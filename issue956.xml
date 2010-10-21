@@ -3,7 +3,7 @@
   <!ENTITY nbsp "&#160;">
 ] >
 
-<issue num="956" status="Open">
+<issue num="956" status="Tentatively Ready">
 <title>Various threading bugs #6</title>
 <section><sref ref="[time.clock.req]"/></section>
 <submitter>Pete Becker</submitter>
@@ -71,26 +71,75 @@ environment</ins>.
 <note>
 2010-03-28 Daniel synced wording with N3092
 </note>
+
+<note>
+Post-Rapperswil:
+</note>
+
+<blockquote>
+Moved to Tentatively Ready with revised wording from Howard Hinnant after 5 positive votes on c++std-lib.
+</blockquote>
+
 </discussion>
 
 <resolution>
-<p>
-Remove every occurrence of "native" in <sref ref="[time.clock.req]"/>.
-</p>
 
 <p>
-Add the following sentence at the end of <sref ref="[time.clock.req]"/>/1:
+Change 20.11.1 [time.clock.req]:
 </p>
 
 <blockquote>
-A clock is a bundle consisting of a <del>native</del> <tt>duration</tt>, a
+<p>
+1 A clock is a bundle consisting of a <del>native</del> <tt>duration</tt>, a
 <del>native</del> <tt>time_point</tt>, and a function <tt>now()</tt> to get the
 current <tt>time_point</tt>. The origin of the clock's <tt>time_point</tt> is
 referred to as the clock's <i>epoch</i>. A clock shall meet the requirements in
-Table 56. <ins>The <tt>duration</tt> and <tt>time_point</tt> types have the
-natural size and resolution suggested by the architecture of the execution
-environment.</ins>
+Table 56.
+</p>
+
+<p>
+2 ...
+</p>
+
+<table border="1">
+<caption>Table 56 &mdash; Clock requirements</caption>
+<tr><th>Expression</th> <th>Return type</th> <th>Operational semantics</th></tr>
+
+<tr>
+<td><tt>C1::rep</tt></td>
+<td>An arithmetic type or a class emulating an arithmetic type</td>
+<td>The representation type of <del>the native</del>
+<tt><ins>C1::</ins>duration</tt><ins>.</ins> <del>and
+<tt>time_point</tt>.</del></td>
+</tr>
+
+<tr>
+<td><tt>C1::period</tt></td>
+<td align="center">...</td>
+<td align="center">...</td>
+</tr>
+
+<tr>
+<td><tt>C1::duration</tt></td>
+<td><tt>chrono::duration&lt;C1::rep, C1::period&gt;</tt></td>
+<td>The <del>native</del> <tt>duration</tt> type of the clock.</td>
+</tr>
+
+<tr>
+<td><tt>C1::time_point</tt></td>
+<td><tt>chrono::time_point&lt;C1&gt;</tt> or <tt>chrono::time_point&lt;C2,
+C1::duration&gt;</tt></td>
+<td>The <del>native</del> <tt>time_point</tt> type of the clock. <tt>C1</tt> and
+<tt>C2</tt> shall refer to the same epoch.</td>
+</tr>
+
+<tr>
+<td colspan="3" align="center">...</td>
+</tr>
+
+</table>
 </blockquote>
+
 </resolution>
 
 </issue>

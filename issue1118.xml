@@ -3,7 +3,7 @@
   <!ENTITY nbsp "&#160;">
 ] >
 
-<issue num="1118" status="Open">
+<issue num="1118" status="Tentatively Ready">
 <title>tuple query APIs do not support cv-qualification</title>
 <section><sref ref="[tuple.helper]"/></section>
 <submitter>Alisdair Meredith</submitter>
@@ -95,99 +95,81 @@ provided, Howard will move to Review.
 2010-03-28 Daniel deconceptified wording.
 </note>
 
+<note>
+Post-Rapperswil:
+</note>
+
+<p>
+The below given P/R reflects the discussion from the Rapperswil meeting that the wording should not constrain 
+implementation freedom to realize the actual issue target. Thus the original code form was replaced by
+normative words.
+</p>
+<p>
+While preparing this wording it turned out that several <tt>tuple_size</tt> specializations as 
+that of <tt>pair</tt> and <tt>array</tt> are underspecified, because the underlying type of the member 
+value is not specified except that it is an integral type. For the specializations we could introduce a 
+canonical one - like <tt>size_t</tt> - or we could use the same type as the specialization of the 
+unqualified type uses. The following wording follows the second approach.
+</p>
+<p>
+The wording refers to N3126.
+</p>
+
+<blockquote>
+Moved to Tentatively Ready after 6 positive votes on c++std-lib.
+</blockquote>
+
 </discussion>
 
 <resolution>
-<p>
-Add to <sref ref="[tuple.general]"/> p2 (Header <tt>&lt;tuple&gt;</tt> synopsis)
-</p>
 
+<ol>
+<li>Change 20.4.1 [tuple.general]/2, header <tt>&lt;tuple&gt;</tt> synopsis, as indicated:
 <blockquote><pre>
 // 20.4.2.5, tuple helper classes:
 template &lt;class T&gt; class tuple_size; // undefined
-<ins>template &lt;class T&gt; class tuple_size&lt;const T&gt; : public tuple_size&lt;T&gt; {};</ins>
-<ins>template &lt;class T&gt; class tuple_size&lt;volatile T&gt; : public tuple_size&lt;T&gt; {};</ins>
-<ins>template &lt;class T&gt; class tuple_size&lt;const volatile T&gt; : public tuple_size&lt;T&gt; {};</ins>
+<ins>template &lt;class T&gt; class tuple_size&lt;const T&gt;;</ins>
+<ins>template &lt;class T&gt; class tuple_size&lt;volatile T&gt;;</ins>
+<ins>template &lt;class T&gt; class tuple_size&lt;const volatile T&gt;;</ins>
+<ins></ins>
 template &lt;class... Types&gt; class tuple_size&lt;tuple&lt;Types...&gt; &gt;;
-
+	
 template &lt;size_t I, class T&gt; class tuple_element; // undefined
 <ins>template &lt;size_t I, class T&gt; class tuple_element&lt;I, const T&gt;;</ins>
 <ins>template &lt;size_t I, class T&gt; class tuple_element&lt;I, volatile T&gt;;</ins>
 <ins>template &lt;size_t I, class T&gt; class tuple_element&lt;I, const volatile T&gt;;</ins>
+<ins></ins>
 template &lt;size_t I, class... Types&gt; class tuple_element&lt;I, tuple&lt;Types...&gt; &gt;;
 </pre></blockquote>
-
-<!-- 
+</li>
+<li>Add the end of subclause 20.4.2.5 [tuple.helper] insert the following two paragraphs:
 <blockquote><pre>
-// 20.5.2.3, tuple helper classes:
-template &lt;IdentityOf T&gt; class tuple_size; // undefined
-<ins>template &lt;IdentityOf T&gt; class tuple_size&lt; const T &gt; : tuple_size&lt;T&gt; {};</ins>
-<ins>template &lt;IdentityOf T&gt; class tuple_size&lt; volatile T &gt; : tuple_size&lt;T&gt; {};</ins>
-<ins>template &lt;IdentityOf T&gt; class tuple_size&lt; const volatile T &gt; : tuple_size&lt;T&gt; {};</ins>
-
-template &lt;VariableType... Types&gt; class tuple_size&lt;tuple&lt;Types...&gt; &gt;;
-
-template &lt;size_t I, IdentityOf T&gt; class tuple_element; // undefined
-<ins>template &lt;size_t I, IdentityOf T&gt; class tuple_element&lt;I, const T&gt;;</ins>
-<ins>template &lt;size_t I, IdentityOf T&gt; class tuple_element&lt;I, volatile T&gt;;</ins>
-<ins>template &lt;size_t I, IdentityOf T&gt; class tuple_element&lt;I, const volatile T&gt;;</ins>
-
-template &lt;size_t I, VariableType... Types&gt;
-  requires True&lt;(I &lt; sizeof...(Types))&gt; class tuple_element&lt;I, tuple&lt;Types...&gt; &gt;;
-</pre></blockquote>
- -->
-
-<p>
-Add to <sref ref="[tuple.helper]"/>
-</p>
+<ins>template &lt;class T&gt; class tuple_size&lt;const T&gt;;</ins>
+<ins>template &lt;class T&gt; class tuple_size&lt;volatile T&gt;;</ins>
+<ins>template &lt;class T&gt; class tuple_size&lt;const volatile T&gt;;</ins>
+</pre><blockquote>
+<ins>Let <em>TS</em> denote <tt>tuple_size&lt;T&gt;</tt> of the <em>cv</em>-unqualified type <tt>T</tt>. 
+Then each of the three templates shall meet the UnaryTypeTrait requirements (20.7.1) with a BaseCharacteristic of 
+<tt>integral_constant&lt;remove_cv&lt;decltype(<em>TS</em>::value)&gt;::type, <em>TS</em>::value&gt;</tt>.</ins>
+</blockquote></blockquote>
 
 <blockquote><pre>
-template &lt;class... Types&gt;
-class tuple_size&lt;tuple&lt;Types...&gt; &gt;
-  : public integral_constant&lt;size_t, sizeof...(Types)&gt; { };
+<ins>template &lt;size_t I, class T&gt; class tuple_element&lt;I, const T&gt;;</ins>
+<ins>template &lt;size_t I, class T&gt; class tuple_element&lt;I, volatile T&gt;;</ins>
+<ins>template &lt;size_t I, class T&gt; class tuple_element&lt;I, const volatile T&gt;;</ins>
+</pre><blockquote>
+<ins>Let <em>TE</em> denote <tt>tuple_element&lt;I, T&gt;</tt> of the <em>cv</em>-unqualified type <tt>T</tt>. Then each of the 
+three templates shall meet the TransformationTrait requirements (20.7.1) with a member typedef <tt>type</tt> that shall name the 
+same type as the following type:</ins>
+<ul>
+<li><ins>for the first specialization, the type <tt>add_const&lt;<em>TE</em>::type&gt;::type</tt>,</ins></li>
+<li><ins>for the second specialization, the type <tt>add_volatile&lt;<em>TE</em>::type&gt;::type</tt>, and</ins></li>
+<li><ins>for the third specialization, the type <tt>add_cv&lt;<em>TE</em>::type&gt;::type</tt></ins></li>
+</ul>
+</blockquote></blockquote>
+</li>
+</ol>
 
-template &lt;size_t I, class... Types&gt;
-class tuple_element&lt;I, tuple&lt;Types...&gt; &gt; {
-public:
-  typedef TI type;
-};
-
-<ins>template &lt;size_t I, class T&gt;
-  class tuple_element&lt;I, const T&gt; : public add_const&lt;tuple_element&lt;I, T&gt;&gt; {};</ins>
-<ins>template &lt;size_t I, class T&gt;
-  class tuple_element&lt;I, volatile T&gt; : public add_volatile&lt;tuple_element&lt;I, T&gt;&gt; {};</ins>
-<ins>template &lt;size_t I, class T&gt;
-  class tuple_element&lt;I, const volatile T&gt; : public add_cv&lt;tuple_element&lt;I, T&gt;&gt; {};</ins>
-</pre></blockquote>
-
-<!-- 
-<note>
-(note that this solution relies on 'metafunction forwarding' to inherit the
-nested typename type)
-</note>
-
-<blockquote><pre>
-template &lt;class... Types&gt;
-class tuple_size&lt;tuple&lt;Types...&gt; &gt;
-  : public integral_constant&lt;size_t, sizeof...(Types)&gt; { };
-
-template &lt;size_t I, class... Types&gt;
-requires True&lt;(I &lt; sizeof...(Types))&gt;
-class tuple_element&lt;I, tuple&lt;Types...&gt; &gt; {
-public:
-  typedef TI type;
-};
-
-<ins>template &lt;size_t I, IdentityOf T&gt;
-  class tuple_element&lt;I, const T&gt; : add_const&lt;tuple_element&lt;I,T&gt;&gt; {};</ins>
-
-<ins>template &lt;size_t I, IdentityOf T&gt;
-  class tuple_element&lt;I, volatile T&gt; : add_volatile&lt;tuple_element&lt;I,T&gt;&gt; {};</ins>
-
-<ins>template &lt;size_t I, IdentityOf T&gt;
-  class tuple_element&lt;I, const volatile T&gt; : add_cv&lt;tuple_element&lt;I,T&gt;&gt; {};</ins>
-</pre></blockquote>
- -->
 </resolution>
 
 </issue>

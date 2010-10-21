@@ -3,7 +3,7 @@
   <!ENTITY nbsp "&#160;">
 ] >
 
-<issue num="1183" status="Open">
+<issue num="1183" status="Tentatively Ready">
 <title><tt>basic_ios::set_rdbuf</tt> may break class invariants</title>
 <section><sref ref="[basic.ios.members]"/></section>
 <submitter>Daniel Kr&uuml;gler</submitter>
@@ -65,10 +65,6 @@ exception to be thrown like a call to <tt>clear()</tt> would.
 <note>
 2009-10-20 Martin provides wording:
 </note>
-
-</discussion>
-
-<resolution>
 <p>
 Change <sref ref="[basic.ios.members]"/> around p. 19 as indicated:
 </p>
@@ -103,6 +99,42 @@ catch(ios_base::failure) {
 
 </blockquote>
 </blockquote>
+
+<note>
+Post-Rapperswil
+</note>
+
+<p>
+Several reviewers and the submitter believe that the best solution would be to add a pre-condition that the 
+buffer shall not be a null pointer value.
+</p>
+
+<blockquote>
+Moved to Tentatively Ready with revised wording provided by Daniel after 5 positive votes on c++std-lib.
+</blockquote>
+
+</discussion>
+
+<resolution>
+<ol>
+<li>Add a new pre-condition just before 27.5.4.2 [basic.ios.members]/23 as indicated:
+<blockquote><pre>
+void set_rdbuf(basic_streambuf&lt;charT, traits&gt;* sb);
+</pre>
+<blockquote>
+<ins>?? <em>Requires</em>: <tt>sb != nullptr</tt>.</ins>
+<p>
+23 <em>Effects</em>: Associates the <tt>basic_streambuf</tt> object pointed to by <tt>sb</tt> with this stream without calling <tt>clear()</tt>.
+</p>
+<p>
+24 <em>Postconditions</em>: <tt>rdbuf() == sb</tt>.
+</p>
+<p>
+25 <em>Throws</em>: Nothing.
+</p>
+</blockquote></blockquote>
+</li>
+</ol>
 </resolution>
 
 <rationale>

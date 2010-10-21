@@ -3,7 +3,7 @@
   <!ENTITY nbsp "&#160;">
 ] >
 
-<issue num="1335" status="New">
+<issue num="1335" status="Tentatively Ready">
 <title>Insufficient requirements for <tt>tuple::operator&lt;()</tt></title>
 <section><sref ref="[tuple.rel]"/></section>
 <submitter>Joe Gottman</submitter>
@@ -27,25 +27,33 @@ This is necessary but not sufficient, as the algorithm for comparing
 (note the order)
 </p>
 
+<note>
+Post-Rapperswil
+</note>
+
+<blockquote>
+Moved to Tentatively Ready with updated wording correcting change-bars after 6 positive votes on c++std-lib.
+</blockquote>
+
 </discussion>
 
 <resolution>
-<p>
-Change <sref ref="[tuple.rel]"/> to say
-</p>
 
+<ol>
+<li>Change [tuple.rel] before p. 4 as indicated [<strong>Remark to the editor: This paragraph doesn't have a number yet,
+but it seems to me as if it should have one</strong>]:
 <blockquote><pre>
 template&lt;class... TTypes, class... UTypes&gt;
-  bool operator&lt;(const tuple&lt;TTypes...&gt;&amp; t, const tuple&lt;UTypes...&gt;&amp; u);
+bool operator&lt;(const tuple&lt;TTypes...&gt;&amp; t, const tuple&lt;UTypes...&gt;&amp; u);
 </pre>
 <blockquote>
-<i>Requires:</i> For all <tt>i</tt>, where <tt>0 &lt;= i and i &lt;
-sizeof...(Types)</tt>, <tt>get&lt;i&gt;(t) &lt; get&lt;i&gt;(u)</tt> <ins>and
-<tt>get&lt;i&gt;(u) &lt; get&lt;i&gt;(t)</tt> are</ins> <del>is a</del> valid
-expressions returning types that are convertible to <tt>bool</tt>.
-<tt>sizeof...(TTypes) == sizeof...(UTypes)</tt>.
-</blockquote>
-</blockquote>
+<em>Requires</em>: For all <tt>i</tt>, where <tt>0 &lt;= i</tt> and <tt>i &lt; sizeof...(Types)</tt>, 
+<tt>get&lt;i&gt;(t) &lt; get&lt;i&gt;(u)</tt> <ins>and <tt>get&lt;i&gt;(u) &lt; get&lt;i&gt;(t)</tt></ins><del>is 
+a valid expression returning a type that is</del><ins> are valid expressions returning types that 
+are</ins> convertible to <tt>bool</tt>. <tt>sizeof...(TTypes) == sizeof...(UTypes)</tt>.
+</blockquote></blockquote>
+</li>
+</ol>
 
 </resolution>
 

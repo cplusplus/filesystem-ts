@@ -3,7 +3,7 @@
   <!ENTITY nbsp "&#160;">
 ] >
 
-<issue num="1340" status="New">
+<issue num="1340" status="Tentatively Ready">
 <title>Why does <tt>forward_list::resize</tt> take the object to be copied by value?</title>
 <section><sref ref="[forwardlist.modifiers]"/></section>
 <submitter>		
@@ -47,9 +47,25 @@ This would make <tt>forward_list</tt> consistent with the CD1 issue <iref
 ref="679"/>.
 </p>
 
+<note>
+Post-Rapperswil
+</note>
+
+<p>
+Daniel changed the P/R slightly, because one paragraph number has been changed since the issue
+had been submitted. He also added a similar Requires element that exists in all other containers with
+a <tt>resize</tt> member function. He deliberately did not touch the wrong usage of "default-constructed" because that
+will be taken care of by LWG issue <a href="http://www.open-std.org/jtc1/sc22/wg21/docs/lwg-active.html#868">868</a>.
+</p>
+
+<blockquote>
+Moved to Tentatively Ready with revised wording after 5 positive votes on c++std-lib.
+</blockquote>
+
 </discussion>
 
 <resolution>
+<!-- original resolution
 <p>
 Change <sref ref="[forwardlist]"/>/3:
 </p>
@@ -68,6 +84,33 @@ Change <sref ref="[forwardlist.modifiers]"/>/22:
 void resize(size_type sz);
 void resize(size_type sz, <ins>const</ins> value_type<ins>&amp;</ins> c);
 </pre></blockquote>
+<--->
+
+<ol>
+<li>Change [forwardlist]/3, class template <tt>forward_list</tt> synopsis, as indicated:
+<blockquote><pre>
+...
+void resize(size_type sz);
+void resize(size_type sz, <ins>const</ins> value_type<ins>&amp;</ins> c);
+void clear();
+...
+</pre></blockquote>
+</li>
+<li>Change [forwardlist.modifiers]/27 as indicated: 
+<blockquote><pre>	
+void resize(size_type sz);
+void resize(size_type sz, <ins>const</ins> value_type<ins>&amp;</ins> c);
+</pre>
+<blockquote>
+27 <em>Effects</em>: If <tt>sz &lt; distance(begin(), end())</tt>, erases the last <tt>distance(begin(), end()) - sz</tt> elements
+from the list. Otherwise, inserts <tt>sz - distance(begin(), end())</tt> elements at the end of the list. For the first 
+signature the inserted elements are default constructed, and for the second signature they are copies of <tt>c</tt>.
+<p>
+<ins>28 - <em>Requires</em>: <tt>T</tt> shall be <tt>DefaultConstructible</tt> for the first form and	it shall be <tt>CopyConstructible</tt> 
+	for the second form.</ins></p>
+</blockquote></blockquote>
+</li>
+</ol>
 
 </resolution>
 

@@ -3,7 +3,7 @@
   <!ENTITY nbsp "&#160;">
 ] >
 
-<issue num="1319" status="New">
+<issue num="1319" status="Tentatively Ready">
 <title>Containers should require an iterator that is at least a Forward Iterator</title>
 <section><sref ref="[container.requirements.general]"/></section>
 <submitter>Alisdair Meredith</submitter>
@@ -64,10 +64,24 @@ interesting and useful results, it is very unlikely to meet the full set of
 requirements for a standard container.
 </p>
 
+<note>
+Post-Rapperswil:
+</note>
+
+<p>
+Daniel notes: I changed the currently suggested P/R slightly, because it is not robust in regard to new fundamental iterator
+catagories. I recommend to say instead that each container::iterator shall satisfy (and thus may refine) the forward 
+iterator requirements.
+</p>
+
+<blockquote>
+Moved to Tentatively Ready with revised wording after 5 positive votes on c++std-lib.
+</blockquote>
+
 </discussion>
 
 <resolution>
-
+<!-- original resolution
 <p>
 Change Table 91 in <sref ref="[container.requirements.general]"/> as indicated:
 </p>
@@ -113,6 +127,51 @@ Bidirectional or Random Access Iterator.</ins></td>
 
 </table>
 </blockquote>
+<--->
+<ol>
+<li>Change Table 93 &mdash; Container requirements in [container.requirements.general] as indicated:
+<blockquote>
+<table border="1">
+<caption>Table 93 &mdash; Container requirements</caption>
+
+<tbody>
+<tr>
+<th>Expression</th>
+<th>Return type</th>
+<th>Operational<br/>semantics</th>
+<th>Assertion/note<br/>pre-/post-condition</th>
+<th>Complexity</th>
+</tr>
+
+<tr>
+<td colspan="5" align="center"><tt>...</tt></td>
+</tr>
+
+<tr>
+<td><tt>X::iterator</tt></td>
+<td>iterator type<br/>whose value<br/>type is <tt>T</tt></td>
+<td></td>
+<td>any iterator category<br/><del>except output iterator</del><ins><br/>that meets the forward iterator requirements</ins>. convertible<br/>to<br/><tt>X::const_iterator</tt></td>
+<td>compile time</td>
+</tr>
+
+<tr>
+<td><tt>X::const_iterator</tt></td>
+<td>constant iterator type<br/>whose value<br/>type is <tt>T</tt></td>
+<td></td>
+<td>any iterator category<br/><del>except output iterator</del><ins><br/>that meets the forward iterator requirements</ins>.</td>
+<td>compile time</td>
+</tr>
+
+<tr>
+<td colspan="5" align="center"><tt>...</tt></td>
+</tr>
+
+</tbody></table>
+</blockquote>
+
+</li>
+</ol>
 
 </resolution>
 

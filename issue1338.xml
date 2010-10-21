@@ -3,7 +3,7 @@
   <!ENTITY nbsp "&#160;">
 ] >
 
-<issue num="1338" status="New">
+<issue num="1338" status="Tentatively Ready">
 <title>LWG 1205 incorrectly applied</title>
 <section><sref ref="[alg.search]"/></section>
 <submitter>Howard Hinnant</submitter>
@@ -79,12 +79,47 @@ LWG <iref ref="1205"/> is correct and N3092 is not equivalent nor correct.
 I have not reviewed the other 10 recommendations of <iref ref="1205"/>.
 </p>
 
+<note>
+Post-Rapperswil
+</note>
+
+<blockquote>
+It was verified that none of the remaining possibly affected algorithms does have any similar problems and a concrete P/R was added
+that used a similar style as has been applied to the other cases.
+</blockquote>
+
+<blockquote>
+Moved to Tentatively Ready after 5 positive votes on c++std-lib.
+</blockquote>
+
 </discussion>
 
 <resolution>
-<p>
-Reapply LWG <iref ref="1205"/>.
+<ol>
+<li>Change [alg.search]/2 as indicated:
+<blockquote><pre>
+template&lt;class ForwardIterator1, class ForwardIterator2&gt;
+  ForwardIterator1
+    search(ForwardIterator1 first1, ForwardIterator1 last1,
+           ForwardIterator2 first2, ForwardIterator2 last2);
+
+template&lt;class ForwardIterator1, class ForwardIterator2,
+            class BinaryPredicate&gt;
+  ForwardIterator1
+    search(ForwardIterator1 first1, ForwardIterator1 last1,
+           ForwardIterator2 first2, ForwardIterator2 last2,
+           BinaryPredicate pred);
+</pre>
+<blockquote><p>
+1 - [...]
 </p>
+2 - <em>Returns</em>: The first iterator <tt>i</tt> in the range <tt>[first1,last1 - (last2-first2))</tt> such that for any nonnegative
+integer <tt>n</tt> less than <tt>last2 - first2</tt> the following corresponding conditions hold: <tt>*(i + n) == *(first2 + n)</tt>, 
+<tt>pred(*(i + n), *(first2 + n)) != false</tt>. Returns <tt>first1</tt> if <tt>[first2,last2)</tt> is empty <del>or</del><ins>, otherwise
+	returns <tt>last1</tt></ins> if no such iterator is found.
+</blockquote></blockquote>
+</li>
+</ol>
 </resolution>
 
 </issue>

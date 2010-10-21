@@ -3,7 +3,7 @@
   <!ENTITY nbsp "&#160;">
 ] >
 
-<issue num="1234" status="Open">
+<issue num="1234" status="Tentatively Ready">
 <title>"Do the right thing" and NULL</title>
 <section><sref ref="[sequence.reqmts]"/></section>
 <submitter>Matt Austern</submitter>
@@ -85,9 +85,24 @@ This issue can be considered as a refinement of <iref ref="438"/>.
 
 </blockquote>
 
+<note>
+Post-Rapperswil
+</note>
+
+<p>
+Wording was verified to match with the most recent WP. Jonathan Wakely and Alberto Barbati observed that the current 
+WP has a defect that should be fixed here as well: The functions signatures <tt>fx1</tt> and <tt>fx3</tt> are 
+incorrectly referring to <tt>iterator</tt> instead of <tt>const_iterator</tt>.
+</p>
+
+<blockquote>
+Moved to Tentatively Ready with revised wording after 7 positive votes on c++std-lib.
+</blockquote>
+
 </discussion>
 
 <resolution>
+<!--
 <p>
 Change <sref ref="[sequence.reqmts]"/>/14+15
 (<a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2010/n3035.pdf">N3035</a>)
@@ -151,6 +166,93 @@ rt fx3(iterator i1, iterator i2, InputIterator first, InputIterator last);
 are called with a type <tt>InputIterator</tt> that does not qualify as an input
 iterator, then these functions <ins>shall not participate in overload
 resolution</ins><del>will behave as if the overloaded member functions:</del>
+</p>
+
+<blockquote><pre>
+<del>rt fx1(iterator, size_type, const value_type&amp;);</del>
+
+<del>rt fx2(size_type, const value_type&amp;);</del>
+
+<del>rt fx3(iterator, iterator, size_type, const value_type&amp;);</del>
+</pre></blockquote>
+
+<p>
+<del>were called instead, with the same arguments.</del>
+</p>
+</li>
+
+</ul>
+
+<p><del>
+15 In the previous paragraph the alternative binding will fail if <tt>first</tt>
+is not implicitly convertible to <tt>X::size_type</tt> or if <tt>last</tt> is
+not implicitly convertible to <tt>X::value_type</tt>.
+</del></p>
+</blockquote>
+ --->
+ 
+<p>
+Change 23.2.3 [sequence.reqmts]/14+15 as indicated:
+</p>
+
+<blockquote>
+<p>
+14 For every sequence container defined in this Clause and in Clause 21:
+</p>
+
+<ul>
+<li>
+<p>
+If the constructor
+</p>
+
+<blockquote><pre>
+template &lt;class InputIterator&gt;
+X(InputIterator first, InputIterator last,
+  const allocator_type&amp; alloc = allocator_type())
+
+</pre></blockquote>
+
+<p>
+is called with a type <tt>InputIterator</tt> that does not qualify as an input
+iterator, then the constructor <ins>shall not participate in overload
+resolution.</ins><del>will
+behave as if the overloaded constructor:</del>
+</p>
+
+<blockquote><pre><del>
+X(size_type, const value_type& = value_type(),
+  const allocator_type& = allocator_type())
+</del></pre></blockquote>
+
+<p>
+<del>were called instead, with the arguments
+<tt>static_cast&lt;size_type&gt;(first)</tt>, <tt>last</tt> and <tt>alloc</tt>,
+respectively</del>.
+</p>
+</li>
+
+<li>
+
+<p>
+If the member functions of the forms:
+</p>
+
+<blockquote><pre>
+template &lt;class InputIterator&gt; <i>// such as insert()</i>
+rt fx1(<ins>const_</ins>iterator p, InputIterator first, InputIterator last);
+
+template &lt;class InputIterator&gt; <i>// such as append(), assign()</i>
+rt fx2(InputIterator first, InputIterator last);
+
+template &lt;class InputIterator&gt; <i>// such as replace()</i>
+rt fx3(<ins>const_</ins>iterator i1, <ins>const_</ins>iterator i2, InputIterator first, InputIterator last);
+</pre></blockquote>
+
+<p>
+are called with a type <tt>InputIterator</tt> that does not qualify as an input
+iterator, then these functions <ins>shall not participate in overload
+resolution.</ins><del>will behave as if the overloaded member functions:</del>
 </p>
 
 <blockquote><pre>
