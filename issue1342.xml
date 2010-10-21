@@ -1,0 +1,43 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="1342" status="New">
+<title><tt>is_* traits</tt> for binding operations can't be meaningfully specialized</title>
+<section><sref ref="[func.bind.isbind]"/></section>
+<submitter>Sean Hunt</submitter>
+<date>19 Jul 2010</date>
+
+<discussion>
+<p>
+<sref ref="[func.bind.isbind]"/> says for <tt>is_bind_expression</tt>:
+</p>
+
+<blockquote>
+Users may specialize this template to indicate that a type should be
+treated as a subexpression in a <tt>bind</tt> call.
+</blockquote>
+
+<p>
+But it also says:
+</p>
+
+<blockquote>
+If <tt>T</tt> is a type returned from <tt>bind</tt>,
+<tt>is_bind_expression&lt;T&gt;</tt> shall be publicly derived from
+<tt>integral_constant&lt;bool, true&gt;</tt>, otherwise from
+<tt>integral_constant&lt;bool, false&gt;</tt>.
+</blockquote>
+
+<p>
+This means that while the user is free to specialize, any specialization
+would have to be <tt>false</tt> to avoid violating the second
+requirement. A similar problem exists for <tt>is_placeholder</tt>.
+</p>
+</discussion>
+
+<resolution>
+</resolution>
+
+</issue>

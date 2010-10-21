@@ -1,0 +1,46 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="812" status="NAD Editorial">
+<title>unsolicited multithreading considered harmful?</title>
+<section><sref ref="[alg.sort]"/></section>
+<submitter>Paul McKenney</submitter>
+<date>27 Feb 2008</date>
+
+<discussion>
+<p>
+Multi-threading is a good thing, but unsolicited multi-threading can
+potentially be harmful.  For example, <tt>sort()</tt> performance might be
+greatly increased via a multithreaded implementation.  However, such
+a multithreaded implementation could result in concurrent invocations
+of the user-supplied comparator.  This would in turn result in problems
+given a caching comparator that might be written for complex sort keys.
+Please note that this is not a theoretical issue, as multithreaded
+implementations of <tt>sort()</tt> already exist.
+</p>
+<p>
+Having a multithreaded <tt>sort()</tt> available is good, but it should not
+be the default for programs that are not explicitly multithreaded.
+Users should not be forced to deal with concurrency unless they have
+asked for it.
+</p>
+
+<note>
+This may be covered by
+<a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2007/n2410.html">N2410</a>
+Thread-Safety in the Standard Library (Rev 1).
+</note>
+</discussion>
+
+<resolution>
+<p>
+</p>
+</resolution>
+
+<rationale>
+This is already covered by 17.6.5.6/20 in N2723.
+</rationale>
+
+</issue>

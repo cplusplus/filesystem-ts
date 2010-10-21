@@ -1,0 +1,84 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="401" status="CD1">
+<title> incorrect type casts in table 32 in lib.allocator.requirements</title>
+<section><sref ref="[allocator.requirements]"/></section>
+<submitter>Markus Mauhart</submitter>
+<date>27 Feb 2003</date>
+
+<discussion>
+<p>
+I think that in par2 of <sref ref="[default.con.req]"/> the last two
+lines of table 32 contain two incorrect type casts. The lines are ...
+</p>
+
+<pre>
+  a.construct(p,t)   Effect: new((void*)p) T(t)
+  a.destroy(p)       Effect: ((T*)p)?-&gt;~T()
+</pre>
+
+<p>
+.... with the prerequisits coming from the preceding two paragraphs, especially
+from table 31:
+</p>
+
+<pre>
+  alloc&lt;T&gt;             a     ;// an allocator for T
+  alloc&lt;T&gt;::pointer    p     ;// random access iterator
+                              // (may be different from T*)
+  alloc&lt;T&gt;::reference  r = *p;// T&amp;
+  T const&amp;             t     ;
+</pre>
+
+<p>
+For that two type casts ("(void*)p" and "(T*)p") to be well-formed
+this would require then conversions to T* and void* for all
+alloc&lt;T&gt;::pointer, so it would implicitely introduce extra
+requirements for alloc&lt;T&gt;::pointer, additionally to the only
+current requirement (being a random access iterator).
+</p>
+</discussion>
+
+<resolution>
+
+<p>
+Accept proposed wording from
+<a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2007/n2436.pdf">N2436</a> part 1.
+</p>
+
+<p>
+Note: Actually I would prefer to replace "((T*)p)?-&gt;dtor_name" with
+"p?-&gt;dtor_name", but AFAICS this is not possible cause of an omission
+in <sref ref="[over.ref]"/> (for which I have filed another DR on 29.11.2002).
+</p>
+
+<note>Kona: The LWG thinks this is somewhere on the border between
+  Open and NAD.  The intend is clear: <tt>construct</tt> constructs an
+  object at the location <i>p</i>.  It's reading too much into the
+  description to think that literally calling <tt>new</tt> is
+  required.  Tweaking this description is low priority until we can do
+  a thorough review of allocators, and, in particular, allocators with
+  non-default pointer types.</note>
+
+<note>
+Batavia:  Proposed resolution changed to less code and more description.
+</note>
+
+<note>
+post Oxford:  This would be rendered NAD Editorial by acceptance of
+<a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2007/n2257.html">N2257</a>.
+</note>
+
+<note>
+Kona (2007): The LWG adopted the proposed resolution of N2387 for this issue which
+was subsequently split out into a separate paper N2436 for the purposes of voting.
+The resolution in N2436 addresses this issue.  The LWG voted to accelerate this
+issue to Ready status to be voted into the WP at Kona.
+</note>
+
+</resolution>
+
+</issue>

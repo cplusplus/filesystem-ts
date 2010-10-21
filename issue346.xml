@@ -1,0 +1,59 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="346" status="CD1">
+<title>Some iterator member functions should be const</title>
+<section><sref ref="[iterator.concepts]"/></section>
+<submitter>Jeremy Siek</submitter>
+<date>20 Oct 2001</date>
+
+<discussion>
+<p>Iterator member functions and operators that do not change the state
+of the iterator should be defined as const member functions or as
+functions that take iterators either by const reference or by
+value. The standard does not explicitly state which functions should
+be const.  Since this a fairly common mistake, the following changes
+are suggested to make this explicit.</p>
+
+<p>The tables almost indicate constness properly through naming: r
+for non-const and a,b for const iterators. The following changes
+make this more explicit and also fix a couple problems.</p>
+</discussion>
+
+<resolution>
+<p>In <sref ref="[iterator.concepts]"/> Change the first section of p9 from
+"In the following sections, a and b denote values of X..." to
+"In the following sections, a and b denote values of type const X...".</p>
+
+<p>In Table 73, change</p>
+<pre>
+    a-&gt;m   U&amp;         ...
+</pre>
+
+<p>to</p>
+
+<pre>
+    a-&gt;m   const U&amp;   ...
+    r-&gt;m   U&amp;         ...
+</pre>
+
+<p>In Table 73 expression column, change</p>
+
+<pre>
+    *a = t
+</pre>
+
+<p>to</p>
+
+<pre>
+    *r = t
+</pre>
+
+<note>Redmond: The container requirements should be reviewed to see if
+the same problem appears there.</note>
+
+</resolution>
+
+</issue>

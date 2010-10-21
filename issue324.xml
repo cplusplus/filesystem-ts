@@ -1,0 +1,139 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="324" status="CD1">
+<title>Do output iterators have value types?</title>
+<section><sref ref="[output.iterators]"/></section>
+<submitter>Dave Abrahams</submitter>
+<date>7 Jun 2001</date>
+
+<discussion>
+
+<p>Table 73 suggests that output iterators have value types.  It 
+requires the expression "*a = t".  Additionally, although Table 73
+never lists "a = t" or "X(a) = t" in the "expressions" column, it
+contains a note saying that "a = t" and "X(a) = t" have equivalent
+(but nowhere specified!) semantics.</p>
+
+<p>According to 24.1/9, t is supposed to be "a value of value type
+T":</p>
+
+    <blockquote><p>
+    In the following sections, a and b denote values of X, n denotes a
+    value of the difference type Distance, u, tmp, and m denote
+    identifiers, r denotes a value of X&amp;, t denotes a value of
+    value type T.
+    </p></blockquote>
+
+<p>Two other parts of the standard that are relevant to whether
+output iterators have value types:</p>
+
+<ul>
+    <li>24.1/1 says "All iterators i support the expression *i,
+    resulting in a value of some class, enumeration, or built-in type
+    T, called the value type of the iterator".</li>
+
+    <li>
+    24.3.1/1, which says "In the case of an output iterator, the types
+    iterator_traits&lt;Iterator&gt;::difference_type
+    iterator_traits&lt;Iterator&gt;::value_type are both defined as void."
+    </li>
+</ul>
+
+<p>The first of these passages suggests that "*i" is supposed to
+return a useful value, which contradicts the note in 24.1.2/2 saying
+that the only valid use of "*i" for output iterators is in an
+expression of the form "*i = t".  The second of these passages appears
+to contradict Table 73, because it suggests that "*i"'s return value
+should be void.  The second passage is also broken in the case of a an
+iterator type, like non-const pointers, that satisfies both the output
+iterator requirements and the forward iterator requirements.</p>
+
+<p>What should the standard say about <tt>*i</tt>'s return value when
+i is an output iterator, and what should it say about that t is in the
+expression "*i = t"?  Finally, should the standard say anything about
+output iterators' pointer and reference types?</p>
+
+</discussion>
+
+<resolution>
+<p>24.1 p1, change</p>
+
+<blockquote>
+<p>All iterators <tt>i</tt> support the expression <tt>*i</tt>, resulting
+in a value of some class, enumeration, or built-in type <tt>T</tt>,
+called the value type of the iterator.</p>
+</blockquote>
+
+<p>to</p>
+
+<blockquote>
+<p>All input iterators <tt>i</tt> support the expression <tt>*i</tt>,
+resulting in a value of some class, enumeration, or built-in type
+<tt>T</tt>, called the value type of the iterator. All output
+iterators support the expression <tt>*i = o</tt> where <tt>o</tt> is a
+value of some type that is in the set of types that are <i>writable</i> to
+the particular iterator type of <tt>i</tt>.
+</p>
+</blockquote>
+
+<p>24.1 p9, add</p>
+
+<blockquote>
+<p><tt>o</tt> denotes a value of some type that is writable to the
+output iterator.
+</p>
+</blockquote>
+
+<p>Table 73, change</p>
+
+<blockquote>
+<pre>
+*a = t
+</pre>
+</blockquote>
+
+<p>to</p>
+
+<blockquote>
+<pre>
+*r = o
+</pre>
+</blockquote>
+
+<p>and change</p>
+
+<blockquote>
+<pre>
+*r++ = t
+</pre>
+</blockquote>
+
+<p>to</p>
+
+<blockquote>
+<pre>
+*r++ = o
+</pre>
+</blockquote>
+
+<note>post-Redmond: Jeremy provided wording</note>
+
+</resolution>
+
+<rationale>
+<p>The LWG considered two options: change all of the language that
+seems to imply that output iterators have value types, thus making it
+clear that output iterators have no value types, or else define value
+types for output iterator consistently.  The LWG chose the former
+option, because it seems clear that output iterators were never
+intended to have value types.  This was a deliberate design decision,
+and any language suggesting otherwise is simply a mistake.</p>
+
+<p>A future revision of the standard may wish to revisit this design
+decision.</p>
+</rationale>
+
+</issue>

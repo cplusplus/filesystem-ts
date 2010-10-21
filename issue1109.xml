@@ -1,0 +1,45 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="1109" status="NAD Concepts">
+<title><tt>std::includes</tt> should require <tt>CopyConstructible</tt> predicate</title>
+<section><sref ref="[includes]"/></section>
+<submitter>Alisdair Meredith</submitter>
+<date>28 Apr 2009</date>
+
+<discussion>
+<p>
+All the set operation algorithms require a <tt>CopyConstructible</tt> predicate, with
+the exception of <tt>std::includes</tt>.  This looks like a typo as much as anything,
+given the general library requirement that predicates are copy
+constructible, and wording style of other set-like operations.
+</p>
+
+<note>
+Batavia (2009-05):
+</note>
+<blockquote>
+We agree with the proposed resolution.
+Move to NAD Editorial.
+</blockquote>
+</discussion>
+
+<resolution>
+<p>
+Change <sref ref="[algorithms.syn]"/> and <sref ref="[includes]"/>:
+</p>
+
+<blockquote><pre>
+template&lt;InputIterator Iter1, InputIterator Iter2,
+         <del>typename</del> <ins>CopyConstructible</ins> Compare&gt;
+  requires Predicate&lt;Compare, Iter1::value_type, Iter2::value_type&gt;
+        &amp;&amp; Predicate&lt;Compare, Iter2::value_type, Iter1::value_type&gt;
+  bool includes(Iter1 first1, Iter1 last1,
+                Iter2 first2, Iter2 last2,
+                Compare comp);
+</pre></blockquote>
+</resolution>
+
+</issue>

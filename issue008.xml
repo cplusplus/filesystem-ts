@@ -1,0 +1,33 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="8" status="TC1">
+<title>Locale::global lacks guarantee</title>
+<section><sref ref="[locale.statics]"/></section>
+<submitter>Matt Austern</submitter>
+<date>24 Dec 1997</date>
+
+<discussion>
+<p>It appears there's an important guarantee missing from clause
+22. We're told that invoking locale::global(L) sets the C locale if L
+has a name. However, we're not told whether or not invoking
+setlocale(s) sets the global C++ locale. </p>
+
+<p>The intent, I think, is that it should not, but I can't find any
+such words anywhere. </p>
+</discussion>
+
+<resolution>
+<p>Add a sentence at the end of <sref ref="[locale.statics]"/>,
+paragraph 2:&nbsp; </p>
+
+<blockquote>
+  <p>No library function other than <tt>locale::global()</tt> shall affect 
+  the value returned by <tt>locale()</tt>. </p>
+
+</blockquote>
+</resolution>
+
+</issue>

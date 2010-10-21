@@ -1,0 +1,65 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="695" status="CD1">
+<title>ctype&lt;char&gt;::classic_table() not accessible</title>
+<section><sref ref="[facet.ctype.special]"/></section>
+<submitter>Martin Sebor</submitter>
+<date>22 Jun 2007</date>
+
+<discussion>
+<p>
+The   <code>ctype&lt;char&gt;::classic_table()</code>   static  member
+function    returns    a    pointer    to   an    array    of    const
+<code>ctype_base::mask</code>    objects    (enums)   that    contains
+<code>ctype&lt;char&gt;::table_size</code>    elements.    The   table
+describes the properties of the character set in the "C" locale (i.e.,
+whether a  character at an index  given by its value  is alpha, digit,
+punct,   etc.),   and   is    typically   used   to   initialize   the
+<code>ctype&lt;char&gt;</code>  facet in the  classic "C"  locale (the
+protected      <code>ctype&lt;char&gt;</code>      member     function
+<code>table()</code>    then    returns     the    same    value    as
+<code>classic_table()</code>).
+</p>
+<p>
+However, while <code>ctype&lt;char&gt;::table_size</code> (the size of
+the   table)    is   a   public    static   const   member    of   the
+<code>ctype&lt;char&gt;</code>           specialization,           the
+<code>classic_table()</code> static member function is protected. That
+makes getting at the classic  data less than convenient (i.e., one has
+to create  a whole derived class just  to get at the  masks array). It
+makes  little sense  to expose  the size  of the  table in  the public
+interface while making the table itself protected, especially when the
+table is a constant object.
+</p>
+<p>
+The  same argument  can be  made for  the non-static  protected member
+function <code>table()</code>.
+</p>
+</discussion>
+
+<resolution>
+<p>
+Make     the    <code>ctype&lt;char&gt;::classic_table()</code>    and
+<code>ctype&lt;char&gt;::table()</code>  member  functions  public  by
+moving their declarations into the public section of the definition of
+specialization in <sref ref="[facet.ctype.special]"/> as shown below:
+</p>
+<blockquote>
+<pre>
+  static locale::id id;
+  static const size_t table_size = IMPLEMENTATION_DEFINED;
+<del>protected:</del>
+  const mask* table() const throw();
+  static const mask* classic_table() throw();
+<ins>protected:</ins>
+
+~ctype(); // virtual
+virtual char do_toupper(char c) const;
+</pre>
+</blockquote>
+</resolution>
+
+</issue>

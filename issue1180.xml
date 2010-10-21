@@ -1,0 +1,103 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="1180" status="WP">
+<title>Missing string_type member typedef in class <tt>sub_match</tt></title>
+<section><sref ref="[re.submatch.members]"/></section>
+<submitter>Daniel Kr&uuml;gler</submitter>
+<date>25 Jul 2009</date>
+
+<discussion>
+<p>
+The definition of class template <tt>sub_match</tt> is strongly dependent
+on the type <tt>basic_string&lt;value_type&gt;</tt>, both in interface and effects,
+but does not provide a corresponding typedef <tt>string_type</tt>, as e.g.
+class <tt>match_results</tt> does, which looks like an oversight to me that
+should be fixed.
+</p>
+
+<note>
+2009-11-15 Moved to Tentatively Ready after 5 positive votes on c++std-lib.
+</note>
+</discussion>
+
+<resolution>
+
+<ol>
+<li>
+<p>
+In the class template <tt>sub_match</tt> synopsis <sref ref="[re.submatch]"/>/1
+change as indicated:
+</p>
+
+<blockquote><pre>
+template &lt;class BidirectionalIterator&gt;
+class sub_match : public std::pair&lt;BidirectionalIterator, BidirectionalIterator&gt; {
+public:
+  typedef typename iterator_traits&lt;BidirectionalIterator&gt;::value_type value_type;
+  typedef typename iterator_traits&lt;BidirectionalIterator&gt;::difference_type difference_type;
+  typedef BidirectionalIterator iterator;
+  <ins>typedef basic_string&lt;value_type&gt; string_type;</ins>
+
+  bool matched;
+
+  difference_type length() const;
+  operator <del>basic_string&lt;value_type&gt;</del><ins>string_type</ins>() const;
+  <del>basic_string&lt;value_type&gt;</del><ins>string_type</ins> str() const;
+  int compare(const sub_match&amp; s) const;
+  int compare(const <del>basic_string&lt;value_type&gt;</del><ins>string_type</ins>&amp; s) const;
+  int compare(const value_type* s) const;
+};
+</pre></blockquote>
+</li>
+
+<li>
+<p>
+In <sref ref="[re.submatch.members]"/>/2 change as indicated:
+</p>
+
+<blockquote><pre>
+operator <del>basic_string&lt;value_type&gt;</del><ins>string_type</ins>() const;
+</pre>
+
+<blockquote>
+<i>Returns:</i> <tt>matched ? <del>basic_string&lt;value_type&gt;</del>
+<ins>string_type</ins>(first, second) : <del>basic_string&lt;value_type&gt;</del>
+<ins>string_type</ins>()</tt>.
+</blockquote>
+</blockquote>
+</li>
+
+<li>
+<p>
+In <sref ref="[re.submatch.members]"/>/3 change as indicated:
+</p>
+
+<blockquote><pre>
+<del>basic_string&lt;value_type&gt;</del><ins>string_type</ins> str() const;
+</pre>
+
+<blockquote>
+<i>Returns:</i> <tt>matched ? <del>basic_string&lt;value_type&gt;</del>
+<ins>string_type</ins>(first, second) : <del>basic_string&lt;value_type&gt;</del>
+<ins>string_type</ins>()</tt>.
+</blockquote>
+</blockquote>
+</li>
+
+<li>
+<p>
+In <sref ref="[re.submatch.members]"/>/5 change as indicated:
+</p>
+
+<blockquote><pre>
+int compare(const <del>basic_string&lt;value_type&gt;</del><ins>string_type</ins>&amp; s) const;
+</pre></blockquote>
+</li>
+</ol>
+
+</resolution>
+
+</issue>

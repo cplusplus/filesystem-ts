@@ -1,0 +1,389 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="857" status="WP">
+<title><tt>condition_variable::time_wait</tt> return <tt>bool</tt> error prone</title>
+<section><sref ref="[thread.condition.condvar]"/></section>
+<submitter>Beman Dawes</submitter>
+<date>13 Jun 2008</date>
+
+<discussion>
+<p>
+The meaning of the <tt>bool</tt> returned by <tt>condition_variable::timed_wait</tt> is so
+obscure that even the class' designer can't deduce it correctly. Several
+people have independently stumbled on this issue.
+</p>
+<p>
+It might be simpler to change the return type to a scoped enum:
+</p>
+<blockquote><pre>
+enum class timeout { not_reached, reached };
+</pre></blockquote>
+
+<p>
+That's the same cost as returning a <tt>bool</tt>, but not subject to mistakes. Your example below would be:
+</p>
+
+<blockquote><pre>
+if (cv.wait_until(lk, time_limit) == timeout::reached )
+  throw time_out();
+</pre></blockquote>
+
+<note>
+Beman to supply exact wording.
+</note>
+
+<note>
+San Francisco:
+</note>
+
+<blockquote>
+<p>
+There is concern that the enumeration names are just as confusing, if
+not more so, as the bool. You might have awoken because of a signal or a
+spurious wakeup, for example.
+</p>
+<p>
+Group feels that this is a defect that needs fixing.
+</p>
+<p>
+Group prefers returning an enum over a void return.
+</p>
+<p>
+Howard to provide wording.
+</p>
+</blockquote>
+
+<note>
+2009-06-14 Beman provided wording.
+</note>
+
+<note>
+2009-07 Frankfurt:
+</note>
+
+<blockquote>
+Move to Ready.
+</blockquote>
+
+</discussion>
+
+<resolution>
+<p>
+Change Condition variables <sref ref="[thread.condition]"/>, Header
+condition_variable synopsis, as indicated:
+</p>
+
+<blockquote><pre>
+namespace std {
+  class condition_variable;
+  class condition_variable_any;
+
+  <ins>enum class cv_status { no_timeout, timeout };</ins>
+}
+</pre></blockquote>
+
+<p>
+Change Class condition_variable <sref ref="[thread.condition.condvar]"/> as indicated:
+</p>
+
+<blockquote><pre>
+class condition_variable { 
+public:
+  ...
+  template &lt;class Clock, class Duration&gt;
+    <del>bool</del> <ins>cv_status</ins> wait_until(unique_lock&lt;mutex&gt;&amp; lock,
+                    const chrono::time_point&lt;Clock, Duration&gt;&amp; abs_time);
+  template &lt;class Clock, class Duration, class Predicate&gt;
+    bool wait_until(unique_lock&lt;mutex&gt;&amp; lock,
+                    const chrono::time_point&lt;Clock, Duration&gt;&amp; abs_time,
+                    Predicate pred);
+
+  template &lt;class Rep, class Period&gt;
+    <del>bool</del> <ins>cv_status</ins> wait_for(unique_lock&lt;mutex&gt;&amp; lock,
+                  const chrono::duration&lt;Rep, Period&gt;&amp; rel_time);
+  template &lt;class Rep, class Period, class Predicate&gt;
+    bool wait_for(unique_lock&lt;mutex&gt;&amp; lock,
+                  const chrono::duration&lt;Rep, Period&gt;&amp; rel_time,
+                  Predicate pred);
+  ...
+};
+
+...
+
+template &lt;class Clock, class Duration&gt;
+  <del>bool</del> <ins>cv_status</ins> wait_until(unique_lock&lt;mutex&gt;&amp; lock,
+                  const chrono::time_point&lt;Clock, Duration&gt;&amp; abs_time);
+</pre>
+<blockquote>
+<p>
+-15- <i>Precondition:</i> <tt>lock</tt> is locked by the calling thread, and either
+</p>
+<ul>
+<li>
+no other thread is waiting on this <tt>condition_variable</tt> object or
+</li>
+<li>
+<tt>lock.mutex()</tt> returns the same value for each of the <tt>lock</tt>
+arguments supplied by all concurrently waiting threads (via <tt>wait</tt>,
+<tt>wait_for</tt> or <tt>wait_until</tt>.).
+</li>
+</ul>
+
+<p>
+-16- <i>Effects:</i>
+</p>
+
+<ul>
+<li>
+Atomically calls <tt>lock.unlock()</tt> and blocks on <tt>*this</tt>.
+</li>
+<li>
+When unblocked, calls <tt>lock.lock()</tt> (possibly blocking on the lock) and returns.
+</li>
+<li>
+The function will unblock when signaled by a call to <tt>notify_one()</tt>,
+a call to <tt>notify_all()</tt>, <del>by 
+the current time exceeding <tt>abs_time</tt></del> <ins>if <tt>Clock::now() &gt;= abs_time</tt></ins>,
+or spuriously.
+</li>
+<li>
+If the function exits via an exception, <tt>lock.unlock()</tt> shall be called prior
+to exiting the function scope.
+</li>
+</ul>
+
+<p>
+-17- <i>Postcondition:</i> <tt>lock</tt> is locked by the calling thread.
+</p>
+
+<p>
+-18- <i>Returns:</i> <del><tt>Clock::now() &lt; abs_time</tt></del>
+<ins><tt>cv_status::timeout</tt> if the function unblocked because <tt>abs_time</tt>
+was reached, otherwise <tt>cv_status::no_timeout</tt></ins>.
+</p>
+
+<p>
+-19- <i>Throws:</i> <tt>std::system_error</tt> when the effects or postcondition
+cannot be achieved.
+</p>
+
+<p>
+-20- <i>Error conditions:</i>
+</p>
+
+<ul>
+<li>
+<tt>operation_not_permitted</tt> &mdash; if the thread does not own the lock.
+</li>
+<li>
+equivalent error condition from <tt>lock.lock()</tt> or <tt>lock.unlock()</tt>.
+</li>
+</ul>
+</blockquote>
+
+<pre>
+template &lt;class Rep, class Period&gt;
+  <del>bool</del> <ins>cv_status</ins> wait_for(unique_lock&lt;mutex&gt;&amp; lock,
+                const chrono::duration&lt;Rep, Period&gt;&amp; rel_time);
+
+</pre>
+<blockquote>
+<p>
+-21- <i><del>Effects</del> <ins>Returns</ins>:</i>
+</p>
+<blockquote><pre>
+wait_until(lock, chrono::monotonic_clock::now() + rel_time)
+</pre></blockquote>
+<p>
+<del>-22- <i>Returns:</i> <tt>false</tt> if the call is returning because the time
+duration specified by <tt>rel_time</tt> has elapsed, 
+otherwise <tt>true</tt>.</del>
+</p>
+
+<note>
+This part of the wording may conflict with <iref ref="859"/> in detail, but does
+not do so in spirit.  If both issues are accepted, there is a logical merge.
+</note>
+</blockquote>
+
+<pre>
+template &lt;class Clock, class Duration, class Predicate&gt; 
+  bool wait_until(unique_lock&lt;mutex&gt;&amp; lock, 
+                  const chrono::time_point&lt;Clock, Duration&gt;&amp; abs_time, 
+                  Predicate pred);
+</pre>
+
+<blockquote>
+<p>
+-23- <i>Effects:</i>
+</p>
+<blockquote><pre>
+while (!pred()) 
+  if (<del>!</del>wait_until(lock, abs_time) <ins>== cv_status::timeout</ins>) 
+    return pred(); 
+return true;
+</pre></blockquote>
+
+<p>
+-24- <i>Returns:</i> <tt>pred()</tt>.
+</p>
+
+<p>
+-25- [<i>Note:</i>
+The returned value indicates whether the predicate evaluates to
+<tt>true</tt> regardless of whether the timeout was triggered.
+&mdash; <i>end note</i>].
+</p>
+</blockquote>
+</blockquote>
+
+<p>
+Change Class condition_variable_any <sref ref="[thread.condition.condvarany]"/> as indicated:
+</p>
+
+<blockquote><pre>
+class condition_variable_any {
+public:
+  ...
+  template &lt;class Lock, class Clock, class Duration&gt;
+    <del>bool</del> <ins>cv_status</ins> wait_until(Lock&amp; lock,
+                    const chrono::time_point&lt;Clock, Duration&gt;&amp; abs_time);
+  template &lt;class Lock, class Clock, class Duration, class Predicate&gt;
+    bool wait_until(Lock&amp; lock,
+                    const chrono::time_point&lt;Clock, Duration&gt;&amp; abs_time,
+                    Predicate pred);
+
+  template &lt;class Lock, class Rep, class Period&gt;
+    <del>bool</del> <ins>cv_status</ins> wait_for(Lock&amp; lock,
+                  const chrono::duration&lt;Rep, Period&gt;&amp; rel_time);
+  template &lt;class Lock, class Rep, class Period, class Predicate&gt;
+    bool wait_for(Lock&amp; lock,
+                  const chrono::duration&lt;Rep, Period&gt;&amp; rel_time,
+                  Predicate pred);
+  ...
+};
+
+...
+
+template &lt;class Lock, class Clock, class Duration&gt;
+  <del>bool</del> <ins>cv_status</ins> wait_until(Lock&amp; lock,
+                  const chrono::time_point&lt;Clock, Duration&gt;&amp; abs_time);
+</pre>
+
+<blockquote>
+
+<p>
+-13- <i>Effects:</i>
+</p>
+
+<ul>
+<li>
+Atomically calls <tt>lock.unlock()</tt> and blocks on <tt>*this</tt>.
+</li>
+<li>
+When unblocked, calls <tt>lock.lock()</tt> (possibly blocking on the lock) and returns.
+</li>
+<li>
+The function will unblock when signaled by a call to <tt>notify_one()</tt>,
+a call to <tt>notify_all()</tt>, <del>by 
+the current time exceeding <tt>abs_time</tt></del> <ins>if <tt>Clock::now() &gt;= abs_time</tt></ins>,
+or spuriously.
+</li>
+<li>
+If the function exits via an exception, <tt>lock.unlock()</tt> shall be called prior
+to exiting the function scope.
+</li>
+</ul>
+
+<p>
+-14- <i>Postcondition:</i> <tt>lock</tt> is locked by the calling thread.
+</p>
+
+<p>
+-15- <i>Returns:</i> <del><tt>Clock::now() &lt; abs_time</tt></del>
+<ins><tt>cv_status::timeout</tt> if the function unblocked because <tt>abs_time</tt>
+was reached, otherwise <tt>cv_status::no_timeout</tt></ins>.
+</p>
+
+<p>
+-16- <i>Throws:</i> <tt>std::system_error</tt> when the effects or postcondition
+cannot be achieved.
+</p>
+
+<p>
+-17- <i>Error conditions:</i>
+</p>
+
+<ul>
+<li>
+equivalent error condition from <tt>lock.lock()</tt> or <tt>lock.unlock()</tt>.
+</li>
+</ul>
+</blockquote>
+
+<pre>
+template &lt;class Lock, class Rep, class Period&gt;
+  <del>bool</del> <ins>cv_status</ins> wait_for(Lock&amp; lock,
+                const chrono::duration&lt;Rep, Period&gt;&amp; rel_time);
+
+</pre>
+
+<blockquote>
+<p>
+-18- <i><del>Effects</del> <ins>Returns</ins>:</i>
+</p>
+<blockquote><pre>
+wait_until(lock, chrono::monotonic_clock::now() + rel_time)
+</pre></blockquote>
+
+<p>
+<del>-19- <i>Returns:</i> <tt>false</tt> if the call is returning because the time
+duration specified by <tt>rel_time</tt> has elapsed, 
+otherwise <tt>true</tt>.</del>
+</p>
+
+<note>
+This part of the wording may conflict with <iref ref="859"/> in detail, but does
+not do so in spirit.  If both issues are accepted, there is a logical merge.
+</note>
+
+</blockquote>
+
+<pre>
+template &lt;class Lock, class Clock, class Duration, class Predicate&gt; 
+  bool wait_until(Lock&amp; lock, 
+                  const chrono::time_point&lt;Clock, Duration&gt;&amp; <del>rel_time</del> <ins>abs_time</ins>, 
+                  Predicate pred);
+</pre>
+
+<blockquote>
+<p>
+-20- <i>Effects:</i>
+</p>
+<blockquote><pre>
+while (!pred()) 
+  if (<del>!</del>wait_until(lock, abs_time) <ins>== cv_status::timeout</ins>) 
+    return pred(); 
+return true;
+</pre></blockquote>
+
+<p>
+-21- <i>Returns:</i> <tt>pred()</tt>.
+</p>
+
+<p>
+-22- [<i>Note:</i>
+The returned value indicates whether the predicate evaluates to
+<tt>true</tt> regardless of whether the timeout was triggered.
+&mdash; <i>end note</i>].
+</p>
+</blockquote>
+
+</blockquote>
+
+</resolution>
+
+</issue>

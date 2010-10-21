@@ -1,0 +1,39 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="447" status="Dup">
+<title>Wrong template argument for time facets</title>
+<section><sref ref="[locale.category]"/></section>
+<submitter>Pete Becker</submitter>
+<date>26 Dec 2003</date>
+
+<discussion>
+<p>
+22.1.1.1.1/4, table 52, "Required Instantiations", lists, among others:
+</p>
+<pre>
+    time_get&lt;char,InputIterator>
+    time_get_byname&lt;char,InputIterator>
+    time_get&lt;wchar_t,OutputIterator>
+    time_get_byname&lt;wchar_t,OutputIterator>
+</pre>
+
+<p>
+The second argument to the last two should be InputIterator, not
+OutputIterator.
+</p>
+</discussion>
+
+<resolution>
+<p>
+Change the second template argument to InputIterator.
+</p>
+</resolution>
+
+<rationale>
+<duplicate><iref ref="327"/></duplicate>
+</rationale>
+
+</issue>

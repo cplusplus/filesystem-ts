@@ -1,0 +1,97 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="931" status="WP">
+<title>type trait <tt>extent&lt;T, I&gt;</tt></title>
+<section><sref ref="[meta.unary.prop]"/></section>
+<submitter>Yechezkel Mett</submitter>
+<date>4 Nov 2008</date>
+
+<discussion>
+<p>
+The draft (N2798) says in <sref ref="[meta.unary.prop]"/> Table 44: 
+</p>
+<blockquote>
+<table border="1">
+<caption>Table 44 -- Type property queries</caption>
+<tr><th>Template</th><th>Value</th></tr>
+<tr>
+<td>
+<tt>template &lt;class T, unsigned I = 0&gt; struct extent;</tt>
+</td>
+<td>
+If <tt>T</tt> is not an array type (8.3.4), or if it has rank less than
+<tt>I</tt>, or if <tt>I</tt> is 0
+and <tt>T</tt> has type "array of unknown bound of <tt>U</tt>", then 0; otherwise, the
+size of the <tt>I</tt>'th dimension of <tt>T</tt>
+</td>
+</tr>
+</table>
+</blockquote>
+
+<p>
+Firstly it isn't clear from the wording if <tt>I</tt> is 0-based or 1-based 
+("the <tt>I</tt>'th dimension" sort of implies 1-based). From the following 
+example it is clear that the intent is 0-based, in which case it 
+should say "or if it has rank less than or equal to <tt>I</tt>".
+</p>
+<p>
+Sanity check:
+</p>
+<p>
+The example says <tt>assert((extent&lt;int[2], 1&gt;::value) == 0);</tt>
+</p>
+<p>
+Here the rank is 1 and <tt>I</tt> is 1, but the desired result is 0.
+</p>
+
+<note>
+Post Summit:
+</note>
+
+<blockquote>
+<p>
+Do not use "size" or "value", use "bound". Also, move the
+cross-reference to 8.3.4 to just after "bound".
+</p>
+<p>
+Recommend Tentatively Ready.
+</p>
+</blockquote>
+
+</discussion>
+
+<resolution>
+<p>
+In Table 44 of <sref ref="[meta.unary.prop]"/>, third row, column "Value",
+change the cell content:
+</p>
+
+<blockquote>
+<table border="1">
+<caption>Table 44 -- Type property queries</caption>
+<tr><th>Template</th><th>Value</th></tr>
+<tr>
+<td>
+<tt>template &lt;class T, unsigned I = 0&gt; struct extent;</tt>
+</td>
+<td>
+If <tt>T</tt> is not an array type <del>(8.3.4)</del>, or if it has rank less than
+<ins> or equal to</ins> <tt>I</tt>, or if <tt>I</tt> is 0
+and <tt>T</tt> has type "array of unknown bound of <tt>U</tt>", then 0; otherwise, the
+<del>size</del> <ins>bound (8.3.4)</ins> of the <tt>I</tt>'th dimension of <tt>T</tt><ins>,
+where indexing of <tt>I</tt> is zero-based.</ins>
+</td>
+</tr>
+</table>
+</blockquote>
+
+<note>
+Wording supplied by Daniel.
+</note>
+
+</resolution>
+
+</issue>

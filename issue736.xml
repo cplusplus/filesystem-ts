@@ -1,0 +1,156 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="736" status="NAD">
+<title>Comment on [rand.dist.samp.discrete]</title>
+<section><sref ref="[rand.dist.samp.discrete]"/></section>
+<submitter>Stephan Tolksdorf</submitter>
+<date>21 Sep 2007</date>
+
+<discussion>
+<ol type="a">
+<li>
+The specification for <tt>discrete_distribution</tt> requires the member <tt>probabilities()</tt>
+to return a vector of <i>standardized</i> probabilities, which forces the implementation every time to 
+divide each probability by the sum of all probabilities, as the sum will in practice almost never be 
+exactly 1.0. This is unnecessarily inef ficient as the implementation would otherwise not need to 
+compute the standardized probabilities at all and could instead work with the non-standardized 
+probabilities and the sum. If there was no standardization the user would just get back the 
+probabilities that were previously supplied to the distribution object, which to me seems to be the 
+more obvious solution.
+</li>
+<li>
+The behaviour of <tt>discrete_distribution</tt> is not specified in case the number of given
+probabilities is larger than the maximum number representable by the IntType.
+</li>
+</ol>
+
+<p>
+<b>Possible resolution:</b> I propose to change the specification such that the non-standardized 
+probabilities need to be returned and that an additional requirement is included for the number 
+of probabilities to be smaller than the maximum of IntType.
+</p>
+
+<note>
+Stephan Tolksdorf adds pre-Bellevue:
+</note>
+
+<blockquote>
+<p>
+In reply to the discussion in 
+<a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2007/n2424.pdf">N2424</a>
+of this issue:
+</p>
+<p>
+Rescaled floating-point parameter vectors can not be expected to compare
+equal because of the limited precision of floating-point numbers.
+My proposal would at least guarantee that a parameter
+vector (of type double) passed into the distribution would compare equal
+with the one returned by the <tt>probabilities()</tt> method. Furthermore, I do
+not understand why "the changed requirement would lead to a significant
+increase in the amount of state in the distribution object". A typical
+implementation's state would increase by exactly one number: the sum of
+all probabilities. The textual representation for serialization would
+not need to grow at all. Finally, the proposed replacement "<tt>0 &lt; n &lt;=
+numeric_limits&lt;IntType&gt;::max() + 1</tt>" makes the implementation
+unnecessarily complicated, "<tt>0 &lt; n &lt;= numeric_limits&lt;IntType&gt;::max()</tt>"
+would be better.
+</p>
+</blockquote>
+
+<note>
+Bellevue:
+</note>
+
+<blockquote>
+<p>
+In N2424. We agree with the observation and the proposed resolution to
+part b). We recommend the wording n &gt; 0 be replaced with 0 &lt; n
+numeric_limits::max() + 1. However, we disagree with part a), as it
+would interfere with the definition of parameters' equality. Further,
+the changed requirement would lead to a significant increase in the
+amount of state of the distribution object.
+</p>
+
+<p>
+As it stands now, it is convenient, and the changes proposed make it
+much less so.
+</p>
+
+<p>
+NAD. Part a the current behavior is desirable. Part b, any constructor
+can fail, but the rules under which it can fail do not need to be listed
+here.
+</p>
+</blockquote>
+</discussion>
+
+<resolution>
+<p>
+See <a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2007/n2424.pdf">N2424</a>
+for the proposed resolution.
+</p>
+
+<note>
+Stephan Tolksdorf adds pre-Bellevue:
+</note>
+
+<blockquote>
+<p>
+In <sref ref="[rand.dist.samp.discrete]"/>:
+</p>
+
+<p>
+Proposed wording a):
+</p>
+
+<blockquote>
+<p>
+Changae in para. 2
+</p>
+
+<blockquote>
+Constructs a <tt>discrete_distribution</tt> object with <tt>n=1</tt> and <tt>p<sub>0</sub> <ins>= w<sub>0</sub></ins> = 1</tt>
+</blockquote>
+
+<p>
+and change in para. 5
+</p>
+
+<blockquote>
+<i>Returns:</i> A <tt>vector&lt;double&gt;</tt> whose <tt>size</tt> member returns <tt>n</tt> and whose
+<tt>operator[]</tt> member returns <del><tt>p<sub>k</sub></tt></del>
+<ins>the weight <tt>w<sub>k</sub></tt> as a double value</ins>
+when invoked with argument <tt>k</tt> for <tt>k = 0,
+..., n-1</tt>
+</blockquote>
+
+</blockquote>
+
+<p>
+Proposed wording b):
+</p>
+
+<blockquote>
+<p>
+Change in para. 3:
+</p>
+
+<blockquote>
+If <tt>firstW == lastW</tt>, let the sequence <tt>w</tt> have length <tt>n = 1</tt> and consist
+of the single value <tt>w<sub>0</sub> = 1</tt>. Otherwise, <tt>[firstW,lastW)</tt> shall form a
+sequence <tt>w</tt> of length <tt>n <del>&gt; 0</del></tt> 
+<ins>such that <tt>0 &lt; n &lt;= numeric_limits&lt;IntType&gt;::max()</tt>,</ins>
+and <tt>*firstW</tt> shall yield a value <tt>w<sub>0</sub></tt>
+convertible to <tt>double</tt>. [<i>Note:</i> The values <tt>w<sub>k</sub></tt> are commonly known
+as the weights . <i>-- end note</i>]
+</blockquote>
+
+</blockquote>
+
+</blockquote>
+</resolution>
+
+</issue>

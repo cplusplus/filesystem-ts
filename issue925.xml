@@ -1,0 +1,89 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="925" status="WP">
+<title><tt>shared_ptr</tt>'s explicit conversion from <tt>unique_ptr</tt></title>
+<section><sref ref="[util.smartptr.shared.const]"/></section>
+<submitter>Rodolfo Lima</submitter>
+<date>12 Oct 2008</date>
+
+<discussion>
+<p>
+The current working draft
+(<a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2008/n2798.pdf">N2798</a>),
+section <sref ref="[util.smartptr.shared.const]"/> declares
+<tt>shared_ptr</tt>'s constructor that takes a rvalue reference to <tt>unique_ptr</tt> and
+<tt>auto_ptr</tt> as being explicit, affecting several valid smart pointer use
+cases that would take advantage of this conversion being implicit, for
+example:
+</p>
+
+<blockquote><pre>
+class A;
+std::unique_ptr&lt;A&gt; create();
+void process(std::shared_ptr&lt;A&gt; obj);
+
+int main()
+{
+   process(create());                  // use case #1
+   std::unique_ptr&lt;A&gt; uobj = create();
+   process(std::move(uobj));           // use case #2
+   return 0;
+}
+</pre></blockquote>
+
+<p>
+If <tt>unique_ptr</tt> to <tt>shared_ptr</tt> conversions are explicit, the above lines
+should be written:
+</p>
+
+<blockquote><pre>
+process(std::shared_ptr&lt;A&gt;(create()));        // use case #1
+process(std::shared_ptr&lt;A&gt;(std::move(uobj))); // use case #2
+</pre></blockquote>
+
+<p>
+The extra cast required doesn't seems to give any benefits to the user,
+nor protects him of any unintended conversions, this being the raison
+d'etre of explicit constructors.
+</p>
+
+<p>
+It seems that this constructor was made explicit to mimic the conversion
+from <tt>auto_ptr</tt> in pre-rvalue reference days, which accepts both lvalue and
+rvalue references. Although this decision was valid back then, C++0x
+allows the user to express in a clear and non verbose manner when he wants
+move semantics to be employed, be it implicitly (use case 1) or explicitly
+(use case 2).
+</p>
+
+<note>
+Batavia (2009-05):
+</note>
+<blockquote>
+<p>
+Howard and Alisdair like the motivating use cases
+and the proposed resolution.
+</p>
+<p>
+Move to Tentatively Ready.
+</p>
+</blockquote>
+</discussion>
+
+<resolution>
+<p>
+In both <sref ref="[util.smartptr.shared]"/> paragraph 1 and 
+<sref ref="[util.smartptr.shared.const]"/> change:
+</p>
+
+<blockquote><pre>
+template &lt;class Y&gt; <del>explicit</del> shared_ptr(auto_ptr&lt;Y&gt; &amp;&amp;r);
+template &lt;class Y, class D&gt; <del>explicit</del> shared_ptr(unique_ptr&lt;Y, D&gt; &amp;&amp;r);
+</pre></blockquote>
+
+</resolution>
+
+</issue>

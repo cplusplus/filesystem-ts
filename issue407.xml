@@ -1,0 +1,31 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="407" status="CD1">
+<title>Can singular iterators be destroyed?</title>
+<section><sref ref="[iterator.concepts]"/></section>
+<submitter>Nathan Myers</submitter>
+<date>3 Jun 2003</date>
+
+<discussion>
+<p>
+Clause <sref ref="[iterator.concepts]"/>, paragraph 5, says that the only expression
+that is defined for a singular iterator is "an assignment of a
+non-singular value to an iterator that holds a singular value".  This 
+means that destroying a singular iterator (e.g. letting an automatic
+variable go out of scope) is technically undefined behavior.  This
+seems overly strict, and probably unintentional.
+</p>
+</discussion>
+
+<resolution>
+<p>
+Change the sentence in question to "... the only exceptions are
+destroying an iterator that holds a singular value, or the assignment
+of a non-singular value to an iterator that holds a singular value."
+</p>
+</resolution>
+
+</issue>

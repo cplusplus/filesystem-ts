@@ -1,0 +1,143 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="1225" status="NAD Editorial">
+<title>C++0x result_of issue </title>
+<section><sref ref="[func.ret]"/></section>
+<submitter>Sebastian Gesemann</submitter>
+<date>5 Oct 2009</date>
+
+<discussion>
+<p>
+I think the text about <tt>std::result_of</tt> could be a little more precise.
+Quoting from
+<a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2009/n2960.pdf">N2960</a>...
+</p>
+
+<blockquote>
+<p>
+<sref ref="[func.ret]"/> Function object return types
+</p>
+
+<pre>
+template&lt;class&gt; class result_of;
+
+template&lt;class Fn, class... ArgTypes&gt;
+class result_of&lt;Fn(ArgTypes...)&gt; {
+public:
+  typedef <i>see below</i> type;
+};
+</pre>
+
+<p>
+Given an rvalue <tt>fn</tt> of type <tt>Fn</tt> and values <tt>t1, t2,
+..., tN</tt> of types <tt>T1, T2, ... TN</tt> in <tt>ArgTypes</tt>
+respectivly, the <tt>type</tt> member is the result type of the
+expression <tt>fn(t1,t2,...,tN)</tt>. the values <tt>ti</tt> are lvalues
+when the corresponding type <tt>Ti</tt> is an lvalue-reference type, and
+rvalues otherwise.
+</p>
+</blockquote>
+
+<p>
+This text doesn't seem to consider lvalue reference types for <tt>Fn</tt>.
+Also, it's not clear whether this class template can be used for
+"SFINAE" like <tt>std::enable_if</tt>. Example:
+</p>
+
+<blockquote><pre>
+template&lt;typename Fn, typename... Args&gt;
+typename std::result_of&lt;Fn(Args...)&gt;::type
+apply(Fn &amp;&amp; fn, Args &amp;&amp; ...args)
+{
+  // Fn may be an lvalue reference, too
+  return std::forward&lt;Fn&gt;(fn)(std::forward&lt;Args&gt;(args)...);
+}
+</pre></blockquote>
+
+<p>
+Either <tt>std::result_of&lt;...&gt;</tt> can be instantiated and simply may not have
+a typedef "<tt>type</tt>" (--&gt;SFINAE) or instantiating the class template for
+some type combinations will be a "hard" compile-time error.
+</p>
+
+<note>
+2010-02-14 Daniel adds:
+</note>
+
+<blockquote>
+This issue should be considered resolved by <iref ref="1255"/> and <iref
+ref="1270"/>.  The wish to change <tt>result_of</tt> into a compiler-support
+trait was beyond the actual intention of the submitter Sebastian.
+</blockquote>
+
+<note>
+2010 Pittsburgh:  Moved to NAD Editorial, rationale added below.
+</note>
+
+</discussion>
+
+<rationale>
+<p>
+Solved by <iref ref="1270"/>.
+</p>
+</rationale>
+
+<resolution>
+
+<note>
+These changes will require compiler support
+</note>
+
+<p>
+Change <sref ref="[func.ret]"/>:
+</p>
+
+<blockquote><pre>
+template&lt;class&gt; class result_of; // <i>undefined</i>
+
+template&lt;class Fn, class... ArgTypes&gt;
+class result_of&lt;Fn(ArgTypes...)&gt; {
+public:
+  <del>typedef</del> <i>see below</i> <del>type;</del>
+};
+</pre>
+
+<p><del>
+Given an rvalue <tt>fn</tt> of type <tt>Fn</tt> and values <tt>t1, t2,
+..., tN</tt> of types <tt>T1, T2, ... TN</tt> in <tt>ArgTypes</tt>
+respectivly, the <tt>type</tt> member is the result type of the
+expression <tt>fn(t1,t2,...,tN)</tt>. the values <tt>ti</tt> are lvalues
+when the corresponding type <tt>Ti</tt> is an lvalue-reference type, and
+rvalues otherwise.
+</del></p>
+
+<p>
+<ins>The class template <tt>result_of</tt> shall meet the requirements of a
+<i>TransformationTrait</i>: Given the types <tt>Fn</tt>, <tt>T1</tt>, <tt>T2</tt>, ..., <tt>TN</tt> every
+template specialization <tt>result_of&lt;Fn(T1,T2,...,TN)&gt;</tt> shall define the
+member typedef type equivalent to <tt>decltype(<i>RE</i>)</tt> if and only if
+the expression <tt><i>RE</i></tt>
+</ins></p>
+
+<blockquote><pre><ins>
+value&lt;Fn&gt;() ( value&lt;T1&gt;(), value&lt;T2&gt;(), ... value&lt;TN&gt;()  )
+</ins></pre></blockquote>
+
+<p><ins>
+would be well-formed. Otherwise, there shall be no member typedef
+<tt>type</tt> defined.
+</ins></p>
+
+</blockquote>
+ 
+<note>
+The <tt>value&lt;&gt;</tt> helper function is a utility Daniel Kr&uuml;gler
+proposed in
+<a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2009/n2958.html">N2958</a>.
+</note>
+</resolution>
+
+</issue>

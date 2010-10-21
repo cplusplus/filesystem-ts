@@ -1,0 +1,87 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="484" status="NAD Future">
+<title>Convertible to T</title>
+<section><sref ref="[input.iterators]"/></section>
+<submitter>Chris Jefferson</submitter>
+<date>16 Sep 2004</date>
+
+<discussion>
+<p>From comp.std.c++:</p>
+
+<p>
+I note that given an input iterator a for type T, 
+then *a only has to be "convertable to T", not actually of type T.
+</p>
+
+<p>Firstly, I can't seem to find an exact definition of "convertable to T". 
+While I assume it is the obvious definition (an implicit conversion), I 
+can't find an exact definition. Is there one?</p>
+
+<p>Slightly more worryingly, there doesn't seem to be any restriction on 
+the this type, other than it is "convertable to T". Consider two input 
+iterators a and b. I would personally assume that most people would 
+expect *a==*b would perform T(*a)==T(*b), however it doesn't seem that 
+the standard requires that, and that whatever type *a is (call it U) 
+could have == defined on it with totally different symantics and still 
+be a valid inputer iterator.</p>
+
+<p>Is this a correct reading? When using input iterators should I write 
+T(*a) all over the place to be sure that the object i'm using is the 
+class I expect?</p>
+
+<p>This is especially a nuisance for operations that are defined to be
+  "convertible to bool".  (This is probably allowed so that
+  implementations could return say an int and avoid an unnessary
+  conversion. However all implementations I have seen simply return a
+  bool anyway.  Typical implemtations of STL algorithms just write
+  things like <tt>while(a!=b &amp;&amp; *a!=0)</tt>.  But strictly
+  speaking, there are lots of types that are convertible to T but
+  that also overload the appropriate operators so this doesn't behave
+  as expected.</p>
+
+<p>If we want to make code like this legal (which most people seem to
+  expect), then we'll need to tighten up what we mean by "convertible
+  to T".</p>
+
+<note>Lillehammer: The first part is NAD, since "convertible" is
+ well-defined in core. The second part is basically about pathological
+ overloads. It's a minor problem but a real one. So leave open for
+ now, hope we solve it as part of iterator redesign.</note>
+
+<note>
+2009-07-28 Reopened by Alisdair.  No longer solved by concepts.
+</note>
+
+<note>
+2009-10 Santa Cruz:
+</note>
+
+<blockquote>
+Mark as NAD Future. We agree there's an issue, but there is no
+proposed solution at this time and this will be solved by concepts in
+the future.
+</blockquote>
+
+</discussion>
+
+<resolution>
+</resolution>
+
+<rationale>
+<note>
+San Francisco:
+</note>
+
+<blockquote>
+Solved by
+<a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2008/n2758.pdf">N2758</a>.
+</blockquote>
+
+
+</rationale>
+
+</issue>

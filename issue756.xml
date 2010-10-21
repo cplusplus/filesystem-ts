@@ -1,0 +1,107 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="756" status="NAD Editorial">
+<title>Container adaptors push</title>
+<section><sref ref="[container.adaptors]"/></section>
+<submitter>Paolo Carlini</submitter>
+<date>31 Oct 2007</date>
+
+<discussion>
+<p>
+After n2369 we have a single <tt>push_back</tt> overload in the sequence containers,
+of the "emplace" type. At variance with that, still in n2461, we have
+two separate overloads, the C++03 one + one taking an rvalue reference
+in the container adaptors. Therefore, simply from a consistency point of
+view, I was wondering whether the container adaptors should be aligned
+with the specifications of the sequence container themselves: thus have
+a single <tt>push</tt> along the lines:
+</p>
+
+<blockquote><pre>
+template&lt;typename... _Args&gt;
+void
+push(_Args&amp;&amp;... __args)
+  { c.push_back(std::forward&lt;_Args&gt;(__args)...); }
+</pre></blockquote>
+
+<note>
+Related to <iref ref="767"/>
+</note>
+</discussion>
+
+<resolution>
+<p>
+Change <sref ref="[queue.defn]"/>:
+</p>
+
+<blockquote><pre>
+<del>void push(const value_type&amp; x) { c.push_back(x); }</del>
+<del>void push(value_type&amp;&amp; x) { c.push_back(std::move(x)); }</del>
+<ins>template&lt;class... Args&gt; void push(Args&amp;&amp;... args) { c.push_back(std::forward&lt;Args&gt;(args)...); }</ins>
+</pre></blockquote>
+
+<p>
+Change <sref ref="[priority.queue]"/>:
+</p>
+
+<blockquote><pre>
+<del>void push(const value_type&amp; x) { c.push_back(x); }</del>
+<del>void push(value_type&amp;&amp; x) { c.push_back(std::move(x)); }</del>
+<ins>template&lt;class... Args&gt; void push(Args&amp;&amp;... args) { c.push_back(std::forward&lt;Args&gt;(args)...); }</ins>
+</pre></blockquote>
+
+<p>
+Change <sref ref="[priqueue.members]"/>:
+</p>
+
+<blockquote>
+<pre>
+<del>void push(const value_type&amp; x);</del>
+</pre>
+<blockquote>
+<p>
+<del><i>Effects:</i></del>
+</p>
+<blockquote><pre>
+<del>c.push_back(x);</del>
+<del>push_heap(c.begin(), c.end(), comp);</del>
+</pre></blockquote>
+</blockquote>
+
+<pre>
+<ins>template&lt;class... Args&gt;</ins> void push(<del>value_type</del> <ins>Args</ins>&amp;&amp;<ins>...</ins> <del>x</del> <ins>args</ins>);
+</pre>
+<blockquote>
+<p>
+<i>Effects:</i>
+</p>
+<blockquote><pre>
+c.push_back(std::<del>move</del><ins>forward&lt;Args&gt;</ins>(<del>x</del> <ins>args</ins>)<ins>...</ins>);
+push_heap(c.begin(), c.end(), comp);
+</pre></blockquote>
+</blockquote>
+</blockquote>
+
+<p>
+Change <sref ref="[stack.defn]"/>:
+</p>
+
+<blockquote><pre>
+<del>void push(const value_type&amp; x) { c.push_back(x); }</del>
+<del>void push(value_type&amp;&amp; x) { c.push_back(std::move(x)); }</del>
+<ins>template&lt;class... Args&gt; void push(Args&amp;&amp;... args) { c.push_back(std::forward&lt;Args&gt;(args)...); }</ins>
+</pre></blockquote>
+
+</resolution>
+
+<rationale>
+<p>
+Addressed by
+<a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2008/n2680.pdf">N2680 Proposed Wording for Placement Insert (Revision 1)</a>.
+</p>
+</rationale>
+
+</issue>

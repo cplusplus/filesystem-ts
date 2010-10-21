@@ -1,0 +1,70 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="1269" status="NAD Editorial">
+<title>Associated state doesn't account for async</title>
+<section><sref ref="[futures.state]"/></section>
+<submitter>Anthony Williams</submitter>
+<date>18 Nov 2009</date>
+
+<discussion>
+<p>
+The current description of the associated state in <sref ref="[futures.state]"/>
+does not allow for futures created by an <tt>async</tt> call. The description
+therefore needs to be extended to cover that.
+</p>
+
+<note>
+2010 Pittsburgh:  Moved to NAD Editorial.  Rationale added below.
+</note>
+
+</discussion>
+
+<rationale>
+<p>
+Solved by
+<a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2010/n3058.html">N3058</a>.
+</p>
+</rationale>
+
+<resolution>
+<p>
+Add a new sentence to <sref ref="[futures.state]"/> p2:
+</p>
+
+<blockquote>
+2 This <i>associated state</i> consists of some state information and some
+(possibly not yet evaluated) <i>result</i>, which can be a (possibly
+<tt>void</tt>) value or an exception. <ins>If the associated state was created
+by a call to <tt>async</tt> (<sref ref="[futures.async]"/>) then it may also
+contain a deferred function or an associated <tt>thread</tt>.</ins>
+</blockquote>
+
+<p>
+Add an extra bullet to <sref ref="[futures.state]"/> p3:
+</p>
+
+<blockquote>
+<p>
+The result of an associated state can be set by calling:
+</p>
+<ul>
+<li>
+<tt>promise::set_value</tt>,
+</li>
+<li>
+<tt>promise::set_exception</tt>, <del>or</del>
+</li>
+<li>
+packaged_task::operator()<del>.</del><ins>, or</ins>
+</li>
+<li>
+<ins>a call to <tt>async</tt> (<sref ref="[futures.async]"/>).</ins>
+</li>
+</ul>
+</blockquote>
+</resolution>
+
+</issue>

@@ -1,0 +1,58 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="664" status="CD1">
+<title><tt>do_unshift</tt> for <tt>codecvt&lt;char, char, mbstate_t&gt;</tt></title>
+<section><sref ref="[locale.codecvt.virtuals]"/></section>
+<submitter>Thomas Plum</submitter>
+<date>16 Apr 2007</date>
+
+<discussion>
+<p>
+<sref ref="[locale.codecvt.virtuals]"/>, para 7 says (regarding <tt>do_unshift</tt>):
+</p>
+
+<blockquote><p>
+<i>Effects:</i> Places characters starting at to that should be appended to
+terminate a sequence when the current <tt>stateT</tt> is given by
+<tt><i>state</i></tt>.<sup>237)</sup> Stores no more than <tt>(<i>to_limit</i> -
+<i>to</i>)</tt> destination elements, and leaves the <tt><i>to_next</i></tt>
+pointer pointing one beyond the last element successfully stored.
+<em><tt>codecvt&lt;char, char, mbstate_t&gt;</tt> stores no characters.</em>
+</p></blockquote>
+
+<p>
+The following objection has been raised:
+</p>
+
+<blockquote><p>
+Since the C++ Standard permits a nontrivial conversion for the required
+instantiations of <tt>codecvt</tt>, it is overly restrictive to say that
+<tt>do_unshift</tt> must store no characters and return <tt>noconv</tt>.
+</p></blockquote>
+
+<p>
+[Plum ref _222152Y50]
+</p>
+</discussion>
+
+<resolution>
+<p>
+Change <sref ref="[locale.codecvt.virtuals]"/>, p7:
+</p>
+
+<blockquote>
+<p>
+<i>Effects:</i> Places characters starting at <i>to</i> that should be
+appended to terminate a sequence when the current <tt>stateT</tt> is
+given by state.<sup>237)</sup> Stores no more than (<i>to_limit -to</i>)
+destination elements, and leaves the <i>to_next</i> pointer pointing one
+beyond the last element successfully stored. <del><tt>codecvt&lt;char, char,
+mbstate_t&gt;</tt> stores no characters.</del>
+</p>
+</blockquote>
+</resolution>
+
+</issue>

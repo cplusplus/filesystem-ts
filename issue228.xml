@@ -1,0 +1,148 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="228" status="CD1">
+<title>Incorrect specification of &quot;..._byname&quot; facets</title>
+<section><sref ref="[locale.categories]"/></section>
+<submitter>Dietmar K&uuml;hl</submitter>
+<date>20 Apr 2000</date>
+
+<discussion>
+<p>The sections <sref ref="[locale.ctype.byname]"/>, <sref ref="[locale.codecvt.byname]"/>,
+sref ref="22.2.1.6", <sref ref="[locale.numpunct.byname]"/>, <sref ref="[locale.collate.byname]"/>, <sref ref="[locale.time.put.byname]"/>, <sref ref="[locale.moneypunct.byname]"/>, and <sref ref="[locale.messages.byname]"/> overspecify the
+definitions of the &quot;..._byname&quot; classes by listing a bunch
+of virtual functions. At the same time, no semantics of these
+functions are defined. Real implementations do not define these
+functions because the functional part of the facets is actually
+implemented in the corresponding base classes and the constructor of
+the &quot;..._byname&quot; version just provides suitable date used by
+these implementations. For example, the 'numpunct' methods just return
+values from a struct. The base class uses a statically initialized
+struct while the derived version reads the contents of this struct
+from a table.  However, no virtual function is defined in
+'numpunct_byname'.</p>
+
+<p>For most classes this does not impose a problem but specifically
+for 'ctype' it does: The specialization for 'ctype_byname&lt;char&gt;'
+is required because otherwise the semantics would change due to the
+virtual functions defined in the general version for 'ctype_byname':
+In 'ctype&lt;char&gt;' the method 'do_is()' is not virtual but it is
+made virtual in both 'ctype&lt;cT&gt;' and 'ctype_byname&lt;cT&gt;'.
+Thus, a class derived from 'ctype_byname&lt;char&gt;' can tell whether
+this class is specialized or not under the current specification:
+Without the specialization, 'do_is()' is virtual while with
+specialization it is not virtual.</p>
+</discussion>
+
+<resolution>
+<p>&nbsp; Change section 22.2.1.2 (lib.locale.ctype.byname) to become:</p>
+<pre>     namespace std {
+       template &lt;class charT&gt;
+       class ctype_byname : public ctype&lt;charT&gt; {
+       public:
+         typedef ctype&lt;charT&gt;::mask mask;
+         explicit ctype_byname(const char*, size_t refs = 0);
+       protected:
+        ~ctype_byname();             //  virtual
+       };
+     }</pre>
+<p>&nbsp; Change section 22.2.1.6 (lib.locale.codecvt.byname) to become:</p>
+<pre>    namespace std {
+      template &lt;class internT, class externT, class stateT&gt;
+      class codecvt_byname : public codecvt&lt;internT, externT, stateT&gt; {
+      public:
+       explicit codecvt_byname(const char*, size_t refs = 0);
+      protected:
+      ~codecvt_byname();             //  virtual
+       };
+     }
+</pre>
+<p>&nbsp; Change section 22.2.3.2 (lib.locale.numpunct.byname) to become:</p>
+<pre>     namespace std {
+       template &lt;class charT&gt;
+       class numpunct_byname : public numpunct&lt;charT&gt; {
+     //  this class is specialized for  char  and  wchar_t.
+       public:
+         typedef charT                char_type;
+         typedef basic_string&lt;charT&gt;  string_type;
+         explicit numpunct_byname(const char*, size_t refs = 0);
+       protected:
+        ~numpunct_byname();          //  virtual
+       };
+     }</pre>
+<p>&nbsp; Change section 22.2.4.2 (lib.locale.collate.byname) to become:</p>
+<pre>     namespace std {
+       template &lt;class charT&gt;
+       class collate_byname : public collate&lt;charT&gt; {
+       public:
+         typedef basic_string&lt;charT&gt; string_type;
+         explicit collate_byname(const char*, size_t refs = 0);
+       protected:
+        ~collate_byname();           //  virtual
+       };
+     }</pre>
+<p>&nbsp; Change section 22.2.5.2 (lib.locale.time.get.byname) to become:</p>
+<pre>     namespace std {
+       template &lt;class charT, class InputIterator = istreambuf_iterator&lt;charT&gt; &gt;
+       class time_get_byname : public time_get&lt;charT, InputIterator&gt; {
+       public:
+         typedef time_base::dateorder dateorder;
+         typedef InputIterator        iter_type</pre>
+<pre>         explicit time_get_byname(const char*, size_t refs = 0);
+       protected:
+        ~time_get_byname();          //  virtual
+       };
+     }</pre>
+<p>&nbsp; Change section 22.2.5.4 (lib.locale.time.put.byname) to become:</p>
+<pre>     namespace std {
+       template &lt;class charT, class OutputIterator = ostreambuf_iterator&lt;charT&gt; &gt;
+       class time_put_byname : public time_put&lt;charT, OutputIterator&gt;
+       {
+       public:
+         typedef charT          char_type;
+         typedef OutputIterator iter_type;</pre>
+<pre>         explicit time_put_byname(const char*, size_t refs = 0);
+       protected:
+        ~time_put_byname();          //  virtual
+       };
+     }&quot;</pre>
+<p>&nbsp; Change section 22.2.6.4 (lib.locale.moneypunct.byname) to become:</p>
+<pre>     namespace std {
+       template &lt;class charT, bool Intl = false&gt;
+       class moneypunct_byname : public moneypunct&lt;charT, Intl&gt; {
+       public:
+         typedef money_base::pattern pattern;
+         typedef basic_string&lt;charT&gt; string_type;</pre>
+<pre>         explicit moneypunct_byname(const char*, size_t refs = 0);
+       protected:
+        ~moneypunct_byname();        //  virtual
+       };
+     }</pre>
+<p>&nbsp; Change section 22.2.7.2 (lib.locale.messages.byname) to become:</p>
+<pre>     namespace std {
+       template &lt;class charT&gt;
+       class messages_byname : public messages&lt;charT&gt; {
+       public:
+         typedef messages_base::catalog catalog;
+         typedef basic_string&lt;charT&gt;    string_type;</pre>
+<pre>         explicit messages_byname(const char*, size_t refs = 0);
+       protected:
+        ~messages_byname();          //  virtual
+       };
+     }</pre>
+<p>Remove section <sref ref="[locale.codecvt]"/> completely (because in
+this case only those members are defined to be virtual which are
+defined to be virtual in 'ctype&lt;cT&gt;'.)</p>
+
+<note>Post-Tokyo: Dietmar K&uuml;hl submitted this issue at the request of
+the LWG to solve the underlying problems raised by issue <iref
+ref="138"/>.</note>
+
+<note>Copenhagen: proposed resolution was revised slightly, to remove
+three last virtual functions from <tt>messages_byname</tt>.</note>
+
+</resolution>
+
+</issue>

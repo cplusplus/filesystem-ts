@@ -1,0 +1,32 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="175" status="TC1">
+<title>Ambiguity for <tt>basic_streambuf::pubseekpos()</tt> and a few other functions.</title>
+<section><sref ref="[depr.ios.members]"/></section>
+<submitter>Dietmar K&uuml;hl</submitter> 
+<date>23 Jul 1999</date>
+
+<discussion>
+<p>According to paragraph 8 of this section, the methods
+<tt>basic_streambuf::pubseekpos()</tt>,
+<tt>basic_ifstream::open()</tt>, and <tt>basic_ofstream::open</tt>
+&quot;may&quot; be overloaded by a version of this function taking the
+type <tt>ios_base::open_mode</tt> as last argument argument instead of
+<tt>ios_base::openmode</tt> (<tt>ios_base::open_mode</tt> is defined
+in this section to be an alias for one of the integral types). The
+clause specifies, that the last argument has a default argument in
+three cases.  However, this generates an ambiguity with the overloaded
+version because now the arguments are absolutely identical if the last
+argument is not specified.</p>
+</discussion>
+
+<resolution>
+<p>In <sref ref="[depr.ios.members]"/> paragraph 8, remove the default arguments for
+<tt>basic_streambuf::pubseekpos()</tt>,
+<tt>basic_ifstream::open()</tt>, and
+<tt>basic_ofstream::open().</tt></p>
+</resolution>
+</issue>

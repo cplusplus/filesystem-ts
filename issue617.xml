@@ -1,0 +1,128 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="617" status="NAD">
+<title>std::array is a sequence that doesn't satisfy the sequence requirements?</title>
+<section><sref ref="[array]"/></section>
+<submitter>Bo Persson</submitter>
+<date>30 Dec 2006</date>
+
+<discussion>
+<p>
+The <tt>&lt;array&gt;</tt> header is given under <sref ref="[sequences]"/>.
+<sref ref="[array]"/>/paragraph 3 says:
+</p>
+<blockquote><p>
+"Unless otherwise specified, all array operations are as described in
+<sref ref="[container.requirements]"/>".
+</p></blockquote>
+<p>
+However, array isn't mentioned at all in section <sref ref="[container.requirements]"/>.
+In particular, Table 82 "Sequence requirements" lists several operations (insert, erase, clear) 
+that std::array does not have in <sref ref="[array]"/>.
+</p>
+<p>
+Also, Table 83 "Optional sequence operations" lists several operations that 
+std::array does have, but array isn't mentioned.
+</p>
+
+<note>
+2009-07 Frankfurt
+</note>
+
+<blockquote>
+<p>
+The real issue seems to be different than what is described here.
+Non-normative text says that std::array is a sequence container, but
+there is disagreement about what that really means. There are two
+possible interpretations:
+</p>
+<ol>
+<li>
+a sequence container is one that satisfies all sequence container requirements
+</li>
+<li>
+a sequence container is one that satisfies some of the sequence
+container requirements. Any operation that the container supports is
+specified by one or more sequence container requirements, unless that
+operation is specifically singled out and defined alongside the
+description of the container itself.
+</li>
+</ol>
+<p>
+Move to Tentatively NAD.
+</p>
+</blockquote>
+
+<note>
+2009-07-15 Lo&iuml;c Joly adds:
+</note>
+
+<blockquote>
+<p>
+The section <sref ref="[sequence.reqmts]"/>/1 states that array is a sequence. <sref ref="[sequence.reqmts]"/>/3
+introduces table 83, named Sequence container requirements. This seems
+to me to be defining the requirements for all sequences. However, array
+does not follow all of this requirements (this can be read in the array
+specific section, for the standard is currently inconsistent).
+</p>
+
+<p>
+Proposed resolution 1 (minimal change): 
+</p>
+<blockquote>
+<p>
+Say that array is a container, that in addition follows only some of the
+sequence requirements, as described in the array section:
+</p>
+
+<blockquote>
+The library provides <del>five</del> <ins>three</ins> basic kinds of sequence containers: <del><tt>array</tt></del>,
+<tt>vector</tt>, 
+<del><tt>forward_list</tt></del>, <tt>list</tt>, and <tt>deque</tt>. <ins>In addition, <tt>array</tt>
+and <tt>forward_list</tt> follows some of the requirements 
+of sequences, as described in their respective sections.</ins>
+</blockquote>
+
+</blockquote>
+
+<p>
+Proposed resolution 2 (most descriptive description, no full wording provided): 
+</p>
+<blockquote>
+Introduce the notion of a Fixed Size Sequence, with it requirement table
+that would be a subset of the current Sequence container. array would be
+the only Fixed Size Sequence (but dynarray is in the queue for TR2).
+Sequence requirements would now be requirements in addition to Fixed
+Size Sequence requirements (it is currently in addition to container).
+</blockquote>
+</blockquote>
+
+<note>
+2009-07 Frankfurt:
+</note>
+
+<blockquote>
+Move to NAD Editorial
+</blockquote>
+
+<note>
+2009 Santa Cruz:
+</note>
+
+<blockquote>
+This will require a lot of reorganization. Editor doesn't think this is really
+an issue, since the description of array can be considered as overriding
+what's specified about sequences. Move to NAD.
+</blockquote>
+
+</discussion>
+
+<resolution>
+<p>
+</p>
+</resolution>
+
+</issue>

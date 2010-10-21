@@ -1,0 +1,54 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="1336" status="New">
+<title>Conflicting Error Conditions for <tt>packaged_task::operator()</tt></title>
+<section><sref ref="[futures.task.members]"/></section>
+<submitter>Pete Becker</submitter>
+<date>21 Jun 2010</date>
+
+<discussion>
+<p>
+The Throws clause for <tt>packaged_task::operator()</tt> says that it throws "a
+<tt>future_error</tt> exception object if there is no associated asynchronous
+state or the stored task has already been invoked." However, the Error
+Conditions clause does not define an error condition when the stored task has
+already been invoked, only when the associated state is already ready (i.e. the
+invocation has completed).
+</p>
+</discussion>
+
+<resolution>
+<p>
+Change the first bullet item in <sref ref="[futures.task.members]"/> /22:
+</p>
+
+<blockquote><pre>
+void operator()(ArgTypes... args);
+</pre>
+<blockquote>
+<p>
+20 ...
+</p>
+<p>
+21 ...
+</p>
+<p>
+22 <i>Error conditions:</i>
+</p>
+<ul>
+<li>
+<tt>promise_already_satisfied</tt> if <del>the associated asynchronous state is
+already ready</del> <ins><tt>operator()</tt> has already been called</ins>.
+</li>
+<li>
+<tt>no_state</tt> if <tt>*this</tt> has no associated asynchronous state.
+</li>
+</ul>
+</blockquote>
+</blockquote>
+</resolution>
+
+</issue>

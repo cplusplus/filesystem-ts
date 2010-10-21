@@ -1,0 +1,65 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="1316" status="New">
+<title><tt>scoped_allocator_adaptor operator==</tt> has no definition</title>
+<section><sref ref="[allocator.adaptor]"/></section>
+<submitter>Pablo Halpern</submitter>
+<date>11 Feb 2009</date>
+
+<discussion>
+<p>
+The WP 
+(<a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2009/n3000.pdf">N3000</a>)
+contains these declarations:
+</p>
+
+<blockquote>
+<pre>template &lt;class OuterA1, class OuterA2, class... InnerAllocs&gt;
+  bool operator==(const scoped_allocator_adaptor&lt;OuterA1, InnerAllocs...&gt;&amp; a,
+                  const scoped_allocator_adaptor&lt;OuterA2, InnerAllocs...&gt;&amp; b);
+template &lt;class OuterA1, class OuterA2, class... InnerAllocs&gt;
+  bool operator!=(const scoped_allocator_adaptor&lt;OuterA1, InnerAllocs...&gt;&amp; a,
+                  const scoped_allocator_adaptor&lt;OuterA2, InnerAllocs...&gt;&amp; b);</pre>
+</blockquote>
+
+<p>
+But does not define what the behavior of these operators are.
+</p>
+
+</discussion>
+
+<resolution>
+<p>
+Add a new section after <sref ref="[allocator.adaptor.members]"/>:
+</p>
+
+<blockquote>
+<p><b>Scoped allocator operators  [scoped.adaptor.operators]</b></p>
+
+<pre>template &lt;class OuterA1, class OuterA2, class... InnerAllocs&gt;
+  bool operator==(const scoped_allocator_adaptor&lt;OuterA1, InnerAllocs...&gt;&amp; a,
+                  const scoped_allocator_adaptor&lt;OuterA2, InnerAllocs...&gt;&amp; b);</pre>
+
+<blockquote>
+<i>Returns:</i> <code>a.outer_allocator() == b.outer_allocator()</code>
+if <code>sizeof...(InnerAllocs)</code> is zero; otherwise,
+<code>a.outer_allocator() == b.outer_allocator() &amp;&amp;
+a.inner_allocator() == b.inner_allocator()</code>.
+</blockquote>
+
+<pre>template &lt;class OuterA1, class OuterA2, class... InnerAllocs&gt;
+  bool operator!=(const scoped_allocator_adaptor&lt;OuterA1, InnerAllocs...&gt;&amp; a,
+                  const scoped_allocator_adaptor&lt;OuterA2, InnerAllocs...&gt;&amp; b);</pre>
+
+<blockquote>
+<i>Returns:</i> <code>!(a == b)</code>.
+</blockquote>
+
+</blockquote>
+
+</resolution>
+
+</issue>

@@ -1,0 +1,226 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="696" status="WP">
+<title><code>istream::operator&gt;&gt;(int&amp;)</code> broken</title>
+<section><sref ref="[istream.formatted.arithmetic]"/></section>
+<submitter>Martin Sebor</submitter>
+<date>23 Jun 2007</date>
+
+<discussion>
+<p>
+From message c++std-lib-17897:
+</p>
+<p>
+The code shown in <sref ref="[istream.formatted.arithmetic]"/> as the "as if"
+implementation of the two arithmetic extractors that don't have a
+corresponding <code>num_get</code> interface (i.e., the
+<code>short</code> and <code>int</code> overloads) is subtly buggy in
+how it deals with <code>EOF</code>, overflow, and other similar
+conditions (in addition to containing a few typos).
+</p>
+<p>
+One problem is that if <code>num_get::get()</code> reaches the EOF
+after reading in an otherwise valid value that exceeds the limits of
+the narrower type (but not <code>LONG_MIN</code> or
+<code>LONG_MAX</code>), it will set <code><i>err</i></code> to
+<code>eofbit</code>. Because of the if condition testing for
+<code>(<i>err</i> == 0)</code>, the extractor won't set
+<code>failbit</code> (and presumably, return a bogus value to the
+caller).
+</p>
+<p>
+Another problem with the code is that it never actually sets the
+argument to the extracted value. It can't happen after the call to
+<code>setstate()</code> since the function may throw, so we need to
+show when and how it's done (we can't just punt as say: "it happens
+afterwards"). However, it turns out that showing how it's done isn't
+quite so easy since the argument is normally left unchanged by the
+facet on error except when the error is due to a misplaced thousands
+separator, which causes <code>failbit</code> to be set but doesn't
+prevent the facet from storing the value.
+</p>
+
+<note>
+Batavia (2009-05):
+</note>
+<blockquote>
+<p>
+We believe this part of the Standard has been recently adjusted
+and that this issue was addressed during that rewrite.
+</p>
+<p>
+Move to NAD.
+</p>
+</blockquote>
+
+<note>
+2009-05-28 Howard adds:
+</note>
+
+<blockquote>
+<p>
+I've moved this issue from Tentatively NAD to Open.
+</p>
+
+<p>
+The current wording of
+<a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2009/n2857.pdf">N2857</a>
+in <sref ref="[facet.num.get.virtuals]"/> p3, stage 3 appears to indicate that
+in parsing arithmetic types, the value is always set, but sometimes in addition
+to setting <tt>failbit</tt>.
+</p>
+
+<ul>
+<li>
+If there is a range error, the value is set to min or max, else
+</li>
+<li>
+if there is a conversion error, the value is set to 0, else
+</li>
+<li>
+if there is a grouping error, the value is set to whatever it would be if grouping were ignored, else
+</li>
+<li>
+the value is set to its error-free result.
+</li>
+</ul>
+
+<p>
+However there is a contradictory sentence in <sref ref="[facet.num.get.virtuals]"/> p1.
+</p>
+
+<p>
+<sref ref="[istream.formatted.arithmetic]"/> should mimic the behavior of <sref ref="[facet.num.get.virtuals]"/>
+(whatever we decide that behavior is) for
+<tt>int</tt> and <tt>short</tt>, and currently does not.  I believe that the
+correct code fragment should look like:
+</p>
+
+<blockquote><pre>
+typedef num_get&lt;charT,istreambuf_iterator&lt;charT,traits&gt; &gt; numget;
+iostate err = ios_base::goodbit;
+long lval;
+use_facet&lt;numget&gt;(loc).get(*this, 0, *this, err, lval);
+if (lval &lt; numeric_limits&lt;int&gt;::min())
+{
+  err |= ios_base::failbit;
+  val = numeric_limits&lt;int&gt;::min();
+}
+else if (lval &gt; numeric_limits&lt;int&gt;::max())
+{
+  err |= ios_base::failbit;
+  val = numeric_limits&lt;int&gt;::max();
+}
+else
+  val = static_cast&lt;int&gt;(lval);
+setstate(err);
+</pre></blockquote>
+</blockquote>
+
+<note>
+2009-07 Frankfurt
+</note>
+
+<blockquote>
+Move to Ready.
+</blockquote>
+
+</discussion>
+
+<resolution>
+<p>
+Change <sref ref="[facet.num.get.virtuals]"/>, p1:
+</p>
+
+<blockquote>
+-1- <i>Effects:</i> Reads characters from <tt>in</tt>, interpreting them
+according to <tt>str.flags()</tt>, <tt>use_facet&lt;ctype&lt;charT&gt;
+&gt;(loc)</tt>, and <tt>use_facet&lt; numpunct&lt;charT&gt;
+&gt;(loc)</tt>, where <tt>loc</tt> is <tt>str.getloc()</tt>. <del>If an error
+occurs, <tt>val</tt> is unchanged; otherwise it is set to the resulting value.</del>
+</blockquote>
+
+<p>
+Change <sref ref="[istream.formatted.arithmetic]"/>, p2 and p3:
+</p>
+
+<blockquote>
+<pre>
+operator>>(short&amp; val);
+</pre>
+<blockquote>
+<p>
+-2- The conversion occurs as if performed by the following code fragment (using the same notation as for 
+the preceding code fragment):
+</p>
+
+<blockquote><pre>
+typedef num_get&lt;charT,istreambuf_iterator&lt;charT,traits&gt; &gt; numget;
+iostate err = ios<del>tate</del><ins>_base</ins>::goodbit;
+long lval;
+use_facet&lt;numget&gt;(loc).get(*this, 0, *this, err, lval);
+<del>if (err != 0)
+  ;
+else if (lval &lt; numeric_limits&lt;short&gt;::min()
+  || numeric_limits&lt;short&gt;::max() &lt; lval)
+     err = ios_base::failbit;</del>
+<ins>if (lval &lt; numeric_limits&lt;short&gt;::min())
+{
+  err |= ios_base::failbit;
+  val = numeric_limits&lt;short&gt;::min();
+}
+else if (lval &gt; numeric_limits&lt;short&gt;::max())
+{
+  err |= ios_base::failbit;
+  val = numeric_limits&lt;short&gt;::max();
+}</ins>
+else
+  val = static_cast&lt;short&gt;(lval);
+setstate(err);
+</pre></blockquote>
+
+</blockquote>
+
+<pre>
+operator>>(int&amp; val);
+</pre>
+<blockquote>
+<p>
+-3- The conversion occurs as if performed by the following code fragment (using the same notation as for 
+the preceding code fragment):
+</p>
+
+<blockquote><pre>
+typedef num_get&lt;charT,istreambuf_iterator&lt;charT,traits&gt; &gt; numget;
+iostate err = ios<del>tate</del><ins>_base</ins>::goodbit;
+long lval;
+use_facet&lt;numget&gt;(loc).get(*this, 0, *this, err, lval);
+<del>if (err != 0)
+  ;
+else if (lval &lt; numeric_limits&lt;int&gt;::min()
+  || numeric_limits&lt;int&gt;::max() &lt; lval)
+     err = ios_base::failbit;</del>
+<ins>if (lval &lt; numeric_limits&lt;int&gt;::min())
+{
+  err |= ios_base::failbit;
+  val = numeric_limits&lt;int&gt;::min();
+}
+else if (lval &gt; numeric_limits&lt;int&gt;::max())
+{
+  err |= ios_base::failbit;
+  val = numeric_limits&lt;int&gt;::max();
+}</ins>
+else
+  val = static_cast&lt;int&gt;(lval);
+setstate(err);
+</pre></blockquote>
+
+</blockquote>
+
+</blockquote>
+</resolution>
+
+</issue>

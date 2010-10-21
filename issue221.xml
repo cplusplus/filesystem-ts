@@ -1,0 +1,50 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="221" status="CD1">
+<title>num_get&lt;&gt;::do_get stage 2 processing broken</title>
+<section><sref ref="[facet.num.get.virtuals]"/></section>
+<submitter>Matt Austern</submitter>
+<date>14 Mar 2000</date>
+
+<discussion>
+<p>Stage 2 processing of numeric conversion is broken.</p>
+
+<p>Table 55 in 22.2.2.1.2 says that when basefield is 0 the integral
+conversion specifier is %i. A %i specifier determines a number's base
+by its prefix (0 for octal, 0x for hex), so the intention is clearly
+that a 0x prefix is allowed.  Paragraph 8 in the same section,
+however, describes very precisely how characters are processed. (It
+must be done &quot;as if&quot; by a specified code fragment.) That
+description does not allow a 0x prefix to be recognized.</p>
+
+<p>Very roughly, stage 2 processing reads a char_type ct. It converts
+ct to a char, not by using narrow but by looking it up in a
+translation table that was created by widening the string literal
+&quot;0123456789abcdefABCDEF+-&quot;. The character &quot;x&quot; is
+not found in that table, so it can't be recognized by stage 2
+processing.</p>
+</discussion>
+
+<resolution>
+<p>In 22.2.2.1.2 paragraph 8, replace the line:</p>
+<blockquote>
+  <pre>static const char src[] = &quot;0123456789abcdefABCDEF+-&quot;;</pre>
+</blockquote>
+<p>with the line:</p>
+<blockquote>
+  <pre>static const char src[] = &quot;0123456789abcdefxABCDEFX+-&quot;;</pre>
+</blockquote>
+</resolution>
+
+<rationale>
+<p>If we're using the technique of widening a string literal, the
+string literal must contain every character we wish to recognize.
+This technique has the consequence that alternate representations
+of digits will not be recognized.  This design decision was made
+deliberately, with full knowledge of that limitation.</p>
+</rationale>
+
+</issue>

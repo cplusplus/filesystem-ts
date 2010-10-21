@@ -1,0 +1,161 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="963" status="WP">
+<title>Various threading bugs #13</title>
+<section><sref ref="[thread.thread.member]"/></section>
+<submitter>Pete Becker</submitter>
+<date>7 Jan 2009</date>
+
+<discussion>
+<p>
+<sref ref="[thread.thread.member]"/>:  <tt>thread::detach</tt> is required to
+throw an exception if the thread is "not a detachable thread".
+"Detachable" is never defined.
+</p>
+
+<note>
+Howard adds:
+</note>
+
+<blockquote>
+Due to a mistake on my part, 3 proposed resolutions appeared at approximately
+the same time.  They are all three noted below in the discussion.
+</blockquote>
+
+<note>
+Summit, proposed resolution:
+</note>
+
+<blockquote>
+<p>
+In <sref ref="[thread.thread.member]"/> change:
+</p>
+
+<blockquote><pre>
+void detach();
+</pre>
+<blockquote>
+<p>...</p>
+<p>-14- <i>Error conditions:</i></p>
+<ul>
+<li><tt>no_such_process</tt> --  <ins>if the thread is</ins> not <del>a</del> valid<del> thread</del>.</li>
+<li><tt>invalid_argument</tt> -- <ins>if the thread is</ins> not <del>a detachable</del> <ins>joinable</ins><del> thread</del>.</li>
+</ul>
+</blockquote>
+
+</blockquote>
+
+</blockquote>
+
+<note>
+Post Summit, Jonathan Wakely adds:
+</note>
+
+<blockquote>
+<p>
+A <tt>thread</tt> is detachable if it is joinable. As we've defined joinable,
+we can just use that.
+</p>
+<p>
+This corresponds to the pthreads specification, where pthread_detach
+fails if the thread is not joinable:
+</p>
+<blockquote>
+EINVAL: The  implementation  has  detected  that  the value specified by
+thread does not refer to a joinable thread.
+</blockquote>
+<p>
+Jonathan recommends this proposed wording:
+</p>
+<blockquote>
+<p>
+In <sref ref="[thread.thread.member]"/> change:
+</p>
+
+<blockquote><pre>
+void detach();
+</pre>
+<blockquote>
+<p>...</p>
+<p>-14- <i>Error conditions:</i></p>
+<ul>
+<li>...</li>
+<li><tt>invalid_argument</tt> -- not a <del>detachable</del> <ins>joinable</ins> thread.</li>
+</ul>
+</blockquote>
+
+</blockquote>
+</blockquote>
+</blockquote>
+
+<note>
+Post Summit, Anthony Williams adds:
+</note>
+
+<blockquote>
+<p>
+This is covered by the precondition that <tt>joinable()</tt> be <tt>true</tt>.
+</p>
+<p>
+Anthony recommends this proposed wording:
+</p>
+
+<blockquote>
+<p>
+In <sref ref="[thread.thread.member]"/> change:
+</p>
+
+<blockquote><pre>
+void detach();
+</pre>
+<blockquote>
+<p>...</p>
+<p>-14- <i>Error conditions:</i></p>
+<ul>
+<li>...</li>
+<li><del><tt>invalid_argument</tt> -- not a detachable thread.</del></li>
+</ul>
+</blockquote>
+
+</blockquote>
+
+</blockquote>
+
+</blockquote>
+
+<note>
+2009-10 Santa Cruz:
+</note>
+
+<blockquote>
+Mark as Ready with proposed resolution from Summit.
+</blockquote>
+
+</discussion>
+
+<resolution>
+
+<p>
+In <sref ref="[thread.thread.member]"/> change:
+</p>
+
+<blockquote><pre>
+void detach();
+</pre>
+<blockquote>
+<p>...</p>
+<p>-14- <i>Error conditions:</i></p>
+<ul>
+<li><tt>no_such_process</tt> --  <ins>if the thread is</ins> not <del>a</del> valid<del> thread</del>.</li>
+<li><tt>invalid_argument</tt> -- <ins>if the thread is</ins> not <del>a detachable</del> <ins>joinable</ins><del> thread</del>.</li>
+</ul>
+</blockquote>
+
+</blockquote>
+
+</resolution>
+
+</issue>

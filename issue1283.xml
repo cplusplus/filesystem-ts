@@ -1,0 +1,165 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="1283" status="NAD Editorial">
+<title><tt>MoveConstructible</tt> and <tt>MoveAssignable</tt> need clarification
+of moved-from state</title>
+<section><sref ref="[utility.arg.requirements]"/></section>
+<submitter>Howard Hinnant</submitter>
+<date>12 Dec 2009</date>
+
+<discussion>
+<p><b>Addresses UK 150</b></p>
+
+<p>
+There is on going confusion over what one can and can not do with a moved-from
+object (e.g.
+<a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2009/n3009.html#UK150">UK 150</a>,
+<iref ref="910"/>).
+This issue attempts to clarify that moved-from objects are valid objects with an
+unknown state.
+</p>
+
+<note>
+2010-01-22 Wording tweaked by Beman.
+</note>
+
+<note>
+2010-01-22 Moved to Tentatively Ready after 5 positive votes on c++std-lib.
+</note>
+
+<note>
+2010-01-23 Alisdair opens:
+</note>
+
+<blockquote>
+<p>
+I'm afraid I must register an objection.
+</p>
+
+<p>
+My primary objection is that I have always been opposed to this kind of a
+resolution as over-constraining.  My preferred example is a call implementing
+the pImpl idiom via <tt>unique_ptr</tt>.  Once the pImpl has been moved from, it
+is no longer safe to call the vast majority of the object's methods, yet I see
+no reason to make such a type unusable in the standard library.  I would prefer
+a resolution along the lines suggested in the UK comment, which only requires
+that the object can be safely destroyed, and serve as the target of an
+assignment operator (if supported.)
+</p>
+
+<p>
+However, I will not hold the issue up if I am a lone dissenting voice on this
+(yes, that is a call to hear more support, or I will drop that objection in
+Pittsburgh)
+</p>
+
+<p>
+With the proposed wording, I'm not clear what the term 'valid object' means.  In
+my example above, is a pImpl holding a null pointer 'valid'?  What about a float
+holding a signalling NaN?  What determines if an object is valid?  Without a
+definition of a valid/invalid object, I don't think this wording adds anything,
+and this is an objection that I do want resolved.
+</p>
+
+<note>
+2010-01-24 Alisdair removes his objection.
+</note>
+
+<note>
+2010-01-24 Moved to Tentatively Ready after 5 positive votes on c++std-lib.
+</note>
+
+</blockquote>
+
+<note>
+2010-02-10 Reopened.  The wording here has been merged into <iref ref="1309"/>.
+</note>
+
+<note>
+2010-02-10 Moved to Tentatively NAD Editorial after 5 postive votes on
+c++std-lib.  Rationale added below.
+</note>
+
+</discussion>
+
+<rationale>
+<p>
+This issue is now addressed by <iref ref="1309"/>.
+</p>
+</rationale>
+
+<resolution>
+<p>
+Change the follwing tables in <sref ref="[utility.arg.requirements]"/> as shown:
+</p>
+
+<blockquote>
+
+<table border="1">
+<caption>Table 33 &mdash; <tt>MoveConstructible</tt> requirements <b>[moveconstructible]</b></caption>
+<tr>
+<th>Expression</th>
+<th>Post-condition</th>
+</tr>
+<tr>
+<td>
+<tt>T t(rv)</tt>
+</td>
+<td>
+<tt>t</tt> is equivalent to the value of <tt>rv</tt> before the construction.
+</td>
+</tr>
+<tr>
+<td colspan="2">
+[<i>Note:</i>
+<del>There is no requirement on the value of <tt>rv</tt> after the
+construction.</del>
+<ins><tt>rv</tt> remains a valid object.  Its state is unspecified.</ins>
+&mdash; <i>end note</i>]
+</td>
+</tr>
+</table>
+
+</blockquote>
+<blockquote>
+
+<table border="1">
+<caption>Table 35 &mdash; <tt>MoveAssignable</tt> requirements <b>[moveassignable]</b></caption>
+<tr>
+<th>Expression</th>
+<th>Return type</th>
+<th>Return value</th>
+<th>Post-condition</th>
+</tr>
+<tr>
+<td>
+<tt>t = rv</tt>
+</td>
+<td>
+<tt>T&amp;</tt>
+</td>
+<td>
+<tt>t</tt>
+</td>
+<td>
+<tt>t</tt> is equivalent to the value of <tt>rv</tt> before the assigment.
+</td>
+</tr>
+<tr>
+<td colspan="4">
+[<i>Note:</i>
+<del>There is no requirement on the value of <tt>rv</tt> after the
+assignment.</del>
+<ins><tt>rv</tt> remains a valid object.  Its state is unspecified.</ins>
+&mdash; <i>end note</i>]
+</td>
+</tr>
+</table>
+
+</blockquote>
+</resolution>
+
+</issue>

@@ -1,0 +1,95 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="5" status="TC1">
+<title>String::compare specification questionable</title>
+<section><sref ref="[string::swap]"/></section>
+<submitter>Jack Reeves</submitter>
+<date>11 Dec 1997</date>
+
+<discussion>
+<p>At the very end of the basic_string class definition is the signature: int
+compare(size_type pos1, size_type n1, const charT* s, size_type n2 = npos) const; In the
+following text this is defined as: returns
+basic_string&lt;charT,traits,Allocator&gt;(*this,pos1,n1).compare(
+basic_string&lt;charT,traits,Allocator&gt;(s,n2); </p>
+
+<p>Since the constructor basic_string(const charT* s, size_type n, const Allocator&amp; a
+= Allocator()) clearly requires that s != NULL and n &lt; npos and further states that it
+throws length_error if n == npos, it appears the compare() signature above should always
+throw length error if invoked like so: str.compare(1, str.size()-1, s); where 's' is some
+null terminated character array. </p>
+
+<p>This appears to be a typo since the obvious intent is to allow either the call above or
+something like: str.compare(1, str.size()-1, s, strlen(s)-1); </p>
+
+<p>This would imply that what was really intended was two signatures int compare(size_type
+pos1, size_type n1, const charT* s) const int compare(size_type pos1, size_type n1, const
+charT* s, size_type n2) const; each defined in terms of the corresponding constructor. </p>
+</discussion>
+
+<resolution>
+<p>Replace the compare signature in <sref ref="[basic.string]"/>
+(at the very end of the basic_string synopsis) which reads:</p>
+
+<blockquote>
+  <p><tt>int compare(size_type pos1, size_type n1,<br/>
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; const charT* s,
+  size_type n2 = npos) const;</tt></p>
+</blockquote>
+
+<p>with:</p>
+
+<blockquote>
+  <p><tt>int compare(size_type pos1, size_type n1,<br/>
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; const charT* s) const;<br/>
+  int compare(size_type pos1, size_type n1,<br/>
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; const charT* s,
+  size_type n2) const;</tt></p>
+</blockquote>
+
+<p>Replace the portion of <sref ref="[string::swap]"/>
+paragraphs 5 and 6 which read:</p>
+
+<blockquote>
+  <p><tt>int compare(size_type pos, size_type n1,<br/>
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; charT * s, size_type n2
+  = npos) const;<br/>
+  </tt>Returns:<tt><br/>
+  basic_string&lt;charT,traits,Allocator&gt;(*this, pos, n1).compare(<br/>
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+  basic_string&lt;charT,traits,Allocator&gt;( s, n2))</tt></p>
+</blockquote>
+
+<p>with:</p>
+
+<blockquote>
+  <p><tt>int compare(size_type pos, size_type n1,<br/>
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; const charT * s) const;<br/>
+  </tt>Returns:<tt><br/>
+  basic_string&lt;charT,traits,Allocator&gt;(*this, pos, n1).compare(<br/>
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+  basic_string&lt;charT,traits,Allocator&gt;( s ))<br/>
+  <br/>
+  int compare(size_type pos, size_type n1,<br/>
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; const charT * s,
+  size_type n2) const;<br/>
+  </tt>Returns:<tt><br/>
+  basic_string&lt;charT,traits,Allocator&gt;(*this, pos, n1).compare(<br/>
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+  basic_string&lt;charT,traits,Allocator&gt;( s, n2))</tt></p>
+</blockquote>
+
+<p>Editors please note that in addition to splitting the signature, the third argument
+becomes const, matching the existing synopsis.</p>
+</resolution>
+
+<rationale>
+<p>While the LWG dislikes adding signatures, this is a clear defect in
+the Standard which must be fixed.&nbsp; The same problem was also
+identified in issues 7 (item 5) and 87.</p>
+</rationale>
+
+</issue>

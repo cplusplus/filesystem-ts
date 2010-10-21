@@ -1,0 +1,196 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="1305" status="NAD Editorial">
+<title>preconditions for <tt>atomic_future</tt></title>
+<section><sref ref="[futures.atomic_future]"/></section>
+<submitter>Alisdair Meredith</submitter>
+<date>23 Jan 2010</date>
+
+<discussion>
+
+<p>
+The revised futures package in the current working paper simplified the
+<tt>is_ready/has_exception/has_value</tt> set of APIs, replacing them with a
+single 'valid' method.  This method is used in many places to signal pre- and
+post- conditions, but that edit is not complete.  
+</p>
+
+<p>
+Atomic future retains the extended earlier API, and provides defined,
+synchronized behaviour for all calls.  However, some preconditions and throws
+clauses are missing, which can easily be built around the new <tt>valid()</tt>
+api.  Note that for consistency, I suggest <tt>is_ready/has_exception/has_value
+throw</tt> an exception if <tt>valid()</tt> is not <tt>true</tt>, rather than
+return <tt>false</tt>.  I think this is implied by the existing pre-condition on
+<tt>is_ready</tt>.
+</p>
+
+<note>
+2010-01-23 See discussion starting with Message c++std-lib-26666.
+</note>
+
+<note>
+2010 Pittsburgh:  Moved to NAD Editorial.  Rationale added below.
+</note>
+
+</discussion>
+
+<rationale>
+<p>
+Solved by
+<a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2010/n3058.html">N3058</a>.
+</p>
+</rationale>
+
+<resolution>
+<p>
+Insert the following extra paragraphs:
+</p>
+
+<p>
+In <sref ref="[futures.atomic_future]"/>
+</p>
+
+<blockquote><pre>
+bool is_ready() const;
+</pre>
+<blockquote>
+<p>
+17 <i><del>Precondition</del> <ins>Requires</ins>:</i> <tt>valid() == true</tt>.
+</p>
+
+<p>
+18 <i>Returns:</i> <tt>true</tt> only if the associated state is ready.
+</p>
+
+<p><ins>
+<i>Throws:</i> <tt>future_error</tt> with an error condition of
+<tt>no_state</tt> if the precondition is not met.
+</ins></p>
+
+</blockquote>
+</blockquote>
+
+<blockquote><pre>
+bool has_exception() const;
+</pre>
+<blockquote>
+
+<p><ins>
+<i>Requires:</i> <tt>valid() == true</tt>.
+</ins></p>
+
+<p>
+19 <i>Returns:</i> <tt>true</tt> only if the associated state is ready and
+contains an exception.
+</p>
+
+<p><ins>
+<i>Throws:</i> <tt>future_error</tt> with an error condition of
+<tt>no_state</tt> if the precondition is not met.
+</ins></p>
+
+</blockquote>
+</blockquote>
+
+<blockquote><pre>
+bool has_value() const;
+</pre>
+<blockquote>
+
+<p><ins>
+<i>Requires:</i> <tt>valid() == true</tt>.
+</ins></p>
+
+<p>
+20 <i>Returns:</i> <tt>true</tt> only if the associated state is ready and
+contains a value.
+</p>
+
+<p><ins>
+<i>Throws:</i> <tt>future_error</tt> with an error condition of
+<tt>no_state</tt> if the precondition is not met.
+</ins></p>
+
+</blockquote>
+</blockquote>
+
+<blockquote><pre>
+void wait() const;
+</pre>
+<blockquote>
+
+<p><ins>
+<i>Requires:</i> <tt>valid() == true</tt>.
+</ins></p>
+
+<p>
+22 <i>Effects:</i> blocks until ...
+</p>
+
+<p><ins>
+<i>Throws:</i> <tt>future_error</tt> with an error condition of
+<tt>no_state</tt> if the precondition is not met.
+</ins></p>
+
+</blockquote>
+</blockquote>
+
+<blockquote><pre>
+template &lt;class Rep, class Period&gt;
+  bool wait_for(const chrono::duration&lt;Rep, Period&gt;&amp; rel_time) const;
+</pre>
+<blockquote>
+
+<p><ins>
+<i>Requires:</i> <tt>valid() == true</tt>.
+</ins></p>
+
+<p>
+23 <i>Effects:</i> blocks until ...
+</p>
+
+<p>
+24 <i>Returns:</i> <tt>true</tt> only if ...
+</p>
+
+<p><ins>
+<i>Throws:</i> <tt>future_error</tt> with an error condition of
+<tt>no_state</tt> if the precondition is not met.
+</ins></p>
+
+</blockquote>
+</blockquote>
+
+<blockquote><pre>
+template &lt;class Clock, class Duration&gt;
+  bool wait_until(const chrono::time_point&lt;Clock, Duration&gt;&amp; abs_time) const;
+</pre>
+<blockquote>
+
+<p><ins>
+<i>Requires:</i> <tt>valid() == true</tt>.
+</ins></p>
+
+<p>
+25 <i>Effects:</i> blocks until ...
+</p>
+
+<p>
+26 <i>Returns:</i> <tt>true</tt> only if ...
+</p>
+
+<p><ins>
+<i>Throws:</i> <tt>future_error</tt> with an error condition of
+<tt>no_state</tt> if the precondition is not met.
+</ins></p>
+
+</blockquote>
+</blockquote>
+
+</resolution>
+
+</issue>

@@ -1,0 +1,105 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="967" status="WP">
+<title>Various threading bugs #17</title>
+<section><sref ref="[thread.thread.constr]"/></section>
+<submitter>Pete Becker</submitter>
+<date>7 Jan 2009</date>
+
+<discussion>
+<p>
+the error handling for the constructor for <tt>condition_variable</tt>
+distinguishes lack of memory from lack of other resources, but the error
+handling for the thread constructor does not. Is this difference
+intentional?
+</p>
+
+<note>
+Beman has volunteered to provide proposed wording.
+</note>
+
+<note>
+2009-09-25 Beman provided proposed wording.
+</note>
+
+<blockquote>
+The proposed resolution assumes <iref ref="962"/> has been accepted and
+its proposed resolution applied to the working paper.
+</blockquote>
+
+<note>
+2009-10 Santa Cruz:
+</note>
+
+<blockquote>
+Move to Ready.
+</blockquote>
+
+</discussion>
+
+<resolution>
+<!-- 
+<p><i>Change Exceptions <sref ref="[thread.req.exception]"/> as indicated:</i></p>
+<blockquote>
+<p>Some functions described in this Clause are 
+specified to throw exceptions of type <code>system_error</code> (19.5.5). Such exceptions 
+shall be thrown if any of the <i>Error conditions</i> are detected or a call to an operating system or other underlying API 
+results in an error that prevents the library function from meeting its specifications.
+<ins><i>[Note:</i> See <sref ref="[res.on.exception.handling]"/> for exceptions thrown to report 
+storage allocation failures. <i>--end  note]</i></ins></p>
+
+</blockquote>
+ -->
+
+<p><span style="font-style: italic">Change Mutex requirements <sref ref="[thread.mutex.requirements]"/>, 
+paragraph 4, as indicated:</span></p>
+<blockquote>
+
+<p><i>Error conditions:</i></p>
+  <blockquote>
+
+<ul>
+<li><del> <code>not_enough_memory</code> &mdash; if there is not enough memory to construct 
+the mutex object.</del></li>
+
+<li><code>resource_unavailable_try_again</code> &mdash; if any native handle type 
+manipulated is not available.</li>
+
+<li><code>operation_not_permitted</code> &mdash; if the thread does not have the 
+necessary permission to change the state of the mutex object.</li>
+
+<li><code>device_or_resource_busy</code> &mdash; if any native handle type 
+manipulated is already locked.</li>
+
+<li><code>invalid_argument</code> &mdash; if any native handle type manipulated as 
+part of mutex construction is incorrect.</li>
+</ul>
+  </blockquote>
+</blockquote>
+
+<p><span style="font-style: italic">Change Class condition_variable <sref ref="[thread.condition.condvar]"/>, 
+default constructor, as indicated:</span></p>
+<blockquote>
+  <p><code>condition_variable();</code></p>
+  <blockquote>
+    <p><i>Effects:</i> Constructs an object of type <code>condition_variable</code>.</p>
+    <p><ins><i>Throws:</i> <code>std::system_error</code> when an exception is required (<sref ref="[thread.req.exception]"/>)</ins>.</p>
+    <p><i>Error conditions:</i></p>
+    <blockquote>
+    <ul>
+      <li><del><code>not_enough_memory</code> &mdash; if a memory limitation prevents 
+      initialization.</del></li>
+      <li> <code>resource_unavailable_try_again</code> &mdash; if some non-memory 
+      resource limitation prevents initialization.</li>
+      <li> <code>device_or_resource_busy</code> &mdash; if attempting to initialize a 
+      previously-initialized but as of yet undestroyed <code>condition_variable</code>.</li>
+    </ul>
+    </blockquote>
+  </blockquote>
+</blockquote>
+</resolution>
+
+</issue>

@@ -1,0 +1,146 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="560" status="NAD">
+<title>User-defined allocators without default constructor</title>
+<section><sref ref="[allocator.requirements]"/></section>
+<submitter>Sergey P. Derevyago</submitter>
+<date>17 Feb 2006</date>
+
+<discussion>
+<h4>1. The essence of the problem.</h4>
+<p>
+User-defined allocators without default constructor are not explicitly
+supported by the standard but they can be supported just like std::vector
+supports elements without default constructor.
+</p>
+<p>
+As a result, there exist implementations that work well with such allocators
+and implementations that don't.
+</p>
+
+<h4>2. The cause of the problem.</h4>
+<p>
+1) The standard doesn't explicitly state this intent but it should. In
+particular, 20.1.5p5 explicitly state the intent w.r.t. the allocator
+instances that compare non-equal. So it can similarly state the intent w.r.t.
+the user-defined allocators without default constructor.
+</p>
+<p>
+2) Some container operations are obviously underspecified. In particular,
+21.3.7.1p2 tells:
+</p>
+<blockquote><pre>
+template&lt;class charT, class traits, class Allocator&gt;
+  basic_string&lt;charT,traits,Allocator&gt; operator+(
+    const charT* lhs,
+    const basic_string&lt;charT,traits,Allocator&gt;&amp; rhs
+  );
+</pre>
+<p>
+Returns: <tt>basic_string&lt;charT,traits,Allocator&gt;(lhs) + rhs</tt>.
+</p>
+</blockquote>
+<p>
+That leads to the basic_string&lt;charT,traits,Allocator&gt;(lhs, Allocator()) call.
+Obviously, the right requirement is:
+</p>
+<blockquote><p>
+Returns: <tt>basic_string&lt;charT,traits,Allocator&gt;(lhs, rhs.get_allocator()) + rhs</tt>.
+</p></blockquote>
+<p>
+It seems like a lot of DRs can be submitted on this "Absent call to
+get_allocator()" topic.
+</p>
+
+<h4>3. Proposed actions.</h4>
+<p>
+1) Explicitly state the intent to allow for user-defined allocators without
+default constructor in 20.1.5 Allocator requirements.
+</p>
+<p>
+2) Correct all the places, where a correct allocator object is available
+through the get_allocator() call but default Allocator() gets passed instead.
+</p>
+<h4>4. Code sample.</h4>
+<p>
+Let's suppose that the following memory pool is available:
+</p>
+<blockquote><pre>
+class mem_pool {
+      // ...
+      void* allocate(size_t size);
+      void deallocate(void* ptr, size_t size);
+};
+</pre></blockquote>
+<p>
+So the following allocator can be implemented via this pool:
+</p>
+<blockquote><pre>
+class stl_allocator {
+      mem_pool&amp; pool;
+
+ public:
+      explicit stl_allocator(mem_pool&amp; mp) : pool(mp) {}
+      stl_allocator(const stl_allocator&amp; sa) : pool(sa.pool) {}
+      template &lt;class U&gt;
+      stl_allocator(const stl_allocator&lt;U&gt;&amp; sa)  : pool(sa.get_pool()) {}
+      ~stl_allocator() {}
+
+      pointer allocate(size_type n, std::allocator&lt;void&gt;::const_pointer = 0)
+      {
+       return (n!=0) ? static_cast&lt;pointer&gt;(pool.allocate(n*sizeof(T))) : 0;
+      }
+
+      void deallocate(pointer p, size_type n)
+      {
+       if (n!=0) pool.deallocate(p, n*sizeof(T));
+      }
+
+      // ...
+};
+</pre></blockquote>
+<p>
+Then the following code works well on some implementations and doesn't work on
+another:
+</p>
+<blockquote><pre>
+typedef basic_string&lt;char, char_traits&lt;char&gt;, stl_allocator&lt;char&gt; &gt; 
+  tl_string;
+mem_pool mp;
+tl_string s1("abc", stl_allocator&lt;int&gt;(mp));
+printf("(%s)\n", ("def"+s1).c_str());
+</pre></blockquote>
+<p>
+In particular, on some implementations the code can't be compiled without
+default stl_allocator() constructor.
+</p>
+<p>
+The obvious way to solve the compile-time problems is to intentionally define
+a NULL pointer dereferencing default constructor
+</p>
+<blockquote><pre>
+stl_allocator() : pool(*static_cast&lt;mem_pool*&gt;(0)) {}
+</pre></blockquote>
+<p>
+in a hope that it will not be called. The problem is that it really gets
+called by operator+(const char*, const string&amp;) under the current 21.3.7.1p2
+wording.
+</p>
+</discussion>
+
+<resolution>
+<p>
+</p>
+</resolution>
+
+<rationale>
+<p>
+Recommend NAD.  <tt>operator+()</tt> with <tt>string</tt> already requires the desired
+semantics of copying the allocator from one of the strings (<i>lhs</i> when there is a choice).
+</p>
+</rationale>
+
+</issue>

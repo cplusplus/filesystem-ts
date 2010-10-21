@@ -1,0 +1,84 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="7" status="TC1">
+<title>String clause minor problems</title>
+<section><sref ref="[strings]"/></section>
+<submitter>Matt Austern</submitter>
+<date>15 Dec 1997</date>
+
+<discussion>
+<p>(1) In <sref ref="[string::insert]"/>, the description of template
+&lt;class InputIterator&gt; insert(iterator, InputIterator,
+InputIterator) makes no sense. It refers to a member function that
+doesn't exist. It also talks about the return value of a void
+function. </p>
+
+<p>(2) Several versions of basic_string::replace don't appear in the
+class synopsis. </p>
+
+<p>(3) basic_string::push_back appears in the synopsis, but is never
+described elsewhere.  In the synopsis its argument is const charT,
+which doesn't makes much sense; it should probably be charT, or
+possible const charT&amp;. </p>
+
+<p>(4) basic_string::pop_back is missing. </p>
+
+<p>(5) int compare(size_type pos, size_type n1, charT* s, size_type n2
+= npos) make no sense. First, it's const charT* in the synopsis and
+charT* in the description. Second, given what it says in RETURNS,
+leaving out the final argument will always result in an exception
+getting thrown. This is paragraphs 5 and 6 of 
+<sref ref="[string::swap]"/></p>
+
+<p>(6) In table 37, in section <sref ref="[char.traits.require]"/>,
+there's a note for X::move(s, p, n). It says &quot;Copies correctly
+even where p is in [s, s+n)&quot;. This is correct as far as it goes,
+but it doesn't go far enough; it should also guarantee that the copy
+is correct even where s in in [p, p+n). These are two orthogonal
+guarantees, and neither one follows from the other. Both guarantees
+are necessary if X::move is supposed to have the same sort of
+semantics as memmove (which was clearly the intent), and both
+guarantees are necessary if X::move is actually supposed to be
+useful. </p>
+</discussion>
+
+<resolution>
+<p>ITEM 1: In 21.3.5.4 [lib.string::insert], change paragraph 16 to <br/>
+<br/>
+&nbsp;&nbsp;&nbsp; EFFECTS: Equivalent to insert(p - begin(), basic_string(first, last)).<br/>
+<br/>
+ITEM 2:&nbsp; Not a defect; the Standard is clear.. There are ten versions of replace() in
+the synopsis, and ten versions in 21.3.5.6 [lib.string::replace].<br/>
+<br/>
+ITEM 3: Change the declaration of push_back in the string synopsis (21.3,
+[lib.basic.string]) from:</p>
+
+<p>&nbsp;&nbsp;&nbsp;&nbsp; void push_back(const charT)<br/>
+<br/>
+to<br/>
+<br/>
+&nbsp;&nbsp;&nbsp;&nbsp; void push_back(charT)<br/>
+<br/>
+Add the following text immediately after 21.3.5.2 [lib.string::append], paragraph 10.<br/>
+<br/>
+&nbsp;&nbsp;&nbsp; void basic_string::push_back(charT c);<br/>
+&nbsp;&nbsp;&nbsp; EFFECTS: Equivalent to append(static_cast&lt;size_type&gt;(1), c);<br/>
+<br/>
+ITEM 4: Not a defect. The omission appears to have been deliberate.<br/>
+<br/>
+ITEM 5: Duplicate; see issue 5 (and 87).<br/>
+<br/>
+ITEM 6: In table 37, Replace:<br/>
+<br/>
+&nbsp;&nbsp;&nbsp; &quot;Copies correctly even where p is in [s, s+n).&quot;<br/>
+<br/>
+with:<br/>
+<br/>
+&nbsp;&nbsp;&nbsp;&nbsp; &quot;Copies correctly even where the ranges [p, p+n) and [s,
+s+n) overlap.&quot;</p>
+</resolution>
+
+</issue>

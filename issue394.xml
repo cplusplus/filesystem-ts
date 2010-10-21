@@ -1,0 +1,118 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg_issue.dtd" [
+  <!ENTITY nbsp " ">
+]>
+
+<issue num="394" status="NAD">
+<title>behavior of formatted output on failure</title>
+<section><sref ref="[ostream.formatted.reqmts]"/></section>
+<submitter>Martin Sebor</submitter>
+<date>27 Dec 2002</date>
+
+<discussion>
+<p>
+There is a contradiction in Formatted output about what bit is
+supposed to be set if the formatting fails. On sentence says it's
+badbit and another that it's failbit.
+</p>
+<p>
+27.6.2.5.1, p1 says in the Common Requirements on Formatted output
+functions:
+</p>
+<pre>
+     ... If the generation fails, then the formatted output function
+     does setstate(ios::failbit), which might throw an exception.
+</pre>
+<p>
+27.6.2.5.2, p1 goes on to say this about Arithmetic Inserters:
+</p>
+<p>
+     ... The formatting conversion occurs as if it performed the
+     following code fragment:
+</p>
+<pre>
+     bool failed =
+         use_facet&lt;num_put&lt;charT,ostreambuf_iterator&lt;charT,traits>
+         > >
+         (getloc()).put(*this, *this, fill(), val). failed();
+
+     ... If failed is true then does setstate(badbit) ...
+</pre>
+<p>
+The original intent of the text, according to Jerry Schwarz (see
+c++std-lib-10500), is captured in the following paragraph:
+</p>
+<p>
+In general "badbit" should mean that the stream is unusable because
+of some underlying failure, such as disk full or socket closure;
+"failbit" should mean that the requested formatting wasn't possible
+because of some inconsistency such as negative widths.  So typically
+if you clear badbit and try to output something else you'll fail
+again, but if you clear failbit and try to output something else
+you'll succeed.
+</p>
+<p>
+In the case of the arithmetic inserters, since num_put cannot
+report failure by any means other than exceptions (in response
+to which the stream must set badbit, which prevents the kind of
+recoverable error reporting mentioned above), the only other
+detectable failure is if the iterator returned from num_put
+returns true from failed().
+</p>
+<p>
+Since that can only happen (at least with the required iostream
+specializations) under such conditions as the underlying failure
+referred to above (e.g., disk full), setting badbit would seem
+to be the appropriate response (indeed, it is required in
+27.6.2.5.2, p1). It follows that failbit can never be directly
+set by the arithmetic (it can only be set by the sentry object
+under some unspecified conditions).
+</p>
+<p>
+The situation is different for other formatted output functions
+which can fail as a result of the streambuf functions failing
+(they may do so by means other than exceptions), and which are
+then required to set failbit.
+</p>
+<p>
+The contradiction, then, is that ostream::operator&lt;&lt;(int) will
+set badbit if the disk is full, while operator&lt;&lt;(ostream&amp;,
+char) will set failbit under the same conditions. To make the behavior
+consistent, the Common requirements sections for the Formatted output
+functions should be changed as proposed below.
+</p>
+<note>Kona: There's agreement that this is a real issue.  What we
+  decided at Kona: 1. An error from the buffer (which can be detected
+  either directly from streambuf's member functions or by examining a
+  streambuf_iterator) should always result in badbit getting set.
+  2. There should never be a circumstance where failbit gets set.
+  That represents a formatting error, and there are no circumstances
+  under which the output facets are specified as signaling a
+  formatting error. (Even more so for string output that for numeric
+  because there's nothing to format.)  If we ever decide to make it
+  possible for formatting errors to exist then the facets can signal
+  the error directly, and that should go in clause 22, not clause 27.
+  3. The phrase "if generation fails" is unclear and should be
+  eliminated.  It's not clear whether it's intended to mean a buffer
+  error (e.g. a full disk), a formatting error, or something else.
+  Most people thought it was supposed to refer to buffer errors; if
+  so, we should say so.  Martin will provide wording.</note>
+
+<note>
+2009-07 Frankfurt
+</note>
+
+<blockquote>
+NAD. This issue is already fixed.
+</blockquote>
+
+</discussion>
+
+<resolution>
+</resolution>
+
+<rationale>
+
+</rationale>
+
+</issue>

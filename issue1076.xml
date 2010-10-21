@@ -1,0 +1,321 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="1076" status="Open">
+<title>unary/binary_negate need constraining and move support</title>
+<section><sref ref="[negators]"/></section>
+<submitter>Alisdair Meredith</submitter>
+<date>20 Mar 2009</date>
+
+<discussion>
+<p>
+The class templates <tt>unary/binary_negate</tt> need constraining and move support.
+</p>
+<p>
+Ideally these classes would be deprecated, allowing <tt>unary/binary_function</tt> to
+also be deprecated.  However, until a generic negate adaptor is introduced
+that can negate any <tt>Callable</tt> type, they must be supported so should be
+constrained.  Likewise, they should be movable, and support adopting a
+move-only predicate type.
+</p>
+<p>
+In order to preserve ABI compatibility, new rvalue overloads are supplied in
+preference to changing the existing pass-by-const-ref to pass-by-value.
+</p>
+<p>
+Do not consider the issue of forwarding mutable lvalues at this point,
+although remain open to another issue on the topic.
+</p>
+
+<note>
+2009-05-01 Daniel adds:
+</note>
+<blockquote>
+<p>
+IMO the currently proposed resolution needs some updates
+because it is ill-formed at several places:
+</p>
+
+<ol>
+<li>
+<p>
+In concept AdaptableUnaryFunction change
+</p>
+<blockquote><pre>
+typename X::result_type;
+typename X::argument_type;
+</pre></blockquote>
+<p>
+to
+</p>
+<blockquote><pre>
+Returnable result_type = typename X::result_type;
+typename argument_type = typename X::argument_type;
+</pre></blockquote>
+<p>
+[The replacement "Returnable result_type" instead of "typename
+result_type" is non-editorial, but maybe you prefer that as well]
+</p>
+</li>
+<li>
+<p>
+In concept AdaptableBinaryFunction change
+</p>
+<blockquote><pre>
+typename X::result_type;
+typename X::first_argument_type;
+typename X::second_argument_type;
+</pre></blockquote>
+<p>
+to
+</p>
+<blockquote><pre>
+Returnable result_type = typename X::result_type;
+typename first_argument_type = typename X::first_argument_type;
+typename second_argument_type = typename X::second_argument_type;
+</pre></blockquote>
+<p>
+[The replacement "Returnable result_type" instead of "typename
+result_type" is non-editorial, but maybe you prefer that as well.]
+</p>
+</li>
+
+<li>
+<p>
+In class unary/binary_function
+</p>
+<ol type="a">
+<li>
+I suggest to change "ReturnType" to "Returnable" in both cases.
+</li>
+<li>
+I think you want to replace the remaining occurrences of "Predicate" by "P"
+(in both classes in copy/move from a predicate)
+</li>
+</ol>
+</li>
+<li>
+<p>
+I think you need to change the proposed signatures of not1 and not2, because
+they would still remain unconstrained: To make them constrained at least a
+single requirement needs to be added to enable requirement implication. This
+could be done via a dummy ("requires True&lt;true&gt;") or just explicit as follows:
+</p>
+<ol type="a">
+<li>
+<blockquote><pre>
+template &lt;AdaptableUnaryFunction P&gt;
+requires Predicate&lt; P, P::argument_type&gt;
+unary_negate&lt;P&gt; not1(const P&amp;&amp; pred);
+template &lt;AdaptableUnaryFunction P&gt;
+requires Predicate&lt; P, P::argument_type &gt;
+unary_negate&lt;P&gt; not1(P&amp;&amp; pred);
+</pre>
+<blockquote>
+-3- Returns: unary_negate&lt;P&gt;(pred).
+</blockquote>
+</blockquote>
+<p>
+[Don't we want a move call for the second overload as in
+</p>
+<blockquote><pre>
+unary_negate&lt;P&gt;(std::move(pred))
+</pre></blockquote>
+<p>
+in the Returns clause ?]
+</p>
+</li>
+<li>
+<pre>
+template &lt;AdaptableBinaryFunction P&gt;
+requires Predicate&lt; P, P::first_argument_type, P::second_argument_type &gt;
+binary_negate&lt;P&gt; not2(const P&amp; pred);
+template &lt;AdaptableBinaryFunction P&gt;
+requires Predicate&lt; P, P::first_argument_type, P::second_argument_type &gt;
+binary_negate&lt;P&gt; not2(P&amp;&amp; pred);
+</pre>
+<p>
+-5- Returns: binary_negate&lt;P&gt;(pred).
+</p>
+<p>
+[Don't we want a move call for the second overload as in
+</p>
+<blockquote><pre>
+binary_negate&lt;P&gt;(std::move(pred))
+</pre></blockquote>
+<p>
+in the Returns clause ?]
+</p>
+</li>
+</ol>
+</li>
+</ol>
+</blockquote>
+
+<note>
+Batavia (2009-05):
+</note>
+<blockquote>
+<p>
+There is concern that complicating the solution
+to preserve the ABI seems unnecessary,
+since we're not in general preserving the ABI.
+</p>
+<p>
+We would prefer a separate paper consolidating all Clause 20
+issues that are for the purpose of providing constrained versions
+of the existing facilities.
+</p>
+<p>
+Move to Open.
+</p>
+</blockquote>
+
+<note>
+2009-10 post-Santa Cruz:
+</note>
+
+<blockquote>
+Leave open pending the potential move constructor paper. Note that
+we consider the "constraining" part NAD Concepts.
+</blockquote>
+
+<note>
+2010-01-31 Alisdair removes the current proposed wording from the proposed
+wording section because it is based on concepts.  That wording is proposed here:
+</note>
+
+<blockquote class="note">
+<p>
+Add new concepts where appropriate::
+</p>
+
+<blockquote><pre>
+auto concept AdaptableUnaryFunction&lt; typename X &gt; {
+  typename X::result_type;
+  typename X::argument_type;
+}
+
+auto concept AdaptableBinaryFunction&lt; typename X &gt; {
+  typename X::result_type;
+  typename X::first_argument_type;
+  typename X::second_argument_type;
+}
+</pre></blockquote>
+
+<p>
+Revise as follows:
+</p>
+
+<p>
+Base <sref ref="[base]"/> (Only change is constrained Result)
+</p>
+
+<blockquote>
+<p>
+-1-  The following classes are provided to simplify the typedefs of the
+argument and result types:
+</p>
+<pre>
+namespace std {
+  template &lt;class Arg, <del>class</del> <ins>ReturnType</ins> Result&gt;
+  struct unary_function {
+     typedef Arg    argument_type;
+     typedef Result result_type;
+  };
+
+  template &lt;class Arg1, class Arg2, <del>class</del> <ins>ReturnType</ins> Result&gt;
+  struct binary_function {
+     typedef Arg1   first_argument_type;
+     typedef Arg2   second_argument_type;
+     typedef Result result_type;
+  };
+}
+</pre></blockquote>
+
+<p>
+Negators <sref ref="[negators]"/>:
+</p>
+
+<blockquote>
+<p>
+-1- Negators <tt>not1</tt> and <tt>not2</tt> take a unary and a binary predicate,
+respectively, and return their complements (5.3.1).
+</p>
+
+<pre>
+template &lt;<del>class</del> <ins>AdaptableUnaryFunction</ins> P<del>redicate</del>&gt;
+  <ins>requires Predicate&lt; P, P::argument_type &gt;</ins>
+  class unary_negate
+    : public unary_function&lt;<del>typename</del> P<del>redicate</del>::argument_type,bool&gt; {
+  public:
+    <ins>unary_negate(const unary_negate &amp; ) = default;</ins>
+    <ins>unary_negate(unary_negate &amp;&amp; );</ins>
+
+    <ins>requires CopyConstructible&lt; P &gt;</ins>
+       explicit unary_negate(const Predicate&amp; pred); 
+    <ins>requires MoveConstructible&lt; P &gt;
+       explicit unary_negate(Predicate &amp;&amp; pred);</ins>
+
+    bool operator()(const <del>typename</del> P<del>redicate</del>::argument_type&amp; x) const;
+  };
+</pre>
+<blockquote>
+-2 <tt>operator()</tt> returns <tt>!pred(x)</tt>.
+</blockquote>
+
+<pre>
+template &lt;class Predicate&gt;
+  unary_negate&lt;Predicate&gt; not1(const Predicate&amp;amp; pred);
+<ins>template &lt;class Predicate&gt;
+  unary_negate&lt;Predicate&gt; not1(Predicate&amp;&amp; pred);</ins>
+</pre>
+<blockquote>
+-3-  <i>Returns:</i> <tt>unary_negate&lt;Predicate&gt;(pred)</tt>.
+</blockquote>
+
+<pre>
+template &lt;<del>class</del> <ins>AdaptableBinaryFunction</ins> P<del>redicate</del> &gt;
+  <ins>requires Predicate&lt; P, P::first_argument_type, P::second_argument_type &gt;</ins>
+  class binary_negate
+    : public binary_function&lt;<del>typename</del> P<del>redicate</del>::first_argument_type,
+                              <del>typename</del> P<del>redicate</del>::second_argument_type, bool&gt; {
+  public:
+    <ins>biary_negate(const binary_negate &amp; ) = default;</ins>
+    <ins>binary_negate(binary_negate &amp;&amp; );</ins>
+
+    <ins>requires CopyConstructible&lt; P &gt;</ins>
+       explicit binary_negate(const Predicate&amp; pred);
+    <ins>requires MoveConstructible&lt; P &gt;
+       explicit binary_negate(const Predicate&amp; pred);</ins>
+
+    bool operator()(const <del>typename</del> P<del>redicate</del>::first_argument_type&amp; x,
+                    const <del>typename</del> P<del>redicate</del>::second_argument_type&amp; y) const;
+  };
+</pre>
+<blockquote>
+-4- <tt>operator()</tt> returns <tt>!pred(x,y)</tt>.
+</blockquote>
+
+<pre>
+template &lt;class Predicate&gt;
+  binary_negate&lt;Predicate&gt; not2(const Predicate&amp; pred);
+<ins>template &lt;class Predicate&gt;
+  binary_negate&lt;Predicate&gt; not2(Predicate&amp;&amp; pred);</ins>
+</pre>
+
+<blockquote>
+-5- <i>Returns:</i> <tt>binary_negate&lt;Predicate&gt;(pred)</tt>.
+</blockquote>
+</blockquote>
+
+</blockquote>
+
+</discussion>
+
+<resolution>
+</resolution>
+
+</issue>

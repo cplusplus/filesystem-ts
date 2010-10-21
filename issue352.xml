@@ -1,0 +1,60 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="352" status="CD1">
+<title>missing fpos requirements</title>
+<section><sref ref="[char.traits.typedefs]"/></section>
+<submitter>Martin Sebor</submitter>
+<date>2 Dec 2001</date>
+
+<discussion>
+<p>
+<i>(1)</i>
+There are no requirements on the <tt>stateT</tt> template parameter of
+<tt>fpos</tt> listed in 27.4.3. The interface appears to require that
+the type be at least Assignable and CopyConstructible (27.4.3.1, p1),
+and I think also DefaultConstructible (to implement the operations in
+Table 88).
+</p>
+<p>
+21.1.2, p3, however, only requires that
+<tt>char_traits&lt;charT&gt;::state_type</tt> meet the requirements of
+CopyConstructible types.
+</p>
+<p>
+<i>(2)</i>
+Additionally, the <tt>stateT</tt> template argument has no
+corresponding typedef in fpos which might make it difficult to use in
+generic code.
+</p>
+</discussion>
+
+<resolution>
+<p>
+Modify 21.1.2, p4 from
+</p>
+<p>
+    Requires: <tt>state_type</tt> shall meet the requirements of
+              CopyConstructible types (20.1.3).
+</p>
+<p>
+    Requires: state_type shall meet the requirements of Assignable
+              (23.1, p4), CopyConstructible (20.1.3), and
+              DefaultConstructible  (20.1.4) types.
+</p>
+
+</resolution>
+
+<rationale>
+<p>The LWG feels this is two issues, as indicated above. The first is
+a defect---std::basic_fstream is unimplementable without these
+additional requirements---and the proposed resolution fixes it.  The
+second is questionable; who would use that typedef?  The class
+template fpos is used only in a very few places, all of which know the
+state type already.  Unless motivation is provided, the second should
+be considered NAD.</p>
+</rationale>
+
+</issue>

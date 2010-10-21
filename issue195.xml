@@ -1,0 +1,62 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="195" status="TC1">
+<title>Should <tt>basic_istream::sentry</tt>'s constructor ever set eofbit?</title>
+<section><sref ref="[istream::sentry]"/></section>
+<submitter>Matt Austern</submitter>
+<date>13 Oct 1999</date>
+
+<discussion>
+<p>Suppose that <tt>is.flags() &amp; ios_base::skipws</tt> is nonzero.
+What should <tt>basic_istream&lt;&gt;::sentry</tt>'s constructor do if it
+reaches eof while skipping whitespace?  27.6.1.1.2/5 suggests it
+should set failbit. Should it set eofbit as well?  The standard
+doesn't seem to answer that question.</p>
+
+<p>On the one hand, nothing in <sref ref="[istream::sentry]"/> says that
+<tt>basic_istream&lt;&gt;::sentry</tt> should ever set eofbit.  On the
+other hand, <sref ref="[istream]"/> paragraph 4 says that if
+extraction from a <tt>streambuf</tt> &quot;returns
+<tt>traits::eof()</tt>, then the input function, except as explicitly
+noted otherwise, completes its actions and does
+<tt>setstate(eofbit)&quot;</tt>.  So the question comes down to
+whether <tt>basic_istream&lt;&gt;::sentry</tt>'s constructor is an
+input function.</p>
+
+<p>Comments from Jerry Schwarz:</p>
+<blockquote>
+<p>It was always my intention that eofbit should be set any time that a
+virtual returned something to indicate eof, no matter what reason
+iostream code had for calling the virtual.</p>
+<p>
+The motivation for this is that I did not want to require streambufs
+to behave consistently if their virtuals are called after they have
+signaled eof.</p>
+<p>
+The classic case is a streambuf reading from a UNIX file.  EOF isn't
+really a state for UNIX file descriptors.  The convention is that a
+read on UNIX returns 0 bytes to indicate &quot;EOF&quot;, but the file
+descriptor isn't shut down in any way and future reads do not
+necessarily also return 0 bytes.  In particular, you can read from
+tty's on UNIX even after they have signaled &quot;EOF&quot;.  (It
+isn't always understood that a ^D on UNIX is not an EOF indicator, but
+an EOL indicator.  By typing a &quot;line&quot; consisting solely of
+^D you cause a read to return 0 bytes, and by convention this is
+interpreted as end of file.)</p>
+</blockquote>
+</discussion>
+
+<resolution>
+<p>Add a sentence to the end of 27.6.1.1.2 paragraph 2:</p>
+<blockquote>
+<p>If <tt>is.rdbuf()-&gt;sbumpc()</tt> or <tt>is.rdbuf()-&gt;sgetc()</tt>
+returns <tt>traits::eof()</tt>, the function calls
+<tt>setstate(failbit | eofbit)</tt> (which may throw
+<tt>ios_base::failure</tt>).
+</p>
+</blockquote>
+</resolution>
+</issue>

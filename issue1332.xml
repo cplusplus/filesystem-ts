@@ -1,0 +1,166 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="1332" status="New">
+<title>Let Hash objects throw!</title>
+<section><sref ref="[hash.requirements]"/></section>
+<submitter>Daniel Kr&uuml;gler</submitter>
+<date>26 Mar 2010</date>
+
+<discussion>
+<p>
+The currently added Hash requirements demand in Table 40 &mdash; Hash
+requirements [hash]:
+</p>
+
+<blockquote>
+<table border="1">
+
+<caption>Table 40 &mdash; Hash requirements [hash]</caption>
+
+<tr>
+<th>Expression</th>
+<th>Return type</th>
+<th>Requirement</th>
+</tr>
+
+<tr>
+<td><tt>h(k)</tt></td>
+<td><tt>size_t</tt></td>
+<td>Shall not throw exceptions. [..]</td>
+</tr>
+
+</table>
+</blockquote>
+
+<p>
+While it surely is a generally accepted idea that hash function objects
+<i>should</i> not throw exceptions, this basic constraint for such a fundamental
+requirement set does neither match the current library policy nor real world
+cases:
+</p>
+
+<ol>
+<li>
+There are little known situations where a swap or move operation may throw an
+exception and in some popular domains such functions are <em>required</em> not
+to throw. But the library invested already efforts for good reasons to require
+"working" container implementations in the presence of throwing move or swap
+operations, see e.g. <sref ref="[associative.reqmts.except]"/>, <sref
+ref="[unord.req.except]"/>.
+</li>
+
+<li>
+The container library is already specified to cope with potentially throwing
+comparers, predicates, <i>and</i> hash function objects, see above.
+</li>
+
+<li>
+<p>
+The new definition goes beyond the original hash requirements as specified
+by SGI library in regard to the exception requirement:
+</p>
+<blockquote>
+<a href="http://www.sgi.com/tech/stl/HashFunction.html">http://www.sgi.com/tech/stl/HashFunction.html</a>
+</blockquote>
+</li>
+
+<li>
+There are indeed real-world examples of potentially throwing hash functions,
+typically when the proxy pattern is used and when the to-be hashed proxied
+instance is some <i>volatile</i> object, e.g. a file or internet resource, that
+might suddenly be unavailable at the time of hashing.
+</li>
+
+<li>
+With the new <tt>noexcept</tt> language facility libraries can still take
+advantage of no-throw guarantees of hasher functions with stricter guarantees.
+</li>
+</ol>
+
+<p>
+Even though the majority of all known move, swap, and hash functions won't throw
+and in some cases <em>must</em> not throw, it seems like unnecessary
+over-constraining the definition of a Hash functor not to propagate exceptions
+in any case and it contradicts the general principle of C++ to impose such a
+requirement for this kind of fundamental requirement.
+</p>
+</discussion>
+
+<resolution>
+<ol>
+<li>
+<p>
+Change Table 40 &mdash; Hash requirements [hash] as indicated:
+</p>
+
+<blockquote>
+<table border="1">
+
+<caption>Table 40 &mdash; Hash requirements [hash]</caption>
+
+<tr>
+<th>Expression</th>
+<th>Return type</th>
+<th>Requirement</th>
+</tr>
+
+<tr>
+<td><tt>h(k)</tt></td>
+<td><tt>size_t</tt></td>
+<td><del>Shall not throw exceptions.</del> [..]</td>
+</tr>
+
+</table>
+</blockquote>
+</li>
+
+<li>
+<p>
+Add to <sref ref="[unord.hash]"/>/1 a new bullet:
+</p>
+
+<blockquote>
+<p>
+1 The unordered associative containers defined in Clause 23.5 use
+specializations of the class template <tt>hash</tt>
+as the default hash function. For all object types <tt>Key</tt> for which there
+exists a specialization <tt>hash&lt;Key&gt;</tt>, the
+instantiation <tt>hash&lt;Key&gt;</tt> shall:
+</p>
+<ul>
+<li>
+satisfy the <tt>Hash</tt> requirements (20.2.4), with <tt>Key</tt> as the
+function call argument type, the <tt>DefaultConstructible</tt> requirements
+(33), the <tt>CopyAssignable</tt> requirements (37),
+</li>
+<li>
+be swappable (20.2.2) for lvalues,
+</li>
+<li>
+provide two nested types <tt>result_type</tt> and <tt>argument_type</tt> which
+shall be synonyms for <tt>size_t</tt> and <tt>Key</tt>, respectively,
+</li>
+<li>
+satisfy the requirement that if <tt>k1 == k2</tt> is true, <tt>h(k1) ==
+h(k2)</tt> is also true, where <tt>h</tt> is an object of type
+<tt>hash&lt;Key&gt;</tt> and <tt>k1</tt> and <tt>k2</tt> are objects of type
+<tt>Key</tt><ins>,</ins><del>.</del>
+</li>
+<li>
+<ins>satisfy the requirement that the expression <tt>h(k)</tt>, where <tt>h</tt>
+is an object of type <tt>hash&lt;Key&gt;</tt> and <tt>k</tt> is an object of
+type <tt>Key</tt>, shall not throw an expression, unless
+<tt>hash&lt;Key&gt;</tt> is a user-defined specialization that depends on at
+least one user-defined type.</ins>
+</li>
+</ul>
+</blockquote>
+</li>
+</ol>
+
+</resolution>
+
+</issue>

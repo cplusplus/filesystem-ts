@@ -1,0 +1,100 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="1078" status="NAD Concepts">
+<title>DE-17: Remove class type_index</title>
+<section><sref ref="[type.index]"/></section>
+<submitter>Doug Gregor</submitter>
+<date>20 Mar 2009</date>
+
+<discussion>
+
+<p><b>Addresses DE 17</b></p>
+
+<p>
+DE-17: 
+</p>
+<p>
+The class <tt>type_index</tt> should be removed; it provides no additional
+functionality beyond providing appropriate concept maps.
+</p>
+
+<note>
+2009-03-31 Peter adds:
+</note>
+
+<blockquote>
+<p>
+It is not true, in principle, that <tt>std::type_index</tt> provides no  utility
+compared to bare <tt>std::type_info*</tt>.
+</p>
+<p>
+<tt>std::type_index</tt> can avoid the lifetime issues with <tt>type_info</tt> when  the
+DLL that has produced the <tt>type_info</tt> object is unloaded. A raw
+<tt>type_info*</tt> does not, and cannot, provide any protection in this  case.
+A <tt>type_index</tt> can (if the implementor so chooses) because it  can wrap a
+smart (counted or even cloning) pointer to the <tt>type_info</tt>  data that is
+needed for <tt>name()</tt> and <tt>before()</tt> to work.
+</p>
+</blockquote>
+
+</discussion>
+
+<resolution>
+<p>Modify the header &lt;typeinfo&gt; synopsis in 
+  <sref ref="[support.rtti]"/>p1 as follows:</p>
+
+<blockquote><pre>
+namespace std { 
+  class type_info; 
+  <del>class type_index;</del>
+  template &lt;class T&gt; struct hash;
+  template&lt;&gt; struct hash&lt;<del>type_index</del><ins>const type_info *</ins>&gt; : public std::unary_function&lt;<del>type_index</del><ins>const type_info *</ins>, size_t&gt; {
+    size_t operator()(<del>type_index</del><ins>const type_info *</ins> <del>index</del><ins>t</ins>) const;
+  }<ins>;</ins>
+  <ins>concept_map LessThanComparable&lt;const type_info *&gt; <i>see below</i></ins>
+  class bad_cast; 
+  class bad_typeid;
+}
+</pre></blockquote>
+
+<p>Add the following new subsection</p>
+<blockquote>
+<p>
+<ins>18.7.1.1 Template specialization <code>hash&lt;const type_info *&gt;</code>
+[type.info.hash]</ins></p>
+
+<pre>
+<ins>size_t operator()(const type_info *x) const;</ins>
+</pre>
+<ol>
+<li><ins><i>Returns</i>: <code>x-&gt;hash_code()</code></ins></li>
+</ol>
+</blockquote>
+
+ <p>Add the following new subsection</p>
+ <blockquote>
+<p><ins>18.7.1.2 <code>type_info</code> concept map [type.info.concepts]</ins></p>
+
+
+<pre>
+<ins>concept_map LessThanComparable&lt;const type_info *&gt; {</ins>
+  <ins>bool operator&lt;(const type_info *x, const type_info *y) { return x-&gt;before(*y); }</ins>
+  <ins>bool operator&lt;=(const type_info *x, const type_info *y) { return !y-&gt;before(*x); }</ins>
+  <ins>bool operator&gt;(const type_info *x, const type_info *y) { return y-&gt;before(*x); }</ins>
+  <ins>bool operator&gt;=(const type_info *x, const type_info *y) { return !x-&gt;before(*y); }</ins>
+<ins>}</ins>
+</pre>
+<ol>
+  <li><ins><i>Note</i>: provides a well-defined ordering among
+  <code>type_info const</code> pointers, which makes such pointers
+  usable in associative containers (23.4).</ins></li>
+</ol>
+</blockquote>
+
+<p>Remove section <sref ref="[type.index]"/></p>
+</resolution>
+
+</issue>

@@ -1,0 +1,107 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="184" status="CD1">
+<title>numeric_limits&lt;bool&gt; wording problems</title>
+<section><sref ref="[numeric.special]"/></section>
+<submitter>Gabriel Dos Reis</submitter>
+<date>21 Jul 1999</date>
+
+<discussion>
+<p>bools are defined by the standard to be of integer types, as per
+<sref ref="[basic.fundamental]"/> paragraph 7.  However &quot;integer types&quot;
+seems to have a special meaning for the author of 18.2. The net effect
+is an unclear and confusing specification for
+numeric_limits&lt;bool&gt; as evidenced below.</p>
+
+<p>18.2.1.2/7 says numeric_limits&lt;&gt;::digits is, for built-in integer
+types, the number of non-sign bits in the representation.</p>
+
+<p>4.5/4 states that a bool promotes to int ; whereas 4.12/1 says any non zero
+arithmetical value converts to true.</p>
+
+<p>I don't think it makes sense at all to require
+numeric_limits&lt;bool&gt;::digits and numeric_limits&lt;bool&gt;::digits10 to
+be meaningful.</p>
+
+<p>The standard defines what constitutes a signed (resp. unsigned) integer
+types. It doesn't categorize bool as being signed or unsigned. And the set of
+values of bool type has only two elements.</p>
+
+<p>I don't think it makes sense to require numeric_limits&lt;bool&gt;::is_signed
+to be meaningful.</p>
+
+<p>18.2.1.2/18 for numeric_limits&lt;integer_type&gt;::radix&nbsp; says:</p>
+<blockquote>
+  <p>For integer types, specifies the base of the representation.186)</p>
+</blockquote>
+
+<p>This disposition is at best misleading and confusing for the standard
+requires a &quot;pure binary numeration system&quot; for integer types as per
+3.9.1/7</p>
+
+<p>The footnote 186) says: &quot;Distinguishes types with base other than 2 (e.g
+BCD).&quot;&nbsp; This also erroneous as the standard never defines any integer
+types with base representation other than 2.</p>
+
+<p>Furthermore, numeric_limits&lt;bool&gt;::is_modulo and
+numeric_limits&lt;bool&gt;::is_signed have similar problems.</p>
+</discussion>
+
+<resolution>
+<p>Append to the end of <sref ref="[numeric.special]"/>:</p>
+<blockquote>
+  <p>The specialization for bool shall be provided as follows:</p>
+  <pre>    namespace std {
+       template&lt;&gt; class numeric_limits&lt;bool&gt; {
+       public:
+         static const bool is_specialized = true;
+         static bool min() throw() { return false; }
+         static bool max() throw() { return true; }
+
+         static const int  digits = 1;
+         static const int  digits10 = 0;
+         static const bool is_signed = false;
+         static const bool is_integer = true;
+         static const bool is_exact = true;
+         static const int  radix = 2;
+         static bool epsilon() throw() { return 0; }
+         static bool round_error() throw() { return 0; }
+
+         static const int  min_exponent = 0;
+         static const int  min_exponent10 = 0;
+         static const int  max_exponent = 0;
+         static const int  max_exponent10 = 0;
+
+         static const bool has_infinity = false;
+         static const bool has_quiet_NaN = false;
+         static const bool has_signaling_NaN = false;
+         static const float_denorm_style has_denorm = denorm_absent;
+         static const bool has_denorm_loss = false;
+         static bool infinity() throw() { return 0; }
+         static bool quiet_NaN() throw() { return 0; }
+         static bool signaling_NaN() throw() { return 0; }
+         static bool denorm_min() throw() { return 0; }
+
+         static const bool is_iec559 = false;
+         static const bool is_bounded = true;
+         static const bool is_modulo = false;
+
+         static const bool traps = false;
+         static const bool tinyness_before = false;
+         static const float_round_style round_style = round_toward_zero;
+       };
+     }</pre>
+</blockquote>
+
+<note>Tokyo:&nbsp; The LWG desires wording that specifies exact values
+rather than more general wording in the original proposed
+resolution.</note>
+
+<note>Post-Tokyo:&nbsp; At the request of the LWG in Tokyo, Nico
+Josuttis provided the above wording.</note>
+</resolution>
+
+</issue>

@@ -1,0 +1,132 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="585" status="NAD">
+    <title>facet error reporting</title>
+    <section><sref ref="[locale.categories]"/></section>
+    <submitter>Martin Sebor, Paolo Carlini</submitter>
+    <date>22 Jun 2006</date>
+
+    <discussion>
+        <p>
+
+Section  22.2, paragraph 2  requires facet  <code>get()</code> members
+that    take    an    <code>ios_base::iostate&amp;</code>    argument,
+<code><i>err</i></code>,  to   ignore  the  (initial)   value  of  the
+argument, but to set it to <code>ios_base::failbit</code> in case of a
+parse error.
+
+        </p>
+        <p>
+
+We  believe  there  are  a   few  minor  problems  with  this  blanket
+requirement  in   conjunction  with   the  wording  specific   to  each
+<code>get()</code> member function.
+
+        </p>
+        <p>
+
+First,  besides <code>get()</code>  there are  other  member functions
+with     a      slightly     different     name      (for     example,
+<code>get_date()</code>). It's not completely clear that the intent of
+the  paragraph  is  to  include  those  as  well,  and  at  least  one
+implementation has interpreted the requirement literally.
+
+        </p>
+        <p>
+
+Second,    the     requirement    to    "set     the    argument    to
+<code>ios_base::failbit</code>  suggests that  the  functions are  not
+permitted    to   set    it   to    any   other    value    (such   as
+<code>ios_base::eofbit</code>,   or   even  <code>ios_base::eofbit   |
+ios_base::failbit</code>).
+
+        </p>
+        <p>
+
+However, 22.2.2.1.2, p5 (Stage  3 of <code>num_get</code> parsing) and
+p6 (<code>bool</code> parsing)  specifies that the <code>do_get</code>
+functions  perform <code><i>err</i> |=  ios_base::eofbit</code>, which
+contradicts  the earlier  requirement to  ignore  <i>err</i>'s initial
+value.
+
+        </p>
+        <p>
+
+22.2.6.1.2,  p1  (the  Effects  clause of  the  <code>money_get</code>
+facet's  <code>do_get</code>  member  functions) also  specifies  that
+<code><i>err</i></code>'s initial  value be used to  compute the final
+value  by  ORing  it  with  either  <code>ios_base::failbit</code>  or
+with<code>ios_base::eofbit | ios_base::failbit</code>.
+
+        </p>
+
+<note>
+2009-07 Frankfurt
+</note>
+
+<blockquote>
+Move to NAD.
+</blockquote>
+
+    </discussion>
+
+    <resolution>
+        <p>
+
+We believe the  intent is for all facet member  functions that take an
+<code>ios_base::iostate&amp;</code> argument to:
+
+        </p>
+            <ul>
+                <li>
+
+ignore the initial value of the <code><i>err</i></code> argument,
+
+                </li>
+                <li>
+
+reset <code><i>err</i></code>  to <code>ios_base::goodbit</code> prior
+to any further processing,
+
+                </li>
+                <li>
+
+and       set      either       <code>ios_base::eofbit</code>,      or
+<code>ios_base::failbit</code>, or both in <code><i>err</i></code>, as
+appropriate,  in response  to  reaching the  end-of-file  or on  parse
+error, or both.
+
+                </li>
+            </ul>
+        <p>
+
+To that effect we propose to change 22.2, p2 as follows:
+
+        </p>
+        <p>
+
+The  <i>put</i><del>()</del>  members  make  no  provision  for  error
+reporting.   (Any  failures of  the  OutputIterator  argument must  be
+extracted   from  the   returned  iterator.)    <ins>Unless  otherwise
+specified, </ins>the <i>get</i><del>()</del>  members  <ins>that</ins>
+take an  <code>ios_base::iostate&amp;</code> argument <del>whose value
+they  ignore,  but  set  to  ios_base::failbit  in  case  of  a  parse
+error.</del><ins>,   <code><i>err</i></code>,   start  by   evaluating
+<code>err  =   ios_base::goodbit</code>,  and  may   subsequently  set
+<i>err</i>     to     either     <code>ios_base::eofbit</code>,     or
+<code>ios_base::failbit</code>,     or     <code>ios_base::eofbit    |
+ios_base::failbit</code> in response to reaching the end-of-file or in
+case of a parse error, or both, respectively.</ins>
+
+        </p>
+    </resolution>
+    
+<note>
+Kona (2007): We need to change the proposed wording to clarify that the
+phrase "the get members" actually denotes <tt>get()</tt>, <tt>get_date()</tt>, etc.
+Proposed Disposition: Open
+</note>
+</issue>

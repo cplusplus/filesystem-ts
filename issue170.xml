@@ -1,0 +1,29 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="170" status="TC1">
+<title>Inconsistent definition of <tt>traits_type</tt></title>
+<section><sref ref="[stringstream]"/></section>
+<submitter>Dietmar K&uuml;hl</submitter> 
+<date>20 Jul 1999</date>
+
+<discussion>
+<p>The classes <tt>basic_stringstream</tt> (<sref ref="[stringstream]"/>),
+<tt>basic_istringstream</tt> (<sref ref="[istringstream]"/>), and
+<tt>basic_ostringstream</tt> (<sref ref="[ostringstream]"/>) are inconsistent
+in their definition of the type <tt>traits_type</tt>: For
+<tt>istringstream</tt>, this type is defined, for the other two it is
+not. This should be consistent.</p>
+</discussion>
+
+<resolution>
+<p><b>Proposed resolution:</b></p> <p>To the declarations of
+<tt>basic_ostringstream</tt> (<sref ref="[ostringstream]"/>) and
+<tt>basic_stringstream</tt> (<sref ref="[stringstream]"/>) add:</p>
+<blockquote>
+<pre>typedef traits traits_type;</pre>
+</blockquote>
+</resolution>
+</issue>

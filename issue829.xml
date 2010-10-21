@@ -1,0 +1,98 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="829" status="CD1">
+<title>current_exception wording unclear about exception type</title>
+<section><sref ref="[propagation]"/></section>
+<submitter>Beman Dawes</submitter>
+<date>20 Apr 2008</date>
+
+<discussion>
+<p>Consider this code:</p>
+
+<blockquote>
+<pre>exception_ptr xp;</pre>
+<pre>try {do_something(); }
+
+catch (const runtime_error&amp; ) {xp = current_exception();}
+
+...
+
+rethrow_exception(xp);</pre>
+</blockquote>
+
+<p>
+Say <code>do_something()</code> throws an exception object of type <code>
+range_error</code>. What is the type of the exception object thrown by <code>
+rethrow_exception(xp)</code> above? It must have a type of <code>range_error</code>; 
+if it were of type <code>runtime_error</code> it still isn't possible to 
+propagate an exception and the exception_ptr/current_exception/rethrow_exception 
+machinery serves no useful purpose.
+</p>
+
+<p>
+Unfortunately, the current wording does not explicitly say that. Different 
+people read the current wording and come to different conclusions. While it may 
+be possible to deduce the correct type from the current wording, it would be 
+much clearer to come right out and explicitly say what the type of the referred 
+to exception is.
+</p>
+
+<note>
+Peter adds:
+</note>
+
+<blockquote>
+<p>
+I don't like the proposed resolution of 829. The normative text is
+unambiguous that the <tt>exception_ptr</tt> refers to the <em>currently handled
+exception</em>. This term has a standard meaning, see <sref ref="[except.handle]"/>/8; this is the
+exception that <tt>throw;</tt> would rethrow, see <sref ref="[except.throw]"/>/7.
+</p>
+<p>
+A better way to address this is to simply add the non-normative example
+in question as a clarification. The term <i>currently handled exception</i>
+should be italicized and cross-referenced. A [<i>Note:</i> the currently
+handled exception is the exception that a throw expression without an
+operand (<sref ref="[except.throw]"/>/7) would rethrow. <i>--end note</i>] is also an option.
+</p>
+</blockquote>
+
+</discussion>
+
+<resolution>
+
+<p>
+After <sref ref="[propagation]"/> , paragraph 7, add the indicated text:
+</p>
+
+<blockquote>
+<pre>exception_ptr current_exception();</pre>
+
+<blockquote>
+<p>
+<i>Returns:</i> <code>exception_ptr</code> object that refers 
+to the currently handled exception <ins>(<sref ref="[except.handle]"/>)</ins> or a copy of the currently handled 
+exception, or a null <code>exception_ptr</code> object if no exception is being handled. If 
+the function needs to allocate memory and the attempt fails, it returns an
+<code>exception_ptr</code> object that refers to an instance of <code>bad_alloc</code>. 
+It is unspecified whether the return values of two successive calls to
+<code>current_exception</code> refer to the same exception object. 
+[<i>Note:</i> that is, it 
+is unspecified whether <code>current_exception</code>
+creates a new copy each time it is called.
+<i>-- end note</i>]
+</p>
+
+<p>
+<i>Throws:</i> nothing.
+</p>
+
+</blockquote>
+</blockquote>
+
+</resolution>
+
+</issue>

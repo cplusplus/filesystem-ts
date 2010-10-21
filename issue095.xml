@@ -1,0 +1,43 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="95" status="NAD">
+<title>Members added by the implementation</title>
+<section><sref ref="[member.functions]"/></section>
+<submitter>AFNOR</submitter>
+<date>7 Oct 1998</date>
+
+<discussion>
+<p>In 17.3.4.4/2 vs 17.3.4.7/0 there is a hole; an implementation could add virtual
+members a base class and break user derived classes.</p>
+
+<p>Example: </p>
+
+<blockquote>
+  <pre>// implementation code:
+struct _Base { // _Base is in the implementer namespace
+        virtual void foo ();
+};
+class vector : _Base // deriving from a class is allowed
+{ ... };
+
+// user code:
+class vector_checking : public vector 
+{
+        void foo (); // don't want to override _Base::foo () as the 
+                     // user doesn't know about _Base::foo ()
+};</pre>
+</blockquote>
+</discussion>
+
+<resolution>
+<p>Clarify the wording to make the example illegal.</p>
+</resolution>
+
+<rationale>
+<p>This is not a defect in the Standard.&nbsp; The example is already
+illegal.&nbsp; See <sref ref="[member.functions]"/> paragraph 2.</p>
+</rationale>
+</issue>

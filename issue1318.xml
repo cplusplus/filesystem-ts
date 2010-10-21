@@ -1,0 +1,268 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="1318" status="New">
+<title>N2982 removes previous allocator capabilities</title>
+<section><sref ref="[allocator.traits.types]"/></section>
+<submitter>Pete Becker</submitter>
+<date>11 Feb 2010</date>
+
+<discussion>
+<p>
+<a
+href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2009/n2982.pdf">N2982</a>
+says that containers should have a nested typedef that defines their
+<tt>reference_type</tt> as <tt>value_type&amp;</tt>; the previous
+standard deferred to the allocator to define its
+<tt>reference_type</tt>, and containers simply passed the allocator's
+typedef on. This change is a mistake. Allocators should define both a
+<tt>pointer</tt> type and a <tt>reference</tt> type. That's essential
+for their original purpose, which was to make different memory models
+transparent. If an allocator defines a <tt>pointer</tt> type that isn't
+compatible with a normal pointer it also has to define a corresponding
+<tt>reference</tt> type. For example (and please forgive a Windows-ism),
+if an allocator's pointer is <tt>T __far*</tt>, then it's
+<tt>reference</tt> has to be <tt>T __far&amp;</tt>. Otherwise everything
+crashes (under the hood, references are pointers and have to have the
+same memory access mechanics). Extensions such as this for more general
+memory models were explicitly encouraged by C++03, and the allocator's
+<tt>pointer</tt> and <tt>reference</tt> typedefs were the hooks for such
+extensions. Removing the allocator's <tt>reference</tt> and
+<tt>const_reference</tt> typedefs makes those extensions unimplementable
+and breaks existing implementations that rely on those hooks.
+</p>
+
+<note>
+2010-02-25 Alisdair adds:
+</note>
+
+<blockquote>
+<p>
+<tt>vector&lt;bool&gt;::reference</tt> is a nested class, and not a typedef.  It
+should be removed from the list of containers when this change is made.
+</p>
+
+<p>
+In general, I am unfcomfortable placing this reference requirement on each
+container, as I would prefer to require:
+</p>
+
+<blockquote><pre>
+is_same&lt;Container::reference, Container::iterator::reference&gt;
+</pre></blockquote>
+
+<p>
+This distinction is important, if we intend to support proxy iterators.  The
+iterator paper in the pre-Pittsburgh mailing
+(<a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2010/n3046.html">N3046</a>)
+does <em>not</em> make this proposal, but organises clause 24 in such a way this
+will be much easier to specify.
+</p>
+
+<p>
+The changes to clause 20 remain important for all the reasons Pete highlights.
+</p>
+</blockquote>
+
+</discussion>
+
+<resolution>
+<ol>
+<li>
+<p>
+Add the following two rows to Table 40, Allocator requirements:
+</p>
+
+<blockquote>
+<table border="1">
+<caption>Table 40 &mdash; Allocator requirements</caption>
+<tr>
+<th>
+Expression
+</th>
+
+<th>
+Return type
+</th>
+
+<th>
+Assertion/note<br/>pre-/post-condition
+</th>
+
+<th>
+Default
+</th>
+
+</tr>
+
+<tr>
+<td><ins><tt>X::reference</tt></ins></td>
+
+<td><tt></tt></td>
+
+<td><tt></tt></td>
+
+<td><ins><tt>T&amp;</tt></ins></td>
+</tr>
+
+<tr>
+<td><ins><tt>X::const_reference</tt></ins></td>
+
+<td><tt></tt></td>
+
+<td><tt></tt></td>
+
+<td><ins><tt>const T&amp;</tt></ins></td>
+</tr>
+
+</table>
+</blockquote>
+
+</li>
+
+<li>
+<p>
+2. Change the following two rows in Table 40:
+</p>
+
+<blockquote>
+<table border="1">
+<caption>Table 40 &mdash; Allocator requirements</caption>
+<tr>
+<th>
+Expression
+</th>
+
+<th>
+Return type
+</th>
+
+<th>
+Assertion/note<br/>pre-/post-condition
+</th>
+
+<th>
+Default
+</th>
+
+</tr>
+
+<tr>
+<td><ins><tt>*p</tt></ins></td>
+
+<td><tt><del>T&amp;</del> <ins>X::reference</ins></tt></td>
+
+<td><tt></tt></td>
+
+<td></td>
+</tr>
+
+<tr>
+<td><ins><tt>*q</tt></ins></td>
+
+<td><tt><del>const T&amp;</del> <ins>X::const_reference</ins></tt></td>
+
+<td><tt></tt></td>
+
+<td></td>
+</tr>
+
+</table>
+</blockquote>
+
+</li>
+
+<li>
+<p>
+Add the following typedef declarations to allocator_traits <sref
+ref="[allocator.traits]"/>:
+</p>
+
+<blockquote><pre>
+template &lt;class Alloc&gt; struct allocator_traits {
+  ...
+  <ins>typedef <i>see below</i> reference;</ins>
+  <ins>typedef <i>see below</i> const_reference;</ins>
+  ...
+</pre></blockquote>
+</li>
+
+<li>
+<p>
+Add the following descriptions to <sref ref="[allocator.traits.types]"/>:
+</p>
+
+<blockquote>
+<pre>typedef see below reference;</pre>
+<blockquote>
+<i>Type:</i> <tt>Alloc::reference</tt> if such a type exists; otherwise,
+<tt>value_type&amp;</tt>.
+</blockquote>
+
+<pre>typedef see below const reference;</pre>
+<blockquote>
+<i>Type:</i> <tt>Alloc::const_reference</tt> if such a type exists; otherwise,
+<tt>const value_type&amp;</tt>.
+</blockquote>
+</blockquote>
+</li>
+
+<li>
+<p>
+Add the following typdef declarations to scoped_allocator_adaptor <sref
+ref="[allocator.adaptor]"/>:
+</p>
+
+<blockquote><pre>
+template &lt;class OuterAlloc, class... InnerAllocs&gt;
+class scoped_allocator_adaptor : public OuterAlloc {
+  ...
+  <ins>typedef typename OuterTraits::reference reference;</ins>
+  <ins>typedef typename OuterTraits::const_reference const_reference;</ins>
+  ...
+</pre></blockquote>
+</li>
+
+<li>
+<p>
+Change the nested typedefs reference and
+const_reference to:
+</p>
+
+<blockquote><pre>
+typedef typename allocator_traits&lt;Allocator&gt;::reference reference;
+typedef typename allocator_traits&lt;Allocator&gt;::const_reference const_reference;
+</pre></blockquote>
+
+<p>
+for each of the following class templates:
+</p>
+
+<blockquote>
+<tt>deque</tt> <sref ref="[deque]"/><br/>
+<tt>forward_list</tt> <sref ref="[forwardlist]"/><br/>
+<tt>list</tt> <sref ref="[list]"/><br/>
+<tt>queue</tt> <sref ref="[queue.defn]"/><br/>
+<tt>priority_queue</tt> <sref ref="[priority.queue]"/><br/>
+<tt>stack</tt> <sref ref="[stack.defn]"/><br/>
+<tt>vector</tt> <sref ref="[vector]"/><br/>
+<tt>vector&lt;bool&gt;</tt> <sref ref="[vector.bool]"/><br/>
+<tt>map</tt> <sref ref="[map]"/><br/>
+<tt>multimap</tt> <sref ref="[multimap]"/><br/>
+<tt>set</tt> <sref ref="[set]"/><br/>
+<tt>multiset</tt> <sref ref="[multiset]"/><br/>
+<tt>unordered_map</tt> <sref ref="[unord.map]"/><br/>
+<tt>unordered_multimap</tt> <sref ref="[unord.multimap]"/><br/>
+<tt>unordered_set</tt> <sref ref="[unord.set]"/><br/>
+<tt>unordered_multiset</tt> <sref ref="[unord.multiset]"/><br/>
+<tt>basic_string</tt> <sref ref="[basic.string]"/><br/>
+<tt>match_results</tt> <sref ref="[re.results]"/>
+</blockquote>
+</li>
+
+</ol>
+</resolution>
+
+</issue>

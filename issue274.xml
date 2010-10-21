@@ -1,0 +1,72 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="274" status="CD1">
+<title>a missing/impossible allocator requirement</title>
+<section><sref ref="[allocator.requirements]"/></section>
+<submitter>Martin Sebor</submitter>
+<date>02 Nov 2000</date>
+
+<discussion>
+<p>
+I see that table 31 in 20.1.5, p3 allows T in std::allocator&lt;T&gt; to be of
+any type. But the synopsis in 20.4.1 calls for allocator&lt;&gt;::address() to
+be overloaded on reference and const_reference, which is ill-formed for
+all T = const U. In other words, this won't work:
+</p>
+
+<p>
+template class std::allocator&lt;const int&gt;;
+</p>
+
+<p>
+The obvious solution is to disallow specializations of allocators on
+const types. However, while containers' elements are required to be
+assignable (which rules out specializations on const T's), I think that
+allocators might perhaps be potentially useful for const values in other
+contexts. So if allocators are to allow const types a partial
+specialization of std::allocator&lt;const T&gt; would probably have to be
+provided.
+</p>
+</discussion>
+
+<resolution>
+<p>Change the text in row 1, column 2 of table 32 in 20.1.5, p3 from</p>
+
+    <blockquote><p>
+    any type
+    </p></blockquote>
+
+<p>to</p>
+    <blockquote><p>
+    any non-const, non-reference type
+    </p></blockquote>
+
+<note>Redmond: previous proposed resolution was "any non-const,
+non-volatile, non-reference type".  Got rid of the "non-volatile".</note>
+
+</resolution>
+
+<rationale>
+<p>
+Two resolutions were originally proposed: one that partially
+specialized std::allocator for const types, and one that said an
+allocator's value type may not be const.  The LWG chose the second.
+The first wouldn't be appropriate, because allocators are intended for
+use by containers, and const value types don't work in containers.
+Encouraging the use of allocators with const value types would only
+lead to unsafe code.
+</p>
+<p>
+The original text for proposed resolution 2 was modified so that it
+also forbids volatile types and reference types.
+</p>
+
+<note>Cura&ccedil;ao: LWG double checked and believes volatile is correctly
+excluded from the PR.</note>
+
+</rationale>
+
+</issue>

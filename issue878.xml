@@ -1,0 +1,84 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="878" status="WP">
+   <title><tt>forward_list</tt> preconditions</title>
+   <section><sref ref="[forwardlist]"/></section>
+   <submitter>Martin Sebor</submitter>
+   <date>23 Aug 2008</date>
+   <discussion>
+       <p>
+
+<tt>forward_list</tt> member functions that take
+a <tt>forward_list::iterator</tt> (denoted <tt>position</tt> in the
+function signatures) argument have the following precondition:
+
+       </p>
+       <blockquote>
+
+<i>Requires:</i> <tt>position</tt> is dereferenceable or equal
+to <tt>before_begin()</tt>.
+
+       </blockquote>
+       <p>
+
+I believe what's actually intended is this:
+
+       </p>
+       <blockquote>
+
+<i>Requires:</i> <tt>position</tt> is in the range
+[<tt>before_begin()</tt>, <tt>end()</tt>).
+
+       </blockquote>
+       <p>
+
+That is, when it's dereferenceable, <tt>position</tt> must point
+into <tt>*this</tt>, not just any <tt>forward_list</tt> object.
+
+       </p>
+
+<note>
+San Francisco:
+</note>
+
+<blockquote>
+Robert suggested alternate proposed wording which had large support.
+</blockquote>
+
+<note>
+Post Summit:
+</note>
+
+<blockquote>
+<p>
+Walter: "position is before_begin() or a dereferenceable": add "is" after the "or"
+</p>
+<p>
+With that minor update, Recommend Tentatively Ready.
+</p>
+</blockquote>
+
+</discussion>
+
+<resolution>
+       <p>
+
+Change the <i>Requires</i> clauses
+<sref ref="[forwardlist] "/>, p21, p24, p26, p29, and,
+<sref ref="[forwardlist.ops]"/>, p39, p43, p47
+as follows:
+
+       </p>
+       <blockquote>
+
+<i>Requires:</i> <tt>position</tt> is <ins><tt>before_begin()</tt> or is a</ins>
+dereferenceable
+<ins>iterator in the range <tt>[begin(), end())</tt></ins>
+<del>or equal to <tt>before_begin()</tt></del>. ...
+
+       </blockquote>
+   </resolution>
+</issue>

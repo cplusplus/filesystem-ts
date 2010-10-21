@@ -1,0 +1,55 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="331" status="CD1">
+<title>bad declaration of destructor for ios_base::failure</title>
+<section><sref ref="[ios::failure]"/></section>
+<submitter>PremAnand M. Rao</submitter>
+<date>23 Aug 2001</date>
+
+<discussion>
+<p>
+With the change in <sref ref="[res.on.exception.handling]"/> to state
+   "An implementation may strengthen the exception-specification for a 
+    non-virtual function by removing listed exceptions."
+(issue <iref ref="119"/>)
+and the following declaration of ~failure() in ios_base::failure
+</p>
+<pre>
+    namespace std {
+       class ios_base::failure : public exception {
+       public:
+           ...
+           virtual ~failure();
+           ...
+       };
+     }
+</pre>
+<p>the class failure cannot be implemented since in <sref ref="[type.info]"/> the destructor of class exception has an empty
+exception specification:</p>
+<pre>
+    namespace std {
+       class exception {
+       public:
+         ...
+         virtual ~exception() throw();
+         ...
+       };
+     }
+</pre>
+</discussion>
+
+<resolution>
+<p>Remove the declaration of ~failure().</p>
+</resolution>
+
+<rationale>
+<p>The proposed resolution is consistent with the way that destructors
+of other classes derived from <tt>exception</tt> are handled.</p>
+</rationale>
+
+
+</issue>
+

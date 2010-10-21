@@ -1,0 +1,71 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg_issue.dtd" [
+  <!ENTITY nbsp " ">
+]>
+
+<issue num="381" status="CD1">
+<title>detection of invalid mbstate_t in codecvt</title>
+<section><sref ref="[locale.codecvt.byname]"/></section>
+<submitter>Martin Sebor</submitter>
+<date>6 Sep 2002</date>
+
+<discussion>
+<p>
+All but one codecvt member functions that take a state_type argument
+list as one of their preconditions that the state_type argument have
+a valid value. However, according to 22.2.1.5.2, p6,
+codecvt::do_unshift() is the only codecvt member that is supposed to
+return error if the state_type object is invalid.
+</p>
+
+<p>
+It seems to me that the treatment of state_type by all codecvt member
+functions should be the same and the current requirements should be
+changed. Since the detection of invalid state_type values may be
+difficult in general or computationally expensive in some specific
+cases, I propose the following:
+</p>
+</discussion>
+
+<resolution>
+<p>
+Add a new paragraph before 22.2.1.5.2, p5, and after the function
+declaration below
+</p>
+<pre>
+    result do_unshift(stateT&amp; state,
+    externT* to, externT* to_limit, externT*&amp; to_next) const;
+</pre>
+<p>
+as follows:
+</p>
+<pre>
+    Requires: (to &lt;= to_end) well defined and true; state initialized,
+    if at the beginning of a sequence, or else equal to the result of
+    converting the preceding characters in the sequence.
+</pre>
+<p>
+and change the text in Table 54, row 4, the <b>error</b> row, under
+the heading Meaning, from
+</p>
+<pre>
+    state has invalid value
+</pre>
+<p>
+to
+</p>
+<pre>
+    an unspecified error has occurred
+</pre>
+</resolution>
+
+<rationale>
+<p>The intent is that implementations should not be required to detect
+invalid state values; such a requirement appears nowhere else.  An
+invalid state value is a precondition violation, <i>i.e.</i> undefined
+behavior.  Implementations that do choose to detect invalid state
+values, or that choose to detect any other kind of error, may return
+<b>error</b> as an indication.</p>
+</rationale>
+
+</issue>

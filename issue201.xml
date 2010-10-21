@@ -1,0 +1,78 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="201" status="CD1">
+<title>Numeric limits terminology wrong</title>
+<section><sref ref="[limits]"/></section>
+<submitter>Stephen Cleary</submitter>
+<date>21 Dec 1999</date>
+
+<discussion>
+<p>
+In some places in this section, the terms "fundamental types" and
+"scalar types" are used when the term "arithmetic types" is intended.
+The current usage is incorrect because void is a fundamental type and
+pointers are scalar types, neither of which should have
+specializations of numeric_limits.
+</p>
+<note>Lillehammer: it remains true that numeric_limits is using
+  imprecise language. However, none of the proposals for changed
+  wording are clearer.  A redesign of numeric_limits is needed, but this
+  is more a task than an open issue.</note>
+</discussion>
+
+<resolution>
+
+<p>
+Change <sref ref="[support.limits]"/> to:
+</p>
+
+<blockquote>
+<p>
+-1- The headers <tt>&lt;limits&gt;</tt>, <tt>&lt;climits&gt;</tt>,
+<tt>&lt;cfloat&gt;</tt>, and <tt>&lt;cinttypes&gt;</tt> supply
+characteristics of implementation-dependent <del>fundamental</del>
+<ins>arithmetic</ins> types (3.9.1).
+</p>
+</blockquote>
+
+<p>
+Change <sref ref="[limits]"/> to:
+</p>
+
+<blockquote>
+<p>
+-1- The <tt>numeric_limits</tt> component provides a C++ program with
+information about various properties of the implementation's
+representation of the <del>fundamental</del> <ins>arithmetic</ins>
+types.
+</p>
+<p>
+-2- Specializations shall be provided for each <del>fundamental</del>
+<ins>arithmetic</ins> type, both floating point and integer, including
+<tt>bool</tt>. The member <tt>is_specialized</tt> shall be <tt>true</tt>
+for all such specializations of <tt>numeric_limits</tt>.
+</p>
+<p>
+-4- Non-<del>fundamental</del><ins>arithmetic</ins> standard types, such
+as <tt>complex&lt;T&gt;</tt> (26.3.2), shall not have specializations.
+</p>
+</blockquote>
+
+<p>
+Change <sref ref="[numeric.limits]"/> to:
+</p>
+
+<blockquote>
+<p>
+<del>-1- The member <tt>is_specialized</tt> makes it possible to distinguish
+between fundamental types, which have specializations, and non-scalar types,
+which do not.</del>
+</p>
+</blockquote>
+
+</resolution>
+
+</issue>

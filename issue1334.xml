@@ -1,0 +1,192 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="1334" status="New">
+<title>Insert iterators are broken for some proxy  containers compared to C++03</title>
+<section><sref ref="[back.insert.iter.op=]"/>, <sref ref="[front.insert.iter.op=]"/>,
+<sref ref="[insert.insert.iter.op=]"/></section>
+<submitter>Daniel Kr&uuml;gler</submitter>
+<date>28 Mar 2010</date>
+
+<discussion>
+<p>
+In C++03 this was valid code:
+</p>
+
+<blockquote><pre>
+#include &lt;vector&gt;
+#include &lt;iterator&gt;
+
+int main() {
+  typedef std::vector&lt;bool&gt; Cont;
+  Cont c;
+  std::back_insert_iterator&lt;Cont&gt; it = std::back_inserter(c);
+  *it = true;
+}
+</pre></blockquote>
+
+<p>
+In C++0x this code does no longer compile because of an ambiguity error for this
+<tt>operator=</tt> overload pair:
+</p>
+
+<blockquote><pre>
+back_insert_iterator&lt;Container&gt;&amp;
+operator=(typename Container::const_reference value);
+
+back_insert_iterator&lt;Container&gt;&amp;
+operator=(typename Container::value_type&amp;&amp; value);
+</pre></blockquote>
+
+<p>
+This is so, because for proxy-containers like <tt>std::vector&lt;bool&gt;</tt>
+the <tt>const_reference</tt> usually is a non-reference type and in this case
+it's identical to <tt>Container::value_type</tt>, thus forming the ambiguous
+overload pair
+</p>
+
+<blockquote><pre>
+back_insert_iterator&lt;Container&gt;&amp;
+operator=(bool value);
+
+back_insert_iterator&lt;Container&gt;&amp;
+operator=(bool&amp;&amp; value);
+</pre></blockquote>
+
+<p>
+The same problem exists for <tt>std::back_insert_iterator</tt>,
+<tt>std::front_insert_iterator</tt>, and <tt>std::insert_iterator</tt>.
+</p>
+
+<p>
+One possible fix would be to require that <tt>const_reference</tt> of a proxy
+container must not be the same as the <tt>value_type</tt>, but this would break
+earlier valid code. The alternative would be to change the first signature to
+</p>
+
+<blockquote><pre>
+back_insert_iterator&lt;Container&gt;&amp;
+operator=(const typename Container::const_reference&amp; value);
+</pre></blockquote>
+
+<p>
+This would have the effect that this signature <em>always</em> expects an lvalue
+or rvalue, but it would not create an ambiguity relative to the second form with
+rvalue-references. [For all non-proxy containers the signature will be the same
+as before due to reference-collapsing and const folding rules]
+</p>
+</discussion>
+
+<resolution>
+<ol>
+
+<li>
+<p>
+Change <sref ref="[back.insert.iterator]"/>, class back_insert_iterator synopsis
+as indicated:
+</p>
+
+<blockquote><pre>
+template &lt;class Container&gt;
+class back_insert_iterator :
+  public iterator&lt;output_iterator_tag,void,void,void,void&gt; {
+protected:
+  Container* container;
+public:
+  [..]
+  back_insert_iterator&lt;Container&gt;&amp;
+    operator=(<ins>const</ins> typename Container::const_reference<ins>&amp;</ins> value);
+  back_insert_iterator&lt;Container&gt;&amp;
+    operator=(typename Container::value_type&amp;&amp; value);
+  [..]
+};
+</pre></blockquote>
+</li>
+
+<li>
+<p>
+Change <sref ref="[back.insert.iter.op=]"/> before p. 1 as indicated:
+</p>
+
+<blockquote><pre>
+back_insert_iterator&lt;Container&gt;&amp;
+  operator=(<ins>const</ins> typename Container::const_reference<ins>&amp;</ins> value);
+</pre></blockquote>
+</li>
+
+<li>
+<p>
+Change <sref ref="[front.insert.iterator]"/>, class front_insert_iterator
+synposis as indicated:
+</p>
+
+<blockquote><pre>
+template &lt;class Container&gt;
+class front_insert_iterator :
+  public iterator&lt;output_iterator_tag,void,void,void,void&gt; {
+protected:
+  Container* container;
+public:
+  [..]
+  front_insert_iterator&lt;Container&gt;&amp;
+    operator=(<ins>const</ins> typename Container::const_reference<ins>&amp;</ins> value);
+  front_insert_iterator&lt;Container&gt;&amp;
+    operator=(typename Container::value_type&amp;&amp; value);
+  [..]
+};
+</pre></blockquote>
+</li>
+
+<li>
+<p>
+Change <sref ref="[front.insert.iter.op=]"/> before p.1 as indicated:
+</p>
+
+<blockquote><pre>
+front_insert_iterator&lt;Container&gt;&amp;
+  operator=(<ins>const</ins> typename Container::const_reference<ins>&amp;</ins> value);
+</pre></blockquote>
+</li>
+
+<li>
+<p>
+Change <sref ref="[insert.iterator]"/>, class insert_iterator synopsis as
+indicated:
+</p>
+
+<blockquote><pre>
+template &lt;class Container&gt;
+class insert_iterator :
+  public iterator&lt;output_iterator_tag,void,void,void,void&gt; {
+protected:
+  Container* container;
+  typename Container::iterator iter;
+public:
+  [..]
+  insert_iterator&lt;Container&gt;&amp;
+    operator=(<ins>const</ins> typename Container::const_reference<ins>&amp;</ins> value);
+  insert_iterator&lt;Container&gt;&amp;
+    operator=(typename Container::value_type&amp;&amp; value);
+  [..]
+};
+</pre></blockquote>
+</li>
+
+<li>
+<p>
+Change <sref ref="[insert.iter.op=]"/> before p. 1 as indicated:
+</p>
+
+<blockquote><pre>
+insert_iterator&lt;Container&gt;&amp;
+  operator=(<ins>const</ins> typename Container::const_reference<ins>&amp;</ins> value);
+</pre></blockquote>
+</li>
+
+</ol>
+
+</resolution>
+
+</issue>

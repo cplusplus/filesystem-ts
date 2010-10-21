@@ -1,0 +1,52 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="1165" status="NAD Editorial">
+<title>Unneeded promise move constructor</title>
+<section><sref ref="[futures.promise]"/></section>
+<submitter>LWG</submitter>
+<date>28 Jun 2009</date>
+
+<discussion>
+
+<p><b>Addresses UK 343</b></p>
+
+<p><b>Description</b></p>
+        <p>The move constructor of a std::promise
+        object does not need to allocate any memory, so the
+        move-construct-with-allocator overload of the constructor
+        is superfluous.</p>
+<p><b>Suggestion</b></p>
+        <p>Remove the
+        constructor with the signature <tt>template &lt;class
+        Allocator&gt; promise(allocator_arg_t, const Allocator&amp;
+        a, promise&amp; rhs);</tt></p>
+<p><b>Notes</b></p>
+<p>Create an issue. Detlef will look into it. Will solicit feedback from Pablo. 
+    Note that &#8220;rhs&#8221; argument should also be an rvalue reference in any case.</p>
+
+<note>
+2009-07 Frankfurt
+</note>
+
+<blockquote>
+Pending a paper from Anthony Williams / Detleff Volleman.
+</blockquote>
+
+<note>
+2009-10 Santa Cruz:
+</note>
+
+<blockquote>
+NAD Editorial.  Solved by
+<a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2009/n2997.html">N2997</a>.
+</blockquote>
+
+</discussion>
+
+<resolution>
+</resolution>
+
+</issue>

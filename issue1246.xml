@@ -1,0 +1,74 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="1246" status="NAD">
+<title><tt>vector::resize()</tt> missing efficiency guarantee</title>
+<section><sref ref="[vector.capacity]"/></section>
+<submitter>David Abrahams</submitter>
+<date>24 Oct 2009</date>
+
+<discussion>
+<p>
+If <tt>v</tt> is a <tt>vector</tt>, I think repeated calls to
+<tt>v.resize( v.size() + 1 )</tt> should be amortized O(1), but it's not
+clear that's true from the text of the standard:
+</p>
+
+<blockquote><pre>
+void resize(size_type sz);
+</pre>
+<blockquote>
+<i>Effects:</i> If <tt>sz &lt; size()</tt>, equivalent to <tt>erase(begin() + sz, end());</tt>. If
+<tt>size() &lt; sz</tt>, appends <tt>sz - size()</tt> default constructed elements to the
+sequence.
+</blockquote>
+</blockquote>
+
+<p>
+Seems to me if we used <tt>push_back</tt> instead of appends, we might be giving
+the guarantee I'd like.  Thoughts?
+</p>
+
+<note>
+2009-11-10 Howard adds:
+</note>
+
+<blockquote>
+Moved to Tentatively NAD after 5 positive votes on c++std-lib.  Rationale added
+below.
+</blockquote>
+
+</discussion>
+
+<resolution>
+<p>
+In <sref ref="[vector.capacity]"/>/10, change
+</p>
+
+<blockquote><pre>
+void resize(size_type sz);
+</pre>
+<blockquote>
+<i>Effects:</i> If <tt>sz &lt; size()</tt>, equivalent to <tt>erase(begin() + sz, end());</tt>. If
+<tt>size() &lt; sz</tt>, <del>appends <tt>sz - size()</tt> default constructed elements to the
+sequence</del>
+<ins>equivalent to <tt>sz - size()</tt> consecutive evaluations of <tt>push_back(T())</tt></ins>.
+</blockquote>
+</blockquote>
+
+</resolution>
+
+<rationale>
+<p>
+The description in terms of <tt>push_back</tt> led some to believe that
+one could expect the exact same growth pattern from both <tt>resize</tt> and
+<tt>push_back</tt> (e.g.) which could lead to sub-optimal implementations.
+Additionally, <sref ref="[vector]"/>, p1 includes a statement that this container
+"supports (amortized) constant time insert and erase operations at the end;",
+therefore addressing the concern of this issue.
+</p>
+</rationale>
+
+</issue>

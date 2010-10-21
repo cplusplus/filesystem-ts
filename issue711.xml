@@ -1,0 +1,169 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="711" status="WP">
+<title>Contradiction in empty <tt>shared_ptr</tt></title>
+<section><sref ref="[util.smartptr.shared.obs]"/></section>
+<submitter>Peter Dimov</submitter>
+<date>24 Aug 2007</date>
+
+<discussion>
+<p>
+A discussion on
+<a href="http://groups.google.com/group/comp.std.c++/browse_frm/thread/8e89dceb35cd7971">comp.std.c++</a>
+has identified a contradiction in the <tt>shared_ptr</tt> specification.
+The note:
+</p>
+
+<blockquote><p>
+[ <i>Note:</i> this constructor allows creation of an empty shared_ptr instance with a non-NULL stored pointer.
+-end note ]
+</p></blockquote>
+
+<p>
+after the aliasing constructor
+</p>
+
+<blockquote><pre>
+template&lt;class Y&gt; shared_ptr(shared_ptr&lt;Y&gt; const&amp; r, T *p);
+</pre></blockquote>
+
+<p>
+reflects the intent of
+<a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2007/n2351.htm">N2351</a>
+to, well, allow the creation of an empty <tt>shared_ptr</tt>
+with a non-NULL stored pointer.
+</p>
+
+<p>
+This is contradicted by the second sentence in the Returns clause of <sref ref="[util.smartptr.shared.obs]"/>:
+</p>
+
+<blockquote>
+<pre>
+T* get() const;
+</pre>
+<blockquote><p>
+<i>Returns:</i> the stored pointer. Returns a null pointer if <tt>*this</tt> is empty.
+</p></blockquote>
+</blockquote>
+
+<note>
+Bellevue:
+</note>
+
+<blockquote>
+<p>
+Adopt option 1 and move to review, not ready.
+</p>
+<p>
+There was a lot of confusion about what an empty <tt>shared_ptr</tt> is (the term
+isn't defined anywhere), and whether we have a good mental model for how
+one behaves. We think it might be possible to deduce what the definition
+should be, but the words just aren't there. We need to open an issue on
+the use of this undefined term. (The resolution of that issue might
+affect the resolution of issue <iref ref="711"/>.)
+</p>
+<p>
+The LWG is getting more uncomfortable with the aliasing proposal (N2351)
+now that we realize some of its implications, and we need to keep an eye
+on it, but there isn't support for removing this feature at this time.
+</p>
+</blockquote>
+
+<note>
+Sophia Antipolis:
+</note>
+
+<blockquote>
+<p>
+We heard from Peter Dimov, who explained his reason for preferring solution 1.
+</p>
+<p>
+Because it doesn't seem to add anything. It simply makes the behavior
+for p = 0 undefined. For programmers who don't create empty pointers
+with p = 0, there is no difference. Those who do insist on creating them
+presumably have a good reason, and it costs nothing for us to define the
+behavior in this case.
+</p>
+<p>
+The aliasing constructor is sharp enough as it is, so "protecting" users
+doesn't make much sense in this particular case.
+</p>
+<p>
+> Do you have a use case for r being empty and r being non-null? 
+</p>
+<p>
+I have received a few requests for it from "performance-conscious"
+people (you should be familiar with this mindset) who don't like the
+overhead of allocating and maintaining a control block when a null
+deleter is used to approximate a raw pointer. It is obviously an "at
+your own risk", low-level feature; essentially a raw pointer behind a
+shared_ptr facade.
+</p>
+<p>
+We could not agree upon a resolution to the issue; some of us thought
+that Peter's description above is supporting an undesirable behavior.
+</p>
+</blockquote>
+
+<note>
+2009-07 Frankfurt:
+</note>
+
+<blockquote>
+<p>
+We favor option 1, move to Ready.
+</p>
+<note>
+Howard:  Option 2 commented out for clarity, and can be brought back.
+</note>
+</blockquote>
+
+</discussion>
+
+<resolution>
+<p>
+In keeping the N2351 spirit and obviously my preference, change <sref ref="[util.smartptr.shared.obs]"/>:
+</p>
+
+<blockquote>
+<pre>
+T* get() const;
+</pre>
+<blockquote><p>
+<i>Returns:</i> the stored pointer. <del>Returns a null pointer if <tt>*this</tt> is empty.</del>
+</p></blockquote>
+</blockquote>
+
+<!-- 
+<p>
+Alternative proposed resolution: (I won't be happy if we do this, but it's possible):
+</p>
+
+<p>
+Change <sref ref="[util.smartptr.shared.const]"/>:
+</p>
+
+<blockquote>
+<pre>
+template&lt;class Y&gt; shared_ptr(shared_ptr&lt;Y&gt; const&amp; r, T *p);
+</pre>
+<blockquote>
+<p>
+<ins><i>Requires:</i> If <tt>r</tt> is empty, <tt>p</tt> shall be <tt>0</tt>.</ins>
+</p>
+<p>
+<del>[ <i>Note:</i> this constructor allows creation of an empty <tt>shared_ptr</tt>
+instance with a non-NULL stored pointer. 
+&mdash; <i>end note</i> ]</del>
+</p>
+</blockquote>
+</blockquote>
+ -->
+
+</resolution>
+
+</issue>

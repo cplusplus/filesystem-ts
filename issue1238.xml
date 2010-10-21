@@ -1,0 +1,140 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="1238" status="NAD Future">
+<title>defining algorithms taking iterator for range</title>
+<section><sref ref="[algorithms]"/></section>
+<submitter>Alisdair Meredith</submitter>
+<date>15 Oct 2009</date>
+
+<discussion>
+<p>
+The library has many algorithms that take a source range represented by
+a pair of iterators, and the start of some second sequence given by a
+single iterator.  Internally, these algorithms will produce undefined
+behaviour if the second 'range' is not as large as the input range, but
+none of the algorithms spell this out in Requires clauses, and there is
+no catch-all wording to cover this in clause 17 or the front matter of
+25.
+</p>
+
+<p>
+There was an attempt to provide such wording in paper
+<a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2009/n2944.pdf">n2944</a>
+but this
+seems incidental to the focus of the paper, and getting the wording of
+this issue right seems substantially more difficult than the simple
+approach taken in that paper.  Such wording will be removed from an
+updated paper, and hopefully tracked via the LWG issues list instead.
+</p>
+
+<p>
+It seems there are several classes of problems here and finding wording
+to solve all in one paragraph could be too much.  I suspect we need
+several overlapping requirements that should cover the desired range of
+behaviours.
+</p>
+
+<p>
+Motivating examples:
+</p>
+
+<p>
+A good initial example is the <tt>swap_ranges</tt> algorithm.  Here there is a
+clear requirement that <tt>first2</tt> refers to the start of a valid range at
+least as long as the range <tt>[first1, last1)</tt>.  <a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2009/n2944.pdf">n2944</a> tries to solve this
+by positing a hypothetical <tt>last2</tt> iterator that is implied by the
+signature, and requires <tt>distance(first2,last2) &lt; distance(first1,last1)</tt>.
+ This mostly works, although I am uncomfortable assuming that <tt>last2</tt> is
+clearly defined and well known without any description of how to obtain
+it (and I have no idea how to write that).
+</p>
+
+<p>
+A second motivating example might be the <tt>copy</tt> algorithm.  Specifically,
+let us image a call like:
+</p>
+
+<blockquote><pre>
+copy(istream_iterator&lt;int&gt;(is),istream_iterator(),ostream_iterator&lt;int&gt;(os));
+</pre></blockquote>
+
+<p>
+In this case, our input iterators are literally simple <tt>InputIterators</tt>,
+and the destination is a simple <tt>OutputIterator</tt>.  In neither case am I
+happy referring to <tt>std::distance</tt>, in fact it is not possible for the
+<tt>ostream_iterator</tt> at all as it does not meet the requirements.  However,
+any wording we provide must cover both cases.  Perhaps we might deduce
+<tt>last2 == ostream_iterator&lt;int&gt;{}</tt>, but that might not always be valid for
+user-defined iterator types.  I can well imagine an 'infinite range'
+that writes to <tt>/dev/null</tt> and has no meaningful <tt>last2</tt>.
+</p>
+
+<p>
+The motivating example in <a
+href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2009/n2944.pdf"
+>n2944</a> is <tt>std::equal</tt>, and that seems to fall somewhere between the
+two.
+</p>
+
+<p>
+Outlying examples might be <tt>partition_copy</tt> that takes two output
+iterators, and the <tt>_n</tt> algorithms where a range is specified by a
+specific number of iterations, rather than traditional iterator pair. 
+We should also <em>not</em> accidentally apply inappropriate constraints to
+<tt>std::rotate</tt> which takes a third iterator that is not intended to be a
+separate range at all.
+</p>
+
+<p>
+I suspect we want some wording similar to:
+</p>
+
+<blockquote>
+For algorithms that operate on ranges where the end iterator of the
+second range is not specified, the second range shall contain at least
+as many elements as the first.
+</blockquote>
+
+<p>
+I don't think this quite captures the intent yet though.  I am not sure
+if 'range' is the right term here rather than sequence.  More awkwardly,
+I am not convinced we can describe an Output sequence such as produce by
+an <tt>ostream_iterator</tt> as "containing elements", at least not as a
+precondition to the call before they have been written.
+</p>
+
+<p>
+Another idea was to describe require that the trailing iterator support
+at least distance(input range) applications of <tt>operator++</tt> and may be
+written through the same number of times if a mutable/output iterator.
+</p>
+
+<p>
+We might also consider handling the case of an output range vs. an input
+range in separate paragraphs, if that simplifies how we describe some of
+these constraints.
+</p>
+
+<note>
+2009-11-03 Howard adds:
+</note>
+
+<blockquote>
+Moved to Tentatively NAD Future after 5 positive votes on c++std-lib.
+</blockquote>
+</discussion>
+
+<rationale>
+<p>
+Does not have sufficient support at this time. May wish to reconsider for a
+future standard.
+</p>
+</rationale>
+
+<resolution>
+</resolution>
+
+</issue>

@@ -1,0 +1,83 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="575" status="CD1">
+<title>the specification of ~shared_ptr is MT-unfriendly, makes implementation assumptions</title>
+<section><sref ref="[util.smartptr.shared.dest]"/><sref ref="[tr.util.smartptr.shared.dest]"/></section>
+<submitter>Peter Dimov</submitter>
+<date>23 Apr 2006</date>
+
+<discussion>
+<p>
+[tr.util.smartptr.shared.dest] says in its second bullet:
+</p>
+
+<p>
+"If *this shares ownership with another shared_ptr instance (use_count() &gt; 1),
+decrements that instance's use count."
+</p>
+
+<p>
+The problem with this formulation is that it presupposes the existence of an
+"use count" variable that can be decremented and that is part of the state of a
+shared_ptr instance (because of the "that instance's use count".)
+</p>
+
+<p>
+This is contrary to the spirit of the rest of the specification that carefully
+avoids to require an use count variable. Instead, use_count() is specified to
+return a value, a number of instances.
+</p>
+
+<p>
+In multithreaded code, the usual implicit assumption is that a shared variable
+should not be accessed by more than one thread without explicit synchronization,
+and by introducing the concept of an "use count" variable, the current wording
+implies that two shared_ptr instances that share ownership cannot be destroyed
+simultaneously.
+</p>
+
+<p>
+In addition, if we allow the interpretation that an use count variable is part
+of shared_ptr's state, this would lead to other undesirable consequences WRT
+multiple threads. For example,
+</p>
+
+<blockquote><pre>
+p1 = p2;
+</pre></blockquote>
+
+<p>
+would now visibly modify the state of p2, a "write" operation, requiring a lock.
+</p>
+</discussion>
+
+<resolution>
+<p>
+Change the first two bullets of [lib.util.smartptr.shared.dest]/1 to:
+</p>
+
+<blockquote>
+<ul>
+<li>If <tt>*this</tt> is <i>empty</i> <ins>or shares ownership with another
+<tt>shared_ptr</tt> instance (<tt>use_count() &gt; 1</tt>)</ins>, there are no side effects.</li>
+<li><del>If <tt>*this</tt> <i>shares ownership</i> with another <tt>shared_ptr</tt> instance
+(<tt>use_count() &gt; 1</tt>), decrements that instance's use count.</del></li>
+</ul>
+</blockquote>
+
+<p>
+Add the following paragraph after [lib.util.smartptr.shared.dest]/1:
+</p>
+
+<blockquote><p>
+[<i>Note:</i> since the destruction of <tt>*this</tt> decreases the number of instances in
+<tt>*this</tt>'s ownership group by one, all <tt>shared_ptr</tt> instances that share ownership
+with <tt>*this</tt> will report an <tt>use_count()</tt> that is one lower than its previous value
+after <tt>*this</tt> is destroyed. <i>--end note</i>]
+</p></blockquote>
+</resolution>
+
+</issue>

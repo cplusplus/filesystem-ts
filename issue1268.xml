@@ -1,0 +1,430 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="1268" status="Open">
+<title>The Mutex requirements in 30.4.1 and 30.4.2 are wrong</title>
+<section><sref ref="[thread.mutex]"/></section>
+<submitter>Anthony Williams</submitter>
+<date>17 Nov 2009</date>
+
+<discussion>
+<p>
+The <tt>Mutex</tt> requirements in <sref ref="[thread.mutex.requirements]"/> and
+<sref ref="[thread.timedmutex.requirements]"/> confuse the requirements on the
+behaviour of <tt>std::mutex</tt> et al with the requirements on
+<tt>Lockable</tt> types for use with <tt>std::unique_lock</tt>,
+<tt>std::lock_guard</tt> and <tt>std::condition_variable_any</tt>.
+</p>
+
+<note>
+2010 Pittsburgh:
+</note>
+
+<blockquote>
+<p>
+Concepts of threads chapter and issue presentation are: Lockable &lt; Mutex &lt;
+TimedMutex and Lockable &lt; TimedLockable &lt; TimedMutex.
+</p>
+<p>
+Typo in failed deletion of Mutex in 30.4.4 p4 edits.
+</p>
+<p>
+Lockable requirements are too weak for condition_variable_any, but the Mutex
+requirements are too strong.
+</p>
+<p>
+Need subset of Lockable requirements for condition_variable_any that does not
+include try_lock. E.g. CvLockable &lt; Lockable.
+</p>
+<p>
+Text needs updating to recent draft changes.
+</p>
+<p>
+Needs to specify exception behavior in Lockable.
+</p>
+<p>
+The current standard is fine for what it says, but it places requirements that
+are too strong on authors of mutexes and locks.
+</p>
+<p>
+Move to open status. Suggest Anthony look at condition_variable_any
+requirements. Suggest Anthony refine requirements/concepts categories.
+</p>
+<p>
+Related to <iref ref="964"/> and <iref ref="966"/>
+</p>
+</blockquote>
+
+<note>
+2010-03-28 Daniel synced with N3092.
+</note>
+
+</discussion>
+
+<resolution>
+<p>
+Add a new section to <sref ref="[thread.req]"/> after <sref
+ref="[thread.req.timing]"/> as follows:
+</p>
+
+<blockquote>
+<p>
+30.2.5 Requirements for Lockable types
+</p>
+
+<p>
+The standard library templates <tt>unique_lock</tt> (<sref
+ref="[thread.lock.unique]"/>), <tt>lock_guard</tt> (<sref
+ref="[thread.lock.guard]"/>), <tt>lock</tt>, <tt>try_lock</tt> (<sref
+ref="[thread.lock.algorithm]"/>) and <tt>condition_variable_any</tt> (<sref
+ref="[thread.condition.condvarany]"/>) all operate on user-supplied
+<tt>Lockable</tt> objects. Such an object must support the member functions
+specified for either the <tt>Lockable</tt> Requirements or the
+<tt>TimedLockable</tt> requirements as appropriate to acquire or release
+ownership of a <tt>lock</tt> by a given <tt>thread</tt>. [<i>Note:</i> the
+nature of any lock ownership and any synchronization it may entail are not part
+of these requirements. &mdash; <i>end note</i>]
+</p>
+
+<p>
+30.2.5.1  Lockable Requirements
+</p>
+
+<p>
+In order to qualify as a <tt>Lockable</tt> type, the following expressions must
+be supported, with the specified semantics, where <tt>m</tt> denotes a value of
+type <tt>L</tt> that supports the <tt>Lockable</tt>:
+</p>
+
+<p>
+The expression <tt>m.lock()</tt> shall be well-formed and have the following
+semantics:
+</p>
+
+<dl>
+  <dt>Effects:</dt><dd>Block until a lock can be acquired for the current thread.</dd>
+  <dt>Return type:</dt><dd><tt>void</tt></dd>
+</dl>
+
+<p>
+The expression <tt>m.try_lock()</tt> shall be well-formed and have the
+following semantics:
+</p>
+
+<dl>
+  <dt>Effects:</dt><dd>Attempt to acquire a lock for the current thread without blocking.</dd>
+  <dt>Return type:</dt><dd><tt>bool</tt></dd>
+  <dt>Returns:</dt><dd><tt>true</tt> if the lock was
+  acquired, <tt>false</tt> otherwise.</dd>
+</dl>
+
+<p>
+The expression <tt>m.unlock()</tt> shall be well-formed and have the
+following semantics:
+</p>
+
+<dl>
+  <dt>Effects:</dt><dd>Release a lock on <tt>m</tt> held by the current thread.</dd>
+  <dt>Return type:</dt><dd><tt> void</tt></dd>
+  <dt>Throws:</dt><dd> Nothing if the current thread holds a lock on <tt>m</tt>.</dd>
+</dl>
+
+<p>
+30.2.5.2 <tt>TimedLockable</tt> Requirements
+</p>
+
+<p>
+For a type to qualify as <tt>TimedLockable</tt> it must meet the
+<tt>Lockable</tt> requirements, and additionally the following
+expressions must be well-formed, with the specified semantics,
+where <tt>m</tt> is an instance of a type <tt>TL</tt> that supports
+the <tt>TimedLockable</tt> requirements, <tt>rel_time</tt> denotes
+instantiation of <tt>duration</tt> (<sref ref="[time.duration]"/>) and <tt>abs_time</tt>
+denotes an instantiation of <tt>time_point</tt> (<sref ref="[time.point]"/>)
+
+</p>
+
+<p>
+The expression <tt>m.try_lock_for(rel_time)</tt> shall be well-formed and have the
+following semantics:
+</p>
+
+<dl>
+  <dt>Effects:</dt><dd>Attempt to acquire a lock for the current
+  thread within the specified time period.</dd>
+  <dt>Return type:</dt><dd><tt>bool</tt></dd>
+  <dt>Returns:</dt><dd><tt>true</tt> if the lock was
+  acquired, <tt>false</tt> otherwise.</dd>
+</dl>
+
+<p>
+The expression <tt>m.try_lock_until(abs_time)</tt> shall be well-formed and have the
+following semantics:
+</p>
+
+<dl>
+  <dt>Effects:</dt><dd>Attempt to acquire a lock for the current
+  thread before the specified point in time.</dd>
+  <dt>Return type:</dt><dd><tt>bool</tt></dd>
+  <dt>Returns:</dt><dd><tt>true</tt> if the lock was
+  acquired, <tt>false</tt> otherwise.</dd>
+</dl>
+</blockquote>
+
+<p>
+Replace <sref ref="[thread.mutex.requirements]"/> paragraph 2 with the
+following:
+</p>
+
+<blockquote>
+2 This section describes requirements on <del>template argument types
+used to instantiate templates defined in</del> <ins>the mutex types
+supplied by</ins> the C++ standard library. <del>The template
+definitions in the C++ standard library refer</del> These types shall
+conform to the named <tt>Mutex</tt> requirements whose details are set
+out below.  In this description, <tt>m</tt> is an object
+of <del>a <tt>Mutex</tt> type</del>
+<ins>one of the standard library mutex types <tt>std::mutex</tt>,
+<tt>std::recursive_mutex</tt>, <tt>std::timed_mutex</tt> or
+<tt>std::recursive_timed_mutex</tt>.</ins>.
+</blockquote>
+
+<p>
+Add the following paragraph after <sref ref="[thread.mutex.requirements]"/>
+paragraph 2:
+</p>
+
+<blockquote><ins>
+A <tt>Mutex</tt> type shall conform to the <tt>Lockable</tt>
+requirements (30.2.5.1).
+</ins></blockquote>
+
+<p>
+Replace <sref ref="[thread.timedmutex.requirements]"/> paragraph 1 with the
+following:
+</p>
+
+<blockquote>
+<ins>The C++ standard library <tt>TimedMutex</tt> types <tt>std::timed_mutex</tt>
+  and <tt>std::recursive_timed_mutex</tt> </ins>
+<del>A <tt>TimedMutex</tt> type</del> shall meet the requirements for
+a <tt>Mutex</tt> type. In addition, <del>it</del><ins>they</ins> shall
+meet the requirements set out <del>in this Clause 30.4.2</del><ins>below</ins>,
+where <tt>rel_time</tt> denotes an instantiation of <tt>duration</tt>
+(<sref ref="[time.duration]"/>) and <tt>abs_time</tt> denotes an instantiation
+of <tt>time_point</tt> (<sref ref="[time.point]"/>).
+</blockquote>
+
+<p>
+Add the following paragraph after <sref ref="[thread.timedmutex.requirements]"/> paragraph 1:
+</p>
+
+<blockquote><ins>
+A <tt>TimedMutex</tt> type shall conform to the <tt>TimedLockable</tt>
+requirements (30.2.5.1).
+</ins></blockquote>
+
+
+<p>
+Add the following paragraph following <sref ref="[thread.lock.guard]"/>
+paragraph 1:
+</p>
+
+<blockquote><ins>
+The supplied <tt>Mutex</tt> type shall meet the <tt>Lockable</tt> 
+requirements
+(30.2.5.1).
+</ins></blockquote>
+
+<p>
+Add the following paragraph following <sref ref="[thread.lock.unique]"/>
+paragraph 1:
+</p>
+
+<blockquote><ins>
+The supplied <tt>Mutex</tt> type shall meet the <tt>Lockable</tt> 
+requirements
+(30.2.5.1). <tt>unique_lock&lt;Mutex&gt;</tt> meets the <tt>Lockable</tt>
+requirements. If <tt>Mutex</tt> meets the <tt>TimedLockable</tt> 
+requirements
+(30.2.5.2) then <tt>unique_lock&lt;Mutex&gt;</tt> also meets the
+<tt>TimedLockable</tt> requirements.
+</ins></blockquote>
+
+<p>
+Replace the use of "mutex" or "mutex object" with "lockable object"
+throughout clause <sref ref="[thread.lock]"/> paragraph 1:
+</p>
+
+<blockquote>
+1 A lock is an object that holds a reference to
+a <del>mutex</del><ins>lockable object</ins> and may unlock
+the <del>mutex</del><ins>lockable object</ins> during the lock's
+destruction (such as when leaving block scope). A thread of execution
+may use a lock to aid in managing <del>mutex</del> ownership <ins>of a
+lockable object</ins> in an exception safe manner. A lock is said to
+own a <del>mutex</del><ins>lockable object</ins> if it is currently
+managing the ownership of that <del>mutex</del><ins>lockable
+object</ins> for a thread of execution. A lock does not manage the
+lifetime of the <del>mutex</del><ins>lockable object</ins> it
+references.  [ Note: Locks are intended to ease the burden of
+unlocking the <del>mutex</del><ins>lockable object</ins> under both
+normal and exceptional circumstances. &mdash; end note ]
+</blockquote>
+
+<p><sref ref="[thread.lock]"/> paragaph 2:</p>
+
+<blockquote>
+2 Some lock constructors take tag types which describe what should be
+done with the <del>mutex</del><ins>lockable</ins> object during the
+lock's constuction.
+</blockquote>
+
+<p><sref ref="[thread.lock.guard]"/> paragaph 1:</p>
+
+<blockquote>
+1 An object of type <tt>lock_guard</tt> controls the ownership of a
+  <del>mutex</del><ins>lockable</ins> object within a scope. A
+<tt>lock_guard</tt> object maintains ownership of
+a <del>mutex</del><ins>lockable</ins> object throughout
+the <tt>lock_guard</tt> object's lifetime. The behavior of a program
+is undefined if the <del>mutex</del><ins>lockable object</ins>
+referenced by <tt>pm</tt> does not exist for the entire lifetime (3.8)
+of the <tt>lock_guard</tt> object. <ins><tt>Mutex</tt> shall meet
+  the <tt>Lockable</tt> requirements (30.2.5.1).</ins>
+</blockquote>
+
+<p><sref ref="[thread.lock.unique]"/> paragaph 1:</p>
+
+<blockquote>
+1 An object of type <tt>unique_lock</tt> controls the ownership of
+a <del>mutex</del><ins>lockable object</ins> within a
+scope. <Del>Mutex</Del> <del>o</del><ins>O</ins>wnership <Ins>of the
+lockable object</Ins> may be acquired at construction or after
+construction, and may be transferred, after acquisition, to
+another <tt>unique_lock</tt> object. Objects of
+type <tt>unique_lock</tt> are not copyable but are movable. The
+behavior of a program is undefined if the contained
+pointer <tt>pm</tt> is not null and the mutex pointed to
+by <tt>pm</tt> does not exist for the entire remaining lifetime (3.8)
+of the <tt>unique_lock</tt> object. <ins><tt>Mutex</tt> shall meet
+the <tt>Lockable</tt> requirements (30.2.5.1).</ins>
+</blockquote>
+
+
+<p>
+Add the following to the precondition of <tt>unique_lock(mutex_type&amp;
+ m,
+const chrono::time_point&lt;Clock, Duration&gt;&amp; abs_time)</tt> in 
+<sref ref="[thread.lock.unique.cons]"/> paragraph 18:
+</p>
+
+<blockquote><pre>template &lt;class Clock, class Duration&gt;
+  unique_lock(mutex_type&amp; m, const chrono::time_point&lt;Clock, Duration&gt;&amp; abs_time);
+</pre>
+
+<blockquote>
+18 <i>Requires:</i> If <tt>mutex_type</tt> is not a recursive mutex 
+the
+calling thread does not own the mutex. <ins>The supplied <tt>mutex_type</tt>
+type shall meet the <tt>TimedLockable</tt> requirements (30.2.5.2).</ins>
+</blockquote>
+</blockquote>
+
+<p>
+Add the following to the precondition of <tt>unique_lock(mutex_type&amp;
+ m,
+const chrono::duration&lt;Rep, Period&gt;&amp; rel_time)</tt> in 
+<sref ref="[thread.lock.unique.cons]"/>
+paragraph 22
+</p>
+
+<blockquote>
+22  <i>Requires:</i> If <tt>mutex_type</tt> is not a recursive mutex
+ the
+calling thread does not own the mutex. <ins>The supplied <tt>mutex_type</tt>
+type shall meet the <tt>TimedLockable</tt> requirements (30.2.5.2).</ins>
+</blockquote>
+
+<p>
+Add the following as a precondition of <tt>bool try_lock_until(const
+chrono::time_point&lt;Clock, Duration&gt;&amp; abs_time)</tt> before
+<sref ref="[thread.lock.unique.locking]"/> paragraph 8
+</p>
+
+<blockquote><pre>template &lt;class Clock, class Duration&gt;
+  bool try_lock_until(const chrono::time_point&lt;Clock, Duration&gt;&amp; abs_time);
+</pre>
+<blockquote><ins>
+<i>Requires:</i> The supplied <tt>mutex_type</tt> type shall meet the
+<tt>TimedLockable</tt> requirements (30.2.5.2).
+</ins></blockquote>
+</blockquote>
+
+<p>
+Add the following as a precondition of <tt>bool try_lock_for(const
+chrono::duration&lt;Rep, Period&gt;&amp; rel_time)</tt> before 
+<sref ref="[thread.lock.unique.locking]"/> paragraph 12
+</p>
+
+<blockquote><pre>template &lt;class Rep, class Period&gt;
+  bool try_lock_for(const chrono::duration&lt;Rep, Period&gt;&amp; rel_time);
+</pre>
+<blockquote><ins>
+<i>Requires:</i> The supplied <tt>mutex_type</tt> type shall meet the
+<tt>TimedLockable</tt> requirements (30.2.5.2).
+</ins></blockquote>
+</blockquote>
+
+<p>
+Replace <sref ref="[thread.lock.algorithm]"/> p1 with the following:
+</p>
+
+<blockquote><pre>template &lt;class L1, class L2, class... L3&gt; int try_lock(L1&amp;, L2&amp;, L3&amp;...);
+</pre>
+<blockquote>
+1 <i>Requires:</i> Each template parameter type shall meet the
+<tt><del>Mutex</del> <ins>Lockable</ins></tt> requirements
+<ins>(30.2.5.1).</ins><del>, except that a call to <tt>try_lock()</tt> 
+may throw
+an exception.</del> [<i>Note:</i> The <tt>unique_lock</tt> class 
+template meets
+these requirements when suitably instantiated. &mdash; <i>end note</i>]
+</blockquote>
+</blockquote>
+
+<p>
+Replace <sref ref="[thread.lock.algorithm]"/> p4 with the following:
+</p>
+
+<blockquote><pre>template &lt;class L1, class L2, class... L3&gt; void lock(L1&amp;, L2&amp;, L3&amp;...);
+</pre>
+<blockquote>
+4 <i>Requires:</i> Each template parameter type shall meet the
+<tt>Mutex<del>Mutex</del> <ins>Lockable</ins></tt>
+requirements <ins>(30.2.5.1).</ins><del>, except that a call to
+<tt>try_lock()</tt> may throw an exception.</del> [<i>Note:</i> The
+<tt>unique_lock</tt> class template meets these requirements when 
+suitably
+instantiated. &mdash; <i>end note</i>]
+</blockquote>
+</blockquote>
+
+<p>
+Replace <sref ref="[thread.condition.condvarany]"/> paragraph 1 with:
+</p>
+
+<blockquote>
+1 A <tt>Lock</tt> type shall meet the <del>requirements for a <tt>Mutex</tt>
+type</del> <ins><tt>Lockable</tt> requirements (30.2.5.1)</ins>, except 
+that
+<tt>try_lock</tt> is not required. [<i>Note:</i> All of the standard 
+mutex types
+meet this requirement. &mdash; <i>end note</i>]
+</blockquote>
+
+</resolution>
+
+</issue>

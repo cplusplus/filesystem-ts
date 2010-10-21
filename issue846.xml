@@ -1,0 +1,63 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="846" status="CD1">
+<title>No definition for constructor</title>
+<section><sref ref="[atomics.types]"/></section>
+<submitter>Alisdair Meredith</submitter>
+<date>3 Jun 2008</date>
+
+<discussion>
+<p>
+The atomic classes and class templates (<sref ref="[atomics.types.integral]"/> /
+<sref ref="[atomics.types.address]"/>) have a constexpr
+constructor taking a value of the appropriate type for that atomic.
+However, neither clause provides semantics or a definition for this
+constructor.  I'm not sure if the initialization is implied by use of
+constexpr keyword (which restricts the form of a constructor) but even if
+that is the case, I think it is worth spelling out explicitly as the
+inference would be far too subtle in that case.
+</p>
+
+<note>
+San Francisco:
+</note>
+
+<blockquote>
+<p>
+Lawrence will provide wording.
+</p>
+<p>
+This issue is addressed in
+<a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2008/n2783.html">N2783</a>.
+</p>
+</blockquote>
+</discussion>
+
+<resolution>
+
+<p>
+before the description of ...<code>is_lock_free</code>,
+that is before <sref ref="[atomics.types.operations]"/> paragraph 4,
+add the following description.
+</p>
+
+<blockquote>
+<pre><code>
+constexpr <var>A</var>::<var>A</var>(<var>C</var> desired);
+</code></pre>
+<dl>
+<dt><i>Effects:</i></dt>
+<dd>
+Initializes the object with the value <code>desired</code>.
+[<i>Note:</i>
+Construction is not atomic.
+&mdash;<i>end note</i>]
+</dd>
+</dl>
+</blockquote>
+</resolution>
+
+</issue>

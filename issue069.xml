@@ -1,0 +1,51 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="69" status="TC1">
+<title>Must elements of a vector be contiguous?</title>
+
+<section><sref ref="[vector]"/></section>
+<submitter>Andrew Koenig</submitter>
+<date>29 Jul 1998</date>
+
+<discussion>
+<p>The issue is this: Must the elements of a vector be in contiguous memory?</p>
+
+<p>(Please note that this is entirely separate from the question of
+whether a vector iterator is required to be a pointer; the answer to
+that question is clearly &quot;no,&quot; as it would rule out
+debugging implementations)</p>
+</discussion>
+
+<resolution>
+<p>Add the following text to the end of <sref ref="[vector]"/>,
+paragraph 1. </p>
+
+<blockquote>
+  <p>The elements of a vector are stored contiguously, meaning that if
+  v is a <tt>vector&lt;T, Allocator&gt;</tt> where T is some type
+  other than <tt>bool</tt>, then it obeys the identity <tt>&amp;v[n]
+  == &amp;v[0] + n</tt> for all <tt>0 &lt;= n &lt; v.size()</tt>.</p>
+</blockquote>
+</resolution>
+
+<rationale>
+<p>The LWG feels that as a practical matter the answer is clearly
+&quot;yes&quot;.  There was considerable discussion as to the best way
+to express the concept of &quot;contiguous&quot;, which is not
+directly defined in the standard.  Discussion included:</p>
+
+<ul>
+  <li>An operational definition similar to the above proposed resolution is 
+    already used for valarray (<sref ref="[valarray.access]"/>).</li>
+  <li>There is no need to explicitly consider a user-defined operator&amp; 
+    because elements must be copyconstructible (<sref ref="[container.requirements]"/> para 3) 
+    and copyconstructible (<sref ref="[utility.arg.requirements]"/>) specifies
+    requirements for operator&amp;.</li>
+  <li>There is no issue of one-past-the-end because of language rules.</li>
+</ul>
+</rationale>
+
+</issue>

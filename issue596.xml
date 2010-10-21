@@ -1,0 +1,139 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="596" status="CD1">
+<title>27.8.1.3 Table 112 omits "a+" and "a+b" modes</title>
+<section><sref ref="[filebuf.members]"/></section>
+<submitter>Thomas Plum</submitter>
+<date>26 Sep 2006</date>
+
+<discussion>
+<p>
+In testing <sref ref="[filebuf.members]"/>, Table 112 (in the latest N2009 draft), we invoke  
+</p>
+<blockquote><pre>
+   ostr.open("somename", ios_base::out | ios_base::in | ios_base::app)
+</pre></blockquote>
+<p>
+and we expect the open to fail, because out|in|app is not listed in
+Table 92, and just before the table we see very specific words:
+</p>
+<blockquote><p>
+  If mode is not some combination of flags shown in the table 
+  then the open fails.
+</p></blockquote>
+<p>
+But the corresponding table in the C standard, 7.19.5.3, provides two
+modes "a+" and "a+b", to which the C++ modes out|in|app and
+out|in|app|binary would presumably apply.
+</p>
+<p>
+We would like to argue that the intent of Table 112 was to match the
+semantics of 7.19.5.3 and that the omission of "a+" and "a+b" was
+unintentional.  (Otherwise there would be valid and useful behaviors
+available in C file I/O which are unavailable using C++, for no
+valid functional reason.)
+</p>
+<p>
+We further request that the missing modes be explicitly restored to
+the WP, for inclusion in C++0x.
+</p>
+
+<note>
+Martin adds:
+</note>
+
+<p>
+...besides "a+" and "a+b" the C++ table is also missing a row
+for a lone app bit which in at least two current implementation
+as well as in Classic Iostreams corresponds to the C stdio "a"
+mode and has been traditionally documented as implying ios::out.
+Which means the table should also have a row for in|app meaning
+the same thing as "a+" already proposed in the issue.
+</p>
+</discussion>
+
+<resolution>
+<p>
+Add to the table "File open modes" in <sref ref="[filebuf.members]"/>:
+</p>
+
+<blockquote>
+<table border="1">
+<caption> File open modes</caption>
+<tr>
+<th colspan="5"><tt>ios_base</tt> Flag combination</th>
+<th><tt>stdio</tt> equivalent</th>
+</tr>
+<tr>
+<th><tt>binary</tt></th><th><tt>in</tt></th><th><tt>out</tt></th><th><tt>trunc</tt></th><th><tt>app</tt></th><th><tt>&nbsp;</tt></th>
+</tr>
+
+<tr>
+<td>&nbsp;</td> <td>&nbsp;</td> <td><tt>+</tt></td> <td>&nbsp;</td> <td>&nbsp;</td> <td><tt>"w"</tt></td>
+</tr>
+<tr>
+<td>&nbsp;</td> <td>&nbsp;</td> <td><tt>+</tt></td> <td>&nbsp;</td> <td><tt>+</tt></td> <td><tt>"a"</tt></td>
+</tr>
+<tr>
+<td>&nbsp;</td> <td>&nbsp;</td> <td>&nbsp;</td> <td>&nbsp;</td> <td><ins><tt>+</tt></ins></td> <td><ins><tt>"a"</tt></ins></td>
+</tr>
+<tr>
+<td>&nbsp;</td> <td>&nbsp;</td> <td><tt>+</tt></td> <td><tt>+</tt></td> <td>&nbsp;</td> <td><tt>"w"</tt></td>
+</tr>
+<tr>
+<td>&nbsp;</td> <td><tt>+</tt></td> <td>&nbsp;</td> <td>&nbsp;</td> <td>&nbsp;</td> <td><tt>"r"</tt></td>
+</tr>
+<tr>
+<td>&nbsp;</td> <td><tt>+</tt></td> <td><tt>+</tt></td> <td>&nbsp;</td> <td>&nbsp;</td> <td><tt>"r+"</tt></td>
+</tr>
+<tr>
+<td>&nbsp;</td> <td><tt>+</tt></td> <td><tt>+</tt></td> <td><tt>+</tt></td> <td>&nbsp;</td> <td><tt>"w+"</tt></td>
+</tr>
+<tr>
+<td>&nbsp;</td> <td><ins><tt>+</tt></ins></td> <td><ins><tt>+</tt></ins></td> <td>&nbsp;</td> <td><ins><tt>+</tt></ins></td> <td><ins><tt>"a+"</tt></ins></td>
+</tr>
+<tr>
+<td>&nbsp;</td> <td><ins><tt>+</tt></ins></td> <td>&nbsp;</td> <td>&nbsp;</td> <td><ins><tt>+</tt></ins></td> <td><ins><tt>"a+"</tt></ins></td>
+</tr>
+
+<tr>
+<td><tt>+</tt></td> <td>&nbsp;</td> <td><tt>+</tt></td> <td>&nbsp;</td> <td>&nbsp;</td> <td><tt>"wb"</tt></td>
+</tr>
+<tr>
+<td><tt>+</tt></td> <td>&nbsp;</td> <td><tt>+</tt></td> <td>&nbsp;</td> <td><tt>+</tt></td> <td><tt>"ab"</tt></td>
+</tr>
+<tr>
+<td><ins><tt>+</tt></ins></td> <td>&nbsp;</td> <td>&nbsp;</td> <td>&nbsp;</td> <td><ins><tt>+</tt></ins></td> <td><ins><tt>"ab"</tt></ins></td>
+</tr>
+<tr>
+<td><tt>+</tt></td> <td>&nbsp;</td> <td><tt>+</tt></td> <td><tt>+</tt></td> <td>&nbsp;</td> <td><tt>"wb"</tt></td>
+</tr>
+<tr>
+<td><tt>+</tt></td> <td><tt>+</tt></td> <td>&nbsp;</td> <td>&nbsp;</td> <td>&nbsp;</td> <td><tt>"rb"</tt></td>
+</tr>
+<tr>
+<td><tt>+</tt></td> <td><tt>+</tt></td> <td><tt>+</tt></td> <td>&nbsp;</td> <td>&nbsp;</td> <td><tt>"r+b"</tt></td>
+</tr>
+<tr>
+<td><tt>+</tt></td> <td><tt>+</tt></td> <td><tt>+</tt></td> <td><tt>+</tt></td> <td>&nbsp;</td> <td><tt>"w+b"</tt></td>
+<tr>
+<td><ins><tt>+</tt></ins></td> <td><ins><tt>+</tt></ins></td> <td><ins><tt>+</tt></ins></td> <td>&nbsp;</td> <td><ins><tt>+</tt></ins></td> <td><ins><tt>"a+b"</tt></ins></td>
+</tr>
+<tr>
+<td><ins><tt>+</tt></ins></td> <td><ins><tt>+</tt></ins></td> <td>&nbsp;</td> <td>&nbsp;</td> <td><ins><tt>+</tt></ins></td> <td><ins><tt>"a+b"</tt></ins></td>
+</tr>
+
+</tr>
+</table>
+</blockquote>
+
+</resolution>
+
+<note>
+Kona (2007) Added proposed wording and moved to Review.
+</note>
+
+</issue>

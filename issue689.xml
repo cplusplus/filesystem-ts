@@ -1,0 +1,33 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="689" status="CD1">
+<title>reference_wrapper constructor overly constrained</title>
+<section><sref ref="[refwrap.const]"/></section>
+<submitter>Peter Dimov</submitter>
+<date>10 May 2007</date>
+
+<discussion>
+<p>
+The constructor of <tt>reference_wrapper</tt> is currently <tt>explicit</tt>. The primary
+motivation behind this is the safety problem with respect to rvalues,
+which is addressed by the proposed resolution of the previous issue.
+Therefore we should consider relaxing the requirements on the
+constructor since requests for the implicit conversion keep resurfacing.
+</p>
+<p>
+Also please see the thread starting at c++std-lib-17398 for some good discussion on this subject.
+</p>
+</discussion>
+
+<resolution>
+<p>
+Remove the <tt>explicit</tt> from the constructor of <tt>reference_wrapper</tt>. If the
+proposed resolution of the previous issue is accepted, remove the
+<tt>explicit</tt> from the <tt>T&amp;&amp;</tt> constructor as well to keep them in sync.
+</p>
+</resolution>
+
+</issue>

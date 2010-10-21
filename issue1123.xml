@@ -1,0 +1,158 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="1123" status="WP">
+<title>no requirement that standard streams be flushed</title>
+<section><sref ref="[ios::Init]"/></section>
+<submitter>James Kanze</submitter>
+<date>14 May 2009</date>
+
+<discussion>
+<p>
+As currently formulated, the standard doesn't require that there 
+is ever a flush of <tt>cout</tt>, etc.  (This implies, for example, that 
+the classical hello, world program may have no output.)  In the 
+current draft
+(<a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2008/n2798.pdf">N2798</a>),
+there is a requirement that the objects 
+be constructed before <tt>main</tt>, and before the dynamic 
+initialization of any non-local objects defined after the 
+inclusion of <tt>&lt;iostream&gt;</tt> in the same translation unit.  The only 
+requirement that I can find concerning flushing, however, is in 
+<sref ref="[ios::Init]"/>, where the destructor of the last 
+<tt>std::ios_base::Init</tt> object flushes.  But there is, as far as I 
+can see, no guarantee that such an object ever exists. 
+</p>
+<p>
+Also, the wording in <sref ref="[iostreams.objects]"/> says that:
+</p>
+<blockquote>
+The objects 
+are constructed and the associations are established at some 
+time prior to or during the first time an object of class 
+<tt>ios_base::Init</tt> is constructed, and in any case before the body 
+of main begins execution.
+</blockquote>
+<p>
+In <sref ref="[ios::Init]"/>, however, as an 
+effect of the constructor, it says that
+</p>
+<blockquote>
+If <tt>init_cnt</tt> is zero, 
+the function stores the value one in <tt>init_cnt</tt>, then constructs 
+and initializes the objects <tt>cin</tt>, <tt>cout</tt>, <tt>cerr</tt>, <tt>clog</tt> 
+<tt>wcin</tt>, <tt>wcout</tt>, <tt>wcerr</tt>, and <tt>wclog</tt>"
+</blockquote>
+
+<p>
+which seems to forbid earlier 
+construction. 
+</p>
+
+<p>
+(Note that with these changes, the exposition only "<tt>static 
+int init_cnt</tt>" in <tt>ios_base::Init</tt> can be dropped.) 
+</p>
+<p>
+Of course, a determined programmer can still inhibit the 
+flush with things like: 
+</p>
+<blockquote><pre>
+new std::ios_base::Init ;       //  never deleted 
+</pre></blockquote>
+<p>
+or (in a function): 
+</p>
+<blockquote><pre>
+std::ios_base::Init ensureConstruction ; 
+//  ... 
+exit( EXIT_SUCCESS ) ; 
+</pre></blockquote>
+<p>
+Perhaps some words somewhere to the effect that all 
+<tt>std::ios_base::Init</tt> objects should have static lifetime 
+would be in order. 
+</p>
+
+<note>
+2009 Santa Cruz:
+</note>
+
+<blockquote>
+Moved to Ready.  Some editorial changes are expected (in addition to the
+proposed wording) to remove <tt>init_cnt</tt> from <tt>Init</tt>.
+</blockquote>
+
+</discussion>
+
+<resolution>
+<p>
+Change <sref ref="[iostream.objects]"/>/2:
+</p>
+
+<blockquote>
+-2- The objects are constructed and the associations are established at
+some time prior to or during the first time an object of class
+<tt>ios_base::Init</tt> is constructed, and in any case before the body
+of main begins execution.<sup>292</sup> The objects are not destroyed
+during program execution.<sup>293</sup>
+<del>If a translation unit includes
+<tt>&lt;iostream&gt;</tt> or explicitly constructs an
+<tt>ios_base::Init</tt> object, these stream objects shall be
+constructed before dynamic initialization of non-local objects defined
+later in that translation unit.</del>
+<ins>The results of including <tt>&lt;iostream&gt;</tt> in a translation
+unit shall be as if <tt>&lt;iostream&gt;</tt> defined an instance of
+<tt>ios_base::Init</tt> with static lifetime. Similarly, the entire
+program shall behave as if there were at least one instance of
+<tt>ios_base::Init</tt> with static lifetime.</ins>
+</blockquote>
+
+<p>
+Change <sref ref="[ios::Init]"/>/3:
+</p>
+
+<blockquote>
+<pre>
+Init();
+</pre>
+<blockquote>
+-3- <i>Effects:</i> Constructs an object of class <tt>Init</tt>. 
+<del>If <tt>init_cnt</tt> is zero, the function stores the value one in
+<tt>init_cnt</tt>, then constructs and initializes the objects
+<tt>cin</tt>, <tt>cout</tt>, <tt>cerr</tt>, <tt>clog</tt> (27.4.1),
+<tt>wcin</tt>, <tt>wcout</tt>, <tt>wcerr</tt>, and <tt>wclog</tt>
+(27.4.2). In any case, the function then adds one to the value stored in
+<tt>init_cnt</tt>.</del>
+<ins>Constructs and initializes the objects <tt>cin</tt>, <tt>cout</tt>,
+<tt>cerr</tt>, <tt>clog</tt>, <tt>wcin</tt>, <tt>wcout</tt>,
+<tt>wcerr</tt> and <tt>wclog</tt> if they have not already been
+constructed and initialized.</ins>
+</blockquote>
+</blockquote>
+
+<p>
+Change <sref ref="[ios::Init]"/>/4:
+</p>
+
+<blockquote>
+<pre>
+~Init();
+</pre>
+<blockquote>
+-4- <i>Effects:</i> Destroys an object of class <tt>Init</tt>.
+<del>The function subtracts one from the value stored in <tt>init_cnt</tt> and,
+if the resulting stored value is one,</del>
+<ins>If there are no other instances of the class still in
+existance,</ins>
+calls <tt>cout.flush()</tt>,
+<tt>cerr.flush()</tt>, <tt>clog.flush()</tt>, <tt>wcout.flush()</tt>,
+<tt>wcerr.flush()</tt>, <tt>wclog.flush()</tt>.
+</blockquote>
+</blockquote>
+
+</resolution>
+
+</issue>

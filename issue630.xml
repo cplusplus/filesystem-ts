@@ -1,0 +1,211 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="630" status="WP">
+<title>arrays of valarray</title>
+<section><sref ref="[valarray.cons]"/></section>
+<submitter>Martin Sebor</submitter>
+<date>28 Jan 2007</date>
+
+<discussion>
+        <p>
+
+Section <sref ref="[numeric.requirements]"/>, p1     suggests     that     a
+<code>valarray</code>  specialization on  a  type <code>T</code>  that
+satisfies  the requirements enumerated  in the  paragraph is  itself a
+valid  type   on  which  <code>valarray</code>   may  be  instantiated
+(Footnote       269        makes       this       clear).        I.e.,
+<code>valarray&lt;valarray&lt;T&gt;  &gt;</code> is  valid as  long as
+<code>T</code>   is   valid.    However,  since   implementations   of
+<code>valarray</code> are permitted to initialize storage allocated by
+the class by  invoking the default ctor of  <code>T</code> followed by
+the    copy    assignment    operator,   such    implementations    of
+<code>valarray</code>   wouldn't  work  with   (perhaps  user-defined)
+specializations of <code>valarray</code> whose assignment operator had
+undefined behavior when the size of its argument didn't match the size
+of <code>*this</code>.  By <i>"wouldn't work"</i> I mean that it would
+be  impossible  to resize  such  an array  of  arrays  by calling  the
+<code>resize()</code> member  function on it if the  function used the
+copy  assignment operator  after constructing  all elements  using the
+default  ctor (e.g.,  by invoking  <code>new  value_type[N]</code>) to
+obtain default-initialized storage) as it's permitted to do.
+
+        </p>
+        <p>
+
+Stated      more     generally,      the      problem     is      that
+<code>valarray&lt;valarray&lt;T&gt;  &gt;::resize(size_t)</code> isn't
+required or  guaranteed to have well-defined semantics  for every type
+<code>T</code>     that      satisfies     all     requirements     in
+<sref ref="[numeric.requirements]"/>.
+
+        </p>
+        <p>
+
+I  believe  this  problem  was  introduced  by  the  adoption  of  the
+resolution                outlined                in                <a
+href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/1996/N0857.asc">N0857</a>,
+<i>Assignment  of  valarrays</i>,  from  1996.   The  copy  assignment
+operator  of  the original  numerical  array  classes  proposed in  <a
+href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/1993/N0280.pdf">N0280</a>,
+as      well       as      the      one       proposed      in      <a
+href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/1993/N0308.asc">N0308</a>
+(both  from 1993), had  well-defined semantics  for arrays  of unequal
+size (the  latter explicitly  only when <code>*this</code>  was empty;
+assignment of non empty arrays of unequal size was a runtime error).
+
+        </p>
+        <p>
+
+The  justification for  the  change given  in  N0857 was the "loss  of
+performance [deemed]  only significant  for very simple  operations on
+small arrays or for architectures with very few registers."
+
+        </p>
+        <p>
+
+Since tiny  arrays on a  limited subset of hardware  architectures are
+likely  to  be  an   exceedingly  rare  case  (despite  the  continued
+popularity of  x86) I  propose to revert  the resolution and  make the
+behavior    of   all   <code>valarray</code>    assignment   operators
+well-defined even  for non-conformal  arrays (i.e., arrays  of unequal
+size).   I have implemented  this change  and measured  no significant
+degradation  in performance in  the common  case (non-empty  arrays of
+equal size).  I  have measured a 50% (and in  some cases even greater)
+speedup  in the  case of  assignments to  empty arrays  versus calling
+<code>resize()</code>  first followed  by  an invocation  of the  copy
+assignment operator.
+
+        </p>
+
+<note>
+Bellevue:
+</note>
+
+<blockquote>
+If no proposed wording by June meeting, this issue should be closed NAD.
+</blockquote>
+
+<note>
+2009-07 Frankfurt
+</note>
+
+<blockquote>
+<p>
+Move resolution 1 to Ready.
+</p>
+<p>
+Howard: second resolution has been commented out (made invisible).
+Can be brought back on demand.
+</p>
+</blockquote>
+
+</discussion>
+
+<resolution>
+        <p>
+
+Change <sref ref="[valarray.assign]"/>, p1 as follows:
+
+        </p>
+        <blockquote>
+            <p>
+                <code>
+
+valarray&lt;T&gt;&amp; operator=(const valarray&lt;T&gt;&amp;<ins> x</ins>);
+
+                </code>
+            </p>
+            <p>
+
+-1- Each element of the <code>*this</code> array is assigned the value
+of  the  corresponding  element   of  the  argument  array.   <del>The
+resulting behavior is undefined if </del><ins>When </ins>the length of
+the  argument  array  is  not   equal  to  the  length  of  the  *this
+array<del>.</del><ins>  resizes  <code>*this</code>  to make  the  two
+arrays     the      same     length,     as      if     by     calling
+<code>resize(x.size())</code>, before performing the assignment.</ins>
+
+            </p>
+        </blockquote>
+        <p>
+
+And  add a new  paragraph just  below paragraph  1 with  the following
+text:
+
+        </p>
+        <blockquote>
+            <p>
+
+<ins>-2- <i>Postcondition</i>: <code>size() == x.size()</code>.</ins>
+
+            </p>
+        </blockquote>
+        <p>
+
+Also add the following paragraph to <sref ref="[valarray.assign]"/>, immediately after p4:
+
+        </p>
+        <blockquote>
+            <p>
+
+<ins>-?- When the length,  <i><code>N</code></i> of the array referred
+to by the  argument is not equal to  the length of <code>*this</code>,
+the  operator resizes <code>*this</code>  to make  the two  arrays the
+same  length, as if  by calling  <code>resize(<i>N</i>)</code>, before
+performing the assignment.</ins>
+
+            </p>
+        </blockquote>
+
+<note>
+pre-Sophia Antipolis, Martin adds the following compromise wording, but
+prefers the original proposed resolution:
+</note>
+
+<!-- 
+<p>
+Change <sref ref="[valarray.assign]"/>, p1 as follows:
+</p>
+
+<blockquote>
+<p>
+ -1- <i>Requires:</i> <tt>size() == 0 || size() == x.size()</tt>.
+</p>
+<p>
+ -2- <i>Effects:</i> If <tt>size() == 0</tt> calls <tt>x.resize(x.size())</tt> first.
+     Each element of the <tt>*this</tt> array is assigned the value of the
+     corresponding element of the argument array.
+</p>
+<p>
+ -3- <i>Postcondition:</i> <tt>size() == x.size()</tt>.
+</p>
+</blockquote>
+
+<p>
+Add the following paragraph to <sref ref="[valarray.assign]"/>, immediately after
+p4:
+</p>
+
+<blockquote>
+<p>
+ -?- When <tt>size() == 0</tt> and the length, <tt>N</tt> of the array referred to by
+     the argument is not equal to the length of <tt>*this</tt>, the operator
+     resizes <tt>*this</tt> to make the two arrays the same length, as if by
+     calling <tt>resize(N)</tt>, before performing the assignment. Otherwise,
+     when <tt>size() &gt; 0</tt> and <tt>size() != N</tt>, the behavior is undefined.
+</p>
+</blockquote>
+ -->
+
+</resolution>
+
+<note>
+Kona (2007): Gaby to propose wording for an alternative resolution in
+which you can assign to a <tt>valarray</tt> of size 0, but not to any other
+<tt>valarray</tt> whose size is unequal to the right hand side of the assignment.
+</note>
+
+</issue>

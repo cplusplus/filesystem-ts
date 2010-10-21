@@ -1,0 +1,80 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="247" status="CD1">
+<title><tt>vector</tt>, <tt>deque::insert</tt> complexity</title>
+<section><sref ref="[vector.modifiers]"/></section>
+<submitter>Lisa Lippincott</submitter>
+<date>06 Jun 2000</date>
+
+<discussion>
+<p>Paragraph 2 of <sref ref="[vector.modifiers]"/> describes the complexity
+of <tt>vector::insert</tt>:</p>
+
+   <blockquote><p>
+   Complexity: If first and last are forward iterators, bidirectional
+   iterators, or random access iterators, the complexity is linear in
+   the number of elements in the range [first, last) plus the distance
+   to the end of the vector. If they are input iterators, the complexity
+   is proportional to the number of elements in the range [first, last)
+   times the distance to the end of the vector.
+   </p></blockquote>
+
+<p>First, this fails to address the non-iterator forms of
+<tt>insert</tt>.</p>
+
+<p>Second, the complexity for input iterators misses an edge case --
+it requires that an arbitrary number of elements can be added at
+the end of a <tt>vector</tt> in constant time.</p>
+
+<p>I looked to see if <tt>deque</tt> had a similar problem, and was
+surprised to find that <tt>deque</tt> places no requirement on the
+complexity of inserting multiple elements (<sref ref="[deque.modifiers]"/>,
+paragraph 3):</p>
+
+   <blockquote><p>
+   Complexity: In the worst case, inserting a single element into a
+   deque takes time linear in the minimum of the distance from the
+   insertion point to the beginning of the deque and the distance
+   from the insertion point to the end of the deque. Inserting a
+   single element either at the beginning or end of a deque always
+   takes constant time and causes a single call to the copy constructor
+   of T.
+   </p></blockquote>
+</discussion>
+
+<resolution>
+
+<p>Change Paragraph 2 of <sref ref="[vector.modifiers]"/> to</p>
+   <blockquote><p>
+   Complexity: The complexity is linear in the number of elements 
+   inserted plus the distance to the end of the vector.
+   </p></blockquote>
+
+   <note>For input iterators, one may achieve this complexity by first
+   inserting at the end of the <tt>vector</tt>, and then using
+   <tt>rotate</tt>.</note>
+
+<p>Change <sref ref="[deque.modifiers]"/>, paragraph 3, to:</p>
+
+   <blockquote><p>
+   Complexity: The complexity is linear in the number of elements 
+   inserted plus the shorter of the distances to the beginning and
+   end of the deque.  Inserting a single element at either the
+   beginning or the end of a deque causes a single call to the copy
+   constructor of T.
+   </p></blockquote>
+
+</resolution>
+
+<rationale>
+<p>This is a real defect, and proposed resolution fixes it: some
+  complexities aren't specified that should be.  This proposed
+  resolution does constrain deque implementations (it rules out the
+  most naive possible implementations), but the LWG doesn't see a
+  reason to permit that implementation.</p>
+</rationale>
+
+</issue>

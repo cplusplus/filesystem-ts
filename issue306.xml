@@ -1,0 +1,40 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="306" status="CD1">
+<title>offsetof macro and non-POD types</title>
+<section><sref ref="[support.types]"/></section>
+<submitter>Steve Clamage</submitter>
+<date>21 Feb 2001</date>
+
+<discussion> 
+<p>Spliced together from reflector messages c++std-lib-8294 and -8295:</p>
+
+<p>18.1, paragraph 5, reads: &quot;The macro <tt>offsetof</tt>
+accepts a restricted set of <i>type</i> arguments in this
+International Standard. <i>type</i> shall be a POD structure or a POD
+union (clause 9). The result of applying the offsetof macro to a field
+that is a static data member or a function member is
+undefined.&quot;</p>
+
+<p>For the POD requirement, it doesn't say &quot;no diagnostic
+required&quot; or &quot;undefined behavior&quot;. I read <sref ref="[intro.compliance]"/>, paragraph 1, to mean that a diagnostic is required.
+It's not clear whether this requirement was intended.  While it's
+possible to provide such a diagnostic, the extra complication doesn't
+seem to add any value.
+</p>
+</discussion>
+
+<resolution>
+<p>Change 18.1, paragraph 5, to &quot;If <i>type</i> is not a POD
+structure or a POD union the results are undefined.&quot;</p>
+
+<note>Copenhagen: straw poll was 7-4 in favor.  It was generally
+agreed that requiring a diagnostic was inadvertent, but some LWG
+members thought that diagnostics should be required whenever
+possible.</note>
+
+</resolution>
+</issue>

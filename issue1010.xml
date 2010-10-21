@@ -1,0 +1,49 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="1010" status="NAD Concepts">
+<title><tt>operator-=</tt> should use default in concept</title>
+<section><sref ref="[random.access.iterators]"/></section>
+<submitter>Alisdair Meredith</submitter>
+<date>11 Mar 2009</date>
+
+<discussion>
+
+<p><b>Addresses UK 263</b></p>
+
+<p>
+This requirement on <tt>operator-=</tt> would be better expressed as a default
+implementation in the concept, with a matching axiom.
+</p>
+
+<note>
+Batavia (2009-05):
+</note>
+<blockquote>
+The proposed resolution should also remove
+paragraph 5 and the declaration that precedes it.
+Further, we should provide an axiom
+that captures the desired semantics.
+This may be a broader policy to be applied.
+Move to Open.
+</blockquote>
+</discussion>
+
+<resolution>
+<p>
+Change <sref ref="[random.access.iterators]"/>:
+</p>
+
+<blockquote><pre>
+concept RandomAccessIterator&lt;typename X&gt; : BidirectionalIterator&lt;X&gt;, LessThanComparable&lt;X&gt; {
+  ...
+  X&amp; operator-=(X&amp; <ins>x</ins>, difference_type <ins>n</ins>)<ins> { return x += -n</ins>;<ins> }</ins>
+  ...
+}
+</pre></blockquote>
+
+</resolution>
+
+</issue>

@@ -1,0 +1,94 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="974" status="WP">
+<title><tt>duration&lt;double&gt;</tt> should not implicitly convert to <tt>duration&lt;int&gt;</tt></title>
+<section><sref ref="[time.duration.cons]"/></section>
+<submitter>Howard Hinnant</submitter>
+<date>21 Jan 2009</date>
+
+<discussion>
+<p>
+The following code should not compile because it involves implicit truncation
+errors (against the design philosophy of the <tt>duration</tt> library).
+</p>
+
+<blockquote><pre>
+duration&lt;double&gt; d(3.5);
+duration&lt;int&gt; i = d;  <font color="#C80000">// implicit truncation, should not compile</font>
+</pre></blockquote>
+
+<p>
+This intent was codified in the example implementation which drove this proposal
+but I failed to accurately translate the code into the specification in this
+regard.
+</p>
+
+<note>
+Batavia (2009-05):
+</note>
+<blockquote>
+<p>
+We agree with the proposed resolution.
+</p>
+<p>
+Move to Tentatively Ready.
+</p>
+</blockquote>
+
+<note>
+2009-07 Frankfurt
+</note>
+
+<blockquote>
+Moved from Tentatively Ready to Open only because the wording needs to be
+improved for enable_if type constraining, possibly following Robert's
+formula.
+</blockquote>
+
+<note>
+2009-08-01 Howard adds:
+</note>
+
+<blockquote>
+Addressed by <iref ref="1177"/>.
+</blockquote>
+
+<note>
+2009-10 Santa Cruz:
+</note>
+
+<blockquote>
+Not completely addressed by <iref ref="1177"/>.  Move to Ready.
+</blockquote>
+
+</discussion>
+
+<resolution>
+<p>
+Change <sref ref="[time.duration.cons]"/>, p4:
+</p>
+
+<blockquote>
+<pre>
+template &lt;class Rep2, class Period2&gt; 
+  duration(const duration&lt;Rep2, Period2&gt;&amp; d);
+</pre>
+<blockquote>
+-4- <i>Requires:</i> <tt>treat_as_floating_point&lt;rep&gt;::value</tt>
+shall be <tt>true</tt> or <ins>both</ins> <tt>ratio_divide&lt;Period2,
+period&gt;::type::den</tt> shall be 1
+<ins>and <tt>treat_as_floating_point&lt;Rep2&gt;::value</tt>
+shall be <tt>false</tt></ins>.
+Diagnostic required.
+[<i>Note:</i> This requirement prevents implicit truncation error when
+converting between integral-based <tt>duration</tt> types. Such a
+construction could easily lead to confusion about the value of the
+<tt>duration</tt>. -- <i>end note</i>]
+</blockquote>
+</blockquote>
+</resolution>
+
+</issue>

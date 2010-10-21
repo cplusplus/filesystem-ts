@@ -1,0 +1,87 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="297" status="CD1">
+<title>const_mem_fun_t&lt;&gt;::argument_type should be const T*</title>
+<section><sref ref="[logical.operations]"/></section>
+<submitter>Martin Sebor</submitter>
+<date>6 Jan 2001</date>
+
+<discussion>
+<p>The class templates <tt>const_mem_fun_t</tt> in 20.5.8, p8 and
+<tt>const_mem_fun1_t</tt>
+in 20.5.8, p9 derive from <tt>unary_function&lt;T*, S></tt>, and
+<tt>binary_function&lt;T*,
+A, S></tt>, respectively. Consequently, their <tt>argument_type</tt>, and
+<tt>first_argument_type</tt>
+members, respectively, are both defined to be <tt>T*</tt> (non-const).
+However, their function call member operator takes a <tt>const T*</tt>
+argument. It is my opinion that <tt>argument_type</tt> should be <tt>const
+T*</tt> instead, so that one can easily refer to it in generic code. The
+example below derived from existing code fails to compile due to the
+discrepancy:
+</p>
+
+<p><tt>template &lt;class T></tt>
+<br/><tt>void foo (typename T::argument_type arg)&nbsp;&nbsp; // #1</tt>
+<br/><tt>{</tt>
+<br/><tt>&nbsp;&nbsp;&nbsp; typename T::result_type (T::*pf) (typename
+T::argument_type)
+const =&nbsp;&nbsp; // #2</tt>
+<br/><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &amp;T::operator();</tt>
+<br/><tt>}</tt>
+</p>
+
+<p><tt>struct X { /* ... */ };</tt></p>
+
+<p><tt>int main ()</tt>
+<br/><tt>{</tt>
+<br/><tt>&nbsp;&nbsp;&nbsp; const X x;</tt>
+<br/><tt>&nbsp;&nbsp;&nbsp; foo&lt;std::const_mem_fun_t&lt;void, X>
+>(&amp;x);&nbsp;&nbsp;
+// #3</tt>
+<br/><tt>}</tt>
+</p>
+
+<p>#1 <tt>foo()</tt> takes a plain unqualified <tt>X*</tt> as an argument
+<br/>#2 the type of the pointer is incompatible with the type of the member
+function
+<br/>#3 the address of a constant being passed to a function taking a non-const
+<tt>X*</tt>
+</p>
+</discussion>
+
+<resolution>
+<p>Replace the top portion of the definition of the class template
+const_mem_fun_t in 20.5.8, p8
+</p>
+<p><tt>template &lt;class S, class T> class const_mem_fun_t</tt>
+<br/><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; : public
+unary_function&lt;T*, S> {</tt>
+</p>
+<p>with</p>
+<p><tt>template &lt;class S, class T> class const_mem_fun_t</tt>
+<br/><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; : public
+unary_function&lt;<b>const</b> T*, S> {</tt>
+</p>
+<p>Also replace the top portion of the definition of the class template
+const_mem_fun1_t in 20.5.8, p9</p>
+<p><tt>template &lt;class S, class T, class A> class const_mem_fun1_t</tt>
+<br/><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; : public
+binary_function&lt;T*, A, S> {</tt>
+</p>
+<p>with</p>
+<p><tt>template &lt;class S, class T, class A> class const_mem_fun1_t</tt>
+<br/><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; : public
+binary_function&lt;<b>const</b> T*, A, S> {</tt>
+</p>
+</resolution>
+
+<rationale>
+<p>This is simply a contradiction: the <tt>argument_type</tt> typedef,
+and the argument type itself, are not the same.</p>
+</rationale>
+
+</issue>

@@ -1,0 +1,51 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="319" status="CD1">
+<title>Storage allocation wording confuses "Required behavior", "Requires"</title>
+<section><sref ref="[new.delete.single]"/> <sref ref="[new.delete.array]"/></section>
+<submitter>Beman Dawes</submitter>
+<date>15 May 2001</date>
+
+<discussion>
+<p>The standard specifies <sref ref="[structure.specifications]"/> that "Required
+behavior" elements describe "the semantics of a function definition
+provided by either the implementation or a C++ program."</p>
+
+<p>The standard specifies <sref ref="[structure.specifications]"/> that "Requires"
+elements describe "the preconditions for calling the function."</p>
+
+<p>In the sections noted below, the current wording specifies
+"Required Behavior" for what are actually preconditions, and thus
+should be specified as "Requires".</p>
+
+</discussion>
+
+<resolution>
+
+<p>In <sref ref="[new.delete.single]"/> Para 12 Change:</p>
+<blockquote>
+  <p>Required behavior: accept a value of ptr that is null or that was
+  returned by an earlier call ...</p>
+</blockquote>
+<p>to:</p>
+<blockquote>
+  <p>Requires: the value of ptr is null or the value returned by an
+  earlier call ...</p>
+</blockquote>
+
+<p>In <sref ref="[new.delete.array]"/> Para 11 Change:</p>
+<blockquote>
+  <p>Required behavior: accept a value of ptr that is null or that was
+  returned by an earlier call ...</p>
+</blockquote>
+<p>to:</p>
+<blockquote>
+  <p>Requires: the value of ptr is null or the value returned by an
+  earlier call ...</p>
+</blockquote>
+
+</resolution>
+</issue>

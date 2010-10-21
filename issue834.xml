@@ -1,0 +1,764 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="834" status="NAD Editorial">
+<title>Unique_ptr::pointer requirements underspecified</title>
+<section><sref ref="[unique.ptr.single]"/></section>
+<submitter>Daniel Kr&uuml;gler</submitter>
+<date>14 May 2008</date>
+
+<discussion>
+<p>
+Issue <iref ref="673"/> (including recent updates by <iref ref="821"/>) proposes a useful
+extension point for <tt>unique_ptr</tt> by granting support for an optional
+<tt>deleter_type::pointer</tt> to act as pointer-like replacement for <tt>element_type*</tt>
+(In the following: <tt>pointer</tt>).
+</p>
+<p>
+Unfortunately no requirements are specified for the type <tt>pointer</tt> which has
+impact on at least two key features of <tt>unique_ptr</tt>:
+</p>
+
+<ol>
+<li>Operational fail-safety.</li>
+<li>(Well-)Definedness of expressions.</li>
+</ol>
+
+<p>
+<tt>Unique_ptr</tt> specification makes great efforts to require that essentially *all*
+operations cannot throw and therefore adds proper wording to the affected
+operations of the deleter as well. If user-provided <tt>pointer</tt>-emulating types
+("smart pointers") will be allowed, either *all* throw-nothing clauses have to
+be replaced by weaker "An exception is thrown only if <tt>pointer</tt>'s {op} throws
+an exception"-clauses or it has to be said explicitly that all used
+operations of
+<tt>pointer</tt> are required *not* to throw. I understand the main focus of <tt>unique_ptr</tt>
+to be as near as possible to the advantages of native pointers which cannot
+fail and thus strongly favor the second choice. Also, the alternative position
+would make it much harder to write safe and simple template code for
+<tt>unique_ptr</tt>. Additionally, I assume that a general statement need to be given
+that all of the expressions of <tt>pointer</tt> used to define semantics are required to
+be well-formed and well-defined (also as back-end for <iref ref="762"/>).
+</p>
+
+<note>
+Sophia Antipolis:
+</note>
+
+<blockquote>
+<p>
+Howard: We maybe need a core concept <tt>PointerLike</tt>, but we don't need the
+arithmetic (see <tt>shared_ptr</tt> vs. <tt>vector&lt;T&gt;::iterator</tt>.
+</p>
+<p>
+Howard will go through and enumerate the individual requirements wrt. <tt>pointer</tt> for each member function.
+</p>
+</blockquote>
+
+<note>
+2009-07 Frankfurt:
+</note>
+
+<blockquote>
+Move to Ready.
+</blockquote>
+
+<note>
+2009-10-15 Alisdair pulls from Ready:
+</note>
+
+<blockquote>
+<p>
+I hate to pull an issue out of Ready status, but I don't think 834 is
+fully baked yet.
+</p>
+
+<p>
+For reference the proposed resolution is to add the following words:
+</p>
+
+<blockquote>
+<tt>unique_ptr&lt;T, D&gt;::pointer</tt>'s operations shall be
+well-formed, shall have well defined behavior, and shall not throw
+exceptions.
+</blockquote>
+
+<p>
+This leaves me with a big question : which operations?
+</p>
+
+<p>
+Are all pointer operations required to be nothrow, including operations
+that have nothing to do with interactions with <tt>unique_ptr</tt>?  This was
+much simpler with concepts where we could point to operations within a
+certain concept, and so nail down the interactions.
+</p>
+</blockquote>
+
+<note>
+2009-10-15 Daniel adds:
+</note>
+
+<blockquote>
+I volunteer to prepare a more fine-grained solution, but I would like
+to ask for feedback that helps me doing so. If this question is asked
+early in the meeting I might be able to fix it within the week, but I
+cannot promise that now.
+</blockquote>
+
+<note>
+2009-10 Santa Cruz:
+</note>
+
+<blockquote>
+Leave in open. Daniel to provide wording as already suggested.
+</blockquote>
+
+<note>
+2009-12-22 Daniel provided wording and rationale.
+</note>
+
+<note>
+2010 Pittsburgh:  Moved to NAD Editorial.  Rationale added below.
+</note>
+
+</discussion>
+
+<rationale>
+<p>
+The here proposed resolution has considerable overlap with the requirements that
+are used in the allocator requirements.
+</p>
+
+<p>
+This might be a convincing argument to isolate the common subset into one
+requirement. The reason I did not do that is basically because we might find out
+that they are either over-constraining or under-constraining at this late point
+of specification. Note also that as a result of the idea of a general
+requirement set I added the requirement
+</p>
+
+<blockquote>
+A default-initialized object may have a singular value
+</blockquote>
+
+<p>
+even though this does not play a relevant role for <tt>unique_ptr</tt>.
+</p>
+
+<p>
+One further characteristics of the resolution is that availability of relational
+operators of <tt>unique_ptr&lt;T, D&gt;::pointer</tt> is not part of the basic
+requirements, which is in sync with the allocator requirements on pointer-like
+(this means that <tt>unique_ptr</tt> can hold a <tt>void_pointer</tt> or
+<tt>const_void_pointer</tt>).
+</p>
+
+<p>
+Solved by
+<a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2010/n3073.html">N3073</a>.
+</p>
+
+</rationale>
+
+<resolution>
+
+<ol>
+
+<li>
+<p>
+Change <sref ref="[unique.ptr.single]"/>/1 as indicated: <i>[The intent is to
+replace the coupling between <tt>T*</tt> and the deleter's <tt>operator()</tt>
+by a coupling between <tt>unique_ptr&lt;T, D&gt;::pointer</tt> and this
+<tt>operator()</tt>]</i>
+</p>
+
+<blockquote>
+1 - The default type for the template parameter <tt>D</tt> is
+<tt>default_delete</tt>. A client-supplied template argument <tt>D</tt> shall be
+a function pointer or functor for which, given a value <tt>d</tt> of type
+<tt>D</tt> and a <del>pointer</del> <ins>value</ins> <tt>ptr</tt> of type
+<tt><del>T*</del> <ins>unique_ptr&lt;T, D&gt;::pointer</ins></tt>, the
+expression <tt>d(ptr)</tt> is valid and has the effect of deallocating the
+pointer as appropriate for that deleter. <tt>D</tt> may also be an
+lvalue-reference to a deleter.
+</blockquote>
+</li>
+
+<li>
+<p>
+Change <sref ref="[unique.ptr.single]"/>/3 as indicated:
+</p>
+
+<blockquote>
+<p>
+3 - If the type <tt>remove_reference&lt;D&gt;::type::pointer</tt> exists, then
+<tt>unique_ptr&lt;T, D&gt;::pointer</tt> shall be a synonym for
+<tt>remove_reference&lt;D&gt;::type::pointer</tt>. Otherwise
+<tt>unique_ptr&lt;T, D&gt;::pointer</tt> shall be a synonym for <tt>T*</tt>. The
+type <tt>unique_ptr&lt;T, D&gt;::pointer</tt> shall <del>be</del> <ins>satisfy
+the requirements of <tt>EqualityComparable</tt>,
+<tt>DefaultConstructible</tt>,</ins> <tt>CopyConstructible</tt> <del>(Table 34)
+and</del><ins>,</ins> <tt>CopyAssignable</tt> <del>(Table 36)</del><ins>,
+<tt>Swappable</tt>, and <tt>Destructible</tt> (<sref
+ref="[utility.arg.requirements]"/>). A default-initialized object may have a
+singular value.  A value-initialized object produces the null value of the type.
+The null value shall be equivalent only to itself. An object of this type can be
+copy-initialized with a value of type <tt>nullptr_t</tt>, compared for equality
+with a value of type <tt>nullptr_t</tt>, and assigned a value of type
+<tt>nullptr_t</tt>. The effect shall be as if a value-initialized object had
+been used in place of the null pointer constant. An object <tt>p</tt> of this
+type can be contextually converted to <tt>bool</tt>. The effect shall be as if
+<tt>p != nullptr</tt> had been evaluated in place of <tt>p</tt>. No operation on
+this type which is part of the above mentioned requirements shall exit via an
+exception.
+</ins>
+</p>
+<p><ins>
+[<i>Note:</i> Given an allocator type <tt>X</tt> (<sref
+ref="[allocator.requirements]"/>), the types <tt>X::pointer</tt>,
+<tt>X::const_pointer</tt>, <tt>X::void_pointer</tt>, and
+<tt>X::const_void_pointer</tt> may be used as <tt>unique_ptr&lt;T,
+D&gt;::pointer</tt> &mdash; <i>end note</i>]
+</ins></p>
+
+<p><ins>
+In addition to being available via inclusion of the <tt>&lt;utility&gt;</tt>
+header, the <tt>swap</tt> function template in <sref ref="[utility.swap]"/> is
+also available within the definition of <tt>unique_ptr</tt>'s <tt>swap</tt>
+function.
+</ins></p>
+</blockquote>
+</li>
+
+<li>
+<p>
+Change <sref ref="[unique.ptr.single.ctor]"/>/2+3 as indicated: <i>[The first
+change ensures that we explicitly say, how the stored pointer is initialized.
+This is important for a <tt>constexpr</tt> function, because this may make a
+difference for user-defined pointer-like types]</i>
+</p>
+
+<blockquote><pre>
+constexpr unique_ptr();
+</pre>
+<blockquote>
+<p>...</p>
+<p>
+2 - <i>Effects:</i> Constructs a <tt>unique_ptr</tt> which owns nothing<ins>,
+value-initializing the stored pointer</ins>.
+</p>
+
+<p>
+3 - <i>Postconditions:</i> <tt>get() == <del>0</del> <ins>nullptr</ins></tt>.
+</p>
+</blockquote>
+</blockquote>
+</li>
+
+<li>
+<p>
+Change <sref ref="[unique.ptr.single.ctor]"/>/6+7 as indicated: <i>[This is a
+step-by-fix to ensure consistency to the changes of
+<a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2009/n2976.html">N2976</a>]</i>
+</p>
+
+<blockquote><pre>
+unique_ptr(pointer p);
+</pre>
+<blockquote>
+<p>...</p>
+<p>
+6 - <i>Effects:</i> Constructs a <tt>unique_ptr</tt> which owns <tt>p</tt><ins>,
+initializing the stored pointer with <tt>p</tt></ins>.
+</p>
+
+<p>
+7 - <i>Postconditions:</i> <tt>get() == p</tt>. <tt>get_deleter()</tt> returns a
+reference to a <del>default constructed</del> <ins>value-initialized</ins>
+deleter <tt>D</tt>.
+</p>
+</blockquote>
+</blockquote>
+</li>
+
+<li>
+<p>
+Insert a new effects clause in <sref ref="[unique.ptr.single.ctor]"/> just
+before p. 14: <i>[The intent is to fix the current lack of specification in
+which way the stored pointer is initialized]</i>
+</p>
+
+<blockquote><pre>
+unique_ptr(pointer p, <i><del>implementation-defined</del> <ins>see below</ins></i> d1);
+unique_ptr(pointer p, <i><del>implementation-defined</del> <ins>see below</ins></i> d2);
+</pre>
+<blockquote>
+<p>...</p>
+<p><ins>
+<i>Effects:</i> Constructs a <tt>unique_ptr</tt> which owns <tt>p</tt>,
+initializing the stored pointer with <tt>p</tt> and the initializing the deleter
+as described above.
+</ins></p>
+
+<p>
+14 - <i>Postconditions:</i> <tt>get() == p</tt>. <tt>get_deleter()</tt> returns a
+reference to the internally stored deleter. If <tt>D</tt> is a reference type
+then <tt>get_deleter()</tt> returns a reference to the lvalue <tt>d</tt>.
+</p>
+</blockquote>
+</blockquote>
+</li>
+
+<li>
+<p>
+Change <sref ref="[unique.ptr.single.ctor]"/>/18+22 as indicated: <i>[The intent
+is to clarify that the moved-from source must contain a null pointer, there is
+no other choice left]</i>
+</p>
+
+<blockquote><pre>
+unique_ptr(unique_ptr&amp;&amp; u);
+</pre>
+<blockquote>
+<p>
+[..]
+</p>
+
+<p>
+18 - <i>Postconditions:</i> <tt>get() == value u.get()</tt> had before the
+construction<ins> and <tt>u.get() == nullptr</tt></ins>. <tt>get_deleter()</tt>
+returns a reference to the internally stored deleter which was constructed from
+<tt>u.get_deleter()</tt>. If <tt>D</tt> is a reference type then
+<tt>get_deleter()</tt> and <tt>u.get_deleter()</tt> both reference the same
+lvalue deleter.
+</p>
+
+</blockquote>
+
+<pre>
+template &lt;class U, class E&gt; unique_ptr(unique_ptr&lt;U, E&gt;&amp;&amp; u);
+</pre>
+
+<blockquote>
+
+<p>
+[..]
+</p>
+
+<p>
+22 - <i>Postconditions:</i> <tt>get() == value u.get()</tt> had before the
+construction, modulo any required offset adjustments resulting from the cast
+from <tt>unique_ptr&lt;U, E&gt;::pointer</tt> to <tt>pointer</tt><ins> and
+<tt>u.get() == nullptr</tt></ins>. <tt>get_deleter()</tt> returns a reference to
+the internally stored deleter which was constructed from
+<tt>u.get_deleter()</tt>.
+</p>
+</blockquote>
+</blockquote>
+</li>
+
+<li>
+<p>
+Change <sref ref="[unique.ptr.single.ctor]"/>/20 as indicated: <i>[With the
+possibility of user-defined pointer-like types the implication does only exist,
+if those are built-in pointers. Note that this change should also be applied
+with the acceptance of <iref ref="950"/>]</i>
+</p>
+
+<blockquote><pre>
+template &lt;class U, class E&gt; unique_ptr(unique_ptr&lt;U, E&gt;&amp;&amp; u);
+</pre>
+<blockquote>
+20 - <i>Requires:</i> If <tt>D</tt> is not a reference type, construction of the
+deleter <tt>D</tt> from an rvalue of type <tt>E</tt> shall be well formed and
+shall not throw an exception. If <tt>D</tt> is a reference type, then <tt>E</tt>
+shall be the same type as <tt>D</tt> (diagnostic required). <tt>unique_ptr&lt;U,
+E&gt;::pointer</tt> shall be implicitly convertible to <tt>pointer</tt>.
+<del>[<i>Note:</i> These requirements imply that <tt>T</tt> and <tt>U</tt> are
+complete types. &mdash; <i>end note</i>]</del>
+</blockquote>
+</blockquote>
+</li>
+
+<li>
+<p>
+Change <sref ref="[unique.ptr.single.dtor]"/>/2 as indicated:
+</p>
+
+<blockquote><pre>
+~unique_ptr();
+</pre>
+<blockquote>
+<p>...</p>
+<p>
+2 - <i>Effects:</i> If <tt>get() == <del>0</del> <ins>nullptr</ins></tt> there
+are no effects. Otherwise <tt>get_deleter()(get())</tt>.
+</p>
+</blockquote>
+</blockquote>
+</li>
+
+<li>
+<p>
+Change <sref ref="[unique.ptr.single.asgn]"/>/3+8 as indicated: <i>[The intent is to
+clarify that the moved-from source must contain a null pointer, there
+is no other choice left]</i>
+</p>
+
+<blockquote><pre>
+unique_ptr&amp; operator=(unique_ptr&amp;&amp; u);
+</pre>
+<blockquote>
+<p>[..]</p>
+<p>
+3 - <i>Postconditions:</i> This <tt>unique_ptr</tt> now owns the pointer which <tt>u</tt>
+owned, and <tt>u</tt> no longer owns it<ins>, <tt>u.get() == nullptr</tt></ins>.
+[<i>Note:</i> If <tt>D</tt> is a reference type, then the referenced lvalue deleters
+are move assigned. &mdash; <i>end note</i>]
+</p>
+</blockquote>
+
+<pre>
+template &lt;class U, class E&gt; unique_ptr&amp; operator=(unique_ptr&lt;U, E&gt;&amp;&amp; u);
+</pre>
+
+<blockquote>
+<p>[..]</p>
+
+<p>
+8 - <i>Postconditions:</i> This <tt>unique_ptr</tt> now owns the pointer which
+<tt>u</tt> owned, and <tt>u</tt> no longer owns it<ins>, <tt>u.get() ==
+nullptr</tt></ins>.
+</p>
+</blockquote>
+</blockquote>
+</li>
+
+<li>
+<p>
+Change <sref ref="[unique.ptr.single.asgn]"/>/6 as indicated: <i>[With the
+possibility of user-defined pointer-like types the implication does only exist,
+if those are built-in pointers. Note that this change should also be applied
+with the acceptance of <iref ref="950"/>]</i>
+</p>
+
+<blockquote><pre>
+template &lt;class U, class E&gt; unique_ptr&amp; operator=(unique_ptr&lt;U, E&gt;&amp;&amp; u);
+</pre>
+<blockquote>
+<p>[..]</p>
+<p>
+6 - <i>Requires:</i> Assignment of the deleter <tt>D</tt> from an rvalue
+<tt>D</tt> shall not throw an exception. <tt>unique_ptr&lt;U,
+E&gt;::pointer</tt> shall be implicitly convertible to <tt>pointer</tt>.
+<del>[<i>Note:</i> These requirements imply that <tt>T</tt> and <tt>U</tt> are
+complete types. &mdash; <i>end note</i>]</del>
+</p>
+</blockquote>
+</blockquote>
+</li>
+
+<li>
+<p>
+Change <sref ref="[unique.ptr.single.asgn]"/> before p. 11 and p. 12 as
+indicated: <i>[The first change is a simple typo fix]</i>
+</p>
+
+<blockquote><pre>
+unique_ptr&amp; operator=(nullptr_t<del>}</del><ins>)</ins>;
+</pre>
+
+<blockquote>
+<p>
+11 - <i>Effects:</i> <tt>reset()</tt>.
+</p>
+
+<p>
+12 - <i>Postcondition:</i> <tt>get() == <del>0</del> <ins>nullptr</ins></tt>
+</p>
+</blockquote>
+</blockquote>
+</li>
+
+<li>
+<p>
+Change <sref ref="[unique.ptr.single.observers]"/>/1+4+12 as indicated:
+</p>
+
+<blockquote><pre>
+typename add_lvalue_reference&lt;T&gt;::type operator*() const;
+</pre>
+<blockquote>
+<p>
+1 - <i>Requires:</i> <tt>get() != <del>0</del> <ins>nullptr</ins></tt>. <ins>The
+variable definition <tt>add_lvalue_reference&lt;T&gt;::type t = *get()</tt>
+shall be well formed, shall have well-defined behavior, and shall not exit via
+an exception.</ins>
+</p>
+<p>
+[..]
+</p>
+
+</blockquote>
+
+<pre>
+pointer operator-&gt;() const;
+</pre>
+
+<blockquote>
+<p>
+4 - <i>Requires:</i> <tt>get() != <del>0</del> <ins>nullptr</ins></tt>.
+</p>
+
+<p>
+[..]
+</p>
+
+</blockquote>
+
+<pre>
+explicit operator bool() const;
+</pre>
+
+<blockquote>
+12 - <i>Returns:</i> <tt>get() != <del>0</del><ins>nullptr</ins></tt>.
+</blockquote>
+</blockquote>
+</li>
+
+<li>
+<p>
+Change <sref ref="[unique.ptr.single.modifiers]"/>/1 as indicated:
+</p>
+
+<blockquote><pre>
+pointer release();
+</pre>
+
+<blockquote>
+1 - <i>Postcondition:</i> <tt>get() == <del>0</del> <ins>nullptr</ins></tt>.
+</blockquote>
+</blockquote>
+</li>
+
+<li>
+<p>
+Change <sref ref="[unique.ptr.single.modifiers]"/>/9 as indicated: <i>[The
+intent is to ensure that potentially user-defined swaps are used. A side-step
+fix and harmonization with the specification of the the deleter is realized.
+Please note the additional requirement in bullet 2 of this proposed resolution
+regarding the availability of the generic <tt>swap</tt> templates within the
+member <tt>swap</tt> function.]</i>
+</p>
+
+<blockquote><pre>
+void swap(unique_ptr&amp; u);
+</pre>
+
+<blockquote>
+<p>
+8 - <i>Requires:</i> The deleter <tt>D</tt> shall be <tt>Swappable</tt> and
+shall not throw an exception under <tt>swap</tt>.
+</p>
+
+<p>
+9 - <i>Effects:</i> The stored pointers of <tt><ins>*</ins>this</tt> and
+<tt>u</tt> are exchanged <ins>by an unqualified call to non-member
+<tt>swap</tt></ins>. The stored deleters are <del><tt>swap</tt>'d
+(unqualified)</del> <ins>exchanged by an unqualified call to non-member
+<tt>swap</tt></ins>.
+</p>
+</blockquote>
+</blockquote>
+</li>
+
+<li>
+<p>
+Change <sref ref="[unique.ptr.runtime.observers]"/>/1 as indicated:
+</p>
+
+<blockquote><pre>
+T&amp; operator[](size_t i) const;
+</pre>
+<blockquote>
+<i>Requires:</i> <tt>i &lt;</tt> the size of the array to which the stored
+pointer points. <ins>The variable definition <tt>T&amp; t = get()[i]</tt> shall
+be well formed, shall have well-defined behavior, and shall not exit via an
+exception.</ins>
+</blockquote>
+</blockquote>
+</li>
+
+<li>
+<p>
+Change <sref ref="[unique.ptr.runtime.modifiers]"/>/1 as indicated:
+</p>
+
+<blockquote><pre>
+void reset(pointer p = pointer());
+void reset(nullptr_t p);
+</pre>
+
+<blockquote>
+1 - <i>Effects:</i> If <tt>get() == <del>0</del> <ins>nullptr</ins></tt> there
+are no effects. Otherwise <tt>get_deleter()(get())</tt>.
+</blockquote>
+</blockquote>
+</li>
+
+<li>
+<p>
+Change <sref ref="[unique.ptr.special]"/> as indicated: <i>[We don't add the
+relational operators to the basic requirement set, therefore we need special
+handling here]</i>
+</p>
+
+<blockquote>
+<pre>
+template &lt;class T1, class D1, class T2, class D2&gt;
+  bool operator==(const unique_ptr&lt;T1, D1&gt;&amp; x, const unique_ptr&lt;T2, D2&gt;&amp; y);
+</pre>
+
+<blockquote>
+<p>
+<ins><i>Requires:</i> The variable definition <tt>bool b = x.get() ==
+y.get();</tt> shall be well formed, shall have well-defined behavior, and shall
+not exit via an exception.</ins>
+</p>
+
+<p>
+2 - <i>Returns:</i> <tt>x.get() == y.get()</tt>.
+</p>
+
+<p><ins>
+<i>Throws:</i> nothing.
+</ins></p>
+</blockquote>
+
+<pre>
+template &lt;class T1, class D1, class T2, class D2&gt;
+  bool operator!=(const unique_ptr&lt;T1, D1&gt;&amp; x, const unique_ptr&lt;T2, D2&gt;&amp; y);
+</pre>
+
+<blockquote>
+<p>
+<ins>Requires: The variable definition <tt>bool b = x.get() != y.get();</tt>
+shall be well formed, shall have well-defined behavior, and shall not exit via
+an exception.</ins>
+</p>
+
+<p>
+3 - <i>Returns:</i> <tt>x.get() != y.get()</tt>.
+</p>
+
+<p><ins>
+<i>Throws:</i> nothing.
+</ins></p>
+</blockquote>
+
+<pre>
+template &lt;class T1, class D1, class T2, class D2&gt;
+  bool operator&lt;(const unique_ptr&lt;T1, D1&gt;&amp; x, const unique_ptr&lt;T2, D2&gt;&amp; y);
+</pre>
+
+<blockquote>
+<p>
+<ins>Requires: The variable definition <tt>bool b = x.get() &lt; y.get()</tt>;
+shall be well formed, shall have well-defined behavior, and shall not exit via
+an exception.</ins>
+</p>
+
+<p>
+4 - <i>Returns:</i> <tt>x.get() &lt; y.get()</tt>.
+</p>
+
+<p><ins>
+<i>Throws:</i> nothing.
+</ins></p>
+</blockquote>
+
+<pre>
+template &lt;class T1, class D1, class T2, class D2&gt;
+  bool operator&lt;=(const unique_ptr&lt;T1, D1&gt;&amp; x, const unique_ptr&lt;T2, D2&gt;&amp; y);
+</pre>
+
+<blockquote>
+<p>
+<ins>Requires: The variable definition <tt>bool b = x.get() &lt;= y.get();</tt>
+shall be well formed, shall have well-defined behavior, and shall not exit via
+an exception.</ins>
+</p>
+
+<p>
+5 - <i>Returns:</i> <tt>x.get() &lt;= y.get()</tt>.
+</p>
+
+<p><ins>
+<i>Throws:</i> nothing.
+</ins></p>
+</blockquote>
+
+<pre>
+template &lt;class T1, class D1, class T2, class D2&gt;
+  bool operator&gt;(const unique_ptr&lt;T1, D1&gt;&amp; x, const unique_ptr&lt;T2, D2&gt;&amp; y);
+</pre>
+
+<blockquote>
+<p>
+<ins>Requires: The variable definition <tt>bool b = x.get() &gt; y.get();</tt>
+shall be well formed, shall have well-defined behavior, and shall not exit via
+an exception.</ins>
+</p>
+
+<p>
+6 - <i>Returns:</i> <tt>x.get() &gt; y.get()</tt>.
+</p>
+
+<p><ins>
+<i>Throws:</i> nothing.
+</ins></p>
+</blockquote>
+
+<pre>
+template &lt;class T1, class D1, class T2, class D2&gt;
+  bool operator&gt;=(const unique_ptr&lt;T1, D1&gt;&amp; x, const unique_ptr&lt;T2, D2&gt;&amp; y);
+</pre>
+
+<blockquote>
+<p>
+<ins>Requires: The variable definition <tt>bool b = x.get() &gt;= y.get();</tt>
+shall be well formed, shall have well-defined behavior, and shall not exit via
+an exception.</ins>
+</p>
+
+<p>
+7 - <i>Returns:</i> <tt>x.get() &gt;= y.get()</tt>.
+</p>
+
+<p><ins>
+<i>Throws:</i> nothing.
+</ins></p>
+</blockquote>
+
+</blockquote>
+</li>
+
+</ol>
+
+<!-- 
+<p>
+Add the following sentence just at the end of the newly proposed
+<sref ref="[unique.ptr.single]"/>/p. 3:
+</p>
+
+<blockquote>
+<tt>unique_ptr&lt;T, D&gt;::pointer</tt>'s operations shall be well-formed, shall have well
+defined behavior, and shall not throw exceptions.
+</blockquote>
+ -->
+</resolution>
+
+</issue>

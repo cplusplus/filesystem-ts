@@ -1,0 +1,60 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="1264" status="WP">
+<title><tt>quick_exit</tt> support for freestanding implementations</title>
+<section><sref ref="[compliance]"/></section>
+<submitter>Alisdair Meredith</submitter>
+<date>12 Nov 2009</date>
+
+<discussion>
+<p><b>Addresses UK 172</b></p>
+
+<p>
+This issue is a response to NB comment UK-172
+</p>
+
+<p>
+The functions <tt>quick_exit</tt> and <tt>at_quick_exit</tt> should be
+added to the required features of <tt>&lt;cstdlib&gt;</tt> in a
+freestanding implementation.
+</p>
+
+<p>
+This comment was rejected in Summit saying neither <tt>at_exit</tt> nor
+<tt>at_quick_exit</tt> should be required.  This suggests the comment was
+misread, as <tt>atexit</tt> is already required to be supported.  If the LWG
+really did wish to not require the registration functions be supported,
+then a separate issue should be opened to change the current standard.
+</p>
+
+<p>
+Given both <tt>exit</tt> and <tt>atexit</tt> are required, the UK panel feels it is
+appropriate to require the new <tt>quick_exit</tt> facility is similarly
+supported.
+</p>
+
+<note>
+2009-12-11 Moved to Tentatively Ready after 5 positive votes on c++std-lib.
+</note>
+</discussion>
+
+<resolution>
+<p>
+Ammend p3 Freestanding implementations <sref ref="[compliance]"/>
+</p>
+
+<blockquote>
+3 The supplied version of the header <tt>&lt;cstdlib&gt;</tt> shall
+declare at least the functions <tt>abort<del>()</del></tt>, <tt>atexit<del>()</del></tt>,
+<ins><tt>at_quick_exit</tt>,</ins> <del>and</del> <tt>exit<del>()</del></tt><ins>, and
+<tt>quick_exit</tt></ins>(<sref ref="[support.start.term]"/>). The other
+headers listed in this table shall meet the same requirements as for a
+hosted implementation.
+</blockquote>
+
+</resolution>
+
+</issue>

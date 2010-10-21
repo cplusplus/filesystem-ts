@@ -1,0 +1,82 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="598" status="TRDec">
+<title>Decimal: Conversion to integral should truncate, not round.</title>
+<section><sref ref="[trdec.types.types]"/></section>
+<submitter>Daniel Krugler</submitter>
+<date>28 May 2006</date>
+
+<discussion>
+
+<p>
+In a private email, Daniel writes:
+</p>
+<blockquote>
+<p>
+I would like to 
+ask, what where the reason for the decision to 
+define the semantics of the integral conversion of the decimal types, namely
+</p>
+<pre>
+"operator long long() const;
+
+     Returns: Returns the result of the 
+conversion of *this to the type long long, as if 
+performed by the expression llrounddXX(*this)."
+</pre>
+<p>
+where XX stands for either 32, 64, or 128, 
+corresponding to the proper decimal type. The 
+exact meaning of llrounddXX is not given in that 
+paper, so I compared it to the corresponding 
+definition given in C99, 2nd edition (ISO 9899), which says in 7.12.9.7 p. 2:
+</p>
+<p>
+"The lround and llround functions round their 
+argument to the nearest integer value,
+rounding halfway cases away from zero, regardless 
+of the current rounding direction. [..]"
+</p>
+<p>
+Now considering the fact that integral conversion 
+of the usual floating-point types ("4.9 
+Floating-integral conversions") has truncation 
+semantic I wonder why this conversion behaviour 
+has not been transferred for the decimal types. 
+</p>
+</blockquote>
+<p>
+Robert comments:
+</p>
+<p>
+Also, there is a further error in the <b>Returns:</b> clause for converting <code>decimal::decimal128</code> to <code>long long</code>.  It currently calls <code>llroundd64</code>, not <code>llroundd128</code>.
+</p>
+
+</discussion>
+
+<resolution>
+<p>
+Change the <b>Returns:</b> clause in 3.2.2.4 to:
+</p>
+<blockquote><p>
+<b>Returns:</b> Returns the result of the conversion of <code>*this</code> to the type <code>long long</code>, as if performed by the expression <code>llroundd32(*this)</code> <ins>while the decimal rounding direction mode [3.5.2] <code>FE_DEC_TOWARD_ZERO</code> is in effect</ins>.
+</p></blockquote>
+<p>
+Change the <b>Returns:</b> clause in 3.2.3.4 to:
+</p>
+<blockquote><p>
+<b>Returns:</b> Returns the result of the conversion of <code>*this</code> to the type <code>long long</code>, as if performed by the expression <code>llroundd64(*this)</code> <ins>while the decimal rounding direction mode [3.5.2] <code>FE_DEC_TOWARD_ZERO</code> is in effect</ins>.
+</p></blockquote>
+<p>
+Change the <b>Returns:</b> clause in 3.2.4.4 to:
+</p>
+<blockquote><p>
+<b>Returns:</b> Returns the result of the conversion of <code>*this</code> to the type <code>long long</code>, as if performed by the expression <del><code>llroundd64(*this)</code></del> <ins><code>llroundd128(*this)</code> while the decimal rounding direction mode [3.5.2] <code>FE_DEC_TOWARD_ZERO</code> is in effect</ins>.
+</p></blockquote>
+
+</resolution>
+</issue>
+

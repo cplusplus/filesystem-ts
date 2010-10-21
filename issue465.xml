@@ -1,0 +1,49 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="465" status="CD1">
+<title>Contents of &lt;ciso646></title>
+<section><sref ref="[headers]"/></section>
+<submitter>Steve Clamage</submitter>
+<date>3 Jun 2004</date>
+
+<discussion>
+<p>C header &lt;iso646.h> defines macros for some operators, such as
+not_eq for !=.</p>
+
+<p>Section <sref ref="[headers]"/> "Headers" says that except as noted in
+clauses 18 through 27, the &lt;cname> C++ header contents are the same
+as the C header &lt;name.h>. In particular, table 12 lists
+&lt;ciso646> as a C++ header.</p>
+
+<p>I don't find any other mention of &lt;ciso646>, or any mention of
+&lt;iso646.h>, in clauses 17 thorough 27. That implies that the
+contents of &lt;ciso646> are the same as C header &lt;iso646.h>.</p>
+
+<p>Annex C (informative, not normative) in [diff.header.iso646.h] C.2.2.2
+"Header &lt;iso646.h>" says that the alternative tokens are not
+defined as macros in &lt;ciso646>, but does not mention the contents
+of &lt;iso646.h>.</p>
+
+<p>I don't find any normative text to support C.2.2.2.</p>
+
+</discussion>
+
+<resolution>
+<p>Add to section 17.4.1.2 Headers [lib.headers] a new paragraph after
+  paragraph 6 (the one about functions must be functions):</p> 
+
+<blockquote>
+<p>Identifiers that are keywords or operators in C++ shall not be defined
+as macros in C++ standard library headers. 
+[Footnote:In particular, including the standard header &lt;iso646.h>
+or &lt;ciso646> has no effect. </p>
+</blockquote>
+
+<note>post-Redmond: Steve provided wording.</note>
+
+</resolution>
+
+</issue>

@@ -1,0 +1,42 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="261" status="CD1">
+<title>Missing description of <tt>istream_iterator::operator!=</tt></title>
+<section><sref ref="[istream.iterator.ops]"/></section>
+<submitter>Martin Sebor</submitter>
+<date>27 Aug 2000</date>
+
+<discussion>
+<p>
+24.5.1, p3 lists the synopsis for
+</p>
+
+<pre>
+   template &lt;class T, class charT, class traits, class Distance&gt;
+        bool operator!=(const istream_iterator&lt;T,charT,traits,Distance&gt;&amp; x,
+                        const istream_iterator&lt;T,charT,traits,Distance&gt;&amp; y);
+</pre>
+
+<p>
+but there is no description of what the operator does (i.e., no Effects
+or Returns clause) in 24.5.1.2.
+</p>
+</discussion>
+
+<resolution>
+<p>
+Add paragraph 7 to the end of section 24.5.1.2 with the following text:
+</p>
+
+<pre>
+   template &lt;class T, class charT, class traits, class Distance&gt;
+        bool operator!=(const istream_iterator&lt;T,charT,traits,Distance&gt;&amp; x,
+                        const istream_iterator&lt;T,charT,traits,Distance&gt;&amp; y);
+</pre>
+
+<p>-7- Returns: !(x == y).</p>
+</resolution>
+</issue>

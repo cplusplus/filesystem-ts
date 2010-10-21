@@ -1,0 +1,482 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="1052" status="NAD Future">
+<title>Response to UK 281</title>
+<section><sref ref="[reverse.iter.opref]"/></section>
+<submitter>Alisdair Meredith</submitter>
+<date>12 Mar 2009</date>
+
+<discussion>
+
+<p><b>Addresses UK 281</b></p>
+
+<p>
+The current specification for return value for <tt>reverse_iterator::operator-&gt;</tt>
+will always be a true pointer type, but <tt>reverse_iterator</tt> supports proxy
+iterators where the pointer type may be some kind of 'smart pointer'.
+</p>
+
+<note>
+Summit:
+</note>
+
+<blockquote>
+<p>
+<tt>move_iterator</tt> avoids this problem by returning a value of the wrapped
+Iterator type.
+study group formed to come up with a suggested resolution.
+</p>
+<p>
+<tt>move_iterator</tt> solution shown in proposed wording.
+</p>
+</blockquote>
+
+<note>
+2009-07 post-Frankfurt:
+</note>
+
+<blockquote>
+Howard to deconceptize. Move to Review after that happens.
+</blockquote>
+
+<note>
+2009-08-01 Howard deconceptized:
+</note>
+
+<blockquote>
+</blockquote>
+
+<note>
+2009-10 Santa Cruz:
+</note>
+
+<blockquote>
+<p>
+We can't think of any reason we can't just define reverse
+iterator's pointer types to be the same as the underlying iterator's
+pointer type, and get it by calling the right arrow directly.
+</p>
+<p>
+Here is the proposed wording that was replaced:
+</p>
+<blockquote><pre>
+template &lt;class Iterator&gt; 
+class reverse_iterator { 
+  ...
+  typedef <del>typename iterator_traits&lt;</del>Iterator<del>&gt;::pointer</del> pointer;
+</pre></blockquote>
+
+<p>
+Change <sref ref="[reverse.iter.opref]"/>:
+</p>
+
+<blockquote><pre>
+pointer operator-&gt;() const;
+</pre>
+<blockquote>
+<i>Returns:</i>
+<blockquote><pre>
+<del>&amp;(operator*());</del>
+<ins>this-&gt;tmp = current;</ins>
+<ins>--this-&gt;tmp;</ins>
+<ins>return this-&gt;tmp;</ins>
+</pre></blockquote>
+</blockquote>
+</blockquote>
+</blockquote>
+
+<note>
+2010-03-03 Daniel opens:
+</note>
+
+<blockquote>
+<ol>
+
+<li>
+There is a minor problem with the exposition-only declaration of the private
+member <tt>deref_tmp</tt> which is modified in a const member function (and the
+same problem occurs in the specification of <tt>operator*</tt>). The fix is to
+make it a mutable member.
+</li>
+
+<li>
+<p>
+The more severe problem is that the resolution for some reasons
+does not explain in the rationale why it was decided to differ from
+the suggested fix (using <tt>deref_tmp</tt> instead of <tt>tmp</tt>) in the
+[ 2009-10 Santa Cruz] comment:
+</p>
+
+<blockquote><pre>
+this-&gt;deref_tmp = current;
+--this-&gt;deref_tmp;
+return this-&gt;deref_tmp;
+</pre></blockquote>
+
+<p>
+combined with the change of
+</p>
+
+<blockquote><pre>
+typedef typename iterator_traits&lt;Iterator&gt;::pointer pointer;
+</pre></blockquote>
+
+<p>
+to
+</p>
+
+<blockquote><pre>
+typedef Iterator pointer;
+</pre></blockquote>
+
+<p>
+The problem of the agreed on wording is that the following rather
+typical example, that compiled with the wording before 1052 had
+been applied, won't compile anymore:
+</p>
+
+<blockquote><pre>
+#include &lt;iterator&gt;
+#include &lt;utility&gt;
+
+int main() {
+  typedef std::pair&lt;int, double&gt; P;
+  P op;
+  std::reverse_iterator&lt;P*&gt; ri(&amp;op + 1);
+  ri-&gt;first; // Error
+}
+</pre></blockquote>
+
+<p>
+Comeau online returns (if a correspondingly changed
+<tt>reverse_iterator</tt> is used):
+</p>
+
+<blockquote><pre>
+"error: expression must have class type
+     return deref_tmp.operator-&gt;();
+            ^
+         detected during instantiation of "Iterator
+                   reverse_iterator&lt;Iterator&gt;::operator-&gt;() const [with
+                   Iterator=std::pair&lt;int, double&gt; *]""
+</pre></blockquote>
+
+<p>
+Thus the change will break valid, existing code based
+on <tt>std::reverse_iterator</tt>.
+</p>
+
+</li>
+
+</ol>
+
+<p>
+IMO the suggestion proposed in the comment is a necessary fix, which harmonizes
+with the similar specification of <tt>std::move_iterator</tt> and properly
+reflects the recursive nature of the evaluation of <tt>operator-&gt;</tt>
+overloads.
+</p>
+
+<p>
+Suggested resolution:
+</p>
+
+<ol>
+
+<li>
+<p>
+In the class template <tt>reverse_iterator</tt> synopsis of <sref
+ref="[reverse.iterator]"/> change as indicated:
+</p>
+
+<blockquote><pre>
+namespace std {
+template &lt;class Iterator&gt;
+class reverse_iterator : public
+             iterator&lt;typename iterator_traits&lt;Iterator&gt;::iterator_category,
+             typename iterator_traits&lt;Iterator&gt;::value_type,
+             typename iterator_traits&lt;Iterator&gt;::difference_type,
+             <del>typename iterator_traits&lt;</del>Iterator<del>&gt;::pointer</del>,
+             typename iterator_traits&lt;Iterator&gt;::reference&gt; {
+public:
+  [..]
+  typedef <del>typename iterator_traits&lt;</del>Iterator<del>&gt;::pointer</del> pointer;
+  [..]
+protected:
+  Iterator current;
+private:
+  <ins>mutable</ins> Iterator deref_tmp; // exposition only
+};
+</pre></blockquote>
+</li>
+
+<li>
+Change <sref ref="[reverse.iter.opref]"/>/1 as indicated:
+
+<blockquote><pre>
+pointer operator-&gt;() const;
+</pre>
+
+<blockquote>
+1 <i><del>Returns</del> <ins>Effects</ins>:</i> <del><tt>&amp;(operator*())</tt>.</del>
+<blockquote><pre>
+<ins>deref_tmp = current;</ins>
+<ins>--deref_tmp;</ins>
+<ins>return deref_tmp;</ins>
+</pre></blockquote>
+</blockquote>
+</blockquote>
+
+</li>
+
+</ol>
+
+</blockquote>
+
+<note>
+2010 Pittsburgh:
+</note>
+
+<blockquote>
+<p>
+We prefer to make to use a local variable instead of <tt>deref_tmp</tt> within
+<tt>operator-&gt;()</tt>.  And although this means that the <tt>mutable</tt>
+change is no longer needed, we prefer to keep it because it is needed for
+<tt>operator*()</tt> anyway.
+</p>
+
+<p>
+Here is the proposed wording that was replaced:
+</p>
+
+<blockquote class="note">
+<p>
+Change <sref ref="[reverse.iter.opref]"/>:
+</p>
+
+<blockquote><pre>
+pointer operator-&gt;() const;
+</pre>
+
+<blockquote>
+
+<i>Returns:</i>
+<blockquote><pre>
+<del>&amp;(operator*());</del>
+<ins>deref_tmp = current;
+--deref_tmp;
+return deref_tmp::operator-&gt;();</ins>
+</pre></blockquote>
+
+</blockquote>
+</blockquote>
+
+
+</blockquote>
+</blockquote>
+
+<note>
+2010-03-10 Howard adds:
+</note>
+
+<blockquote>
+<p>
+Here are three tests that the current proposed wording passes, and no
+other solution I've seen passes all three:
+</p>
+
+<ol>
+<li>
+<p>
+Proxy pointer support:
+</p>
+<blockquote><pre>
+#include &lt;iterator&gt;
+#include &lt;cassert&gt;
+
+struct X { int m; };
+
+X x;
+
+struct IterX {
+    typedef std::bidirectional_iterator_tag iterator_category;
+    typedef X&amp; reference;
+    struct pointer
+    {
+        pointer(X&amp; v) : value(v) {}
+        X&amp; value;
+        X* operator-&gt;() const {return &amp;value;}
+    };
+    typedef std::ptrdiff_t difference_type;
+    typedef X value_type;
+    // additional iterator requirements not important for this issue
+    
+    reference operator*() const { return x; }
+    pointer operator-&gt;() const { return pointer(x); }
+    IterX&amp; operator--() {return *this;}
+
+};
+
+int main()
+{
+    std::reverse_iterator&lt;IterX&gt; ix;
+    assert(&amp;ix-&gt;m == &amp;(*ix).m);
+}
+</pre></blockquote>
+</li>
+<li>
+<p>
+Raw pointer support:
+</p>
+<blockquote><pre>
+#include &lt;iterator&gt;
+#include &lt;utility&gt;
+
+int main() {
+  typedef std::pair&lt;int, double&gt; P;
+  P op;
+  std::reverse_iterator&lt;P*&gt; ri(&amp;op + 1);
+  ri-&gt;first; // Error
+}
+</pre></blockquote>
+</li>
+<li>
+<p>
+Caching iterator support:
+</p>
+<blockquote><pre>
+#include &lt;iterator&gt;
+#include &lt;cassert&gt;
+
+struct X { int m; };
+
+struct IterX {
+    typedef std::bidirectional_iterator_tag iterator_category;
+    typedef X&amp; reference;
+    typedef X* pointer;
+    typedef std::ptrdiff_t difference_type;
+    typedef X value_type;
+    // additional iterator requirements not important for this issue
+    
+    reference operator*() const { return value; }
+    pointer operator-&gt;() const { return &amp;value; }
+    IterX&amp; operator--() {return *this;}
+
+private:
+    mutable X value;
+};
+
+int main()
+{
+    std::reverse_iterator&lt;IterX&gt; ix;
+    assert(&amp;ix-&gt;m == &amp;(*ix).m);
+}
+</pre></blockquote>
+</li>
+</ol>
+</blockquote>
+
+<note>
+2010 Pittsburgh:
+</note>
+
+<blockquote>
+Moved to NAD Future, rationale added.
+</blockquote>
+
+
+</discussion>
+
+<rationale>
+<p>
+The LWG did not reach a consensus for a change to the WP.
+</p>
+</rationale>
+
+<resolution>
+
+<ol>
+
+<li>
+<p>
+In the class template <tt>reverse_iterator</tt> synopsis of <sref
+ref="[reverse.iterator]"/> change as indicated:
+</p>
+
+<blockquote><pre>
+namespace std {
+template &lt;class Iterator&gt;
+class reverse_iterator : public
+             iterator&lt;typename iterator_traits&lt;Iterator&gt;::iterator_category,
+             typename iterator_traits&lt;Iterator&gt;::value_type,
+             typename iterator_traits&lt;Iterator&gt;::difference_type,
+             <del>typename iterator_traits&lt;</del>Iterator<ins>&amp;</ins><del>&gt;::pointer</del>,
+             typename iterator_traits&lt;Iterator&gt;::reference&gt; {
+public:
+  [..]
+  typedef <del>typename iterator_traits&lt;</del>Iterator<ins>&amp;</ins><del>&gt;::pointer</del> pointer;
+  [..]
+protected:
+  Iterator current;
+private:
+  <ins>mutable</ins> Iterator deref_tmp; // exposition only
+};
+</pre></blockquote>
+</li>
+
+<li>
+Change <sref ref="[reverse.iter.opref]"/>/1 as indicated:
+
+<blockquote><pre>
+pointer operator-&gt;() const;
+</pre>
+
+<blockquote>
+1 <i><del>Returns</del> <ins>Effects</ins>:</i> <del><tt>&amp;(operator*())</tt>.</del>
+<blockquote><pre>
+<ins>deref_tmp = current;</ins>
+<ins>--deref_tmp;</ins>
+<ins>return deref_tmp;</ins>
+</pre></blockquote>
+</blockquote>
+</blockquote>
+
+</li>
+
+</ol>
+
+
+
+<!-- 
+<blockquote><pre>
+template &lt;class Iterator&gt; 
+class reverse_iterator { 
+  ...
+  typedef <del>typename iterator_traits&lt;</del>Iterator<del>&gt;::pointer</del> pointer;
+</pre></blockquote>
+
+<p>
+Change <sref ref="[reverse.iter.opref]"/>:
+</p>
+
+<blockquote><pre>
+pointer operator-&gt;() const;
+</pre>
+<blockquote>
+<i>Returns:</i>
+<blockquote><pre>
+<del>&amp;(operator*());</del>
+<ins>this-&gt;tmp = current;</ins>
+<ins>--this-&gt;tmp;</ins>
+<ins>return this-&gt;tmp;</ins>
+</pre></blockquote>
+</blockquote>
+</blockquote>
+ -->
+
+</resolution>
+
+</issue>

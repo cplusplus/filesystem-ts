@@ -1,0 +1,36 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="135" status="NAD">
+<title>basic_iostream doubly initialized</title>
+<section><sref ref="[iostream.cons]"/></section>
+<submitter>Howard Hinnant</submitter>
+<date>6 Mar 1999</date>
+
+<discussion>
+<p>-1- Effects Constructs an object of class basic_iostream, assigning
+initial values to the base classes by calling
+basic_istream&lt;charT,traits&gt;(sb) (lib.istream) and
+basic_ostream&lt;charT,traits&gt;(sb) (lib.ostream)</p>
+
+<p>The called for basic_istream and basic_ostream constructors call
+init(sb). This means that the basic_iostream's virtual base class is
+initialized twice.</p>
+</discussion>
+
+<resolution>
+<p>Change 27.6.1.5.1, paragraph 1 to:</p>
+
+<p>-1- Effects Constructs an object of class basic_iostream, assigning
+initial values to the base classes by calling
+basic_istream&lt;charT,traits&gt;(sb) (lib.istream).</p>
+</resolution>
+
+<rationale>
+<p>The LWG agreed that the <tt> init()</tt> function is called
+twice, but said that this is harmless and so not a defect in the
+standard.</p>
+</rationale>
+</issue>

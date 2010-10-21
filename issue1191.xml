@@ -1,0 +1,133 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="1191" status="Open">
+<title><tt>tuple get</tt> API should respect rvalues</title>
+<section><sref ref="[tuple.elem]"/></section>
+<submitter>Alisdair Meredith</submitter>
+<date>18 Aug 2009</date>
+
+<discussion>
+<p>
+The <tt>tuple get</tt> API should respect rvalues.  This would allow for moving a
+single element out of a <tt>tuple</tt>-like type.
+</p>
+
+<note>
+2009-10-30 Alisdair adds:
+</note>
+
+<blockquote>
+<p>
+The issue of rvalue overloads of get for tuple-like types was briefly
+discussed in Santa Cruz.
+</p>
+
+<p>
+The feedback was this would be welcome, but we need full wording for the
+other types (<tt>pair</tt> and <tt>array</tt>) before advancing.
+</p>
+
+<p>
+I suggest the issue moves to Open from New as it has been considered,
+feedback given, and it has not (yet) been rejected as NAD.
+</p>
+</blockquote>
+
+</discussion>
+
+<resolution>
+<p>
+Add the following signature to p2 <sref ref="[tuple.general]"/>
+</p>
+
+<blockquote><pre><ins>
+template &lt;size_t I, class ... Types&gt;
+typename tuple_element&lt;I, tuple&lt;Types...&gt; &gt;::type&amp;&amp; get(tuple&lt;Types...&gt; &amp;&amp;);
+</ins></pre></blockquote>
+
+<p>
+And again to <sref ref="[tuple.elem]"/>.
+</p>
+
+<blockquote><pre><ins>
+template &lt;size_t I, class ... Types&gt;
+typename tuple_element&lt;I, tuple&lt;Types...&gt; &gt;::type&amp;&amp; get(tuple&lt;Types...&gt;&amp;&amp; t);
+</ins></pre>
+
+<blockquote>
+<p><ins>
+<i>Effects:</i> Equivalent to <tt>return std::forward&lt;typename tuple_element&lt;I, tuple&lt;Types...&gt; &gt;::type&amp;&amp;&gt;(get&lt;I&gt;(t));</tt>
+</ins></p>
+
+
+<p><ins>
+[<i>Note:</i> If a <tt>T</tt> in <tt>Types</tt> is some reference type <tt>X&amp;</tt>,
+the return type is <tt>X&amp;</tt>, not <tt>X&amp;&amp;</tt>.
+However, if the element type is non-reference type <tt>T</tt>,
+the return type is <tt>T&amp;&amp;</tt>. &mdash; <i>end note</i>]
+</ins></p>
+
+</blockquote>
+</blockquote>
+
+<p>
+Add the following signature to p1 <sref ref="[utility]"/>
+</p>
+
+<blockquote><pre><ins>
+template &lt;size_t I, class T1, class T2&gt;
+typename tuple_element&lt;I, pair&lt;T1,T2&gt; &gt;::type&amp;&amp; get(pair&lt;T1, T2&gt;&amp;&amp;);
+</ins></pre></blockquote>
+
+<p>
+And to p5 <sref ref="[pair.astuple]"/>
+</p>
+
+<blockquote><pre><ins>
+template &lt;size_t I, class T1, class T2&gt;
+typename tuple_element&lt;I, pair&lt;T1,T2&gt; &gt;::type&amp;&amp; get(pair&lt;T1, T2&gt;&amp;&amp; p);
+</ins></pre>
+
+<blockquote>
+<p><ins>
+<i>Returns:</i> If <tt>I == 0</tt> returns <tt>std::forward&lt;T1&amp;&amp;&gt;(p.first)</tt>;
+if <tt>I == 1</tt>
+returns <tt>std::forward&lt;T2&amp;&amp;&gt;(p.second)</tt>; otherwise the program is ill-formed.
+</ins></p>
+
+<p><ins>
+<i>Throws:</i> Nothing.
+</ins></p>
+
+</blockquote>
+
+</blockquote>
+
+<p>
+Add the following signature to <sref ref="[sequences]"/> <tt>&lt;array&gt;</tt> synopsis
+</p>
+
+<blockquote><pre><ins>template &lt;size_t I, class T, size_t N&gt;
+T&amp;&amp; get(array&lt;T,N&gt; &amp;&amp;);
+</ins></pre></blockquote>
+
+<p>
+And after p8 <sref ref="[array.tuple]"/>
+</p>
+
+<blockquote><pre>
+<ins>template &lt;size_t I, class T, size_t N&gt;
+T&amp;&amp; get(array&lt;T,N&gt; &amp;&amp; a);
+</ins></pre>
+
+<blockquote><ins>
+<i>Effects:</i> Equivalent to <tt>return std::move(get&lt;I&gt;(a));</tt>
+</ins></blockquote>
+</blockquote>
+
+</resolution>
+
+</issue>

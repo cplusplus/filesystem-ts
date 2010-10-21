@@ -1,0 +1,117 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="1183" status="Open">
+<title><tt>basic_ios::set_rdbuf</tt> may break class invariants</title>
+<section><sref ref="[basic.ios.members]"/></section>
+<submitter>Daniel Kr&uuml;gler</submitter>
+<date>28 Jul 2009</date>
+
+<discussion>
+<p>
+The protected member function <tt>set_rdbuf</tt> had been added during the
+process of adding move and swap semantics to IO classes. A relevant
+property of this function is described by it's effects in
+<sref ref="[basic.ios.members]"/>/19:
+</p>
+
+<blockquote>
+<i>Effects:</i> Associates the <tt>basic_streambuf</tt> object pointed to by sb with
+this stream without calling <tt>clear()</tt>.
+</blockquote>
+
+<p>
+This means that implementors of or those who derive from existing IO classes
+could cause an internal state where the stream buffer could be 0, but the
+IO class has the state <tt>good()</tt>. This would break several currently existing
+implementations which rely on the fact that setting a stream buffer via the
+currently only ways, i.e. either by calling
+</p>
+
+<blockquote><pre>
+void init(basic_streambuf&lt;charT,traits&gt;* sb);
+</pre></blockquote>
+
+<p>
+or by calling
+</p>
+
+<blockquote><pre>
+basic_streambuf&lt;charT,traits&gt;* rdbuf(basic_streambuf&lt;charT,traits&gt;* sb);
+</pre></blockquote>
+
+<p>
+to set <tt>rdstate()</tt> to <tt>badbit</tt>, if the buffer is 0. This has the effect that many
+internal functions can simply check <tt>rdstate()</tt> instead of <tt>rdbuf()</tt> for being 0.
+</p>
+
+<p>
+I therefore suggest that a requirement is added for callers of <tt>set_rdbuf</tt> to
+set a non-0 value.
+</p>
+
+<note>
+2009-10 Santa Cruz:
+</note>
+
+<blockquote>
+Moved to Open.  Martin volunteers to provide new wording, where
+<tt>set_rdbuf()</tt> sets the <tt>badbit</tt> but does not cause an
+exception to be thrown like a call to <tt>clear()</tt> would.
+</blockquote>
+
+<note>
+2009-10-20 Martin provides wording:
+</note>
+
+</discussion>
+
+<resolution>
+<p>
+Change <sref ref="[basic.ios.members]"/> around p. 19 as indicated:
+</p>
+
+<blockquote><pre>
+void set_rdbuf(basic_streambuf&lt;charT, traits&gt;* sb);
+</pre>
+
+<blockquote>
+<p><del>
+<i>Effects:</i> Associates the <tt>basic_streambuf</tt> object pointed
+to by <tt>sb</tt> with this stream without calling <tt>clear()</tt>.
+<i>Postconditions:</i> <tt>rdbuf() == sb</tt>.
+</del></p>
+
+<p><ins>
+<i>Effects:</i> As if:
+</ins></p>
+
+<blockquote><pre><ins>
+iostate state = rdstate();
+try { rdbuf(sb); }
+catch(ios_base::failure) {
+   if (0 == (state &amp; ios_base::badbit))
+       unsetf(badbit);
+}
+</ins></pre></blockquote>
+
+<p>
+<i>Throws:</i> Nothing.
+</p>
+
+</blockquote>
+</blockquote>
+</resolution>
+
+<rationale>
+We need to be able to call <tt>set_rdbuf()</tt> on stream objects
+for which (<tt>rdbuf() == 0</tt>) holds without causing <tt>ios_base::failure</tt> to
+be thrown. We also don't want <tt>badbit</tt> to be set as a result of
+setting <tt>rdbuf()</tt> to 0 if it wasn't set before the call. This changed
+Effects clause maintains the current behavior (as of N2914) without
+requiring that <tt>sb</tt> be non-null.
+</rationale>
+
+</issue>

@@ -1,0 +1,186 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="226" status="CD1">
+<title>User supplied specializations or overloads of namespace std function templates</title>
+<section><sref ref="[reserved.names]"/></section>
+<submitter>Dave Abrahams</submitter>
+<date>01 Apr 2000</date>
+
+<discussion>
+<p>The issues are:&nbsp;</p>
+<p>1. How can a 3rd party library implementor (lib1) write a version of a standard
+algorithm which is specialized to work with his own class template?&nbsp;</p>
+<p>2. How can another library implementor (lib2) write a generic algorithm which 
+will take advantage of the specialized algorithm in lib1?</p>
+<p>This appears to be the only viable answer under current language rules:</p>
+<blockquote>
+  <pre>namespace lib1
+{
+    // arbitrary-precision numbers using T as a basic unit
+    template &lt;class T&gt;
+    class big_num { //...
+    };
+    </pre>
+  <pre>    // defining this in namespace std is illegal (it would be an
+    // overload), so we hope users will rely on Koenig lookup
+    template &lt;class T&gt;
+    void swap(big_int&lt;T&gt;&amp;, big_int&lt;T&gt;&amp;);
+}</pre>
+  <pre>#include &lt;algorithm&gt;
+namespace lib2
+{
+    template &lt;class T&gt;
+    void generic_sort(T* start, T* end)
+    {
+            ...
+        // using-declaration required so we can work on built-in types
+        using std::swap;
+        // use Koenig lookup to find specialized algorithm if available
+        swap(*x, *y);
+    }
+}</pre>
+</blockquote>
+<p>This answer has some drawbacks. First of all, it makes writing lib2 difficult
+and somewhat slippery. The implementor needs to remember to write the
+using-declaration, or generic_sort will fail to compile when T is a built-in
+type. The second drawback is that the use of this style in lib2 effectively
+&quot;reserves&quot; names in any namespace which defines types which may
+eventually be used with lib2. This may seem innocuous at first when applied to
+names like swap, but consider more ambiguous names like unique_copy() instead.
+It is easy to imagine the user wanting to define these names differently in his
+own namespace. A definition with semantics incompatible with the standard
+library could cause serious problems (see issue <iref ref="225"/>).</p>
+<p>Why, you may ask, can't we just partially specialize std::swap()? It's
+because the language doesn't allow for partial specialization of function
+templates. If you write:</p>
+<blockquote>
+  <pre>namespace std
+{
+    template &lt;class T&gt;
+    void swap(lib1::big_int&lt;T&gt;&amp;, lib1::big_int&lt;T&gt;&amp;);
+}</pre>
+</blockquote>
+<p>You have just overloaded std::swap, which is illegal under the current
+language rules. On the other hand, the following full specialization is legal:</p>
+<blockquote>
+  <pre>namespace std
+{
+    template &lt;&gt;
+    void swap(lib1::other_type&amp;, lib1::other_type&amp;);
+}</pre>
+</blockquote>
+
+<p>This issue reflects concerns raised by the &quot;Namespace issue
+with specialized swap&quot; thread on comp.lang.c++.moderated. A
+similar set of concerns was earlier raised on the boost.org mailing
+list and the ACCU-general mailing list.  Also see library reflector
+message c++std-lib-7354.</p>
+
+<p>
+J. C. van Winkel points out (in c++std-lib-9565) another unexpected
+fact: it's impossible to output a container of std::pair's using copy
+and an ostream_iterator, as long as both pair-members are built-in or
+std:: types.  That's because a user-defined operator&lt;&lt; for (for
+example) std::pair&lt;const std::string, int&gt; will not be found:
+lookup for operator&lt;&lt; will be performed only in namespace std.
+Opinions differed on whether or not this was a defect, and, if so,
+whether the defect is that something is wrong with user-defined
+functionality and std, or whether it's that the standard library does
+not provide an operator&lt;&lt; for std::pair&lt;&gt;.
+</p>
+
+</discussion>
+
+<resolution>
+
+<p>Adopt the wording proposed in Howard Hinnant's paper
+  N1523=03-0106, "Proposed Resolution To LWG issues 225, 226, 229".</p>
+
+
+<note>Tokyo: Summary, &quot;There is no conforming way to extend
+std::swap for user defined templates.&quot;&nbsp; The LWG agrees that
+there is a problem.  Would like more information before
+proceeding. This may be a core issue.  Core issue 229 has been opened
+to discuss the core aspects of this problem. It was also noted that
+submissions regarding this issue have been received from several
+sources, but too late to be integrated into the issues list.
+</note>
+
+<note>Post-Tokyo: A paper with several proposed resolutions,
+J16/00-0029==WG21/N1252, &quot;Shades of namespace std functions
+&quot; by Alan Griffiths, is in the Post-Tokyo mailing. It
+should be considered a part of this issue.</note>
+
+<note>Toronto: Dave Abrahams and Peter Dimov have proposed a
+resolution that involves core changes: it would add partial
+specialization of function template.  The Core Working Group is
+reluctant to add partial specialization of function templates.  It is
+viewed as a large change, CWG believes that proposal presented leaves
+some syntactic issues unanswered; if the CWG does add partial
+specialization of function templates, it wishes to develop its own
+proposal.  The LWG continues to believe that there is a serious
+problem: there is no good way for users to force the library to use
+user specializations of generic standard library functions, and in
+certain cases (e.g. transcendental functions called by
+<tt>valarray</tt> and <tt>complex</tt>) this is important.  Koenig
+lookup isn't adequate, since names within the library must be
+qualified with <tt>std</tt> (see issue 225), specialization doesn't
+work (we don't have partial specialization of function templates), and
+users aren't permitted to add overloads within namespace std.
+</note>
+
+<note>Copenhagen: Discussed at length, with no consensus.  Relevant
+papers in the pre-Copenhagen mailing: N1289, N1295, N1296.  Discussion
+focused on four options. (1) Relax restrictions on overloads within
+namespace std. (2) Mandate that the standard library use unqualified
+calls for <tt>swap</tt> and possibly other functions.  (3) Introduce
+helper class templates for <tt>swap</tt> and possibly other functions.
+(4) Introduce partial specialization of function templates.  Every
+option had both support and opposition.  Straw poll (first number is
+support, second is strongly opposed): (1) 6, 4; (2) 6, 7; (3) 3, 8;
+(4) 4, 4.</note>
+
+<note>Redmond: Discussed, again no consensus.  Herb presented an
+argument that a user who is defining a type <tt>T</tt> with an
+associated <tt>swap</tt> should not be expected to put that
+<tt>swap</tt> in namespace std, either by overloading or by partial
+specialization.  The argument is that <tt>swap</tt> is part of
+<tt>T</tt>'s interface, and thus should to in the same namespace as
+<tt>T</tt> and only in that namespace.  If we accept this argument,
+the consequence is that standard library functions should use
+unqualified call of <tt>swap</tt>.  (And which other functions? Any?)
+A small group (Nathan, Howard, Jeremy, Dave, Matt, Walter, Marc) will
+try to put together a proposal before the next meeting.</note>
+
+<note>Cura&ccedil;ao: An LWG-subgroup spent an afternoon working on issues
+225, 226, and 229.  Their conclusion was that the issues should be
+separated into an LWG portion (Howard's paper, N1387=02-0045), and a
+EWG portion (Dave will write a proposal). The LWG and EWG had
+(separate) discussions of this plan the next day.  The proposed
+resolution is the one proposed by Howard.</note>
+
+<note>Santa Cruz: the LWG agreed with the general direction of
+  Howard's paper, N1387.  (Roughly: Koenig lookup is disabled unless
+  we say otherwise; this issue is about when we do say otherwise.)
+  However, there were concerns about wording.  Howard will provide new
+  wording.  Bill and Jeremy will review it.</note>
+
+<note>Kona: Howard proposed the new wording.  The LWG accepted his
+  proposed resolution.</note>
+
+</resolution>
+
+<rationale>
+<p>Informally: introduce a Swappable concept, and specify that the
+  value types of the iterators passed to certain standard algorithms
+  (such as iter_swap, swap_ranges, reverse, rotate, and sort) conform
+  to that concept.  The Swappable concept will make it clear that
+  these algorithms use unqualified lookup for the calls
+  to <tt>swap</tt>.  Also, in <sref ref="[valarray.transcend]"/> paragraph 1,
+  state that the valarray transcendentals use unqualified lookup.</p>
+</rationale>
+
+</issue>

@@ -1,0 +1,41 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="802" status="NAD">
+<title><tt>knuth_b</tt> returns wrong value</title>
+<section><sref ref="[rand.predef]"/></section>
+<submitter>P.J. Plauger</submitter>
+<date>20 Feb 2008</date>
+
+<discussion>
+<p>
+The 10,000<sup>th</sup> value returned by <tt>knuth_b</tt> is supposed to be
+1112339016. We get 2126698284.
+</p>
+</discussion>
+
+<resolution>
+<p>
+Change <sref ref="[rand.predef]"/>/p8:
+</p>
+
+<blockquote>
+<pre>
+typedef shuffle_order_engine&lt;minstd_rand0, 256&gt; 
+        knuth_b; 
+</pre>
+<blockquote>
+<i>Required behavior:</i> The 10000<sup>th</sup> consecutive invocation of a default-constructed
+object of type <tt>knuth_b</tt> shall produce the value
+<del>1112339016</del> <ins>2126698284</ins>.
+</blockquote>
+</blockquote>
+</resolution>
+
+<note>
+Bellevue: Submitter withdraws defect. "We got the wrong value for entirely the right reasons". NAD.
+</note>
+
+</issue>

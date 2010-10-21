@@ -1,0 +1,71 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="230" status="CD1">
+<title>Assignable specified without also specifying CopyConstructible</title>
+<section><sref ref="[library]"/></section>
+<submitter>Beman Dawes</submitter>
+<date>26 Apr 2000</date>
+
+<discussion>
+<p>Issue <iref ref="227"/> identified an instance (std::swap) where
+Assignable was specified without also specifying
+CopyConstructible. The LWG asked that the standard be searched to
+determine if the same defect existed elsewhere.</p>
+
+<p>There are a number of places (see proposed resolution below) where
+Assignable is specified without also specifying
+CopyConstructible. There are also several cases where both are
+specified. For example, <sref ref="[rand.req]"/>.</p>
+</discussion>
+
+<resolution>
+<p>In  <sref ref="[container.requirements]"/> table 65 for value_type:
+change "T is Assignable" to "T is CopyConstructible and
+Assignable&quot;
+</p>
+
+<p>In <sref ref="[associative.reqmts]"/> table 69 X::key_type; change
+&quot;Key is Assignable" to &quot;Key is
+CopyConstructible and Assignable&quot;<br/>
+</p>
+
+<p>In <sref ref="[output.iterators]"/> paragraph 1, change:
+</p>
+<blockquote>
+<p> A class or a built-in type X satisfies the requirements of an
+output iterator if X is an Assignable type (23.1) and also the
+following expressions are valid, as shown in Table 73:
+</p>
+</blockquote>
+<p>to:
+</p>
+<blockquote>
+<p> A class or a built-in type X satisfies the requirements of an
+output iterator if X is a CopyConstructible (20.1.3) and Assignable
+type (23.1) and also the following expressions are valid, as shown in
+Table 73:
+</p>
+</blockquote>
+
+<note>Post-Tokyo: Beman Dawes submitted this issue at the request of
+the LWG.  He asks that the <sref ref="[alg.replace]"/> and <sref ref="[alg.fill]"/> changes be studied carefully, as it is not clear that
+CopyConstructible is really a requirement and may be
+overspecification.</note>
+
+<note>Portions of the resolution for issue 230 have been superceded by
+the resolution of issue <iref ref="276"/>.</note>
+
+</resolution>
+
+<rationale>
+<p>The original proposed resolution also included changes to input
+iterator, fill, and replace.  The LWG believes that those changes are
+not necessary.  The LWG considered some blanket statement, where an
+Assignable type was also required to be Copy Constructible, but
+decided against this because fill and replace really don't require the
+Copy Constructible property.</p>
+</rationale>
+</issue>

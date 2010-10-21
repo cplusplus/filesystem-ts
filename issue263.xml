@@ -1,0 +1,86 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="263" status="CD1">
+<title>Severe restriction on <tt>basic_string</tt> reference counting</title>
+<section><sref ref="[basic.string]"/></section>
+<submitter>Kevlin Henney</submitter>
+<date>04 Sep 2000</date>
+
+<discussion>
+<p>
+The note in paragraph 6 suggests that the invalidation rules for
+references, pointers, and iterators in paragraph 5 permit a reference-
+counted implementation (actually, according to paragraph 6, they permit
+a &quot;reference counted implementation&quot;, but this is a minor editorial fix).
+</p>
+
+<p>
+However, the last sub-bullet is so worded as to make a reference-counted
+implementation unviable. In the following example none of the
+conditions for iterator invalidation are satisfied:
+</p>
+
+<pre>
+    // first example: &quot;*******************&quot; should be printed twice
+    string original = &quot;some arbitrary text&quot;, copy = original;
+    const string &amp; alias = original;
+
+    string::const_iterator i = alias.begin(), e = alias.end();
+    for(string::iterator j = original.begin(); j != original.end(); ++j)
+        *j = '*';
+    while(i != e)
+        cout &lt;&lt; *i++;
+    cout &lt;&lt; endl;
+    cout &lt;&lt; original &lt;&lt; endl;
+</pre>
+
+<p>
+Similarly, in the following example:
+</p>
+
+<pre>
+    // second example: &quot;some arbitrary text&quot; should be printed out
+    string original = &quot;some arbitrary text&quot;, copy = original;
+    const string &amp; alias = original;
+
+    string::const_iterator i = alias.begin();
+    original.begin();
+    while(i != alias.end())
+        cout &lt;&lt; *i++;
+</pre>
+
+<p>
+I have tested this on three string implementations, two of which were
+reference counted. The reference-counted implementations gave
+&quot;surprising behavior&quot; because they invalidated iterators on
+the first call to non-const begin since construction. The current
+wording does not permit such invalidation because it does not take
+into account the first call since construction, only the first call
+since various member and non-member function calls.
+</p>
+</discussion>
+
+<resolution>
+<p>
+Change the following sentence in 21.3 paragraph 5 from
+</p>
+
+<blockquote><p>
+    Subsequent to any of the above uses except the forms of insert() and
+    erase() which return iterators, the first call to non-const member
+    functions operator[](), at(), begin(), rbegin(), end(), or rend().
+</p></blockquote>
+
+<p>to</p>
+
+<blockquote><p>
+    Following construction or any of the above uses, except the forms of
+    insert() and erase() that return iterators, the first call to non-
+    const member functions operator[](), at(), begin(), rbegin(), end(),
+    or rend().
+</p></blockquote>
+</resolution>
+</issue>

@@ -1,0 +1,32 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="191" status="NAD">
+<title>Unclear complexity for algorithms such as binary search</title>
+<section><sref ref="[alg.binary.search]"/></section>
+<submitter>Nico Josuttis</submitter>
+<date>10 Oct 1999</date>
+
+<discussion>
+<p>The complexity of binary_search() is stated as "At most
+log(last-first) + 2 comparisons", which seems to say that the
+algorithm has logarithmic complexity. However, this algorithms is
+defined for forward iterators. And for forward iterators, the need to
+step element-by-element results into linear complexity. But such a
+statement is missing in the standard. The same applies to
+lower_bound(), upper_bound(), and equal_range().&nbsp;<br/>
+<br/>
+However, strictly speaking the standard contains no bug here. So this
+might considered to be a clarification or improvement.
+</p>
+</discussion>
+
+<rationale>
+<p>The complexity is expressed in terms of comparisons, and that
+complexity can be met even if the number of iterators accessed is
+linear. Paragraph 1 already says exactly what happens to
+iterators.</p>
+</rationale>
+</issue>

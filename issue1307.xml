@@ -1,0 +1,55 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="1307" status="NAD Editorial">
+<title><tt>exception_ptr</tt> and <tt>allocator</tt> pointers don't understand !=</title>
+<section><sref ref="[propagation]"/></section>
+<submitter>Daniel Kr&uuml;gler</submitter>
+<date>26 Jan 2010</date>
+
+<discussion>
+<p>
+The current requirements for a conforming implementation of
+<tt>std::exception_ptr</tt> (<sref ref="[propagation]"/>/1-6) does not clarify
+whether the expression
+</p>
+
+<blockquote><pre>
+e1 != e2
+e1 != nullptr
+</pre></blockquote>
+
+<p>
+with <tt>e1</tt> and <tt>e2</tt> being two values of type
+<tt>std::exception_ptr</tt> are supported or not. Reason for this oddity is that
+the concept <tt>EqualityComparable</tt> does not provide operator <tt>!=</tt>.
+</p>
+
+<p>
+For the same reason programmers working against the types <tt>X::pointer</tt>,
+<tt>X::const_pointer</tt>, <tt>X::void_pointer</tt>, and
+<tt>X::const_void_pointer</tt> of any allocator concept <tt>X</tt> (<sref
+ref="[allocator.requirements]"/>/4 + Table 40) in a generic context can not rely
+on the availability of the != operation, which is rather unnatural and
+error-prone.
+</p>
+
+<note>
+2010 Pittsburgh:  Moved to NAD Editorial.  Rationale added below.
+</note>
+
+</discussion>
+
+<rationale>
+<p>
+Solved by
+<a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2010/n3073.html">N3073</a>.
+</p>
+</rationale>
+
+<resolution>
+</resolution>
+
+</issue>

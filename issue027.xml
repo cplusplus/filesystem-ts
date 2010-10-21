@@ -1,0 +1,35 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="27" status="TC1">
+<title>String::erase(range) yields wrong iterator</title>
+<section><sref ref="[string::erase]"/></section>
+<submitter>Nathan Myers</submitter>
+<date>6 Aug 1998</date>
+
+<discussion>
+<p>The string::erase(iterator first, iterator last) is specified to return an element one
+place beyond the next element after the last one erased. E.g. for the string
+&quot;abcde&quot;, erasing the range ['b'..'d') would yield an iterator for element 'e',
+while 'd' has not been erased. </p>
+</discussion>
+
+<resolution>
+<p>In <sref ref="[string::erase]"/>, paragraph 10, change: </p>
+
+<blockquote>
+  <p>Returns: an iterator which points to the element immediately following _last_ prior to
+  the element being erased. </p>
+</blockquote>
+
+<p>to read </p>
+
+<blockquote>
+  <p>Returns: an iterator which points to the element pointed to by _last_ prior to the
+  other elements being erased. </p>
+</blockquote>
+</resolution>
+
+</issue>

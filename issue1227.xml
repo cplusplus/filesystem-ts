@@ -1,0 +1,58 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="1227" status="WP">
+<title><tt>&lt;bitset&gt;</tt> synopsis overspecified</title>
+<section><sref ref="[template.bitset]"/></section>
+<submitter>Bo Persson</submitter>
+<date>5 Oct 2009</date>
+
+<discussion>
+<p>
+The resolutions to some library defect reports, like <iref ref="1178"/>
+requires that <tt>#includes</tt> in each synopsis should be taken
+literally. This means that the <tt>&lt;bitset&gt;</tt> header now
+<em>must</em> include <tt>&lt;stdexcept&gt;</tt>, even though none of the
+exceptions are mentioned in the <tt>&lt;bitset&gt;</tt> header.
+</p>
+<p>
+Many other classes are required to throw exceptions like
+<tt>invalid_argument</tt> and <tt>out_of_range</tt>, without explicitly
+including <tt>&lt;stdexcept&gt;</tt> in their synopsis. It is totally
+possible for implementations to throw the needed exceptions from utility
+functions, whose implementations are not visible in the headers.
+</p>
+<p>
+I propose that <tt>&lt;stdexcept&gt;</tt> is removed from the
+<tt>&lt;bitset&gt;</tt> header.
+</p>
+
+<note>
+2009-10 Santa Cruz:
+</note>
+
+<blockquote>
+Moved to Ready.
+</blockquote>
+
+</discussion>
+
+<resolution>
+<p>
+Change <sref ref="[template.bitset]"/>:
+</p>
+
+<blockquote><pre>
+#include &lt;cstddef&gt;        // for size_t
+#include &lt;string&gt;
+<del>#include &lt;stdexcept&gt;      // for invalid_argument,</del>
+                          <del>// out_of_range, overflow_error</del>
+#include &lt;iosfwd&gt;         // for istream, ostream
+namespace std {
+...
+</pre></blockquote>
+</resolution>
+
+</issue>

@@ -1,0 +1,87 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="800" status="NAD Editorial">
+<title>Issues in 26.4.7.1 [rand.util.seedseq](6)</title>
+<section><sref ref="[rand.util.seedseq]"/></section>
+<submitter>Stephan Tolksdorf</submitter>
+<date>18 Feb 2008</date>
+
+<discussion>
+<p>
+The for-loop in the algorithm specification has <tt>n</tt> iterations, where <tt>n</tt> is
+defined to be <tt>end - begin</tt>, i.e. the number of supplied w-bit quantities.
+Previous versions of this algorithm and the general logic behind it
+suggest that this is an oversight and that in the context of the
+for-loop <tt>n</tt> should be the number of full 32-bit quantities in <tt>b</tt> (rounded
+upwards). If <tt>w</tt> is 64, the current algorithm throws away half of all bits
+in <tt>b</tt>. If <tt>w</tt> is 16, the current algorithm sets half of all elements in <tt>v</tt>
+to 0.
+</p>
+
+<p>
+There are two more minor issues:
+</p>
+
+<ul>
+<li>
+Strictly speaking <tt>end - begin</tt> is not defined since
+<tt>InputIterator</tt> is not required to be a random access iterator.
+</li>
+<li>
+Currently all integral types are allowed as input to the <tt>seed_seq</tt>
+constructor, including <tt>bool</tt>. IMHO allowing <tt>bool</tt>s unnecessarily
+complicates the implementation without any real benefit to the user.
+I'd suggest to exclude <tt>bool</tt>s as input.
+</li>
+</ul>
+
+<note>
+Bellevue:
+</note>
+
+<blockquote>
+Move to OPEN Bill will try to propose a resolution by the next meeting.
+</blockquote>
+
+<note>
+post Bellevue:  Bill provided wording.
+</note>
+
+<p>
+This issue is made moot if <iref ref="803"/> is accepted.
+</p>
+
+</discussion>
+
+<resolution>
+<p>
+Replace <sref ref="[rand.util.seedseq]"/> paragraph 6 with:
+</p>
+
+<blockquote>
+<p>
+<i>Effects:</i> Constructs a <tt>seed_seq</tt> object by effectively concatenating the
+low-order <tt>u</tt> bits of each of the elements of the supplied sequence <tt>[begin,
+end)</tt>
+in ascending order of significance to make a (possibly very large) unsigned
+binary number <tt>b</tt> having a total of <tt>n</tt> bits, and then carrying out the
+following
+algorithm:
+</p>
+
+<blockquote><pre>
+for( v.clear(); n &gt; 0; n -= 32 )
+   v.push_back(b mod 2<sup>32</sup>), b /= 2<sup>32</sup>;
+</pre></blockquote>
+</blockquote>
+</resolution>
+
+<rationale>
+Addressed by
+<a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2009/n2836.pdf">N2836</a> "Wording Tweaks for Concept-enabled Random Number Generation in C++0X".
+</rationale>
+
+</issue>

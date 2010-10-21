@@ -1,0 +1,57 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="1320" status="New">
+<title>Header for <tt>iter_swap</tt></title>
+<section><sref ref="[iterator.synopsis]"/></section>
+<submitter>Alisdair Meredith</submitter>
+<date>16 Feb 2010</date>
+
+<discussion>
+<p>
+The <tt>iter_swap</tt> function template appears in the
+<tt>&lt;algorithm&gt;</tt> header, yet its main use is in building further
+algorithms, not calling existing ones. The main clients are implementers of data
+structures and their iterators, so it seems most appropriate to place the
+template in the <tt>&lt;iterator&gt;</tt> header instead.
+</p>
+
+<p>
+Note that this is not an issue for implementers of the standard library, as they
+rarely use the standard headers directly, designing a more fine-grained set of
+headers for their own internal use.  This option is not available to customers
+of the standard library.
+</p>
+
+<p>
+Note that we cannot remove <tt>iter_swap</tt> from <tt>&lt;algorithm&gt;</tt>
+without breaking code, but there is no reason we cannot offer the same
+declaration via two standard headers.  Alternatively, require
+<tt>&lt;algorithm&gt;</tt> to <tt>#include &lt;iterator&gt;</tt>, but
+introducing the dependency on the iterator adaptors seems un-necessary.
+</p>
+
+</discussion>
+
+<resolution>
+
+<p>
+Add the declaration of <tt>iter_swap</tt> to the <tt>&lt;iterator&gt;</tt>
+header synopsis (<sref ref="[iterator.synopsis]"/>), with a note that it is
+documented in clause <sref ref="[algorithms]"/>.
+</p>
+
+<blockquote><pre>
+...
+template &lt;class T, size_t N&gt; T* end(T (&amp;array)[N]);
+
+<ins><i>// documented in <sref ref="[algorithms]"/></i>
+template&lt;class ForwardIterator1, class ForwardIterator2&gt;
+  void iter_swap(ForwardIterator1 a, ForwardIterator2 b);</ins>
+</pre></blockquote>
+
+</resolution>
+
+</issue>

@@ -1,0 +1,86 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="464" status="CD1">
+<title>Suggestion for new member functions in standard containers</title>
+<section><sref ref="[vector]"/><sref ref="[map]"/></section>
+<submitter>Thorsten Ottosen</submitter>
+<date>12 May 2004</date>
+
+<discussion>
+
+<p>To add slightly more convenience to vector&lt;T> and map&lt;Key,T> we should consider to add</p>
+<ol>
+<li> add vector&lt;T>::data() member (const and non-const version)
+semantics: if( empty() ) return 0; else return buffer_;</li>
+<li> add map&lt;Key,T>::at( const Key&amp; k ) member (const and non-const version)
+<i>semantics</i>: iterator i = find( k ); if( i != end() ) return *i; else throw range_error();</li>
+</ol>
+
+<p>Rationale:</p>
+
+<ul>
+<li>To obtain a pointer to the vector's buffer, one must use either operator[]() (which can give undefined  behavior for empty vectors) or at() (which will then throw if the vector is empty).  </li>
+<li>tr1::array&lt;T,sz> already has a data() member</li>
+<li>e cannot use operator[]() when T is not DefaultDonstructible</li>
+<li>Neither when the map is const.</li>
+<li>when we want to make sure we don't add an element accidently</li>
+<li>when it should be considered an error if a key is not in the map</li>
+</ul>
+
+</discussion>
+
+<resolution>
+<p>In <sref ref="[vector]"/>, add the following to the <tt>vector</tt>
+  synopsis after "element access" and before "modifiers":</p>
+<pre>
+  // <i>[lib.vector.data] data access</i>
+  pointer       data();
+  const_pointer data() const;
+</pre>
+
+<p>Add a new subsection of <sref ref="[vector]"/>:</p>
+<blockquote>
+<p>23.2.4.x <tt>vector</tt> data access</p>
+<pre>
+   pointer       data();
+   const_pointer data() const;
+</pre>
+<p><b>Returns:</b> A pointer such that [data(), data() + size()) is a valid
+   range.  For a non-empty vector, data() == &amp;front().</p>
+<p><b>Complexity:</b> Constant time.</p>
+<p><b>Throws:</b> Nothing.</p>
+</blockquote>
+
+<p>In <sref ref="[map]"/>, add the following to the <tt>map</tt>
+synopsis immediately after the line for operator[]:</p>
+<pre>
+  T&amp;       at(const key_type&amp; x);
+  const T&amp; at(const key_type&amp; x) const;
+</pre>
+
+<p>Add the following to <sref ref="[map.access]"/>:</p>
+<blockquote>
+<pre>
+  T&amp;       at(const key_type&amp; x);
+  const T&amp; at(const key_type&amp; x) const;
+</pre>
+
+<p><b>Returns:</b> A reference to the element whose key is equivalent
+  to x, if such an element is present in the map.</p>
+<p><b>Throws:</b> <tt>out_of_range</tt> if no such element is present.</p>
+
+</blockquote>
+
+</resolution>
+
+<rationale>
+<p>Neither of these additions provides any new functionality but the
+  LWG agreed that they are convenient, especially for novices.  The
+  exception type chosen for <tt>at</tt>, <tt>std::out_of_range</tt>,
+  was chosen to match <tt>vector::at</tt>.</p>
+</rationale>
+
+</issue>

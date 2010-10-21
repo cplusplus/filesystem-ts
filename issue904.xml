@@ -1,0 +1,74 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="904" status="WP">
+<title>result_of argument types</title>
+<section><sref ref="[func.ret]"/></section>
+<submitter>Jonathan Wakely</submitter>
+<date>10 Sep 2008</date>
+
+<discussion>
+<p>
+The WP and TR1 have the same text regarding the argument types of a
+<tt>result_of</tt> expression:
+</p>
+<blockquote>
+The values <tt>ti</tt> are lvalues when the corresponding type <tt>Ti</tt> is a
+reference type, and rvalues otherwise.
+</blockquote>
+<p>
+I read this to mean that this compiles:
+</p>
+<blockquote><pre>
+typedef int (*func)(int&amp;);
+result_of&lt;func(int&amp;&amp;)&gt;::type i = 0;
+</pre></blockquote>
+<p>
+even though this doesn't:
+</p>
+<blockquote><pre>
+int f(int&amp;);
+f( std::move(0) );
+</pre></blockquote>
+<p>
+Should the text be updated to say "when <tt>Ti</tt> is an lvalue-reference
+type" or am I missing something?
+</p>
+<p>
+I later came up with this self-contained example which won't compile,
+but I think it should:
+</p>
+<blockquote><pre>
+struct X {
+  void operator()(int&amp;);
+  int operator()(int&amp;&amp;);
+} x;
+
+std::result_of&lt; X(int&amp;&amp;) &gt;::type i = x(std::move(0));
+</pre></blockquote>
+
+<note>
+Post Summit:
+</note>
+
+<blockquote>
+Recommend Tentatively Ready.
+</blockquote>
+
+</discussion>
+
+<resolution>
+<p>
+Change <sref ref="[func.ret]"/>, p1:
+</p>
+
+<blockquote>
+... The values <tt>ti</tt> are lvalues 
+when the corresponding type <tt>Ti</tt> is a<ins>n</ins> <ins>lvalue-</ins>reference type,
+and rvalues otherwise. 
+</blockquote>
+</resolution>
+
+</issue>

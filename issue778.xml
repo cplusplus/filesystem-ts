@@ -1,0 +1,55 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="778" status="CD1">
+<title>std::bitset does not have any constructor taking a string literal</title>
+<section><sref ref="[bitset.cons]"/></section>
+<submitter>Thorsten Ottosen</submitter>
+<date>24 Jan 2008</date>
+
+<discussion>
+<p>
+A small issue with <tt>std::bitset</tt>: it does not have any constructor
+taking a string literal, which is clumsy and looks like an oversigt when
+we tried to enable uniform use of <tt>string</tt> and <tt>const char*</tt> in the library.
+</p>
+
+<p>
+Suggestion: Add
+</p>
+
+<blockquote><pre>
+explicit bitset( const char* str );
+</pre></blockquote>
+
+<p>
+to std::bitset.
+</p>
+</discussion>
+
+<resolution>
+<p>
+Add to synopsis in <sref ref="[template.bitset]"/>
+</p>
+
+<blockquote><pre>
+explicit bitset( const char* str );
+</pre></blockquote>
+
+<p>
+Add to synopsis in <sref ref="[bitset.cons]"/>
+</p>
+
+<blockquote><pre>
+explicit bitset( const char* str );
+</pre>
+<p>
+<i>Effects:</i> Constructs a <tt>bitset</tt> as if <tt>bitset(string(str))</tt>.
+</p>
+</blockquote>
+
+</resolution>
+
+</issue>

@@ -1,0 +1,73 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="643" status="CD1">
+<title>Impossible "as if" clauses</title>
+<section><sref ref="[filebuf]"/> <sref ref="[facet.num.put.virtuals]"/></section>
+<submitter>Daniel Kr&uuml;gler</submitter>
+<date>20 Feb 2007</date>
+
+<discussion>
+<p>
+The current standard 14882:2003(E) as well as N2134 have the
+following
+defects:
+</p>
+
+<p>
+<sref ref="[filebuf]"/>/5 says:
+</p>
+
+<blockquote>
+<p>
+In order to support file I/O and multibyte/wide character conversion, conversions are performed using members of a 
+facet, referred to as <tt><i>a_codecvt</i></tt> in following sections, obtained "as if" by
+</p>
+<blockquote><pre>
+codecvt&lt;charT,char,typename traits::state_type&gt; <i>a_codecvt</i> =
+  use_facet&lt;codecvt&lt;charT,char,typename traits::state_type&gt; &gt;(getloc());
+</pre></blockquote>
+</blockquote>
+
+<p>
+<tt>use_facet</tt> returns a <tt>const facet</tt> reference and no facet is
+copyconstructible, so the codecvt construction should fail to compile.
+</p>
+
+<p>
+A similar issue arises in <sref ref="[facet.num.put.virtuals]"/>/15 for <tt>num_punct</tt>.
+</p>
+</discussion>
+
+<resolution>
+<p>
+In <sref ref="[filebuf]"/>/5 change the "as if" code
+</p>
+
+<blockquote><pre>
+<ins>const </ins>codecvt&lt;charT,char,typename traits::state_type&gt;<ins>&amp;</ins> <i>a_codecvt</i> =
+  use_facet&lt;codecvt&lt;charT,char,typename traits::state_type&gt; &gt;(getloc());
+</pre></blockquote>
+
+<p>
+In <sref ref="[facet.num.put.virtuals]"/>/15 (This is para 5 in N2134) change
+</p>
+
+<blockquote>
+<p>
+A local variable <tt><i>punct</i></tt> is initialized via
+</p>
+<blockquote><pre>
+<ins>const </ins>numpunct&lt;charT&gt;<ins>&amp;</ins> <i>punct</i> = use_facet&lt; numpunct&lt;charT&gt; &gt;(<i>str</i>.getloc() )<ins>;</ins>
+</pre></blockquote>
+</blockquote>
+
+<p>
+(Please note also the additional provided trailing semicolon)
+</p>
+
+</resolution>
+
+</issue>

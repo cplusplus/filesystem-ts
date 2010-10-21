@@ -1,0 +1,67 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="647" status="NAD Editorial">
+<title>Inconsistent regex_search params</title>
+<section><sref ref="[re.alg.search]"/></section>
+<submitter>Daniel Kr&uuml;gler</submitter>
+<date>26 Feb 2007</date>
+
+<discussion>
+<p>
+<sref ref="[re.alg.search]"/>/5 declares
+</p>
+
+<blockquote><pre>
+template &lt;class iterator, class charT, class traits&gt;
+bool regex_search(iterator first, iterator last,
+                  const basic_regex&lt;charT, traits&gt;&amp; e,
+                  regex_constants::match_flag_type flags =
+                      regex_constants::match_default);
+</pre></blockquote>
+
+<p>
+where it's not explained, which iterator category
+the parameter iterator belongs to. This is inconsistent
+to the preceding declaration in the synopsis section
+<sref ref="[re.syn]"/>, which says:
+</p>
+
+<blockquote><pre>
+template &lt;class BidirectionalIterator, class charT, class traits&gt;
+bool regex_search(BidirectionalIterator first, BidirectionalIterator last,
+                  const basic_regex&lt;charT, traits&gt;&amp; e,
+                  regex_constants::match_flag_type flags =
+                      regex_constants::match_default);
+</pre></blockquote>
+</discussion>
+
+<resolution>
+<p>
+In <sref ref="[re.alg.search]"/>/5 replace all three occurences of param "iterator" with
+"BidirectionalIterator"
+</p>
+
+<blockquote><pre>
+template &lt;class <del>iterator</del> <ins>BidirectionalIterator</ins>, class charT, class traits&gt;
+  bool regex_search(<del>iterator</del> <ins>BidirectionalIterator</ins> first, <del>iterator</del> <ins>BidirectionalIterator</ins> last, 
+                    const basic_regex&lt;charT, traits&gt;&amp; e, 
+                    regex_constants::match_flag_type flags = 
+                      regex_constants::match_default);
+</pre>
+<p>
+-6- <i>Effects:</i> Behaves "as if" by constructing an object what of
+type <tt>match_results&lt;<del>iterator</del>
+<ins>BidirectionalIterator</ins>&gt;</tt> and then returning the result
+of <tt>regex_search(first, last, what, e, flags)</tt>.
+</p>
+</blockquote>
+</resolution>
+
+<rationale>
+Applied to working paper while issue was still in New status.
+</rationale>
+
+</issue>

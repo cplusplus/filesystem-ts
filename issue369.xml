@@ -1,0 +1,113 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="369" status="CD1">
+<title>io stream objects and static ctors</title>
+<section><sref ref="[iostream.objects]"/></section>
+<submitter>Ruslan Abdikeev</submitter>
+<date>8 Jul 2002</date>
+
+<discussion>
+<p>
+Is it safe to use standard iostream objects from constructors of
+static objects?  Are standard iostream objects constructed and are
+their associations established at that time?
+</p>
+
+<p>Surpisingly enough, Standard does NOT require that.</p>
+
+<p>
+27.3/2 [lib.iostream.objects] guarantees that standard iostream
+objects are constructed and their associations are established before
+the body of main() begins execution.  It also refers to ios_base::Init
+class as the panacea for constructors of static objects.
+</p>
+
+<p>
+However, there's nothing in 27.3 [lib.iostream.objects],
+in 27.4.2 [lib.ios.base], and in 27.4.2.1.6 [lib.ios::Init],
+that would require implementations to allow access to standard
+iostream objects from constructors of static objects.
+</p>
+
+<p>Details:</p>
+
+<p>Core text refers to some magic object ios_base::Init, which will
+be discussed below:</p>
+
+<blockquote><p>
+    "The [standard iostream] objects are constructed, and their
+    associations are established at some time prior to or during
+    first time an object of class basic_ios&lt;charT,traits&gt;::Init
+    is constructed, and in any case before the body of main
+    begins execution." (27.3/2 [lib.iostream.objects])
+</p></blockquote>
+
+<p>
+The first <i>non-normative</i> footnote encourages implementations
+to initialize standard iostream objects earlier than required.
+</p>
+
+<p>However, the second <i>non-normative</i> footnote makes an explicit
+and unsupported claim:</p>
+
+<blockquote><p>
+  "Constructors and destructors for static objects can access these
+  [standard iostream] objects to read input from stdin or write output
+  to stdout or stderr." (27.3/2 footnote 265 [lib.iostream.objects])
+</p></blockquote>
+
+<p>
+The only bit of magic is related to that ios_base::Init class.  AFAIK,
+the rationale behind ios_base::Init was to bring an instance of this
+class to each translation unit which #included &lt;iostream&gt; or
+related header.  Such an inclusion would support the claim of footnote
+quoted above, because in order to use some standard iostream object it
+is necessary to #include &lt;iostream&gt;.
+</p>
+
+<p>
+However, while Standard explicitly describes ios_base::Init as
+an appropriate class for doing the trick, I failed to found a
+mention of an _instance_ of ios_base::Init in Standard.
+</p>
+</discussion>
+
+<resolution>
+
+<p>Add to <sref ref="[iostream.objects]"/>, p2, immediately before the last sentence
+of the paragraph, the following two sentences:</p>
+
+<blockquote><p>
+If a translation unit includes &lt;iostream&gt;, or explicitly
+constructs an ios_base::Init object, these stream objects shall
+be constructed before dynamic initialization of non-local
+objects defined later in that translation unit, and these stream
+objects shall be destroyed after the destruction of dynamically
+initialized non-local objects defined later in that translation unit.
+</p></blockquote>
+
+<note>Lillehammer: Matt provided wording.</note>
+<note>Mont Tremblant: Matt provided revised wording.</note>
+</resolution>
+
+<rationale>
+<p>
+The original proposed resolution unconditionally required
+implementations to define an ios_base::Init object of some
+implementation-defined name in the header &lt;iostream>. That's an
+overspecification. First, defining the object may be unnecessary
+and even detrimental to performance if an implementation can
+guarantee that the 8 standard iostream objects will be initialized
+before any other user-defined object in a program. Second, there
+is no need to require implementations to document the name of the
+object.</p>
+
+<p>
+The new proposed resolution gives users guidance on what they need to
+do to ensure that stream objects are constructed during startup.</p>
+</rationale>
+
+</issue>

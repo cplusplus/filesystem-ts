@@ -1,0 +1,53 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [
+  <!ENTITY nbsp " ">
+]>
+
+<issue num="360" status="CD1">
+<title>locale mandates inefficient implementation</title>
+<section><sref ref="[locale]"/></section>
+<submitter>Martin Sebor</submitter>
+<date>12 Mar 2002</date>
+
+<discussion>
+<p>
+22.1.1, p7 (copied below) allows iostream formatters and extractors
+to make assumptions about the values returned from facet members.
+However, such assumptions are apparently not guaranteed to hold
+in other cases (e.g., when the facet members are being called directly
+rather than as a result of iostream calls, or between successive
+calls to the same iostream functions with no interevening calls to
+<tt>imbue()</tt>, or even when the facet member functions are called
+from other member functions of other facets). This restriction
+prevents locale from being implemented efficiently.
+</p>
+</discussion>
+
+<resolution>
+<p>Change the first sentence in 22.1.1, p7 from</p>
+<blockquote><p>
+    In successive calls to a locale facet member function during
+    a call to an iostream inserter or extractor or a streambuf member
+    function, the returned result shall be identical. [Note: This
+    implies that such results may safely be reused without calling
+    the locale facet member function again, and that member functions
+    of iostream classes cannot safely call <tt>imbue()</tt>
+    themselves, except as specified elsewhere. --end note]
+</p></blockquote>
+
+<p>to</p>
+
+<blockquote><p>
+    In successive calls to a locale facet member function on a facet
+    object installed in the same locale, the returned result shall be
+    identical. ...
+</p></blockquote>
+
+</resolution>
+
+<rationale>
+<p>This change is reasonable becuase it clarifies the intent of this
+  part of the standard.</p>
+</rationale>
+
+</issue>

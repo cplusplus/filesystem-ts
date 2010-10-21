@@ -1,0 +1,44 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="36" status="TC1">
+<title>Iword &amp; pword storage lifetime omitted</title>
+<section><sref ref="[ios.base.storage]"/></section>
+<submitter>Nathan Myers</submitter>
+<date>6 Aug 1998</date>
+
+<discussion>
+<p>In the definitions for ios_base::iword and pword, the lifetime of the storage is
+specified badly, so that an implementation which only keeps the last value stored appears
+to conform. In particular, it says: </p>
+
+<p>The reference returned may become invalid after another call to the object's iword
+member with a different index ... </p>
+
+<p>This is not idle speculation; at least one implementation was done this way. </p>
+</discussion>
+
+<resolution>
+<p>Add in <sref ref="[ios.base.storage]"/>, in both paragraph 2 and also in
+paragraph 4, replace the sentence: </p>
+
+<blockquote>
+  <p>The reference returned may become invalid after another call to the object's iword
+  [pword] member with a different index, after a call to its copyfmt member, or when the
+  object is destroyed. </p>
+</blockquote>
+
+<p>with: </p>
+
+<blockquote>
+  <p>The reference returned is invalid after any other operations on the object. However,
+  the value of the storage referred to is retained, so that until the next call to copyfmt,
+  calling iword [pword] with the same index yields another reference to the same value. </p>
+</blockquote>
+
+<p>substituting &quot;iword&quot; or &quot;pword&quot; as appropriate. </p>
+</resolution>
+
+</issue>

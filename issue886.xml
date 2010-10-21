@@ -1,0 +1,104 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="886" status="WP">
+<title>tuple construction</title>
+<section><sref ref="[tuple.cnstr]"/></section>
+<submitter>Alisdair Meredith</submitter>
+<date>15 Sep 2008</date>
+
+<discussion>
+<p>
+<sref ref="[tuple.cnstr]"/>:
+</p>
+<blockquote>
+<i>Effects:</i> Default initializes each element.
+</blockquote>
+
+<p>
+Could be clarified to state each "non-trivial" element.  Otherwise
+we have a conflict with Core deinfition of default initialization -
+trivial types do not get initialized (rather than initialization
+having no effect)
+</p>
+
+<p>
+I'm going to punt on this one, because it's not an issue that's
+related to concepts. I suggest bringing it to Howard's attention on
+the reflector.
+</p>
+
+<note>
+San Francisco:
+</note>
+
+<blockquote>
+<p>
+Text in draft doesn't mean anything, changing to "non-trivial" makes it
+meaningful.
+</p>
+<p>
+We prefer "value initializes". Present implementations use
+value-initialization. Users who don't want value initialization have
+alternatives.
+</p>
+<p>
+Request resolution text from Alisdair.
+</p>
+
+<p>
+This issue relates to Issue <iref ref="868"/> default construction and value-initialization.
+</p>
+</blockquote>
+
+<note>
+2009-05-04 Alisdair provided wording and adds:
+</note>
+
+<blockquote>
+<p>
+Note: This <em>IS</em> a change of semantic from TR1, although one the room agreed
+with during the discussion.  To preserve TR1 semantics, this would have been
+worded:
+</p>
+<blockquote><pre>
+requires DefaultConstructible&lt;Types&gt;... tuple();
+</pre>
+<blockquote>
+-2-   <i>Effects:</i> Default-initializes each non-trivial element.
+</blockquote>
+</blockquote>
+
+
+</blockquote>
+
+<note>
+2009-07 Frankfurt
+</note>
+
+<blockquote>
+Move to Ready.
+</blockquote>
+
+</discussion>
+
+<resolution>
+<p>
+Change p2 in Construction <sref ref="[tuple.cnstr]"/>:
+</p>
+
+<blockquote><pre>
+requires DefaultConstructible&lt;Types&gt;... tuple();
+</pre>
+<blockquote>
+<p>
+-2- <i>Effects:</i> <del>Default</del> <ins>Value-</ins>initializes each element.
+</p>
+</blockquote>
+</blockquote>
+
+</resolution>
+
+</issue>

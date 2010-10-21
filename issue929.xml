@@ -1,0 +1,296 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="929" status="WP">
+<title>Thread constructor</title>
+<section><sref ref="[thread.thread.constr]"/></section>
+<submitter>Anthony Williams</submitter>
+<date>23 Oct 2008</date>
+
+<discussion>
+
+<p><b>Addresses UK 323</b></p>
+
+<p>
+The <tt>thread</tt> constructor for starting a new thread with a function and
+arguments is overly constrained by the signature requiring rvalue
+references for <tt>func</tt> and <tt>args</tt> and the <tt>CopyConstructible</tt> requirements
+for the elements of <tt>args</tt>. The use of an rvalue reference for the
+function restricts the potential use of a plain function name, since
+the type of the bound parameter will be deduced to be a function
+reference and decay to pointer-to-function will not happen. This
+therefore complicates the implementation in order to handle a simple
+case. Furthermore, the use of rvalue references for args prevents the
+array to pointer decay. Since arrays are not <tt>CopyConstructible</tt> or even
+<tt>MoveConstructible</tt>, this essentially prevents the passing of arrays as
+parameters. In particular it prevents the passing of string literals.
+Consequently a simple case such as
+</p>
+
+<blockquote><pre>
+void f(const char*);
+std::thread t(f,"hello");
+</pre></blockquote>
+
+<p>
+is ill-formed since the type of the string literal is <tt>const char[6]</tt>.
+</p>
+
+<p>
+By changing the signature to take all parameters by value we can
+eliminate the <tt>CopyConstructible</tt> requirement and permit the use of
+arrays, as the parameter passing semantics will cause the necessary
+array-to-pointer decay. They will also cause the function name to
+decay to a pointer to function and allow the implementation to handle
+functions and function objects identically.
+</p>
+
+<p>
+The new signature of the <tt>thread</tt> constructor for a function and
+arguments is thus:
+</p>
+
+<blockquote><pre>
+template&lt;typename F,typename... Args&gt;
+thread(F,Args... args);
+</pre></blockquote>
+
+<p>
+Since the parameter pack <tt>Args</tt> can be empty, the single-parameter
+constructor that takes just a function by value is now redundant.
+</p>
+
+<note>
+Howard adds:
+</note>
+
+<blockquote>
+<p>
+I agree with everything Anthony says in this issue.  However I believe we
+can optimize in such a way as to get the pass-by-value behavior with the
+pass-by-rvalue-ref performance.  The performance difference is that the latter
+removes a <tt>move</tt> when passing in an lvalue.
+</p>
+
+<p>
+This circumstance is very analogous to <tt>make_pair</tt> (<sref ref="[pairs]"/>)
+where we started with passing by const reference, changed to pass by value to
+get pointer decay, and then changed to pass by rvalue reference, but modified with
+<tt>decay&lt;T&gt;</tt> to retain the pass-by-value behavior.  If we were to
+apply the same solution here it would look like:
+</p>
+
+<blockquote><pre>
+<del>template &lt;class F&gt; explicit thread(F f);</del>
+template &lt;class F, class ...Args&gt; thread(F&amp;&amp; f, Args&amp;&amp;... args);
+</pre>
+<blockquote>
+<p>
+-4- <i>Requires:</i> <tt>F</tt> and each <tt>Ti</tt> in <tt>Args</tt> shall be <del><tt>CopyConstructible</tt>
+if an lvalue and otherwise</del> <tt>MoveConstructible</tt>.
+<tt><i>INVOKE</i>(f, w1, w2, ..., wN)</tt> (<sref ref="[func.require]"/>) shall be a valid expression for
+some values <tt>w1, w2, ... , wN,</tt> where <tt>N == sizeof...(Args)</tt>.
+</p>
+<p>
+-5- <i>Effects:</i> Constructs an object of type <tt>thread</tt>
+<del>and executes <tt><i>INVOKE</i>(f, t1, t2, ..., tN)</tt> in a new
+thread of execution, where <tt>t1, t2, ..., tN</tt> are the values in <tt>args...</tt></del>.
+<ins>Constructs
+the following objects in memory which is accessible to a new thread of execution
+as if:</ins>
+</p>
+<blockquote><pre>
+<ins>typename decay&lt;F&gt;::type g(std::forward&lt;F&gt;(f));</ins>
+<ins>tuple&lt;typename decay&lt;Args&gt;::type...&gt; w(std::forward&lt;Args&gt;(args)...);</ins>
+</pre></blockquote>
+<p>
+<ins>The new thread of
+execution executes <tt><i>INVOKE</i>(g, wi...)</tt> where the <tt>wi...</tt> refers
+to the elements stored in the <tt>tuple w</tt>.</ins>
+Any return value from <tt>g</tt> is ignored.
+<del>If <tt>f</tt> terminates with an uncaught exception, <tt>std::terminate()</tt> shall be called.</del>
+<ins>If the evaluation of <tt><i>INVOKE</i>(g,  wi...)</tt> terminates
+with an uncaught exception, <tt>std::terminate()</tt> shall be called [<i>Note:</i>
+<tt>std::terminate()</tt> could be called before entering <tt>g</tt>. -- <i>end note</i>]. Any
+exception thrown before the evaluation of <tt><i>INVOKE</i></tt> has started shall be
+catchable in the calling thread.</ins>
+</p>
+</blockquote>
+</blockquote>
+
+<p>
+Text referring to when <tt>terminate()</tt> is called was contributed by Ganesh.
+</p>
+
+</blockquote>
+
+<note>
+Batavia (2009-05):
+</note>
+<blockquote>
+We agree with the proposed resolution,
+but would like the final sentence to be reworded
+since "catchable" is not a term of art (and is used nowhere else).
+</blockquote>
+
+<note>
+2009-07 Frankfurt:
+</note>
+
+<blockquote>
+<p>
+This is linked to
+<a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2009/n2901.pdf">N2901</a>.
+</p>
+<p>
+Howard to open a separate issue to remove (<iref ref="1176"/>).
+</p>
+<p>
+In Frankfurt there is no consensus for removing the variadic constructor.
+</p>
+</blockquote>
+
+<note>
+2009-10 Santa Cruz:
+</note>
+
+<blockquote>
+We want to move forward with this issue.  If we later take it out via <iref ref="1176"/>
+then that's ok too.  Needs small group to improve wording.
+</blockquote>
+
+<note>
+2009-10 Santa Cruz:
+</note>
+
+<blockquote>
+<p>
+Stefanus provided revised wording.  Moved to Review  Here is the original wording:
+</p>
+<blockquote>
+<p>
+Modify the class definition of <tt>std::thread</tt> in <sref ref="[thread.thread.class]"/> to remove the
+following signature:
+</p>
+
+<blockquote><pre>
+<del>template&lt;class F&gt; explicit thread(F f);</del>
+template&lt;class F, class ... Args&gt; <ins>explicit</ins> thread(F&amp;&amp; f, Args&amp;&amp; ... args);
+</pre></blockquote>
+
+<p>
+Modify <sref ref="[thread.thread.constr]"/> to replace the constructors prior to paragraph 4 with
+the single constructor as above. Replace paragraph 4 - 6 with the
+following:
+</p>
+
+<blockquote>
+<p>
+-4- <i>Requires:</i> <tt>F</tt> and each <tt>Ti</tt> in <tt>Args</tt> shall be <del><tt>CopyConstructible</tt>
+if an lvalue and otherwise</del> <tt>MoveConstructible</tt>.
+<tt><i>INVOKE</i>(f, w1, w2, ..., wN)</tt> (<sref ref="[func.require]"/>) shall be a valid expression for
+some values <tt>w1, w2, ... , wN,</tt> where <tt>N == sizeof...(Args)</tt>.
+</p>
+<p>
+-5- <i>Effects:</i> Constructs an object of type <tt>thread</tt>
+<del>and executes <tt><i>INVOKE</i>(f, t1, t2, ..., tN)</tt> in a new
+thread of execution, where <tt>t1, t2, ..., tN</tt> are the values in <tt>args...</tt></del>.
+<ins>Constructs
+the following objects:</ins>
+</p>
+<blockquote><pre>
+<ins>typename decay&lt;F&gt;::type g(std::forward&lt;F&gt;(f));</ins>
+<ins>tuple&lt;typename decay&lt;Args&gt;::type...&gt; w(std::forward&lt;Args&gt;(args)...);</ins>
+</pre></blockquote>
+<p>
+<ins>and executes <tt><i>INVOKE</i>(g, wi...)</tt> in a new thread of execution.
+These objects shall be destroyed when the new thread of execution completes.</ins>
+Any return value from <tt>g</tt> is ignored.
+<del>If <tt>f</tt> terminates with an uncaught exception, <tt>std::terminate()</tt> shall be called.</del>
+<ins>If the evaluation of <tt><i>INVOKE</i>(g,  wi...)</tt> terminates
+with an uncaught exception, <tt>std::terminate()</tt> shall be called [<i>Note:</i>
+<tt>std::terminate()</tt> could be called before entering <tt>g</tt>. -- <i>end note</i>]. Any
+exception thrown before the evaluation of <tt><i>INVOKE</i></tt> has started shall be
+catchable in the calling thread.</ins>
+</p>
+<p>
+-6- <i>Synchronization:</i> The invocation of the constructor <i>happens before</i> the
+invocation of <del><tt>f</tt></del> <ins><tt>g</tt></ins>.
+</p>
+</blockquote>
+
+</blockquote>
+</blockquote>
+
+<note>
+2010-01-19 Moved to Tentatively Ready after 5 positive votes on c++std-lib.
+</note>
+</discussion>
+
+<resolution>
+<p>
+Modify the class definition of <tt>std::thread</tt> in <sref ref="[thread.thread.class]"/> to remove the
+following signature:
+</p>
+
+<blockquote><pre>
+<del>template&lt;class F&gt; explicit thread(F f);</del>
+template&lt;class F, class ... Args&gt; <ins>explicit</ins> thread(F&amp;&amp; f, Args&amp;&amp; ... args);
+</pre></blockquote>
+
+<p>
+Modify <sref ref="[thread.thread.constr]"/> to replace the constructors prior to paragraph 4 with
+the single constructor as above. Replace paragraph 4 - 6 with the
+following:
+</p>
+
+<blockquote>
+<p>
+<ins>Given a function as follows:</ins>
+</p>
+
+<blockquote><pre><ins>
+template&lt;typename T&gt; typename decay&lt;T&gt;::type decay_copy(T&amp;&amp; v)
+    { return std::forward&lt;T&gt;(v); }
+</ins></pre></blockquote>
+
+<p>
+-4- <i>Requires:</i> <tt>F</tt> and each <tt>Ti</tt> in <tt>Args</tt> shall
+<del>be <tt>CopyConstructible</tt> if an lvalue and otherwise</del> <ins>satisfy
+the</ins> <tt>MoveConstructible</tt> <ins>requirements</ins>.
+<del><tt><i>INVOKE</i>(f, w1, w2, ..., wN)</tt> (<sref ref="[func.require]"/>)
+shall be a valid expression for some values <tt>w1, w2, ... , wN,</tt> where
+<tt>N == sizeof...(Args)</tt>.</del>
+<ins><tt><i>INVOKE</i>(decay_copy(std::forward&lt;F&gt;(f)), decay_copy(std::forward&lt;Args&gt;(args))...)</tt> (<sref
+ref="[func.require]"/>) shall be a valid expression.</ins>
+</p>
+
+<p>
+-5- <i>Effects:</i> Constructs an object of type <tt>thread</tt> <del>and executes
+<tt>INVOKE(f, t1, t2, ..., tN)</tt> in a new thread of execution, where
+<tt>t1, t2, ..., tN</tt> are the values in <tt>args...</tt>. 
+Any return
+value from <tt>f</tt> is ignored. If <tt>f</tt> terminates with an
+uncaught exception, <tt>std::terminate()</tt> shall be called.</del>
+<ins>The new thread of execution executes <tt>INVOKE(decay_copy(std::forward&lt;F&gt;(f)),
+decay_copy(std::forward&lt;Args&gt;(args))...)</tt> with the calls to <tt>decay_copy()</tt> being evaluated in
+the constructing thread. Any return value from this invocation is
+ignored. [<i>Note:</i> this implies any exceptions not thrown from the
+invocation of the copy of <tt>f</tt> will be thrown in the constructing thread,
+not the new thread. &mdash; <i>end note</i>].
+If the invocation of <tt><i>INVOKE</i>(decay_copy(std::forward&lt;F&gt;(f)),
+decay_copy(std::forward&lt;Args&gt;(args))...)</tt> terminates with an uncaught
+exception, <tt>std::terminate</tt> shall be called.
+</ins></p>
+
+<p>
+-6- <i>Synchronization:</i> The invocation of the constructor <i>happens before</i> the
+invocation of <ins>the copy of</ins> <tt>f</tt>.
+</p>
+</blockquote>
+
+</resolution>
+
+</issue>

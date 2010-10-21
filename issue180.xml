@@ -1,0 +1,139 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="180" status="CD1">
+<title>Container member iterator arguments constness has unintended consequences</title>
+<section><sref ref="[basic.string]"/></section>
+<submitter>Dave Abrahams</submitter>
+<date>1 Jul 1999</date>
+
+<discussion>
+<p>It is the constness of the container which should control whether
+it can be modified through a member function such as erase(), not the
+constness of the iterators. The iterators only serve to give
+positioning information.</p>
+
+<p>Here's a simple and typical example problem which is currently very
+difficult or impossible to solve without the change proposed
+below.</p>
+
+<p>Wrap a standard container C in a class W which allows clients to
+find and read (but not modify) a subrange of (C.begin(), C.end()]. The
+only modification clients are allowed to make to elements in this
+subrange is to erase them from C through the use of a member function
+of W.</p>
+
+<note>
+post Bellevue, Alisdair adds:
+</note>
+
+<blockquote>
+<p>
+This issue was implemented by
+<a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2007/n2350.pdf">N2350</a>
+for everything but <tt>basic_string</tt>.
+</p>
+
+<p>
+Note that the specific example in this issue (<tt>basic_string</tt>) is the one place
+we forgot to amend in
+<a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2007/n2350.pdf">N2350</a>,
+so we might open this issue for that
+single container?
+</p>
+</blockquote>
+
+<note>
+Sophia Antipolis:
+</note>
+
+<blockquote>
+<p>
+This was a fix that was intended for all standard library containers,
+and has been done for other containers, but string was missed.
+</p>
+<p>
+The wording updated.
+</p>
+<p>
+We did not make the change in <tt>replace</tt>, because this change would affect
+the implementation because the string may be written into. This is an
+issue that should be taken up by concepts.
+</p>
+<p>
+We note that the supplied wording addresses the initializer list provided in
+<a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2008/n2679.pdf">N2679</a>.
+</p>
+</blockquote>
+
+</discussion>
+
+<resolution>
+<p>
+Update the following signature in the <tt>basic_string</tt> class template definition in
+<sref ref="[basic.string]"/>, p5:
+</p>
+<blockquote><pre>
+namespace std {
+  template&lt;class charT, class traits = char_traits&lt;charT&gt;,
+    class Allocator = allocator&lt;charT&gt; &gt;
+  class basic_string {
+
+    ...
+
+    iterator insert(<ins>const_</ins>iterator p, charT c);
+    void insert(<ins>const_</ins>iterator p, size_type n, charT c);
+    template&lt;class InputIterator&gt;
+      void insert(<ins>const_</ins>iterator p, InputIterator first, InputIterator last);
+    void insert(<ins>const_</ins>iterator <ins>p</ins>, initializer_list&lt;charT&gt;);
+
+    ...
+
+    iterator erase(<ins>const_</ins>iterator <ins>const_</ins>position);
+    iterator erase(<ins>const_</ins>iterator first, <ins>const_</ins>iterator last);
+
+    ...
+
+  };
+}
+</pre></blockquote>
+
+<p>
+Update the following signatures in <sref ref="[string::insert]"/>:
+</p>
+
+<blockquote><pre>
+iterator insert(<ins>const_</ins>iterator p, charT c);
+void insert(<ins>const_</ins>iterator p, size_type n, charT c);
+template&lt;class InputIterator&gt;
+  void insert(<ins>const_</ins>iterator p, InputIterator first, InputIterator last);
+void insert(<ins>const_</ins>iterator <ins>p</ins>, initializer_list&lt;charT&gt;);
+</pre></blockquote>
+
+<p>
+Update the following signatures in <sref ref="[string::erase]"/>:
+</p>
+
+<blockquote><pre>
+iterator erase(<ins>const_</ins>iterator <ins>const_</ins>position);
+iterator erase(<ins>const_</ins>iterator first, <ins>const_</ins>iterator last);
+</pre></blockquote>
+
+</resolution>
+
+<rationale>
+<p>The issue was discussed at length. It was generally agreed that 1)
+There is no major technical argument against the change (although
+there is a minor argument that some obscure programs may break), and
+2) Such a change would not break const correctness. The concerns about
+making the change were 1) it is user detectable (although only in
+boundary cases), 2) it changes a large number of signatures, and 3) it
+seems more of a design issue that an out-and-out defect.</p>
+
+<p>The LWG believes that this issue should be considered as part of a
+general review of const issues for the next revision of the
+standard. Also see issue <iref ref="200"/>.</p>
+</rationale>
+</issue>

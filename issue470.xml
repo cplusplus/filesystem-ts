@@ -1,0 +1,55 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="470" status="NAD">
+<title>accessing containers from their elements' special functions</title>
+<section><sref ref="[containers]"/></section>
+<submitter>Martin Sebor</submitter>
+<date>28 Jun 2004</date>
+<discussion>
+
+<p>
+The standard doesn't prohibit the destructors (or any other special
+functions) of containers' elements invoked from a member function
+of the container from "recursively" calling the same (or any other)
+member function on the same container object, potentially while the
+container is in an intermediate state, or even changing the state
+of the container object while it is being modified. This may result
+in some surprising (i.e., undefined) behavior.
+</p>
+
+<p>Read email thread starting with c++std-lib-13637 for more.</p>
+
+</discussion>
+
+<resolution>
+
+<p>Add to Container Requirements the following new paragraph:</p>
+
+<pre>
+    Unless otherwise specified, the behavior of a program that
+    invokes a container member function f from a member function
+    g of the container's value_type on a container object c that
+    called g from its mutating member function h, is undefined.
+    I.e., if v is an element of c, directly or indirectly calling
+    c.h() from v.g() called from c.f(), is undefined.
+</pre>
+
+<note>Redmond: This is a real issue, but it's probably a clause 17
+  issue, not clause 23.  We get the same issue, for example, if we
+  try to destroy a stream from one of the stream's callback functions.</note>
+  
+
+</resolution>
+<rationale>
+<p>
+Recommend NAD.  We agree this is an issue, but not a defect.
+We believe that there is no wording we can put in the standard
+that will cover all cases without introducing unfortunate
+corner cases.
+</p>
+</rationale>
+
+</issue>

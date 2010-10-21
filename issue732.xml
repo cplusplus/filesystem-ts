@@ -1,0 +1,75 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="732" status="NAD Editorial">
+<title>Defect in [rand.dist.samp.genpdf]</title>
+<section><sref ref="[rand.dist.samp.genpdf]"/></section>
+<submitter>Stephan Tolksdorf</submitter>
+<date>21 Sep 2007</date>
+
+<discussion>
+<p>
+<sref ref="[rand.dist.samp.genpdf]"/> describes the interface for a distribution template that is 
+meant to simulate random numbers from any general distribution given only the density and the 
+support of the distribution. I'm not aware of any general purpose algorithm that would be capable 
+of correctly and efficiently implementing the described functionality. From what I know, this is 
+essentially an unsolved research problem. Existing algorithms either require more knowledge 
+about the distribution and the problem domain or work only under very limited circumstances. 
+Even the state of the art special purpose library UNU.RAN does not solve the problem in full 
+generality, and in any case, testing and customer support for such a library feature would be a 
+nightmare.
+</p>
+
+<p>
+<b>Possible resolution:</b> For these reasons, I propose to delete section <sref ref="[rand.dist.samp.genpdf]"/>.
+</p>
+
+<note>
+Bellevue:
+</note>
+
+<blockquote>
+<p>
+Disagreement persists.
+</p>
+<p>
+Objection to this issue is that this function takes a general functor.
+The general approach would be to normalize this function, integrate it,
+and take the inverse of the integral, which is not possible in general.
+An example function is sin(1+n*x) -- for any spatial frequency that the
+implementor chooses, there is a value of n that renders that choice
+arbitrarily erroneous.
+</p>
+<p>
+Correction: The formula above should instead read 1+sin(n*x).
+</p>
+<p>
+Objector proposes the following possible compromise positions:
+</p>
+<ul>
+<li>
+rand.dist.samp.genpdf takes an number of points so that implementor need not guess.
+</li>
+<li>
+replace rand.disk.samp.genpdf with an extension to either or both of the discrete functions to take arguments that take a functor and number of points in place of the list of probabilities. Reference issues 793 and 794.
+</li>
+</ul>
+</blockquote>
+
+</discussion>
+
+<resolution>
+<p>
+See <a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2009/n2813.pdf">N2813</a>
+for the proposed resolution.
+</p>
+</resolution>
+
+<rationale>
+Addressed by
+<a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2009/n2836.pdf">N2836</a> "Wording Tweaks for Concept-enabled Random Number Generation in C++0X".
+</rationale>
+
+</issue>

@@ -1,0 +1,48 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="757" status="NAD Editorial">
+<title>Typo in the synopsis of vector</title>
+<section><sref ref="[vector]"/></section>
+<submitter>Paolo Carlini</submitter>
+<date>4 Nov 2007</date>
+
+<discussion>
+<p>
+In the synopsis <sref ref="[vector]"/>, there is the signature:
+</p>
+
+<blockquote><pre>
+void insert(const_iterator position, size_type n, T&amp;&amp; x);
+</pre></blockquote>
+
+<p>
+instead of:
+</p>
+
+<blockquote><pre>
+iterator insert(const_iterator position, T&amp;&amp; x);
+</pre></blockquote>
+
+<p>
+<sref ref="[vector.modifiers]"/> is fine.
+</p>
+
+</discussion>
+
+<resolution>
+<p>
+Change the synopsis in <sref ref="[vector]"/>:
+</p>
+
+<blockquote><pre>
+iterator insert(const_iterator position, const T&amp; x); 
+<ins>iterator insert(const_iterator position, T&amp;&amp; x);</ins>
+void     insert(const_iterator position, size_type n, const T&amp; x); 
+<del>void     insert(const_iterator position, size_type n, T&amp;&amp; x);</del>
+</pre></blockquote>
+</resolution>
+
+</issue>

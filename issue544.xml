@@ -1,0 +1,47 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="544" status="NAD Editorial">
+<title>minor NULL problems in C.2</title>
+<section><sref ref="[diff.library]"/></section>
+<submitter>Martin Sebor</submitter>
+<date>25 Nov 2005</date>
+
+<discussion>
+<p>
+According to C.2.2.3, p1, "the macro NULL, defined in any of &lt;clocale&gt;,
+&lt;cstddef&gt;, &lt;cstdio&gt;, &lt;cstdlib&gt;, &lt;cstring&gt;, &lt;ctime&gt;,
+or &lt;cwchar&gt;." This is consistent with the C standard.
+</p>
+<p>
+However, Table 95 in C.2 fails to mention &lt;clocale&gt; and &lt;cstdlib&gt;.
+</p>
+<p>
+In addition, C.2, p2 claims that "The C++ Standard library provides
+54 standard macros from the C library, as shown in Table 95." While
+table 95 does have 54 entries, since a couple of them (including the
+NULL macro) are listed more than once, the actual number of macros
+defined by the C++ Standard Library may not be 54.
+</p>
+</discussion>
+
+<resolution>
+<p>
+I propose we add &lt;clocale&gt; and &lt;cstdlib&gt; to Table 96 and remove the
+number of macros from C.2, p2 and reword the sentence as follows:
+</p>
+<blockquote><p>
+The C++ Standard library <del>provides 54 standard macros from</del>
+<ins>defines a number macros corresponding to those defined by</ins> the C 
+<ins>Standard</ins> library, as shown in Table 96.
+</p></blockquote>
+
+<note>
+Portland:  Resolution is considered editorial.  It will be incorporated into the WD.
+</note>
+
+</resolution>
+
+</issue>

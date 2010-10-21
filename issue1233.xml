@@ -1,0 +1,57 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="1233" status="NAD Editorial">
+<title>Missing <tt>unique_ptr</tt> signatures in synopsis</title>
+<section><sref ref="[memory]"/></section>
+<submitter>Daniel Kr&uuml;gler</submitter>
+<date>11 Oct 2009</date>
+
+<discussion>
+<p>
+Related to <iref ref="296"/>.  Some <tt>unique_ptr</tt> signatures are missing
+from the synopsis in <sref ref="[memory]"/>.
+</p>
+
+<note>
+2009-11-04 Howard adds:
+</note>
+
+<blockquote>
+Moved to Tentatively NAD Editorial.  The editor has adopted the fix.
+</blockquote>
+</discussion>
+
+<resolution>
+<p>
+Add in <sref ref="[memory]"/>, Header <tt>&lt;memory&gt;</tt> synopsis
+missing declarations as shown below:
+</p>
+
+<blockquote><pre>
+// 20.8.11 Class unique_ptr:
+template &lt;class X&gt; class default_delete;
+<ins>template&lt;class T&gt; struct default_delete&lt;T[]&gt;;</ins>
+template &lt;class X, class D = default_delete&lt;T&gt;&gt; class unique_ptr;
+<ins>template&lt;class T, class D&gt; class unique_ptr&lt;T[], D&gt;;</ins>
+
+<ins>template&lt;class T, class D&gt; void swap(unique_ptr&lt;T, D&gt;&amp; x, unique_ptr&lt;T, D&gt;&amp; y);</ins>
+
+<ins>template&lt;class T1, class D1, class T2, class D2&gt;
+bool operator==(const unique_ptr&lt;T1, D1&gt;&amp; x, const unique_ptr&lt;T2, D2&gt;&amp; y);</ins>
+<ins>template&lt;class T1, class D1, class T2, class D2&gt;
+bool operator!=(const unique_ptr&lt;T1, D1&gt;&amp; x, const unique_ptr&lt;T2, D2&gt;&amp; y);</ins>
+<ins>template&lt;class T1, class D1, class T2, class D2&gt;
+bool operator&lt;(const unique_ptr&lt;T1, D1&gt;&amp; x, const unique_ptr&lt;T2, D2&gt;&amp; y);</ins>
+<ins>template&lt;class T1, class D1, class T2, class D2&gt;
+bool operator&lt;=(const unique_ptr&lt;T1, D1&gt;&amp; x, const unique_ptr&lt;T2, D2&gt;&amp; y);</ins>
+<ins>template&lt;class T1, class D1, class T2, class D2&gt;
+bool operator&gt;(const unique_ptr&lt;T1, D1&gt;&amp; x, const unique_ptr&lt;T2, D2&gt;&amp; y);</ins>
+<ins>template&lt;class T1, class D1, class T2, class D2&gt;
+bool operator&gt;=(const unique_ptr&lt;T1, D1&gt;&amp; x, const unique_ptr&lt;T2, D2&gt;&amp; y);</ins>
+</pre></blockquote>
+</resolution>
+
+</issue>

@@ -1,0 +1,54 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="1208" status="WP">
+<title>valarray initializer_list constructor has incorrect effects</title>
+<section><sref ref="[valarray.cons]"/></section>
+<submitter>Howard Hinnant</submitter>
+<date>23 Sep 2009</date>
+
+<discussion>
+<p>
+<sref ref="[valarray.cons]"/> says:
+</p>
+
+<blockquote>
+<pre>
+valarray(initializer_list&lt;T&gt; il);
+</pre>
+<blockquote>
+<i>Effects:</i> Same as <tt>valarray(il.begin(), il.end())</tt>.
+</blockquote>
+</blockquote>
+
+<p>
+But there is no <tt>valarray</tt> constructor taking two <tt>const T*</tt>.
+</p>
+
+<note>
+2009-10-29 Howard:
+</note>
+
+<blockquote>
+Moved to Tentatively Ready after 6 positive votes on c++std-lib.
+</blockquote>
+</discussion>
+
+<resolution>
+<p>
+Change <sref ref="[valarray.cons]"/>:
+</p>
+
+<blockquote>
+<pre>
+valarray(initializer_list&lt;T&gt; il);
+</pre>
+<blockquote>
+<i>Effects:</i> Same as <tt>valarray(il.begin(), il.<del>end</del><ins>size</ins>())</tt>.
+</blockquote>
+</blockquote>
+</resolution>
+
+</issue>

@@ -1,0 +1,71 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="687" status="CD1">
+<title>shared_ptr conversion constructor not constrained</title>
+<section><sref ref="[util.smartptr.shared.const]"/>, <sref ref="[util.smartptr.weak.const]"/></section>
+<submitter>Peter Dimov</submitter>
+<date>10 May 2007</date>
+
+<discussion>
+<p>
+Since all conversions from <tt>shared_ptr&lt;T&gt;</tt> to <tt>shared_ptr&lt;U&gt;</tt> have the same
+rank regardless of the relationship between <tt>T</tt> and <tt>U</tt>, reasonable user
+code that works with raw pointers fails with <tt>shared_ptr</tt>:
+</p>
+
+<blockquote><pre>
+void f( shared_ptr&lt;void> );
+void f( shared_ptr&lt;int&gt; );
+
+int main()
+{
+  f( shared_ptr&lt;double&gt;() ); // ambiguous
+}
+</pre></blockquote>
+
+<p>
+Now that we officially have <tt>enable_if</tt>, we can constrain the constructor
+and the corresponding assignment operator to only participate in the
+overload resolution when the pointer types are compatible.
+</p>
+</discussion>
+
+<resolution>
+<p>
+In <sref ref="[util.smartptr.shared.const]"/>, change:
+</p>
+
+<blockquote><p>
+-14- <i>Requires:</i> <del>For the second constructor</del> <ins>The
+second constructor shall not participate in the overload resolution
+unless</ins> <tt>Y*</tt> <del>shall be</del> <ins>is implicitly</ins> convertible
+to <tt>T*</tt>.
+</p></blockquote>
+
+<p>
+In <sref ref="[util.smartptr.weak.const]"/>, change:
+</p>
+
+<blockquote>
+<pre>
+<del>template&lt;class Y&gt; weak_ptr(shared_ptr&lt;Y&gt; const&amp; r);</del>
+<del>weak_ptr(weak_ptr const&amp; r);</del>
+<del>template&lt;class Y&gt; weak_ptr(weak_ptr&lt;Y&gt; const&amp; r);</del>
+<ins>weak_ptr(weak_ptr const&amp; r);</ins>
+<ins>template&lt;class Y&gt; weak_ptr(weak_ptr&lt;Y&gt; const&amp; r);</ins>
+<ins>template&lt;class Y&gt; weak_ptr(shared_ptr&lt;Y&gt; const&amp; r);</ins>
+</pre>
+<blockquote><p>
+-4- <i>Requires:</i> <del>For</del> <del>t</del><ins>T</ins>he second and
+third constructors<del>,</del> <ins>shall not participate in the
+overload resolution unless</ins> <tt>Y*</tt> <del>shall be</del>
+<ins>is implicitly</ins> convertible to <tt>T*</tt>.
+</p></blockquote>
+</blockquote>
+
+</resolution>
+
+</issue>

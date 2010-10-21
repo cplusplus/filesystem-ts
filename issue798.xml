@@ -1,0 +1,93 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="798" status="CD1">
+<title>Refactoring of binders lead to interface breakage</title>
+<section><sref ref="[depr.lib.binders]"/></section>
+<submitter>Daniel Kr&uuml;gler</submitter>
+<date>14 Feb 2008</date>
+
+<discussion>
+<p>
+<a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2008/n2521.pdf">N2521</a>
+and its earlier predecessors have moved the old binders from
+[lib.binders] to <sref ref="[depr.lib.binders]"/> thereby introducing some renaming
+of the template parameter names (<tt>Operation -&gt; Fn</tt>). During this
+renaming process the <em>protected</em> data member <tt>op</tt> was also renamed to
+<tt>fn</tt>, which seems as an unnecessary interface breakage to me - even if
+this user access point is probably rarely used.
+</p>
+</discussion>
+
+<resolution>
+<p>
+Change <sref ref="[depr.lib.binder.1st]"/>:
+</p>
+
+<blockquote>
+<pre>
+template &lt;class Fn&gt; 
+class binder1st 
+  : public unary_function&lt;typename Fn::second_argument_type, 
+                          typename Fn::result_type&gt; { 
+protected: 
+  Fn <del>fn</del> <ins>op</ins>; 
+  typename Fn::first_argument_type value; 
+public: 
+  binder1st(const Fn&amp; x, 
+            const typename Fn::first_argument_type&amp; y); 
+  typename Fn::result_type 
+    operator()(const typename Fn::second_argument_type&amp; x) const; 
+  typename Fn::result_type 
+    operator()(typename Fn::second_argument_type&amp; x) const; 
+};
+</pre>
+
+<blockquote>
+<p>
+-1- The constructor initializes <del><tt>fn</tt></del> <ins><tt>op</tt></ins> with <tt>x</tt> and <tt>value</tt> with <tt>y</tt>.
+</p>
+<p>
+-2- <tt>operator()</tt> returns <tt><del>fn</del><ins>op</ins>(value,x)</tt>.
+</p>
+</blockquote>
+</blockquote>
+
+<p>
+Change <sref ref="[depr.lib.binder.2nd]"/>:
+</p>
+
+<blockquote>
+<pre>
+template &lt;class Fn&gt; 
+class binder2nd
+  : public unary_function&lt;typename Fn::first_argument_type, 
+                          typename Fn::result_type&gt; { 
+protected: 
+  Fn <del>fn</del> <ins>op</ins>; 
+  typename Fn::second_argument_type value; 
+public: 
+  binder2nd(const Fn&amp; x, 
+            const typename Fn::second_argument_type&amp; y); 
+  typename Fn::result_type 
+    operator()(const typename Fn::first_argument_type&amp; x) const; 
+  typename Fn::result_type 
+    operator()(typename Fn::first_argument_type&amp; x) const; 
+};
+</pre>
+
+<blockquote>
+<p>
+-1- The constructor initializes <del><tt>fn</tt></del> <ins><tt>op</tt></ins> with <tt>x</tt> and <tt>value</tt> with <tt>y</tt>.
+</p>
+<p>
+-2- <tt>operator()</tt> returns <tt><del>fn</del><ins>op</ins>(value,x)</tt>.
+</p>
+</blockquote>
+</blockquote>
+
+</resolution>
+
+</issue>

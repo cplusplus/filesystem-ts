@@ -1,0 +1,49 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="364" status="CD1">
+<title>Inconsistent wording in 27.5.2.4.2</title>
+<section><sref ref="[streambuf.virt.buffer]"/></section>
+<submitter>Walter Brown, Marc Paterno</submitter>
+<date>10 May 2002</date>
+
+<discussion>
+<p>
+<sref ref="[streambuf.virt.buffer]"/> paragraph 1 is inconsistent with the Effects
+clause for seekoff.
+</p>
+</discussion>
+
+<resolution>
+<p>
+Make this paragraph, the Effects clause for setbuf, consistent in wording
+with the Effects clause for seekoff in paragraph 3 by amending paragraph 1
+to indicate the purpose of setbuf:
+</p>
+
+<p>Original text:</p>
+
+<blockquote><p>
+1 Effects: Performs an operation that is defined separately for each
+class derived from basic_streambuf in this clause (27.7.1.3, 27.8.1.4).
+</p></blockquote>
+
+<p>Proposed text:</p>
+
+<blockquote><p>
+1 Effects: Influences stream buffering in a way that is defined separately
+for each class derived from basic_streambuf in this clause
+(27.7.1.3, 27.8.1.4).
+</p></blockquote>
+
+</resolution>
+
+<rationale>
+<p>The LWG doesn't believe there is any normative difference between
+  the existing wording and what's in the proposed resolution, but the
+  change may make the intent clearer.</p>
+</rationale>
+
+</issue>

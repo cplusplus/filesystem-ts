@@ -1,0 +1,69 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="1333" status="New">
+<title>Missing forwarding during std::function invocation</title>
+<section><sref ref="[func.wrap.func.inv]"/></section>
+<submitter>Daniel Kr&uuml;gler</submitter>
+<date>26 Mar 2010</date>
+
+<discussion>
+<p>
+The current wording of <sref ref="[func.wrap.func.inv]"/>/1:
+</p>
+
+<blockquote><pre>
+R operator()(ArgTypes... args) const
+</pre>
+
+<blockquote>
+<i>Effects:</i> <tt><i>INVOKE</i>(f, t1, t2, ..., tN, R)</tt> (20.8.2), where
+<tt>f</tt> is the target object (20.8.1) of <tt>*this</tt> and <tt>t1, t2, ...,
+tN</tt> are the values in <tt>args...</tt>.
+</blockquote>
+</blockquote>
+
+<p>
+uses an unclear relation between the actual args and the used variables
+<tt>ti</tt>. It should be made clear, that <tt>std::forward</tt> has to be used
+to conserve the expression lvalueness.
+</p>
+</discussion>
+
+<resolution>
+<p>
+Change <sref ref="[func.wrap.func.inv]"/>/1+2 as indicated:
+</p>
+
+<blockquote><pre>
+R operator()(ArgTypes... args) const
+</pre>
+
+<blockquote>
+<p>
+1 <i>Effects:</i>: <tt><i>INVOKE</i>(f,
+<ins>std::forward&lt;ArgTypes&gt;(args)...</ins><del>t1, t2, ..., tN</del>,
+R)</tt> (20.8.2), where <tt>f</tt> is the target object (20.8.1) of
+<tt>*this</tt> <del>and <tt>t1, t2, ..., tN</tt> are the values in
+<tt>args...</tt></del>.
+</p>
+
+<p>
+2 <i>Returns:</i> Nothing if <tt>R</tt> is <tt>void</tt>, otherwise the return
+value of <tt><i>INVOKE</i>(f,
+<ins>std::forward&lt;ArgTypes&gt;(args)...</ins><del>t1, t2, ..., tN</del>,
+R)</tt>.
+</p>
+
+<p>
+3 <i>Throws:</i> <tt>bad_function_call</tt> if <tt>!*this</tt>; otherwise, any
+exception thrown by the wrapped callable object.
+</p>
+</blockquote>
+</blockquote>
+
+</resolution>
+
+</issue>

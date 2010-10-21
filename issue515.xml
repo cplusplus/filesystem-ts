@@ -1,0 +1,79 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="515" status="NAD">
+<title>Random number engine traits</title>
+<section><sref ref="[rand.synopsis]"/><sref ref="[tr.rand.synopsis]"/></section>
+<submitter>Walter Brown</submitter>
+<date>3 Jul 2005</date>
+
+<discussion>
+<p>
+To accompany the concept of a pseudo-random number engine as defined in Table 17,
+we propose and recommend an adjunct template, engine_traits, to be declared in
+[tr.rand.synopsis] as:
+</p>
+<blockquote><pre>
+template&lt; class PSRE &gt;
+class engine_traits;
+</pre></blockquote>
+<p>
+This template's primary purpose would be as an aid to generic programming involving
+pseudo-random number engines.  Given only the facilities described in tr1, it would
+be very difficult to produce any algorithms involving the notion of a generic engine.
+The intent of this proposal is to  provide, via engine_traits&lt;&gt;, sufficient
+descriptive information to allow an algorithm to employ a pseudo-random number engine
+without regard to its exact type, i.e., as a template parameter.
+</p>
+<p>
+For example, today it is not possible to write an efficient generic function that
+requires any specific number of random bits.  More specifically, consider a
+cryptographic application that internally needs 256 bits of randomness per call:
+</p>
+<blockquote><pre>
+template&lt; class Eng, class InIter, class OutIter &gt;
+void crypto( Eng&amp; e, InIter in, OutIter out );
+</pre></blockquote>
+<p>
+Without knowning the number of bits of randomness produced per call to a provided
+engine, the algorithm has no means of determining how many times to call the engine.
+</p>
+<p>
+In a new section [tr.rand.eng.traits], we proposed to define the engine_traits
+template as: 
+</p>
+<blockquote><pre>
+template&lt; class PSRE &gt;
+class engine_traits
+{
+  static  std::size_t  bits_of_randomness = 0u;
+  static  std::string  name()  { return "unknown_engine"; }
+  // TODO: other traits here
+};
+</pre></blockquote>
+<p>
+Further, each engine described in [tr.rand.engine] would be accompanied by a
+complete specialization of this new engine_traits template.
+</p>
+
+</discussion>
+
+<resolution>
+<note>
+Berlin:  Walter: While useful for implementation per TR1, N1932 has no need for this
+feature.  Recommend close as NAD.
+</note>
+</resolution>
+
+<rationale>
+<p>
+Recommend NAD,
+<a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2006/n1932.pdf">N1932</a>,
+<a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2006/n2111.pdf">N2111</a>
+covers this.  Already in WP.
+</p>
+</rationale>
+
+</issue>

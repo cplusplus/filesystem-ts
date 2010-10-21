@@ -1,0 +1,28 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="88" status="NAD">
+<title>Inconsistency between string::insert() and string::append()</title>
+<section><sref ref="[string::insert]"/> <sref ref="[string::append]"/></section>
+<submitter>Nico Josuttis</submitter>
+<date>29 Sep 1998</date>
+
+<discussion>
+<p>Why does </p>
+<pre>  template&lt;class InputIterator&gt; 
+       basic_string&amp; append(InputIterator first, InputIterator last);</pre>
+
+<p>return a string, while</p>
+<pre>  template&lt;class InputIterator&gt; 
+       void insert(iterator p, InputIterator first, InputIterator last);</pre>
+
+<p>returns nothing ?</p>
+</discussion>
+
+<rationale>
+<p>The LWG believes this stylistic inconsistency is not sufficiently 
+serious to constitute a defect.</p>
+</rationale>
+</issue>

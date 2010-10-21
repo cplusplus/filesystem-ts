@@ -1,0 +1,90 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="1341" status="New">
+<title>Reporting out-of-bound values on numeric string conversions</title>
+<section><sref ref="[string.conversions]"/></section>
+<submitter>Alisdair Meredith</submitter>
+<date>19 Jul 2010</date>
+
+<discussion>
+<p>
+The functions (<tt>w</tt>)<tt>stoi</tt> and (<tt>w</tt>)<tt>stof</tt>
+are specified in terms of calling C library APIs for potentially wider
+types.  The integer and floating-point versions have subtly different
+behaviour when reading values that are too large to convert.  The
+floating point case will throw <tt>out_of_bound</tt> if the read value
+is too large to convert to the wider type used in the implementation,
+but behaviour is undefined if the converted value cannot narrow to a
+float.  The integer case will throw <tt>out_of_bounds</tt> if the
+converted value cannot be represented in the narrower type, but throws
+<tt>invalid_argument</tt>, rather than <tt>out_of_bounds</tt>, if the
+conversion to the wider type fails due to overflow.
+</p>
+
+<p>
+Suggest that the Throws clause for both specifications should be
+consistent, supporting the same set of fail-modes with the matching set
+of exceptions.
+</p>
+
+</discussion>
+
+<resolution>
+<p>
+21.5p3 [string.conversions]
+</p>
+
+<blockquote><pre>
+int stoi(const string&amp; str, size_t *idx = 0, int base = 10);
+long stol(const string&amp; str, size_t *idx = 0, int base = 10);
+unsigned long stoul(const string&amp; str, size_t *idx = 0, int base = 10);
+long long stoll(const string&amp; str, size_t *idx = 0, int base = 10);
+unsigned long long stoull(const string&amp; str, size_t *idx = 0, int base = 10);
+</pre>
+
+<blockquote>
+<p>
+...
+</p>
+<p>
+3 <i>Throws:</i> <tt>invalid_argument</tt> if <tt>strtol</tt>,
+<tt>strtoul</tt>, <tt>strtoll</tt>, or <tt>strtoull</tt> reports that no
+conversion could be performed. Throws <tt>out_of_range</tt> if
+<ins><tt>strtol</tt>, <tt>strtoul</tt>, <tt>strtoll</tt> or
+<tt>strtoull</tt> sets <tt>errno</tt> to <tt>ERANGE</tt>, or if</ins>
+the converted value is outside the range of representable values for the
+return type.
+</p>
+</blockquote>
+</blockquote>
+
+<p>
+21.5p6 [string.conversions]
+</p>
+
+<blockquote><pre>
+float stof(const string&amp; str, size_t *idx = 0);
+double stod(const string&amp; str, size_t *idx = 0);
+long double stold(const string&amp; str, size_t *idx = 0);
+</pre>
+
+<blockquote>
+<p>
+...
+</p>
+<p>
+6 <i>Throws:</i> <tt>invalid_argument</tt> if <tt>strtod</tt> or
+<tt>strtold</tt> reports that no conversion could be performed. Throws
+<tt>out_of_range</tt> if <tt>strtod</tt> or <tt>strtold</tt> sets
+<tt>errno</tt> to <tt>ERANGE</tt> <ins> or if the converted value is
+outside the range of representable values for the return type</ins>.
+</p>
+</blockquote>
+</blockquote>
+
+</resolution>
+
+</issue>

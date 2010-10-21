@@ -1,0 +1,36 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="115" status="TC1">
+<title>Typo in strstream constructors</title>
+<section><sref ref="[depr.strstream.cons]"/></section>
+<submitter>Steve Clamage</submitter>
+<date>2 Nov 1998</date>
+
+<discussion>
+<p>D.7.4.1 strstream constructors paragraph 2 says: </p>
+
+<blockquote>
+  <p>Effects: Constructs an object of class strstream, initializing the base class with
+  iostream(&amp; sb) and initializing sb with one of the two constructors: </p>
+  <p>- If mode&amp;app==0, then s shall designate the first element of an array of n
+  elements. The constructor is strstreambuf(s, n, s). </p>
+  <p>- If mode&amp;app==0, then s shall designate the first element of an array of n
+  elements that contains an NTBS whose first element is designated by s. The constructor is
+  strstreambuf(s, n, s+std::strlen(s)).</p>
+</blockquote>
+
+<p>Notice the second condition is the same as the first. I think the second condition
+should be &quot;If mode&amp;app==app&quot;, or &quot;mode&amp;app!=0&quot;, meaning that
+the append bit is set.</p>
+</discussion>
+
+<resolution>
+<p>In <sref ref="[depr.ostrstream.cons]"/> paragraph 2 and <sref ref="[depr.strstream.cons]"/>
+paragraph 2, change the first condition to <tt>(mode&amp;app)==0</tt>
+and the second condition to <tt>(mode&amp;app)!=0</tt>.</p>
+</resolution>
+
+</issue>

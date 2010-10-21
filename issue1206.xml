@@ -1,0 +1,111 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="1206" status="Ready">
+<title>Incorrect requires for <tt>move_backward</tt> and <tt>copy_backward</tt></title>
+<section><sref ref="[alg.move]"/></section>
+<submitter>Howard Hinnant</submitter>
+<date>13 Sep 2009</date>
+
+<discussion>
+<p>
+<sref ref="[alg.move]"/>, p6 says:
+</p>
+
+<blockquote>
+<pre>
+template&lt;class BidirectionalIterator1, class BidirectionalIterator2&gt;
+  BidirectionalIterator2
+    move_backward(BidirectionalIterator1 first,
+                  BidirectionalIterator1 last,
+                  BidirectionalIterator2 result);
+</pre>
+<blockquote>
+<p>...</p>
+<p>
+<i>Requires:</i> <tt>result</tt> shall not be in the range
+<tt>[first,last)</tt>.
+</p>
+</blockquote>
+</blockquote>
+
+<p>
+This is essentially an "off-by-one" error.
+</p>
+
+<p>
+When <tt>result == last</tt>, which
+<em>is</em> allowed by this specification, then the range <tt>[first, last)</tt>
+is being move assigned into the range <tt>[first, last)</tt>.  The <tt>move</tt>
+(forward) algorithm doesn't allow self move assignment, and neither should
+<tt>move_backward</tt>.  So <tt>last</tt> should be included in the range which
+<tt>result</tt> can not be in.
+</p>
+
+<p>
+Conversely, when <tt>result == first</tt>, which <em>is not</em> allowed by this
+specification, then the range <tt>[first, last)</tt>
+is being move assigned into the range <tt>[first - (last-first), first)</tt>.
+I.e. into a <em>non-overlapping</em> range.  Therefore <tt>first</tt> should
+not be included in the range which <tt>result</tt> can not be in.
+</p>
+
+<p>
+The same argument applies to <tt>copy_backward</tt> though copy assigning elements
+to themselves (<tt>result == last</tt>) should be harmless (though is disallowed
+by <tt>copy</tt>).
+</p>
+
+<note>
+2010 Pittsburgh:  Moved to Ready.
+</note>
+
+</discussion>
+
+<resolution>
+<p>
+Change <sref ref="[alg.move]"/>, p6:
+</p>
+
+<blockquote>
+<pre>
+template&lt;class BidirectionalIterator1, class BidirectionalIterator2&gt;
+  BidirectionalIterator2
+    move_backward(BidirectionalIterator1 first,
+                  BidirectionalIterator1 last,
+                  BidirectionalIterator2 result);
+</pre>
+<blockquote>
+<p>...</p>
+<p>
+<i>Requires:</i> <tt>result</tt> shall not be in the range
+<tt><del>[</del><ins>(</ins>first,last<ins>]</ins><del>)</del></tt>.
+</p>
+</blockquote>
+</blockquote>
+
+<p>
+Change <sref ref="[alg.copy]"/>, p13:
+</p>
+
+<blockquote>
+<pre>
+template&lt;class BidirectionalIterator1, class BidirectionalIterator2&gt;
+  BidirectionalIterator2
+    copy_backward(BidirectionalIterator1 first,
+                  BidirectionalIterator1 last,
+                  BidirectionalIterator2 result);
+</pre>
+<blockquote>
+<p>...</p>
+<p>
+<i>Requires:</i> <tt>result</tt> shall not be in the range
+<tt><del>[</del><ins>(</ins>first,last<ins>]</ins><del>)</del></tt>.
+</p>
+</blockquote>
+</blockquote>
+</resolution>
+
+</issue>

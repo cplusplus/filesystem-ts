@@ -1,0 +1,118 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="1031" status="NAD Future">
+<title>Response to US 78</title>
+<section><sref ref="[util.smartptr.shared]"/></section>
+<submitter>Alisdair Meredith</submitter>
+<date>11 Mar 2009</date>
+
+<discussion>
+
+<p><b>Addresses US 78</b></p>
+
+<p>
+There is presently no way to convert directly from a <tt>shared_ptr</tt> to a
+<tt>unique_ptr</tt>. Add an interface that performs the conversion. 
+</p>
+
+<note>
+Summit:
+</note>
+
+<blockquote>
+We look forward to a paper on this topic. We recommend no action until a
+paper is available. We believe that the shared pointer must use the default
+deleter for the conversion to succeed.
+</blockquote>
+
+<note>
+Peter Dimov adds:
+</note>
+
+<blockquote>
+This is basically a request for <tt>shared_ptr&lt;&gt;::release</tt> in
+disguise, with all the associated problems. Not a good idea.
+</blockquote>
+
+<note>
+2009-07 post-Frankfurt:
+</note>
+
+<blockquote>
+<p>
+The rationale for the omission of a release() member function from shared_ptr is given in:
+<a href="http://www.boost.org/doc/libs/1_39_0/libs/smart_ptr/shared_ptr.htm">http://www.boost.org/doc/libs/1_39_0/libs/smart_ptr/shared_ptr.htm</a>
+</p>
+<p>
+The implementation of such a member is non-trivial (and maybe
+impossible), because it would need to account for the deleter.
+</p>
+</blockquote>
+
+<note>
+2009-07-26 Howard sets to Tentatively NAD Future.
+</note>
+
+<blockquote>
+<p>
+I took an online poll and got 3 votes for NAD and 3 for NAD Future.  Personally
+I prefer NAD Future as this does refer to an extension that could conceivably be
+considered beyond C++0X.
+</p>
+
+<p>
+However such an extension would need to solve a couple of problems:
+</p>
+
+<ol>
+<li>What is the interface for such a conversion when the <tt>shared_ptr</tt> does
+not have unique ownership?  Throw an exception?  Create a null <tt>unique_ptr</tt>?
+Undefined behavior?
+</li>
+
+<li>
+<p>
+How does one handle custom deleters given to the <tt>shared_ptr</tt> constructor?
+</p>
+<p>
+I do not believe it is possible to implement a general answer to this question.
+The <tt>shared_ptr</tt> deleter is a run time (or construction time) characteristic.
+The <tt>unique_ptr</tt> deleter is a compile time characteristic.  In general one
+can not know to what type of <tt>unqiue_ptr</tt> you are converting to.
+</p>
+<p>
+One answer is for the user of the conversion to specify the deleter type and perhaps
+throw an exception if the specification turns out to be incorrect.
+</p>
+<p>
+Another answer is for the conversion to only be valid when the underlying deleter
+is <tt>default_delete</tt>.  We would probalby need to specify that this is indeed the
+underlying deleter of a <tt>shared_ptr</tt> when a custom deleter is not given in
+the constructor.
+</p>
+</li>
+</ol>
+
+<p>
+At any rate, there are non-trivial design issues which would need to be implemented
+and tested in the field for usability prior to standardization.
+</p>
+</blockquote>
+
+<note>
+2009 Santa Cruz:
+</note>
+
+<blockquote>
+Moved to NAD Future.
+</blockquote>
+
+</discussion>
+
+<resolution>
+</resolution>
+
+</issue>

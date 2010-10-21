@@ -1,0 +1,62 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="181" status="TC1">
+<title>make_pair() unintended behavior</title>
+<section><sref ref="[pairs]"/></section>
+<submitter>Andrew Koenig</submitter>
+<date>3 Aug 1999</date>
+
+<discussion>
+<p>The claim has surfaced in Usenet that expressions such as<br/>
+<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <tt>make_pair(&quot;abc&quot;, 3)</tt><br/>
+<br/>
+are illegal, notwithstanding their use in examples, because template instantiation tries to bind the first template
+parameter to <tt> const char (&amp;)[4]</tt>, which type is uncopyable.<br/>
+<br/>
+I doubt anyone intended that behavior...
+</p>
+</discussion>
+
+<resolution>
+<p>In <sref ref="[utility]"/>, paragraph 1 change the following
+declaration of make_pair():</p>
+<blockquote>
+  <pre>template &lt;class T1, class T2&gt; pair&lt;T1,T2&gt; make_pair(const T1&amp;, const T2&amp;);</pre>
+</blockquote>
+<p>to:</p>
+<blockquote>
+  <pre>template &lt;class T1, class T2&gt; pair&lt;T1,T2&gt; make_pair(T1, T2);</pre>
+</blockquote>
+<p>  In <sref ref="[pairs]"/> paragraph 7 and the line before, change:</p>
+<blockquote>
+<pre>template &lt;class T1, class T2&gt;
+pair&lt;T1, T2&gt; make_pair(const T1&amp; x, const T2&amp; y);</pre>
+</blockquote>
+<p>to:</p>
+<blockquote>
+<pre>template &lt;class T1, class T2&gt;
+pair&lt;T1, T2&gt; make_pair(T1 x, T2 y);</pre>
+</blockquote>
+<p>and add the following footnote to the effects clause:</p>
+<blockquote>
+  <p> According to 12.8 [class.copy], an implementation is permitted
+  to not perform a copy of an argument, thus avoiding unnecessary
+  copies.</p>
+</blockquote>
+</resolution>
+
+<rationale>
+<p>Two potential fixes were suggested by Matt Austern and Dietmar
+K&uuml;hl, respectively, 1) overloading with array arguments, and 2) use of
+a reference_traits class with a specialization for arrays.  Andy
+Koenig suggested changing to pass by value. In discussion, it appeared
+that this was a much smaller change to the standard that the other two
+suggestions, and any efficiency concerns were more than offset by the
+advantages of the solution. Two implementors reported that the
+proposed resolution passed their test suites.</p>
+</rationale>
+</issue>

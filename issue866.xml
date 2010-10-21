@@ -1,0 +1,94 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="866" status="WP">
+<title>Qualification of placement new-expressions</title>
+<section><sref ref="[specialized.algorithms]"/>, <sref ref="[util.smartptr.shared.create]"/></section>
+<submitter>Alberto Ganesh Barbati</submitter>
+<date>14 Jul 2008</date>
+
+<discussion>
+<p>
+LWG issue <iref ref="402"/> replaced "<tt>new</tt>" with "<tt>::new</tt>" in the placement
+new-expression in <sref ref="[allocator.members]"/>. I believe the rationale
+given in <iref ref="402"/> applies also to the following other contexts:
+</p>
+<ul>
+<li>
+<p>
+in <sref ref="[specialized.algorithms]"/>, all four algorithms <tt>unitialized_copy</tt>,
+<tt>unitialized_copy_n</tt>, <tt>unitialized_fill</tt> and <tt>unitialized_fill_n</tt> use
+the unqualified placement new-expression in some variation of the form:
+</p>
+<blockquote><pre>
+new  (static_cast&lt;void*&gt;(&amp;*result)) typename  iterator_traits&lt;ForwardIterator&gt;::value_type(*first);
+</pre></blockquote>
+</li>
+<li>
+<p>
+in <sref ref="[util.smartptr.shared.create]"/> there is a reference to the unqualified placement new-expression:
+</p>
+<blockquote><pre>
+new  (pv)  T(std::forward&lt;Args&gt;(args)...),
+</pre></blockquote>
+</li>
+</ul>
+<p>
+I suggest to add qualification in all those places. As far as I know,
+these are all the remaining places in the whole library that explicitly
+use a placement new-expression. Should other uses come out, they should
+be qualified as well.
+</p>
+<p>
+As an aside, a qualified placement new-expression does not need
+additional requirements to be compiled in a constrained context. By
+adding qualification, the <tt>HasPlacementNew</tt> concept introduced recently in
+<a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2008/n2677.pdf">N2677 (Foundational Concepts)</a>
+would no longer be needed by library and
+should therefore be removed.
+</p>
+
+<note>
+San Francisco:
+</note>
+
+<blockquote>
+Detlef: If we move this to Ready, it's likely that we'll forget about
+the side comment about the <tt>HasPlacementNew</tt> concept.
+</blockquote>
+
+<note>
+post San Francisco:
+</note>
+
+<blockquote>
+Daniel:  <tt>HasPlacementNew</tt> has been removed from
+<a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2008/n2774.pdf">N2774 (Foundational Concepts)</a>.
+</blockquote>
+
+</discussion>
+
+<resolution>
+<p>
+Replace "<tt>new</tt>" with "<tt>::new</tt>" in:
+</p>
+<ul>
+<li>
+<sref ref="[uninitialized.copy]"/>, paragraphs 1 and 3
+</li>
+<li>
+<sref ref="[uninitialized.fill]"/>  paragraph 1
+</li>
+<li>
+<sref ref="[uninitialized.fill.n]"/> paragraph 1
+</li>
+<li>
+<sref ref="[util.smartptr.shared.create]"/> once in paragraph 1 and twice in paragraph 2.
+</li>
+</ul>
+
+</resolution>
+
+</issue>

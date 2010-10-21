@@ -1,0 +1,72 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="564" status="WP">
+<title>stringbuf seekpos underspecified</title>
+<section><sref ref="[stringbuf.virtuals]"/></section>
+<submitter>Martin Sebor</submitter>
+<date>23 Feb 2006</date>
+
+<discussion>
+<p>
+The   effects  of  the   <code>seekpos()</code>  member   function  of
+<code>basic_stringbuf</code>  simply say  that the  function positions
+the  input and/or  output  sequences  but fail  to  spell out  exactly
+how. This is in contrast  to the detail in which <code>seekoff()</code>
+is described.
+</p>
+
+<note>
+2009-07 Frankfurt
+</note>
+
+<blockquote>
+Move to Ready.
+</blockquote>
+
+</discussion>
+
+<resolution>
+        <p>
+
+Change 27.7.1.3, p13 to read:
+
+        </p>
+<blockquote>
+<p>
+-13- <i>Effects:</i> <ins>Equivalent to <tt>seekoff(off_type(<i>sp</i>), ios_base::beg,
+<i>which</i>)</tt>.</ins> <del>Alters the stream position within the controlled sequences,
+if possible, to correspond to the stream position stored in <tt><i>sp</i></tt>
+(as described below).</del>
+</p>
+<ul>
+<li><del>If <tt>(<i>which</i> &amp; ios_base::in) != 0</tt>, positions the input sequence.</del></li>
+<li><del>If <tt>(<i>which</i> &amp; ios_base::out) != 0</tt>, positions the output sequence.</del></li>
+<li><del>If <tt><i>sp</i></tt> is an invalid stream position, or if the function
+positions neither sequence, the positioning operation fails. If <tt><i>sp</i></tt>
+has not been obtained by a previous successful call to one of the positioning
+functions (<tt>seekoff</tt>, <tt>seekpos</tt>, <tt>tellg</tt>, <tt>tellp</tt>)
+the effect is undefined.</del></li>
+</ul>
+</blockquote>
+</resolution>
+
+<note>
+Kona (2007): A <tt>pos_type</tt> is a position in a stream by
+definition, so there is no ambiguity as to what it means. Proposed
+Disposition: NAD
+</note>
+
+<note>
+Post-Kona Martin adds:
+I'm afraid I disagree
+with the Kona '07 rationale for marking it NAD. The only text
+that describes precisely what it means to position the input
+or output sequence is in <tt>seekoff()</tt>. The <tt>seekpos()</tt> Effects
+clause is inadequate in comparison and the proposed resolution
+plugs the hole by specifying <tt>seekpos()</tt> in terms of <tt>seekoff()</tt>.
+</note>
+
+</issue>

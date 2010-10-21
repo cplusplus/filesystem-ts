@@ -1,0 +1,33 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="14" status="TC1">
+<title>Locale::combine should be const</title>
+<section><sref ref="[locale.members]"/></section>
+<submitter>Nathan Myers</submitter>
+<date>6 Aug 1998</date>
+
+<discussion>
+<p>locale::combine is the only member function of locale (other than constructors and
+destructor) that is not const. There is no reason for it not to be const, and good reasons
+why it should have been const. Furthermore, leaving it non-const conflicts with 22.1.1
+paragraph 6: &quot;An instance of a locale is immutable.&quot; </p>
+
+<p>History: this member function originally was a constructor. it happened that the
+interface it specified had no corresponding language syntax, so it was changed to a member
+function. As constructors are never const, there was no &quot;const&quot; in the interface
+which was transformed into member &quot;combine&quot;. It should have been added at that
+time, but the omission was not noticed. </p>
+</discussion>
+
+<resolution>
+<p>In <sref ref="[locale]"/> and also in <sref ref="[locale.members]"/>, add 
+&quot;const&quot; to the declaration of member combine: </p>
+<blockquote>
+  <pre>template &lt;class Facet&gt; locale combine(const locale&amp; other) const; </pre>
+</blockquote>
+</resolution>
+
+</issue>

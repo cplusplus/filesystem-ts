@@ -1,0 +1,253 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="343" status="NAD">
+<title>Unspecified library header dependencies</title>
+<section><sref ref="[library]"/></section>
+<submitter>Martin Sebor</submitter>
+<date>09 Oct 2001</date>
+
+<discussion>
+<p>
+The synopses of the C++ library headers clearly show which names are
+required to be defined in each header. Since in order to implement the
+classes and templates defined in these headers declarations of other
+templates (but not necessarily their definitions) are typically
+necessary the standard in 17.4.4, p1 permits library implementers to
+include any headers needed to implement the definitions in each header.
+</p>
+
+<p>
+For instance, although it is not explicitly specified in the synopsis of
+&lt;string&gt;, at the point of definition of the std::basic_string template
+the declaration of the std::allocator template must be in scope. All
+current implementations simply include &lt;memory&gt; from within &lt;string&gt;,
+either directly or indirectly, to bring the declaration of
+std::allocator into scope.
+</p>
+
+<p>
+Additionally, however, some implementation also include &lt;istream&gt; and
+&lt;ostream&gt; at the top of &lt;string&gt; to bring the declarations of
+std::basic_istream and std::basic_ostream into scope (which are needed
+in order to implement the string inserter and extractor operators
+(21.3.7.9 [lib.string.io])). Other implementations only include
+&lt;iosfwd&gt;, since strictly speaking, only the declarations and not the
+full definitions are necessary.
+</p>
+
+<p>
+Obviously, it is possible to implement &lt;string&gt; without actually
+providing the full definitions of all the templates std::basic_string
+uses (std::allocator, std::basic_istream, and std::basic_ostream).
+Furthermore, not only is it possible, doing so is likely to have a
+positive effect on compile-time efficiency.
+</p>
+
+<p>
+But while it may seem perfectly reasonable to expect a program that uses
+the std::basic_string insertion and extraction operators to also
+explicitly include &lt;istream&gt; or &lt;ostream&gt;, respectively, it doesn't seem
+reasonable to also expect it to explicitly include &lt;memory&gt;. Since
+what's reasonable and what isn't is highly subjective one would expect
+the standard to specify what can and what cannot be assumed.
+Unfortunately, that isn't the case.
+</p>
+
+<p>The examples below demonstrate the issue.</p>
+
+<p>Example 1:</p>
+
+<p>It is not clear whether the following program is complete:</p>
+
+<pre>
+#include &lt;string&gt;
+
+extern std::basic_ostream&lt;char&gt; &amp;strm;
+
+int main () {
+    strm &lt;&lt; std::string ("Hello, World!\n");
+}
+</pre>    
+
+<p>or whether one must explicitly include &lt;memory&gt; or
+&lt;ostream&gt; (or both) in addition to &lt;string&gt; in order for
+the program to compile.</p>
+
+
+<p>Example 2:</p>
+
+<p>Similarly, it is unclear whether the following program is complete:</p>
+
+<pre>
+#include &lt;istream&gt;
+
+extern std::basic_iostream&lt;char&gt; &amp;strm;
+
+int main () {
+    strm &lt;&lt; "Hello, World!\n";
+}
+</pre>
+
+<p>
+or whether one needs to explicitly include &lt;ostream&gt;, and
+perhaps even other headers containing the definitions of other
+required templates:</p>
+
+<pre>
+#include &lt;ios&gt;
+#include &lt;istream&gt;
+#include &lt;ostream&gt;
+#include &lt;streambuf&gt;
+
+extern std::basic_iostream&lt;char&gt; &amp;strm;
+
+int main () {
+    strm &lt;&lt; "Hello, World!\n";
+}
+</pre>
+
+<p>Example 3:</p>
+
+<p>Likewise, it seems unclear whether the program below is complete:</p>
+<pre>
+#include &lt;iterator&gt;
+
+bool foo (std::istream_iterator&lt;int&gt; a, std::istream_iterator&lt;int&gt; b)
+{
+    return a == b;
+}
+
+int main () { }
+</pre>
+
+<p>or whether one should be required to include &lt;istream&gt;.</p>
+
+<p>There are many more examples that demonstrate this lack of a
+requirement.  I believe that in a good number of cases it would be
+unreasonable to require that a program explicitly include all the
+headers necessary for a particular template to be specialized, but I
+think that there are cases such as some of those above where it would
+be desirable to allow implementations to include only as much as
+necessary and not more.</p>
+
+<note>
+post Bellevue:
+</note>
+
+<blockquote>
+Position taken in prior reviews is that the idea of a table of header
+dependencies is a good one. Our view is that a full paper is needed to
+do justice to this, and we've made that recommendation to the issue
+author.
+</blockquote>
+
+<note>
+2009-07 Frankfurt
+</note>
+
+<blockquote>
+NAD. Handled by LWG <iref ref="1178"/>.
+</blockquote>
+
+</discussion>
+
+<resolution>
+<p>
+For every C++ library header, supply a minimum set of other C++ library
+headers that are required to be included by that header. The proposed
+list is below (C++ headers for C Library Facilities, table 12 in
+17.4.1.2, p3, are omitted):
+</p>
+
+<pre>
++------------+--------------------+
+| C++ header |required to include |
++============+====================+
+|&lt;algorithm&gt; |                    |
++------------+--------------------+
+|&lt;bitset&gt;    |                    |
++------------+--------------------+
+|&lt;complex&gt;   |                    |
++------------+--------------------+
+|&lt;deque&gt;     |&lt;memory&gt;            |
++------------+--------------------+
+|&lt;exception&gt; |                    |
++------------+--------------------+
+|&lt;fstream&gt;   |&lt;ios&gt;               |
++------------+--------------------+
+|&lt;functional&gt;|                    |
++------------+--------------------+
+|&lt;iomanip&gt;   |&lt;ios&gt;               |
++------------+--------------------+
+|&lt;ios&gt;       |&lt;streambuf&gt;         |
++------------+--------------------+
+|&lt;iosfwd&gt;    |                    |
++------------+--------------------+
+|&lt;iostream&gt;  |&lt;istream&gt;, &lt;ostream&gt;|
++------------+--------------------+
+|&lt;istream&gt;   |&lt;ios&gt;               |
++------------+--------------------+
+|&lt;iterator&gt;  |                    |
++------------+--------------------+
+|&lt;limits&gt;    |                    |
++------------+--------------------+
+|&lt;list&gt;      |&lt;memory&gt;            |
++------------+--------------------+
+|&lt;locale&gt;    |                    |
++------------+--------------------+
+|&lt;map&gt;       |&lt;memory&gt;            |
++------------+--------------------+
+|&lt;memory&gt;    |                    |
++------------+--------------------+
+|&lt;new&gt;       |&lt;exception&gt;         |
++------------+--------------------+
+|&lt;numeric&gt;   |                    |
++------------+--------------------+
+|&lt;ostream&gt;   |&lt;ios&gt;               |
++------------+--------------------+
+|&lt;queue&gt;     |&lt;deque&gt;             |
++------------+--------------------+
+|&lt;set&gt;       |&lt;memory&gt;            |
++------------+--------------------+
+|&lt;sstream&gt;   |&lt;ios&gt;, &lt;string&gt;     |
++------------+--------------------+
+|&lt;stack&gt;     |&lt;deque&gt;             |
++------------+--------------------+
+|&lt;stdexcept&gt; |                    |
++------------+--------------------+
+|&lt;streambuf&gt; |&lt;ios&gt;               |
++------------+--------------------+
+|&lt;string&gt;    |&lt;memory&gt;            |
++------------+--------------------+
+|&lt;strstream&gt; |                    |
++------------+--------------------+
+|&lt;typeinfo&gt;  |&lt;exception&gt;         |
++------------+--------------------+
+|&lt;utility&gt;   |                    |
++------------+--------------------+
+|&lt;valarray&gt;  |                    |
++------------+--------------------+
+|&lt;vector&gt;    |&lt;memory&gt;            |
++------------+--------------------+
+</pre>
+</resolution>
+
+<rationale>
+<p>The portability problem is real.  A program that works correctly on
+one implementation might fail on another, because of different header
+dependencies.  This problem was understood before the standard was
+completed, and it was a conscious design choice.</p>
+<p>One possible way to deal with this, as a library extension, would
+be an &lt;all&gt; header.</p>
+
+<p>
+Hinnant:  It's time we dealt with this issue for C++0X.  Reopened.
+</p>
+
+</rationale>
+
+</issue>
+

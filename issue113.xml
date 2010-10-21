@@ -1,0 +1,42 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="113" status="NAD">
+<title>Missing/extra iostream sync semantics</title>
+<section><sref ref="[istream]"/> <sref ref="[istream.unformatted]"/></section>
+<submitter>Steve Clamage</submitter>
+<date>13 Oct 1998</date>
+
+<discussion>
+<p>In 27.6.1.1, class basic_istream has a member function sync, described in 27.6.1.3,
+paragraph 36. </p>
+
+<p>Following the chain of definitions, I find that the various sync functions have defined
+semantics for output streams, but no semantics for input streams. On the other hand,
+basic_ostream has no sync function. </p>
+
+<p>The sync function should at minimum be added to basic_ostream, for internal
+consistency. </p>
+
+<p>A larger question is whether sync should have assigned semantics for input streams. </p>
+
+<p>Classic iostreams said streambuf::sync flushes pending output and attempts to return
+unread input characters to the source. It is a protected member function. The filebuf
+version (which is public) has that behavior (it backs up the read pointer). Class
+strstreambuf does not override streambuf::sync, and so sync can't be called on a
+strstream. </p>
+
+<p>If we can add corresponding semantics to the various sync functions, we should. If not,
+we should remove sync from basic_istream.</p>
+</discussion>
+
+<rationale>
+<p>A sync function is not needed in basic_ostream because the flush function provides the
+desired functionality.</p>
+
+<p>As for the other points, the LWG finds the standard correct as written.</p>
+</rationale>
+
+</issue>

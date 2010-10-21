@@ -1,0 +1,58 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="1151" status="NAD Editorial">
+<title>Behavior of the library in the presence of threads is incompletely specified</title>
+<section><sref ref="[library]"/></section>
+<submitter>LWG</submitter>
+<date>28 Jun 2009</date>
+
+<discussion>
+<p><b>Addresses US 63</b></p>
+
+   <p><b>Description</b></p>
+        <p>The behavior of the library in the presence of threads
+        is incompletely specified.</p>
+        <p>For example, if thread 1 assigns to <tt>X</tt>, then writes data
+        to file <tt>f</tt>, which is read by thread 2, and then accesses
+        variable <tt>X</tt>, is thread 2 guaranteed to be able to see the
+        value assigned to <tt>X</tt> by thread 1? In other words, does the
+        write of the data "happen before" the read?</p>
+        <p>Another example: does simultaneous access using <tt>operator
+        at()</tt> to different characters in the same non-const string
+        really introduce a data race?</p>
+<p><b>Suggestion</b></p>
+<p><b>Notes</b></p><p>17 SG: should go to threads group; misclassified in document
+</p>
+
+    <p>Concurrency SG: Create an issue. Hans will look into it.</p>
+
+<note>
+2009 Santa Cruz:
+</note>
+
+<blockquote>
+Move to "Open". Hans and the rest of the concurrency working group will
+study this. We can't make progress without a thorough review and a
+paper.
+</blockquote>
+
+<note>
+2010 Pittsburgh:  Moved to NAD Editorial.  Rationale added below.
+</note>
+
+</discussion>
+
+<rationale>
+<p>
+Solved by
+<a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2010/n3069.html">N3069</a>.
+</p>
+</rationale>
+
+<resolution>
+</resolution>
+
+</issue>

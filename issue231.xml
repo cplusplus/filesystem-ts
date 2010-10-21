@@ -1,0 +1,85 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="231" status="CD1">
+<title>Precision in iostream?</title>
+<section><sref ref="[facet.num.put.virtuals]"/></section>
+<submitter>James Kanze, Stephen Clamage</submitter>
+<date> 25 Apr 2000</date>
+
+<discussion>
+<p>What is the following program supposed to output?</p>
+<pre>#include &lt;iostream&gt;
+
+    int
+    main()
+    {
+        std::cout.setf( std::ios::scientific , std::ios::floatfield ) ;
+        std::cout.precision( 0 ) ;
+        std::cout &lt;&lt; 1.00 &lt;&lt; '\n' ;
+        return 0 ;
+    }</pre>
+<p>From my C experience, I would expect &quot;1e+00&quot;; this is what 
+<tt>printf(&quot;%.0e&quot; , 1.00 );</tt> does. G++ outputs 
+&quot;1.000000e+00&quot;.</p>
+
+<p>The only indication I can find in the standard is 22.2.2.2.2/11,
+where it says &quot;For conversion from a floating-point type, if
+(flags &amp; fixed) != 0 or if str.precision() &gt; 0, then
+str.precision() is specified in the conversion specification.&quot;
+This is an obvious error, however, fixed is not a mask for a field,
+but a value that a multi-bit field may take -- the results of and'ing
+fmtflags with ios::fixed are not defined, at least not if
+ios::scientific has been set. G++'s behavior corresponds to what might
+happen if you do use (flags &amp; fixed) != 0 with a typical
+implementation (floatfield == 3 &lt;&lt; something, fixed == 1
+&lt;&lt; something, and scientific == 2 &lt;&lt; something).</p>
+
+<p>Presumably, the intent is either (flags &amp; floatfield) != 0, or
+(flags &amp; floatfield) == fixed; the first gives something more or
+less like the effect of precision in a printf floating point
+conversion. Only more or less, of course. In order to implement printf
+formatting correctly, you must know whether the precision was
+explicitly set or not. Say by initializing it to -1, instead of 6, and
+stating that for floating point conversions, if precision &lt; -1, 6
+will be used, for fixed point, if precision &lt; -1, 1 will be used,
+etc. Plus, of course, if precision == 0 and flags &amp; floatfield ==
+0, 1 should be = used. But it probably isn't necessary to emulate all
+of the anomalies of printf:-).</p>
+</discussion>
+
+<resolution>
+<p>
+Replace <sref ref="[facet.num.put.virtuals]"/>, paragraph 11, with the following 
+sentence:
+</p>
+<blockquote><p>
+For conversion from a floating-point type,
+<tt><i>str</i>.precision()</tt> is specified in the conversion
+specification.
+</p></blockquote>
+</resolution>
+
+<rationale>
+<p>The floatfield determines whether numbers are formatted as if
+with %f, %e, or %g.  If the <tt>fixed</tt> bit is set, it's %f,
+if <tt>scientific</tt> it's %e, and if both bits are set, or 
+neither, it's %g.</p>
+<p>Turning to the C standard, a precision of 0 is meaningful
+for %f and %e.  For %g, precision 0 is taken to be the same as 
+precision 1.</p>
+<p>The proposed resolution has the effect that if neither
+<tt>fixed</tt> nor <tt>scientific</tt> is set we'll be
+specifying a precision of 0, which will be internally
+turned into 1.  There's no need to call it out as a special
+case.</p>
+<p>The output of the above program will be &quot;1e+00&quot;.</p>
+
+<note>Post-Cura&ccedil;ao: Howard provided improved wording covering the case
+where precision is 0 and mode is %g.</note>
+
+</rationale>
+
+</issue>

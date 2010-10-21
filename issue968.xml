@@ -1,0 +1,102 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="968" status="WP">
+<title>Various threading bugs #18</title>
+<section><sref ref="[thread.mutex.requirements]"/></section>
+<submitter>Pete Becker</submitter>
+<date>7 Jan 2009</date>
+
+<discussion>
+<p>
+<sref ref="[thread.mutex.requirements]"/>: several functions are
+required to throw exceptions "if the thread does not have the necessary
+permission ...". "The necessary permission" is not defined.
+</p>
+
+<note>
+Summit:
+</note>
+<blockquote>
+Move to open.
+</blockquote>
+
+
+<note>
+Beman has volunteered to provide proposed wording.
+</note>
+
+<note>
+2009-10 Santa Cruz:
+</note>
+
+<blockquote>
+Moved to Ready with minor word-smithing in the example.
+</blockquote>
+
+</discussion>
+
+<resolution>
+
+
+<p><i>Change Exceptions <sref ref="[thread.req.exception]"/> as indicated:</i></p>
+<blockquote>
+<p>Some functions described in this Clause are 
+specified to throw exceptions of type <code>system_error</code> (19.5.5). Such exceptions 
+shall be thrown if any of the <i>Error conditions</i> are detected or a call to an operating system or other underlying API 
+results in an error that prevents the library function from meeting its specifications.
+<i>[Note:</i> See <sref ref="[res.on.exception.handling]"/> for exceptions thrown to report 
+storage allocation failures. <i>&mdash;end 
+note]</i></p>
+
+<p><ins><i>[Example:</i></ins></p>
+
+<blockquote>
+
+<p><ins>Consider a function in this clause that is specified to throw exceptions of type <code>
+system_error</code> and specifies <i>Error conditions</i> that include <code>
+operation_not_permitted</code> for a thread that does not have the privilege to 
+perform the operation. Assume that, during the execution of this function, an <code>errno</code> 
+of <code>EPERM</code> is reported by a POSIX API call used by the 
+implementation. Since POSIX specifies an <code>errno</code> of <code>EPERM</code> 
+when &quot;the caller does not have the privilege to perform the operation&quot;, 
+the implementation maps <code>EPERM</code>&nbsp; to an <code>error_condition</code> 
+of <code>operation_not_permitted</code> (<sref ref="[syserr]"/>) and an exception of type <code>
+system_error</code> is thrown. </ins></p>
+
+</blockquote>
+
+<p><ins><i>&mdash;end example]</i></ins></p>
+
+<p><span style="font-style: italic">Editorial note: For the sake of exposition, 
+the existing text above is shown with the changes proposed in issues 962 and 967. The 
+proposed additional example is independent of whether or not the 962 and 967 
+proposed resolutions are accepted.</span></p>
+
+</blockquote>
+
+<p><span style="font-style: italic">Change Mutex requirements <sref ref="[thread.mutex.requirements]"/>, 
+paragraph 4, as indicated:</span></p>
+
+<blockquote>
+
+<p>&mdash; <code>operation_not_permitted</code> &mdash; if the thread does not have the 
+<del>necessary permission to change the state of the mutex object</del> <ins>privilege to perform the operation</ins>.</p>
+
+</blockquote>
+
+<p><span style="font-style: italic">Change Mutex requirements <sref ref="[thread.mutex.requirements]"/>, 
+paragraph 12, as indicated:</span></p>
+
+<blockquote>
+
+<p>&mdash; <code>operation_not_permitted</code> &mdash; if the thread does not have the 
+<del>necessary permission to change the state of the mutex</del> <ins>privilege to perform the operation</ins>.</p>
+
+</blockquote>
+
+</resolution>
+
+</issue>

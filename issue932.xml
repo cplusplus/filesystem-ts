@@ -1,0 +1,215 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="932" status="NAD Editorial">
+<title><tt>unique_ptr(pointer p)</tt> for pointer deleter types</title>
+<section><sref ref="[unique.ptr.single.ctor]"/></section>
+<submitter>Howard Hinnant</submitter>
+<date>26 Nov 2008</date>
+
+<discussion>
+
+<p><b>Addresses US 79</b></p>
+
+<p>
+<sref ref="[unique.ptr.single.ctor]"/>/5 no longer requires for <tt>D</tt>
+not to be a pointer type.  I believe this restriction was accidently removed
+when we relaxed the completeness reuqirements on <tt>T</tt>. The restriction
+needs to be put back in.  Otherwise we have a run time failure that could
+have been caught at compile time:
+</p>
+
+<blockquote><pre>
+{
+unique_ptr&lt;int, void(*)(void*)&gt; p1(malloc(sizeof(int)));  <font color="#C80000">// should not compile</font>
+}  <font color="#C80000">// p1.~unique_ptr() dereferences a null function pointer</font>
+unique_ptr&lt;int, void(*)(void*)&gt; p2(malloc(sizeof(int)), free);  <font color="#C80000">// ok</font>
+</pre></blockquote>
+
+<note>
+Post Summit:
+</note>
+
+<blockquote>
+Recommend Tentatively Ready.
+</blockquote>
+
+<note>
+2009-07 Frankfurt
+</note>
+
+<blockquote>
+Moved from Tentatively Ready to Open only because the wording needs to be
+improved for enable_if type constraining, possibly following Robert's
+formula.
+</blockquote>
+
+<note>
+2009-07 Frankfurt:
+</note>
+
+<blockquote>
+<p>
+We need to consider whether some requirements in the Requires paragraphs
+of [unique.ptr] should instead be Remarks.
+</p>
+<p>
+Leave Open. Howard to provide wording, and possibly demonstrate how this
+can be implemented using enable_if.
+</p>
+</blockquote>
+
+<note>
+2009-07-27 Howard adds:
+</note>
+
+<blockquote>
+<p>
+The two constructors to which this issue applies are not easily constrained
+with <tt>enable_if</tt> as they are not templated:
+</p>
+
+<blockquote><pre>
+unique_ptr();
+explicit unique_ptr(pointer p);
+</pre></blockquote>
+
+<p>
+To "SFINAE" these constructors away would take heroic effort such as specializing
+the entire <tt>unique_ptr</tt> class template on pointer deleter types.  There
+is insufficient motivation for such heroics.  Here is the expected and
+reasonable implementation for these constructors:
+</p>
+
+<blockquote><pre>
+unique_ptr()
+    : ptr_(pointer())
+    {
+        static_assert(!is_pointer&lt;deleter_type&gt;::value,
+            "unique_ptr constructed with null function pointer deleter");
+    }
+explicit unique_ptr(pointer p)
+    : ptr_(p)
+    {
+        static_assert(!is_pointer&lt;deleter_type&gt;::value,
+            "unique_ptr constructed with null function pointer deleter");
+    }
+</pre></blockquote>
+
+<p>
+I.e. just use <tt>static_assert</tt> to verify that the constructor is not
+instantiated with a function pointer for a deleter.  The compiler will automatically
+take care of issuing a diagnostic if the deleter is a reference type (uninitialized
+reference error).
+</p>
+
+<p>
+In keeping with our discussions in Frankfurt, I'm moving this requirement on
+the implementation from the Requires paragraph to a Remarks paragraph.
+</p>
+
+</blockquote>
+
+<note>
+2009-08-17 Daniel adds:
+</note>
+
+<blockquote>
+<p>
+It is insufficient to require a diagnostic. This doesn't imply an
+ill-formed program
+as of <sref ref="[defns.diagnostic]"/> (a typical alternative would be a compiler
+warning), but
+exactly that seems to be the intend. I suggest to use the following
+remark instead:
+</p>
+
+<blockquote>
+<i>Remarks:</i> The program shall be ill-formed if this constructor is
+instantiated when <tt>D</tt> is a pointer type or reference type.
+</blockquote>
+
+<p>
+Via the general standard rules of <sref ref="[intro.compliance]"/> the "diagnostic
+required" is implied.
+</p>
+
+</blockquote>
+
+<note>
+2009-10 Santa Cruz:
+</note>
+
+<blockquote>
+Moved to Ready.
+</blockquote>
+
+<note>
+2010-03-14 Howard adds:
+</note>
+
+<blockquote>
+We moved
+<a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2010/n3073.html">N3073</a>
+to the formal motions page in Pittsburgh which should obsolete this issue.  I've
+moved this issue to NAD Editorial, solved by N3073.
+</blockquote>
+
+</discussion>
+
+<rationale>
+<p>
+Solved by <a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2010/n3073.html">N3073</a>.
+</p>
+</rationale>
+
+<resolution>
+<p>
+Change the description of the default constructor in <sref ref="[unique.ptr.single.ctor]"/>:
+</p>
+
+<blockquote><pre>
+unique_ptr();
+</pre>
+<blockquote>
+<p>
+-1- <i>Requires:</i> <tt>D</tt> shall be default constructible, and that construction
+shall not throw an exception. <del><tt>D</tt> shall 
+not be a reference type or pointer type (diagnostic required).</del>
+</p>
+<p>...</p>
+<p><ins>
+<i>Remarks:</i> The program shall be ill-formed if this constructor is
+instantiated when <tt>D</tt> is a pointer type or reference type.
+<!-- 
+<i>Remarks:</i> A diagnostic shall be emitted if this constructor is instantiated
+when <tt>D</tt> is a pointer type or reference type.
+ -->
+</ins></p>
+</blockquote>
+</blockquote>
+
+<p>
+Add  after <sref ref="[unique.ptr.single.ctor]"/>/8:
+</p>
+
+<blockquote><pre>
+unique_ptr(pointer p);
+</pre>
+<blockquote>
+<p>...</p>
+<p><ins>
+<i>Remarks:</i> The program shall be ill-formed if this constructor is
+instantiated when <tt>D</tt> is a pointer type or reference type.
+<!-- 
+<i>Remarks:</i> A diagnostic shall be emitted if this constructor is instantiated
+when <tt>D</tt> is a pointer type or reference type.
+ -->
+</ins></p>
+</blockquote>
+</blockquote>
+</resolution>
+
+</issue>

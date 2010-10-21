@@ -1,0 +1,42 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="29" status="TC1">
+<title>Ios_base::init doesn't exist</title>
+<section><sref ref="[narrow.stream.objects]"/></section>
+<submitter>Nathan Myers</submitter>
+<date>6 Aug 1998</date>
+
+<discussion>
+<p>Sections <sref ref="[narrow.stream.objects]"/> and <sref ref="[wide.stream.objects]"/> mention
+a function ios_base::init, which is not defined. Probably they mean
+basic_ios&lt;&gt;::init, defined in <sref ref="[basic.ios.cons]"/>,
+paragraph 3. </p>
+</discussion>
+
+<resolution>
+<p>[R12: modified to include paragraph 5.]</p>
+
+<p>In <sref ref="[narrow.stream.objects]"/> paragraph 2 and 5, change </p>
+
+<blockquote>
+  <p>ios_base::init </p>
+</blockquote>
+
+<p>to </p>
+
+<blockquote>
+  <p>basic_ios&lt;char&gt;::init </p>
+</blockquote>
+
+<p>Also, make a similar change in <sref ref="[wide.stream.objects]"/> except it
+should read </p>
+
+<blockquote>
+  <p>basic_ios&lt;wchar_t&gt;::init </p>
+</blockquote>
+</resolution>
+
+</issue>

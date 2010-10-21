@@ -1,0 +1,189 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="1129" status="NAD Editorial">
+<title><tt>istream(buf)_iterator</tt> should support literal sentinel value</title>
+<section><sref ref="[istream.iterator.cons]"/>, <sref ref="[istreambuf.iterator]"/></section>
+<submitter>Alisdair Meredith</submitter>
+<date>30 May 2009</date>
+
+<discussion>
+<p>
+<tt>istream_iterator</tt> and <tt>istreambuf_iterator</tt> should support literal sentinel
+values.  The default constructor is frequently used to terminate ranges, and
+could easily be a literal value for <tt>istreambuf_iterator</tt>, and
+<tt>istream_iterator</tt> when iterating value types.  A little more work using a
+suitably sized/aligned char-array for storage (or an updated component like
+<tt>boost::optional</tt> proposed for TR2) would allow <tt>istream_iterator</tt> to support
+<tt>constexpr</tt> default constructor in all cases, although we might leave this
+tweak as a QoI issue.  Note that requiring <tt>constexpr</tt> be supported also
+allows us to place no-throw guarantees on this constructor too.
+</p>
+
+<note>
+2009-06-02 Daniel adds:
+</note>
+
+<blockquote>
+<p>
+I agree with the usefulness of the issue suggestion, but we need
+to ensure that <tt>istream_iterator</tt> <em>can</em> satisfy be literal if needed.
+Currently this is not clear, because <sref ref="[istream.iterator]"/>/3 declares
+a copy constructor and a destructor and explains their semantic in
+<sref ref="[istream.iterator.cons]"/>/3+4.
+</p>
+<p>
+The prototype semantic specification is ok (although it seems
+somewhat redundant to me, because the semantic doesn't say
+anything interesting in both cases), but for support of trivial class
+types we also need a trivial copy constructor and destructor as of
+<sref ref="[class]"/>/6. The current non-informative specification of these
+two special members suggests to remove their explicit declaration
+in the class and add explicit wording that says that if <tt>T</tt> is
+trivial a default constructed iterator is also literal, alternatively it
+would be possible to mark both as defaulted and add explicit
+(memberwise) wording that guarantees that they are trivial.
+</p>
+<p>
+Btw.: I'm quite sure that the <tt>istreambuf_iterator</tt> additions to
+ensure triviality are not sufficient as suggested, because the
+library does not yet give general guarantees that a defaulted
+special member declaration makes this member also trivial.
+Note that e.g. the atomic types do give a general statement!
+</p>
+<p>
+Finally there is a wording issue: There does not exist something
+like a "literal constructor". The core language uses the term
+"constexpr constructor" for this.
+</p>
+<p>
+Suggestion:
+</p>
+<ol>
+<li>
+<p>
+Change <sref ref="[istream.iterator]"/>/3 as indicated:
+</p>
+<blockquote><pre>
+<ins>constexpr</ins> istream_iterator();
+istream_iterator(istream_type&amp; s);
+istream_iterator(const istream_iterator<del>&lt;T,charT,traits,Distance&gt;</del>&amp; x)<ins> = default</ins>;
+~istream_iterator()<ins> = default</ins>;
+</pre></blockquote>
+</li>
+<li>
+<p>
+Change <sref ref="[istream.iterator.cons]"/>/1 as indicated:
+</p>
+<blockquote><pre>
+<ins>constexpr</ins> istream_iterator();
+</pre>
+<blockquote>
+-1- <i>Effects:</i> Constructs the end-of-stream iterator. <ins>If <tt>T</tt> is a literal type,
+then this constructor shall be a constexpr constructor.</ins>
+</blockquote>
+</blockquote>
+</li>
+<li>
+<p>
+Change <sref ref="[istream.iterator.cons]"/>/3 as indicated:
+</p>
+<blockquote><pre>
+istream_iterator(const istream_iterator<del>&lt;T,charT,traits,Distance&gt;</del>& x)<ins> = default</ins>;
+</pre>
+<blockquote>
+-3- <i>Effects:</i> Constructs a copy of <tt>x</tt>. <ins>If <tt>T</tt> is a literal type, then
+this constructor shall be a trivial copy constructor.</ins>
+</blockquote>
+</blockquote>
+</li>
+<li>
+<p>
+Change <sref ref="[istream.iterator.cons]"/>/4 as indicated:
+</p>
+
+<blockquote><pre>
+~istream_iterator()<ins> = default</ins>;
+</pre>
+<blockquote>
+-4- <i>Effects:</i> The iterator is destroyed. <ins>If <tt>T</tt> is a literal type, then
+this destructor shall be a trivial
+destructor.</ins>
+</blockquote>
+</blockquote>
+</li>
+<li>
+<p>
+Change <sref ref="[istreambuf.iterator]"/> before p. 1 as indicated:
+</p>
+
+<blockquote><pre>
+<ins>constexpr</ins> istreambuf_iterator() throw();
+<ins>istreambuf_iterator(const istreambuf_iterator&amp;)  throw() = default;</ins>
+<ins>~istreambuf_iterator()  throw() = default;</ins>
+</pre></blockquote>
+</li>
+<li>
+<p>
+Change <sref ref="[istreambuf.iterator]"/>/1 as indicated:
+</p>
+<blockquote>
+[..] The default constructor <tt>istreambuf_iterator()</tt> and the constructor
+<tt>istreambuf_iterator(0)</tt> both
+construct an end of stream iterator object suitable for use as an
+end-of-range. <ins>All
+specializations of <tt>istreambuf_iterator</tt> shall have a trivial copy
+constructor, a constexpr default
+constructor and a trivial destructor.</ins>
+</blockquote>
+</li>
+</ol>
+</blockquote>
+
+<note>
+2009-10 Santa Cruz:
+</note>
+
+<blockquote>
+NAD Editorial.  Solved by
+<a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2009/n2994.html">N2994</a>.
+</blockquote>
+
+</discussion>
+
+<resolution>
+<p>
+<sref ref="[istream.iterator]"/> para 3
+</p>
+
+<blockquote><pre>
+<ins>constexpr</ins> istream_iterator();
+</pre></blockquote>
+
+<p>
+<sref ref="[istream.iterator.cons]"/>
+</p>
+
+<blockquote><pre>
+<ins>constexpr</ins> istream_iterator();
+</pre>
+<blockquote>
+-1- <i>Effects:</i> Constructs the end-of-stream iterator.
+<ins>If <tt>T</tt> is a literal type, then this constructor shall
+be a literal constructor.</ins>
+</blockquote>
+</blockquote>
+
+<p>
+<sref ref="[istreambuf.iterator]"/>
+</p>
+
+<blockquote><pre>
+<ins>constexpr</ins> istreambuf_iterator() throw();
+</pre></blockquote>
+
+</resolution>
+
+</issue>

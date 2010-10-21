@@ -1,0 +1,67 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="362" status="CD1">
+<title>bind1st/bind2nd type safety</title>
+<section><sref ref="[depr.lib.binders]"/></section>
+<submitter>Andrew Demkin</submitter>
+<date>26 Apr 2002</date>
+
+<discussion>
+<p>
+The definition of bind1st() (<sref ref="[depr.lib.binders]"/>) can result in
+the construction of an unsafe binding between incompatible pointer
+types. For example, given a function whose first parameter type is
+'pointer to T', it's possible without error to bind an argument of
+type 'pointer to U' when U does not derive from T:
+</p>
+<pre>
+   foo(T*, int);
+
+   struct T {};
+   struct U {};
+
+   U u;
+
+   int* p;
+   int* q;
+
+   for_each(p, q, bind1st(ptr_fun(foo), &amp;u));    // unsafe binding
+</pre>
+
+<p>
+The definition of bind1st() includes a functional-style conversion to
+map its argument to the expected argument type of the bound function
+(see below):
+</p>
+<pre>
+  typename Operation::first_argument_type(x)
+</pre>
+
+<p>
+A functional-style conversion (<sref ref="[depr.lib.binders]"/>) is defined to be
+semantically equivalent to an explicit cast expression (<sref ref="[depr.lib.binders]"/>), which may (according to 5.4, paragraph 5) be interpreted
+as a reinterpret_cast, thus masking the error.
+</p>
+
+<p>The problem and proposed change also apply to <sref ref="[depr.lib.binders]"/>.</p>
+</discussion>
+
+<resolution>
+<p>Add this sentence to the end of <sref ref="[depr.lib.binders]"/>/1:
+  "Binders <tt>bind1st</tt> and <tt>bind2nd</tt> are deprecated in
+  favor of <tt>std::tr1::bind</tt>."</p>
+
+<p>(Notes to editor: (1) when and if tr1::bind is incorporated into
+  the standard, "std::tr1::bind" should be changed to "std::bind". (2)
+  20.5.6 should probably be moved to Annex D.</p>
+</resolution>
+
+<rationale>
+<p>There is no point in fixing bind1st and bind2nd.  tr1::bind is a
+  superior solution.  It solves this problem and others.</p>
+</rationale>
+
+</issue>

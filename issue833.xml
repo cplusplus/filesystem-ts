@@ -1,0 +1,84 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="833" status="NAD">
+<title>Freestanding implementations header list needs review for C++0x</title>
+<section><sref ref="[compliance]"/></section>
+<submitter>Beman Dawes</submitter>
+<date>14 May 2008</date>
+
+<discussion>
+<p>
+Once the C++0x standard library is feature complete, the LWG needs to
+review <sref ref="[compliance]"/> Freestanding implementations header list to
+ensure it reflects LWG consensus.
+</p>
+
+<note>
+San Francisco:
+</note>
+
+<blockquote>
+<p>
+This is a placeholder defect to remind us to review the table once we've
+stopped adding headers to the library.
+</p>
+<p>
+Three new headers that need to be added to the list:
+</p>
+<blockquote><pre>
+&lt;initializer_list&gt; &lt;concept&gt; &lt;iterator_concepts&gt;
+</pre></blockquote>
+<p>
+<tt>&lt;iterator_concepts&gt;</tt>, in particular, has lots of stuff
+that isn't needed, so maybe the stuff that is needed should be broken
+out into a separate header.
+</p>
+<p>
+Robert: What about <tt>reference_closure</tt>? It's currently in
+<tt>&lt;functional&gt;</tt>.
+</p>
+</blockquote>
+
+<note>
+Post Summit Daniel adds:
+</note>
+
+<blockquote>
+<ol>
+<li>
+The comment regarding <tt>reference_closure</tt> seems moot since it was just
+recently decided to remove that.
+</li>
+<li>
+A reference to proposal
+<a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2009/n2814.pdf">N2814</a>
+("Fixing freestanding") should be added. This
+paper e.g. proposes to add only <tt>&lt;initializer_list&gt;</tt> to the include list
+of freestanding.
+</li>
+</ol>
+</blockquote>
+
+<note>
+2009-07 Frankfurt:
+</note>
+
+<blockquote>
+<p>
+Addressed by paper
+<a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2009/n2814.pdf">N2814</a>.
+</p>
+<p>
+Move to NAD.
+</p>
+</blockquote>
+
+</discussion>
+
+<resolution>
+</resolution>
+
+</issue>

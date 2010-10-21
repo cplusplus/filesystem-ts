@@ -1,0 +1,462 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="463" status="NAD">
+<title>auto_ptr usability issues</title>
+<section><sref ref="[auto.ptr]"/></section>
+<submitter>Rani Sharoni</submitter>
+<date>7 Dec 2003</date>
+
+<discussion>
+
+<p>
+TC1 CWG DR #84 effectively made the template&lt;class Y> operator auto_ptr&lt;Y>()
+member of auto_ptr (20.4.5.3/4) obsolete.
+</p>
+
+<p>
+The sole purpose of this obsolete conversion member is to enable copy
+initialization base from r-value derived (or any convertible types like
+cv-types) case:
+</p>
+<pre>
+#include &lt;memory>
+using std::auto_ptr;
+
+struct B {};
+struct D : B {};
+
+auto_ptr&lt;D> source();
+int sink(auto_ptr&lt;B>);
+int x1 = sink( source() ); // #1 EDG - no suitable copy constructor
+</pre>
+
+<p>
+The excellent analysis of conversion operations that was given in the final
+auto_ptr proposal
+(http://anubis.dkuug.dk/jtc1/sc22/wg21/docs/papers/1997/N1128.pdf)
+explicitly specifies this case analysis (case 4). DR #84 makes the analysis
+wrong and actually comes to forbid the loophole that was exploited by the
+auto_ptr designers.
+</p>
+
+<p>
+I didn't encounter any compliant compiler (e.g. EDG, GCC, BCC and VC) that
+ever allowed this case. This is probably because it requires 3 user defined
+conversions and in fact current compilers conform to DR #84.
+</p>
+
+<p>
+I was surprised to discover that the obsolete conversion member actually has
+negative impact of the copy initialization base from l-value derived
+case:</p>
+<pre>
+auto_ptr&lt;D> dp;
+int x2 = sink(dp); // #2 EDG - more than one user-defined conversion applies
+</pre>
+
+<p>
+I'm sure that the original intention was allowing this initialization using
+the template&lt;class Y> auto_ptr(auto_ptr&lt;Y>&amp; a) constructor (20.4.5.1/4) but
+since in this copy initialization it's merely user defined conversion (UDC)
+and the obsolete conversion member is UDC with the same rank (for the early
+overloading stage) there is an ambiguity between them.
+</p>
+
+<p>
+Removing the obsolete member will have impact on code that explicitly
+invokes it:
+</p>
+<pre>
+int y = sink(source().operator auto_ptr&lt;B>());
+</pre>
+
+<p>
+IMHO no one ever wrote such awkward code and the reasonable workaround for
+#1 is:
+</p>
+<pre>
+int y = sink( auto_ptr&lt;B>(source()) );
+</pre>
+
+<p>
+I was even more surprised to find out that after removing the obsolete
+conversion member the initialization was still ill-formed:
+int x3 = sink(dp); // #3 EDG - no suitable copy constructor
+</p>
+
+<p>
+This copy initialization semantically requires copy constructor which means
+that both template conversion constructor and the auto_ptr_ref conversion
+member (20.4.5.3/3) are required which is what was explicitly forbidden in
+DR #84. This is a bit amusing case in which removing ambiguity results with
+no candidates.
+</p>
+
+<p>
+I also found exception safety issue with auto_ptr related to auto_ptr_ref:
+</p>
+<pre>
+int f(auto_ptr&lt;B>, std::string);
+auto_ptr&lt;B> source2();
+
+// string constructor throws while auto_ptr_ref
+// "holds" the pointer
+int x4 = f(source2(), "xyz"); // #4
+</pre>
+
+<p>
+The theoretic execution sequence that will cause a leak:
+</p>
+<ol>
+<li>call auto_ptr&lt;B>::operator auto_ptr_ref&lt;B>()</li>
+<li>call string::string(char const*) and throw</li>
+</ol>
+
+<p>
+According to 20.4.5.3/3 and 20.4.5/2 the auto_ptr_ref conversion member
+returns auto_ptr_ref&lt;Y> that holds *this and this is another defect since
+the type of *this is auto_ptr&lt;X> where X might be different from Y. Several
+library vendors (e.g. SGI) implement auto_ptr_ref&lt;Y> with Y* as member which
+is much more reasonable. Other vendor implemented auto_ptr_ref as
+defectively required and it results with awkward and catastrophic code:
+int oops = sink(auto_ptr&lt;B>(source())); // warning recursive on all control
+paths
+</p>
+
+<p>
+Dave Abrahams noticed that there is no specification saying that
+auto_ptr_ref copy constructor can't throw.
+</p>
+
+<p>
+My proposal comes to solve all the above issues and significantly simplify
+auto_ptr implementation. One of the fundamental requirements from auto_ptr
+is that it can be constructed in an intuitive manner (i.e. like ordinary
+pointers) but with strict ownership semantics which yield that source
+auto_ptr in initialization must be non-const. My idea is to add additional
+constructor template with sole propose to generate ill-formed, diagnostic
+required, instance for const auto_ptr arguments during instantiation of
+declaration. This special constructor will not be instantiated for other
+types which is achievable using 14.8.2/2 (SFINAE). Having this constructor
+in hand makes the constructor template&lt;class Y> auto_ptr(auto_ptr&lt;Y> const&amp;)
+legitimate since the actual argument can't be const yet non const r-value
+are acceptable.
+</p>
+
+<p>
+This implementation technique makes the "private auxiliary class"
+auto_ptr_ref obsolete and I found out that modern C++ compilers (e.g. EDG,
+GCC and VC) consume the new implementation as expected and allow all
+intuitive initialization and assignment cases while rejecting illegal cases
+that involve const auto_ptr arguments.
+</p>
+
+<p>The proposed auto_ptr interface:</p>
+
+<pre>
+namespace std {
+    template&lt;class X> class auto_ptr {
+    public:
+        typedef X element_type;
+
+        // 20.4.5.1 construct/copy/destroy:
+        explicit auto_ptr(X* p=0) throw();
+        auto_ptr(auto_ptr&amp;) throw();
+        template&lt;class Y> auto_ptr(auto_ptr&lt;Y> const&amp;) throw();
+        auto_ptr&amp; operator=(auto_ptr&amp;) throw();
+        template&lt;class Y> auto_ptr&amp; operator=(auto_ptr&lt;Y>) throw();
+        ~auto_ptr() throw();
+
+        // 20.4.5.2 members:
+        X&amp; operator*() const throw();
+        X* operator->() const throw();
+        X* get() const throw();
+        X* release() throw();
+        void reset(X* p=0) throw();
+
+    private:
+        template&lt;class U>
+        auto_ptr(U&amp; rhs, typename
+unspecified_error_on_const_auto_ptr&lt;U>::type = 0);
+    };
+}
+</pre>
+
+<p>
+One compliant technique to implement the unspecified_error_on_const_auto_ptr
+helper class is using additional private auto_ptr member class template like
+the following:
+</p>
+<pre>
+template&lt;typename T> struct unspecified_error_on_const_auto_ptr;
+
+template&lt;typename T>
+struct unspecified_error_on_const_auto_ptr&lt;auto_ptr&lt;T> const>
+{ typedef typename auto_ptr&lt;T>::const_auto_ptr_is_not_allowed type; };
+</pre>
+
+<p>
+There are other techniques to implement this helper class that might work
+better for different compliers (i.e. better diagnostics) and therefore I
+suggest defining its semantic behavior without mandating any specific
+implementation. IMO, and I didn't found any compiler that thinks otherwise,
+14.7.1/5 doesn't theoretically defeat the suggested technique but I suggest
+verifying this with core language experts.
+</p>
+
+<p><b>Further changes in standard text:</b></p>
+<p>Remove section 20.4.5.3</p>
+
+<p>Change 20.4.5/2 to read something like:
+Initializing auto_ptr&lt;X> from const auto_ptr&lt;Y> will result with unspecified
+ill-formed declaration that will require unspecified diagnostic.</p>
+
+<p>Change 20.4.5.1/4,5,6 to read:</p>
+
+<pre>template&lt;class Y> auto_ptr(auto_ptr&lt;Y> const&amp; a) throw();</pre>
+<p> 4 Requires: Y* can be implicitly converted to X*.</p>
+<p> 5 Effects: Calls const_cast&lt;auto_ptr&lt;Y>&amp;>(a).release().</p>
+<p> 6 Postconditions: *this holds the pointer returned from a.release().</p>
+
+<p>Change 20.4.5.1/10</p>
+<pre>
+template&lt;class Y> auto_ptr&amp; operator=(auto_ptr&lt;Y> a) throw();
+</pre>
+<p>
+10 Requires: Y* can be implicitly converted to X*. The expression delete
+get() is well formed.
+</p>
+
+<p>LWG TC DR #127 is obsolete.</p>
+
+<p>
+Notice that the copy constructor and copy assignment operator should remain
+as before and accept non-const auto_ptr&amp; since they have effect on the form
+of the implicitly declared copy constructor and copy assignment operator of
+class that contains auto_ptr as member per 12.8/5,10:
+</p>
+<pre>
+struct X {
+    // implicit X(X&amp;)
+    // implicit X&amp; operator=(X&amp;)
+    auto_ptr&lt;D> aptr_;
+};
+</pre>
+
+<p>
+In most cases this indicates about sloppy programming but preserves the
+current auto_ptr behavior.
+</p>
+
+<p>
+Dave Abrahams encouraged me to suggest fallback implementation in case that
+my suggestion that involves removing of auto_ptr_ref will not be accepted.
+In this case removing the obsolete conversion member to auto_ptr&lt;Y> and
+20.4.5.3/4,5 is still required in order to eliminate ambiguity in legal
+cases. The two constructors that I suggested will co exist with the current
+members but will make auto_ptr_ref obsolete in initialization contexts.
+auto_ptr_ref will be effective in assignment contexts as suggested in DR
+#127 and I can't see any serious exception safety issues in those cases
+(although it's possible to synthesize such). auto_ptr_ref&lt;X> semantics will
+have to be revised to say that it strictly holds pointer of type X and not
+reference to an auto_ptr for the favor of cases in which auto_ptr_ref&lt;Y> is
+constructed from auto_ptr&lt;X> in which X is different from Y (i.e. assignment
+from r-value derived to base).
+</p>
+
+<note>Redmond: punt for the moment. We haven't decided yet whether we
+  want to fix auto_ptr for C++-0x, or remove it and replace it with
+  move_ptr and unique_ptr.</note>
+
+<note>
+Oxford 2007: Recommend NAD.  We're just going to deprecate it.  It still works for simple use cases
+and people know how to deal with it.  Going forward <tt>unique_ptr</tt> is the recommended
+tool.
+</note>
+
+<note>
+2007-11-09: Reopened at the request of David Abrahams, Alisdair Meredith and Gabriel Dos Reis.
+</note>
+
+<note>
+2009-07 Frankfurt
+</note>
+
+<blockquote>
+This is a complicated issue, so we agreed to defer discussion until
+later in the week so that interested parties can read up on it.
+</blockquote>
+
+<note>
+209-10-04 Daniel adds:
+</note>
+
+<blockquote>
+<p>
+I suggest to close this issue as NAD. The reasons are two-fold: First, the
+suggested proposed resolution uses no longer appropriate language means
+to solve this issue, which has the effect that the recommended resolution is
+another - but better - form of hack. Second, either following the suggested
+resolution or the now more natural alternative via the added member set
+</p>
+
+<blockquote><pre>
+template&lt;class Y&gt; auto_ptr(auto_ptr&lt;Y&gt;&amp;&amp;) throw();
+template&lt;class Y&gt; auto_ptr&amp; operator=(auto_ptr&lt;Y&gt;&amp;&amp;) throw();
+</pre></blockquote>
+
+<p>
+would still have a non-zero probability to break user-code that actively
+references <tt>auto_ptr_ref</tt>. This risk seems to indicate that a
+decision which would not touch the current spec of <tt>auto_ptr</tt> at
+all (but deprecating it) and instead recommending to use
+<tt>unique_ptr</tt> for new code instead might have the best
+cost-benefit ratio. IMO the current solution of <iref ref="1100"/> can
+be considered as an active user-support for this transition.
+</p>
+</blockquote>
+
+<note>
+2009-10 Santa Cruz:
+</note>
+
+<blockquote>
+Mark as NAD. Alisdair will open a new issue (<iref ref="1247"/>) with
+proposed wording to handle <tt>auto_ptr_ref</tt>.
+</blockquote>
+
+</discussion>
+
+<resolution>
+<p>
+Change the synopsis in <sref ref="[auto.ptr]"/>:
+</p>
+
+<blockquote><pre>
+namespace std { 
+  <del>template &lt;class Y&gt; struct auto_ptr_ref {};</del>
+
+  <ins>// exposition only</ins>
+  <ins>template &lt;class T&gt; struct constant_object;</ins>
+
+  <ins>// exposition only</ins>
+  <ins>template &lt;class T&gt;</ins>
+  <ins>struct cannot_transfer_ownership_from</ins>
+    <ins>: constant_object&lt;T&gt; {};</ins>
+
+  template &lt;class X&gt; class auto_ptr { 
+  public: 
+    typedef X element_type; 
+
+    // D.9.1.1 construct/copy/destroy: 
+    explicit auto_ptr(X* p =0) throw(); 
+    auto_ptr(auto_ptr&amp;) throw(); 
+    template&lt;class Y&gt; auto_ptr(auto_ptr&lt;Y&gt;<ins> const</ins>&amp;) throw(); 
+    auto_ptr&amp; operator=(auto_ptr&amp;) throw(); 
+    template&lt;class Y&gt; auto_ptr&amp; operator=(auto_ptr&lt;Y&gt;<del>&amp;</del>) throw();
+    <del>auto_ptr&amp; operator=(auto_ptr_ref&lt;X&gt; r) throw();</del>
+    ~auto_ptr() throw(); 
+
+    // D.9.1.2 members: 
+    X&amp; operator*() const throw();
+    X* operator-&gt;() const throw();
+    X* get() const throw();
+    X* release() throw();
+    void reset(X* p =0) throw();
+
+    <del>// D.9.1.3 conversions:</del>
+    <del>auto_ptr(auto_ptr_ref&lt;X&gt;) throw();</del>
+    <del>template&lt;class Y&gt; operator auto_ptr_ref&lt;Y&gt;() throw();</del>
+    <del>template&lt;class Y&gt; operator auto_ptr&lt;Y&gt;() throw();</del>
+
+    <ins>// exposition only</ins>
+    <ins>template&lt;class U&gt;</ins>
+    <ins>auto_ptr(U&amp; rhs, typename cannot_transfer_ownership_from&lt;U&gt;::error = 0);</ins>
+  }; 
+
+  template &lt;&gt; class auto_ptr&lt;void&gt; 
+  { 
+  public: 
+    typedef void element_type; 
+  }; 
+
+}
+</pre></blockquote>
+
+<p>
+Remove <sref ref="[auto.ptr.conv]"/>.
+</p>
+
+<p>
+Change <sref ref="[auto.ptr]"/>, p3:
+</p>
+
+<blockquote>
+The <tt>auto_ptr</tt> provides a semantics of strict ownership. An
+<tt>auto_ptr</tt> owns the object it holds a pointer to. Copying an
+<tt>auto_ptr</tt> copies the pointer and transfers ownership to the
+destination. If more than one <tt>auto_ptr</tt> owns the same object at
+the same time the behavior of the program is undefined. <ins>Templates
+<tt>constant_object</tt> and <tt>cannot_transfer_ownership_from</tt>,
+and the final constructor of <tt>auto_ptr</tt> are for exposition only.
+For any types <tt>X</tt> and <tt>Y</tt>, initializing
+<tt>auto_ptr&lt;X&gt;</tt> from <tt>const auto_ptr&lt;Y&gt;</tt> is
+ill-formed, diagnostic required.</ins> [<i>Note:</i> The uses of
+<tt>auto_ptr</tt> include providing temporary exception-safety for
+dynamically allocated memory, passing ownership of dynamically allocated
+memory to a function, and returning dynamically allocated memory from a
+function. <tt>auto_ptr</tt> does not meet the <tt>CopyConstructible</tt>
+and <tt>Assignable</tt> requirements for Standard Library container
+elements and thus instantiating a Standard Library container with an
+<tt>auto_ptr</tt> results in undefined behavior. <i>-- end note</i>]
+</blockquote>
+
+<p>
+Change <sref ref="[auto.ptr.cons]"/>, p5:
+</p>
+
+<blockquote>
+<pre>
+template&lt;class Y&gt; auto_ptr(auto_ptr&lt;Y&gt;<ins> const</ins>&amp; a) throw();
+</pre>
+<blockquote>
+<p>
+<i>Requires:</i> <tt>Y*</tt> can be implicitly converted to <tt>X*</tt>.
+</p>
+<p>
+<i>Effects:</i> Calls <ins><tt>const_cast&lt;auto_ptr&lt;Y&gt;&amp;&gt;(</tt></ins><tt>a</tt><ins><tt>)</tt></ins><tt>.release()</tt>.
+</p>
+<p>
+<i>Postconditions:</i> <tt>*this</tt> holds the pointer returned from <tt>a.release()</tt>.
+</p>
+</blockquote>
+</blockquote>
+
+<p>
+Change <sref ref="[auto.ptr.cons]"/>, p10:
+</p>
+
+<blockquote>
+<pre>
+template&lt;class Y&gt; auto_ptr&amp; operator=(auto_ptr&lt;Y&gt;<del>&amp;</del> a) throw();
+</pre>
+<blockquote>
+<p>
+<i>Requires:</i> <tt>Y*</tt> can be implicitly converted to <tt>X*</tt>.
+The expression <tt>delete get()</tt> is well formed.
+</p>
+<p>
+<i>Effects:</i> Calls <tt>reset(a.release())</tt>.
+</p>
+<p>
+<i>Returns:</i> <tt>*this</tt>.
+</p>
+</blockquote>
+</blockquote>
+
+</resolution>
+
+</issue>

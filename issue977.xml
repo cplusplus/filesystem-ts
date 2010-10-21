@@ -1,0 +1,326 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="977" status="NAD">
+<title>insert iterators inefficient for expensive to move types</title>
+<section><sref ref="[insert.iterators]"/></section>
+<submitter>Howard Hinnant</submitter>
+<date>2 Feb 2009</date>
+
+<discussion>
+<p>
+The new concepts for the insert iterators mandate an extra copy when
+inserting an lvalue:
+</p>
+
+<blockquote><pre>
+requires CopyConstructible&lt;Cont::value_type&gt;
+  back_insert_iterator&lt;Cont&gt;&amp; 
+  operator=(const Cont::value_type&amp; value);
+</pre>
+<blockquote>
+-1- <i>Effects:</i> <tt>push_back(*container, <b>Cont::value_type(</b>value<b>)</b>);</tt>
+</blockquote>
+</blockquote>
+
+<p>
+The reason is to convert <tt>value</tt> into an rvalue because the current
+<tt>BackInsertionContainer</tt> concept only handles <tt>push_back</tt>-ing
+rvalues:
+</p>
+
+<blockquote><pre>
+concept BackInsertionContainer&lt;typename C&gt; : Container&lt;C&gt; { 
+  void push_back(C&amp;, value_type&amp;&amp;); 
+}
+</pre></blockquote>
+
+<p>
+Without the conversion of <tt>value</tt> to an rvalue, the assignment operator
+fails to concept check.
+</p>
+
+<p>
+A solution is to modify the <tt>BackInsertionContainer</tt> concept so that
+the client can pass in the parameter type for <tt>push_back</tt> similar to
+what is already done for the <tt>OutputIterator</tt> concept:
+</p>
+
+<blockquote><pre>
+concept BackInsertionContainer&lt;typename C, typename Value = C::value_type&amp;&amp;&gt;
+  : Container&lt;C&gt; { 
+     void push_back(C&amp;, Value); 
+}
+</pre></blockquote>
+
+<p>
+This allows the assignment operator to be adjusted appropriately:
+</p>
+
+<blockquote><pre>
+requires BackInsertionContainer&lt;Cont, Cont::value_type const&amp&gt; &amp;&amp;
+         CopyConstructible&lt;Cont::value_type&gt;
+  back_insert_iterator&lt;Cont&gt;&amp; 
+  operator=(const Cont::value_type&amp; value);
+</pre>
+<blockquote>
+-1- <i>Effects:</i> <tt>push_back(*container, value);</tt>
+</blockquote>
+</blockquote>
+
+<note>
+We may want to propagate this fix to other concepts such as <tt>StackLikeContainer</tt>.
+</note>
+
+<note>
+Solution and wording collaborated on by Doug and Howard.
+</note>
+
+<note>
+Batavia (2009-05):
+</note>
+<blockquote>
+<p>
+Howard notes that "these operations behaved efficiently until concepts were added."
+</p>
+<p>
+Alisdair is uncertain that the proposed resolution is syntactically correct.
+</p>
+<p>
+Move to Open, and recommend the issue be deferred until after the next
+Committee Draft is issued.
+</p>
+</blockquote>
+
+<note>
+2009-10 Santa Cruz:
+</note>
+
+<blockquote>
+NAD, solved by the removal of concepts.
+</blockquote>
+
+</discussion>
+
+<resolution>
+<p>
+Change <sref ref="[container.concepts.free]"/>:
+</p>
+
+<blockquote>
+<pre>
+concept FrontInsertionContainer&lt;typename C<ins>, typename Value = C::value_type&amp;&amp;</ins>&gt;
+    : Container&lt;C&gt; { 
+  void push_front(C&amp;, <del>value_type&amp;&amp;</del> <ins>Value</ins>); 
+
+  axiom FrontInsertion(C c, <del>value_type</del> <ins>Value</ins> x) { 
+    x == (push_front(c, x), front(c)); 
+  } 
+}
+</pre>
+
+<p>...</p>
+
+<pre>
+concept BackInsertionContainer&lt;typename C<ins>, typename Value = C::value_type&amp;&amp;</ins>&gt;
+    : Container&lt;C&gt; { 
+  void push_back(C&amp;, <del>value_type&amp;&amp;</del> <ins>Value</ins>); 
+}
+</pre>
+
+<p>...</p>
+
+<pre>
+concept InsertionContainer&lt;typename C<ins>, typename Value = C::value_type&amp;&amp;</ins>&gt;
+    : Container&lt;C&gt; { 
+  iterator insert(C&amp;, const_iterator, <del>value_type&amp;&amp;</del> <ins>Value</ins>); 
+
+  axiom Insertion(C c, const_iterator position, <del>value_type</del> <ins>Value</ins> v) { 
+    v == *insert(c, position, v); 
+  } 
+}
+</pre>
+
+</blockquote>
+
+<p>
+Change <sref ref="[container.concepts.member]"/>:
+</p>
+
+<blockquote>
+<pre>
+auto concept MemberFrontInsertionContainer&lt;typename C<ins>, typename Value = C::value_type&amp;&amp;</ins>&gt;
+    : MemberContainer&lt;C&gt; { 
+  void C::push_front(<del>value_type&amp;&amp;</del> <ins>Value</ins>); 
+
+  axiom MemberFrontInsertion(C c, <del>value_type</del> <ins>Value</ins> x) { 
+    x == (c.push_front(x), c.front()); 
+  } 
+}
+</pre>
+
+<p>...</p>
+
+<pre>
+auto concept MemberBackInsertionContainer&lt;typename C<ins>, typename Value = C::value_type&amp;&amp;</ins>&gt;
+    : MemberContainer&lt;C&gt; { 
+  void C::push_back(<del>value_type&amp;&amp;</del> <ins>Value</ins>); 
+}
+</pre>
+
+<p>...</p>
+
+<pre>
+auto concept MemberInsertionContainer&lt;typename C<ins>, typename Value = C::value_type&amp;&amp;</ins>&gt;
+    : MemberContainer&lt;C&gt; { 
+  iterator C::insert(const_iterator, <del>value_type&amp;&amp;</del> <ins>Value</ins>); 
+
+  axiom MemberInsertion(C c, const_iterator position, <del>value_type</del> <ins>Value</ins> v) { 
+    v == *c.insert(position, v); 
+  } 
+}
+</pre>
+</blockquote>
+
+<p>
+Change <sref ref="[container.concepts.maps]"/>:
+</p>
+
+<blockquote>
+<pre>
+template &lt;MemberFrontInsertionContainer C<ins>, typename Value = C::value_type&amp;&amp;</ins>&gt; 
+concept_map FrontInsertionContainer&lt;C<ins>, Value</ins>&gt; { 
+  typedef Container&lt;C&gt;::value_type value_type;
+
+  void push_front(C&amp; c, <del>value_type&amp;&amp;</del> <ins>Value</ins> v) { c.push_front(static_cast&lt;<del>value_type&amp;&amp;</del> <ins>Value</ins>&gt;(v)); } 
+}
+</pre>
+
+<p>...</p>
+
+<pre>
+template &lt;MemberBackInsertionContainer C<ins>, typename Value = C::value_type&amp;&amp;</ins>&gt; 
+concept_map BackInsertionContainer&lt;C<ins>, Value</ins>&gt; { 
+  typedef Container&lt;C&gt;::value_type value_type;
+
+  void push_back(C&amp; c, <del>value_type&amp;&amp;</del> <ins>Value</ins> v) { c.push_back(static_cast&lt;<del>value_type&amp;&amp;</del> <ins>Value</ins>&gt;(v)); } 
+}
+</pre>
+
+<p>...</p>
+
+<pre>
+template &lt;MemberInsertionContainer C<ins>, typename Value = C::value_type&amp;&amp;</ins>&gt; 
+concept_map InsertionContainer&lt;C<ins>, Value</ins>&gt; { 
+  typedef Container&lt;C&gt;::value_type value_type;
+  Container&lt;C&gt;::iterator insert(C&amp; c, Container&lt;C&gt;::const_iterator i, <del>value_type&amp;&amp;</del> <ins>Value</ins> v) 
+  { return c.insert(i, static_cast&lt;<del>value_type&amp;&amp;</del> <ins>Value</ins>&gt;(v)); } 
+}
+</pre>
+
+</blockquote>
+
+<p>
+Change <sref ref="[back.insert.iterator]"/>:
+</p>
+
+<blockquote><pre>
+template &lt;BackInsertionContainer Cont&gt; 
+class back_insert_iterator {
+  ...
+  requires <ins>BackInsertionContainer&lt;Cont, const Cont::value_type&amp;&gt;</ins>
+           <del>CopyConstructible&lt;Cont::value_type&gt;</del>
+    back_insert_iterator&lt;Cont&gt;&amp; 
+      operator=(const Cont::value_type&amp; value);
+  ...
+</pre></blockquote>
+
+<p>
+Change <sref ref="[back.insert.iter.op=]"/>:
+</p>
+
+<blockquote>
+<pre>
+requires <ins>BackInsertionContainer&lt;Cont, const Cont::value_type&amp;&gt;</ins>
+         <del>CopyConstructible&lt;Cont::value_type&gt;</del>
+  back_insert_iterator&lt;Cont&gt;&amp; 
+    operator=(const Cont::value_type&amp; value);
+</pre>
+<blockquote>
+-1- <i>Effects:</i> <tt>push_back(*container, <del>Cont::value_type(</del>value<del>)</del>);</tt>
+</blockquote>
+</blockquote>
+
+<p>
+Change <sref ref="[front.insert.iterator]"/>:
+</p>
+
+<blockquote><pre>
+template &lt;FrontInsertionContainer Cont&gt; 
+class front_insert_iterator {
+  ...
+  requires <ins>FrontInsertionContainer&lt;Cont, const Cont::value_type&amp;&gt;</ins>
+           <del>CopyConstructible&lt;Cont::value_type&gt;</del>
+    front_insert_iterator&lt;Cont&gt;&amp; 
+      operator=(const Cont::value_type&amp; value);
+  ...
+</pre></blockquote>
+
+<p>
+Change <sref ref="[front.insert.iter.op=]"/>:
+</p>
+
+<blockquote>
+<pre>
+requires <ins>FrontInsertionContainer&lt;Cont, const Cont::value_type&amp;&gt;</ins>
+         <del>CopyConstructible&lt;Cont::value_type&gt;</del>
+  front_insert_iterator&lt;Cont&gt;&amp; 
+    operator=(const Cont::value_type&amp; value);
+</pre>
+<blockquote>
+-1- <i>Effects:</i> <tt>push_front(*container, <del>Cont::value_type(</del>value<del>)</del>);</tt>
+</blockquote>
+</blockquote>
+
+<p>
+Change <sref ref="[insert.iterator]"/>:
+</p>
+
+<blockquote><pre>
+template &lt;InsertionContainer Cont&gt; 
+class insert_iterator {
+  ...
+  requires <ins>InsertionContainer&lt;Cont, const Cont::value_type&amp;&gt;</ins>
+           <del>CopyConstructible&lt;Cont::value_type&gt;</del>
+    insert_iterator&lt;Cont&gt;&amp; 
+      operator=(const Cont::value_type&amp; value);
+  ...
+</pre></blockquote>
+
+<p>
+Change <sref ref="[insert.iter.op=]"/>:
+</p>
+
+<blockquote>
+<pre>
+requires <ins>InsertionContainer&lt;Cont, const Cont::value_type&amp;&gt;</ins>
+         <del>CopyConstructible&lt;Cont::value_type&gt;</del>
+  insert_iterator&lt;Cont&gt;&amp; 
+    operator=(const Cont::value_type&amp; value);
+</pre>
+<blockquote>
+<p>
+-1- <i>Effects:</i>
+</p>
+<blockquote><pre>
+iter = insert(*container, iter, <del>Cont::value_type(</del>value<del>)</del>); 
+++iter;
+</pre></blockquote>
+</blockquote>
+</blockquote>
+
+</resolution>
+
+</issue>

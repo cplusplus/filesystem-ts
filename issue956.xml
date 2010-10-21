@@ -1,0 +1,96 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="956" status="Open">
+<title>Various threading bugs #6</title>
+<section><sref ref="[time.clock.req]"/></section>
+<submitter>Pete Becker</submitter>
+<date>7 Jan 2009</date>
+
+<discussion>
+<p>
+<sref ref="[time.clock.req]"/> uses the word "native" in several places,
+but doesn't define it. What is a "native <tt>duration</tt>"?
+</p>
+
+<note>
+2009-05-10 Howard adds:
+</note>
+
+<blockquote>
+The standard uses "native" in several places without defining it (e.g.
+<sref ref="[lex.ccon]"/>).  It is meant to mean "that which is defined
+by the facility", or something along those lines.  In this case it refers
+to the nested <tt>time_point</tt> and <tt>duration</tt> types of the clock.
+Better wording is welcome.
+</blockquote>
+
+<note>
+Batavia (2009-05):
+</note>
+<blockquote>
+Move to Open pending proposed wording from Pete.
+</blockquote>
+
+<note>
+2009-10-23 Pete provides wording:
+</note>
+
+<note>
+2009-11-18 Daniel adds:
+</note>
+
+<blockquote>
+<p>
+I see that <sref ref="[thread.timedmutex.requirements]"/>/3 says:
+</p>
+
+<blockquote>
+<i>Precondition:</i> If the tick <tt>period</tt> of <tt>rel_time</tt> is not
+exactly convertible to the native tick <tt>period</tt>, the <tt>duration</tt>
+shall be rounded up to the nearest native tick <tt>period</tt>.
+</blockquote>
+
+<p>
+I would prefer to see that adapted as well. Following the same style as
+the proposed resolution I come up with
+</p>
+
+<blockquote>
+<i>Precondition:</i> If the tick <tt>period</tt> of <tt>rel_time</tt> is not
+exactly convertible to the <del>native</del> tick <tt>period</tt> <ins>of the
+execution environment</ins>, the <tt>duration</tt> shall be rounded up to the
+nearest <del>native</del> tick <tt>period</tt> <ins>of the execution
+environment</ins>.
+</blockquote>
+
+</blockquote>
+
+<note>
+2010-03-28 Daniel synced wording with N3092
+</note>
+</discussion>
+
+<resolution>
+<p>
+Remove every occurrence of "native" in <sref ref="[time.clock.req]"/>.
+</p>
+
+<p>
+Add the following sentence at the end of <sref ref="[time.clock.req]"/>/1:
+</p>
+
+<blockquote>
+A clock is a bundle consisting of a <del>native</del> <tt>duration</tt>, a
+<del>native</del> <tt>time_point</tt>, and a function <tt>now()</tt> to get the
+current <tt>time_point</tt>. The origin of the clock's <tt>time_point</tt> is
+referred to as the clock's <i>epoch</i>. A clock shall meet the requirements in
+Table 56. <ins>The <tt>duration</tt> and <tt>time_point</tt> types have the
+natural size and resolution suggested by the architecture of the execution
+environment.</ins>
+</blockquote>
+</resolution>
+
+</issue>

@@ -1,0 +1,138 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="906" status="NAD Concepts">
+<title><tt>ObjectType</tt> is the wrong concept to constrain <tt>initializer_list</tt></title>
+<section><sref ref="[support.initlist]"/></section>
+<submitter>Daniel Kr&uuml;gler</submitter>
+<date>26 Sep 2008</date>
+
+<discussion>
+<p>
+The currently proposed constraint on <tt>initializer_list</tt>'s element type
+<tt>E</tt> is that is has to meet <tt>ObjectType</tt>. This is an underspecification,
+because both core language and library part of <tt>initializer_list</tt>
+make clear, that it references an implicitly allocated array:
+</p>
+<p>
+<sref ref="[dcl.init.list]"/>/4:
+</p>
+<blockquote>
+When an initializer list is implicitly converted to a
+<tt>std::initializer_list&lt;E&gt;</tt>, the object passed is constructed as if the
+implementation allocated an array of N elements of type <tt>E</tt>, where
+N is the number of elements in the initializer list.[..]
+</blockquote>
+
+<p>
+<sref ref="[support.initlist]"/>/2.
+</p>
+
+<blockquote>
+An object of type <tt>initializer_list&lt;E&gt;</tt> provides access to an array of
+objects of type <tt>const E</tt>.[..]
+</blockquote>
+
+<p>
+Therefore, <tt>E</tt> needs to fulfill concept <tt>ValueType</tt> (thus excluding
+abstract class types). This stricter requirement should be added
+to prevent deep instantiation errors known from the bad old times,
+as shown in the following example:
+</p>
+
+<blockquote><pre>
+// Header A: (Should concept-check even in stand-alone modus)
+
+template &lt;DefaultConstructible T&gt;
+requires MoveConstructible&lt;T&gt;
+void generate_and_do_3(T a) {
+  std::initializer_list&lt;T&gt; list{T(), std::move(a), T()};
+  ...
+}
+
+void do_more();
+void do_more_or_less();
+
+template &lt;DefaultConstructible T&gt;
+requires MoveConstructible&lt;T&gt;
+void more_generate_3() {
+  do_more();
+  generate_and_do_3(T());
+}
+
+template &lt;DefaultConstructible T&gt;
+requires MoveConstructible&lt;T&gt;
+void something_and_generate_3() {
+  do_more_or_less();
+  more_generate_3();
+}
+
+// Test.cpp
+
+#include "A.h"
+
+class Abstract {
+public:
+  virtual ~Abstract();
+  virtual void foo() = 0; // abstract type
+  Abstract(Abstract&amp;&amp;){} // MoveConstructible
+  Abstract(){} // DefaultConstructible
+};
+
+int main() {
+  // The restricted template *accepts* the argument, but
+  // causes a deep instantiation error in the internal function
+  // generate_and_do_3:
+  something_and_generate_3&lt;Abstract&gt;();
+}
+</pre></blockquote>
+
+<p>
+The proposed stricter constraint does not minimize the aim to
+support more general containers for which <tt>ObjectType</tt> would be
+sufficient. If such an extended container (lets assume it's still a
+class template) provides a constructor that accepts an <tt>initializer_list</tt>
+only <em>this</em> constructor would need to be restricted on <tt>ValueType</tt>:
+</p>
+
+<blockquote><pre>
+template&lt;ObjectType T&gt;
+class ExtContainer {
+public:
+  requires ValueType&lt;T&gt;
+  ExtContainer(std::initializer_list&lt;T&gt;);
+  ...
+};
+</pre></blockquote>
+
+<note>
+Batavia (2009-05):
+</note>
+<blockquote>
+Move to Tentatively Ready.
+</blockquote>
+
+<note>
+2009-07 Frankfurt:
+</note>
+
+<blockquote>
+Need to look at again without concepts.
+</blockquote>
+
+</discussion>
+
+<resolution>
+<ol>
+<li>
+In <sref ref="[support.initlist]"/>/p.1 replace in "header <tt>&lt;initializer_list&gt;</tt> synopsis"
+the constraint "<tt>ObjectType</tt>" in the template parameter list by the
+constraint "<tt>ValueType</tt>".
+</li>
+</ol>
+
+</resolution>
+
+</issue>

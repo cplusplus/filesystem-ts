@@ -1,0 +1,112 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="1019" status="WP">
+<title>Response to UK 205</title>
+<section><sref ref="[meta.help]"/></section>
+<submitter>Alisdair Meredith</submitter>
+<date>11 Mar 2009</date>
+
+<discussion>
+
+<p><b>Addresses UK 205</b></p>
+
+<p>
+<tt>integral_constant</tt> objects should be usable in integral-constant-expressions.
+The addition to the language of literal types and the enhanced rules for
+constant expressions make this possible.
+</p>
+
+<note>
+Batavia (2009-05):
+</note>
+<blockquote>
+We agree that the <tt>static</tt> data member
+ought be declared <tt>constexpr</tt>,
+but do not see a need for the proposed <tt>operator value_type()</tt>.
+(A use case would be helpful.)
+Move to Open.
+</blockquote>
+
+<note>
+2009-05-23 Alisdair adds:
+</note>
+
+<blockquote>
+<p>
+The motivating case in my mind is that we can then use
+<tt>true_type</tt> and <tt>false_type</tt> as integral Boolean expressions, for example inside
+a <tt>static_assert</tt> declaration.  In that sense it is purely a matter of style.
+</p>
+<p>
+Note that Boost has applied the non-explicit conversion operator for many
+years as it has valuable properties for extension into other metaprogramming
+libraries, such as MPL.  If additional rationale is desired I will poll the
+Boost lists for why this extension was originally applied.  I would argue
+that explicit conversion is more appropriate for 0x though.
+</p>
+</blockquote>
+
+<note>
+2009-07-04 Howard adds:
+</note>
+
+<blockquote>
+<p>
+Here's a use case which demonstrates the syntactic niceness which Alisdair describes:
+</p>
+
+<blockquote><pre>
+#define requires(...) class = typename std::enable_if&lt;(__VA_ARGS__)&gt;::type
+
+template &lt;class T, class U,
+    requires(!is_lvalue_reference&lt;T&gt;() ||
+              is_lvalue_reference&lt;T&gt;() &amp;&amp; is_lvalue_reference&lt;U&gt;()),
+    requires(is_same&lt;typename base_type&lt;T&gt;::type,
+                     typename base_type&lt;U&gt;::type&gt;)&gt;
+inline
+T&amp;&amp;
+forward(U&amp;&amp; t)
+{
+    return static_cast&lt;T&amp;&amp;&gt;(t);
+}
+</pre></blockquote>
+</blockquote>
+
+<note>
+2009-07 post-Frankfurt:
+</note>
+
+<blockquote>
+Move to Tentatively Ready.
+</blockquote>
+
+<note>
+2009 Santa Cruz:
+</note>
+
+<blockquote>
+Moved to Ready for this meeting.
+</blockquote>
+
+</discussion>
+
+<resolution>
+<p>
+Add to the <tt>integral_constant</tt> struct definition in <sref ref="[meta.help]"/>:
+</p>
+
+<blockquote><pre>
+template &lt;class T, T v&gt;
+struct integral_constant {
+  static const<ins>expr</ins> T value = v;
+  typedef T value_type;
+  typedef integral_constant&lt;T,v&gt; type;
+  <ins>constexpr operator value_type() { return value; }</ins>
+};
+</pre></blockquote>
+</resolution>
+
+</issue>

@@ -1,0 +1,79 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="614" status="NAD">
+<title>std::string allocator requirements still inconsistent</title>
+<section><sref ref="[basic.string]"/></section>
+<submitter>Bo Persson</submitter>
+<date>5 Dec 2006</date>
+
+<discussion>
+<p>
+This is based on N2134, where 21.3.1/2 states:
+"... The Allocator object used shall be a copy of the Allocator object 
+passed to the basic_string object's constructor or, if the constructor does 
+not take an Allocator argument, a copy of a default-constructed Allocator 
+object."
+</p>
+<p>
+Section 21.3.2/1 lists two constructors:
+</p>
+<blockquote><pre>
+basic_string(const basic_string&lt;charT,traits,Allocator&gt;&amp; str );
+
+basic_string(const basic_string&lt;charT,traits,Allocator&gt;&amp; str ,
+             size_type pos , size_type n = npos,
+             const Allocator&amp; a = Allocator());
+</pre></blockquote>
+<p>
+and then says "In the first form, the Allocator value used is copied from 
+str.get_allocator().", which isn't an option according to 21.3.1.
+</p>
+<note>
+Batavia:  We need blanket statement to the effect of:
+</note>
+
+<ol>
+<li>If an allocator is passed in, use it, or,</li>
+<li>If a string is passed in, use its allocator.</li>
+</ol>
+<note>
+Review constructors and functions that return a string; make sure we follow these
+rules (substr, operator+, etc.).  Howard to supply wording.
+</note>
+
+<note>
+Bo adds:  The new container constructor which takes only a <tt>size_type</tt> is not
+consistent with <sref ref="[container.requirements]"/>, p9 which says in part:
+
+<blockquote>
+All other constructors for these container types take an
+<tt>Allocator&amp;</tt> argument (20.1.2), an allocator whose value type
+is the same as the container's value type. A copy of this argument is
+used for any memory allocation performed, by these constructors and by
+all member functions, during the lifetime of each container object.
+</blockquote>
+</note>
+
+<note>
+post Bellevue: We re-confirm that the issue is real. Pablo will provide wording.
+</note>
+
+<note>
+2009-07 Frankfurt
+</note>
+
+<blockquote>
+Move to NAD.
+</blockquote>
+
+</discussion>
+
+<resolution>
+<p>
+</p>
+</resolution>
+
+</issue>

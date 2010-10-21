@@ -1,0 +1,92 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="1030" status="WP">
+<title>Response to JP 44</title>
+<section><sref ref="[util.smartptr.shared.atomic]"/></section>
+<submitter>Alisdair Meredith</submitter>
+<date>11 Mar 2009</date>
+
+<discussion>
+
+<p><b>Addresses JP 44</b></p>
+
+<p>
+The 1st parameter <tt>p</tt> and 2nd parameter <tt>v</tt> is now
+<tt>shared_ptr&lt;T&gt;*</tt>.
+</p>
+<p>
+It should be <tt>shared_ptr&lt;T&gt;&amp;</tt>, or if these are
+<tt>shared_ptr&lt;T&gt;*</tt> then add the "<tt>p</tt> shall not be a
+null pointer" at the requires.
+</p>
+
+<note>
+Summit:
+</note>
+
+<blockquote>
+Agree. All of the functions need a requirement that <tt>p</tt> (or
+<tt>v</tt>) is a pointer to a valid object.
+</blockquote>
+
+<note>
+2009-07 post-Frankfurt:
+</note>
+
+<blockquote>
+<p>
+Lawrence explained that these signatures match the regular atomics. The
+regular atomics must not use references because these signatures are
+shared with C. The decision to pass shared_ptrs by pointer rather than
+by reference was deliberate and was motivated by the principle of least
+surprise.
+</p>
+<p>
+Lawrence to write wording that requires that the pointers not be null.
+</p>
+</blockquote>
+
+<note>
+2009-09-20 Lawrence provided wording:
+</note>
+
+<blockquote>
+<p>
+The parameter types for atomic shared pointer access
+were deliberately chosen to be pointers
+to match the corresponding parameters of the atomics chapter.
+Those in turn were deliberately chosen
+to match C functions,
+which do not have reference parameters.
+</p>
+<p>
+We adopt the second suggestion,
+to require that such pointers not be null.
+</p>
+</blockquote>
+
+<note>
+2009-10 Santa Cruz:
+</note>
+
+<blockquote>
+Moved to Ready.
+</blockquote>
+
+</discussion>
+
+<resolution>
+<p>
+In section "<code>shared_ptr</code> atomic access"
+<sref ref="[util.smartptr.shared.atomic]"/>, add to each function the
+following clause.
+</p>
+<blockquote><p>
+<i>Requires:</i> <code>p</code> shall not be null.
+</p></blockquote>
+</resolution>
+
+</issue>

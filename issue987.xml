@@ -1,0 +1,261 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="987" status="WP">
+<title><tt>reference_wrapper</tt> and function types</title>
+<section><sref ref="[refwrap]"/></section>
+<submitter>Howard Hinnant</submitter>
+<date>18 Feb 2009</date>
+
+<discussion>
+<p>
+The synopsis in <sref ref="[refwrap]"/> says:
+</p>
+
+<blockquote><pre>
+template &lt;<b>ObjectType</b> T&gt; class reference_wrapper
+...
+</pre></blockquote>
+
+<p>
+And then paragraph 3 says:
+</p>
+
+<blockquote>
+<p>
+The template instantiation <tt>reference_wrapper&lt;T&gt;</tt> shall be
+derived from <tt>std::unary_function&lt;T1, R&gt;</tt> only if the type
+<tt>T</tt> is any of the following:
+</p>
+
+<ul>
+<li>
+a <b>function type</b> or a pointer to function type taking one argument of
+type <tt>T1</tt> and returning <tt>R</tt>
+</li>
+</ul>
+</blockquote>
+
+<p>
+But function types are not <tt>ObjectType</tt>s.
+</p>
+
+<p>
+Paragraph 4 contains the same contradiction.
+</p>
+
+<note>
+Post Summit:
+</note>
+
+<blockquote>
+<p>
+Jens: restricted reference to ObjectType
+</p>
+<p>
+Recommend Review.
+</p>
+</blockquote>
+
+<note>
+Post Summit, Peter adds:
+</note>
+
+<blockquote>
+<p>
+In <a href="https://svn.boost.org/trac/boost/ticket/1846">https://svn.boost.org/trac/boost/ticket/1846</a>
+however Eric Niebler makes the very reasonable point that <tt>reference_wrapper&lt;F&gt;</tt>,
+where <tt>F</tt> is a function type, represents a reference to a function,
+a legitimate entity. So <tt>boost::ref</tt> was changed to allow it.
+</p>
+<p>
+<a href="https://svn.boost.org/trac/boost/browser/trunk/libs/bind/test/ref_fn_test.cpp">https://svn.boost.org/trac/boost/browser/trunk/libs/bind/test/ref_fn_test.cpp</a>
+</p>
+<p>
+Therefore, I believe an alternative proposed resolution for issue 987 could simply
+allow <tt>reference_wrapper</tt> to be used with function types.
+</p>
+</blockquote>
+
+<note>
+Post Summit, Howard adds:
+</note>
+
+<blockquote>
+<p>
+I agree with Peter (and Eric).  I got this one wrong on my first try.  Here
+is code that demonstrates how easy (and useful) it is to instantiate
+<tt>reference_wrapper</tt> with a function type:
+</p>
+
+<blockquote><pre>
+#include &lt;functional&gt;
+
+template &lt;class F&gt;
+void test(F f);
+
+void f() {}
+
+int main()
+{
+    test(std::ref(f));
+}
+</pre></blockquote>
+
+<p>
+Output (link time error shows type of <tt>reference_wrapper</tt> instantiated
+with function type):
+</p>
+
+<blockquote><pre>
+Undefined symbols:
+  "void test&lt;std::reference_wrapper&lt;void ()()&gt; &gt;(std::reference_wrapper&lt;void ()()&gt;)",...
+</pre></blockquote>
+
+<p>
+I've taken the liberty of changing the proposed wording to allow function types
+and set to Open.  I'll also freely admit that I'm not positive <tt>ReferentType</tt>
+is the correct concept.
+</p>
+
+</blockquote>
+
+<!-- 
+<note>
+Post Summit Daniel adds:
+</note>
+
+<blockquote>
+I suggest to add an additional requirement clause "<tt>requires
+PointeeType&lt;T&gt;</tt>" to all suggested places in this issue where
+<tt>ReferentType</tt> is required to exclude reference types. This could
+happen unintentionally, if <tt>reference_wrapper</tt> is instantiated
+from the class template instead of the factory functions in template
+code or if the factory functions are called with explicitly provided
+template arguments.
+</blockquote>
+ -->
+
+<note>
+Batavia (2009-05):
+</note>
+<blockquote>
+<p>
+Howard observed that <tt>FunctionType</tt>,
+a concept not (yet?) in the Working Paper,
+is likely the correct constraint to be applied.
+However, the proposed resolution provides an adequate approximation.
+</p>
+<p>
+Move to Review.
+</p>
+</blockquote>
+
+<note>
+2009-05-23 Alisdair adds:
+</note>
+
+<blockquote>
+<p>
+By constraining to <tt>PointeeType</tt> we rule out the ability for <tt>T</tt> to be a
+reference, and call in reference-collapsing.  I'm not sure if this is
+correct and intended, but would like to be sure the case was considered.
+</p>
+<p>
+Is dis-allowing reference types and the
+implied reference collapsing the intended result?
+</p>
+</blockquote>
+
+<note>
+2009-07 Frankfurt
+</note>
+
+<blockquote>
+Moved from Review to Open only because the wording needs to be
+tweaked for concepts removal.
+</blockquote>
+
+<note>
+2009-10-14 Daniel provided de-conceptified wording.
+</note>
+
+<note>
+2009-10 post-Santa Cruz:
+</note>
+
+<blockquote>
+Move to Tentatively Ready.
+</blockquote>
+
+</discussion>
+
+<resolution>
+<p>
+Change <sref ref="[refwrap]"/>/1 as indicated:
+</p>
+
+<blockquote>
+<tt>reference_wrapper&lt;T&gt;</tt> is a <tt>CopyConstructible</tt> and
+<tt><ins>Copy</ins>Assignable</tt> wrapper around a
+reference to an object <ins>or function</ins> of type <tt>T</tt>.
+</blockquote>
+
+<!-- 
+<p>
+Change the synopsis in <sref ref="[function.objects]"/>:
+</p>
+
+<blockquote><pre>
+// 20.6.5, reference_wrapper:
+template &lt;<del>ObjectType</del> <ins>ReferentType</ins> T&gt;
+  <ins>requires PointeeType&lt;T&gt;</ins>
+  class reference_wrapper;
+
+template &lt;<del>ObjectType</del> <ins>PointeeType</ins> T&gt;
+  reference_wrapper&lt;T&gt; ref(T&amp;);
+
+template &lt;<del>ObjectType</del> <ins>PointeeType</ins> T&gt;
+  reference_wrapper&lt;const T&gt; cref(const T&amp;);
+
+template &lt;<del>ObjectType</del> <ins>PointeeType</ins> T&gt;
+  reference_wrapper&lt;T&gt; ref(reference_wrapper&lt;T&gt;);
+template &lt;<del>ObjectType</del> <ins>PointeeType</ins> T&gt;
+  reference_wrapper&lt;const T&gt; cref(reference_wrapper&lt;T&gt;);
+</pre></blockquote>
+
+<p>
+Change the synopsis in <sref ref="[refwrap]"/>:
+</p>
+
+<blockquote><pre>
+template &lt;<del>ObjectType</del> <ins>ReferentType</ins> T&gt;
+  <ins>requires PointeeType&lt;T&gt;</ins>
+  class reference_wrapper
+   ...
+</pre></blockquote>
+
+<p>
+Change the prototypes in <sref ref="[refwrap.helpers]"/>:
+</p>
+
+<blockquote><pre>
+template &lt;<del>ObjectType</del> <ins>PointeeType</ins> T&gt;
+  reference_wrapper&lt;T&gt; ref(T&amp;);
+...
+template &lt;<del>ObjectType</del> <ins>PointeeType</ins> T&gt;
+  reference_wrapper&lt;const T&gt; cref(const T&amp;);
+...
+template &lt;<del>ObjectType</del> <ins>PointeeType</ins> T&gt;
+  reference_wrapper&lt;T&gt; ref(reference_wrapper&lt;T&gt;);
+...
+template &lt;<del>ObjectType</del> <ins>PointeeType</ins> T&gt;
+  reference_wrapper&lt;const T&gt; cref(reference_wrapper&lt;T&gt;);
+</pre></blockquote>
+ -->
+
+</resolution>
+
+</issue>

@@ -1,0 +1,35 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="894" status="WP">
+<title>longjmp and destructors</title>
+<section><sref ref="[support.runtime]"/></section>
+<submitter>Lawrence Crowl, Alisdair Meredith</submitter>
+<date>17 Sep 2008</date>
+
+<discussion>
+<p>
+The interaction between <tt>longjmp</tt> and exceptions seems unnecessarily
+restrictive and not in keeping with existing practice.
+</p>
+</discussion>
+
+<resolution>
+<p>
+Edit paragraph 4 of <sref ref="[support.runtime]"/> as follows:
+</p>
+
+<blockquote>
+The function signature <tt>longjmp(jmp_buf jbuf, int val)</tt> has more
+restricted behavior in this International Standard. A
+<tt>setjmp/longjmp</tt> call pair has undefined behavior if replacing the
+<tt>setjmp</tt> and <tt>longjmp</tt> by <tt>catch</tt> and
+<tt>throw</tt> would <del>destroy</del>
+<ins>invoke any non-trivial destructors for</ins>
+any automatic objects.
+</blockquote>
+</resolution>
+
+</issue>

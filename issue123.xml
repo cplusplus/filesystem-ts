@@ -1,0 +1,149 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="123" status="CD1">
+<title>Should valarray helper arrays fill functions be const?</title>
+<section><sref ref="[slice.arr.fill]"/> <sref ref="[gslice.array.fill]"/> 
+         <sref ref="[mask.array.fill]"/> <sref ref="[indirect.array.fill]"/></section>
+<submitter>Judy Ward</submitter>
+<date>15 Dec 1998 </date>
+
+<discussion>
+<p>One of the operator= in the valarray helper arrays is const and one
+is not. For example, look at slice_array. This operator= in Section
+<sref ref="[slice.arr.assign]"/> is const: </p>
+
+<p>&nbsp;&nbsp;&nbsp; <tt>void operator=(const valarray&lt;T&gt;&amp;) const;</tt> </p>
+
+<p>but this one in Section <sref ref="[slice.arr.fill]"/> is not: </p>
+
+<p>&nbsp;&nbsp;&nbsp; <tt>void operator=(const T&amp;); </tt></p>
+
+<p>The description of the semantics for these two functions is similar. </p>
+</discussion>
+
+<resolution>
+
+<p><sref ref="[template.slice.array]"/> Template class slice_array</p>
+<blockquote>
+
+   <p>In the class template definition for slice_array, replace the member
+   function declaration</p>
+    <pre>
+      void operator=(const T&amp;);
+    </pre>
+   <p>with</p>
+    <pre>
+      void operator=(const T&amp;) const;
+    </pre>
+</blockquote>
+
+<p><sref ref="[slice.arr.fill]"/> slice_array fill function</p>
+<blockquote>
+
+   <p>Change the function declaration</p>
+    <pre>
+      void operator=(const T&amp;);
+    </pre>
+   <p>to</p>
+    <pre>
+      void operator=(const T&amp;) const;
+    </pre>
+</blockquote>
+
+<p><sref ref="[template.gslice.array]"/> Template class gslice_array</p>
+<blockquote>
+
+   <p>In the class template definition for gslice_array, replace the member
+   function declaration</p>
+    <pre>
+      void operator=(const T&amp;);
+    </pre>
+   <p>with</p>
+    <pre>
+      void operator=(const T&amp;) const;
+    </pre>
+</blockquote>
+
+<p><sref ref="[gslice.array.fill]"/> gslice_array fill function</p>
+<blockquote>
+
+   <p>Change the function declaration</p>
+    <pre>
+      void operator=(const T&amp;);
+    </pre>
+   <p>to</p>
+    <pre>
+      void operator=(const T&amp;) const;
+    </pre>
+</blockquote>
+
+<p><sref ref="[template.mask.array]"/> Template class mask_array</p>
+<blockquote>
+
+   <p>In the class template definition for mask_array, replace the member
+   function declaration</p>
+    <pre>
+      void operator=(const T&amp;);
+    </pre>
+   <p>with</p>
+    <pre>
+      void operator=(const T&amp;) const;
+    </pre>
+</blockquote>
+
+<p><sref ref="[mask.array.fill]"/> mask_array fill function</p>
+<blockquote>
+
+   <p>Change the function declaration</p>
+    <pre>
+      void operator=(const T&amp;);
+    </pre>
+   <p>to</p>
+    <pre>
+      void operator=(const T&amp;) const;
+    </pre>
+</blockquote>
+
+<p><sref ref="[template.indirect.array]"/> Template class indirect_array</p>
+<blockquote>
+
+   <p>In the class template definition for indirect_array, replace the member
+   function declaration</p>
+    <pre>
+      void operator=(const T&amp;);
+    </pre>
+   <p>with</p>
+    <pre>
+      void operator=(const T&amp;) const;
+    </pre>
+</blockquote>
+
+<p><sref ref="[indirect.array.fill]"/> indirect_array fill function</p>
+<blockquote>
+
+   <p>Change the function declaration</p>
+    <pre>
+      void operator=(const T&amp;);
+    </pre>
+   <p>to</p>
+    <pre>
+      void operator=(const T&amp;) const;
+    </pre>
+</blockquote>
+
+
+<note>Redmond: Robert provided wording.</note>
+
+</resolution>
+
+<rationale>
+<p>There's no good reason for one version of operator= being const and
+another one not.  Because of issue <iref ref="253"/>, this now
+matters: these functions are now callable in more circumstances.  In
+many existing implementations, both versions are already const.</p>
+</rationale>
+
+</issue>

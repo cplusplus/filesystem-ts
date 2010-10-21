@@ -1,0 +1,45 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="209" status="TC1">
+<title>basic_string declarations inconsistent</title>
+<section><sref ref="[basic.string]"/></section>
+<submitter>Igor Stauder</submitter>
+<date>11 Feb 2000</date>
+
+<discussion>
+<p>In Section <sref ref="[basic.string]"/> the basic_string member function
+declarations use a consistent style except for the following functions:</p>
+<blockquote>
+  <pre>void push_back(const charT);
+basic_string&amp; assign(const basic_string&amp;);
+void swap(basic_string&lt;charT,traits,Allocator&gt;&amp;);</pre>
+</blockquote>
+<p>- push_back, assign, swap: missing argument name&nbsp;<br/>
+- push_back: use of const with charT (i.e. POD type passed by value
+not by reference - should be charT or const charT&amp; )<br/>
+- swap: redundant use of template parameters in argument
+basic_string&lt;charT,traits,Allocator&gt;&amp;</p>
+</discussion>
+
+<resolution>
+<p>In Section <sref ref="[basic.string]"/> change the basic_string member
+function declarations push_back, assign, and swap to:</p>
+<blockquote>
+  <pre>void push_back(charT c); 
+
+basic_string&amp; assign(const basic_string&amp; str);
+void swap(basic_string&amp; str);</pre>
+</blockquote>
+</resolution>
+
+<rationale>
+<p>Although the standard is in general not consistent in declaration
+style, the basic_string declarations are consistent other than the
+above.  The LWG felt that this was sufficient reason to merit the
+change.
+</p>
+</rationale>
+</issue>

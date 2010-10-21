@@ -1,0 +1,75 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="501" status="NAD">
+<title>Proposal: strengthen guarantees of lib.comparisons</title>
+<section><sref ref="[base]"/></section>
+<submitter>Me &lt;anti_spam_email2003@yahoo.com&gt;</submitter>
+<date>7 Jun 2005</date>
+
+<discussion>
+<blockquote><p>
+"For templates greater, less, greater_equal, and less_equal,
+the specializations for any pointer type yield a total order, even if
+the built-in operators &lt;, &gt;, &lt;=, &gt;= do not."
+</p></blockquote>
+
+<p>
+The standard should do much better than guarantee that these provide a
+total order, it should guarantee that it can be used to test if memory
+overlaps, i.e. write a portable memmove. You can imagine a platform
+where the built-in operators use a uint32_t comparison (this tests for
+overlap on this platform) but the less&lt;T*&gt; functor is allowed to be
+defined to use a int32_t comparison. On this platform, if you use
+std::less with the intent of making a portable memmove, comparison on
+an array that straddles the 0x7FFFFFFF/0x8000000 boundary can give
+incorrect results.
+</p>
+</discussion>
+
+<resolution>
+<p>
+Add a footnote to 20.5.3/8 saying:
+</p>
+
+<blockquote><p>
+Given a p1 and p2 such that p1 points to N objects of type T and p2
+points to M objects of type T. If [p1,p1+N) does not overlap [p2,p2+M),
+less returns the same value when comparing all pointers in [p1,p1+N) to
+all pointers in [p2,p2+M). Otherwise, there is a value Q and a value R
+such that less returns the same value when comparing all pointers in
+[p1,p1+Q) to all pointers in [p2,p2+R) and an opposite value when
+comparing all pointers in [p1+Q,p1+N) to all pointers in [p2+R,p2+M).
+For the sake of completeness, the null pointer value (4.10) for T is
+considered to be an array of 1 object that doesn't overlap with any
+non-null pointer to T. less_equal, greater, greater_equal, equal_to,
+and not_equal_to give the expected results based on the total ordering
+semantics of less. For T of void, treat it as having similar semantics
+as T of char i.e. less&lt;cv T*&gt;(a, b) gives the same results as less&lt;cv
+void*&gt;(a, b) which gives the same results as less&lt;cv char*&gt;((cv
+char*)(cv void*)a, (cv char*)(cv void*)b).
+</p></blockquote>
+
+<p>
+I'm also thinking there should be a footnote to 20.5.3/1 saying that if
+A and B are similar types (4.4/4), comp&lt;A&gt;(a,b) returns the same value
+as comp&lt;B&gt;(a,b) (where comp is less, less_equal, etc.). But this might
+be problematic if there is some really funky operator overloading going
+on that does different things based on cv (that should be undefined
+behavior if somebody does that though). This at least should be
+guaranteed for all POD types (especially pointers) that use the
+built-in comparison operators.
+</p>
+
+</resolution>
+
+<rationale>
+<p>
+less is already required to provide a strict weak ordering which is good enough
+to detect overlapping memory situations.
+</p>
+</rationale>
+
+</issue>

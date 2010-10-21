@@ -1,0 +1,32 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="852" status="CD1">
+<title>unordered containers <tt>begin(n)</tt> mistakenly <tt>const</tt></title>
+<section><sref ref="[unord]"/></section>
+<submitter>Robert Klarer</submitter>
+<date>12 Jun 2008</date>
+
+<discussion>
+<p>
+In 3 of the four unordered containers the local <tt>begin</tt> member is mistakenly declared <tt>const</tt>:
+</p>
+
+<blockquote><pre>
+local_iterator begin(size_type n) const;
+</pre></blockquote>
+</discussion>
+
+<resolution>
+<p>
+Change the synopsis in <sref ref="[unord.map]"/>, <sref ref="[unord.multimap]"/>, and <sref ref="[unord.multiset]"/>:
+</p>
+
+<blockquote><pre>
+local_iterator begin(size_type n)<del> const</del>;
+</pre></blockquote>
+</resolution>
+
+</issue>

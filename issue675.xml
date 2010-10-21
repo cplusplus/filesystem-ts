@@ -1,0 +1,111 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="675" status="CD1">
+<title>Move assignment of containers</title>
+<section><sref ref="[container.requirements]"/></section>
+<submitter>Howard Hinnant</submitter>
+<date>5 May 2007</date>
+
+<discussion>
+<p>
+James Hopkin pointed out to me that if <tt>vector&lt;T&gt;</tt> move assignment is O(1)
+(just a <tt>swap</tt>) then containers such as <tt>vector&lt;shared_ptr&lt;ostream&gt;&gt;</tt> might have
+the wrong semantics under move assignment when the source is not truly an rvalue, but a
+moved-from lvalue (destructors could run late).
+</p>
+
+<blockquote><pre>
+<tt>vector&lt;shared_ptr&lt;ostream&gt;&gt;</tt> v1;
+<tt>vector&lt;shared_ptr&lt;ostream&gt;&gt;</tt> v2;
+...
+v1 = v2;               // #1
+v1 = std::move(v2);    // #2
+</pre></blockquote>
+
+<p>
+Move semantics means not caring what happens to the source (<tt>v2</tt> in this example).
+It doesn't mean not caring what happens to the target (<tt>v1</tt>).  In the above example
+both assignments should have the same effect on <tt>v1</tt>.  Any non-shared <tt>ostream</tt>'s
+<tt>v1</tt> owns before the assignment should be closed, whether <tt>v1</tt> is undergoing
+copy assignment or move assignment.
+</p>
+
+<p>
+This implies that the semantics of move assignment of a generic container should be
+<tt>clear, swap</tt> instead of just swap.  An alternative which could achieve the same
+effect would be to move assign each element.  In either case, the complexity of move
+assignment needs to be relaxed to <tt>O(v1.size())</tt>.
+</p>
+
+<p>
+The performance hit of this change is not nearly as drastic as it sounds. 
+In practice, the target of a move assignment has always just been move constructed
+or move assigned <i>from</i>.  Therefore under <tt>clear, swap</tt> semantics (in
+this common use case) we are still achieving O(1) complexity.
+</p>
+
+</discussion>
+
+<resolution>
+<p>
+Change <sref ref="[container.requirements]"/>:
+</p>
+
+<blockquote>
+<table border="1">
+<caption>Table 89: Container requirements</caption>
+<tr>
+<th>expression</th><th>return type</th><th>operational semantics</th>
+<th>assertion/note pre/post-condition</th><th>complexity</th>
+</tr>
+<tr>
+<td><tt>a = rv;</tt></td><td><tt>X&amp;</tt></td>
+<td>All existing elements of <tt>a</tt> are either move assigned or destructed</td>
+<td><tt>a</tt> shall be equal to the 
+value that <tt>rv</tt> had 
+before this construction
+</td>
+<td><del>(Note C)</del> <ins>linear</ins></td>
+</tr>
+</table>
+
+<p>
+Notes: the algorithms <tt>swap()</tt>, <tt>equal()</tt> and
+<tt>lexicographical_compare()</tt> are defined in clause 25. Those
+entries marked "(Note A)" should have constant complexity. Those entries
+marked "(Note B)" have constant complexity unless
+<tt>allocator_propagate_never&lt;X::allocator_type&gt;::value</tt> is
+<tt>true</tt>, in which case they have linear complexity.
+<del>Those entries
+marked "(Note C)" have constant complexity if <tt>a.get_allocator() ==
+rv.get_allocator()</tt> or if either
+<tt>allocator_propagate_on_move_assignment&lt;X::allocator_type&gt;::value</tt>
+is <tt>true</tt> or
+<tt>allocator_propagate_on_copy_assignment&lt;X::allocator_type&gt;::value</tt>
+is <tt>true</tt> and linear complexity otherwise.</del>
+</p>
+</blockquote>
+
+</resolution>
+
+<note>
+post Bellevue Howard adds:
+</note>
+
+<blockquote>
+<p>
+This issue was voted to WP in Bellevue, but accidently got stepped on by
+<a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2008/n2525.pdf">N2525</a>
+which was voted to WP simulataneously.  Moving back to Open for the purpose of getting
+the wording right.  The intent of this issue and N2525 are not in conflict.
+</p>
+</blockquote>
+
+<note>
+post Sophia Antipolis Howard updated proposed wording:
+</note>
+
+</issue>

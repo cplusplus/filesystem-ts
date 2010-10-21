@@ -1,0 +1,78 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="1104" status="WP">
+<title><tt>basic_ios::move</tt> should accept lvalues</title>
+<section><sref ref="[basic.ios.members]"/></section>
+<submitter>Howard Hinnant</submitter>
+<date>25 Apr 2009</date>
+
+<discussion>
+<p>
+With the rvalue reference changes in
+<a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2009/n2844.html">N2844</a>
+<tt>basic_ios::move</tt> no longer has the most convenient signature:
+</p>
+
+<blockquote><pre>
+void move(basic_ios&amp;&amp; rhs);
+</pre></blockquote>
+
+<p>
+This signature should be changed to accept lvalues.  It does not need to be
+overloaded to accept rvalues.  This is a special case that only derived clients
+will see.  The generic <tt>move</tt> still needs to accept rvalues.
+</p>
+
+<note>
+Batavia (2009-05):
+</note>
+<blockquote>
+<p>
+Tom prefers, on general principles, to provide both overloads.
+Alisdair agrees.
+</p>
+<p>
+Howard points out that there is no backward compatibility issue
+as this is new to C++0X.
+</p>
+<p>
+We agree that both overloads should be provided,
+and Howard will provide the additional wording.
+Move to Open.
+</p>
+</blockquote>
+
+<note>
+2009-05-23 Howard adds:
+</note>
+
+<blockquote>
+Added overload, moved to Review.
+</blockquote>
+
+<note>
+2009 Santa Cruz:
+</note>
+
+<blockquote>
+Move to Ready.
+</blockquote>
+
+</discussion>
+
+<resolution>
+<p>
+Add a signature to the existing prototype in the synopsis of <sref ref="[ios]"/>
+and in <sref ref="[basic.ios.members]"/>:
+</p>
+
+<blockquote><pre>
+<ins>void move(basic_ios&amp; rhs);</ins>
+void move(basic_ios&amp;&amp; rhs);
+</pre></blockquote>
+</resolution>
+
+</issue>

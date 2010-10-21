@@ -1,0 +1,370 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="1089" status="WP">
+<title>Response to JP 76</title>
+<section><sref ref="[thread]"/></section>
+<submitter>Howard Hinnant</submitter>
+<date>22 Mar 2009</date>
+
+<discussion>
+<p><b>Addresses JP 76</b></p>
+
+<p>
+A description for "Throws: Nothing." are not unified.
+</p>
+
+<p>
+At the part without throw, "Throws: Nothing." should be described.
+</p>
+
+<p>
+Add "Throws: Nothing." to the following.
+</p>
+
+<ul>
+<li>
+<sref ref="[thread.thread.static]"/> p1
+</li>
+<li>
+<sref ref="[thread.lock.guard]"/> p4
+</li>
+<li>
+<sref ref="[thread.lock.unique.cons]"/> p6
+</li>
+<li>
+<sref ref="[thread.condition.condvar]"/> p7 and p8
+</li>
+<li>
+<sref ref="[thread.condition.condvarany]"/> p6, p7, p19, p21 and p25
+</li>
+</ul>
+
+<note>
+Summit:
+</note>
+<blockquote>
+Pass on to editor.
+</blockquote>
+
+<note>
+Post Summit:  Editor declares this non-editorial.
+</note>
+
+<note>
+2009-08-01 Howard provided wording:
+</note>
+
+<blockquote>
+
+<p>
+The definition of "<i>Throws:</i> Nothing." that I added is probably going to
+be controversial, but I beg you to consider it seriously.
+</p>
+
+<blockquote>
+<p>
+In C++ there are three "flow control" options for a function:
+</p>
+
+<ol>
+<li>
+It can return, either with a value, or with <tt>void</tt>.
+</li>
+<li>
+It can call a function which never returns, such as <tt>std::exit</tt> or
+<tt>std::terminate</tt>.
+</li>
+<li>
+It can throw an exception.
+</li>
+</ol>
+
+The above list can be abbreviated with:
+
+<ol>
+<li><b>R</b>eturns.</li>
+<li><b>E</b>nds program.</li>
+<li><b>T</b>hrows exception.</li>
+</ol>
+
+<p>
+In general a function can have the behavior of any of these 3, or any combination
+of any of these three, depending upon run time data.
+</p>
+
+<ol>
+<li><b>R</b></li>
+<li><b>E</b></li>
+<li><b>T</b></li>
+<li><b>RE</b></li>
+<li><b>RT</b></li>
+<li><b>ET</b></li>
+<li><b>RET</b></li>
+</ol>
+
+<p>
+A function with no throw spec, and no documentation, is in general a <b>RET</b>
+function.  It may return, it may end the program, or it may throw.  When we
+specify a function with an empty throw spec:
+</p>
+
+<blockquote><pre>
+void f() throw();
+</pre></blockquote>
+
+<p>
+We are saying that <tt>f()</tt> is an <b>RE</b> function:  It may return or end
+the program, but it will not throw.
+</p>
+
+<p>
+I posit that there are very few places in the library half of the standard
+where we intend for functions to be able to end the program (call <tt>terminate</tt>).
+And none of those places where we do say <tt>terminate</tt> could be called,
+do we currently say "<i>Throws:</i> Nothing.".
+</p>
+
+<p>
+I believe that if we define "<i>Throws:</i> Nothing." to mean <b>R</b>,
+we will both clarify many, many places in the standard, <em>and</em> give us a
+good rationale for choosing between "<i>Throws:</i> Nothing." (<b>R</b>)
+and <tt>throw()</tt> (<b>RE</b>) in the future.  Indeed, this may give us motivation
+to change several <tt>throw()</tt>s to "<i>Throws:</i> Nothing.".
+</p>
+</blockquote>
+
+<p>
+I did not add the following changes as JP 76 requested as I believe we want to
+allow these functions to throw:
+</p>
+
+<blockquote>
+<p>
+Add a paragraph under <sref ref="[thread.lock.guard]"/> p4:
+</p>
+
+<blockquote><pre>
+explicit lock_guard(mutex_type&amp; m);
+</pre>
+
+<p><ins>
+<i>Throws:</i> Nothing.
+</ins></p>
+</blockquote>
+
+<p>
+Add a paragraph under <sref ref="[thread.lock.unique.cons]"/> p6:
+</p>
+
+<blockquote><pre>
+explicit unique_lock(mutex_type&amp; m);
+</pre>
+
+<p><ins>
+<i>Throws:</i> Nothing.
+</ins></p>
+</blockquote>
+
+<p>
+Add a paragraph under <sref ref="[thread.condition.condvarany]"/> p19, p21 and p25:
+</p>
+
+<blockquote><pre>
+template &lt;class Lock, class Rep, class Period&gt; 
+  bool wait_for(Lock&amp; lock, const chrono::duration&lt;Rep, Period&gt;&amp; rel_time);
+</pre>
+
+<p><ins>
+<i>Throws:</i> Nothing.
+</ins></p>
+</blockquote>
+
+<blockquote><pre>
+template &lt;class Lock, class Duration, class Predicate&gt; 
+  bool wait_until(Lock&amp; lock, const chrono::time_point&lt;Clock, Duration&gt;&amp; rel_time, Predicate pred);
+</pre>
+
+<p><ins>
+<i>Throws:</i> Nothing.
+</ins></p>
+</blockquote>
+
+<blockquote><pre>
+template &lt;class Lock, class Rep, class Period, class Predicate&gt; 
+  bool wait_for(Lock&amp; lock, const chrono::duration&lt;Rep, Period&gt;&amp; rel_time, Predicate pred);
+</pre>
+
+<p><ins>
+<i>Throws:</i> Nothing.
+</ins></p>
+</blockquote>
+
+</blockquote>
+
+</blockquote>
+
+<note>
+2009-10 Santa Cruz:
+</note>
+
+<blockquote>
+Defer pending further developments with exception restriction annotations.
+</blockquote>
+
+<note>
+2010-02-11 Moved to Tentatively Ready after 5 positive votes on c++std-lib.
+</note>
+
+<note>
+2010-02-24 Pete moved to Open:
+</note>
+
+<blockquote>
+A "<i>Throws:</i> Nothing" specification is not the place to say that a function
+is not allowed to call <tt>exit()</tt>. While I agree with the thrust of the
+proposed resolution, "doesn't throw exceptions" is a subset of "always returns
+normally". If it's important to say that most library functions don't call
+<tt>exit()</tt>, say so.
+</blockquote>
+
+<note>
+2010 Pittsburgh:
+</note>
+
+<blockquote>
+Move to Ready except for the added paragraph to <sref
+ref="[structure.specifications]"/>.
+</blockquote>
+
+</discussion>
+
+<resolution>
+<!-- 
+<p>
+Add a paragraph after <sref ref="[structure.specifications]"/> p4:
+</p>
+
+<blockquote>
+<p>
+-3- Descriptions of function semantics contain the following elements
+(as appropriate):<sup>158</sup>
+</p>
+<ul>
+<li>...</li>
+<li>
+<i>Throws:</i> any exceptions thrown by the function, and the conditions
+that would cause the exception
+</li>
+<li>...</li>
+</ul>
+
+<p>
+-4- For non-reserved replacement and handler functions, ...
+</p>
+
+<p><ins>
+A "<i>Throws:</i> Nothing." element indicates that the function shall
+return ordinarily, and not exit via an exception.  This element also
+indicates that the function <em>shall</em> return. [<i>Note:</i> This
+differs from an empty throw specification which may cause a function to
+call <tt>unexpected</tt> and subsequently <tt>terminate</tt>. &mdash;
+<i>end note</i>]
+</ins></p>
+</blockquote>
+ -->
+
+<p>
+Add a paragraph under <sref ref="[thread.thread.static]"/> p1:
+</p>
+
+<blockquote><pre>
+unsigned hardware_concurrency();
+</pre>
+
+<p>
+-1- <i>Returns:</i> ...
+</p>
+
+<p><ins>
+<i>Throws:</i> Nothing.
+</ins></p>
+</blockquote>
+
+<p>
+Add a paragraph under <sref ref="[thread.condition.condvar]"/> p7 and p8:
+</p>
+
+<blockquote>
+<p>
+<i>[Informational, not to be incluced in the WP: The POSIX spec allows only:</i>
+</p>
+<dl>
+<dt><i>[EINVAL]</i></dt>
+<dd><i>The value <tt>cond</tt> does not refer to an initialized condition variable. &mdash; end informational]</i></dd>
+</dl>
+
+<pre>
+void notify_one();
+</pre>
+
+<p>
+-7- <i>Effects:</i> ...
+</p>
+
+<p><ins>
+<i>Throws:</i> Nothing.
+</ins></p>
+</blockquote>
+
+<blockquote><pre>
+void notify_all();
+</pre>
+
+<p>
+-8- <i>Effects:</i> ...
+</p>
+
+<p><ins>
+<i>Throws:</i> Nothing.
+</ins></p>
+</blockquote>
+
+
+<p>
+Add a paragraph under <sref ref="[thread.condition.condvarany]"/> p6 and p7:
+</p>
+
+<blockquote>
+<pre>
+void notify_one();
+</pre>
+
+<p>
+-6- <i>Effects:</i> ...
+</p>
+
+<p><ins>
+<i>Throws:</i> Nothing.
+</ins></p>
+</blockquote>
+
+<blockquote><pre>
+void notify_all();
+</pre>
+
+<p>
+-7- <i>Effects:</i> ...
+</p>
+
+<p><ins>
+<i>Throws:</i> Nothing.
+</ins></p>
+</blockquote>
+
+
+</resolution>
+
+</issue>

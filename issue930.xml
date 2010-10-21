@@ -1,0 +1,378 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="930" status="NAD">
+<title>Access to std::array data as built-in array type</title>
+<section><sref ref="[array]"/></section>
+<submitter>Niels Dekker</submitter>
+<date>17 Nov 2008</date>
+
+<discussion>
+
+<p>
+The Working Draft (N2798) allows access to the elements of
+<tt>std::array</tt> by its <tt>data()</tt> member function:
+</p>
+
+<blockquote>
+
+<h5>23.2.1.4 array::data [array.data]</h5>
+<pre>
+ T *data();
+ const T *data() const;
+</pre>
+<ol><li>
+ Returns: elems.
+</li></ol>
+</blockquote>
+
+<p>
+Unfortunately, the result of <tt>std::array::data()</tt> cannot be bound
+to a reference to a built-in array of the type of <tt>array::elems</tt>.
+And <tt>std::array</tt> provides no other way to get a reference to
+<tt>array::elems</tt>. 
+This hampers the use of <tt>std::array</tt>, for example when trying to
+pass its data to a C style API function:
+</p>
+
+<pre>
+ // Some C style API function. 
+ void set_path( char (*)[MAX_PATH] );
+
+ std::array&lt;char,MAX_PATH&gt; path;
+ set_path( path.data() );  // error
+ set_path( &amp;(path.data()) );  // error
+</pre>
+
+ <p>
+Another example, trying to pass the array data to an instance of another
+C++ class:
+</p>
+
+<pre>
+ // Represents a 3-D point in space.
+ class three_d_point {
+ public:
+   explicit three_d_point(const double (&amp;)[3]); 
+ };
+
+ const std::array&lt;double,3&gt; coordinates = { 0, 1, 2 };
+ three_d_point point1( coordinates.data() );  // error.
+ three_d_point point2( *(coordinates.data()) );  // error.
+</pre>
+
+<p>
+A user might be tempted to use <tt>std::array::elems</tt> instead, but
+doing so isn't recommended, because <tt>std::array::elems</tt> is "for
+exposition only".  Note that Boost.Array users might already use
+<tt>boost::array::elems</tt>, as its documentation doesn't explicitly
+state that <tt>boost::array::elems</tt> is for exposition only:
+http://www.boost.org/doc/libs/1_36_0/doc/html/boost/array.html
+</p>
+<p>
+I can think of three options to solve this issue:
+</p>
+<ol><li>
+Remove the words "exposition only" from the definition of
+<tt>std::array::elems</tt>, as well as the note saying that "elems is
+shown for exposition only."
+</li><li>
+Change the signature of <tt>std::array::data()</tt>, so that it would
+return a reference to the built-in array, instead of a pointer to its
+first element.
+</li><li>
+Add extra member functions, returning a reference to the built-in array.
+</li></ol>
+<p>
+Lawrence Crowl wrote me that it might be better to leave
+<tt>std::array::elems</tt> "for exposition only", to allow alternate
+representations to allocate the array data dynamically.  This might be
+of interest to the embedded community, having to deal with very limited
+stack sizes.
+</p>
+<p>
+The second option, changing the return type of
+<tt>std::array::data()</tt>, would break backward compatible to current
+Boost and TR1 implementations, as well as to the other contiguous
+container (<tt>vector</tt> and <tt>string</tt>) in a very subtle way.
+For example, the following call to <tt>std::swap</tt> currently swap two
+locally declared pointers <tt>(data1, data2)</tt>, for any container
+type <tt>T</tt> that has a <tt>data()</tt> member function. When
+<tt>std::array::data()</tt> is changed to return a reference, the
+<tt>std::swap</tt> call may swap the container elements instead.
+</p>
+
+<pre>
+ template &lt;typename T&gt;
+ void func(T&amp; container1, T&amp; container2)
+ {
+   // Are data1 and data2 pointers or references?
+   auto data1 = container1.data();
+   auto data2 = container2.data();
+
+   // Will this swap two local pointers, or all container elements?
+   std::swap(data1, data2);
+ }
+</pre>
+
+<p>
+The following concept is currently satisfied by all contiguous
+containers, but it no longer is for <tt>std::array</tt>, when
+<tt>array::data()</tt>
+is changed to return a reference (tested on ConceptGCC Alpha 7):
+</p>
+
+<pre>
+ auto concept ContiguousContainerConcept&lt;typename T&gt;
+ {
+   typename value_type = typename T::value_type;
+   const value_type * T::data() const;
+ }
+</pre>
+
+<p>
+Still it's worth considering having <tt>std::array::data()</tt> return a
+reference, because it might be the most intuitive option, from a user's
+point of view.  Nicolai Josuttis (who wrote <tt>boost::array</tt>)
+mailed me that he very much prefers this option.
+</p>
+<p>
+Note that for this option, the definition of <tt>data()</tt> would also
+need to be revised for zero-sized arrays, as its return type cannot be a
+reference to a zero-sized built-in array.  Regarding zero-sized array,
+<tt>data()</tt> could throw an exception.  Or there could be a partial
+specialization of <tt>std::array</tt> where <tt>data()</tt> returns
+<tt>T*</tt> or gets removed.
+</p>
+<p>
+Personally I prefer the third option, adding a new member function to
+<tt>std::array</tt>, overloaded for const and non-const access,
+returning a reference to the built-in array, to avoid those compatible
+issues. I'd propose naming the function <tt>std::array::c_array()</tt>,
+which sounds intuitive to me. Note that <tt>boost::array</tt> already
+has a <tt>c_array()</tt> member, returning a pointer, but Nicolai told
+me that this one is only there for historical reasons. (Otherwise a name
+like <tt>std::array::native_array()</tt> or
+<tt>std::array::builtin_array()</tt> would also be fine with me.) 
+According to my proposed resolution, a zero-sized <tt>std::array</tt> does not need
+to have <tt>c_array()</tt>, while it is still required to have
+<tt>data()</tt> functions.
+</p>
+
+<note>
+Post Summit:
+</note>
+
+<blockquote>
+
+<p>
+Alisdair: Don't like p4 suggesting implementation-defined behaviour.
+</p>
+<p>
+Walter: What about an explicit conversion operator, instead of adding
+the new member function?
+</p>
+<p>
+Alisdair: Noodling about:
+</p>
+<blockquote><pre>
+template&lt;size_t N, ValueType T&gt;
+struct array
+{
+  T elems[N];
+
+// fantasy code starts here
+
+// crazy decltype version for grins only
+//requires True&lt;(N&gt;0)&gt;
+//explict operator decltype(elems) &amp; () { return elems; }
+
+// conversion to lvalue ref
+requires True&lt;(N&gt;0)&gt;
+explict operator T(&amp;)[N] () &amp; { return elems; }
+
+// conversion to const lvalue ref
+requires True&lt;(N&gt;0)&gt;
+explict operator const T(&amp;)[N] () const &amp; { return elems; }
+
+// conversion to rvalue ref using ref qualifiers
+requires True&lt;(N&gt;0)&gt;
+explict operator T(&amp;&amp;)[N] () &amp;&amp; { return elems; }
+
+// fantasy code ends here
+
+explicit operator bool() { return true; }
+};
+</pre></blockquote>
+
+<p>
+This seems legal but odd. Jason Merrill says currently a CWG issue 613
+on the non-static data member that fixes the error that current G++
+gives for the non-explicit, non-conceptualized version of this. Verdict
+from human compiler: seems legal.
+</p>
+<p>
+Some grumbling about zero-sized arrays being allowed and supported.
+</p>
+<p>
+Walter: Would this address the issue? Are we inclined to go this route?
+</p>
+<p>
+Alan: What would usage look like?
+</p>
+<blockquote><pre>
+// 3-d point in space
+struct three_d_point
+{
+  explicit three_d_point(const double (&amp;)[3]);
+};
+
+void sink(double*);
+
+const std::array&lt;double, 3&gt; coordinates = { 0, 1, 2 };
+three_d_point point1( coordinates.data() ); //error
+three_d_point point2( *(coordinates.data()) ); // error
+three_d_point point3( coordinates ); // yay!
+
+sink(cooridinates); // error, no conversion
+</pre></blockquote>
+
+<p>
+Recommended Open with new wording. Take the required clause and add the
+explicit conversion operators, not have a <tt>typedef</tt>. At issue still is use
+<tt>decltype</tt> or use <tt>T[N]</tt>. In favour of using <tt>T[N]</tt>, even though use of
+<tt>decltype</tt> is specially clever.
+</p>
+
+</blockquote>
+
+<note>
+Post Summit, further discussion in the thread starting with c++std-lib-23215.
+</note>
+
+<note>
+2009-07 post-Frankfurt (Saturday afternoon group):
+</note>
+
+<blockquote>
+<p>
+The idea to resolve the issue by adding explicit conversion operators
+was abandoned, because it would be inconvenient to use, especially when
+passing the array to a template function, as mentioned by Daniel. So we
+reconsidered the original proposed resolution, which appeared
+acceptable, except for its proposed changes to <sref ref="[array.zero]"/>, which
+allowed <tt>c_array_type</tt> and <tt>c_array()</tt> to be absent for a zero-sized array.
+Alisdair argued that such wording would disallow certain generic use
+cases. New wording for <sref ref="[array.zero]"/> was agreed upon (Howard: and
+is reflected in the proposed resolution).
+</p>
+<p>
+Move to Review
+</p>
+</blockquote>
+
+<note>
+2009-07-31 Alisdair adds:
+</note>
+
+<blockquote>
+<p>
+I will be unhappy voting the proposed resolution for 930 past review
+until we have implementation experience with reference qualifiers. 
+Specifically, I want to understand the impact of the missing overload
+for <tt>const &amp;&amp;</tt> (if any.)
+</p>
+
+<p>
+If we think the issue is important enough it might be worthwhile
+stripping the ref qualifiers for easy progress next meeting, and opening
+yet another issue to put them back with experience.
+</p>
+
+<p>
+Recommend deferring any decision on splitting the issue until we get LWG
+feedback next meeting - I may be the lone dissenting voice if others are
+prepared to proceed without it.
+</p>
+</blockquote>
+
+<note>
+2009-10 Santa Cruz:
+</note>
+
+<blockquote>
+Mark as NAD. There was not enough consensus that this was sufficiently
+useful. There are known other ways to do this, such as small inline
+conversion functions.
+</blockquote>
+
+</discussion>
+
+<resolution>
+<p>
+Add to the template definition of array, <sref ref="[array]"/>/3:
+</p>
+
+<blockquote>
+<pre><ins>
+typedef T c_array_type[N];
+c_array_type &amp; c_array() &amp;;
+c_array_type &amp;&amp; c_array() &amp;&amp;;
+const c_array_type &amp; c_array() const &amp;;
+</ins>
+</pre>
+</blockquote>
+
+<p>
+Add the following subsection to <sref ref="[array]"/>, after <sref ref="[array.data]"/>:
+</p>
+
+<blockquote>
+<h5><ins>23.2.1.5 array::c_array [array.c_array]</ins></h5>
+    <pre><ins>
+c_array_type &amp; c_array() &amp;;
+c_array_type &amp;&amp; c_array() &amp;&amp;;
+const c_array_type &amp; c_array() const &amp;;
+</ins></pre>
+<blockquote>
+<p>
+<ins><i>Returns:</i> <tt>elems</tt>.</ins>
+</p>
+</blockquote>
+
+</blockquote>
+
+<!-- 
+<p>
+Add to Zero sized arrays <sref ref="[array.zero]"/>:
+</p>
+
+<blockquote>
+4. The presence of <tt>c_array_type</tt> and <tt>c_array()</tt> and
+their semantics are implementation defined, for a zero-sized array.
+</blockquote>
+ -->
+
+<p>
+Change Zero sized arrays <sref ref="[array.zero]"/>:
+</p>
+
+<blockquote>
+
+<p>-2- ...</p>
+
+<p><ins>
+The type <tt>c_array_type</tt> is unspecified for a zero-sized array.
+</ins></p>
+
+<p>
+-3- The effect of calling <ins><tt>c_array()</tt>,</ins> <tt>front()</tt><ins>,</ins> or
+<tt>back()</tt> for a zero-sized array is implementation defined.
+</p>
+</blockquote>
+
+</resolution>
+
+</issue>

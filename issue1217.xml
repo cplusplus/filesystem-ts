@@ -1,0 +1,119 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="1217" status="NAD Future">
+<title>Quaternion support</title>
+<section><sref ref="[complex.numbers]"/></section>
+<submitter>Ted Shaneyfelt</submitter>
+<date>26 Sep 2009</date>
+
+<discussion>
+<p>
+Concerning mathematically proper operation of the type:
+</p>
+
+<blockquote><pre>
+complex&lt;complex&lt;T&gt; &gt;
+</pre></blockquote>
+
+<p>
+Generally accepted mathematical semantics of such a construct correspond
+to quaternions through Cayly-Dickson construct
+</p>
+
+<blockquote><pre>
+(w+xi) + (y+zi) j
+</pre></blockquote>
+
+<p>
+The proper implementation seems straightforward by adding a few
+declarations like those below. I have included operator definition for
+combining real scalars and complex types, as well, which seems
+appropriate, as algebra of complex numbers allows mixing complex and
+real numbers with operators. It also allows for constructs such as
+<tt>complex&lt;double&gt; i=(0,1),  x = 12.34 + 5*i;</tt>
+</p>
+
+<p>
+Quaternions are often used in areas such as computer graphics, where,
+for example, they avoid the problem of Gimbal lock when rotating objects
+in 3D space, and can be more efficient than matrix multiplications,
+although I am applying them to a different field.
+</p>
+
+<pre>
+/////////////////////////ALLOW OPERATORS TO COMBINE REAL SCALARS AND COMPLEX VALUES /////////////////////////
+template&lt;typename T,typename S&gt; complex&lt;T&gt; operator+(const complex&lt;T&gt; x,const S a) {
+    complex&lt;T&gt; result(x.real()+a, x.imag());
+    return result;
+}
+template&lt;typename T,typename S&gt; complex&lt;T&gt; operator+(const S a,const complex&lt;T&gt; x) {
+    complex&lt;T&gt; result(a+x.real(), x.imag());
+    return result;
+}
+template&lt;typename T,typename S&gt; complex&lt;T&gt; operator-(const complex&lt;T&gt; x,const S a) {
+    complex&lt;T&gt; result(x.real()-a, x.imag());
+    return result;
+}
+template&lt;typename T,typename S&gt; complex&lt;T&gt; operator-(const S a,const complex&lt;T&gt; x) {
+    complex&lt;T&gt; result(a-x.real(), x.imag());
+    return result;
+}
+template&lt;typename T,typename S&gt; complex&lt;T&gt; operator*(const complex&lt;T&gt; x,const S a) {
+    complex&lt;T&gt; result(x.real()*a, x.imag()*a);
+    return result;
+}
+template&lt;typename T,typename S&gt; complex&lt;T&gt; operator*(const S a,const complex&lt;T&gt; x) {
+    complex&lt;T&gt; result(a*x.real(), a*x.imag());
+    return result;
+}
+
+/////////////////////////PROPERLY IMPLEMENT QUATERNION SEMANTICS/////////////////////////
+template&lt;typename T&gt; double normSq(const complex&lt;complex&lt;T&gt; &gt;q) {
+    return q.real().real()*q.real().real()
+         + q.real().imag()*q.real().imag()
+         + q.imag().real()*q.imag().real()
+         + q.imag().imag()*q.imag().imag();
+}
+template&lt;typename T&gt; double norm(const complex&lt;complex&lt;T&gt; &gt;q) {
+    return sqrt(normSq(q));
+}
+/////// Cayley-Dickson Construction
+template&lt;typename T&gt; complex&lt;complex&lt;T&gt; &gt; conj(const complex&lt;complex&lt;T&gt; &gt; x) {
+    complex&lt;complex&lt;T&gt; &gt; result(conj(x.real()),-x.imag());
+    return result;
+}
+template&lt;typename T&gt; complex&lt;complex&lt;T&gt; &gt; operator*(const complex&lt;complex&lt;T&gt; &gt; ab,const complex&lt;complex&lt;T&gt; &gt; cd) {
+    complex&lt;T&gt; re(ab.real()*cd.real()-conj(cd.imag())*ab.imag());
+    complex&lt;T&gt; im(cd.imag()*ab.real()+ab.imag()*conj(cd.real()));
+    complex&lt;complex&lt;double&gt; &gt; q(re,im);
+    return q;
+}
+//// Quaternion division
+template&lt;typename S,typename T&gt; complex&lt;complex&lt;T&gt; &gt; operator/(const complex&lt;complex&lt;T&gt; &gt; q,const S a) {
+    return q * (1/a);
+}
+template&lt;typename S,typename T&gt; complex&lt;complex&lt;T&gt; &gt; operator/(const S a,const complex&lt;complex&lt;T&gt; &gt; q) {
+    return a*conj(q)/normSq(q);
+}
+template&lt;typename T&gt; complex&lt;complex&lt;T&gt; &gt; operator/(const complex&lt;complex&lt;T&gt; &gt; n, const complex&lt;complex&lt;T&gt; &gt; d) {
+    return n * (conj(d)/normSq(d));
+}
+</pre>
+
+<note>
+2009-10 Santa Cruz:
+</note>
+
+<blockquote>
+NAD Future.  There is no consensus or time to move this into C++0X.
+</blockquote>
+
+</discussion>
+
+<resolution>
+</resolution>
+
+</issue>

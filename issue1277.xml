@@ -1,0 +1,64 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="1277" status="WP">
+<title><tt>std::thread::id</tt> should be trivially copyable</title>
+<section><sref ref="[thread.thread.id]"/></section>
+<submitter>Anthony Williams</submitter>
+<date>24 Nov 2009</date>
+
+<discussion>
+<p>
+The class definition of <tt>std::thread::id</tt> in
+<a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2009/n3000.pdf">N3000</a>
+is:
+</p>
+
+<blockquote><pre>
+class thread::id {
+public:
+  id();
+};
+</pre></blockquote>
+
+<p>
+Typically, I expect that the internal data members will either be
+pointers or integers, so that in practice the class will be trivially
+copyable. However, I don't think the current wording guarantees it, and
+I think it would be useful. In particular, I can see a use for
+<tt>std::atomic&lt;std::thread::id&gt;</tt> to allow a <tt>thread</tt>
+to claim ownership of a data structure atomicly, and
+<tt>std::atomic&lt;T&gt;</tt> requires that <tt>T</tt> is trivially
+copyable.
+</p>
+
+<note>
+2010-02-12 Moved to Tentatively Ready after 7 positive votes on c++std-lib.
+</note>
+
+</discussion>
+
+<resolution>
+<p>
+Add a new sentence to <sref ref="[thread.thread.id]"/> p1:
+</p>
+
+<blockquote>
+1 An object of type <tt>thread::id</tt> provides a unique identifier for
+each thread of execution and a single distinct value for all
+<tt>thread</tt> objects that do not represent a thread of execution
+(<sref ref="[thread.thread.class]"/>). Each thread of execution has an
+associated <tt>thread::id</tt> object that is not equal to the
+<tt>thread::id</tt> object of any other thread of execution and that is
+not equal to the <tt>thread::id</tt> object of any <tt>std::thread</tt>
+object that does not represent threads of execution. The library may
+reuse the value of a <tt>thread::id</tt> of a terminated thread that can
+no longer be joined. <ins><tt>thread::id</tt> shall be a trivially
+copyable class (<sref ref="[class]"/>).</ins>
+</blockquote>
+
+</resolution>
+
+</issue>

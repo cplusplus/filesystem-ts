@@ -1,0 +1,61 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="1291" status="NAD Editorial">
+<title>exceptions thrown during <tt>promise::set_value</tt></title>
+<section><sref ref="[futures.promise]"/></section>
+<submitter>Jonathan Wakely</submitter>
+<date>18 Dec 2009</date>
+
+<discussion>
+<p>
+In <sref ref="[futures.promise]"/>
+</p>
+
+<p>
+Does <tt>promise&lt;R&gt;::set_value</tt> return normally if the copy/move
+constructor of <tt>R</tt> throws?
+</p>
+
+<p>
+The exception could be caught and set using
+<tt>promise&lt;R&gt;::set_exception</tt>, or it could be allowed to leave the
+<tt>set_value</tt> call, but it's not clear which is intended. I suggest the
+exception should not be caught.
+</p>
+
+<p>
+N.B. This doesn't apply to <tt>promise&lt;R&amp;&gt;::set_value</tt> or
+<tt>promise&lt;void&gt;::set_value</tt> because they don't construct a new
+object.
+</p>
+
+<note>
+2010 Pittsburgh:  Moved to NAD Editorial.  Rationale added below.
+</note>
+
+</discussion>
+
+<rationale>
+<p>
+Solved by
+<a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2010/n3058.html">N3058</a>.
+</p>
+</rationale>
+
+<resolution>
+<p>
+Change <sref ref="[futures.promise]"/>/18:
+</p>
+
+<blockquote>
+18 <i>Throws:</i> <tt>future_error</tt> if its associated state is already
+ready<ins> or, for the first version an exception thrown by the copy constructor
+of <tt>R</tt>, or for the second version an exception thrown by the move
+constructor of <tt>R</tt></ins>.
+</blockquote>
+</resolution>
+
+</issue>

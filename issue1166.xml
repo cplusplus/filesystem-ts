@@ -1,0 +1,60 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="1166" status="NAD Editorial">
+<title>Allocator-specific move/copy break model of move-constructor and
+        move-assignment</title>
+<section><sref ref="[allocator.propagation]"/>, <sref ref="[allocator.propagation.map]"/>, <sref ref="[containers]"/></section>
+<submitter>LWG</submitter>
+<date>28 Jun 2009</date>
+
+<discussion>
+
+<p><b>Addresses US 77</b></p>
+
+<p><b>Description</b></p>
+        <p>Allocator-specific move and copy behavior for containers
+        (<a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2008/n2525.pdf">N2525</a>) complicates a little-used and already-complicated
+        portion of the standard library (allocators), and breaks
+        the conceptual model of move-constructor and
+        move-assignment operations on standard containers being
+        efficient operations. The extensions for allocator-specific
+        move and copy behavior should be removed from the working
+        paper.</p>
+        <p>With the
+        introduction of rvalue references, we are teaching
+        programmers that moving from a standard container (e.g., a
+        <tt>vector&lt;string&gt;</tt>) is an efficient, constant-time
+        operation. The introduction of <a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2008/n2525.pdf">N2525</a> removed that
+        guarantee; depending on the behavior of four different
+        traits (20.8.4), the complexity of copy and move operations
+        can be constant or linear time. This level of customization
+        greatly increases the complexity of standard containers,
+        and benefits only a tiny fraction of the C++ community.</p>
+<p><b>Suggestion</b></p>
+
+        <p>Remove 20.8.4.</p>
+        
+        <p>Remove 20.8.5.</p>
+        
+        <p>Remove all references to the facilities in
+        20.8.4 and 20.8.5 from clause 23.</p>
+
+
+<note>
+2009-10 Santa Cruz:
+</note>
+
+<blockquote>
+NAD Editorial.  Addressed by
+<a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2009/n2982.pdf">N2982</a>.
+</blockquote>
+
+</discussion>
+
+<resolution>
+</resolution>
+
+</issue>

@@ -1,0 +1,108 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="1011" status="WP">
+<title><tt>next/prev</tt> wrong iterator type</title>
+<section><sref ref="[iterator.operations]"/></section>
+<submitter>Alisdair Meredith</submitter>
+<date>11 Mar 2009</date>
+
+<discussion>
+
+<p><b>Addresses UK 271</b></p>
+
+<p>
+<tt>next/prev</tt> return an incremented iterator without changing the value of
+the original iterator. However, even this may invalidate an
+<tt>InputIterator</tt>. A <tt>ForwardIterator</tt> is required to guarantee the
+'multipass' property.
+</p>
+
+<note>
+Batavia (2009-05):
+</note>
+<blockquote>
+We agree with the proposed resolution.
+Move to Tentatively Ready.
+</blockquote>
+
+<note>
+2009-07 Frankfurt
+</note>
+
+<blockquote>
+Moved from Tentatively Ready to Open only because the wording needs to be
+tweaked for concepts removal.
+</blockquote>
+
+<note>
+2009-10-14 Daniel provided de-conceptified wording.
+</note>
+
+<note>
+2009-10 Santa Cruz:
+</note>
+
+<blockquote>
+Moved to Ready.
+</blockquote>
+
+</discussion>
+
+<resolution>
+<!-- 
+<p>
+Change <sref ref="[iterator.synopsis]"/>:
+</p>
+
+<blockquote><pre>
+template &lt;<del>InputIterator</del> <ins>ForwardIterator</ins> Iter&gt; 
+  Iter next(Iter x, 
+    Iter::difference_type n = 1);
+</pre></blockquote>
+
+<p>
+Change <sref ref="[iterator.operations]"/>, p6:
+</p>
+
+<blockquote><pre>
+template &lt;<del>InputIterator</del> <ins>ForwardIterator</ins> Iter&gt; 
+  Iter next(Iter x, 
+    Iter::difference_type n = 1);
+</pre></blockquote>
+ -->
+
+<ol>
+<li>
+<p>
+Change header <tt>&lt;iterator&gt;</tt> synopsis <sref
+ref="[iterator.synopsis]"/> as indicated:
+</p>
+
+<blockquote><pre>
+// 24.4.4, iterator operations:
+...
+template &lt;class <del>Input</del><ins>Forward</ins>Iterator&gt;
+  <del>Input</del><ins>Forward</ins>Iterator
+  next(<del>Input</del><ins>Forward</ins>Iterator x, typename std::iterator_traits&lt;<del>Input</del><ins>Forward</ins>Iterator&gt;::difference_type n = 1);
+</pre></blockquote>
+</li>
+
+<li>
+<p>
+Change <sref ref="[iterator.operations]"/> before p.6 as indicated:
+</p>
+
+<blockquote><pre>
+template &lt;class <del>Input</del><ins>Forward</ins>Iterator>
+  <del>Input</del><ins>Forward</ins>Iterator
+  next(<del>Input</del><ins>Forward</ins>Iterator x, typename std::iterator_traits&lt;<del>Input</del><ins>Forward</ins>Iterator&gt;::difference_type n = 1);
+</pre></blockquote>
+</li>
+</ol>
+
+</resolution>
+
+</issue>

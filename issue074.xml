@@ -1,0 +1,30 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="74" status="TC1">
+<title>Garbled text for <tt>codecvt::do_max_length</tt></title>
+<section><sref ref="[locale.codecvt]"/></section>
+<submitter>Matt Austern</submitter>
+<date>8 Sep 1998</date>
+
+<discussion>
+<p>The text of <tt>codecvt::do_max_length</tt>'s &quot;Returns&quot;
+clause (22.2.1.5.2, paragraph 11) is garbled. It has unbalanced
+parentheses and a spurious <b>n</b>.</p>
+</discussion>
+
+<resolution>
+<p>Replace <sref ref="[locale.codecvt.virtuals]"/> paragraph 11 with the
+following:</p>
+
+<blockquote><p>
+  <b>Returns</b>: The maximum value that
+  <tt>do_length(state, from, from_end, 1)</tt> can return for any
+  valid range <tt>[from, from_end)</tt> and <tt>stateT</tt> value
+  <tt>state</tt>. The specialization <tt>codecvt&lt;char, char,
+  mbstate_t&gt;::do_max_length()</tt> returns 1.
+</p></blockquote>
+</resolution>
+</issue>

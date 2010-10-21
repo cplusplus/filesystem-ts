@@ -1,0 +1,40 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="481" status="NAD">
+<title>unique's effects on the range [result, last)</title>
+<section><sref ref="[alg.unique]"/></section>
+<submitter>Andrew Koenig</submitter>
+<date>30 Aug 2004</date>
+
+<discussion>
+<p>
+The standard says that unique(first, last) "eliminates all but the
+first element from every consecutive group of equal elements" in
+[first, last) and returns "the end of the resulting range".  So a
+postcondition is that [first, result) is the same as the old [first,
+last) except that duplicates have been eliminated.
+</p>
+
+<p>What postconditions are there on the range [result, last)?  One
+  might argue that the standard says nothing about those values, so
+  they can be anything.  One might also argue that the standard
+  doesn't permit those values to be changed, so they must not be.
+  Should the standard say something explicit one way or the other?</p>
+
+</discussion>
+
+<resolution>
+<p>
+</p>
+</resolution>
+
+<rationale>
+<p>We don't want to make many guarantees about what's in [result,
+end). Maybe we aren't being quite explicit enough about not being
+explicit, but it's hard to think that's a major problem.</p>
+</rationale>
+
+</issue>

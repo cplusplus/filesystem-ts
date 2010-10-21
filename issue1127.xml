@@ -1,0 +1,51 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="1127" status="NAD Concepts">
+<title>rvalue references and iterator traits</title>
+<section><sref ref="[iterator.traits]"/></section>
+<submitter>Alisdair Meredith</submitter>
+<date>28 May 2009</date>
+
+<discussion>
+<p>
+The deprecated support for <tt>iterator_traits</tt> and legacy (unconstrained)
+iterators features the (exposition only) concept:
+</p>
+
+<blockquote><pre>
+concept IsReference&lt;typename T&gt; { } // exposition only
+template&lt;typename T&gt; concept_map IsReference&lt;T&amp;&gt; { }
+</pre></blockquote>
+<p>
+Now this looks exactly like the <tt>LvalueReference</tt> concept recently added to
+clause 20, so I wonder if we should use that instead?
+Then I consider the lack of rvalue-reference support, which means that
+<tt>move_iterator</tt> would always flag as merely supporting the <tt>input_iterator_tag</tt>
+category.  This suggests we retain the exposition concept, but add a second
+concept_map to support rvalue references.
+</p>
+<p>
+I would suggest adding the extra concept_map is the right way forward, but
+still wonder if the two exposition-only concepts in this clause might be
+worth promoting to clause 20.  That question might better be answered with a
+fuller investigation of type_trait/concept unification though.
+</p>
+</discussion>
+
+<resolution>
+<p>
+In Iterator traits <sref ref="[iterator.traits]"/> para 4 add:
+</p>
+
+<blockquote><pre>
+concept IsReference&lt;typename T&gt; { } // exposition only
+template&lt;typename T&gt; concept_map IsReference&lt;T&amp;&gt; { }
+<ins>template&lt;typename T&gt; concept_map IsReference&lt;T&amp;&amp;&gt; { }</ins>
+</pre></blockquote>
+
+</resolution>
+
+</issue>

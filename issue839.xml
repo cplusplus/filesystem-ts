@@ -1,0 +1,300 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="839" status="NAD Future">
+<title>Maps and sets missing splice operation</title>
+<section><sref ref="[associative]"/>, <sref ref="[unord]"/></section>
+<submitter>Alan Talbot</submitter>
+<date>18 May 2008</date>
+
+<discussion>
+<p>
+Splice is a very useful feature of <tt>list</tt>. This functionality is also very
+useful for any other node based container, and I frequently wish it were
+available for maps and sets. It seems like an omission that these
+containers lack this capability. Although the complexity for a splice is
+the same as for an insert, the actual time can be much less since the
+objects need not be reallocated and copied. When the element objects are
+heavy and the compare operations are fast (say a <tt>map&lt;int, huge_thingy&gt;</tt>)
+this can be a big win.
+</p>
+
+<p>
+<b>Suggested resolution:</b>
+</p>
+
+<p>
+Add the following signatures to map, set, multimap, multiset, and the unordered associative containers:
+</p>
+<blockquote><pre> 
+void splice(list&lt;T,Allocator&gt;&amp;&amp; x);
+void splice(list&lt;T,Allocator&gt;&amp;&amp; x, const_iterator i);
+void splice(list&lt;T,Allocator&gt;&amp;&amp; x, const_iterator first, const_iterator last);
+</pre></blockquote>
+
+<p>
+Hint versions of these are also useful to the extent hint is useful.
+(I'm looking for guidance about whether hints are in fact useful.)
+</p>
+ 
+<blockquote><pre> 
+void splice(const_iterator position, list&lt;T,Allocator&gt;&amp;&amp; x);
+void splice(const_iterator position, list&lt;T,Allocator&gt;&amp;&amp; x, const_iterator i);
+void splice(const_iterator position, list&lt;T,Allocator&gt;&amp;&amp; x, const_iterator first, const_iterator last);
+</pre></blockquote>
+
+<note>
+Sophia Antipolis:
+</note>
+
+<blockquote>
+<p>
+Don't try to <tt>splice "list"</tt> into the other containers, it should be container-type.
+</p>
+<p>
+<tt>forward_list</tt> already has <tt>splice_after</tt>.
+</p>
+<p>
+Would "<tt>splice</tt>" make sense for an <tt>unordered_map</tt>?
+</p>
+<p>
+Jens, Robert: "<tt>splice</tt>" is not the right term, it implies maintaining ordering in <tt>list</tt>s.
+</p>
+<p>
+Howard: <tt>adopt</tt>?
+</p>
+<p>
+Jens: <tt>absorb</tt>?
+</p>
+<p>
+Alan: <tt>subsume</tt>?
+</p>
+<p>
+Robert: <tt>recycle</tt>?
+</p>
+<p>
+Howard: <tt>transfer</tt>? (but no direction)
+</p>
+<p>
+Jens: <tt>transfer_from</tt>. No.
+</p>
+<p>
+Alisdair: Can we give a nothrow guarantee? If your <tt>compare()</tt> and <tt>hash()</tt> doesn't throw, yes.
+</p>
+<p>
+Daniel: For <tt>unordered_map</tt>, we can't guarantee nothrow.
+</p>
+</blockquote>
+
+<note>
+San Francisco:
+</note>
+
+<blockquote>
+<p>
+Martin: this would possibly outlaw an implementation technique that is
+currently in use; caching nodes in containers.
+</p>
+<p>
+Alan: if you cache in the allocator, rather than the individual
+container, this proposal doesn't interfere with that.
+</p>
+<p>
+Martin: I'm not opposed to this, but I'd like to see an implementation
+that demonstrates that it works.
+</p>
+</blockquote>
+
+<note>
+2009-07 Frankfurt:
+</note>
+
+<blockquote>
+NAD Future.
+</blockquote>
+
+<note>
+2009-09-19 Howard adds:
+</note>
+
+<blockquote>
+<p>
+I'm not disagreeing with the NAD Future resolution.  But when the future gets
+here, here is a possibility worth exploring:
+</p>
+
+<blockquote>
+<p>
+Add to the "unique" associative containers:
+</p>
+
+<blockquote><pre>
+typedef <i>details</i>      node_ptr;
+
+node_ptr             remove(const_iterator p);
+pair&lt;iterator, bool&gt; insert(node_ptr&amp;&amp; nd);
+iterator             insert(const_iterator p, node_ptr&amp;&amp; nd);
+</pre></blockquote>
+
+<p>
+And add to the "multi" associative containers:
+</p>
+
+<blockquote><pre>
+typedef <i>details</i> node_ptr;
+
+node_ptr remove(const_iterator p);
+iterator insert(node_ptr&amp;&amp; nd);
+iterator insert(const_iterator p, node_ptr&amp;&amp; nd);
+</pre></blockquote>
+
+<p>
+<tt>Container::node_ptr</tt> is a smart pointer much like <tt>unique_ptr</tt>.
+It owns a node obtained from the container it was removed from.  It maintains a
+reference to the allocator in the container so that it can properly deallocate
+the node if asked to, even if the allocator is stateful.  This being said, the
+<tt>node_ptr</tt> can not outlive the container for this reason.
+</p>
+
+<p>
+The <tt>node_ptr</tt> offers "<tt>const</tt>-free" access to the node's
+<tt>value_type</tt>.
+</p>
+
+<p>
+With this interface, clients have a great deal of flexibility:
+</p>
+
+<ul>
+<li>
+A client can remove a node from one container, and insert it into another
+(without any heap allocation).  This is the splice functionality this issue
+asks for.
+</li>
+<li>
+A client can remove a node from a container, change its key or value, and insert
+it back into the same container, or another container, all without the cost of
+allocating a node.
+</li>
+<li>
+If the Compare function is nothrow (which is very common), then this functionality
+is nothrow unless modifying the value throws.  And if this does throw, it does
+so outside of the containers involved.
+</li>
+<li>
+If the Compare function does throw, the <tt>insert</tt> function will have the
+argument <tt>nd</tt> retain ownership of the node.
+</li>
+<li>
+The <tt>node_ptr</tt> should be independent of the <tt>Compare</tt> parameter
+so that a node can be transferred from <tt>set&lt;T, C1, A&gt;</tt>
+to <tt>set&lt;T, C2, A&gt;</tt> (for example).
+</li>
+</ul>
+
+<p>
+Here is how the customer might use this functionality:
+</p>
+
+<ul>
+<li>
+<p>
+Splice a node from one container to another:
+</p>
+<blockquote><pre>
+m2.insert(m1.remove(i));
+</pre></blockquote>
+</li>
+
+<li>
+<p>
+Change the "key" in a <tt>std::map</tt> without the cost of node reallocation:
+</p>
+<blockquote><pre>
+auto p = m.remove(i);
+p->first = new_key;
+m.insert(std::move(p));
+</pre></blockquote>
+</li>
+
+<li>
+<p>
+Change the "value" in a <tt>std::set</tt> without the cost of node reallocation:
+</p>
+<blockquote><pre>
+auto p = s.remove(i);
+*p = new_value;
+s.insert(std::move(p));
+</pre></blockquote>
+</li>
+
+<li>
+<p>
+Move a move-only or heavy object out of an associative container (as opposed to
+the proposal in <iref ref="1041"/>):
+</p>
+<blockquote><pre>
+MoveOnly x = std::move(*s.remove(i));
+</pre></blockquote>
+<ol>
+<li>
+<tt>remove(i)</tt> transfers ownership of the node from the set to a temporary
+<tt>node_ptr</tt>.
+</li>
+<li>
+The <tt>node_ptr</tt> is dereferenced, and that non-const reference is sent to
+<tt>move</tt> to cast it to an rvalue.
+</li>
+<li>
+The rvalue <tt>MoveOnly</tt> is move constructed into <tt>x</tt> from
+the <tt>node_ptr</tt>.
+</li>
+<li>
+<tt>~node_ptr()</tt> destructs the moved-from <tt>MoveOnly</tt> and deallocates
+the node.
+</li>
+</ol>
+
+<p>
+Contrast this with the <iref ref="1041"/> solution:
+</p>
+<blockquote><pre>
+MoveOnly x = std::move(s.extract(i).first);
+</pre></blockquote>
+
+<p>
+The former requires one move construction for <tt>x</tt> while the latter
+requires two (one into the <tt>pair</tt> and then one into <tt>x</tt>).  Either
+of these constructions can throw (say if there is only a copy constructor for
+<tt>x</tt>).  With the former, the point of throw is outside of the container
+<tt>s</tt>, after the element has been removed from the container.  With the latter,
+one throwing construction takes place prior to the removal of the element, and
+the second takes place after the element is removed.
+</p>
+
+</li>
+</ul>
+
+<p>
+The "node insertion" API maintains the API associated with inserting <tt>value_type</tt>s
+so the customer can use familiar techniques for getting an iterator to the 
+inserted node, or finding out whether it was inserted or not for the "unique"
+containers.
+</p>
+
+<p>
+Lightly prototyped.  No implementation problems.  Appears to work great
+for the client.
+</p>
+
+</blockquote>
+</blockquote>
+
+</discussion>
+
+<resolution>
+</resolution>
+
+</issue>

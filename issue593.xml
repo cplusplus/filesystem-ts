@@ -1,0 +1,46 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="593" status="CD1">
+<title>__STDC_CONSTANT_MACROS</title>
+<section><sref ref="[cstdint]"/><sref ref="[tr.c99.cstdint]"/></section>
+<submitter>Walter Brown</submitter>
+<date>28 Aug 2006</date>
+
+<discussion>
+<p>
+Clause 18.3 of the current Working Paper (N2009) deals with the new C++ headers
+&lt;cstdint&gt; and &lt;stdint.h&gt;.  These are of course based on the C99 header
+&lt;stdint.h&gt;, and were part of TR1.
+</p>
+
+<p>
+Per 18.3.1/1, these headers define a number of macros and function macros. 
+While the WP does not mention __STDC_CONSTANT_MACROS in this context, C99
+footnotes do mention __STDC_CONSTANT_MACROS.  Further, 18.3.1/2 states that "The
+header defines all ... macros the same as C99 subclause 7.18."
+</p>
+
+<p>
+Therefore, if I wish to have the above-referenced macros and function macros
+defined, must I #define __STDC_CONSTANT_MACROS before I #include &lt;cstdint&gt;, or
+does the C++ header define these macros/function macros unconditionally?
+</p>
+</discussion>
+
+<resolution>
+<p>
+To put this issue to rest for C++0X, I propose the following addition to 
+18.3.1/2 of the Working Paper N2009:
+</p>
+
+<blockquote><p>
+[Note: The macros defined by &lt;cstdint&gt; are provided unconditionally: in
+particular, the symbols __STDC_LIMIT_MACROS and __STDC_CONSTANT_MACROS
+(mentioned in C99 footnotes 219, 220, and 222) play no role in C++. --end note]
+</p></blockquote>
+</resolution>
+
+</issue>

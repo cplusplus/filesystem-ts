@@ -1,0 +1,296 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="1182" status="WP">
+<title>Unfortunate hash dependencies</title>
+<section><sref ref="[unord.hash]"/></section>
+<submitter>Alisdair Meredith</submitter>
+<date>28 Jul 2009</date>
+
+<discussion>
+<p><b>Addresses UK 324</b></p>
+
+<p>
+The implied library dependencies created by spelling out all the <tt>hash</tt>
+template specializations in the <tt>&lt;functional&gt;</tt> synopsis are unfortunate. 
+The potential coupling is greatly reduced if the <tt>hash</tt> specialization is
+declared in the appropriate header for each library type, as it is much
+simpler to forward declare the primary template and provide a single
+specialization than it is to implement a <tt>hash</tt> function for a <tt>string</tt> or
+<tt>vector</tt> without providing a definition for the whole <tt>string/vector</tt>
+template in order to access the necessary bits.
+</p>
+
+<p>
+Note that the proposed resolution purely involves moving the
+declarations of a few specializations, it specifically does not make any
+changes to <sref ref="[unord.hash]"/>.
+</p>
+
+<note>
+2009-09-15 Daniel adds:
+</note>
+
+<blockquote>
+</blockquote>
+<p>
+I suggest to add to the current existing
+proposed resolution the following items.
+</p>
+
+<ul>
+<li>
+<p>
+Add to the very first strike-list of the currently suggested resolution
+the following lines:
+</p>
+
+<blockquote><pre>
+<del>template &lt;&gt; struct hash&lt;std::error_code&gt;;</del>
+<del>template &lt;&gt; struct hash&lt;std::thread::id&gt;;</del>
+</pre></blockquote>
+</li>
+
+<li>
+<p>
+Add the following declarations to <sref ref="[syserr]"/>, header
+<tt>&lt;system_error&gt;</tt> synopsis after // 19.5.4:
+</p>
+
+<blockquote><pre>
+<ins>
+// 19.5.x hash support
+template &lt;class T&gt; struct hash;
+template &lt;&gt; struct hash&lt;error_code&gt;;
+</ins>
+</pre></blockquote>
+</li>
+
+<li>
+<p>
+Add a new clause 19.5.X (probably after 19.5.4):
+</p>
+
+<blockquote>
+<p><ins>
+19.5.X Hash support [syserr.hash]
+</ins></p>
+
+<pre><ins>
+template &lt;&gt; struct hash&lt;error_code&gt;;
+</ins></pre>
+
+<blockquote><ins>
+An explicit specialization of the class template hash (<sref ref="[unord.hash]"/>)
+shall be provided
+for the type <tt>error_code</tt> suitable for using this type as key in
+unordered associative
+containers (<sref ref="[unord]"/>).
+</ins></blockquote>
+</blockquote>
+</li>
+
+<li>
+<p>
+Add the following declarations to <sref ref="[thread.thread.id]"/> just after the
+declaration of
+the comparison operators:
+</p>
+
+<blockquote><pre>
+<ins>
+template &lt;class T&gt; struct hash;
+template &lt;&gt; struct hash&lt;thread::id&gt;;
+</ins></pre></blockquote>
+</li>
+
+<li>
+<p>
+Add a new paragraph at the end of <sref ref="[thread.thread.id]"/>:
+</p>
+
+<blockquote>
+<pre><ins>
+template &lt;&gt; struct hash&lt;thread::id&gt;;
+</ins></pre>
+
+<blockquote><ins>
+An explicit specialization of the class template hash (<sref ref="[unord.hash]"/>)
+shall be provided
+for the type <tt>thread::id</tt> suitable for using this type as key in
+unordered associative
+containers (<sref ref="[unord]"/>).
+</ins></blockquote>
+</blockquote>
+</li>
+
+<li>
+Issue <iref ref="889"/> independently suggests moving the specialization
+<tt>std::hash&lt;std::thread::id&gt;</tt> to header <tt>&lt;thread&gt;</tt>.
+</li>
+</ul>
+
+<note>
+2009-11-13 Alisdair adopts Daniel's suggestion and the extended note from
+<iref ref="889"/>.
+</note>
+
+<note>
+2010-01-31 Alisdair: related to <iref ref="1245"/> and <iref ref="978"/>.
+</note>
+
+<note>
+2010-02-07 Proposed wording updated by Beman, Daniel, Alisdair and Ganesh.
+</note>
+
+<note>
+2010-02-09 Moved to Tentatively Ready after 5 positive votes on c++std-lib.
+</note>
+
+</discussion>
+
+<resolution>
+<p><i>Strike the following specializations declared in the <tt>&lt;functional&gt;</tt> 
+synopsis p2 <sref ref="[function.objects]"/> </i> </p>
+<blockquote>
+  <pre><del>template &lt;&gt; struct hash&lt;std::string&gt;;</del>
+<del>template &lt;&gt; struct hash&lt;std::u16string&gt;;</del>
+<del>template &lt;&gt; struct hash&lt;std::u32string&gt;;</del>
+<del>template &lt;&gt; struct hash&lt;std::wstring&gt;;</del>
+
+<del>template &lt;&gt; struct hash&lt;std::error_code&gt;;</del>
+<del>template &lt;&gt; struct hash&lt;std::thread::id&gt;;</del>
+<del>template &lt;class Allocator&gt; struct hash&lt;std::vector&lt;bool, Allocator&gt; &gt;;</del>
+<del>template &lt;std::size_t N&gt; struct hash&lt;std::bitset&lt;N&gt; &gt;;</del></pre>
+</blockquote>
+<p><i>Add the following at the end of <sref ref="[unord.hash]"/>:</i></p>
+<blockquote>
+  <pre><ins>template &lt;&gt; struct hash&lt;bool&gt;;
+template &lt;&gt; struct hash&lt;char&gt;;
+template &lt;&gt; struct hash&lt;signed char&gt;;
+template &lt;&gt; struct hash&lt;unsigned char&gt;;
+template &lt;&gt; struct hash&lt;char16_t&gt;;
+template &lt;&gt; struct hash&lt;char32_t&gt;;
+template &lt;&gt; struct hash&lt;wchar_t&gt;;
+template &lt;&gt; struct hash&lt;short&gt;;
+template &lt;&gt; struct hash&lt;unsigned short&gt;;
+template &lt;&gt; struct hash&lt;int&gt;;
+template &lt;&gt; struct hash&lt;unsigned int&gt;;
+template &lt;&gt; struct hash&lt;long&gt;;
+template &lt;&gt; struct hash&lt;long long&gt;;
+template &lt;&gt; struct hash&lt;unsigned long&gt;;
+template &lt;&gt; struct hash&lt;unsigned long long&gt;;
+template &lt;&gt; struct hash&lt;float&gt;;
+template &lt;&gt; struct hash&lt;double&gt;;
+template &lt;&gt; struct hash&lt;long double&gt;;
+template&lt;class T&gt; struct hash&lt;T*&gt;;</ins></pre>
+  <p><ins>
+  Specializations meeting the requirements of class template <tt>hash</tt> <sref ref="[unord.hash]"/>.</ins></p>
+</blockquote>
+<p><i>Add the following declarations to <sref ref="[syserr]"/>, header <tt>&lt;system_error&gt;</tt> 
+synopsis after // 19.5.4: </i> </p>
+<blockquote>
+  <pre><ins>// [syserr.hash] hash support
+template &lt;class T&gt; struct hash;
+template &lt;&gt; struct hash&lt;error_code&gt;;</ins></pre>
+</blockquote>
+<p><i>Add a new clause 19.5.X (probably after 19.5.4): </i> </p>
+<blockquote>
+  <p><ins>19.5.X Hash support [syserr.hash] </ins></p>
+  <pre><ins>template &lt;&gt; struct hash&lt;error_code&gt;;</ins></pre>
+    <p><ins>Specialization meeting the requirements of class template <tt>hash</tt> <sref ref="[unord.hash]"/>.</ins></p>
+</blockquote>
+<p><i>Add the following declarations to the synopsis of <tt>&lt;string&gt;</tt> in <sref ref="[string.classes]"/>
+</i>
+</p>
+<blockquote>
+  <pre><ins>// [basic.string.hash] hash support
+template &lt;class T&gt; struct hash;
+template &lt;&gt; struct hash&lt;string&gt;;
+template &lt;&gt; struct hash&lt;u16string&gt;;
+template &lt;&gt; struct hash&lt;u32string&gt;;
+template &lt;&gt; struct hash&lt;wstring&gt;;</ins></pre>
+</blockquote>
+<p><i>Add a new clause 21.4.X </i> </p>
+<blockquote>
+  <p><ins>21.4.X Hash support [basic.string.hash]></ins></p>
+  <pre><ins>template &lt;&gt; struct hash&lt;string&gt;;
+template &lt;&gt; struct hash&lt;u16string&gt;;
+template &lt;&gt; struct hash&lt;u32string&gt;;
+template &lt;&gt; struct hash&lt;wstring&gt;;</ins></pre>
+    <p><ins>Specializations meeting the requirements of class template <tt>hash</tt> <sref ref="[unord.hash]"/>.</ins></p>
+</blockquote>
+<p><i>Add the following declarations to the synopsis of <tt>&lt;vector&gt;</tt> in
+<sref ref="[sequences]"/></i> </p>
+<blockquote>
+  <pre><ins>// 21.4.x hash support
+template &lt;class T&gt; struct hash;
+template &lt;class Allocator&gt; struct hash&lt;vector&lt;bool, Allocator&gt;&gt;;</ins></pre>
+</blockquote>
+<p><i>Add a new paragraph to the end of <sref ref="[vector.bool]"/> </i> </p>
+<blockquote>
+  <pre><ins>template &lt;class Allocator&gt; struct hash&lt;vector&lt;bool, Allocator&gt;&gt;;</ins></pre>
+    <p><ins>Specialization meeting the requirements of class template <tt>hash</tt> <sref ref="[unord.hash]"/>.</ins></p>
+</blockquote>
+<p><i>Add the following declarations to the synopsis of <tt>&lt;bitset&gt;</tt> in <sref ref="[template.bitset]"/> </i> </p>
+<blockquote>
+  <pre><ins>// [bitset.hash] hash support
+template &lt;class T&gt; struct hash;
+template &lt;size_t N&gt; struct hash&lt;bitset&lt;N&gt; &gt;;</ins></pre>
+</blockquote>
+<p><i>Add a new subclause 20.3.7.X [bitset.hash] </i> </p>
+<blockquote>
+  <p><ins>20.3.7.X bitset hash support [bitset.hash]</ins></p>
+  <pre><ins>template &lt;size_t N&gt; struct hash&lt;bitset&lt;N&gt; &gt;;</ins></pre>
+    <p><ins>Specialization meeting the requirements of class template <tt>hash</tt> <sref ref="[unord.hash]"/>.</ins></p>
+</blockquote>
+<p><i>Add the following declarations to <sref ref="[thread.thread.id]"/> synopsis just after the 
+declaration of the comparison operators: </i> </p>
+<blockquote>
+  <pre><ins>template &lt;class T&gt; struct hash;
+template &lt;&gt; struct hash&lt;thread::id&gt;;</ins></pre>
+</blockquote>
+<p><i>Add a new paragraph at the end of <sref ref="[thread.thread.id]"/>: </i> </p>
+<blockquote>
+  <pre><ins>template &lt;&gt; struct hash&lt;thread::id&gt;;</ins></pre>
+  <p><ins>Specialization meeting the requirements of class template <tt>hash</tt> <sref ref="[unord.hash]"/>.</ins></p>
+</blockquote>
+
+<p><i>Change Header &lt;typeindex&gt; synopsis <sref ref="[type.index.synopsis]"/> as 
+indicated:</i></p>
+<blockquote>
+<pre>namespace std {
+class type_index;
+  <ins>// [type.index.hash] hash support</ins>
+  template &lt;class T&gt; struct hash;
+  template&lt;&gt; struct hash&lt;type_index&gt;<ins>;</ins> <del> : public unary_function&lt;type_index, size_t&gt; {
+    size_t operator()(type_index index) const;
+  }</del>
+}</pre>
+</blockquote>
+
+<p><i>Change Template specialization hash&lt;type_index&gt; <sref ref="[type.index.templ]"/>
+  as indicated:</i></p>
+
+<blockquote>
+
+  <p>20.11.4 <del>Template specialization hash&lt;type_index&gt; [type.index.templ]</del>
+  <ins>Hash support [type.index.hash]</ins></p>
+
+  <pre><del>size_t operator()(type_index index) const;</del></pre>
+  <blockquote>
+    <p><del><i>Returns:</i> <tt>index.hash_code()</tt></del></p>
+  </blockquote>
+  
+  <pre><ins>template&lt;&gt; struct hash&lt;type_index&gt;;</ins></pre>
+  <p><ins>Specialization meeting the requirements of class template <tt>hash</tt> [unord.hash]. 
+  For an object <tt>index</tt> of type <tt>type_index</tt>, <tt>hash&lt;type_index&gt;()(index)</tt> 
+  shall evaluate to the same value as <tt>index.hash_code()</tt>.</ins></p>
+  
+</blockquote>
+
+</resolution>
+
+</issue>

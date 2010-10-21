@@ -1,0 +1,140 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="1171" status="Open">
+<title>duration types should be literal</title>
+<section><sref ref="[time.duration]"/></section>
+<submitter>Alisdair Meredith</submitter>
+<date>6 Jul 2009</date>
+
+<discussion>
+<p>
+The <tt>duration</tt> types in <sref ref="[time.duration]"/> are exactly the sort of type
+that should be "literal types" in the new standard.  Likewise,
+arithmetic operations on <tt>duration</tt>s should be declared <tt>constexpr</tt>.
+</p>
+
+<note>
+2009-09-21 Daniel adds:
+</note>
+
+<blockquote>
+An alternative (and possibly preferable solution for potentially
+heap-allocating big_int representation types) would be to ask the core
+language to allow references to <tt>const</tt> literal types as feasible
+arguments for <tt>constexpr</tt> functions.
+</blockquote>
+
+<note>
+2009-10-30 Alisdair adds:
+</note>
+
+<blockquote>
+<p>
+I suggest this issue moves from New to Open.
+</p>
+
+<p>
+Half of this issue was dealt with in paper
+<a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2009/n2994.html">n2994</a>
+on constexpr constructors.
+</p>
+
+<p>
+The other half (duration arithmetic) is on hold pending Core support for
+<tt>const &amp;</tt> in <tt>constexpr</tt> functions.
+</p>
+
+</blockquote>
+
+<note>
+2010-03-15 Alisdair updated wording to be consistent with
+<a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2010/n3078.html">N3078</a>.
+</note>
+
+</discussion>
+
+<resolution>
+<p>
+Add <tt>constexpr</tt> to declaration of following functions and constructors:
+</p>
+<p>
+Modify p1 <sref ref="[time]"/>, and the prototype definitions in <sref
+ref="[time.duration.nonmember]"/>, <sref ref="[time.duration.comparisons]"/>,
+and <sref ref="[time.duration.cast]"/>:
+</p>
+
+<blockquote>
+<p>
+<b>Header <tt>&lt;chrono&gt;</tt> synopsis</b>
+</p>
+
+<pre>
+<i>// duration arithmetic</i>
+template &lt;class Rep1, class Period1, class Rep2, class Period2&gt;
+   typename common_type&lt;duration&lt;Rep1, Period1&gt;, duration&lt;Rep2, Period2&gt;&gt;::type
+   <ins>constexpr</ins> operator+(const duration&lt;Rep1, Period1&gt;&amp; lhs, const duration&lt;Rep2, Period2&gt;&amp; rhs);
+template &lt;class Rep1, class Period1, class Rep2, class Period2&gt;
+   typename common_type&lt;duration&lt;Rep1, Period1&gt;, duration&lt;Rep2, Period2&gt;&gt;::type
+   <ins>constexpr</ins> operator-(const duration&lt;Rep1, Period1&gt;&amp; lhs, const duration&lt;Rep2, Period2&gt;&amp; rhs);
+template &lt;class Rep1, class Period, class Rep2&gt;
+   duration&lt;typename common_type&lt;Rep1, Rep2&gt;::type, Period&gt;
+   <ins>constexpr</ins> operator*(const duration&lt;Rep1, Period&gt;&amp; d, const Rep2&amp; s);
+template &lt;class Rep1, class Period, class Rep2&gt;
+   duration&lt;typename common_type&lt;Rep1, Rep2&gt;::type, Period&gt;
+   <ins>constexpr</ins> operator*(const Rep1&amp; s, const duration&lt;Rep2, Period&gt;&amp; d);
+template &lt;class Rep1, class Period, class Rep2&gt;
+   duration&lt;typename common_type&lt;Rep1, Rep2&gt;::type, Period&gt;
+   <ins>constexpr</ins> operator/(const duration&lt;Rep1, Period&gt;&amp; d, const Rep2&amp; s);
+template &lt;class Rep1, class Period1, class Rep2, class Period2&gt;
+   typename common_type&lt;Rep1, Rep2&gt;::type
+   <ins>constexpr</ins> operator/(const duration&lt;Rep1, Period1&gt;&amp; lhs, const duration&lt;Rep2, Period2&gt;&amp; rhs);
+
+<i>// duration comparisons</i>
+template &lt;class Rep1, class Period1, class Rep2, class Period2&gt;
+   <ins>constexpr</ins> bool operator==(const duration&lt;Rep1, Period1&gt;&amp; lhs, const duration&lt;Rep2, Period2&gt;&amp; rhs);
+template &lt;class Rep1, class Period1, class Rep2, class Period2&gt;
+   <ins>constexpr</ins> bool operator!=(const duration&lt;Rep1, Period1&gt;&amp; lhs, const duration&lt;Rep2, Period2&gt;&amp; rhs);
+template &lt;class Rep1, class Period1, class Rep2, class Period2&gt;
+   <ins>constexpr</ins> bool operator&lt; (const duration&lt;Rep1, Period1&gt;&amp; lhs, const duration&lt;Rep2, Period2&gt;&amp; rhs);
+template &lt;class Rep1, class Period1, class Rep2, class Period2&gt;
+   <ins>constexpr</ins> bool operator&lt;=(const duration&lt;Rep1, Period1&gt;&amp; lhs, const duration&lt;Rep2, Period2&gt;&amp; rhs);
+template &lt;class Rep1, class Period1, class Rep2, class Period2&gt;
+   <ins>constexpr</ins> bool operator&gt; (const duration&lt;Rep1, Period1&gt;&amp; lhs, const duration&lt;Rep2, Period2&gt;&amp; rhs);
+template &lt;class Rep1, class Period1, class Rep2, class Period2&gt;
+   <ins>constexpr</ins> bool operator&gt;=(const  duration&lt;Rep1, Period1&gt;&amp; lhs, const duration&lt;Rep2, Period2&gt;&amp; rhs);
+
+<i>// duration_cast</i>
+template &lt;class ToDuration, class Rep, class Period&gt;
+   <ins>constexpr</ins> ToDuration duration_cast(const duration&lt;Rep, Period&gt;&amp; d);
+</pre>
+
+</blockquote>
+
+<p>
+Change <sref ref="[time.duration]"/>:
+</p>
+
+<blockquote>
+
+<pre>
+template &lt;class Rep, class Period = ratio&lt;1&gt;&gt;
+class duration {
+  ...
+public:
+  ...
+  <ins>constexpr</ins> duration(const duration&amp;) = default;
+  ...
+
+};
+</pre>
+</blockquote>
+<note>
+Note - this edit already seems assumed by definition of the duration static members <tt>zero/min/max</tt>.
+They cannot meaningfully be <tt>constexpr</tt> without this change.
+</note>
+</resolution>
+
+</issue>

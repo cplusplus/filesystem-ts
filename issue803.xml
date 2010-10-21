@@ -1,0 +1,258 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="803" status="NAD Editorial">
+<title>Simplification of <tt>seed_seq::seq_seq</tt></title>
+<section><sref ref="[rand.util.seedseq]"/></section>
+<submitter>Charles Karney</submitter>
+<date>22 Feb 2008</date>
+
+<discussion>
+<p>
+<tt>seed_seq(InputIterator begin, InputIterator end);</tt> constructs a <tt>seed_seq</tt>
+object repacking the bits of supplied sequence <tt>[begin, end)</tt> into a
+32-bit vector.
+</p>
+<p>
+This repacking triggers several problems:
+</p>
+<ol>
+<li>
+Distinctness of the output of <tt>seed_seq::generate</tt> required the
+introduction of the initial "<tt>if (w &lt; 32) v.push_back(n);</tt>"  (Otherwise
+the unsigned short vectors [1, 0] and [1] generate the same sequence.)
+</li>
+<li>
+Portability demanded the introduction of the template parameter <tt>u</tt>.
+(Otherwise some sequences could not be obtained on computers where no
+integer types are exactly 32-bits wide.)
+</li>
+<li>
+The description and algorithm have become unduly complicated.
+</li>
+</ol>
+<p>
+I propose simplifying this <tt>seed_seq</tt> constructor to be "32-bit only".
+Despite it's being simpler, there is NO loss of functionality (see
+below).
+</p>
+<p>
+Here's how the description would read
+</p>
+<blockquote>
+<p>
+<sref ref="[rand.util.seedseq]"/> Class <tt>seed_seq</tt>
+</p>
+
+<blockquote>
+<pre>
+template&lt;class InputIterator&gt;
+  seed_seq(InputIterator begin, InputIterator end);
+</pre>
+<blockquote>
+<p>
+5 <i>Requires:</i> NO CHANGE
+</p>
+<p>
+6 <i>Effects:</i> Constructs a <tt>seed_seq</tt> object by
+</p>
+<blockquote>
+<pre>
+for (InputIterator s = begin; s != end; ++s)
+   v.push_back((*s) mod 2^32);
+</pre>
+</blockquote>
+</blockquote>
+</blockquote>
+</blockquote>
+
+<p>
+Discussion:
+</p>
+<p>
+The chief virtues here are simplicity, portability, and generality.
+</p>
+<ul>
+<li>
+Simplicity -- compare the above specification with the
+<a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2007/n2461.pdf">n2461</a> proposal.
+</li>
+<li>
+Portability -- with <tt>iterator_traits&lt;InputIterator&gt;::value_type =
+uint_least32_t</tt> the user is guaranteed to get the same behavior across
+platforms.
+</li>
+<li>
+Generality -- any behavior that the
+<a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2007/n2461.pdf">n2461</a>
+proposal can achieve can be
+obtained with this simpler proposal (albeit with a shuffling of bits
+in the input sequence).
+</li>
+</ul>
+<p>
+Arguments (and counter-arguments) against making this change (and
+retaining the
+<a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2007/n2461.pdf">n2461</a>
+behavior) are:
+</p>
+<ul>
+<li>
+<p>
+The user can pass an array of <tt>unsigned char</tt> and <tt>seed_seq</tt> will nicely
+ repack it.
+</p>
+<p>
+ Response: So what?  Consider the seed string "ABC".  The
+ <a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2007/n2461.pdf">n2461</a>
+ proposal results in
+</p>
+<blockquote><pre>
+v = { 0x3, 0x434241 };
+</pre></blockquote>
+<p>
+while the simplified proposal yields
+</p>
+<blockquote><pre>
+v = { 0x41, 0x42, 0x43 };
+</pre></blockquote>
+<p>
+The results produced by <tt>seed_seq::generate</tt> with the two inputs are
+different but nevertheless equivalently "mixed up" and this remains
+true even if the seed string is long.
+</p>
+</li>
+<li>
+<p>
+With long strings (e.g., with bit-length comparable to the number of
+ bits in the state), <tt>v</tt> is longer (by a factor of 4) with the simplified
+ proposal and <tt>seed_seq::generate</tt> will be slower.
+</p>
+<p>
+Response: It's unlikely that the efficiency of <tt>seed_seq::generate</tt> will
+ be a big issue.  If it is, the user is free to repack the seed vector
+ before constructing <tt>seed_seq</tt>.
+</p>
+</li>
+<li>
+<p>
+A user can pass an array of 64-bit integers and all the bits will be
+ used.
+</p>
+<p>
+ Response: Indeed.  However, there are many instances in the 
+ <a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2007/n2461.pdf">n2461</a>
+ where integers are silently coerced to a narrower width and this
+ should just be a case of the user needing to read the documentation.
+ The user can of course get equivalent behavior by repacking his seed
+ into 32-bit pieces.  Furthermore, the unportability of the 
+ <a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2007/n2461.pdf">n2461</a>
+ proposal with
+</p>
+<blockquote><pre>
+unsigned long s[] = {1, 2, 3, 4};
+seed_seq q(s, s+4);
+</pre></blockquote>
+<p>
+ which typically results in <tt>v = {1, 2, 3, 4}</tt> on 32-bit machines and in
+<tt>v = {1, 0, 2, 0, 3, 0, 4, 0}</tt> on 64-bit machines is a major pitfall for
+ unsuspecting users.
+</p>
+</li>
+</ul>
+
+<p>
+Note: this proposal renders moot issues <iref ref="782"/> and <iref ref="800"/>.
+</p>
+
+<note>
+Bellevue:
+</note>
+
+<blockquote>
+Walter needs to ask Fermilab for guidance. Defer till tomorrow. Bill likes the proposed resolution.
+</blockquote>
+
+<note>
+Sophia Antipolis:
+</note>
+
+<blockquote>
+<p>
+Marc Paterno wants portable behavior between 32bit and 64bit machines;
+we've gone to significant trouble to support portability of engines and
+their values.
+</p>
+<p>
+Jens: the new algorithm looks perfectly portable
+</p>
+<p>
+Marc Paterno to review off-line.
+</p>
+<p>
+Modify the proposed resolution to read "Constructs a seed_seq object by the following algorithm ..."
+</p>
+<p>
+Disposition: move to review; unanimous consent.
+</p>
+<p>
+(moots <iref ref="782"/> and <iref ref="800"/>)
+</p>
+</blockquote>
+
+</discussion>
+
+<resolution>
+<p>
+Change <sref ref="[rand.util.seedseq]"/>:
+</p>
+
+<blockquote>
+<pre>
+template&lt;class InputIterator<del>, 
+  size_t u = numeric_limits&lt;iterator_traits&lt;InputIterator&gt;::value_type&gt;::digits</del>&gt;
+  seed_seq(InputIterator begin, InputIterator end);
+</pre>
+<blockquote>
+<p>
+-5- <i>Requires:</i> <tt>InputIterator</tt> shall satisfy the requirements of an input iterator (24.1.1)
+such that <tt>iterator_traits&lt;InputIterator&gt;::value_type</tt> shall denote an integral type.
+</p>
+<p>
+-6- Constructs a <tt>seed_seq</tt> object by <ins>the following algorithm</ins> <del>rearranging some or all of the bits of the supplied sequence
+<tt>[begin,end)</tt> of w-bit quantities into 32-bit units, as if by the following: </del>
+</p>
+<p>
+<del>First extract the rightmost <tt>u</tt> bits from each of the <tt>n = end
+- begin</tt> elements of the supplied sequence and concatenate all the
+extracted bits to initialize a single (possibly very large) unsigned
+binary number, <tt>b = &sum;<sup>n-1</sup><sub>i=0</sub> (begin[i] 
+mod 2<sup>u</sup>) &middot; 2<sup>w&middot;i</sup></tt> (in which the bits of each <tt>begin[i]</tt>
+are treated as denoting an unsigned quantity). Then carry out 
+the following algorithm:</del>
+</p>
+<blockquote><pre><del>
+v.clear(); 
+if ($w$ &lt; 32) 
+  v.push_back($n$); 
+for( ; $n$ &gt; 0; --$n$) 
+  v.push_back(b mod 2<sup>32</sup>), b /= 2<sup>32</sup>;
+</del></pre></blockquote>
+<blockquote>
+<pre><ins>
+for (InputIterator s = begin; s != end; ++s)
+   v.push_back((*s) mod 2<sup>32</sup>);
+</ins></pre>
+</blockquote>
+</blockquote>
+</blockquote>
+</resolution>
+
+<rationale>
+Addressed by
+<a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2009/n2836.pdf">N2836</a> "Wording Tweaks for Concept-enabled Random Number Generation in C++0X".
+</rationale>
+
+</issue>

@@ -1,0 +1,119 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="1319" status="New">
+<title>Containers should require an iterator that is at least a Forward Iterator</title>
+<section><sref ref="[container.requirements.general]"/></section>
+<submitter>Alisdair Meredith</submitter>
+<date>16 Feb 2010</date>
+
+<discussion>
+<p>
+The requirements on container iterators are spelled out in
+<sref ref="[container.requirements.general]"/>, table 91.
+</p>
+
+<blockquote>
+<table border="1">
+<caption>Table 91 &mdash; Container requirements</caption>
+
+<tr>
+<th>Expression</th>
+<th>Return type</th>
+<th>Operational semantics</th>
+<th>Assertion/note<br/>pre-/post-condition</th>
+<th>Complexity</th>
+</tr>
+
+<tr>
+<td colspan="5"><center>...</center></td>
+</tr>
+
+<tr>
+<td><tt>X::iterator</tt></td>
+<td>iterator type whose value type is <tt>T</tt></td>
+<td></td>
+<td>any iterator category except output iterator. Convertible to
+<tt>X::const_iterator</tt>.</td>
+<td>compile time</td>
+</tr>
+
+<tr>
+<td><tt>X::const_iterator</tt></td>
+<td>constant iterator type whose value type is <tt>T</tt></td>
+<td></td>
+<td>any iterator category except output iterator</td>
+<td>compile time</td>
+</tr>
+
+<tr>
+<td colspan="5"><center>...</center></td>
+</tr>
+
+</table>
+</blockquote>
+
+<p>
+As input iterators do not have the multi-pass guarantee, they are not suitable
+for iterating over a container.  For example, taking two calls to
+<tt>begin()</tt>, incrementing either iterator might invalidate the other. 
+While data structures might be imagined where this behaviour produces
+interesting and useful results, it is very unlikely to meet the full set of
+requirements for a standard container.
+</p>
+
+</discussion>
+
+<resolution>
+
+<p>
+Change Table 91 in <sref ref="[container.requirements.general]"/> as indicated:
+</p>
+
+<blockquote>
+<table border="1">
+<caption>Table 91 &mdash; Container requirements</caption>
+
+<tr>
+<th>Expression</th>
+<th>Return type</th>
+<th>Operational semantics</th>
+<th>Assertion/note<br/>pre-/post-condition</th>
+<th>Complexity</th>
+</tr>
+
+<tr>
+<td colspan="5"><center>...</center></td>
+</tr>
+
+<tr>
+<td><tt>X::iterator</tt></td>
+<td>iterator type whose value type is <tt>T</tt></td>
+<td></td>
+<td><del>any iterator category except output iterator.</del> <ins>A Forward,
+Bidirectional or Random Access Iterator.</ins> Convertible to
+<tt>X::const_iterator</tt>.</td>
+<td>compile time</td>
+</tr>
+
+<tr>
+<td><tt>X::const_iterator</tt></td>
+<td>constant iterator type whose value type is <tt>T</tt></td>
+<td></td>
+<td><del>any iterator category except output iterator</del> <ins>A Forward,
+Bidirectional or Random Access Iterator.</ins></td>
+<td>compile time</td>
+</tr>
+
+<tr>
+<td colspan="5"><center>...</center></td>
+</tr>
+
+</table>
+</blockquote>
+
+</resolution>
+
+</issue>

@@ -1,0 +1,28 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="223" status="TC1">
+<title>reverse algorithm should use iter_swap rather than swap</title>
+<section><sref ref="[alg.reverse]"/></section>
+<submitter>Dave Abrahams</submitter>
+<date>21 Mar 2000</date>
+
+<discussion>
+<p>Shouldn't the effects say "applies iter_swap to all pairs..."?</p>
+</discussion>
+
+<resolution>
+<p>In <sref ref="[alg.reverse]"/>, replace:</p>
+  <blockquote><p>
+  Effects: For each non-negative integer i &lt;= (last - first)/2, 
+  applies swap to all pairs of iterators first + i, (last - i) - 1.
+  </p></blockquote>
+<p>with:</p>
+  <blockquote><p>
+  Effects: For each non-negative integer i &lt;= (last - first)/2, 
+  applies iter_swap to all pairs of iterators first + i, (last - i) - 1.
+  </p></blockquote>
+</resolution>
+</issue>

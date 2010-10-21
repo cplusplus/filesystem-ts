@@ -1,0 +1,42 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="739" status="NAD">
+<title>Defect in [rand.util.canonical]/3</title>
+<section><sref ref="[rand.util.canonical]"/></section>
+<submitter>Stephan Tolksdorf</submitter>
+<date>21 Sep 2007</date>
+
+<discussion>
+<p>
+The complexity of <tt>generate_canonical</tt> is specified to be "exactly k=max(1, ceil(b/log2 
+R)) invocations of g". This terms involves a logarithm that is not rounded and hence can not (in 
+general) be computed at compile time. As this function template is performance critical, I propose 
+to replace ceil(b/log2 R) with ceil(b/floor(log2 R)).
+</p>
+
+<p>
+See <a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2007/n2424.pdf">N2424</a>
+for further discussion.
+</p>
+
+<note>
+Bellevue:
+</note>
+
+<blockquote>
+In N2424. Close NAD as described there.
+</blockquote>
+
+</discussion>
+
+<resolution>
+<p>
+See <a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2007/n2424.pdf">N2424</a>
+for the proposed resolution.
+</p>
+</resolution>
+
+</issue>

@@ -1,0 +1,191 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="876" status="WP">
+<title><tt>basic_string</tt> access operations should give stronger guarantees</title>
+<section><sref ref="[basic.string]"/></section>
+<submitter>Daniel Kr&uuml;gler</submitter>
+<date>22 Aug 2008</date>
+
+<discussion>
+<p>
+During the Sophia Antipolis meeting it was decided to split-off some
+parts of the
+<a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2008/n2647.html">n2647</a>
+("Concurrency modifications for <tt>basic_string</tt>")
+proposal into a separate issue, because these weren't actually
+concurrency-related. The here proposed changes refer to the recent
+update document
+<a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2008/n2668.htm">n2668</a>
+and attempt to take advantage of the
+stricter structural requirements.
+</p>
+<p>
+Indeed there exists some leeway for more guarantees that would be
+very useful for programmers, especially if interaction with transactionary
+or exception-unaware C API code is important. This would also allow
+compilers to take advantage of more performance optimizations, because
+more functions can have throw() specifications. This proposal uses the
+form of "Throws: Nothing" clauses to reach the same effect, because
+there already exists a different issue in progress to clean-up the current
+existing "schizophrenia" of the standard in this regard.
+</p>
+<p>
+Due to earlier support for copy-on-write, we find the following
+unnecessary limitations for C++0x:
+</p>
+
+<ol>
+<li>
+Missing no-throw guarantees: <tt>data()</tt> and <tt>c_str()</tt> simply return
+a pointer to their guts, which is a non-failure operation. This should
+be spelled out. It is also noteworthy to mention that the same
+guarantees should also be given by the size query functions,
+because the combination of pointer to content and the length is
+typically needed during interaction with low-level API.
+</li>
+<li>
+Missing complexity guarantees: <tt>data()</tt> and <tt>c_str()</tt> simply return
+a pointer to their guts, which is guaranteed O(1). This should be
+spelled out.
+</li>
+<li>
+Missing reading access to the terminating character: Only the
+const overload of <tt>operator[]</tt> allows reading access to the terminator
+char. For more intuitive usage of strings, reading access to this
+position should be extended to the non-const case. In contrast
+to C++03 this reading access should now be homogeneously
+an lvalue access.
+</li>
+</ol>
+
+<p>
+The proposed resolution is split into a main part (A) and a
+secondary part (B) (earlier called "Adjunct Adjunct Proposal").
+(B) extends (A) by also making access to index position
+size() of the at() overloads a no-throw operation. This was
+separated, because this part is theoretically observable in
+specifically designed test programs.
+</p>
+
+<note>
+San Francisco:
+</note>
+
+<blockquote>
+<p>
+We oppose part 1 of the issue but hope to address <tt>size()</tt> in
+issue <iref ref="877"/>.
+</p>
+<p>
+We do not support part B. 4 of the issue because of the breaking API change.
+</p>
+<p>
+We support part A. 2 of the issue.
+</p>
+<p>
+On support part A. 3 of the issue:
+</p>
+<blockquote>
+Pete's broader comment: now that we know that basic_string will be a
+block of contiguous memory, we should just rewrite its specification
+with that in mind. The expression of the specification will be simpler
+and probably more correct as a result.
+</blockquote>
+</blockquote>
+
+<note>
+2009-07 Frankfurt
+</note>
+
+<blockquote>
+<p>
+Move proposed resolution A to Ready.
+</p>
+<note>
+Howard: Commented out part B.
+</note>
+</blockquote>
+
+</discussion>
+
+<resolution>
+<ol type="A">
+<li>
+<ol>
+<li>
+<p>In <sref ref="[string.capacity]"/>, just after p. 1 add a new paragraph:
+</p>
+<blockquote>
+<i>Throws:</i> Nothing.
+</blockquote>
+
+</li>
+<li>
+<p>
+In <sref ref="[string.access]"/> <em>replace</em> p. 1 by the following <em>4</em> paragraghs:
+</p>
+
+<blockquote>
+<p>
+<i>Requires:</i> <tt>pos &le; size()</tt>.
+</p>
+<p>
+<i>Returns:</i> If <tt>pos &lt; size()</tt>, returns <tt>*(begin() + pos)</tt>. Otherwise, returns
+a reference to a <tt>charT()</tt> that shall not be modified.
+</p>
+<p>
+<i>Throws:</i> Nothing.
+</p>
+<p>
+<i>Complexity:</i> Constant time.
+</p>
+</blockquote>
+
+</li>
+<li>
+<p>
+In <sref ref="[string.accessors]"/> replace the now <em>common</em> returns
+clause of <tt>c_str()</tt> and <tt>data()</tt> by the following <em>three</em> paragraphs:
+</p>
+<blockquote>
+<p>
+<i>Returns:</i> A pointer <tt>p</tt> such that <tt>p+i == &amp;operator[](i)</tt> for each <tt>i</tt>
+in <tt>[0, size()]</tt>.
+</p>
+<p>
+<i>Throws:</i> Nothing.
+</p>
+<p>
+<i>Complexity:</i> Constant time.
+</p>
+</blockquote>
+</li>
+</ol>
+</li>
+<!-- 
+<li>
+<ol start="4">
+<li>
+<p>
+In <sref ref="[string.access]"/> <em>replace</em> p.2 and p.3 by:
+</p>
+<blockquote>
+<p>
+<i>Requires:</i> <tt>pos &le; size()</tt>
+</p>
+<p>
+<i>Throws:</i> <tt>out_of_range</tt> if <tt>pos &gt; size()</tt>.
+</p>
+</blockquote>
+</li>
+</ol>
+</li>
+ -->
+</ol>
+
+</resolution>
+
+</issue>

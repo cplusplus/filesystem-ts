@@ -1,0 +1,68 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="709" status="CD1">
+<title><tt>char_traits::not_eof</tt> has wrong signature</title>
+<section><sref ref="[char.traits.specializations]"/></section>
+<submitter>Bo Persson</submitter>
+<date>13 Aug 2007</date>
+
+<discussion>
+<p>
+The changes made for <tt>constexpr</tt> in <sref ref="[char.traits.specializations]"/> have 
+not only changed the <tt>not_eof</tt> function from pass by const reference to 
+pass by value, it has also changed the parameter type from <tt>int_type</tt> to 
+<tt>char_type</tt>.
+</p>
+<p>
+This doesn't work for type <tt>char</tt>, and is inconsistent with the 
+requirements in Table 56, Traits requirements, <sref ref="[char.traits.require]"/>.
+</p>
+
+<p>
+Pete adds:
+</p>
+
+<blockquote><p>
+For what it's worth, that may not have been an intentional change. 
+N2349, which detailed the changes for adding constant expressions to 
+the library, has strikeout bars through the <tt>const</tt> and the <tt>&amp;</tt> that 
+surround the <tt>char_type</tt> argument, but none through <tt>char_type</tt> itself. 
+So the intention may have been just to change to pass by value, with 
+text incorrectly copied from the standard.
+</p></blockquote>
+
+</discussion>
+
+<resolution>
+<p>
+Change the signature in <sref ref="[char.traits.specializations.char]"/>,
+<sref ref="[char.traits.specializations.char16_t]"/>, <sref ref="[char.traits.specializations.char32_t]"/>,
+and <sref ref="[char.traits.specializations.wchar.t]"/> to
+</p>
+
+<blockquote><pre>
+static constexpr int_type not_eof(<del>char_type</del> <ins>int_type</ins> c);
+</pre></blockquote>
+
+</resolution>
+
+<note>
+Bellevue:
+</note>
+
+<blockquote>
+Resolution: NAD editorial - up to Pete's judgment
+</blockquote>
+
+<note>
+Post Sophia Antipolis
+</note>
+
+<blockquote>
+Moved from Pending NAD Editorial to Review.  The proposed wording appears to be correct but non-editorial.
+</blockquote>
+
+</issue>

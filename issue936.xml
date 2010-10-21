@@ -1,0 +1,111 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="936" status="NAD Future">
+<title>Mutex type overspecified</title>
+<section><sref ref="[thread.mutex.requirements]"/></section>
+<submitter>Pete Becker</submitter>
+<date>5 Dec 2008</date>
+
+<discussion>
+
+<duplicate><iref ref="961"/></duplicate>
+
+<p>
+<sref ref="[thread.mutex.requirements]"/> describes the requirements for a type to be
+a "Mutex type". A Mutex type can be used as the template argument for
+the <tt>Lock</tt> type that's passed to <tt>condition_variable_any::wait</tt> (although
+<tt>Lock</tt> seems like the wrong name here, since <tt>Lock</tt> is given a different
+formal meaning in <sref ref="[thread.lock]"/>) and, although the WD doesn't quite say
+so, as the template argument for <tt>lock_guard</tt> and <tt>unique_lock</tt>.
+</p>
+
+<p>
+The requirements for a Mutex type include:
+</p>
+
+<ul>
+<li>
+<tt>m.lock()</tt> shall be well-formed and have [described] semantics, including a return type of <tt>void</tt>.
+</li>
+<li>
+<tt>m.try_lock()</tt> shall be well-formed and have [described] semantics, including a return type of <tt>bool</tt>.
+</li>
+<li>
+<tt>m.unlock()</tt> shall be well-formed and have [described] semantics, including a return type of <tt>void</tt>.
+</li>
+</ul>
+
+<p>
+Also, a Mutex type "shall not be copyable nor movable".
+</p>
+
+<p>
+The latter requirement seems completely irrelevant, and the three
+requirements on return types are tighter than they need to be. For
+example, there's no reason that <tt>lock_guard</tt> can't be instantiated with a
+type that's copyable. The rule is, in fact, that <tt>lock_guard</tt>, etc. won't
+try to copy objects of that type. That's a constraint on locks, not on
+mutexes. Similarly, the requirements for <tt>void</tt> return types are
+unnecessary; the rule is, in fact, that <tt>lock_guard</tt>, etc. won't use any
+returned value. And with the return type of <tt>bool</tt>, the requirement should
+be that the return type is convertible to <tt>bool</tt>.
+</p>
+
+<note>
+Summit:
+</note>
+
+<blockquote>
+<p>
+Move to open. Related to conceptualization and should probably be tackled as part of that.
+</p>
+<ul>
+<li>
+The intention is not only to place a constraint on what types such as
+<tt>lock_guard</tt> may do with mutex types, but on what any code, including user
+code, may do with mutex types. Thus the constraints as they are apply to
+the mutex types themselves, not the current users of mutex types in the
+standard.
+</li>
+<li>
+This is a low priority issue; the wording as it is may be overly
+restrictive but this may not be a real issue.
+</li>
+</ul>
+</blockquote>
+
+<note>
+Post Summit Anthony adds:
+</note>
+
+<blockquote>
+<p>
+Section <sref ref="[thread.mutex.requirements]"/> conflates the
+requirements on a generic Mutex type (including user-supplied mutexes)
+with the requirements placed on the standard-supplied mutex types in an
+attempt to group everything together and save space.
+</p>
+<p>
+When applying concepts to chapter 30, I suggest that the concepts
+<tt>Lockable</tt> and <tt>TimedLockable</tt> embody the requirements for
+*use* of a mutex type as required by
+<tt>unique_lock/lock_guard/condition_variable_any</tt>. These should be
+relaxed as Pete describes in the issue. The existing words in <sref
+ref="[thread.mutex.requirements]"/> are requirements on all of
+<tt>std::mutex</tt>, <tt>std::timed_mutex</tt>,
+<tt>std::recursive_mutex</tt> and <tt>std::recursive_timed_mutex</tt>,
+and should be rephrased as such.
+</p>
+</blockquote>
+
+</discussion>
+
+<resolution>
+<p>
+</p>
+</resolution>
+
+</issue>

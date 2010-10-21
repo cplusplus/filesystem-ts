@@ -1,0 +1,60 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="814" status="WP">
+<title><tt>vector&lt;bool&gt;::swap(reference, reference)</tt> not defined</title>
+<section><sref ref="[vector.bool]"/></section>
+<submitter>Alisdair Meredith</submitter>
+<date>17 Mar 2008</date>
+
+<discussion>
+<p>
+<tt>vector&lt;bool&gt;::swap(reference, reference)</tt> has no definition.
+</p>
+
+<note>
+San Francisco:
+</note>
+
+<blockquote>
+Move to Open. Alisdair to provide a resolution.
+</blockquote>
+
+<note>
+Post Summit Daniel provided wording.
+</note>
+
+<note>
+Batavia (2009-05):
+</note>
+<blockquote>
+We agree with the proposed resolution.
+Move to Tentatively Ready.
+</blockquote>
+</discussion>
+
+<resolution>
+<p>
+Just after <sref ref="[vector.bool]"/>/5 add the following prototype and description:
+</p>
+
+<blockquote>
+<p>
+<ins>static void swap(reference x, reference y);</ins>
+</p>
+<blockquote>
+<p>
+<ins>-6- <i>Effects:</i> Exchanges the contents of <tt>x</tt> and <tt>y</tt> as-if</ins> by:
+</p>
+<blockquote><pre><ins>
+bool b = x;
+x = y;
+y = b;
+</ins></pre></blockquote>
+</blockquote>
+</blockquote>
+</resolution>
+
+</issue>

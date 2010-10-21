@@ -1,0 +1,28 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="500" status="NAD">
+<title>do_length cannot be implemented correctly</title>
+<section><sref ref="[locale.codecvt.byname]"/></section>
+<submitter>Krzysztof &#379;elechowski</submitter>
+<date>24 May 2005</date>
+
+<discussion>
+<ol>
+<li>codecvt::do_length is of type int;</li>
+<li>it is assumed to be sort-of returning from_next - from of type ptrdiff_t;</li>
+<li>ptrdiff_t cannot be cast to an int without data loss.</li>
+</ol>
+<p>
+Contradiction.
+</p>
+</discussion>
+
+<resolution>
+<p>
+</p>
+</resolution>
+
+</issue>

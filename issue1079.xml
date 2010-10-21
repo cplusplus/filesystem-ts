@@ -1,0 +1,140 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="1079" status="WP">
+<title>UK-265: <code>RandomAccessIterator</code>'s <code>operator-</code> has nonsensical effects clause</title>
+<section><sref ref="[random.access.iterators]"/></section>
+<submitter>Doug Gregor</submitter>
+<date>20 Mar 2009</date>
+
+<discussion>
+<p><b>Addresses UK 265</b></p>
+
+<p>UK-265:</p>
+<p>
+This effects clause is nonesense. It looks more like an axiom stating
+equivalence, and certainly an effects clause cannot change the state of
+two arguments passed by const reference
+</p>
+
+<note>
+2009-09-18 Alisdair adds:
+</note>
+
+<blockquote>
+<p>
+For random access iterators, the definitions of <tt>(b-a)</tt> and
+<tt>(a&lt;b)</tt> are circular:
+</p>
+
+<p>
+From table Table 104 -- Random access iterator requirements:
+</p>
+
+<blockquote><pre>
+b - a :==&gt;  (a &lt; b) ? distance(a,b) : -distance(b,a)
+
+a &lt; b :==&gt;  b - a &gt; 0
+</pre></blockquote>
+</blockquote>
+
+<note>
+2009-10 Santa Cruz:
+</note>
+
+<blockquote>
+Moved to Ready.
+</blockquote>
+
+<note>
+2010-02-13 Alisdair opens.
+</note>
+
+<blockquote>
+<p>
+Looking again at LWG #1079, the wording in the issue no longer exists, and
+appears to be entirely an artefact of the concepts wording.
+</p>
+
+<p>
+This issue is currently on our Ready list (not even Tentative!) but I think it
+has to be pulled as there is no way to apply the resolution.
+</p>
+
+<p>
+Looking at the current paper, I think this issue is now "NAD, solved by the
+removal of concepts".  Unfortunately it is too late to poll again, so we will
+have to perform that review in Pittsburgh.
+</p>
+</blockquote>
+
+<note>
+2010-02-13 Daniel updates the wording to address the circularity problem.
+</note>
+
+<blockquote>
+<note>
+The previous wording is preserved here:
+</note>
+<blockquote>
+
+<p>Modify <sref ref="[random.access.iterators]"/>p7-9 as follows:</p>
+
+<blockquote><pre>
+difference_type operator-(const X&amp; a, const X&amp; b);
+</pre>
+<ol start="7">
+  <li><i>Precondition</i>: there exists a value <code>n</code> of
+  <code>difference_type</code> such that <code>a == b + n</code>.</li>
+  <li><del><i>Effects</i>: <code>b == a + (b - a)</code></del></li>
+  <li><i>Returns</i>: <del><code>(a &lt; b) ? distance(a,b) :
+  -distance(b,a)</code></del><ins><code>n</code></ins></li>
+</ol>
+</blockquote>
+
+</blockquote>
+</blockquote>
+
+<note>
+2010 Pittsburgh:
+</note>
+
+<blockquote>
+Moved to Ready for Pittsburgh.
+</blockquote>
+
+</discussion>
+
+<resolution>
+<p>
+Modify Table 105 in <sref ref="[random.access.iterators]"/>:
+</p>
+
+<blockquote>
+<table border="1">
+<caption>Table 105 &mdash; Random access iterator requirements (in addition to
+bidirectional iterator)</caption>
+
+<tr>
+<th>Expression</th>
+<th>Return type</th>
+<th>Operational semantics</th>
+<th>Assertion/note<br/>pre-/post-condition</th>
+</tr>
+
+<tr>
+<td><tt>b - a</tt></td>
+<td><tt>Distance</tt></td>
+<td><tt><del>distance(a,b)</del></tt>
+<ins>return <tt>n</tt></ins></td>
+<td>pre: there exists a value <tt>n</tt> of <tt>Distance</tt> such that <tt>a +
+n == b</tt>. <tt>b == a + (b - a)</tt>.</td>
+</tr>
+
+</table>
+</blockquote>
+</resolution>
+
+</issue>

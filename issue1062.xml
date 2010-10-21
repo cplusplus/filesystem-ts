@@ -1,0 +1,61 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="1062" status="NAD">
+<title>Missing insert_iterator for stacks/queues</title>
+<section><sref ref="[insert.iterators]"/></section>
+<submitter>Alisdair Meredith</submitter>
+<date>13 Mar 2009</date>
+
+<discussion>
+
+<p>
+It is odd that we have an iterator to insert into a <tt>vector</tt>, but not an
+iterator to insert into a <tt>vector</tt> that is adapted as a <tt>stack</tt>. The standard
+container adapters all have a common interface to <tt>push</tt> and <tt>pop</tt> so it should
+be simple to create an iterator adapter to complete the library support.
+</p>
+
+<p>
+We should provide an <tt>AdaptedContainer</tt> concept supporting <tt>push</tt> and <tt>pop</tt>
+operations. Create a new insert iterator and factory function that inserts
+values into the container by calling <tt>push</tt>.
+</p>
+
+<note>
+Batavia (2009-05):
+</note>
+<blockquote>
+<p>
+Walter recommends NAD Future.
+</p>
+<p>
+Move to Open, and recommend deferring the issue until after the next
+Committee Draft is issued.
+</p>
+</blockquote>
+
+<note>
+2009-07-29 Howard moves to Tentatively NAD Future.
+</note>
+
+<blockquote>
+A poll on the LWG reflector voted unanimously to move this issue to Tentatively NAD Future.
+</blockquote>
+
+<note>
+2009 Santa Cruz:
+</note>
+
+<blockquote>
+Moved to NAD.  The intent of these adapters are to restrict the interfaces.
+</blockquote>
+
+</discussion>
+
+<resolution>
+</resolution>
+
+</issue>

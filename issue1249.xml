@@ -1,0 +1,89 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="1249" status="New">
+<title>basic_ios default ctor</title>
+<section><sref ref="[basic.ios.cons]"/></section>
+<submitter>Martin Sebor</submitter>
+<date>25 Oct 2009</date>
+
+<discussion>
+<p>
+The basic_ios default ctor is required to leave the objects members
+uninitialized (see below). The paragraph says the object must be
+initialized by calling basic_ios::init() before it's destroyed by
+I can't find a requirement that it be initialized before calling
+any of the class other member functions. Am I not looking in the
+right place or that an issue?
+</p>
+
+<note>
+2009-10-25 Daniel adds:
+</note>
+
+<blockquote>
+<p>
+I agree, that your wording makes that clearer, but suggest to write
+</p>
+
+<blockquote>
+... calling <tt>basic_ios::init<del>()</del></tt> before ...
+</blockquote>
+
+<p>
+Doing so, I recommend to adapt that of <tt>ios_base();</tt> as well, where
+we have:
+</p>
+
+<blockquote>
+<i>Effects:</i> Each <tt>ios_base</tt> member has an indeterminate value
+after construction. These members shall be initialized by calling
+<tt>basic_ios::init</tt>. If an <tt>ios_base</tt> object is destroyed
+before these initializations have taken place, the behavior is
+undefined.
+</blockquote>
+</blockquote>
+
+</discussion>
+
+<resolution>
+<p>
+Change <sref ref="[ios.base.cons]"/> p1:
+</p>
+
+<blockquote><pre>
+ios_base();
+</pre>
+<blockquote>
+<i>Effects:</i> Each <tt>ios_base</tt> member has an indeterminate value
+after construction. <del>These</del> <ins>The object's</ins> members shall be initialized by calling
+<tt>basic_ios::init</tt> <ins>before the object's first use or before
+ it is destroyed, whichever comes first; otherwise the behavior
+ is undefined.</ins>. <del>If an <tt>ios_base</tt> object is destroyed
+before these initializations have taken place, the behavior is
+undefined.</del>
+</blockquote>
+</blockquote>
+
+<p>
+Change <sref ref="[basic.ios.cons]"/> p2:
+</p>
+
+<blockquote><pre>
+basic_ios();
+</pre>
+<blockquote>
+<i>Effects:</i> Constructs an object of class <tt>basic_ios</tt>
+(27.5.2.7) leaving its member objects uninitialized. The object shall be
+initialized by calling <del>its</del>
+<tt><ins>basic_ios::</ins>init</tt> <ins>before its first
+use or before it is destroyed, whichever comes first; otherwise the
+behavior is undefined.</ins> <del>member function. If it is destroyed
+before it has been initialized the behavior is undefined.</del>
+</blockquote>
+</blockquote>
+</resolution>
+
+</issue>

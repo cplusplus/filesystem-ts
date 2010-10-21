@@ -1,0 +1,40 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="295" status="CD1">
+<title>Is abs defined in &lt;cmath&gt;?</title>
+<section><sref ref="[c.math]"/></section>
+<submitter>Jens Maurer</submitter>
+<date>12 Jan 2001</date>
+
+<discussion>
+<p>
+Table 80 lists the contents of the &lt;cmath&gt; header.  It does not
+list <tt>abs()</tt>.  However, 26.5, paragraph 6, which lists added 
+signatures present in &lt;cmath&gt;, does say that several overloads
+of <tt>abs()</tt> should be defined in &lt;cmath&gt;.
+</p>
+</discussion>
+
+<resolution>
+<p>
+Add <tt>abs</tt> to Table 80.  Also, remove the parenthetical list
+of functions "(abs(), div(), rand(), srand())" from <sref ref="[numarray]"/>,
+paragraph 1.
+</p>
+
+<note>Copenhagen: Modified proposed resolution so that it also gets
+rid of that vestigial list of functions in paragraph 1.</note>
+
+</resolution>
+
+<rationale>
+<p>All this DR does is fix a typo; it's uncontroversial.  A 
+separate question is whether we're doing the right thing in 
+putting some overloads in &lt;cmath&gt; that we aren't also 
+putting in &lt;cstdlib&gt;.  That's issue <iref ref="323"/>.</p>
+</rationale>
+
+</issue>

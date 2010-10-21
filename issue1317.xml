@@ -1,0 +1,192 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="1317" status="NAD Future">
+<title>make_hash</title>
+<section><sref ref="[unord.hash]"/></section>
+<submitter>Nicolai M. Josuttis</submitter>
+<date>10 Feb 2010</date>
+
+<discussion>
+<p>
+Currently, the library lacks a convenient way to provide a hash function that
+can be used with the provided unordered containers to allow the usage of non
+trivial element types.
+</p>
+
+<p>
+While we can easily declare an
+</p>
+
+<blockquote><pre>
+std::unordered_set&lt;int&gt;
+</pre></blockquote>
+
+<p>
+or
+</p>
+
+<blockquote><pre>
+std::unordered_set&lt;std::string&gt;
+</pre></blockquote>
+
+<p>
+we have no easy way to declare an <tt>unordered_set</tt> for a user defined
+type. IMO, this is a big obstacle to use unordered containers in practice. Note
+that in Java, the wide usage of <tt>HashMap</tt> is based on the fact that there
+is always a default hash function provided.
+</p>
+
+<p>
+Of course, a default hash function implies the risk to provide poor hash
+functions. But often even poor hash functions are good enough.
+</p>
+
+<p>
+While I really would like to see a default hash function, I don't propose it
+here because this would probably introduce a discussion that's too big for this
+state of C++0x.
+</p>
+
+<p>
+However, I strongly suggest at least to provide a convenience variadic template
+function <tt>make_hash&lt;&gt;()</tt> to allow an easy definition of a (possibly
+poor) hash function.
+</p>
+
+<p>
+As a consequence for a user-defined type such as
+</p>
+
+<blockquote><pre>
+class Customer {
+   friend class CustomerHash;
+   private:
+     string firstname;
+     string lastname;
+     long   no;
+   ...
+ };
+</pre></blockquote>
+
+<p>
+would allow to specify:
+</p>
+
+<blockquote><pre>
+class CustomerHash : public std::unary_function&lt;Customer, std::size_t&gt;
+{
+  public:
+    std::size_t operator() (const Customer&amp; c) const  {
+       return make_hash(c.firstname,c.lastname,c.no);
+    }
+};
+</pre></blockquote>
+
+<p>
+instead of:
+</p>
+
+<blockquote><pre>
+class CustomerHash : public std::unary_function&lt;Customer, std::size_t&gt;
+{
+  public:
+    std::size_t operator() (const Customer&amp; c) const  {
+       return std::hash&lt;std::string&gt;()(c.firstname) +
+              std::hash&lt;std::string&gt;()(c.lastname) +
+              std::hash&lt;long&gt;()(c.no);
+    }
+};
+</pre></blockquote>
+
+<p>
+Note that, in principle, we can either specify that
+</p>
+
+<blockquote>
+<tt>make_hash</tt> returns the sum of a call of
+<tt>std::hash&lt;T&gt;()(x)</tt> for each argument <tt>x</tt> of type
+<tt>T</tt>
+</blockquote>
+
+<p>
+or we can specify that
+</p>
+
+<blockquote>
+<tt>make_hash</tt> provides a hash value for each argument, for which a
+<tt>std::hash()</tt> function is provided
+</blockquote>
+
+<p>
+with the possible note that the hash value may be poor or only a good hash value
+if the ranges of all passed arguments is equally distributed.
+</p>
+
+<p>
+For my convenience, I propose wording that describes
+the concrete implementation.
+</p>
+
+<note>
+2010 Pittsburgh:  Moved to NAD Editorial, rationale added below.
+</note>
+
+</discussion>
+
+<rationale>
+<p>
+There is no consensus to make this change at this time.
+</p>
+</rationale>
+
+<resolution>
+<p>
+In Function objects <sref ref="[function.objects]"/>
+in paragraph 2 at the end of the Header <tt>&lt;functional&gt;</tt> synopsis
+insert:
+</p>
+
+<blockquote><pre>
+// convenience functions
+template &lt;class T&gt;
+  size_t make_hash (const T&amp;);
+template &lt;class T, class... Types&gt;
+  size_t make_hash (const T&amp;, const Types&amp;...);
+</pre></blockquote>
+
+<p>
+In Class template hash <sref ref="[unord.hash]"/>
+add:
+</p>
+
+<blockquote>
+<p>
+<b>20.7.16.1 Hash creation functions [hash.creation]</b>
+</p>
+
+<pre>
+template &lt;class T&gt;
+  size_t make_hash (const T&amp; val);
+</pre>
+
+<blockquote>
+<i>Returns:</i> <tt>hash&lt;T&gt;()(val);</tt>
+</blockquote>
+
+<pre>
+template &lt;class T, class... Types&gt;
+  size_t make_hash (const T&amp; val, const Types&amp;... args);
+</pre>
+
+<blockquote>
+<i>Returns:</i> <tt>hash&lt;T&gt;()(val) + std::make_hash(args...)</tt>
+</blockquote>
+
+</blockquote>
+
+</resolution>
+
+</issue>

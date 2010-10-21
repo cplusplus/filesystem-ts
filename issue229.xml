@@ -1,0 +1,67 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="229" status="CD1">
+<title>Unqualified references of other library entities</title>
+<section><sref ref="[contents]"/></section>
+<submitter>Steve Clamage</submitter>
+<date>19 Apr 2000</date>
+
+<discussion>
+<p>Throughout the library chapters, the descriptions of library entities refer
+to other library entities without necessarily qualifying the names.</p>
+
+<p>For example, section 25.2.2 &quot;Swap&quot; describes the effect of
+swap_ranges in terms of the unqualified name &quot;swap&quot;. This section
+could reasonably be interpreted to mean that the library must be implemented so
+as to do a lookup of the unqualified name &quot;swap&quot;, allowing users to
+override any ::std::swap function when Koenig lookup applies.</p>
+
+<p>Although it would have been best to use explicit qualification with
+&quot;::std::&quot; throughout, too many lines in the standard would have to be
+adjusted to make that change in a Technical Corrigendum.</p>
+
+<p>Issue <iref ref="182"/>, which addresses qualification of
+<tt>size_t</tt>, is a special case of this.
+</p>
+</discussion>
+
+<resolution>
+<p>To section 17.4.1.1 &quot;Library contents&quot; Add the following paragraph:</p>
+<blockquote>
+  <p>Whenever a name x defined in the standard library is mentioned, the name x
+  is assumed to be fully qualified as ::std::x, unless explicitly described
+  otherwise. For example, if the Effects section for library function F is
+  described as calling library function G, the function ::std::G is meant.</p>
+</blockquote>
+
+<note>Post-Tokyo: Steve Clamage submitted this issue at the request of
+the LWG to solve a problem in the standard itself similar to the
+problem within implementations of library identified by issue <iref
+ref="225"/>.  Any resolution of issue <iref ref="225"/> should be
+coordinated with the resolution of this issue.</note>
+
+<note>post-Toronto: Howard is undecided about whether it is
+appropriate for all standard library function names referred to in
+other standard library functions to be explicitly qualified by
+<tt>std</tt>: it is common advice that users should define global
+functions that operate on their class in the same namespace as the 
+class, and this requires argument-dependent lookup if those functions
+are intended to be called by library code.  Several LWG members are
+concerned that valarray appears to require argument-dependent lookup,
+but that the wording may not be clear enough to fall under
+&quot;unless explicitly described otherwise&quot;.</note>
+
+<note>Cura&ccedil;ao: An LWG-subgroup spent an afternoon working on issues
+225, 226, and 229.  Their conclusion was that the issues should be
+separated into an LWG portion (Howard's paper, N1387=02-0045), and a
+EWG portion (Dave will write a proposal). The LWG and EWG had
+(separate) discussions of this plan the next day.  This paper resolves
+issues 225 and 226.  In light of that resolution, the proposed
+resolution for the current issue makes sense.</note>
+
+</resolution>
+
+</issue>

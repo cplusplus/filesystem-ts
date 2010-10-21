@@ -1,0 +1,81 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="130" status="CD1">
+<title>Return type of container::erase(iterator) differs for associative containers</title>
+
+<section><sref ref="[associative.reqmts]"/> <sref ref="[sequence.reqmts]"/></section>
+<submitter>Andrew Koenig</submitter>
+<date>2 Mar 1999</date>
+
+<discussion>
+<p>Table 67 (23.1.1) says that container::erase(iterator) returns an
+iterator. Table 69 (23.1.2) says that in addition to this requirement,
+associative containers also say that container::erase(iterator)
+returns void.  That's not an addition; it's a change to the
+requirements, which has the effect of making associative containers
+fail to meet the requirements for containers.</p>
+</discussion>
+
+<resolution>
+
+<p>
+In <sref ref="[associative.reqmts]"/>, in Table 69 Associative container
+requirements, change the return type of <tt>a.erase(q)</tt> from
+<tt>void</tt> to <tt>iterator</tt>.  Change the
+assertion/not/pre/post-condition from "erases the element pointed to
+by <tt>q</tt>" to "erases the element pointed to by <tt>q</tt>.
+Returns an iterator pointing to the element immediately following q
+prior to the element being erased. If no such element exists, a.end()
+is returned."
+</p>
+
+<p>
+In <sref ref="[associative.reqmts]"/>, in Table 69 Associative container
+requirements, change the return type of <tt>a.erase(q1, q2)</tt>
+from <tt>void</tt> to <tt>iterator</tt>.  Change the
+assertion/not/pre/post-condition from "erases the elements in the
+range <tt>[q1, q2)</tt>" to "erases the elements in the range <tt>[q1,
+q2)</tt>.  Returns q2."
+</p>
+
+<p>
+In <sref ref="[map]"/>, in the <tt>map</tt> class synopsis; and 
+in <sref ref="[multimap]"/>, in the <tt>multimap</tt> class synopsis; and
+in <sref ref="[set]"/>, in the <tt>set</tt> class synopsis; and
+in <sref ref="[multiset]"/>, in the <tt>multiset</tt> class synopsis:
+change the signature of the first <tt>erase</tt> overload to
+</p>
+<pre>
+   iterator erase(iterator position);
+</pre>
+<p>and change the signature of the third <tt>erase</tt> overload to</p>
+<pre>
+  iterator erase(iterator first, iterator last); 
+</pre>
+
+
+<note>Pre-Kona: reopened at the request of Howard Hinnant</note>
+
+<note>Post-Kona: the LWG agrees the return type should be
+<tt>iterator</tt>, not <tt>void</tt>.  (Alex Stepanov agrees too.)
+Matt provided wording.</note>
+
+<note>
+ Sydney: the proposed wording went in the right direction, but it
+ wasn't good enough. We want to return an iterator from the range form
+ of erase as well as the single-iterator form. Also, the wording is
+ slightly different from the wording we have for sequences; there's no
+ good reason for having a difference.  Matt provided new wording,
+(reflected above) which we will review at the next meeting.
+</note>
+
+<note>
+Redmond:  formally voted into WP.
+</note>
+
+</resolution>
+
+</issue>

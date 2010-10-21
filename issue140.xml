@@ -1,0 +1,45 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="140" status="NAD Editorial">
+<title>map&lt;Key, T&gt;::value_type does not satisfy the assignable requirement</title>
+<section><sref ref="[map]"/></section>
+<submitter>Mark Mitchell</submitter>
+<date>14 Apr 1999</date>
+
+<discussion>
+<blockquote>
+  <p><sref ref="[container.requirements]"/><br/>
+  <br/>
+  expression&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return type
+  &nbsp;&nbsp;&nbsp;&nbsp; pre/post-condition<br/>
+  -------------&nbsp;&nbsp;&nbsp;&nbsp; ----------- &nbsp;&nbsp;&nbsp;&nbsp;
+  -------------------<br/>
+  X::value_type&nbsp;&nbsp;&nbsp; T
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+  T is assignable<br/>
+  <br/>
+  <sref ref="[map]"/><br/>
+  <br/>
+  A map satisfies all the requirements of a container.<br/>
+  <br/>
+  For a map&lt;Key, T&gt; ... the value_type is pair&lt;const Key, T&gt;.</p>
+</blockquote>
+
+<p>There's a contradiction here. In particular, `pair&lt;const Key,
+T&gt;' is not assignable; the `const Key' cannot be assigned
+to. So,&nbsp; map&lt;Key, T&gt;::value_type does not satisfy the
+assignable requirement imposed by a container.</p>
+
+<note>See issue <iref ref="103"/> for the slightly related issue of
+modification of set keys.</note>
+</discussion>
+
+<rationale>
+<p>The LWG believes that the standard is inconsistent, but that this
+is a design problem rather than a strict defect. May wish to
+reconsider for the next standard.</p>
+</rationale>
+</issue>

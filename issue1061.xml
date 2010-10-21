@@ -1,0 +1,42 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="1061" status="NAD Editorial">
+<title>Bad indexing for tuple access to pair (Editorial?)</title>
+<section><sref ref="[pair.astuple]"/></section>
+<submitter>Alisdair Meredith</submitter>
+<date>13 Mar 2009</date>
+
+<discussion>
+
+<p>
+The definition of <tt>get</tt> implies that <tt>get</tt> must return the second element if
+given a negative integer.
+</p>
+
+<note>
+Batavia (2009-05):
+</note>
+<blockquote>
+Move to NAD Editorial.
+</blockquote>
+
+</discussion>
+
+<resolution>
+<p>
+<sref ref="[pair.astuple]"/> p5:
+</p>
+
+<blockquote><pre>
+template&lt;<del>int</del> <ins>size_t</ins> I, class T1, class T2&gt; 
+  requires True&lt;(I &lt; 2)&gt; 
+  const P&amp; get(const pair&lt;T1, T2&gt;&amp;);
+</pre>
+</blockquote>
+
+</resolution>
+
+</issue>

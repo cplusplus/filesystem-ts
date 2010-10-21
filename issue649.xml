@@ -1,0 +1,107 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="649" status="NAD Editorial">
+<title>Several typos in regex_token_iterator constructors</title>
+<section><sref ref="[re.tokiter.cnstr]"/></section>
+<submitter>Daniel Kr&uuml;gler</submitter>
+<date>3 Mar 2007</date>
+
+<discussion>
+<p>
+In <sref ref="[re.tokiter.cnstr]"/>/1+2 both the constructor declaration
+and the following text shows some obvious typos:
+</p>
+<p>
+1) The third constructor form is written as
+</p>
+<blockquote><pre>
+template &lt;std::size_t N&gt;
+  regex_token_iterator(BidirectionalIterator a, BidirectionalIterator b, 
+                       const regex_type&amp; re, 
+                       const int (&amp;submatches)[R], 
+                       regex_constants::match_flag_type m = 
+                         regex_constants::match_default);
+</pre></blockquote>
+
+<p>
+where the dimensions of submatches are specified by an
+unknown value R, which should be N.
+</p>
+<p>
+2) Paragraph 2 of the same section says in its last sentence:
+</p>
+
+<blockquote><p>
+The third constructor initializes the member <tt>subs</tt> to hold a
+copy of the sequence of integer values pointed to by the iterator range
+<tt>[&amp;submatches, &amp;submatches + R)</tt>.
+</p></blockquote>
+
+<p>
+where again R must be replaced by N.
+</p>
+
+<p>
+3) Paragraph 3 of the same section says in its first sentence:
+</p>
+
+<blockquote><p>
+Each constructor then sets <tt>N</tt> to <tt>0</tt>, and
+<tt>position</tt> to <tt>position_iterator(a, b, re, f)</tt>.
+</p></blockquote>
+
+<p>
+where a non-existing parameter "f" is mentioned, which must be
+replaced
+by the parameter "m".
+</p>
+</discussion>
+
+<resolution>
+<p>
+Change <sref ref="[re.tokiter.cnstr]"/>/1:
+</p>
+<blockquote><pre>
+template &lt;std::size_t N&gt;
+  regex_token_iterator(BidirectionalIterator a, BidirectionalIterator b, 
+                       const regex_type&amp; re, 
+                       const int (&amp;submatches)[<del>R</del> <ins>N</ins>], 
+                       regex_constants::match_flag_type m = 
+                         regex_constants::match_default);
+</pre></blockquote>
+
+<p>
+Change <sref ref="[re.tokiter.cnstr]"/>/2:
+</p>
+
+<blockquote><p>
+<i>Effects:</i> The first constructor initializes the member
+<tt>subs</tt> to hold the single value <tt>submatch</tt>. The second
+constructor initializes the member <tt>subs</tt> to hold a copy of the
+argument <tt>submatches</tt>. The third constructor initializes the
+member <tt>subs</tt> to hold a copy of the sequence of integer values
+pointed to by the iterator range <tt>[&amp;submatches, &amp;submatches +
+<del>R</del> <ins>N</ins>)</tt>.
+</p></blockquote>
+
+<p>
+Change <sref ref="[re.tokiter.cnstr]"/>/3:
+</p>
+
+<blockquote><p>
+Each constructor then sets <tt>N</tt> to <tt>0</tt>, and
+<tt>position</tt> to <tt>position_iterator(a, b, re, <del>f</del>
+<ins>m</ins>)</tt>. If <tt>position</tt> is not an end-of-sequence
+iterator the constructor sets <tt>result</tt> to the address of the
+current match. Otherwise if any of the values stored in <tt>subs</tt> is
+equal to <tt>-1</tt> the constructor sets <tt>*this</tt> to a suffix
+iterator that points to the range <tt>[a, b)</tt>, otherwise the
+constructor sets <tt>*this</tt> to an end-of-sequence iterator.
+</p></blockquote>
+
+</resolution>
+
+</issue>

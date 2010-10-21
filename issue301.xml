@@ -1,0 +1,41 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="301" status="CD1">
+<title>basic_string template ctor effects clause omits allocator argument</title>
+<section><sref ref="[string.require]"/></section>
+<submitter>Martin Sebor</submitter>
+<date>27 Jan 2001</date>
+
+<discussion>
+<p>
+The effects clause for the basic_string template ctor in 21.3.1, p15
+leaves out the third argument of type Allocator. I believe this to be
+a mistake.
+</p>
+</discussion>
+
+<resolution>
+<p>Replace</p>
+
+<blockquote>
+    <p><b>-15- Effects:</b> If <i><tt>InputIterator</tt></i> is an integral
+    type, equivalent to</p>
+
+    <blockquote><p><tt>basic_string(static_cast&lt;size_type&gt;(begin),
+    static_cast&lt;value_type&gt;(end))</tt></p></blockquote>
+</blockquote>
+
+<p>with</p>
+
+<blockquote>
+    <p><b>-15- Effects:</b> If <i><tt>InputIterator</tt></i> is an integral
+    type, equivalent to</p>
+
+    <blockquote><p><tt>basic_string(static_cast&lt;size_type&gt;(begin),
+    static_cast&lt;value_type&gt;(end), <b>a</b>)</tt></p></blockquote>
+</blockquote>
+</resolution>
+</issue>

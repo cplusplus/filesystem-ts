@@ -1,0 +1,213 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="1199" status="WP">
+<title>Missing extended copy constructor in container adaptors</title>
+<section><sref ref="[container.adaptors]"/></section>
+<submitter>Pablo Halpern</submitter>
+<date>26 Aug 2009</date>
+
+<discussion>
+<p>
+<tt>queue</tt> has a constructor:
+</p>
+
+<blockquote><pre>
+template &lt;class Alloc&gt;
+  queue(queue&amp;&amp;, const Alloc&amp;);
+</pre></blockquote>
+
+<p>
+but it is missing a corresponding constructor:
+</p>
+
+<blockquote><pre>
+template &lt;class Alloc&gt;
+  queue(const queue&amp;, const Alloc&amp;);
+</pre></blockquote>
+
+<p>
+The same is true of <tt>priority_queue</tt>, and <tt>stack</tt>.  This
+"extended copy constructor" is needed for consistency and to ensure that the
+user of a container adaptor can always specify the allocator for his adaptor.
+</p>
+
+<note>
+2010-02-01 Moved to Tentatively Ready after 5 positive votes on c++std-lib.
+</note>
+
+</discussion>
+
+<resolution>
+<note>
+This resolution has been harmonized with the proposed resolution to issue
+<iref ref="1194"/>
+</note>
+
+<p>Change <sref ref="[queue.defn]"/>, p1:</p>
+
+<blockquote><pre>
+template &lt;class T, class Container = deque&lt;T&gt; &gt;
+class queue {
+public:
+  typedef typename Container::value_type      value_type;
+  typedef typename Container::reference       reference;
+  typedef typename Container::const_reference const_reference;
+  typedef typename Container::size_type       size_type;
+  typedef Container                           container_type;
+protected:
+  Container c;
+
+public:
+  explicit queue(const Container&amp;);
+  explicit queue(Container&amp;&amp; = Container());
+  queue(queue&amp;&amp; q);
+
+  template &lt;class Alloc&gt; explicit queue(const Alloc&amp;);
+  template &lt;class Alloc&gt; queue(const Container&amp;, const Alloc&amp;);
+  template &lt;class Alloc&gt; queue(Container&amp;&amp;, const Alloc&amp;);
+  <ins>template &lt;class Alloc&gt; queue(const queue&amp;, const Alloc&amp;);</ins>
+  template &lt;class Alloc&gt; queue(queue&amp;&amp;, const Alloc&amp;);
+  queue&amp; operator=(queue&amp;&amp; q);
+
+  bool empty() const          { return c.empty(); }
+  ...
+};
+</pre></blockquote>
+
+<p>
+To the new section <sref ref="[queue.cons]"/>, introduced
+in <iref ref="1194"/>, add:
+</p>
+
+<blockquote>
+
+<pre>
+template &lt;class Alloc&gt; 
+  queue(const queue&amp; q, const Alloc&amp; a);
+</pre>
+
+<blockquote><p>
+<i>Effects:</i> Initializes <tt>c</tt> with <tt>q.c</tt> as the
+first argument and <tt>a</tt> as the second argument.
+</p></blockquote>
+
+</blockquote>
+
+<p>Change <sref ref="[priority.queue]"/> as follows (I've an included an editorial change to
+  move the poorly-placed move-assignment operator):</p>
+
+<blockquote><pre>
+template &lt;class T, class Container = vector&lt;T&gt;,
+          class Compare = less&lt;typename Container::value_type&gt; &gt;
+class priority_queue {
+public:
+  typedef typename Container::value_type      value_type;
+  typedef typename Container::reference       reference;
+  typedef typename Container::const_reference const_reference;
+  typedef typename Container::size_type       size_type;
+  typedef          Container                  container_type;
+protected:
+  Container c;
+  Compare comp;
+
+public:
+  priority_queue(const Compare&amp; x, const Container&amp;);
+  explicit priority_queue(const Compare&amp; x = Compare(), Container&amp;&amp; = Container());
+  template &lt;class InputIterator&gt;
+    priority_queue(InputIterator first, InputIterator last,
+                   const Compare&amp; x, const Container&amp;);
+  template &lt;class InputIterator&gt;
+    priority_queue(InputIterator first, InputIterator last,
+                   const Compare&amp; x = Compare(), Container&amp;&amp; = Container());
+  priority_queue(priority_queue&amp;&amp;);
+  <del>priority_queue&amp; operator=(priority_queue&amp;&amp;);</del>
+  template &lt;class Alloc&gt; explicit priority_queue(const Alloc&amp;);
+  template &lt;class Alloc&gt; priority_queue(const Compare&amp;, const Alloc&amp;);
+  template &lt;class Alloc&gt; priority_queue(const Compare&amp;,
+                                        const Container&amp;, const Alloc&amp;);
+  template &lt;class Alloc&gt; priority_queue(const Compare&amp;,
+                                        Container&amp;&amp;, const Alloc&amp;);
+  <ins>template &lt;class Alloc&gt; priority_queue(const priority_queue&amp;, const Alloc&amp;);</ins>
+  template &lt;class Alloc&gt; priority_queue(priority_queue&amp;&amp;, const Alloc&amp;);
+
+  <ins>priority_queue&amp; operator=(priority_queue&amp;&amp;);</ins>
+  ...
+};
+</pre></blockquote>
+
+<p>
+Add to <sref ref="[priqueue.cons]"/>:
+</p>
+
+<blockquote>
+
+<pre>
+template &lt;class Alloc&gt;
+  priority_queue(const priority_queue&amp; q, const Alloc&amp; a);
+</pre>
+
+<blockquote><p>
+<i>Effects:</i> Initializes <tt>c</tt> with <tt>q.c</tt> as the
+first argument and <tt>a</tt> as the second argument, 
+and initializes <tt>comp</tt> with <tt>q.comp</tt>.
+</p></blockquote>
+
+</blockquote>
+
+<p>
+Change <sref ref="[stack.defn]"/>:
+</p>
+
+<blockquote><pre>
+template &lt;class T, class Container = deque&lt;T&gt; &gt;
+class stack {
+public:
+  typedef typename Container::value_type      value_type;
+  typedef typename Container::reference       reference;
+  typedef typename Container::const_reference const_reference;
+  typedef typename Container::size_type       size_type;
+  typedef Container                           container_type;
+protected:
+  Container c;
+
+public:
+  explicit stack(const Container&amp;);
+  explicit stack(Container&amp;&amp; = Container());
+  stack(stack&amp;&amp; s);
+
+  template &lt;class Alloc&gt; explicit stack(const Alloc&amp;);
+  template &lt;class Alloc&gt; stack(const Container&amp;, const Alloc&amp;);
+  template &lt;class Alloc&gt; stack(Container&amp;&amp;, const Alloc&amp;);
+  <ins>template &lt;class Alloc&gt; stack(const stack&amp;, const Alloc&amp;);</ins>
+  template &lt;class Alloc&gt; stack(stack&amp;&amp;, const Alloc&amp;);
+  stack&amp; operator=(stack&amp;&amp; s);
+
+  bool empty() const          { return c.empty(); }
+  ...
+};
+</pre></blockquote>
+
+<p>
+To the new section <sref ref="[stack.cons]"/>, introduced
+in <iref ref="1194"/>, add:
+</p>
+
+<blockquote>
+
+<pre>
+template &lt;class Alloc&gt; 
+  stack(const stack&amp; s, const Alloc&amp; a);
+</pre>
+
+<blockquote><p>
+<i>Effects:</i> Initializes <tt>c</tt> with <tt>s.c</tt> as the
+first argument and <tt>a</tt> as the second argument.
+</p></blockquote>
+</blockquote>
+
+</resolution>
+
+</issue>

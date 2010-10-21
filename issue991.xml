@@ -1,0 +1,57 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="991" status="WP">
+<title>Response to JP 50</title>
+<section><sref ref="[conversions.string]"/></section>
+<submitter>P.J. Plauger</submitter>
+<date>3 Mar 2009</date>
+
+<discussion>
+<p>
+Add custom allocator parameter to <tt>wstring_convert</tt>, since we cannot
+allocate memory for strings from a custom allocator.
+</p>
+
+<note>
+Batavia (2009-05):
+</note>
+<blockquote>
+We agree with the proposed resolution.
+Move to Tentatively Ready.
+</blockquote>
+</discussion>
+
+<resolution>
+<p>
+Change <sref ref="[conversions.string]"/>:
+</p>
+
+<blockquote><pre>
+template&lt;class Codecvt, class Elem = wchar_t<ins>,
+         class Wide_alloc = std::allocator&lt;Elem&gt;,
+         class Byte_alloc = std::allocator&lt;char&gt; </ins>&gt; class wstring_convert {
+  public:
+    typedef std::basic_string&lt;char<ins>, char_traits&lt;char&gt;, Byte_alloc</ins>&gt; byte_string;
+    typedef std::basic_string&lt;Elem<ins>, char_traits&lt;Elem&gt;, Wide_alloc</ins>&gt; wide_string;
+     ...
+</pre></blockquote>
+
+<p>
+Change <sref ref="[conversions.string]"/>, p3:
+</p>
+
+<blockquote>
+-3- The class template describes an ob ject that controls conversions
+between wide string ob jects of class
+<tt>std::basic_string&lt;Elem<ins>, char_traits&lt;Elem&gt;, Wide_alloc</ins>&gt;</tt>
+and byte string objects of class
+<tt>std::basic_string&lt;char<ins>, char_traits&lt;char&gt;, Byte_alloc</ins>&gt;</tt>
+<del>(also known as <tt>std::string</tt>)</del>.
+</blockquote>
+
+</resolution>
+
+</issue>

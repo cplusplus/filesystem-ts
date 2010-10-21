@@ -1,0 +1,52 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="888" status="WP">
+<title>this_thread::yield too strong</title>
+<section><sref ref="[thread.thread.this]"/></section>
+<submitter>Lawrence Crowl</submitter>
+<date>15 Sep 2008</date>
+
+<discussion>
+<p>
+I never thought I'd say this, but <tt>this_thread::yield</tt> seems to be too
+strong in specification.  The issue is that some systems distinguish
+between yielding to another thread in the same process and yielding
+to another process.  Given that the C++ standard only talks about
+a single program, one can infer that the specification allows yielding
+only to another thread within the same program.  Posix has no
+facility for that behavior.  Can you please file an issue to weaken
+the wording.  Perhaps "Offers the operating system the opportunity
+to reschedule."
+</p>
+
+<note>
+Post Summit:
+</note>
+
+<blockquote>
+Recommend move to Tentatively Ready.
+</blockquote>
+
+</discussion>
+
+<resolution>
+<p>
+Change <sref ref="[thread.thread.this]"/>/3:
+</p>
+
+<blockquote>
+<pre>
+void this_thread::yield();
+</pre>
+<blockquote>
+<i>Effects:</i> Offers the <del>operating system</del> <ins>implementation</ins>
+the opportunity to <ins>re</ins>schedule.
+<del>another thread.</del>
+</blockquote>
+</blockquote>
+</resolution>
+
+</issue>

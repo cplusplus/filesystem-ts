@@ -1,0 +1,107 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="1294" status="New">
+<title>Difference between callable wrapper and forwarding  call wrapper unclear</title>
+<section><sref ref="[func.require]"/></section>
+<submitter>Jens Maurer</submitter>
+<date>21 Dec 2009</date>
+
+<discussion>
+<p>
+The current wording in the standard makes it hard to discriminate the difference
+between a "call wrapper" as defined in <sref ref="[func.def]"/>/5+6:
+</p>
+
+<blockquote>
+<p>
+5 A <i>call wrapper type</i> is a type that holds a callable object and supports
+a call operation that forwards to that object.
+</p>
+<p>
+6 A <i>call wrapper</i> is an object of a call wrapper type.
+</p>
+</blockquote>
+
+<p>
+and a "forwarding call wrapper" as defined in <sref ref="[func.require]"/>/4:
+</p>
+
+<blockquote>
+<p>
+4 [..] A <i>forwarding call wrapper</i> is a call wrapper that can be called
+with an argument list. [<i>Note:</i> in a typical implementation forwarding call
+wrappers have an overloaded function call operator of the form
+</p>
+
+<blockquote><pre>
+template&lt;class... ArgTypes&gt;
+R operator()(ArgTypes&amp;&amp;... args) <i>cv-qual</i>;
+</pre></blockquote>
+
+<p>
+&mdash; <i>end note</i>]
+</p>
+</blockquote>
+
+<p>
+Reason for this lack of clear difference seems to be that the wording adaption
+to variadics and rvalues that were applied after it's original proposal in <a
+href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2004/n1673.html#call%20wrapper">N1673</a>:
+</p>
+
+<blockquote>
+<p>
+[..] A <b>forwarding call wrapper</b> is a call wrapper that can be called
+with an argument list <tt>t1, t2, ..., tN</tt> where each <tt>ti</tt> is an lvalue.
+The effect of calling a forwarding call wrapper with one or more
+arguments that are rvalues is implementation defined. [<i>Note:</i> in
+a typical implementation forwarding call wrappers have overloaded
+function call operators of the form
+</p>
+
+<blockquote><pre>
+template&lt;class T1, class T2, ..., class TN&gt;
+R operator()(T1&amp; t1, T2&amp; t2, ..., TN&amp; tN) <i>cv-qual</i>;
+</pre></blockquote>
+
+<p>
+&mdash; <i>end note</i>]
+</p>
+</blockquote>
+
+<p>
+combined with the fact that the word "forward" has two different meanings in
+this context. This issue attempts to clarify the difference better.
+</p>
+</discussion>
+
+<resolution>
+<p>
+Change <sref ref="[func.require]"/>/4 as indicated:
+</p>
+
+<blockquote>
+<p>
+4 [..] A <i>forwarding call wrapper</i> is a call wrapper that can be called
+with an <ins>arbitrary</ins> argument list<ins> and uses perfect forwarding to
+deliver the arguments to the wrapped callable object</ins>. [<i>Note:</i> in a
+typical implementation forwarding call wrappers have an overloaded function call
+operator of the form
+</p>
+
+<blockquote><pre>
+template&lt;class... ArgTypes&gt;
+R operator()(ArgTypes&amp;&amp;... args) <i>cv-qual</i>;
+</pre></blockquote>
+
+<p>
+&mdash; <i>end note</i>]
+</p>
+</blockquote>
+
+</resolution>
+
+</issue>

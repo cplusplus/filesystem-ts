@@ -1,0 +1,63 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="51" status="TC1">
+<title>Requirement to not invalidate iterators missing</title>
+<section><sref ref="[container.requirements]"/></section>
+<submitter>David Vandevoorde</submitter>
+<date>23 Jun 1998</date>
+
+<discussion>
+<p>The std::sort algorithm can in general only sort a given sequence
+by moving around values. The list&lt;&gt;::sort() member on the other
+hand could move around values or just update internal pointers. Either
+method can leave iterators into the list&lt;&gt; dereferencable, but
+they would point to different things. </p>
+
+<p>Does the FDIS mandate anywhere which method should be used for
+list&lt;&gt;::sort()?</p>
+
+<p>Matt Austern comments:</p>
+
+<p>I think you've found an omission in the standard. </p>
+
+<p>The library working group discussed this point, and there was
+supposed to be a general requirement saying that list, set, map,
+multiset, and multimap may not invalidate iterators, or change the
+values that iterators point to, except when an operation does it
+explicitly. So, for example, insert() doesn't invalidate any iterators
+and erase() and remove() only invalidate iterators pointing to the
+elements that are being erased. </p>
+
+<p>I looked for that general requirement in the FDIS, and, while I
+found a limited form of it for the sorted associative containers, I
+didn't find it for list. It looks like it just got omitted. </p>
+
+<p>The intention, though, is that list&lt;&gt;::sort does not
+invalidate any iterators and does not change the values that any
+iterator points to. There would be no reason to have the member
+function otherwise.</p>
+</discussion>
+
+<resolution>
+<p>Add a new paragraph at the end of 23.1:</p>
+
+<blockquote>
+  <p>Unless otherwise specified (either explicitly or by defining a function in terms of
+  other functions), invoking a container member function or passing a container as an
+  argument to a library function shall not invalidate iterators to, or change the values of,
+  objects within that container. </p>
+</blockquote>
+</resolution>
+
+<rationale>
+<p>This was US issue CD2-23-011; it was accepted in London but the
+change was not made due to an editing oversight. The wording in the
+proposed resolution below is somewhat updated from CD2-23-011,
+particularly the addition of the phrase &quot;or change the values
+of&quot;</p>
+</rationale>
+
+</issue>

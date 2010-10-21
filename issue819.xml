@@ -1,0 +1,94 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="819" status="WP">
+<title>rethrow_if_nested</title>
+<section><sref ref="[except.nested]"/></section>
+<submitter>Alisdair Meredith</submitter>
+<date>25 Mar 2008</date>
+
+<discussion>
+<p>
+Looking at the wording I submitted for <tt>rethrow_if_nested</tt>, I don't think I
+got it quite right.
+</p>
+
+<p>
+The current wording says:
+</p>
+
+<blockquote>
+<pre>
+template &lt;class E&gt; void rethrow_if_nested(const E&amp; e);
+</pre>
+<blockquote>
+<p>
+<i>Effects:</i> Calls <tt>e.rethrow_nested()</tt> only if <tt>e</tt>
+is publicly derived from <tt>nested_exception</tt>.
+</p>
+</blockquote>
+</blockquote>
+
+<p>
+This is trying to be a bit subtle, by requiring <tt>e</tt> (not <tt>E</tt>) to be publicly
+derived from <tt>nested_exception</tt> the idea is that a <tt>dynamic_cast</tt> would be
+required to be sure.  Unfortunately, if <tt>e</tt> is dynamically but not statically
+derived from <tt>nested_exception</tt>, <tt>e.rethrow_nested()</tt> is ill-formed.
+</p>
+
+<note>
+San Francisco:
+</note>
+
+<blockquote>
+Alisdair was volunteered to provide wording.
+</blockquote>
+
+<note>
+2009-10 Santa Cruz:
+</note>
+
+<blockquote>
+Leave as Open. Alisdair to provide wording.
+</blockquote>
+
+<note>
+2009-11-09 Alisdair provided wording.
+</note>
+
+<note>
+2010-03-10 Dietmar updated wording.
+</note>
+
+<note>
+2010 Pittsburgh:
+</note>
+
+<blockquote>
+Moved to Ready for Pittsburgh.
+</blockquote>
+
+</discussion>
+
+<resolution>
+<p>
+Change <sref ref="[except.nested]"/>, p8:
+</p>
+
+<blockquote><pre>
+template &lt;class E&gt; void rethrow_if_nested(const E&amp; e);
+</pre>
+<blockquote>
+-8- <i>Effects:</i> <del>Calls <tt>e.rethrow_nested()</tt>
+o</del><ins>O</ins>nly if <ins>the dynamic type of</ins> <tt>e</tt> is
+publicly <ins>and unambiguously</ins> derived from
+<tt>nested_exception</tt> <ins>this calls
+<tt>dynamic_cast&lt;const nested_exception&amp;&gt;(e).rethrow_nested()</tt></ins>.
+</blockquote>
+</blockquote>
+
+</resolution>
+
+</issue>

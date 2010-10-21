@@ -1,0 +1,253 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="1262" status="WP">
+<title><tt>std::less&lt;std::shared_ptr&lt;T&gt;&gt;</tt> is underspecified</title>
+<section><sref ref="[util.smartptr.shared.cmp]"/></section>
+<submitter>Jonathan Wakely</submitter>
+<date>10 Nov 2009</date>
+
+<discussion>
+<p>
+<sref ref="[util.smartptr.shared.cmp]"/>/5 says:
+</p>
+
+<blockquote>
+For templates <tt>greater</tt>, <tt>less</tt>, <tt>greater_equal</tt>, and <tt>less_equal</tt>, the
+partial specializations for <tt>shared_ptr</tt> shall yield a total order, even if
+the built-in operators <tt>&lt;</tt>, <tt>&gt;</tt>,
+<tt>&lt;=</tt>, and <tt>&gt;=</tt> do not. Moreover,
+<tt>less&lt;shared_ptr&lt;T&gt; &gt;::operator()(a, b)</tt> shall return
+<tt>std::less&lt;T*&gt;::operator()(a.get(), b.get())</tt>.
+</blockquote>
+
+<p>
+This is necessary in order to use <tt>shared_ptr</tt> as the key in associate
+containers because
+<a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2008/n2637.pdf">n2637</a>
+changed <tt>operator&lt;</tt> on <tt>shared_ptr</tt>s to be
+defined in terms of <tt>operator&lt;</tt> on the stored pointers (a mistake IMHO
+but too late now.)  By <sref ref="[expr.rel]"/>/2 the result of comparing builtin
+pointers is unspecified except in special cases which generally do not
+apply to <tt>shared_ptr</tt>.
+</p>
+
+<p>
+Earlier versions of the WP
+(<a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2008/n2798.pdf">n2798</a>,
+<a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2009/n2857.pdf">n2857</a>)
+had the following note on
+that paragraph:
+</p>
+
+<blockquote>
+[Editor's
+note: It's not clear to me whether the first sentence is a requirement
+or a note. The second
+sentence seems to be a requirement, but it doesn't really belong here,
+under <tt>operator&lt;</tt>.]
+</blockquote>
+
+<p>
+I agree completely - if partial specializations are needed they should
+be properly specified.
+</p>
+
+<p>
+<sref ref="[util.smartptr.shared.cmp]"/>/6 has a note saying the comparison operator
+allows <tt>shared_ptr</tt> objects to be used as keys in associative
+containers, which is misleading because something else like a
+<tt>std::less</tt> partial specialization is needed.  If it is not correct that
+note should be removed.
+</p>
+
+<p>
+<sref ref="[util.smartptr.shared.cmp]"/>/3 refers to '<tt>x</tt>' and
+'<tt>y</tt>' but the prototype has parameters '<tt>a</tt>' and
+'<tt>b</tt>' - that needs to be fixed even if the rest of the issue is
+NAD.
+</p>
+
+<p>
+I see two ways to fix this, I prefer the first because it removes the
+need for any partial specializations and also fixes <tt>operator&gt;</tt> and
+other comparisons when defined in terms of <tt>operator&lt;</tt>.
+</p>
+
+<ol>
+<li>
+<p>
+Replace <sref ref="[util.smartptr.shared.cmp]"/>/3 with the following and
+remove p5:
+</p>
+
+<blockquote><pre>
+template&lt;class T, class U&gt; bool operator&lt;(const shared_ptr&lt;T&gt;&amp; a, const shared_ptr&lt;U&gt;&amp; b);
+</pre>
+<blockquote>
+<p>
+3  <i>Returns:</i> <del><tt>x.get() &lt; y.get()</tt>.</del>
+<ins><tt>std::less&lt;V&gt;()(a.get(), b.get())</tt>, where <tt>V</tt> is the
+composite pointer type (<sref ref="[expr.rel]"/>).</ins>
+</p>
+
+<p>
+4 <i>Throws:</i> nothing.
+</p>
+
+<p><del>
+5 For templates <tt>greater</tt>, <tt>less</tt>, <tt>greater_equal</tt>, and <tt>less_equal</tt>, the
+partial specializations for <tt>shared_ptr</tt> shall yield a total order, even if
+the built-in operators <tt>&lt;</tt>, <tt>&gt;</tt>,
+<tt>&lt;=</tt>, and <tt>&gt;=</tt> do not. Moreover,
+<tt>less&lt;shared_ptr&lt;T&gt; &gt;::operator()(a, b)</tt> shall return
+<tt>std::less&lt;T*&gt;::operator()(a.get(), b.get())</tt>.
+</del></p>
+<p>
+6 [<i>Note:</i> Defining a comparison operator allows
+<tt>shared_ptr</tt> objects to be used as keys in associative
+containers. &mdash; <i>end note</i>]
+</p>
+</blockquote>
+</blockquote>
+</li>
+
+
+<li>
+<p>
+Add to <sref ref="[util.smartptr.shared]"/>/1 (after the <tt>shared_ptr</tt> comparisons)
+</p>
+
+<blockquote><pre>
+template&lt;class T&gt; struct greater&lt;shared_ptr&lt;T&gt;&gt;;
+template&lt;class T&gt; struct less&lt;shared_ptr&lt;T&gt;&gt;;
+template&lt;class T&gt; struct greater_equal&lt;shared_ptr&lt;T&gt;&gt;;
+template&lt;class T&gt; struct less_equal&lt;shared_ptr&lt;T&gt;&gt;;
+</pre></blockquote>
+
+<p>
+Remove <sref ref="[util.smartptr.shared.cmp]"/>/5 and /6 and replace with:
+</p>
+
+<blockquote><pre>
+template&lt;class T, class U&gt; bool operator&lt;(const shared_ptr&lt;T&gt;&amp; a, const shared_ptr&lt;U&gt;&amp; b);
+</pre>
+<blockquote>
+<p>
+3  <i>Returns:</i> <tt><del>x</del><ins>a</ins>.get() &lt; <del>y</del><ins>b</ins>.get()</tt>.
+</p>
+
+<p>
+4 <i>Throws:</i> nothing.
+</p>
+
+<p><del>
+5 For templates <tt>greater</tt>, <tt>less</tt>, <tt>greater_equal</tt>, and <tt>less_equal</tt>, the
+partial specializations for <tt>shared_ptr</tt> shall yield a total order, even if
+the built-in operators <tt>&lt;</tt>, <tt>&gt;</tt>,
+<tt>&lt;=</tt>, and <tt>&gt;=</tt> do not. Moreover,
+<tt>less&lt;shared_ptr&lt;T&gt; &gt;::operator()(a, b)</tt> shall return
+<tt>std::less&lt;T*&gt;::operator()(a.get(), b.get())</tt>.
+</del></p>
+<p><del>
+6 [<i>Note:</i> Defining a comparison operator allows
+<tt>shared_ptr</tt> objects to be used as keys in associative
+containers. &mdash; <i>end note</i>]
+</del></p>
+</blockquote>
+
+<pre><ins>
+template&lt;class T&gt; struct greater&lt;shared_ptr&lt;T&gt;&gt; :
+binary_function&lt;shared_ptr&lt;T&gt;, shared_ptr&lt;T&gt;, bool&gt; {
+  bool operator()(const shared_ptr&lt;T&gt;&amp; a, const shared_ptr&lt;T&gt;&amp; b) const;
+};
+</ins></pre>
+
+<blockquote><ins>
+<tt>operator()</tt> returns <tt>greater&lt;T*&gt;()(a.get(), b.get())</tt>.
+</ins></blockquote>
+
+<pre><ins>
+template&lt;class T&gt; struct less&lt;shared_ptr&lt;T&gt;&gt; :
+binary_function&lt;shared_ptr&lt;T&gt;, shared_ptr&lt;T&gt;, bool&gt; {
+  bool operator()(const shared_ptr&lt;T&gt;&amp; a, const shared_ptr&lt;T&gt;&amp; b) const;
+};
+</ins></pre>
+
+<blockquote><ins>
+<tt>operator()</tt> returns <tt>less&lt;T*&gt;()(a.get(), b.get())</tt>.
+</ins></blockquote>
+
+<pre><ins>
+template&lt;class T&gt; struct greater_equal&lt;shared_ptr&lt;T&gt;&gt; :
+binary_function&lt;shared_ptr&lt;T&gt;, shared_ptr&lt;T&gt;, bool&gt; {
+  bool operator()(const shared_ptr&lt;T&gt;&amp; a, const shared_ptr&lt;T&gt;&amp; b) const;
+};
+</ins></pre>
+
+<blockquote><ins>
+<tt>operator()</tt> returns <tt>greater_equal&lt;T*&gt;()(a.get(), b.get())</tt>.
+</ins></blockquote>
+
+<pre><ins>
+template&lt;class T&gt; struct less_equal&lt;shared_ptr&lt;T&gt;&gt; :
+binary_function&lt;shared_ptr&lt;T&gt;, shared_ptr&lt;T&gt;, bool&gt; {
+  bool operator()(const shared_ptr&lt;T&gt;&amp; a, const shared_ptr&lt;T&gt;&amp; b) const;
+};
+</ins></pre>
+
+<blockquote><ins>
+<tt>operator()</tt> returns <tt>less_equal&lt;T*&gt;()(a.get(), b.get())</tt>.
+</ins></blockquote>
+
+</blockquote>
+</li>
+</ol>
+
+<note>
+2009-11-18: Moved to Tentatively Ready after 5 positive votes on c++std-lib.
+</note>
+
+</discussion>
+
+<resolution>
+<p>
+Replace <sref ref="[util.smartptr.shared.cmp]"/>/3 with the following and
+remove p5:
+</p>
+
+<blockquote><pre>
+template&lt;class T, class U&gt; bool operator&lt;(const shared_ptr&lt;T&gt;&amp; a, const shared_ptr&lt;U&gt;&amp; b);
+</pre>
+<blockquote>
+<p>
+3  <i>Returns:</i> <del><tt>x.get() &lt; y.get()</tt>.</del>
+<ins><tt>less&lt;V&gt;()(a.get(), b.get())</tt>, where <tt>V</tt> is the
+composite pointer type (<sref ref="[expr.rel]"/>) of <tt>T*</tt> and <tt>U*</tt>.</ins>
+</p>
+
+<p>
+4 <i>Throws:</i> nothing.
+</p>
+
+<p><del>
+5 For templates <tt>greater</tt>, <tt>less</tt>, <tt>greater_equal</tt>, and <tt>less_equal</tt>, the
+partial specializations for <tt>shared_ptr</tt> shall yield a total order, even if
+the built-in operators <tt>&lt;</tt>, <tt>&gt;</tt>,
+<tt>&lt;=</tt>, and <tt>&gt;=</tt> do not. Moreover,
+<tt>less&lt;shared_ptr&lt;T&gt; &gt;::operator()(a, b)</tt> shall return
+<tt>std::less&lt;T*&gt;::operator()(a.get(), b.get())</tt>.
+</del></p>
+<p>
+6 [<i>Note:</i> Defining a comparison operator allows
+<tt>shared_ptr</tt> objects to be used as keys in associative
+containers. &mdash; <i>end note</i>]
+</p>
+</blockquote>
+</blockquote>
+
+</resolution>
+
+</issue>

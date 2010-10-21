@@ -1,0 +1,62 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="300" status="CD1">
+<title>list::merge() specification incomplete</title>
+<section><sref ref="[list.ops]"/></section>
+<submitter>John Pedretti</submitter>
+<date>23 Jan 2001</date>
+
+<discussion>
+<p>
+The &quot;Effects&quot; clause for list::merge() (<sref ref="[list.ops]"/>, p23)
+appears to be incomplete: it doesn't cover the case where the argument
+list is identical to *this (i.e., this == &amp;x). The requirement in the
+note in p24 (below) is that x be empty after the merge which is surely
+unintended in this case.
+</p>
+</discussion>
+
+<resolution>
+<p>In <sref ref="[list.ops]"/>, replace paragraps 23-25 with:</p>
+<blockquote>
+<p>
+23 Effects: if (&amp;x == this) does nothing; otherwise, merges the two
+sorted ranges [begin(), end()) and [x.begin(), x.end()).  The result
+is a range in which the elements will be sorted in non-decreasing
+order according to the ordering defined by comp; that is, for every
+iterator i in the range other than the first, the condition comp(*i,
+*(i - 1)) will be false.
+</p>
+
+<p>
+24 Notes: Stable: if (&amp;x != this), then for equivalent elements in the
+two original ranges, the elements from the original range [begin(),
+end()) always precede the elements from the original range [x.begin(),
+x.end()).  If (&amp;x != this) the range [x.begin(), x.end()) is empty
+after the merge.
+</p>
+
+<p>
+25 Complexity: At most size() + x.size() - 1 applications of comp if
+(&amp;x !  = this); otherwise, no applications of comp are performed.  If
+an exception is thrown other than by a comparison there are no
+effects.
+</p>
+
+</blockquote>
+
+<note>Copenhagen: The original proposed resolution did not fix all of
+the problems in <sref ref="[list.ops]"/>, p22-25.  Three different
+paragraphs (23, 24, 25) describe the effects of <tt>merge</tt>.
+Changing p23, without changing the other two, appears to introduce
+contradictions.  Additionally, "merges the argument list into the
+list" is excessively vague.</note>
+
+<note>Post-Cura&ccedil;ao: Robert Klarer provided new wording.</note>
+
+</resolution>
+
+</issue>

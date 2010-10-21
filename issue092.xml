@@ -1,0 +1,107 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="92" status="CD1">
+<title>Incomplete Algorithm Requirements</title>
+<section><sref ref="[algorithms]"/></section>
+<submitter>Nico Josuttis</submitter>
+<date>29 Sep 1998</date>
+
+<discussion>
+<p>The standard does not state, how often a function object is copied,
+called, or the order of calls inside an algorithm. This may lead to
+surprising/buggy behavior. Consider the following example: </p>
+
+<pre>class Nth {    // function object that returns true for the nth element 
+  private: 
+    int nth;     // element to return true for 
+    int count;   // element counter 
+  public: 
+    Nth (int n) : nth(n), count(0) { 
+    } 
+    bool operator() (int) { 
+        return ++count == nth; 
+    } 
+}; 
+.... 
+// remove third element 
+    list&lt;int&gt;::iterator pos; 
+    pos = remove_if(coll.begin(),coll.end(),  // range 
+                    Nth(3)),                  // remove criterion 
+    coll.erase(pos,coll.end()); </pre>
+
+<p>This call, in fact removes the 3rd <b>AND the 6th</b> element. This
+happens because the usual implementation of the algorithm copies the
+function object internally: </p>
+
+<pre>template &lt;class ForwIter, class Predicate&gt; 
+ForwIter std::remove_if(ForwIter beg, ForwIter end, Predicate op) 
+{ 
+    beg = find_if(beg, end, op); 
+    if (beg == end) { 
+        return beg; 
+    } 
+    else { 
+        ForwIter next = beg; 
+        return remove_copy_if(++next, end, beg, op); 
+    } 
+} </pre>
+
+<p>The algorithm uses find_if() to find the first element that should
+be removed. However, it then uses a copy of the passed function object
+to process the resulting elements (if any). Here, Nth is used again
+and removes also the sixth element. This behavior compromises the
+advantage of function objects being able to have a state. Without any
+cost it could be avoided (just implement it directly instead of
+calling find_if()). </p>
+</discussion>
+
+<resolution>
+
+<p>Add a new paragraph following <sref ref="[algorithms]"/> paragraph 8:</p>
+<blockquote><p>
+[Note: Unless otherwise specified, algorithms that take function
+objects as arguments are permitted to copy those function objects
+freely.  Programmers for whom object identity is important should
+consider using a wrapper class that points to a noncopied
+implementation object, or some equivalent solution.]
+</p></blockquote>
+
+<note>Dublin: Pete Becker felt that this may not be a defect,
+but rather something that programmers need to be educated about.
+There was discussion of adding wording to the effect that the number
+and order of calls to function objects, including predicates, not
+affect the behavior of the function object.</note>
+
+<note>Pre-Kona: Nico comments: It seems the problem is that we don't
+have a clear statement of &quot;predicate&quot; in the
+standard. People including me seemed to think &quot;a function
+returning a Boolean value and being able to be called by an STL
+algorithm or be used as sorting criterion or ... is a
+predicate&quot;. But a predicate has more requirements: It should
+never change its behavior due to a call or being copied. IMHO we have
+to state this in the standard. If you like, see section 8.1.4 of my
+library book for a detailed discussion.</note>
+
+<note>Kona: Nico will provide wording to the effect that &quot;unless
+otherwise specified, the number of copies of and calls to function
+objects by algorithms is unspecified&quot;.&nbsp; Consider placing in
+<sref ref="[algorithms]"/> after paragraph 9.</note>
+
+<note>Santa Cruz: The standard doesn't currently guarantee that
+  functions object won't be copied, and what isn't forbidden is
+  allowed.  It is believed (especially since implementations that were
+  written in concert with the standard do make copies of function
+  objects) that this was intentional.  Thus, no normative change is
+  needed.  What we should put in is a non-normative note suggesting to
+  programmers that if they want to guarantee the lack of copying they
+  should use something like the <tt>ref</tt> wrapper.</note>
+
+<note>Oxford: Matt provided wording.</note>
+
+
+</resolution>
+
+</issue>

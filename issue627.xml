@@ -1,0 +1,36 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="627" status="NAD">
+<title>Low memory and exceptions</title>
+<section><sref ref="[new.delete.single]"/></section>
+<submitter>P.J. Plauger</submitter>
+<date>23 Jan 2007</date>
+
+<discussion>
+<p>
+I recognize the need for nothrow guarantees in the exception reporting
+mechanism, but I strongly believe that implementors also need an escape hatch
+when memory gets really low. (Like, there's not enough heap to construct and
+copy exception objects, or not enough stack to process the throw.) I'd like to
+think we can put this escape hatch in <sref ref="[new.delete.single]"/>,
+<tt>operator new</tt>, but I'm not sure how to do it. We need more than a
+footnote, but the wording has to be a bit vague. The idea is that if
+<tt>new</tt> can't allocate something sufficiently small, it has the right to
+<tt>abort</tt>/call <tt>terminate</tt>/call <tt>unexpected</tt>.
+</p>
+
+<note>
+Bellevue: NAD.  1.4p2 specifies a program must behave correctly "within
+its resource limits", so no further escape hatch is necessary.
+</note>
+</discussion>
+
+<resolution>
+<p>
+</p>
+</resolution>
+
+</issue>

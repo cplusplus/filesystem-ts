@@ -1,0 +1,75 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp " ">
+] >
+
+<issue num="340" status="CD1">
+<title>interpretation of <tt>has_facet&lt;Facet&gt;(loc)</tt></title>
+<section><sref ref="[locale.category]"/></section>
+<submitter>Martin Sebor</submitter>
+<date>18 Sep 2001</date>
+
+<discussion>
+<p>
+It's unclear whether 22.1.1.1.1, p3 says that
+<tt>has_facet&lt;Facet&gt;(loc)</tt> returns true for any <tt>Facet</tt>
+from Table 51 or whether it includes Table 52 as well:
+</p>
+
+<blockquote><p>
+For any locale <tt>loc</tt> either constructed, or returned by
+locale::classic(), and any facet <tt>Facet</tt> that is a member of a
+standard category, <tt>has_facet&lt;Facet&gt;(loc)</tt> is true. Each
+locale member function which takes a <tt>locale::category</tt>
+argument operates on the corresponding set of facets.
+</p></blockquote>
+
+<p>
+It seems that it comes down to which facets are considered to be members of a
+standard category. Intuitively, I would classify all the facets in Table 52 as
+members of their respective standard categories, but there are an unbounded set
+of them...
+</p>
+
+<p>
+The paragraph implies that, for instance, <tt>has_facet&lt;num_put&lt;C,
+OutputIterator&gt; &gt;(loc)</tt> must always return true. I don't think that's
+possible. If it were, then <tt>use_facet&lt;num_put&lt;C, OutputIterator&gt;
+&gt;(loc)</tt> would have to return a reference to a distinct object for each
+valid specialization of <tt>num_put&lt;C, OutputIteratory&gt;</tt>, which is
+clearly impossible.
+</p>
+
+<p>
+On the other hand, if none of the facets in Table 52 is a member of a standard
+category then none of the locale member functions that operate on entire
+categories of facets will work properly.
+</p>
+
+<p>
+It seems that what p3 should mention that it's required (permitted?)
+to hold only for specializations of <tt>Facet</tt> from Table 52 on
+<tt>C</tt> from the set { <tt>char</tt>, <tt>wchar_t</tt> }, and
+<tt>InputIterator</tt> and <tt>OutputIterator</tt> from the set of
+{
+{i,o}<tt>streambuf_iterator</tt>&lt;{<tt>char</tt>,<tt>wchar_t</tt>}<tt>&gt;</tt>
+}.
+</p>
+</discussion>
+
+<resolution>
+<p>In <sref ref="[locale.category]"/>, paragraph 3, change
+"that is a member of a standard category" to "shown in Table 51".</p>
+</resolution>
+
+<rationale>
+<p>The facets in Table 52 are an unbounded set.  Locales should not be
+required to contain an infinite number of facets.</p> 
+
+<p>It's not necessary to talk about which values of InputIterator and
+OutputIterator must be supported.  Table 51 already contains a
+complete list of the ones we need.</p>
+</rationale>
+
+</issue>
+

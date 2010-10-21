@@ -1,0 +1,140 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="1147" status="NAD Editorial">
+<title>non-volatile atomic functions</title>
+<section><sref ref="[atomics.types.operations]"/></section>
+<submitter>Jeffrey Yasskin</submitter>
+<date>16 Jun 2009</date>
+
+<discussion>
+
+<p><b>Addresses US 90</b></p>
+
+<p>
+The C++0X draft
+declares all of the functions dealing with atomics (section <sref ref="[atomics.types.operations]"/>)
+to take volatile arguments.
+Yet it also says (29.4-3),
+</p>
+
+<blockquote>
+<p>
+[ Note: Many operations are volatile-qualified.
+The "volatile as device register" semantics have not changed in the standard.
+This qualification means that volatility is preserved
+when applying these operations to volatile objects.
+It does not mean that operations on non-volatile objects become volatile.
+Thus, volatile qualified operations on non-volatile objects
+may be merged under some conditions. &mdash;end note ]
+</p>
+</blockquote>
+
+<p>
+I was thinking about how to implement this in gcc,
+and I believe that we'll want to overload most of the functions
+on volatile and non-volatile.
+Here's why:
+</p>
+
+<p>
+To let the compiler take advantage of the permission
+to merge non-volatile atomic operations and reorder atomics in certain,
+we'll need to tell the compiler backend
+about exactly which atomic operation was used.
+So I expect most of the functions of the form atomic_&lt;op&gt;_explicit()
+(e.g. atomic_load_explicit, atomic_exchange_explicit,
+atomic_fetch_add_explicit, etc.)
+to become compiler builtins.
+A builtin can tell whether its argument was volatile or not,
+so those functions don't really need extra explicit overloads.
+However, I don't expect that we'll want to add builtins
+for every function in chapter 29,
+since most can be implemented in terms of the _explicit free functions:
+</p>
+
+<pre><code>class atomic_int {
+  __atomic_int_storage value;
+ public:
+  int fetch_add(int increment, memory_order order = memory_order_seq_cst) volatile {
+    // &amp;value has type "volatile __atomic_int_storage*".
+    atomic_fetch_add_explicit(&amp;value, increment, order);
+  }
+  ...
+};
+</code></pre>
+
+<p>
+But now this <em>always</em> calls
+the volatile builtin version of atomic_fetch_add_explicit(),
+even if the atomic_int wasn't declared volatile.
+To preserve volatility and the compiler's permission to optimize,
+I'd need to write:
+</p>
+
+<pre><code>class atomic_int {
+  __atomic_int_storage value;
+ public:
+  int fetch_add(int increment, memory_order order = memory_order_seq_cst) volatile {
+    atomic_fetch_add_explicit(&amp;value, increment, order);
+  }
+  int fetch_add(int increment, memory_order order = memory_order_seq_cst) {
+    atomic_fetch_add_explicit(&amp;value, increment, order);
+  }
+  ...
+};
+</code></pre>
+
+<p>
+But this is visibly different from the declarations in the standard
+because it's now overloaded.
+(Consider passing &amp;atomic_int::fetch_add as a template parameter.)
+</p>
+
+<p>
+The implementation may already have permission to add overloads
+to the member functions:
+</p>
+
+<blockquote>
+<p>
+<sref ref="[member.functions]"/> An implementation may declare additional non-virtual
+member function signatures within a class:<br/>
+...
+</p>
+<ul>
+<li>by adding a member function signature for a member function name.</li>
+</ul>
+</blockquote>
+
+<p>
+but I don't see an equivalent permission to add overloads to the free functions.
+</p>
+
+<note>
+2009-06-16 Lawrence adds:
+</note>
+
+<blockquote>
+<p>
+I recommend allowing non-volatile overloads.
+</p>
+</blockquote>
+
+<note>
+2009-10 Santa Cruz:
+</note>
+
+<blockquote>
+NAD Editorial.  Solved by
+<a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2009/n2992.html">N2992</a>.
+</blockquote>
+
+</discussion>
+
+<resolution>
+</resolution>
+
+</issue>

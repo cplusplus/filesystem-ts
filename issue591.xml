@@ -1,0 +1,72 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="591" status="NAD Editorial">
+<title>Misleading "built-in</title>
+<section><sref ref="[numeric.limits.members]"/></section>
+<submitter>whyglinux</submitter>
+<date>8 Aug 2006</date>
+
+<discussion>
+<p>
+18.2.1.2 numeric_limits members [lib.numeric.limits.members]
+Paragraph 7:
+</p>
+<blockquote><p>
+"For built-in integer types, the number of non-sign bits in the
+representation."
+</p></blockquote>
+
+<p>
+26.1 Numeric type requirements [lib.numeric.requirements]
+Footnote:
+</p>
+
+<blockquote><p>
+"In other words, value types. These include built-in arithmetic types,
+pointers, the library class complex, and instantiations of valarray for
+value types."
+</p></blockquote>
+
+<p>
+Integer types (which are bool, char, wchar_t, and the signed and
+unsigned integer types) and arithmetic types (which are integer and
+floating types) are all built-in types and thus there are no
+non-built-in (that is, user-defined) integer or arithmetic types. Since
+the redundant "built-in" in the above 2 sentences can mislead that
+there may be built-in or user-defined integer and arithmetic types
+(which is not correct), the "built-in" should be removed.
+</p>
+</discussion>
+
+<resolution>
+<p>
+18.2.1.2 numeric_limits members [lib.numeric.limits.members]
+Paragraph 7:
+</p>
+<blockquote><p>
+"For <del>built-in</del> integer types, the number of non-sign bits in the
+representation."
+</p></blockquote>
+
+<p>
+26.1 Numeric type requirements [lib.numeric.requirements]
+Footnote:
+</p>
+
+<blockquote><p>
+"In other words, value types. These include <del>built-in</del> arithmetic types,
+pointers, the library class complex, and instantiations of valarray for
+value types."
+</p></blockquote>
+</resolution>
+
+<rationale>
+<p>
+Recommend NAD / Editorial.  The proposed resolution is accepted as editorial.
+</p>
+</rationale>
+
+</issue>

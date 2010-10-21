@@ -1,0 +1,35 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="86" status="TC1">
+<title>String constructors don't describe exceptions</title>
+<section><sref ref="[string.require]"/></section>
+<submitter>Nico Josuttis</submitter>
+<date>29 Sep 1998</date>
+
+<discussion>
+<p>The constructor from a range:</p>
+
+<pre>template&lt;class InputIterator&gt; 
+         basic_string(InputIterator begin, InputIterator end, 
+                      const Allocator&amp; a = Allocator());</pre>
+
+<p>lacks a throws clause. However, I would expect that it throws
+according to the other constructors if the numbers of characters in
+the range equals npos (or exceeds max_size(), see above). </p>
+</discussion>
+
+<resolution>
+<p>In <sref ref="[string.require]"/>, Strike throws paragraphs for
+constructors which say &quot;Throws: length_error if n ==
+npos.&quot;</p>
+</resolution>
+
+<rationale>
+<p>Throws clauses for length_error if n == npos are no longer needed
+because they are subsumed by the general wording added by the
+resolution for issue <iref ref="83"/>.</p>
+</rationale>
+</issue>

@@ -1,0 +1,63 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="717" status="NAD Editorial">
+<title>Incomplete <tt>valarray::operator[]</tt> specification in [valarray.access]</title>
+<section><sref ref="[valarray.access]"/></section>
+<submitter>Daniel Kr&uuml;gler</submitter>
+<date>27 Aug 2007</date>
+
+<discussion>
+<p>
+Since the return type of <tt>valarray</tt>'s <tt>operator[] const</tt> overload has been
+changed to <tt>const T&amp;</tt> as described in <iref ref="389"/> several paragraphs of
+the section <sref ref="[valarray.access]"/> are now
+incompletely
+specified, because many requirements and guarantees should now also
+apply to the const overload. Most notably, the address and reference
+guarantees should be extended to the const overload case.
+</p>
+</discussion>
+
+<resolution>
+<p>
+Change <sref ref="[valarray.access]"/>:
+</p>
+
+<blockquote>
+<p>
+-1- <del>When applied to a constant array, the subscript operator returns a
+reference to the corresponding element of the array. When applied to a
+non-constant array, t</del><ins>T</ins>he subscript operator returns a
+reference to the corresponding element of the array.
+</p>
+
+<p>
+-3- The expression <tt>&amp;a[i+j] == &amp;a[i] + j</tt> evaluates as <tt>true</tt> for all <tt>size_t i</tt>
+and <tt>size_t j</tt> such that <tt>i+j</tt> is less 
+than the length of the <del>non-constant</del> array <tt>a</tt>.
+</p>
+
+<p>
+-4- Likewise, the expression <tt>&amp;a[i] != &amp;b[j]</tt> evaluates
+as <tt>true</tt> for any two <del>non-constant</del> arrays <tt>a</tt> and
+<tt>b</tt> and for any <tt>size_t i</tt> and <tt>size_t j</tt> such that
+<tt>i</tt> is less than the length of <tt>a</tt> and <tt>j</tt> is less
+than the length of <tt>b</tt>. This property indicates an absence of
+aliasing and may be used to advantage by optimizing
+compilers.<sup>281)</sup>
+</p>
+
+<p>
+-5- The reference returned by the subscript operator for a<ins>n</ins> <del>non-constant</del> array is guaranteed to be valid until
+the member function <tt>resize(size_t, T)</tt> (26.5.2.7) is called for that array or until the lifetime 
+of that array ends, whichever happens first.
+</p>
+
+</blockquote>
+
+</resolution>
+
+</issue>

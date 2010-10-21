@@ -1,0 +1,246 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="818" status="CD1">
+<title>wording for memory ordering</title>
+<section><sref ref="[atomics.order]"/></section>
+<submitter>Jens Maurer</submitter>
+<date>22 Mar 2008</date>
+
+<discussion>
+<p>
+<sref ref="[atomics.order]"/> p1 says in the table that
+</p>
+
+<blockquote>
+<table border="1">
+<tr>
+<th>Element</th><th>Meaning</th>
+</tr>
+<tr>
+<td><tt>memory_order_acq_rel</tt></td>
+<td>the operation has both acquire and release semantics</td>
+</tr>
+</table>
+</blockquote>
+
+<p>
+To my naked eye, that seems to imply that even an atomic read has both
+acquire and release semantics.
+</p>
+
+<p>
+Then, p1 says in the table:
+</p>
+
+<blockquote>
+<table border="1">
+<tr>
+<th>Element</th><th>Meaning</th>
+</tr>
+<tr>
+<td><tt>memory_order_seq_cst</tt></td>
+<td>the operation has both acquire and release semantics,
+    and, in addition, has sequentially-consistent operation ordering</td>
+</tr>
+</table>
+</blockquote>
+
+<p>
+So that seems to be "the same thing" as <tt>memory_order_acq_rel</tt>, with additional
+constraints.
+</p>
+
+<p>
+I'm then reading p2, where it says:
+</p>
+
+<blockquote>
+The <tt>memory_order_seq_cst</tt> operations that load a value are acquire operations
+on the affected locations. The <tt>memory_order_seq_cst</tt> operations that store a value
+are release operations on the affected locations.
+</blockquote>
+
+<p>
+That seems to imply that atomic reads only have acquire semantics.  If that
+is intended, does this also apply to <tt>memory_order_acq_rel</tt> and the individual
+load/store operations as well?
+</p>
+
+<p>
+Also, the table in p1 contains phrases with "thus" that seem to indicate
+consequences of normative wording in <sref ref="[intro.multithread]"/>.  That shouldn't be in
+normative text, for the fear of redundant or inconsistent specification with
+the other normative text.
+</p>
+
+<p>
+Double-check <sref ref="[atomics.types.operations]"/> that each
+operation clearly says whether it's a load or a store operation, or
+both.  (It could be clearer, IMO.  Solution not in current proposed resolution.)
+</p>
+
+<p>
+<sref ref="[atomics.order]"/> p2:  What's a "consistent execution"?  It's not defined in
+<sref ref="[intro.multithread]"/>, it's just used in notes there.
+</p>
+
+<p>
+And why does <sref ref="[atomics.types.operations]"/> p9 for "load" say:
+</p>
+
+
+<blockquote>
+<i>Requires:</i> The order argument shall not be <tt>memory_order_acquire</tt>
+nor <tt>memory_order_acq_rel</tt>.
+</blockquote>
+
+<p>
+(Since this is exactly the same restriction as for "store", it seems to be a typo.)
+</p>
+
+<p>
+And then: <sref ref="[atomics.types.operations]"/> p12:
+</p>
+
+<blockquote>
+These operations are read-modify-write operations in the sense of the
+"synchronizes with" definition (<sref ref="[intro.multithread]"/>), so both such an operation and the
+evaluation that produced the input value synchronize with any evaluation
+that reads the updated value.
+</blockquote>
+
+<p>
+This is redundant with <sref ref="[intro.multithread]"/>, see above for the reasoning.
+</p>
+
+<note>
+San Francisco:
+</note>
+
+<blockquote>
+<p>
+Boehm: "I don't think that this changes anything terribly substantive,
+but it improves the text."
+</p>
+<p>
+Note that "Rephrase the table in as [sic] follows..." should read
+"Replace the table in [atomics.order] with the following...."
+</p>
+<p>
+The proposed resolution needs more work. Crowl volunteered to address
+all of the atomics issues in one paper.
+</p>
+
+<p>
+This issue is addressed in
+<a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2008/n2783.html">N2783</a>.
+</p>
+</blockquote>
+</discussion>
+
+<resolution>
+<p>
+edit <sref ref="[atomics.order]"/>, paragraph 1 as follows.
+</p>
+
+<blockquote>
+<p>
+The enumeration <code>memory_order</code>
+specifies the detailed regular (non-atomic) memory synchronization order
+as defined in <del>Clause 1.7</del> <ins>section 1.10</ins>
+and may provide for operation ordering.
+Its enumerated values and their meanings are as follows:
+</p>
+<blockquote>
+<dl>
+<dt><ins>For <code>memory_order_relaxed</code>,</ins></dt>
+<dd><ins>no operation orders memory.</ins></dd>
+<dt><ins>For <code>memory_order_release</code>,
+<code>memory_order_acq_rel</code>,
+and <code>memory_order_seq_cst</code>,</ins></dt>
+<dd><ins>a store operation performs a release operation
+on the affected memory location.</ins></dd>
+<dt><ins>For <code>memory_order_consume</code>,</ins></dt>
+<dd><ins>a load operation performs a consume operation
+on the affected memory location.</ins></dd>
+<dt><ins>For <code>memory_order_acquire</code>,
+<code>memory_order_acq_rel</code>,
+and <code>memory_order_seq_cst</code>,</ins></dt>
+<dd><ins>a load operation performs an acquire operation
+on the affected memory location.</ins></dd>
+</dl>
+</blockquote>
+</blockquote>
+
+<p>
+remove table 136 in <sref ref="[atomics.order]"/>.
+</p>
+
+<blockquote>
+<table border=1>
+<caption><del>Table 136 &mdash; memory_order effects</del></caption>
+<tr><th><del>Element</del></th><th><del>Meaning</del></th></tr>
+<tr><td valign=top><del><code>memory_order_relaxed</code></del></td>
+<td valign=top><del>the operation does not order memory</del></td></tr>
+<tr><td valign=top><del><code>memory_order_release</code></del></td>
+<td valign=top><del>the operation
+performs a release operation on the affected memory location,
+thus making regular memory writes visible to other threads
+through the atomic variable to which it is applied</del></td></tr>
+<tr><td valign=top><del><code>memory_order_acquire</code></del></td>
+<td valign=top><del>the operation
+performs an acquire operation on the affected memory location,
+thus making regular memory writes in other threads
+released through the atomic variable to which it is applied
+visible to the current thread</del></td></tr>
+<tr><td valign=top><del><code>memory_order_consume</code></del></td>
+<td valign=top><del>the operation
+performs a consume operation on the affected memory location,
+thus making regular memory writes in other threads
+released through the atomic variable to which it is applied
+visible to the regular memory reads
+that are dependencies of this consume operation.</del></td></tr>
+<tr><td valign=top><del><code>memory_order_acq_rel</code></del></td>
+<td valign=top><del>the operation has both acquire and release semantics</del></td></tr>
+<tr><td valign=top><del><code>memory_order_seq_cst</code></del></td>
+<td valign=top><del>the operation has both acquire and release semantics,
+and, in addition, has sequentially-consistent operation ordering</del></td></tr>
+</table>
+</blockquote>
+
+<p>
+edit <sref ref="[atomics.order]"/>, paragraph 2 as follows.
+</p>
+
+<blockquote>
+<p>
+<del>The <code>memory_order_seq_cst</code> operations that load a value
+are acquire operations on the affected locations.
+The <code>memory_order_seq_cst</code> operations that store a value
+are release operations on the affected locations.
+In addition, in a consistent execution,
+there</del> <ins>There</ins> <del>must be</del> <ins>is</ins>
+a single total order <var>S</var>
+on all <code>memory_order_seq_cst</code> operations,
+consistent with the happens before order
+and modification orders for all affected locations,
+such that each <code>memory_order_seq_cst</code> operation
+observes either the last preceding modification
+according to this order <var>S</var>,
+or the result of an operation that is not <code>memory_order_seq_cst</code>.
+[<i>Note:</i>
+Although it is not explicitly required that <var>S</var> include locks,
+it can always be extended to an order
+that does include lock and unlock operations,
+since the ordering between those
+is already included in the happens before ordering.
+&mdash;<i>end note</i>]
+</p>
+</blockquote>
+
+</resolution>
+
+</issue>

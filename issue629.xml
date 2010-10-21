@@ -1,0 +1,94 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="629" status="CD1">
+<title>complex<T> insertion and locale dependence</title>
+<section><sref ref="[complex.ops]"/></section>
+<submitter>Gabriel Dos Reis</submitter>
+<date>28 Jan 2007</date>
+
+<discussion>
+<p>
+is there an issue opened for (0,3) as complex number with
+the French local?  With the English local, the above parses as an
+imaginery complex number.  With the French locale it parses as a
+real complex number.
+</p>
+
+<p>
+Further notes/ideas from the lib-reflector, messages 17982-17984:
+</p>
+
+<blockquote>
+<p>
+Add additional entries in num_punct to cover the complex separator (French would be ';').
+</p>
+<p>
+Insert a space before the comma, which should eliminate the ambiguity.
+</p>
+<p>
+Solve the problem for ordered sequences in general, perhaps with a
+dedicated facet.  Then complex should use that solution.
+</p>
+</blockquote>
+
+<note>
+Bellevue:
+</note>
+
+<blockquote>
+<p>
+After much discussion, we agreed on the following: Add a footnote:
+</p>
+<p>
+[In a locale in which comma is being used as a decimal point character,
+inserting "showbase" into the output stream forces all outputs to show
+an explicit decimal point character; then all inserted complex sequences
+will extract unambiguously.]
+</p>
+<p>
+And move this to READY status.
+</p>
+</blockquote>
+
+<note>
+Pre-Sophia Antipolis, Howard adds:
+</note>
+
+<blockquote>
+Changed "showbase" to "showpoint" and changed from Ready to Review.
+</blockquote>
+
+<note>
+Post-Sophia Antipolis:
+</note>
+
+<blockquote>
+<p>
+I neglected to pull this issue from the formal motions page after the "showbase" to "showpoint" change.
+In Sophia Antipolis this change was reviewed by the LWG and the issue was set to Ready.  We subsequently
+voted the footnote into the WP with "showbase".
+</p>
+<p>
+I'm changing from WP back to Ready to pick up the "showbase" to "showpoint" change.
+</p>
+</blockquote>
+
+</discussion>
+
+<resolution>
+<p>
+Add a footnote to <sref ref="[complex.ops]"/> p16:
+</p>
+
+<blockquote>
+[In a locale in which comma is being used as a decimal point character,
+inserting <tt>showpoint</tt> into the output stream forces all outputs to show
+an explicit decimal point character; then all inserted complex sequences
+will extract unambiguously.]
+</blockquote>
+</resolution>
+
+</issue>

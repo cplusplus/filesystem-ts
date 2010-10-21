@@ -1,0 +1,172 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="183" status="CD1">
+<title>I/O stream manipulators don't work for wide character streams</title>
+<section><sref ref="[std.manip]"/></section>
+<submitter>Andy Sawyer</submitter>
+<date>7 Jul 1999</date>
+
+<discussion>
+<p><sref ref="[std.manip]"/> paragraph 3 says (clause numbering added for
+exposition):</p>
+<blockquote>
+<p>Returns: An object s of unspecified type such that if [1] out is an (instance
+of) basic_ostream then the expression out&lt;&lt;s behaves as if f(s) were
+called, and if [2] in is an (instance of) basic_istream then the expression
+in&gt;&gt;s behaves as if f(s) were called. Where f can be defined as: ios_base&amp;
+f(ios_base&amp; str, ios_base::fmtflags mask) { // reset specified flags
+str.setf(ios_base::fmtflags(0), mask); return str; } [3] The expression
+out&lt;&lt;s has type ostream&amp; and value out. [4] The expression in&gt;&gt;s
+has type istream&amp; and value in.</p>
+</blockquote>
+<p>Given the definitions [1] and [2] for out and in, surely [3] should read:
+&quot;The expression out &lt;&lt; s has type basic_ostream&amp; ...&quot; and
+[4] should read: &quot;The expression in &gt;&gt; s has type basic_istream&amp;
+...&quot;</p>
+<p>If the wording in the standard is correct, I can see no way of implementing
+any of the manipulators so that they will work with wide character streams.</p>
+<p>e.g. wcout &lt;&lt; setbase( 16 );</p>
+<p>Must have value 'wcout' (which makes sense) and type 'ostream&amp;' (which
+doesn't).</p>
+<p>The same &quot;cut'n'paste&quot; type also seems to occur in Paras 4,5,7 and
+8. In addition, Para 6 [setfill] has a similar error, but relates only to
+ostreams.</p>
+<p>I'd be happier if there was a better way of saying this, to make it clear
+that the value of the expression is &quot;the same specialization of
+basic_ostream as out&quot;&amp;</p>
+</discussion>
+
+<resolution>
+<p>Replace section <sref ref="[std.manip]"/> except paragraph 1 with the
+following:</p>
+<blockquote>
+<p>2- The type designated smanip in each of the following function descriptions is implementation-specified and may be different for each
+function.<br/>
+<br/>
+<tt>smanip resetiosflags(ios_base::fmtflags mask);</tt><br/>
+<br/>
+-3- Returns: An object s of unspecified type such that if out is an instance of basic_ostream&lt;charT,traits&gt; then the expression out&lt;&lt;s behaves
+as if f(s, mask) were called, or if in is an instance of basic_istream&lt;charT,traits&gt; then the expression in&gt;&gt;s behaves as if
+f(s, mask) were called. The function f can be defined as:*<br/>
+<br/>
+[Footnote: The expression cin &gt;&gt; resetiosflags(ios_base::skipws) clears ios_base::skipws in the format flags stored in the
+basic_istream&lt;charT,traits&gt; object cin (the same as cin &gt;&gt; noskipws), and the expression cout &lt;&lt; resetiosflags(ios_base::showbase) clears
+ios_base::showbase in the format flags stored in the basic_ostream&lt;charT,traits&gt; object cout (the same as cout &lt;&lt;
+noshowbase). --- end footnote]<br/>
+<br/>
+&nbsp;&nbsp;&nbsp;&nbsp; <tt>ios_base&amp; f(ios_base&amp; str, ios_base::fmtflags mask)<br/>
+&nbsp;&nbsp; {<br/>
+&nbsp;&nbsp; //  reset specified flags<br/>
+&nbsp;&nbsp; str.setf(ios_base::fmtflags(0), mask);<br/>
+&nbsp;&nbsp; return str;<br/>
+&nbsp;&nbsp; }<br/>
+</tt><br/>
+The expression out&lt;&lt;s has type basic_ostream&lt;charT,traits&gt;&amp; and value out.
+The expression in&gt;&gt;s has type basic_istream&lt;charT,traits&gt;&amp; and value in.<br/>
+<br/>
+&nbsp;<tt>smanip setiosflags(ios_base::fmtflags mask);</tt><br/>
+<br/>
+-4- Returns: An object s of unspecified type such that if out is an instance of basic_ostream&lt;charT,traits&gt; then the expression out&lt;&lt;s behaves
+as if f(s, mask) were called, or if in is an instance of basic_istream&lt;charT,traits&gt; then the expression in&gt;&gt;s behaves as if f(s,
+mask) were called. The function f can be defined as:<br/>
+<br/>
+&nbsp;&nbsp;&nbsp;&nbsp; <tt>ios_base&amp; f(ios_base&amp; str, ios_base::fmtflags mask)<br/>
+&nbsp;&nbsp; {<br/>
+&nbsp;&nbsp; //  set specified flags<br/>
+&nbsp;&nbsp; str.setf(mask);<br/>
+&nbsp;&nbsp; return str;<br/>
+&nbsp;&nbsp; }<br/>
+</tt><br/>
+The expression out&lt;&lt;s has type basic_ostream&lt;charT,traits&gt;&amp; and value out.
+The expression in&gt;&gt;s has type basic_istream&lt;charT,traits&gt;&amp; and value in.<br/>
+<br/>
+<tt>smanip setbase(int base);</tt><br/>
+<br/>
+-5- Returns: An object s of unspecified type such that if out is an instance of basic_ostream&lt;charT,traits&gt; then the expression out&lt;&lt;s behaves
+as if f(s, base) were called, or if in is an instance of basic_istream&lt;charT,traits&gt; then the expression in&gt;&gt;s behaves as if f(s,
+base) were called. The function f can be defined as:<br/>
+<br/>
+&nbsp;&nbsp;&nbsp;&nbsp; <tt>ios_base&amp; f(ios_base&amp; str, int base)<br/>
+&nbsp;&nbsp; {<br/>
+&nbsp;&nbsp; //  set  basefield<br/>
+&nbsp;&nbsp; str.setf(base ==  8 ? ios_base::oct :<br/>
+&nbsp;&nbsp; base == 10 ? ios_base::dec :<br/>
+&nbsp;&nbsp; base == 16 ? ios_base::hex :<br/>
+&nbsp;&nbsp; ios_base::fmtflags(0), ios_base::basefield);<br/>
+&nbsp;&nbsp; return str;<br/>
+&nbsp;&nbsp; }<br/>
+</tt><br/>
+The expression out&lt;&lt;s has type basic_ostream&lt;charT,traits&gt;&amp; and value out.
+The expression in&gt;&gt;s has type basic_istream&lt;charT,traits&gt;&amp; and value in.<br/>
+<br/>
+<tt>smanip setfill(char_type c);<br/>
+</tt><br/>
+-6- Returns: An object s of unspecified type such that if out is (or is derived from) basic_ostream&lt;charT,traits&gt; and c has type charT then the
+expression out&lt;&lt;s behaves as if f(s, c) were called. The function f can be
+defined as:<br/>
+<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <tt>template&lt;class charT, class traits&gt;<br/>
+&nbsp;&nbsp; basic_ios&lt;charT,traits&gt;&amp; f(basic_ios&lt;charT,traits&gt;&amp; str, charT c)<br/>
+&nbsp;&nbsp; {<br/>
+&nbsp;&nbsp; //  set fill character<br/>
+&nbsp;&nbsp; str.fill(c);<br/>
+&nbsp;&nbsp; return str;<br/>
+&nbsp;&nbsp; }<br/>
+</tt><br/>
+The expression out&lt;&lt;s has type basic_ostream&lt;charT,traits&gt;&amp; and value out.<br/>
+<br/>
+<tt>smanip setprecision(int n);</tt><br/>
+<br/>
+-7- Returns: An object s of unspecified type such that if out is an instance of basic_ostream&lt;charT,traits&gt; then the expression out&lt;&lt;s behaves
+as if f(s, n) were called, or if in is an instance of basic_istream&lt;charT,traits&gt; then the expression in&gt;&gt;s behaves as if f(s, n)
+were called. The function f can be defined as:<br/>
+<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <tt>ios_base&amp; f(ios_base&amp; str, int n)<br/>
+&nbsp;&nbsp; {<br/>
+&nbsp;&nbsp; //  set precision<br/>
+&nbsp;&nbsp; str.precision(n);<br/>
+&nbsp;&nbsp; return str;<br/>
+&nbsp;&nbsp; }<br/>
+</tt><br/>
+The expression out&lt;&lt;s has type basic_ostream&lt;charT,traits&gt;&amp; and value out.
+The expression in&gt;&gt;s has type basic_istream&lt;charT,traits&gt;&amp; and value in<br/>
+.<br/>
+<tt>smanip setw(int n);<br/>
+</tt><br/>
+-8- Returns: An object s of unspecified type such that if out is an instance of basic_ostream&lt;charT,traits&gt; then the expression out&lt;&lt;s behaves
+as if f(s, n) were called, or if in is an instance of basic_istream&lt;charT,traits&gt; then the expression in&gt;&gt;s behaves as if f(s, n)
+were called. The function f can be defined as:<br/>
+<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <tt>ios_base&amp; f(ios_base&amp; str, int n)<br/>
+&nbsp;&nbsp; {<br/>
+&nbsp;&nbsp; //  set width<br/>
+&nbsp;&nbsp; str.width(n);<br/>
+&nbsp;&nbsp; return str;<br/>
+&nbsp;&nbsp; }<br/>
+</tt><br/>
+The expression out&lt;&lt;s has type
+basic_ostream&lt;charT,traits&gt;&amp; and value out.  The expression
+in&gt;&gt;s has type basic_istream&lt;charT,traits&gt;&amp; and value
+in.
+</p>
+</blockquote>
+
+<note>Kona: Andy Sawyer and Beman Dawes will work to improve the wording of
+the proposed resolution.</note>
+
+<note>Tokyo - The LWG noted that issue <iref ref="216"/> involves
+the same paragraphs.</note>
+
+<note>Post-Tokyo: The issues list maintainer combined the proposed
+resolution of this issue with the proposed resolution for issue <iref
+ref="216"/> as they both involved the same paragraphs, and were so
+intertwined that dealing with them separately appear fraught with
+error.  The full text was supplied by Bill Plauger; it was cross
+checked against changes supplied by Andy Sawyer. It should be further
+checked by the LWG.</note>
+</resolution>
+
+</issue>

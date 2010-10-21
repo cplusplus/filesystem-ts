@@ -1,0 +1,268 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+    <!DOCTYPE issue SYSTEM "lwg_issue.dtd" [
+        <!ENTITY nbsp " ">
+     ]
+>
+<issue num="430" status="WP">
+    <title>valarray subset operations</title>
+    <section><sref ref="[valarray.sub]"/></section>
+    <submitter>Martin Sebor</submitter>
+    <date>18 Sep 2003</date>
+
+<discussion>
+<p>
+The standard fails to specify the behavior of valarray::operator[](slice)
+and other valarray subset operations when they are passed an "invalid"
+slice object, i.e., either a slice that doesn't make sense at all (e.g.,
+slice (0, 1, 0) or one that doesn't specify a valid subset of the valarray
+object (e.g., slice (2, 1, 1) for a valarray of size 1).
+</p>
+<note>Kona: the LWG believes that invalid slices should invoke
+  undefined behavior.  Valarrays are supposed to be designed for high
+  performance, so we don't want to require specific checking.  We
+  need wording to express this decision.</note>
+
+<note>
+Bellevue:
+</note>
+
+<blockquote>
+Please note that the standard also fails to specify the behavior of
+slice_array and gslice_array in the valid case. Bill Plauger will
+endeavor to provide revised wording for slice_array and gslice_array.
+</blockquote>
+
+<note>
+post-Bellevue:  Bill provided wording.
+</note>
+
+<note>
+2009-07 Frankfurt
+</note>
+
+<blockquote>
+<p>
+Move to Ready.
+</p>
+</blockquote>
+
+<note>
+2009-11-04 Pete opens:
+</note>
+
+<blockquote>
+The resolution to LWG issue 430 has not been applied --- there have been
+changes to the underlying text, and the resolution needs to be reworked.
+</blockquote>
+
+<note>
+2010-03-09 Matt updated wording.
+</note>
+
+<note>
+2010 Pittsburgh: Moved to Ready for Pittsburgh.
+</note>
+
+</discussion>
+
+<resolution>
+<p>
+Replace <sref ref="[valarray.sub]"/>, with the following:
+</p>
+
+<blockquote>
+<p>
+The member operator is overloaded to provide several ways to select
+sequences of elements from among those controlled by <tt>*this</tt>.
+Each of these operations returns a subset of the array.  The
+const-qualified versions return this subset as a new <tt>valarray</tt>. The
+non-const versions return a class template object which has reference
+semantics to the original array, working in conjunction with various
+overloads of <tt>operator=</tt> (and other assigning operators) to allow
+selective replacement (slicing) of the controlled sequence. In each case
+the selected element(s) must exist.
+</p>
+
+<pre>
+valarray&lt;T&gt; operator[](slice slicearr) const; 
+</pre>
+
+<blockquote>
+<p>
+This function returns an object of class <tt>valarray&lt;T&gt;</tt>
+containing those elements of the controlled sequence designated by
+<tt>slicearr</tt>. [<i>Example:</i>
+</p>
+
+<blockquote><pre>
+valarray&lt;char&gt; v0("abcdefghijklmnop", 16); 
+valarray&lt;char&gt; v1("ABCDE", 5); 
+v0[slice(2, 5, 3)] = v1; 
+// v0 == valarray&lt;char&gt;("abAdeBghCjkDmnEp", 16)
+</pre></blockquote>
+<p>
+<i>end example</i>]
+</p>
+</blockquote>
+ 
+<pre>
+valarray&lt;T&gt; operator[](slice slicearr); 
+</pre>
+
+<blockquote>
+<p>
+This function selects those elements of the controlled sequence
+designated by <tt>slicearr</tt>.  [<i>Example</i>:
+</p>
+
+<blockquote><pre>
+valarray&lt;char&gt; v0("abcdefghijklmnop", 16); 
+valarray&lt;char&gt; v1("ABCDE", 5); 
+v0[slice(2, 5, 3)] = v1; 
+// v0 == valarray&lt;char&gt;("abAdeBghCjkDmnEp", 16)
+</pre></blockquote>
+<p>
+<i>end example</i>]
+</p>
+</blockquote>
+ 
+<pre>
+valarray&lt;T&gt; operator[](const gslice&amp; gslicearr) const; 
+</pre>
+
+<blockquote>
+<p>
+This function returns an object of class <tt>valarray&lt;T&gt;</tt>
+containing those elements of the controlled sequence designated by
+<tt>gslicearr</tt>. [<i>Example:</i>
+</p>
+
+<blockquote><pre>
+valarray&lt;char&gt; v0("abcdefghijklmnop", 16); 
+const size_t lv[] = {2, 3}; 
+const size_t dv[] = {7, 2}; 
+const valarray&lt;size_t&gt; len(lv, 2), str(dv, 2); 
+// v0[gslice(3, len, str)] returns 
+// valarray&lt;char&gt;("dfhkmo", 6)
+</pre></blockquote>
+<p>
+<i>end example</i>]
+</p>
+</blockquote>
+ 
+<pre>
+gslice_array&lt;T&gt; operator[](const gslice&amp; gslicearr); 
+</pre>
+
+<blockquote>
+<p>
+This function selects those elements of the controlled sequence
+designated by <tt>gslicearr</tt>.  [<i>Example:</i>
+</p>
+
+<blockquote><pre>
+valarray&lt;char&gt; v0("abcdefghijklmnop", 16); 
+valarray&lt;char&gt; v1("ABCDEF", 6); 
+const size_t lv[] = {2, 3}; 
+const size_t dv[] = {7, 2}; 
+const valarray&lt;size_t&gt; len(lv, 2), str(dv, 2); 
+v0[gslice(3, len, str)] = v1; 
+// v0 == valarray&lt;char&gt;("abcAeBgCijDlEnFp", 16)
+</pre></blockquote>
+<p>
+<i>end example</i>]
+</p>
+</blockquote>
+ 
+<pre>
+valarray&lt;T&gt; operator[](const valarray&lt;bool&gt;&amp; boolarr) const; 
+</pre>
+
+<blockquote>
+<p>
+This function returns an object of class <tt>valarray&lt;T&gt;</tt>
+containing those elements of the controlled sequence designated by
+<tt>boolarr</tt>. [<i>Example:</i>
+</p>
+
+<blockquote><pre>
+valarray&lt;char&gt; v0("abcdefghijklmnop", 16); 
+const bool vb[] = {false, false, true, true, false, true}; 
+// v0[valarray&lt;bool&gt;(vb, 6)] returns 
+// valarray&lt;char&gt;("cdf", 3)
+</pre></blockquote>
+<p>
+<i>end example</i>] 
+</p>
+</blockquote>
+ 
+<pre>
+mask_array&lt;T&gt; operator[](const valarray&lt;bool&gt;&amp; boolarr); 
+</pre>
+
+<blockquote>
+<p>
+This function selects those elements of the controlled sequence
+designated by <tt>boolarr</tt>. [<i>Example:</i>
+</p>
+
+<blockquote><pre>
+valarray&lt;char&gt; v0("abcdefghijklmnop", 16); 
+valarray&lt;char&gt; v1("ABC", 3); 
+const bool vb[] = {false, false, true, true, false, true}; 
+v0[valarray&lt;bool&gt;(vb, 6)] = v1; 
+// v0 == valarray&lt;char&gt;("abABeCghijklmnop", 16)
+</pre></blockquote>
+<p>
+<i>end example</i>]
+</p>
+</blockquote>
+ 
+<pre>
+valarray&lt;T&gt; operator[](const valarray&lt;size_t&gt;&amp; indarr) const; 
+</pre>
+
+<blockquote>
+<p>
+This function returns an object of class <tt>valarray&lt;T&gt;</tt>
+containing those elements of the controlled sequence designated by
+<tt>indarr</tt>. [<i>Example:</i>
+</p>
+
+<blockquote><pre>
+valarray&lt;char&gt; v0("abcdefghijklmnop", 16); 
+const size_t vi[] = {7, 5, 2, 3, 8}; 
+// v0[valarray&lt;size_t&gt;(vi, 5)] returns 
+// valarray&lt;char&gt;("hfcdi", 5)
+</pre></blockquote>
+<p>
+<i>end example</i>] 
+</p>
+</blockquote>
+ 
+<pre>
+indirect_array&lt;T&gt; operator[](const valarray&lt;size_t&gt;&amp; indarr);
+</pre>
+
+<blockquote>
+<p>
+This function selects those elements of the controlled sequence
+designated by <tt>indarr</tt>. [<i>Example:</i>
+</p>
+
+<blockquote><pre>
+valarray&lt;char&gt; v0("abcdefghijklmnop", 16); 
+valarray&lt;char&gt; v1("ABCDE", 5); 
+const size_t vi[] = {7, 5, 2, 3, 8}; 
+v0[valarray&lt;size_t&gt;(vi, 5)] = v1; 
+// v0 == valarray&lt;char&gt;("abCDeBgAEjklmnop", 16)
+</pre></blockquote>
+<p>
+<i>end example</i>]
+</p>
+</blockquote>
+
+</blockquote>
+
+</resolution>
+</issue>

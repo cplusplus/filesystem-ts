@@ -1,0 +1,70 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="1065" status="WP">
+<title>Response to UK 168</title>
+<section><sref ref="[contents]"/></section>
+<submitter>Howard Hinnant</submitter>
+<date>15 Mar 2009</date>
+
+<discussion>
+<p><b>Addresses UK 168</b></p>
+<p>
+We should make it clear (either by note or normatively) that namespace
+<tt>std</tt> may contain inline namespaces, and that entities specified to be
+defined in std may in fact be defined in one of these inline namespaces.
+(If we're going to use them for versioning, eg when TR2 comes along,
+we're going to need that.)
+</p>
+
+<p>
+Replace "namespace std or namespaces nested within namespace std" with
+"namespace std or namespaces nested within namespace std or inline
+namespaces nested directly or indirectly within namespace std"
+</p>
+
+<note>
+Summit:
+</note>
+<blockquote>
+adopt UK words (some have reservations whether it is correct)
+</blockquote>
+
+<note>
+2009-05-09 Alisdair improves the wording.
+</note>
+
+<note>
+Batavia (2009-05):
+</note>
+<blockquote>
+<p>
+Bill believes there is strictly speaking no need to say that
+because no portable test can detect the difference.
+However he agrees that it doesn't hurt to say this.
+</p>
+<p>
+Move to Tentatively Ready.
+</p>
+</blockquote>
+</discussion>
+
+<resolution>
+<p>
+Change <sref ref="[contents]"/> p2:
+</p>
+
+<blockquote>
+All library entities except macros, <tt>operator new</tt> and
+<tt>operator delete</tt> are defined within the namespace <tt>std</tt> or
+namespaces nested within namespace <tt>std</tt>.
+<ins>It is unspecified whether names declared in a specific namespace
+are declared directly in that namespace, or in an inline namespace inside
+that namespace. [<i>Footnote:</i> This gives implementers freedom to support
+multiple configurations of the library.]</ins>
+</blockquote>
+</resolution>
+
+</issue>

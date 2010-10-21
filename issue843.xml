@@ -1,0 +1,85 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="843" status="CD1">
+<title> Reference Closure</title>
+<section><sref ref="[func.referenceclosure.cons]"/></section>
+<submitter>Lawrence Crowl</submitter>
+<date>2 Jun 2008</date>
+
+<discussion>
+<p>
+The <tt>std::reference_closure</tt> type has a deleted copy assignment operator
+under the theory that references cannot be assigned, and hence the
+assignment of its reference member must necessarily be ill-formed.
+</p>
+<p>
+However, other types, notably <tt>std::reference_wrapper</tt> and <tt>std::function</tt>
+provide for the "copying of references", and thus the current definition
+of <tt>std::reference_closure</tt> seems unnecessarily restrictive.  In particular,
+it should be possible to write generic functions using both <tt>std::function</tt>
+and <tt>std::reference_closure</tt>, but this generality is much harder when
+one such type does not support assignment.
+</p>
+<p>
+The definition of <tt>reference_closure</tt> does not necessarily imply direct
+implementation via reference types.  Indeed, the <tt>reference_closure</tt> is
+best implemented via a frame pointer, for which there is no standard
+type.
+</p>
+<p>
+The semantics of assignment are effectively obtained by use of the
+default destructor and default copy assignment operator via
+</p>
+
+<blockquote><pre>
+x.~reference_closure(); new (x) reference_closure(y);
+</pre></blockquote>
+
+<p>
+So the copy assignment operator generates no significant real burden
+to the implementation.
+</p>
+</discussion>
+
+<resolution>
+<p>
+In <sref ref="[func.referenceclosure]"/> Class template reference_closure,
+replace the <tt>=delete</tt> in the copy assignment operator in the synopsis
+with <tt>=default</tt>.
+</p>
+
+<blockquote><pre>
+template&lt;class R , class... ArgTypes &gt; 
+  class reference_closure&lt;R (ArgTypes...)&gt; { 
+  public:
+     ...
+     reference_closure&amp; operator=(const reference_closure&amp;) = <del>delete</del> <ins>default</ins>;
+     ...
+</pre></blockquote>
+
+<p>
+In <sref ref="[func.referenceclosure.cons]"/> Construct, copy, destroy,
+add the member function description
+</p>
+
+<blockquote>
+<pre>
+reference_closure&amp; operator=(const reference_closure&amp; f)
+</pre>
+<blockquote>
+<p>
+<i>Postcondition:</i> <tt>*this</tt> is a copy of <tt>f</tt>.
+</p>
+<p>
+<i>Returns:</i> <tt>*this</tt>.
+</p>
+</blockquote>
+</blockquote>
+
+
+</resolution>
+
+</issue>

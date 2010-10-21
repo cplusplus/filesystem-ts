@@ -1,0 +1,38 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="199" status="TC1">
+<title>What does <tt>allocate(0)</tt> return?</title>
+<section><sref ref="[allocator.requirements]"/></section>
+<submitter>Matt Austern</submitter>
+<date>19 Nov 1999</date>
+
+<discussion>
+<p>
+Suppose that <tt>A</tt> is a class that conforms to the
+Allocator requirements of Table 32, and <tt>a</tt> is an
+object of class <tt>A</tt>  What should be the return
+value of <tt>a.allocate(0)</tt>?  Three reasonable
+possibilities: forbid the argument <tt>0</tt>, return
+a null pointer, or require that the return value be a
+unique non-null pointer.
+</p>
+</discussion>
+
+<resolution>
+<p>
+Add a note to the <tt>allocate</tt> row of Table 32:
+&quot;[<i>Note:</i> If <tt>n == 0</tt>, the return value is unspecified. <i>--end note</i>]&quot;</p>
+</resolution>
+
+<rationale>
+<p>A key to understanding this issue is that the ultimate use of
+allocate() is to construct an iterator, and that iterator for zero
+length sequences must be the container's past-the-end
+representation.  Since this already implies special case code, it
+would be over-specification to mandate the return value.
+</p>
+</rationale>
+</issue>

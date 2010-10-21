@@ -1,0 +1,75 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="521" status="CD1">
+<title>Garbled requirements for argument_type in reference_wrapper</title>
+<section><sref ref="[refwrap]"/><sref ref="[tr.util.refwrp.refwrp]"/></section>
+<submitter>Pete Becker</submitter>
+<date>3 Jul 2005</date>
+
+<discussion>
+<p>
+2.1.2/3, second bullet item currently says that reference_wrapper&lt;T&gt; is
+derived from unary_function&lt;T, R&gt; if T is:
+</p>
+<blockquote><p>
+a pointer to member function type with cv-qualifier cv and no arguments;
+the type T1 is cv T* and R is the return type of the pointer to member function;
+</p></blockquote>
+<p>
+The type of T1 can't be cv T*, 'cause that's a pointer to a pointer to member
+function. It should be a pointer to the class that T is a pointer to member of.
+Like this:
+</p>
+<blockquote><p>
+a pointer to a member function R T0::f() cv (where cv represents the member
+function's cv-qualifiers); the type T1 is cv T0*
+</p></blockquote>
+<p>
+Similarly, bullet item 2 in 2.1.2/4 should be:
+</p>
+<blockquote><p>
+a pointer to a member function R T0::f(T2) cv (where cv represents the member
+function's cv-qualifiers); the type T1 is cv T0*
+</p></blockquote>
+</discussion>
+
+<resolution>
+
+<p>
+Change bullet item 2 in 2.1.2/3:
+</p>
+
+<blockquote>
+<ul>
+<li>
+a pointer to member function <del>type with cv-qualifier <tt><i>cv</i></tt> and no arguments;
+the type <tt>T1</tt> is <tt><i>cv</i> T*</tt> and <tt>R</tt> is the return 
+type of the pointer to member function</del> <ins><tt>R T0::f() <i>cv</i></tt>
+(where <tt><i>cv</i></tt> represents the member function's cv-qualifiers);
+the type <tt>T1</tt> is <tt><i>cv</i> T0*</tt></ins>
+</li>
+</ul>
+</blockquote>
+
+<p>
+Change bullet item 2 in 2.1.2/4:
+</p>
+
+<blockquote>
+<ul>
+<li>
+a pointer to member function <del>with cv-qualifier <tt><i>cv</i></tt> and taking one argument
+of type <tt>T2</tt>; the type <tt>T1</tt> is <tt><i>cv</i> T*</tt> and 
+<tt>R</tt> is the return type of the pointer to member function</del>
+<ins><tt>R T0::f(T2) <i>cv</i></tt> (where <tt><i>cv</i></tt> represents the member
+function's cv-qualifiers); the type <tt>T1</tt> is <tt><i>cv</i> T0*</tt></ins>
+</li>
+</ul>
+</blockquote>
+
+</resolution>
+
+</issue>

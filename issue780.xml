@@ -1,0 +1,235 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="780" status="WP">
+<title><tt>std::merge()</tt> specification incorrect/insufficient</title>
+<section><sref ref="[alg.merge]"/></section>
+<submitter>Daniel Kr&uuml;gler</submitter>
+<date>25 Jan 2008</date>
+
+<discussion>
+<p>
+Though issue <iref ref="283"/> has fixed many open issues, it seems that some are still open:
+</p>
+
+<p>
+Both 25.3.4 [lib.alg.merge] in 14882:2003 and <sref ref="[alg.merge]"/> in N2461
+have no Requires element and the Effects element contains some requirements,
+which is probably editorial. Worse is that:
+</p>
+
+<ul>
+<li>
+no assignment requirements are specified (neither implicit nor explicit).
+</li>
+
+<li>
+the effects clause just speaks of "merges", which is badly worded
+near to a circular definition.
+</li>
+
+<li>
+p. 2 mentions a range <tt>[first, last)</tt>, which is not defined by the
+function arguments or otherwise.
+</li>
+
+<li>
+p. 2 says "according to the ordering defined by comp" which is both
+incomplete (because
+this excludes the first variant with &lt;) and redundant (because the
+following subordinate
+clause mentions comp again)
+</li>
+</ul>
+
+<note>
+Post Summit Alisdair adds:
+</note>
+
+<blockquote>
+<p>
+Suggest:
+</p>
+<blockquote>
+(where <tt>last</tt> is equal to <tt>next(result, distance(first1, last1) +
+distance(first2, last2))</tt>, such that resulting range will be sorted in
+non-decreasing order; that is, for every iterator <tt>i</tt> in <tt>[result,last)</tt> other
+than <tt>result</tt>, the condition <tt>*i &lt; *prev(i)</tt> or, respectively, <tt>comp(*i,
+*prev(i))</tt> will be <tt>false</tt>.
+</blockquote>
+
+<p>
+Note that this might still not be technically accurate in the case of
+<tt>InputIterators</tt>, depending on other resolutions working their way through the
+system (<iref ref="1011"/>).
+</p>
+</blockquote>
+
+<note>
+Post Summit Daniel adds:
+</note>
+
+<blockquote>
+If we want to use <tt>prev</tt> and <tt>next</tt> here (Note: <tt>merge</tt>
+is sufficiently satisfied with <tt>InputIterator</tt>) we should instead *add* more to
+<sref ref="[algorithms]"/>/6, but I can currently not propose any good wording for this.
+</blockquote>
+
+<note>
+Batavia (2009-05):
+</note>
+<blockquote>
+<p>
+Pete points out the existing wording in [algorithms]/4
+that permits the use of + in algorithm specifications.
+</p>
+<p>
+Alisdair points out that that wording may not apply to input iterators.
+</p>
+<p>
+Move to Review.
+</p>
+</blockquote>
+
+<note>
+2009-07 Frankfurt:
+</note>
+
+<blockquote>
+Move to Ready.
+</blockquote>
+
+<note>
+2009-08-23 Daniel reopens:
+</note>
+
+<blockquote>
+<p>
+The proposed wording must be rephrased, because the part
+</p>
+
+<blockquote>
+for every iterator <tt>i</tt> in <tt>[result,last)</tt> other than <tt>result</tt>, the condition
+<tt>*i &lt; *(i - 1)</tt> or, respectively, <tt>comp(*i, *(i - 1))</tt> will be <tt>false</tt>"
+</blockquote>
+
+<p>
+isn't meaningful, because the range <tt>[result,last)</tt> is that of a pure
+<tt>OutputIterator</tt>, which is not <em>readable</em> in general.
+</p>
+
+<note>Howard:  Proposed wording updated by Daniel, status moved from Ready to Review.</note>
+</blockquote>
+
+<note>
+2009-10 Santa Cruz:
+</note>
+
+<blockquote>
+<p>
+Matt has some different words to propose.  Those words have been moved into
+the proposed wording section, and the original proposed wording now appears
+here:
+</p>
+<blockquote>
+<p>
+In <sref ref="[alg.merge]"/> replace p.1+ 2:
+</p>
+
+<blockquote>
+<p>
+<i>Effects:</i> <del>Merges</del><ins>Copies all the elements of the</ins>
+two sorted ranges
+<tt>[first1,last1)</tt> and <tt>[first2,last2)</tt> into the range <tt>[result,result +
+(last1 - first1) + (last2 - first2))</tt>
+<ins>, such that resulting range will be sorted in non-decreasing
+order; that is for every
+pair of iterators <tt>i</tt> and <tt>j</tt> of either input ranges, where <tt>*i</tt> was copied
+to the output range
+before <tt>*j</tt> was copied to the output range, the condition <tt>*j &lt; *i</tt> or,
+respectively, <tt>comp(*j, *i)</tt>
+will be <tt>false</tt>.</ins>
+</p>
+
+<p>
+<ins><i>Requires:</i></ins>The resulting range shall not overlap with either
+of the original ranges.
+<del>The list will be sorted in non-decreasing order according to the
+ordering defined by
+<tt>comp</tt>; that is, for every iterator <tt>i</tt> in <tt>[first,last)</tt> other than <tt>first</tt>,
+the condition <tt>*i &lt; *(i - 1)</tt> or
+<tt>comp(*i, *(i - 1))</tt> will be <tt>false</tt>.</del>
+</p>
+</blockquote>
+</blockquote>
+</blockquote>
+
+<note>
+2010-02-10 Moved to Tentatively Ready after 5 positive votes on c++std-lib.
+</note>
+
+</discussion>
+
+<resolution>
+
+<p>
+Change <sref ref="[alg.merge]"/> 1 and 2:
+</p>
+
+<blockquote>
+<p>1 <del>
+<i>Effects:</i> Merges two sorted ranges <tt>[first1,last1)</tt> and
+<tt>[first2,last2)</tt> into the range <tt>[result, result + (last1 -
+first1) + (last2 - first2))</tt>.
+</del></p>
+<p><ins>
+<i>Effects:</i> Copies all the elements of the two ranges
+<tt>[first1,last1)</tt> and <tt>[first2,last2)</tt> into the range
+<tt>[result, result_last)</tt>, where <tt>result_last</tt> is <tt>result
++ (last1 - first1) + (last2 - first2)</tt>, such that the resulting
+range satisfies <tt>is_sorted(result, result_last)</tt> or
+<tt>is_sorted(result, result_last, comp)</tt>, respectively.
+</ins></p>
+
+<p>
+2 <ins><i>Requires:</i></ins> <ins>The ranges <tt>[first1,last1)</tt> and
+<tt>[first2,last2)</tt> shall be sorted with respect to <tt>operator&lt;</tt> or
+<tt>comp</tt>.</ins> The resulting range shall not overlap with either of the
+original ranges.  <del>The list will be sorted in non-decreasing order according
+to the ordering defined by <tt>comp</tt>; that is, for every iterator <tt>i</tt>
+in <tt>[first,last)</tt> other than <tt>first</tt>, the condition <tt>*i &lt;
+*(i - 1)</tt> or <tt>comp(*i, *(i - 1))</tt> will be <tt>false</tt>.</del>
+</p>
+
+</blockquote>
+
+<p>
+Change <sref ref="[alg.merge]"/>/6+7 as indicated <i>[This ensures harmonization
+between <tt>inplace_merge</tt> and <tt>merge</tt>]</i>
+</p>
+
+<blockquote>
+<p>
+6 <i>Effects:</i> Merges two <del>sorted</del> consecutive ranges
+<tt>[first,middle)</tt> and <tt>[middle,last)</tt>, putting the result of the
+merge into the range <tt>[first,last)</tt>. The resulting range will be in
+non-decreasing order; that is, for every iterator <tt>i</tt> in
+<tt>[first,last)</tt> other than <tt>first</tt>, the condition <tt>*i &lt; *(i -
+1)</tt> or, respectively, <tt>comp(*i, *(i - 1))</tt> will be false.
+</p>
+
+<p>
+7 <i>Requires:</i> <ins>The ranges <tt>[first,middle)</tt> and
+<tt>[middle,last)</tt> shall be sorted with respect to <tt>operator&lt;</tt> or
+<tt>comp</tt>.</ins> The type of <tt>*first</tt> shall satisfy the
+<tt>Swappable</tt> requirements (37), the <tt>MoveConstructible</tt>
+requirements (Table 33), and the the <tt>MoveAssignable</tt> requirements (Table
+35).
+</p>
+</blockquote>
+
+</resolution>
+
+</issue>

@@ -1,0 +1,295 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="1281" status="Review">
+<title>CopyConstruction and Assignment between ratios having the same normalized form</title>
+<section><sref ref="[ratio.ratio]"/></section>
+<submitter>Vicente Juan Botet Escrib&aacute;</submitter>
+<date>7 Dec 2009</date>
+
+<discussion>
+<p>
+CopyConstruction and Assignment between <tt>ratio</tt>s having the same
+normalized form. Current
+<a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2009/n3000.pdf">N3000</a>
+do not allows to copy-construct or assign <tt>ratio</tt> instances of
+<tt>ratio</tt> classes having the same normalized form.
+</p>
+
+<p>
+Two <tt>ratio</tt> classes <tt>ratio&lt;N1,D1&gt;</tt> and
+<tt>ratio&lt;N2,D2&gt;</tt> have the same normalized form if
+</p>
+
+<blockquote><pre>
+ratio&lt;N1, D1&gt;::num == ratio&lt;N2, D2&gt;::num &amp;&amp;
+ratio&lt;N1, D1&gt;::den == ratio&lt;N2, D2&gt;::den
+</pre></blockquote>
+
+<p>
+This simple example
+</p>
+
+<blockquote><pre>
+ratio&lt;1,3&gt; r1;
+ratio&lt;3,9&gt; r2;
+r1 = r2; // (1)
+</pre></blockquote>
+
+<p>
+fails to compile in (1). Other example
+</p>
+
+<blockquote><pre>
+ratio&lt;1,3&gt; r1;
+ratio_subtract&lt;ratio&lt;2,3&gt;, ratio&lt;1,3&gt;&gt;::type r2;
+r1 = r2;  
+</pre></blockquote>
+
+<p>
+The nested type of <tt>ratio_subtract&lt;ratio&lt;2,3&gt;,
+ratio&lt;1,3&gt;&gt;</tt> could be <tt>ratio&lt;3,9&gt;</tt> so the compilation
+could fail. It could also be <tt>ratio&lt;1,3&gt;</tt> and the compilation
+succeeds.
+</p>
+
+<p>
+In <sref ref="[ratio.arithmetic]"/> 3 and similar clauses
+</p>
+
+<blockquote>
+3 The nested typedef <tt>type</tt> shall be a synonym for <tt>ratio&lt;T1,
+T2&gt;</tt> where <tt>T1</tt> has the value <tt>R1::num * R2::den - R2::num *
+R1::den</tt> and <tt>T2</tt> has the value <tt>R1::den * R2::den</tt>.
+</blockquote>
+
+<p>
+the meaning of synonym let think that the result shall be a normalized
+<tt>ratio</tt> equivalent to <tt>ratio&lt;T1, T2&gt;</tt>, but there is not an
+explicit definition of what synonym means in this context.
+</p>
+
+<p>
+Additionally we should add a typedef for accessing the normalized
+<tt>ratio</tt>, and  change <sref ref="[ratio.arithmetic]"/> to return only this
+<em>normalized</em> result.
+</p>
+
+<note>
+2010 Pittsburgh:
+</note>
+
+<blockquote>
+<p>
+There is no consensus to add the converting copy constructor or converting copy
+assignment operator.  However there was consensus to add the typedef.
+</p>
+
+<p>
+Proposed wording modified.  Original proposed wording preserved here.  Moved to
+Review.
+</p>
+
+<blockquote class="note">
+<p>
+Make <tt>ratio</tt> default constructible, copy-constructible and assignable
+from any <tt>ratio</tt> which has the same reduced form.
+</p>
+
+<p>
+Add to <sref ref="[ratio.ratio]"/> synopsis
+</p>
+
+<blockquote><pre>
+template &lt;intmax_t N, intmax_t D = 1&gt;
+class ratio {
+public:
+  static constexpr intmax_t num;
+  static constexpr intmax_t den;
+
+  <ins>typedef ratio&lt;num, den&gt; type;</ins>
+
+  <ins>ratio() = default;
+  template &lt;intmax_t N2, intmax_t D2&gt;
+    ratio(const ratio&lt;N2, D2&gt;&amp;);
+  template &lt;intmax_t N2, intmax_t D2&gt;
+    ratio&amp; operator=(const ratio&lt;N2, D2&gt;&amp;);</ins>
+};
+</pre></blockquote>
+
+<p>
+Add to <sref ref="[ratio.ratio]"/>:
+</p>
+
+<blockquote>
+<p>
+Two ratio classes <tt>ratio&lt;N1,D1&gt;</tt> and <tt>ratio&lt;N2,D2&gt;</tt>
+have the same reduced form if <tt>ratio&lt;N1,D1&gt;::type</tt> is the same
+type as <tt>ratio&lt;N2,D2&gt;::type</tt>
+</p>
+
+</blockquote>
+
+<p>
+Add a new section: [ratio.cons]
+</p>
+
+<blockquote>
+<p><b>
+Construction and assignment  [ratio.cons]
+</b></p>
+
+<pre>
+template &lt;intmax_t N2, intmax_t D2&gt;
+  ratio(const ratio&lt;N2, D2&gt;&amp; r);
+</pre>
+
+<blockquote>
+<p>
+<i>Effects:</i> Constructs a <tt>ratio</tt> object.
+</p>
+<p>
+<i>Remarks:</i> This constructor shall not participate in overload resolution
+unless <tt>r</tt> has the same reduced form as <tt>*this</tt>.
+</p>
+</blockquote>
+
+<pre>
+template &lt;intmax_t N2, intmax_t D2&gt;
+  ratio&amp; operator=(const ratio&lt;N2, D2&gt;&amp; r);
+</pre>
+
+<blockquote>
+<p>
+<i>Effects:</i> None.
+</p>
+<p>
+<i>Returns:</i> <tt>*this</tt>.
+</p>
+<p>
+<i>Remarks:</i> This operator shall not participate in overload resolution
+unless <tt>r</tt> has the same reduced form as <tt>*this</tt>.
+</p>
+</blockquote>
+
+</blockquote>
+
+<p>
+Change <sref ref="[ratio.arithmetic]"/> 
+</p>
+
+<blockquote>
+<p>
+Implementations may use other algorithms to compute these values. If overflow
+occurs, a diagnostic shall be issued.
+</p>
+
+<pre>
+template &lt;class R1, class R2&gt; struct ratio_add {
+  typedef <i>see below</i> type;
+};
+</pre>
+
+<blockquote>
+The nested typedef <tt>type</tt> shall be a synonym for <tt>ratio&lt;T1,
+T2&gt;<ins>::type</ins></tt> where <tt>T1</tt> has the value <tt>R1::num *
+R2::den + R2::num * R1::den</tt> and <tt>T2</tt> has the value <tt>R1::den *
+R2::den</tt>.
+</blockquote>
+
+<pre>
+template &lt;class R1, class R2&gt; struct ratio_subtract {
+  typedef <i>see below</i> type;
+};
+</pre>
+
+<blockquote>
+The nested typedef <tt>type</tt> shall be a synonym for <tt>ratio&lt;T1,
+T2&gt;<ins>::type</ins></tt> where <tt>T1</tt> has the value <tt>R1::num *
+R2::den - R2::num * R1::den</tt> and <tt>T2</tt> has the value <tt>R1::den *
+R2::den</tt>.
+</blockquote>
+
+<pre>
+template &lt;class R1, class R2&gt; struct ratio_multiply {
+  typedef <i>see below</i> type;
+};
+</pre>
+
+<blockquote>
+The nested typedef <tt>type</tt> shall be a synonym for <tt>ratio&lt;T1,
+T2&gt;<ins>::type</ins></tt> where <tt>T1</tt> has the value <tt>R1::num *
+R2::num</tt> and <tt>T2</tt> has the value <tt>R1::den * R2::den</tt>.
+</blockquote>
+
+<pre>
+template &lt;class R1, class R2&gt; struct ratio_divide {
+  typedef <i>see below</i> type;
+};
+</pre>
+
+<blockquote>
+The nested typedef <tt>type</tt> shall be a synonym for <tt>ratio&lt;T1,
+T2&gt;<ins>::type</ins></tt> where <tt>T1</tt> has the value <tt>R1::num *
+R2::den</tt> and <tt>T2</tt> has the value <tt>R1::den * R2::num</tt>.
+</blockquote>
+
+</blockquote>
+
+</blockquote>
+
+</blockquote>
+
+<note>
+2010-03-27 Howard adds:
+</note>
+
+<blockquote>
+<p>
+Daniel brought to my attention the recent addition of the typedef <tt>type</tt>
+to the FCD
+<a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2010/n3092.pdf">N3092</a>:
+</p>
+
+<blockquote><pre>
+typedef ratio type;
+</pre></blockquote>
+
+<p>
+This issue was discussed in Pittsburgh, and the decision there was to accept the
+typedef as proposed and move to Review.  Unfortunately the issue was accidently
+applied to the FCD, and incorrectly.  The FCD version of the typedef refers to
+<tt>ratio&lt;N, D&gt;</tt>, but the typedef is intended to refer to
+<tt>ratio&lt;num, den&gt;</tt> which in general is not the same type.
+</p>
+
+<p>
+I've updated the wording to diff against
+<a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2010/n3092.pdf">N3092</a>.
+</p>
+
+</blockquote>
+
+</discussion>
+
+<resolution>
+<p>
+Add to <sref ref="[ratio.ratio]"/> synopsis
+</p>
+
+<blockquote><pre>
+template &lt;intmax_t N, intmax_t D = 1&gt;
+class ratio {
+public:
+  static constexpr intmax_t num;
+  static constexpr intmax_t den;
+
+  typedef ratio<ins>&lt;num, den&gt;</ins> type;
+};
+</pre></blockquote>
+
+</resolution>
+
+</issue>

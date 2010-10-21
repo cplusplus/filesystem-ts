@@ -1,0 +1,74 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="1340" status="New">
+<title>Why does <tt>forward_list::resize</tt> take the object to be copied by value?</title>
+<section><sref ref="[forwardlist.modifiers]"/></section>
+<submitter>		
+James McNellis</submitter>
+<date>16 Jul 2010</date>
+
+<discussion>
+<p>
+In
+<a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2010/n3092.pdf">N3092</a>
+<sref ref="[forwardlist.modifiers]"/>, the <tt>resize()</tt> member function is 
+declared as:
+</p>
+
+<blockquote><pre>
+void resize(size_type sz, value_type c); 
+</pre></blockquote>
+
+<p>
+The other sequence containers (<tt>list</tt>, <tt>deque</tt>, and
+<tt>vector</tt>) take <tt>'c'</tt> by const reference.
+</p>
+
+<p>
+Is there a reason for this difference?  If not, then <tt>resize()</tt> should 
+be declared as: 
+</p>
+
+<blockquote><pre>
+void resize(size_type sz, const value_type&amp; c); 
+</pre></blockquote>
+
+<p>
+The declaration would need to be changed both at its declaration in the class
+definition at <sref ref="[forwardlist]"/>/3 and where its behavior is specified
+at <sref ref="[forwardlist.modifiers]"/>/22.
+</p>
+
+<p>
+This would make <tt>forward_list</tt> consistent with the CD1 issue <iref
+ref="679"/>.
+</p>
+
+</discussion>
+
+<resolution>
+<p>
+Change <sref ref="[forwardlist]"/>/3:
+</p>
+
+<blockquote><pre>
+  ...
+  void resize(size_type sz, <ins>const</ins> value_type<ins>&amp;</ins> c);
+  ...
+</pre></blockquote>
+
+<p>
+Change <sref ref="[forwardlist.modifiers]"/>/22:
+</p>
+
+<blockquote><pre>
+void resize(size_type sz);
+void resize(size_type sz, <ins>const</ins> value_type<ins>&amp;</ins> c);
+</pre></blockquote>
+
+</resolution>
+
+</issue>

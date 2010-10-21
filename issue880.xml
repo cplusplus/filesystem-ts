@@ -1,0 +1,77 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="880" status="NAD Editorial">
+<title>Missing atomic exchange parameter</title>
+<section><sref ref="[atomics]"/></section>
+<submitter>Lawrence Crowl</submitter>
+<date>24 Aug 2008</date>
+
+<discussion>
+<p>
+The <tt>atomic_exchange</tt> and <tt>atomic_exchange_explicit</tt> functions seem to
+be inconsistently missing parameters.
+</p>
+
+<note>
+Post Summit:
+</note>
+
+<blockquote>
+<p>
+Lawrence: Need to write up a list for Pete with details.
+</p>
+<p>
+Detlef: Should not be New, we already talked about in Concurrency group.
+</p>
+<p>
+Recommend Open.
+</p>
+</blockquote>
+
+<note>
+2009-07 Frankfurt
+</note>
+
+<blockquote>
+<p>
+Lawrence will handle all issues relating to atomics in a single paper.
+</p>
+<p>
+LWG will defer discussion on atomics until that paper appears.
+</p>
+<p>
+Move to Open.
+</p>
+</blockquote>
+
+<note>
+2009-08-17 Handled by
+<a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2009/n2925.html">N2925</a>.
+</note>
+
+<note>
+2009-10 Santa Cruz:
+</note>
+
+<blockquote>
+NAD Editorial.  Solved by
+<a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2009/n2992.html">N2992</a>.
+</blockquote>
+
+</discussion>
+
+<resolution>
+<p>
+Add the appropriate parameters.  For example,
+</p>
+
+<blockquote><pre>
+bool atomic_exchange(volatile atomic_bool*<ins>, bool</ins>);
+bool atomic_exchange_explicit(volatile atomic_bool*, bool<ins>, memory_order</ins>);
+</pre></blockquote>
+</resolution>
+
+</issue>

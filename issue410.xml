@@ -1,0 +1,96 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="410" status="CD1">
+<title>Missing semantics for stack and queue comparison operators</title>
+<section><sref ref="[list.cons]"/> <sref ref="[list.modifiers]"/></section>
+<submitter>Hans Bos</submitter>
+<date>7 Jun 2003</date>
+
+<discussion>
+<p>
+Sections <sref ref="[list.cons]"/> and <sref ref="[list.modifiers]"/> list
+comparison operators (==, !=, &lt;, &lt;=, &gt;, =&gt;) for queue and
+stack.  Only the semantics for queue::operator== (<sref ref="[list.cons]"/> par2) and queue::operator&lt; (<sref ref="[list.cons]"/>
+par3) are defined.
+</p>
+</discussion>
+
+<resolution>
+
+<p>Add the following new paragraphs after <sref ref="[list.cons]"/>
+  paragraph 3:</p>
+
+<blockquote>
+
+<pre>
+  operator!=
+</pre>
+<p>Returns: <tt>x.c != y.c</tt></p>
+
+<pre>
+  operator&gt;
+</pre>
+<p>Returns: <tt>x.c &gt; y.c</tt></p>
+
+<pre>
+  operator&lt;=
+</pre>
+<p>Returns: <tt>x.c &lt;= y.c</tt></p>
+
+<pre>
+  operator&gt;=
+</pre>
+<p>Returns: <tt>x.c &gt;= y.c</tt></p>
+
+</blockquote>
+
+<p>Add the following paragraphs at the end of <sref ref="[list.modifiers]"/>:</p>
+
+<blockquote>
+
+<pre>
+  operator==
+</pre>
+<p>Returns: <tt>x.c == y.c</tt></p>
+
+<pre>
+  operator&lt;
+</pre>
+<p>Returns: <tt>x.c &lt; y.c</tt></p>
+
+<pre>
+  operator!=
+</pre>
+<p>Returns: <tt>x.c != y.c</tt></p>
+
+<pre>
+  operator&gt;
+</pre>
+<p>Returns: <tt>x.c &gt; y.c</tt></p>
+
+<pre>
+  operator&lt;=
+</pre>
+<p>Returns: <tt>x.c &lt;= y.c</tt></p>
+
+<pre>
+  operator&gt;=
+</pre>
+<p>Returns: <tt>x.c &gt;= y.c</tt></p>
+
+</blockquote>
+
+
+<note>Kona: Matt provided wording.</note>
+
+</resolution>
+
+<rationale>
+<p>There isn't any real doubt about what these operators are
+supposed to do, but we ought to spell it out.</p>
+</rationale>
+
+</issue>

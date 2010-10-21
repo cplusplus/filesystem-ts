@@ -1,0 +1,85 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="884" status="NAD Editorial">
+<title>shared_ptr swap</title>
+<section><sref ref="[util.smartptr.shared.mod]"/></section>
+<submitter>Jonathan Wakely</submitter>
+<date>15 Sep 2008</date>
+
+<discussion>
+<blockquote><pre>
+#include &lt;memory&gt;
+#include &lt;cassert&gt;
+
+struct A { };
+struct B : A { };
+
+int main()
+{
+    std::shared_ptr&lt;A&gt; pa(new A);
+    std::shared_ptr&lt;B&gt; pb(new B);
+    std::swap&lt;A&gt;(pa, pb);  // N.B. no argument deduction
+    assert( pa.get() == pb.get() );
+    return 0;
+}
+</pre></blockquote>
+
+<p>
+Is this behaviour correct (I believe it is) and if so, is it
+unavoidable, or not worth worrying about?
+</p>
+
+<p>
+This calls the lvalue/rvalue swap overload for <tt>shared_ptr</tt>:
+</p>
+
+<blockquote><pre>
+template&lt;class T&gt; void swap( shared_ptr&lt;T&gt; &amp; a, shared_ptr&lt;T&gt; &amp;&amp; b );
+</pre></blockquote>
+
+<p>
+silently converting the second argument from <tt>shared_ptr&lt;B&gt;</tt> to
+<tt>shared_ptr&lt;A&gt;</tt> and binding the rvalue ref to the produced temporary.
+</p>
+
+<p>
+This is not, in my opinion, a <tt>shared_ptr</tt> problem; it is a general issue
+with the rvalue swap overloads. Do we want to prevent this code from
+compiling? If so, how?
+</p>
+
+<p>
+Perhaps we should limit rvalue args to swap to those types that would
+benefit from the "swap trick".  Or, since we now have <tt>shrink_to_fit()</tt>, just
+eliminate the rvalue swap overloads altogether.  The original motivation
+was:
+</p>
+
+<blockquote><pre>
+vector&lt;A&gt; v = ...;
+...
+swap(v, vector&lt;A&gt;(v));
+</pre></blockquote>
+
+<a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2004/n1690.html#Improved%20swap%20Interface">N1690</a>.
+
+<note>
+Batavia (2009-05):
+</note>
+<blockquote>
+We agree with the proposed resolution.
+Move to NAD Editorial.
+</blockquote>
+</discussion>
+
+<resolution>
+<p>
+Recommend NAD Editorial, fixed by
+<a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2009/n2844.html">N2844</a>.
+</p>
+</resolution>
+
+</issue>

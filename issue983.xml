@@ -1,0 +1,183 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="983" status="NAD Editorial">
+<title><tt>unique_ptr</tt> reference deleters should not be moved from</title>
+<section><sref ref="[unique.ptr.single]"/></section>
+<submitter>Howard Hinnant</submitter>
+<date>10 Feb 2009</date>
+
+<discussion>
+<p>
+Dave brought to my attention that when a <tt>unique_ptr</tt> has a non-const reference
+type deleter, move constructing from it, even when the <tt>unique_ptr</tt> containing
+the reference is an rvalue, could have surprising results:
+</p>
+
+<blockquote><pre>
+D d(some-state);
+unique_ptr&lt;A, D&amp;&gt; p(new A, d);
+unique_ptr&lt;A, D&gt; p2 = std::move(p);
+<font color="#C80000">// has d's state changed here?</font>
+</pre></blockquote>
+
+<p>
+I agree with him.  It is the <tt>unique_ptr</tt> that is the rvalue, not the
+deleter.  When the deleter is a reference type, the <tt>unique_ptr</tt> should
+respect the "lvalueness" of the deleter.
+</p>
+
+<p>
+Thanks Dave.
+</p>
+
+<note>
+Batavia (2009-05):
+</note>
+<blockquote>
+Seems correct, but complicated enough that we recommend moving to Review.
+</blockquote>
+
+<note>
+2009-10 Santa Cruz:
+</note>
+
+<blockquote>
+Move to Ready.
+</blockquote>
+
+<note>
+2010-03-14 Howard adds:
+</note>
+
+<blockquote>
+We moved
+<a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2010/n3073.html">N3073</a>
+to the formal motions page in Pittsburgh which should obsolete this issue.  I've
+moved this issue to NAD Editorial, solved by N3073.
+</blockquote>
+
+</discussion>
+
+<rationale>
+<p>
+Solved by <a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2010/n3073.html">N3073</a>.
+</p>
+</rationale>
+
+<resolution>
+<p>
+Change <sref ref="[unique.ptr.single.ctor]"/>, p20-21
+</p>
+
+<blockquote>
+<pre>
+template &lt;class U, class E&gt; unique_ptr(unique_ptr&lt;U, E&gt;&amp;&amp; u);
+</pre>
+
+<blockquote>
+
+<p>
+-20- <i>Requires:</i> If <tt><del>D</del> <ins>E</ins></tt> is not a reference type,
+construction of the deleter <tt>D</tt> from an rvalue of type <tt>E</tt>
+shall be well formed and shall not throw an exception.
+<ins>
+Otherwise <tt>E</tt> is a reference type and construction of the deleter
+<tt>D</tt> from an lvalue of type <tt>E</tt> shall be well formed and
+shall not throw an exception.
+</ins>
+If <tt>D</tt> is
+a reference type, then <tt>E</tt> shall be the same type as <tt>D</tt>
+(diagnostic required). <tt>unique_ptr&lt;U, E&gt;::pointer</tt> shall be
+implicitly convertible to <tt>pointer</tt>. [<tt>Note:</tt> These
+requirements imply that <tt>T</tt> and <tt>U</tt> are complete types.
+<i>-- end note</i>]
+</p>
+
+<p>
+-21- <i>Effects:</i> Constructs a <tt>unique_ptr</tt> which owns the
+pointer which <tt>u</tt> owns (if any). If the deleter
+<ins><tt>E</tt></ins> is not a reference type, <del>it</del> <ins>this
+deleter</ins> is move constructed from <tt>u</tt>'s deleter, otherwise
+<del>the reference</del> <ins>this deleter</ins> is copy constructed
+from <tt>u</tt>.'s deleter. After the construction, <tt>u</tt> no longer
+owns a pointer. [<i>Note:</i> The deleter constructor can be implemented
+with <tt>std::forward&lt;<del>D</del><ins>E</ins>&gt;</tt>. <i>-- end
+note</i>]
+</p>
+
+</blockquote>
+</blockquote>
+
+<p>
+Change <sref ref="[unique.ptr.single.asgn]"/>, p1-3
+</p>
+
+<blockquote>
+<pre>
+unique_ptr&amp; operator=(unique_ptr&amp;&amp; u);
+</pre>
+<blockquote>
+
+<p>
+-1- <i>Requires:</i> <ins>If the deleter <tt>D</tt> is not a reference type,</ins>
+<del>A</del><ins>a</ins>ssignment of the deleter <tt>D</tt> from an rvalue <tt>D</tt> shall not throw an exception.
+<ins>
+Otherwise the deleter <tt>D</tt> is a reference type,
+and assignment of the deleter <tt>D</tt> from an lvalue <tt>D</tt> shall not throw an exception.</ins>
+</p>
+
+<p>
+-2- <i>Effects:</i> reset(u.release()) followed by
+a<ins>n</ins> <del>move</del> assignment from <del><tt>u</tt>'s deleter to this deleter</del>
+<ins><tt>std::forward&lt;D&gt;(u.get_deleter())</tt></ins>.
+</p>
+
+<p>
+-3- <i>Postconditions:</i> This <tt>unique_ptr</tt> now owns the pointer
+which <tt>u</tt> owned, and <tt>u</tt> no longer owns it. <del>[<i>Note:</i> If
+<tt>D</tt> is a reference type, then the referenced lvalue deleters are
+move assigned. <i>-- end note</i>]</del>
+</p>
+</blockquote>
+</blockquote>
+
+<p>
+Change <sref ref="[unique.ptr.single.asgn]"/>, p6-7
+</p>
+
+<blockquote>
+<pre>
+template &lt;class U, class E&gt; unique_ptr&amp; operator=(unique_ptr&lt;U, E&gt;&amp;&amp; u);
+</pre>
+<blockquote>
+
+<p>
+<i>Requires:</i> <ins>If the deleter <tt>E</tt> is not a reference type,</ins>
+<del>A</del><ins>a</ins>ssignment of the deleter <tt>D</tt> from an rvalue
+<tt><del>D</del><ins>E</ins></tt> shall not throw an exception.
+<ins>
+Otherwise the deleter <tt>E</tt> is a reference type,
+and assignment of the deleter <tt>D</tt> from an lvalue <tt>E</tt> shall not throw an exception.</ins>
+<tt>unique_ptr&lt;U, E&gt;::pointer</tt> shall be implicitly convertible to <tt>pointer</tt>.
+[<i>Note:</i> These requirements imply that <tt>T</tt> and <tt>U></tt>
+are complete types. <i>-- end note</i>]
+</p>
+
+<p>
+<i>Effects:</i> <tt>reset(u.release())</tt> followed by
+a<ins>n</ins> <del>move</del> assignment from <del><tt>u</tt>'s deleter to this deleter</del>
+<ins><tt>std::forward&lt;E&gt;(u.get_deleter())</tt></ins>.
+<del>If either
+<tt>D</tt> or <tt>E</tt> is a reference type, then the referenced lvalue
+deleter participates in the move assignment.</del>
+</p>
+
+</blockquote>
+</blockquote>
+
+</resolution>
+
+</issue>

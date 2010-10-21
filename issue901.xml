@@ -1,0 +1,70 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="901" status="NAD">
+<title>insert iterators can move from lvalues</title>
+<section><sref ref="[insert.iterator]"/></section>
+<submitter>Alisdair Meredith</submitter>
+<date>24 Sep 2008</date>
+
+<discussion>
+<p><b>Addresses UK 282</b></p>
+
+<p>
+The requires clause on the <tt>const T &amp;</tt> overloads in
+<tt>back_insert_iterator/front_insert_iterator/insert_iterator</tt> mean that the
+assignment operator will implicitly move from lvalues of a move-only type.
+</p>
+<p>
+Suggested resolutions are:
+</p>
+<ol type="a">
+<li>
+Add another overload with a negative constraint on copy-constructible
+and flag it "= delete".
+</li>
+<li>
+Drop the copy-constructible overload entirely and rely on perfect
+forwarding to catch move issues one level deeper.
+</li>
+<li>
+This is a fundamental problem in move-syntax that relies on the
+presence of two overloads, and we need to look more deeply into this
+area as a whole - do not solve this issue in isolation.
+</li>
+</ol>
+
+<note>
+Post Summit, Alisdair adds:
+</note>
+
+<blockquote>
+<p>
+Both comment and issue have been resolved by the adoption of
+<a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2009/n2844.html">N2844</a>
+(rvalue references safety fix) at the last meeting.
+</p>
+
+<p>
+Suggest resolve as NAD Editorial with a reference to the paper.
+</p>
+</blockquote>
+
+<note>
+Batavia (2009-05):
+</note>
+<blockquote>
+We agree that this has been resolved in the latest Working Draft.
+Move to NAD.
+</blockquote>
+</discussion>
+
+<resolution>
+<p>
+Recommend NAD, addressed by <a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2009/n2844.html">N2844</a>.
+</p>
+</resolution>
+
+</issue>

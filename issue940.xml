@@ -1,0 +1,278 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="940" status="NAD Editorial">
+<title><tt>std::distance</tt></title>
+<section><sref ref="[iterator.operations]"/></section>
+<submitter>Thomas</submitter>
+<date>14 Dec 2008</date>
+
+<discussion>
+
+<p><b>Addresses UK 270</b></p>
+
+<p>
+Regarding the <tt>std::distance</tt> - function, <sref ref="[iterator.operations]"/>
+/ 4 says:
+</p>
+<blockquote>
+Returns the
+number of increments or decrements needed to get from first to last.
+</blockquote>
+<p>
+This sentence is completely silent about the sign of the return value.
+<sref ref="[iterator.operations]"/> / 1 gives more information about the
+underlying operations, but
+again no inferences about the sign can be made.
+Strictly speaking, that is taking that sentence literally, I think this
+sentence even implies a positive return value in all cases, as the
+number of increments or decrements is clearly a ratio scale variable,
+with a natural zero bound.
+</p>
+<p>
+Practically speaking, my implementations did what common sense and
+knowledge based on pointer arithmetic forecasts, namely a positive sign
+for increments (that is, going from <tt>first</tt> to <tt>last</tt> by <tt>operator++</tt>), and a
+negative sign for decrements (going from <tt>first</tt> to <tt>last</tt> by <tt>operator--</tt>).
+</p>
+<p>
+Here are my two questions:
+</p>
+<p>
+First, is that paragraph supposed to be interpreted in the way what I
+called 'common sense', that is negative sign for decrements ? I am
+fairly sure that's the supposed behavior, but a double-check here in
+this group can't hurt.
+</p>
+<p>
+Second, is the present wording (2003 standard version - no idea about
+the draft for the upcoming standard) worth an edit to make it a bit more
+sensible, to mention the sign of the return value explicitly ?
+</p>
+
+<note>
+Daniel adds:
+</note>
+
+<blockquote>
+<p>
+My first thought was that resolution <iref ref="204"/> would already cover the
+issue report, but it seems that current normative wording is in
+contradiction to that resolution:
+</p>
+
+<p>
+Referring to
+<a href ref="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2008/n2798.pdf">N2798</a>,
+<sref ref="[iterator.operations]"/>/ p.4 says:
+</p>
+
+<blockquote>
+<i>Effects:</i> Returns the number of increments or decrements needed to get
+from <tt>first</tt> to <tt>last</tt>.
+</blockquote>
+
+<p>
+IMO the part " or decrements" is in contradiction to p. 5 which says
+</p>
+
+<blockquote>
+<i>Requires:</i> <tt>last</tt> shall be reachable from <tt>first</tt>.
+</blockquote>
+
+<p>
+because "reachable" is defined in <sref ref="[iterator.concepts]"/>/7 as
+</p>
+
+<blockquote>
+An iterator <tt>j</tt> is called reachable from an iterator <tt>i</tt> if and only if
+there is a finite
+sequence of applications of the expression <tt>++i</tt> that makes <tt>i == j</tt>.[..]
+</blockquote>
+
+<p>
+Here is wording that would be consistent with this definition of "reachable":
+</p>
+
+<p>
+Change <sref ref="[iterator.operations]"/> p4 as follows:
+</p>
+
+<blockquote>
+<i>Effects:</i> Returns the number of increments <del>or decrements</del>
+needed to get from <tt>first</tt> to <tt>last</tt>.
+</blockquote>
+
+</blockquote>
+
+<p>
+Thomas adds more discussion and an alternative view point
+<a href="http://groups.google.com/group/comp.std.c++/browse_thread/thread/e8e46dcda0a5d797#">here</a>.
+</p>
+
+<note>
+Summit:
+</note>
+
+<blockquote>
+The proposed wording below was verbally agreed to.  Howard provided.
+</blockquote>
+
+<note>
+Batavia (2009-05):
+</note>
+<blockquote>
+<p>
+Pete reports that a recent similar change has been made
+for the <tt>advance()</tt> function.
+</p>
+<p>
+We agree with the proposed resolution.
+Move to Tentatively Ready.
+</p>
+</blockquote>
+
+<note>
+2009-07 Frankfurt
+</note>
+
+<blockquote>
+Moved from Tentatively Ready to Open only because the wording needs to be
+tweaked for concepts removal.
+</blockquote>
+
+<note>
+2009-07 Frankfurt:
+</note>
+
+<blockquote>
+Leave Open pending arrival of a post-Concepts WD.
+</blockquote>
+
+<note>
+2009-10-14 Daniel provided de-conceptified wording.
+</note>
+
+<note>
+2009-10 Santa Cruz:
+</note>
+
+<blockquote>
+Move to Ready, replacing the Effects clause in the proposed wording with
+"If InputIterator meets the requirements of random access iterator then
+returns (last - first), otherwise returns the number of increments
+needed to get from first to list.".
+</blockquote>
+
+<note>
+2010 Pittsburgh:
+</note>
+
+<blockquote>
+Moved to NAD Editorial.  Rationale added below.
+</blockquote>
+
+</discussion>
+
+<rationale>
+<p>
+Solved by N3066.
+</p>
+</rationale>
+
+<resolution>
+<ol>
+<li>
+<p>
+Change <sref ref="[random.access.iterators]"/>, Table 105 as indicated [This change is not
+essential but it simplifies the specification] for the row with
+expression "<tt>b - a</tt>"
+and the column Operational semantics:
+</p>
+
+<blockquote><pre>
+<del>(a &lt; b) ? </del>distance(a,b)
+<del>: -distance(b,a)</del>
+</pre></blockquote>
+</li>
+
+<li>
+<p>
+Change <sref ref="[iterator.operations]"/>/4+5 as indicated:
+</p>
+
+<blockquote><pre>
+template&lt;class InputIterator&gt;
+  typename iterator_traits&lt;InputIterator&gt;::difference_type
+    distance(InputIterator first, InputIterator last);
+</pre>
+<blockquote>
+<p>
+4 <i>Effects:</i> <ins>If <tt>InputIterator</tt> meets the requirements
+of random access iterator then returns <tt>(last - first)</tt>,
+otherwise</ins> <del>R</del><ins>r</ins>eturns the number of increments
+<del>or decrements</del> needed to get from <tt>first</tt> to
+<tt>last</tt>.
+</p>
+
+<p>
+5 <i>Requires:</i> <ins>If <tt>InputIterator</tt> meets the requirements
+of random access iterator then <tt>last</tt> shall be reachable from
+<tt>first</tt> or <tt>first</tt> shall be reachable from <tt>last</tt>,
+otherwise</ins> <tt>last</tt> shall be reachable from <tt>first</tt>.
+</p>
+</blockquote>
+</blockquote>
+</li>
+</ol>
+
+
+<!-- 
+<p>
+Change <sref ref="[iterator.operations]"/>:
+</p>
+
+<blockquote>
+<pre>
+template &lt;InputIterator Iter&gt;
+  Iter::difference_type
+  distance(Iter first, Iter last);
+<del>template &lt;RandomAccessIterator Iter&gt;
+  Iter::difference_type distance(Iter first, Iter last);</del>
+</pre>
+
+<blockquote>
+<p>
+-4- <i>Effects:</i> Returns the number of increments <del>or decrements</del>
+needed to get from <tt>first</tt> to <tt>last</tt>.
+</p>
+<p>
+-5- <i>Requires:</i> <tt>last</tt> shall be reachable from <tt>first</tt>.
+</p>
+</blockquote>
+
+<pre>
+<ins>template &lt;RandomAccessIterator Iter&gt;
+  Iter::difference_type distance(Iter first, Iter last);</ins>
+</pre>
+
+<blockquote>
+<p>
+<ins>-6- <i>Effects:</i> Returns the number of increments or decrements
+needed to get from <tt>first</tt> to <tt>last</tt>.</ins>
+</p>
+<p>
+<ins>-7- <i>Requires:</i> <tt>last</tt> shall be reachable from <tt>first</tt>
+or <tt>first</tt> shall be reachable from <tt>last</tt>.</ins>
+</p>
+</blockquote>
+
+
+</blockquote>
+ -->
+
+</resolution>
+
+</issue>

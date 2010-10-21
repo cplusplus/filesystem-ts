@@ -1,0 +1,76 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="716" status="WP">
+<title>Production in [re.grammar] not actually modified</title>
+<section><sref ref="[re.grammar]"/></section>
+<submitter>Stephan T. Lavavej</submitter>
+<date>31 Aug 2007</date>
+
+<discussion>
+<p>
+<sref ref="[tr.re.grammar]"/>/3 and C++0x WP <sref ref="[re.grammar]"/>/3 say:
+</p>
+
+<blockquote>
+<p>
+The following productions within the ECMAScript grammar are modified as follows:
+</p>
+
+<blockquote><pre>
+CharacterClass ::
+[ [lookahead &notin; {^}] ClassRanges ]
+[ ^ ClassRanges ]
+</pre></blockquote>
+
+</blockquote>
+
+<p>
+This definition for <tt>CharacterClass</tt> appears to be exactly identical to that in ECMA-262.
+</p>
+
+<p>
+Was an actual modification intended here and accidentally omitted, or was this production accidentally included?
+</p>
+
+<note>
+Batavia (2009-05):
+</note>
+<blockquote>
+<p>
+We agree that what is specified is identical to what ECMA-262 specifies.
+Pete would like to take a bit of time to assess whether we had intended,
+but failed, to make a change.
+It would also be useful to hear from John Maddock on the issue.
+</p>
+<p>
+Move to Open.
+</p>
+</blockquote>
+
+<note>
+2009-07 Frankfurt:
+</note>
+
+<blockquote>
+Move to Ready.
+</blockquote>
+
+</discussion>
+
+<resolution>
+<p>
+Remove this mention of the CharacterClass production.
+</p>
+
+<blockquote><pre>
+<del>CharacterClass ::
+[ [lookahead &notin; {^}] ClassRanges ]
+[ ^ ClassRanges ]</del>
+</pre></blockquote>
+
+</resolution>
+
+</issue>

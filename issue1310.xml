@@ -1,0 +1,137 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="1310" status="New">
+<title><tt>forward_list splice_after</tt> from lvalues</title>
+<section><sref ref="[forwardlist.ops]"/></section>
+<submitter>Howard Hinnant</submitter>
+<date>5 Feb 2010</date>
+
+<discussion>
+<p>
+We've moved <iref ref="1133"/> to Tentatively Ready and I'm fine with that.
+</p>
+
+<p>
+<iref ref="1133"/> adds lvalue-references to the <tt>splice</tt> signatures for <tt>list</tt>.  So now
+<tt>list</tt> can <tt>splice</tt> from lvalue and rvalue lists (which was the intent of the
+original move papers btw).  During the discussion of this issue it was mentioned
+that if we want to give the same treatment to <tt>forward_list</tt>, that should be a
+separate issue.
+</p>
+
+<p>
+This is that separate issue.
+</p>
+
+<p>
+Consider the following case where you want to splice elements from one place in
+a <tt>forward_list</tt> to another.  Currently this must be coded like so:
+</p>
+
+<blockquote><pre>
+fl.splice_after(to_here, std::move(fl), from1, from2);
+</pre></blockquote>
+
+<p>
+This looks pretty shocking to me.  I would expect to be able to code instead:
+</p>
+
+<blockquote><pre>
+fl.splice_after(to_here, fl, from1, from2);
+</pre></blockquote>
+
+<p>
+but we currently don't allow it.
+</p>
+
+<p>
+When I say <tt>move(fl)</tt>, I consider that as saying that I don't care about
+the value of <tt>fl</tt> any more (until I assign it a new value).  But in the
+above example, this simply isn't true.  I do care about the value of <tt>fl</tt>
+after the move, and I'm not assigning it a new value.  I'm merely permuting its
+current value.
+</p>
+
+<p>
+I propose adding <tt>forward_list&amp;</tt> overloads to the 3
+<tt>splice_after</tt> members.  For consistency's sake (principal of least
+surprise) I'm also proposing to overload <tt>merge</tt> this way as well.
+</p>
+</discussion>
+
+<resolution>
+<p>
+Add to the synopsis of <sref ref="[forwardlist]"/>:
+</p>
+
+<blockquote><pre>
+template &lt;class T, class Allocator = allocator&lt;T&gt; &gt;
+class forward_list {
+public:
+  ...
+  <ins>void splice_after(const_iterator p, forward_list&amp; x);</ins>
+  void splice_after(const_iterator p, forward_list&amp;&amp; x);
+  <ins>void splice_after(const_iterator p, forward_list&amp; x, const_iterator i);</ins>
+  void splice_after(const_iterator p, forward_list&amp;&amp; x, const_iterator i);
+  <ins>void splice_after(const_iterator p, forward_list&amp; x,
+                    const_iterator first, const_iterator last);</ins>
+  void splice_after(const_iterator p, forward_list&amp;&amp; x,
+                    const_iterator first, const_iterator last);
+  ...
+  <ins>void merge(forward_list&amp; x);</ins>
+  void merge(forward_list&amp;&amp; x);
+  <ins>template &lt;class Compare&gt; void merge(forward_list&amp; x, Compare comp);</ins>
+  template &lt;class Compare&gt; void merge(forward_list&amp;&amp; x, Compare comp);
+  ...
+};
+</pre></blockquote>
+
+<p>
+Add to the signatures of <sref ref="[forwardlist.ops]"/>:
+</p>
+
+<blockquote>
+<pre>
+<ins>void splice_after(const_iterator p, forward_list&amp; x);</ins>
+void splice_after(const_iterator p, forward_list&amp;&amp; x);
+</pre>
+<blockquote>
+<p>1 ...</p>
+</blockquote>
+
+<pre>
+<ins>void splice_after(const_iterator p, forward_list&amp; x, const_iterator i);</ins>
+void splice_after(const_iterator p, forward_list&amp;&amp; x, const_iterator i);
+</pre>
+<blockquote>
+<p>5 ...</p>
+</blockquote>
+
+<pre>
+<ins>void splice_after(const_iterator p, forward_list&amp; x,
+                const_iterator first, const_iterator last);</ins>
+void splice_after(const_iterator p, forward_list&amp;&amp; x,
+                const_iterator first, const_iterator last);
+</pre>
+<blockquote>
+<p>9 ...</p>
+</blockquote>
+
+<pre>
+<ins>void merge(forward_list&amp; x);</ins>
+void merge(forward_list&amp;&amp; x);
+<ins>template &lt;class Compare&gt; void merge(forward_list&amp; x, Compare comp);</ins>
+template &lt;class Compare&gt; void merge(forward_list&amp;&amp; x, Compare comp);
+</pre>
+<blockquote>
+<p>18 ...</p>
+</blockquote>
+
+</blockquote>
+
+</resolution>
+
+</issue>

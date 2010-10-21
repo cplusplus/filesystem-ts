@@ -1,0 +1,48 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="119" status="TC1">
+<title>Should virtual functions be allowed to strengthen the exception specification?</title>
+<section><sref ref="[res.on.exception.handling]"/></section>
+<submitter>Judy Ward</submitter>
+<date>15 Dec 1998</date>
+
+<discussion>
+<p>Section <sref ref="[res.on.exception.handling]"/> states: </p>
+
+<p>&quot;An implementation may strengthen the exception-specification
+for a function by removing listed exceptions.&quot; </p>
+
+<p>The problem is that if an implementation is allowed to do this for
+virtual functions, then a library user cannot write a class that
+portably derives from that class. </p>
+
+<p>For example, this would not compile if ios_base::failure::~failure
+had an empty exception specification: </p>
+
+<pre>#include &lt;ios&gt;
+#include &lt;string&gt;
+
+class D : public std::ios_base::failure {
+public:
+        D(const std::string&amp;);
+        ~D(); // error - exception specification must be compatible with 
+              // overridden virtual function ios_base::failure::~failure()
+};</pre>
+</discussion>
+
+<resolution>
+<p>Change Section <sref ref="[res.on.exception.handling]"/> from:</p>
+
+<p>&nbsp;&nbsp;&nbsp;&nbsp; &quot;may strengthen the
+exception-specification for a function&quot;</p>
+
+<p>to:</p>
+
+<p>&nbsp;&nbsp;&nbsp;&nbsp; &quot;may strengthen the
+exception-specification for a non-virtual function&quot;. </p>
+</resolution>
+
+</issue>

@@ -1,0 +1,42 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="101" status="NAD Editorial">
+<title>No way to free storage for vector and deque</title>
+<section><sref ref="[vector]"/> <sref ref="[array]"/></section>
+<submitter>AFNOR</submitter>
+<date>7 Oct 1998</date>
+
+<discussion>
+<p>Reserve can not free storage, unlike string::reserve</p>
+
+<note>
+2010-02-13 Alisdair adds:
+</note>
+
+<blockquote>
+<p>
+This issue has been revisited and addressed (<iref ref="755"/>, <iref
+ref="850"/>). This issues should be reclassified to NAD Editorial to reflect
+this action.
+</p>
+</blockquote>
+
+</discussion>
+
+<rationale>
+<p>This is not a defect in the Standard. The LWG has considered this
+issue in the past and sees no need to change the Standard. Deque has
+no reserve() member function. For vector, shrink-to-fit can be
+expressed in a single line of code (where <tt>v</tt> is
+<tt>vector&lt;T&gt;</tt>):
+</p>
+
+<blockquote>
+  <p><tt>vector&lt;T&gt;(v).swap(v);&nbsp; // shrink-to-fit v</tt></p>
+</blockquote>
+</rationale>
+
+</issue>

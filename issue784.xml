@@ -1,0 +1,78 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="784" status="NAD">
+<title>unique_lock::release</title>
+<section><sref ref="[thread.lock.unique.mod]"/></section>
+<submitter>Constantine Sapuntzakis</submitter>
+<date>2 Feb 2008</date>
+
+<discussion>
+<p>
+<tt>unique_lock::release</tt> will probably lead to many mistakes where people
+call <tt>release</tt> instead of <tt>unlock</tt>. I just coded such a mistake using the
+boost pre-1.35 threads library last week.
+</p>
+
+<p>
+In many threading libraries, a call with <tt>release</tt> in it unlocks the
+lock (e.g. ReleaseMutex in Win32, java.util.concurrent.Semaphore).
+</p>
+
+<p>
+I don't call <tt>unique_lock::lock</tt> much at all, so I don't get to see the
+symmetry between <tt>::lock</tt> and <tt>::unlock</tt>. I usually use the constructor to
+lock the mutex. So I'm left to remember whether to call <tt>release</tt> or
+<tt>unlock</tt> during the few times I need to release the mutex before the scope
+ends. If I get it wrong, the compiler doesn't warn me.
+</p>
+
+<p>
+An alternative name for release may be <tt>disown</tt>.
+</p>
+
+<p>
+This might be a rare case where usability is hurt by consistency with
+the rest of the C++ standard (e.g. <tt>std::auto_ptr::release</tt>).
+</p>
+
+<note>
+Bellevue:
+</note>
+
+<blockquote>
+Change a name from release to disown. However prior art uses the release
+name. Compatibility with prior art is more important that any possible
+benefit such a change might make. We do not see the benefit for
+changing. NAD
+</blockquote>
+</discussion>
+
+<resolution>
+<p>
+Change the synopsis in <sref ref="[thread.lock.unique]"/>:
+</p>
+
+<blockquote><pre>
+template &lt;class Mutex&gt; 
+class unique_lock 
+{ 
+public:
+   ...
+   mutex_type* <del>release</del> <ins>disown</ins>();
+   ...
+};
+</pre></blockquote>
+
+<p>
+Change <sref ref="[thread.lock.unique.mod]"/>:
+</p>
+
+<blockquote><pre>
+mutex_type *<del>release</del> <ins>disown</ins>();
+</pre></blockquote>
+</resolution>
+
+</issue>

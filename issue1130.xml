@@ -1,0 +1,199 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="1130" status="WP">
+<title><tt>copy_exception</tt> name misleading</title>
+<section><sref ref="[propagation]"/></section>
+<submitter>Peter Dimov</submitter>
+<date>13 May 2009</date>
+
+<discussion>
+<p>
+The naming of <tt>std::copy_exception</tt> misleads almost everyone
+(experts included!) to think that it is the function that copies an
+<tt>exception_ptr</tt>:
+</p>
+
+<blockquote><pre>
+exception_ptr p1 = current_exception();
+exception_ptr p2 = copy_exception( p1 );
+</pre></blockquote>
+
+<p>
+But this is not at all what it does. The above actually creates an
+<tt>exception_ptr p2</tt> that contains a copy of <tt>p1</tt>, not of
+the exception to which <tt>p1</tt> refers!
+</p>
+<p>
+This is, of course, all my fault; in my defence, I used <tt>copy_exception</tt>
+because I was unable to think of a better name.
+</p>
+<p>
+But I believe that, based on what we've seen so far, <em>any</em> other name would be better.
+</p>
+<p>
+Therefore, I propose <tt>copy_exception</tt> to be renamed to
+<tt>create_exception</tt>:
+</p>
+
+<blockquote><pre>
+template&lt;class E&gt; exception_ptr create_exception(E e);
+</pre></blockquote>
+
+<p>
+with the following explanatory paragraph after it:
+</p>
+
+<blockquote>
+Creates an <tt>exception_ptr</tt> that refers to a copy of <tt>e</tt>.
+</blockquote>
+
+<note>
+2009-05-13 Daniel adds:
+</note>
+
+<blockquote>
+<p>
+What about
+</p>
+<blockquote><pre>
+make_exception_ptr
+</pre></blockquote>
+<p>
+in similarity to <tt>make_pair</tt> and <tt>make_tuple</tt>, <tt>make_error_code</tt> and
+<tt>make_error_condition</tt>, or <tt>make_shared</tt>? Or, if a stronger symmetry to
+<tt>current_exception</tt> is preferred:
+</p>
+
+<blockquote><pre>
+make_exception
+</pre></blockquote>
+<p>
+We have not a single <tt>create_*</tt> function in the library, it was always
+<tt>make_*</tt> used.
+</p>
+</blockquote>
+
+<note>
+2009-05-13 Peter adds:
+</note>
+
+<blockquote>
+<tt>make_exception_ptr</tt> works for me.
+</blockquote>
+
+<note>
+2009-06-02 Thomas J. Gritzan adds:
+</note>
+
+<blockquote>
+<p>
+To avoid surprises and unwanted recursion, how about making a call to
+<tt>std::make_exception_ptr</tt> with an <tt>exception_ptr</tt> illegal?
+</p>
+<p>
+It might work like this:
+</p>
+<blockquote><pre>
+template&lt;class E&gt;
+exception_ptr make_exception_ptr(E e);
+template&lt;&gt;
+exception_ptr make_exception_ptr&lt;exception_ptr&gt;(exception_ptr e) = delete;
+</pre></blockquote>
+</blockquote>
+
+<note>
+2009 Santa Cruz:
+</note>
+
+<blockquote>
+Move to Review for the time being. The subgroup thinks this is a good
+idea, but doesn't want to break compatibility unnecessarily if someone
+is already shipping this. Let's talk to Benjamin and PJP tomorrow to
+make sure neither objects.
+</blockquote>
+
+<note>
+2009-11-16 Jonathan Wakely adds:
+</note>
+
+<blockquote>
+GCC 4.4 shipped with <tt>copy_exception</tt> but we could certainly keep that
+symbol in the library (but not the headers) so it can still be found
+by any apps foolishly relying on the experimental C++0x mode being ABI
+stable.
+</blockquote>
+
+<note>
+2009-11-16 Peter adopts wording supplied by Daniel.
+</note>
+
+<note>
+2009-11-16 Moved to Tentatively Ready after 5 positive votes on c++std-lib.
+</note>
+</discussion>
+
+<resolution>
+<ol>
+<li>
+<p>
+Change <sref ref="[support.exception]"/>/1, header <tt>&lt;exception&gt;</tt>
+synopsis as indicated:
+</p>
+
+<blockquote><pre>
+exception_ptr current_exception();
+void rethrow_exception [[noreturn]] (exception_ptr p);
+template&lt;class E&gt; exception_ptr <del>copy_exception</del><ins>make_exception_ptr</ins>(E e);
+</pre></blockquote>
+</li>
+
+<li>
+<p>
+Change <sref ref="[propagation]"/>:
+</p>
+
+<blockquote>
+<pre>
+template&lt;class E&gt; exception_ptr <del>copy_exception</del><ins>make_exception_ptr</ins>(E e);
+</pre>
+
+<blockquote>
+<p>
+-11- <i>Effects:</i> <ins>Creates an <tt>exception_ptr</tt> that refers
+to a copy of <tt>e</tt>,</ins> as if
+</p>
+
+<blockquote><pre>
+try {
+  throw e;
+} catch(...) {
+  return current_exception();
+}
+</pre></blockquote>
+
+<p>...</p>
+</blockquote>
+
+</blockquote>
+</li>
+
+<li>
+<p>
+Change <sref ref="[futures.promise]"/>/7 as indicated:
+</p>
+
+<blockquote>
+<i>Effects:</i> if the associated state of <tt>*this</tt> is not ready, stores an exception
+object of type <tt>future_error</tt> with an error code of <tt>broken_promise</tt> as if by
+<tt>this-&gt;set_exception(<del>copy_exception</del><ins>make_exception_ptr</ins>(
+future_error(future_errc::broken_promise))</tt>.  Destroys ...
+</blockquote>
+</li>
+</ol>
+
+</resolution>
+
+</issue>

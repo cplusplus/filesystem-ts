@@ -1,0 +1,244 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="841" status="NAD Editorial">
+<title>cstdint.syn inconsistent with C99</title>
+<section><sref ref="[cstdint.syn]"/></section>
+<submitter>Martin Sebor</submitter>
+<date>17 May 2008</date>
+
+ <discussion>
+   <p>
+
+In specifying the names of macros and types defined in
+header <code>&lt;stdint.h&gt;</code>, C99 makes use of the
+symbol <code><i>N</i></code> to accommodate unusual platforms with
+word sizes that aren't powers of two. C99
+permits <code><i>N</i></code> to take on any positive integer value
+(including, for example, 24).
+
+   </p>
+   <p>
+
+In <sref ref="cstdint.syn"/> Header <code>&lt;cstdint&gt;</code>
+synopsis, C++ on the other hand, fixes the value
+of <code><i>N</i></code> to 8, 16, 32, and 64, and specifies only
+types with these exact widths. 
+
+   </p>
+   <p>
+   </p>
+
+In addition, paragraph 1 of the same section makes use of a rather
+informal shorthand notation to specify sets of macros. When
+interpreted strictly, the notation specifies macros such
+as <code>INT_8_MIN</code> that are not intended to be specified.
+
+   <p>
+
+Finally, the section is missing the usual table of symbols defined
+in that header, making it inconsistent with the rest of the
+specification.
+
+   </p>
+ </discussion>
+ <resolution>
+   <p>
+
+I propose to use the same approach in the C++ spec as C99 uses, that
+is, to specify the header synopsis in terms of "exposition only" types
+that make use of the symbol <code><i>N</i></code> to denote one or
+more of a theoretically unbounded set of widths.
+
+   </p>
+   <p>
+
+Further, I propose to add a new table to section listing the symbols
+defined in the header using a more formal notation that avoids
+introducing inconsistencies.
+
+   </p>
+   <p>
+
+To this effect, in <sref ref="cstdint.syn"/>
+Header <code>&lt;cstdint&gt;</code> synopsis, replace both the
+synopsis and paragraph 1 with the following text:
+
+   </p>
+   <blockquote>
+     <p>
+       <ol>
+         <li>
+
+In the names defined in the <code>&lt;cstdint&gt;</code> header, the
+symbol <code><i>N</i></code> represents a positive decimal integer
+with no leading zeros (e.g., 8 or 24, but not 0, 04, or 048). With the
+exception of exact-width types, macros and types for values
+of <code><i>N</i></code> in the set of 8, 16, 32, and 64 are
+required. Exact-width types, and any macros and types for values
+of <code><i>N</i></code> other than 8, 16, 32, and 64 are
+optional. However, if an implementation provides integer types with
+widths of 8, 16, 32, or 64 bits, the corresponding exact-width types
+and macros are required.
+
+         </li>
+       </ol>
+     </p>
+     <pre>
+namespace std {
+
+   // required types
+
+   // Fastest minimum-width integer types
+   typedef <i>signed integer type</i>   int_fast8_t;
+   typedef <i>signed integer type</i>   int_fast16_t;
+   typedef <i>signed integer type</i>   int_fast32_t;
+   typedef <i>signed integer type</i>   int_fast64_t;
+
+   typedef <i>unsigned integer type</i> uint_fast8_t;
+   typedef <i>unsigned integer type</i> uint_fast16_t;
+   typedef <i>unsigned integer type</i> uint_fast32_t;
+   typedef <i>unsigned integer type</i> uint_fast64_t;
+
+   // Minimum-width integer types
+   typedef <i>signed integer type</i>   int_least8_t;
+   typedef <i>signed integer type</i>   int_least16_t;
+   typedef <i>signed integer type</i>   int_least32_t;
+   typedef <i>signed integer type</i>   int_least64_t;
+
+   typedef <i>unsigned integer type</i> uint_least8_t;
+   typedef <i>unsigned integer type</i> uint_least16_t;
+   typedef <i>unsigned integer type</i> uint_least32_t;
+   typedef <i>unsigned integer type</i> uint_least64_t;
+
+   // Greatest-width integer types
+   typedef <i>signed integer type</i>   intmax_t;
+   typedef <i>unsigned integer type</i> uintmax_t;
+
+   // optionally defined types
+
+   // Exact-width integer types
+   typedef <i>signed integer type</i>   int<i>N</i>_t;
+   typedef <i>unsigned integer type</i> uint<i>N</i>_t;
+
+   // Fastest minimum-width integer types for values
+   // of <i>N</i> other than 8, 16, 32, and 64
+   typedef <i>signed integer type</i>   uint_fast<i>N</i>_t;
+   typedef <i>unsigned integer type</i> uint_fast<i>N</i>_t;
+
+   // Minimum-width integer types for values
+   // of <i>N</i> other than 8, 16, 32, and 64
+   typedef <i>signed integer type</i>   uint_least<i>N</i>_t;
+   typedef <i>unsigned integer type</i> uint_least<i>N</i>_t;
+
+   // Integer types capable of holding object pointers
+   typedef <i>signed integer type</i>   intptr_t;
+   typedef <i>signed integer type</i>   intptr_t;
+
+}</pre>
+   </blockquote>
+   <p>
+
+[Note to editor: Remove all of the existing paragraph 1 from <sref ref="cstdint.syn"/>.]
+
+   </p>
+   <blockquote>
+     Table ??: Header <code>&lt;cstdint&gt;</code> synopsis
+     <table border="1">
+       <thead>
+         <tr>
+           <th>Type</th>
+           <th colspan="3">Name(s)</th>
+         </tr>
+       </thead>
+       <tbody>
+         <tr>
+           <td rowspan="11"><b>Macros:</b></td>
+           <td><tt>INT<i>N</i>_MIN</tt></td>
+           <td><tt>INT<i>N</i>_MAX</tt></td>
+           <td><tt>UINT<i>N</i>_MAX</tt></td>
+         </tr>
+         <tr>
+           <td><tt>INT_FAST<i>N</i>_MIN</tt></td>
+           <td><tt>INT_FAST<i>N</i>_MAX</tt></td>
+           <td><tt>UINT_FAST<i>N</i>_MAX</tt></td>
+         </tr>
+         <tr>
+           <td><tt>INT_LEAST<i>N</i>_MIN</tt></td>
+           <td><tt>INT_LEAST<i>N</i>_MAX</tt></td>
+           <td><tt>UINT_LEAST<i>N</i>_MAX</tt></td>
+         </tr>
+         <tr>
+           <td><tt>INTPTR_MIN</tt></td>
+           <td><tt>INTPTR_MAX</tt></td>
+           <td><tt>UINTPTR_MAX</tt></td>
+         </tr>
+         <tr>
+           <td><tt>INTMAX_MIN</tt></td>
+           <td><tt>INTMAX_MAX</tt></td>
+           <td><tt>UINTMAX_MAX</tt></td>
+         </tr>
+         <tr>
+           <td><tt>PTRDIFF_MIN</tt></td>
+           <td><tt>PTRDIFF_MAX</tt></td>
+           <td><tt>PTRDIFF_MAX</tt></td>
+         </tr>
+         <tr>
+           <td><tt>SIG_ATOMIC_MIN</tt></td>
+           <td><tt>SIG_ATOMIC_MAX</tt></td>
+           <td><tt>SIZE_MAX</tt></td>
+         </tr>
+         <tr>
+           <td><tt>WCHAR_MIN</tt></td>
+           <td><tt>WCHAR_MAX</tt></td>
+         <td></td>
+         </tr>
+         <tr>
+           <td><tt>WINT_MIN</tt></td>
+           <td><tt>WINT_MAX</tt></td>
+           <td></td>
+         </tr>
+         <tr>
+           <td><tt>INT<i>N</i>_C()</tt></td>
+           <td><tt>UINT<i>N</i>_C()</tt></td>
+           <td></td>
+         </tr>
+         <tr>
+           <td><tt>INTMAX_C()</tt></td>
+           <td><tt>UINTMAX_C()</tt></td>
+           <td></td>
+         </tr>
+         <tr>
+           <td rowspan="5"><b>Types:</b></td>
+           <td><tt>int<i>N</i>_t</tt></td>
+           <td><tt>uint<i>N</i>_t</tt></td>
+           <td></td>
+         </tr>
+         <tr>
+           <td><tt>int_fast<i>N</i>_t</tt></td>
+           <td><tt>uint_fast<i>N</i>_t</tt></td>
+           <td></td>
+         </tr>
+         <tr>
+           <td><tt>int_least<i>N</i>_t</tt></td>
+           <td><tt>uint_least<i>N</i>_t</tt></td>
+           <td></td>
+         </tr>
+         <tr>
+           <td><tt>intptr_t</tt></td>
+           <td><tt>uintptr_t</tt></td>
+           <td></td>
+         </tr>
+         <tr>
+           <td><tt>intmax_t</tt></td>
+           <td><tt>uintmax_t</tt></td>
+           <td></td>
+         </tr>
+       </tbody>
+     </table>
+   </blockquote>
+ </resolution>
+
+</issue>

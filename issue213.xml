@@ -1,0 +1,29 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="213" status="NAD">
+<title>Math function overloads ambiguous</title>
+<section><sref ref="[c.math]"/></section>
+<submitter>Nico Josuttis</submitter>
+<date>26 Feb 2000</date>
+
+<discussion>
+<p>Due to the additional overloaded versions of numeric functions for
+float and long double according to Section 26.5, calls such as int x;
+std::pow (x, 4) are ambiguous now in a standard conforming
+implementation. Current implementations solve this problem very
+different (overload for all types, don't overload for float and long
+double, use preprocessor, follow the standard and get
+ambiguities).</p> <p>This behavior should be standardized or at least
+identified as implementation defined.</p>
+</discussion>
+
+<rationale>
+<p>These math issues are an
+understood and accepted consequence of the design. They have
+been discussed several times in the past. Users must write casts
+or write floating point expressions as arguments.</p>
+</rationale>
+</issue>

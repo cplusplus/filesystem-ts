@@ -1,0 +1,80 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="1014" status="WP">
+<title>Response to UK 317 and JP 74</title>
+<section><sref ref="[re.regex.construct]"/></section>
+<submitter>Alisdair Meredith</submitter>
+<date>11 Mar 2009</date>
+
+<discussion>
+
+<p><b>Addresses UK 317 and JP 74</b></p>
+
+<p>
+UK 317:
+</p>
+
+<blockquote>
+<tt>basic_string</tt> has both a constructor and an assignment operator that
+accepts an initializer list, <tt>basic_regex</tt> should have the same.
+</blockquote>
+
+<p>
+JP 74:
+</p>
+
+<blockquote>
+<tt>basic_regx &amp; operator= (initializer_list&lt;T&gt;);</tt> is not defined.
+</blockquote>
+
+<note>
+Batavia (2009-05):
+</note>
+<blockquote>
+UK 317 asks for both assignment and constructor,
+but the requested constructor is already present in the current Working Paper.
+We agree with the proposed resolution.
+Move to Tentatively Ready.
+</blockquote>
+</discussion>
+
+<resolution>
+<p>
+Change <sref ref="[re.regex]"/>:
+</p>
+
+<blockquote><pre>
+template &lt;class charT,
+          class traits = regex_traits&lt;charT&gt; &gt;
+class basic_regex {
+  ...
+  basic_regex&amp; operator=(const charT* ptr);
+  <ins>basic_regex&amp; operator=(initializer_list&lt;charT&gt; il);</ins>
+  template &lt;class ST, class SA&gt;
+    basic_regex&amp; operator=(const basic_string&lt;charT, ST, SA&gt;&amp; p);
+  ...
+};
+</pre></blockquote>
+
+<p>
+Add in  <sref ref="[re.regex.construct]"/>:
+</p>
+
+<blockquote>
+<blockquote>
+-20- ...
+</blockquote>
+<pre>
+basic_regex&amp; operator=(initializer_list&lt;charT&gt; il);
+</pre>
+<blockquote>
+-21- <i>Effects:</i> returns <tt>assign(il.begin(), il.end());</tt>
+</blockquote>
+</blockquote>
+
+</resolution>
+
+</issue>

@@ -1,0 +1,38 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="600" status="TRDec">
+<title>Decimal: Wrong parameters for wcstod* functions</title>
+<section><sref ref="[trdec.types.cwchar]"/></section>
+<submitter>Daniel Krugler</submitter>
+<date>28 May 2006</date>
+
+<discussion>
+<p>
+Daniel writes:
+</p>
+<blockquote><p>
+- 3.9.1 'Additions to &lt;cwchar&gt;' provides wrong 
+signatures to the wcstod32, wcstod64, and 
+wcstod128 functions ([the parameters have type pointer-to-] char instead of wchar_t).
+</p></blockquote>
+</discussion>
+
+<resolution>
+<p>
+Change "3.9.1 Additions to <code>&lt;cwchar&gt;</code> synopsis" to:
+</p>
+<pre>
+       namespace std {
+       namespace decimal {
+         // 3.9.2 wcstod functions:
+         decimal32  wcstod32  (const <del>char</del> <ins>wchar_t</ins> * nptr, <del>char</del> <ins>wchar_t</ins> ** endptr);
+         decimal64  wcstod64  (const <del>char</del> <ins>wchar_t</ins> * nptr, <del>char</del> <ins>wchar_t</ins> ** endptr);
+         decimal128 wcstod128 (const <del>char</del> <ins>wchar_t</ins> * nptr, <del>char</del> <ins>wchar_t</ins> ** endptr);
+       }
+       }
+</pre>
+</resolution>
+</issue>

@@ -1,0 +1,87 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="541" status="CD1">
+<title>shared_ptr template assignment and void</title>
+<section><sref ref="[util.smartptr.shared]"/><sref ref="[tr.util.smartptr.shared]"/></section>
+<submitter>Martin Sebor</submitter>
+<date>16 Oct 2005</date>
+
+<discussion>
+<p>
+Is the void specialization of the template assignment operator taking
+a shared_ptr&lt;void&gt; as an argument supposed be well-formed?
+</p>
+<p>
+I.e., is this snippet well-formed:
+</p>
+<blockquote><pre>
+shared_ptr&lt;void&gt; p;
+p.operator=&lt;void&gt;(p);
+</pre></blockquote>
+
+<p>
+Gcc complains about auto_ptr&lt;void&gt;::operator*() returning a reference
+to void. I suspect it's because shared_ptr has two template assignment
+operators, one of which takes auto_ptr, and the auto_ptr template gets
+implicitly instantiated in the process of overload resolution.
+</p>
+
+<p>
+The only way I see around it is to do the same trick with auto_ptr&lt;void&gt;
+operator*() as with the same operator in shared_ptr&lt;void&gt;.
+</p>
+
+<p>
+PS Strangely enough, the EDG front end doesn't mind the code, even
+though in a small test case (below) I can reproduce the error with
+it as well.
+</p>
+
+<blockquote><pre>
+template &lt;class T&gt;
+struct A { T&amp; operator*() { return *(T*)0; } };
+
+template &lt;class T&gt;
+struct B {
+    void operator= (const B&amp;) { }
+    template &lt;class U&gt;
+    void operator= (const B&lt;U&gt;&amp;) { }
+    template &lt;class U&gt;
+    void operator= (const A&lt;U&gt;&amp;) { }
+};
+
+int main ()
+{
+    B&lt;void&gt; b;
+    b.operator=&lt;void&gt;(b);
+}
+</pre></blockquote>
+</discussion>
+
+<resolution>
+<p>
+In [lib.memory] change:
+</p>
+<blockquote><pre>
+template&lt;class X&gt; class auto_ptr;
+<ins>template&lt;&gt; class auto_ptr&lt;void&gt;;</ins>
+</pre></blockquote>
+
+<p>
+In [lib.auto.ptr]/2 add the following before the last closing brace:
+</p>
+
+<blockquote><pre>
+template&lt;&gt; class auto_ptr&lt;void&gt;
+{
+public:
+    typedef void element_type;
+};
+</pre></blockquote>
+
+</resolution>
+
+</issue>

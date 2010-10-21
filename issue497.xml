@@ -1,0 +1,66 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+    <!DOCTYPE issue SYSTEM "lwg_issue.dtd" [
+        <!ENTITY nbsp " ">
+     ]
+>
+<issue num="497" status="CD1">
+<title>meaning of numeric_limits::traps for floating point types</title>
+<section><sref ref="[numeric.limits.members]"/></section>
+<submitter>Martin Sebor</submitter>
+<date>2 Mar 2005</date>
+
+<discussion>
+
+<p>18.2.1.2, p59 says this much about the traps member of numeric_limits:</p>
+
+<blockquote>
+<p>static const bool traps;<br/>
+-59- true if trapping is implemented for the type.204)
+<br/>
+Footnote 204: Required by LIA-1.
+</p>
+</blockquote>
+
+<p>It's not clear what is meant by "is implemented" here.</p>
+
+<p>
+In the context of floating point numbers it seems reasonable to expect
+to be able to use traps to determine whether a program can "safely" use
+infinity(), quiet_NaN(), etc., in arithmetic expressions, that is
+without causing a trap (i.e., on UNIX without having to worry about
+getting a signal). When traps is true, I would expect any of the
+operations in section 7 of IEEE 754 to cause a trap (and my program
+to get a SIGFPE). So, for example, on Alpha, I would expect traps
+to be true by default (unless I compiled my program with the -ieee
+option), false by default on most other popular architectures,
+including IA64, MIPS, PA-RISC, PPC, SPARC, and x86 which require
+traps to be explicitly enabled by the program.
+</p>
+
+<p>
+Another possible interpretation of p59 is that traps should be true
+on any implementation that supports traps regardless of whether they
+are enabled by default or not. I don't think such an interpretation
+makes the traps member very useful, even though that is how traps is
+implemented on several platforms. It is also the only way to implement
+traps on platforms that allow programs to enable and disable trapping
+at runtime.
+</p>
+</discussion>
+
+<resolution>
+<p>Change p59 to read:</p>
+<blockquote><p>True if, at program startup, there exists a value of the type that
+  would cause an arithmetic operation using that value to trap.</p></blockquote>
+</resolution>
+
+<rationale>
+<p>
+ Real issue, since trapping can be turned on and off. Unclear what a
+ static query can say about a dynamic issue. The real advice we should
+ give users is to use cfenv for these sorts of queries. But this new
+ proposed resolution is at least consistent and slightly better than
+ nothing.</p>
+</rationale>
+
+</issue>

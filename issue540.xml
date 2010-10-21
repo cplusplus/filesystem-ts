@@ -1,0 +1,61 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="540" status="CD1">
+<title>shared_ptr&lt;void&gt;::operator*()</title>
+<section><sref ref="[util.smartptr.shared.obs]"/><sref ref="[tr.util.smartptr.shared.obs]"/></section>
+<submitter>Martin Sebor</submitter>
+<date>15 Oct 2005</date>
+
+<discussion>
+<p>
+I'm trying to reconcile the note in tr.util.smartptr.shared.obs, p6
+that talks about the operator*() member function of shared_ptr:
+</p>
+
+<blockquote><p>
+  Notes: When T is void, attempting to instantiate this member function
+  renders the program ill-formed. [Note: Instantiating shared_ptr&lt;void&gt;
+  does not necessarily result in instantiating this member function.
+  --end note]
+</p></blockquote>
+
+<p>
+with the requirement in temp.inst, p1:
+</p>
+
+<blockquote><p>
+  The implicit instantiation of a class template specialization causes
+  the implicit instantiation of the declarations, but not of the
+  definitions...
+</p></blockquote>
+
+<p>
+I assume that what the note is really trying to say is that
+"instantiating shared_ptr&lt;void&gt; *must not* result in instantiating
+this member function." That is, that this function must not be
+declared a member of shared_ptr&lt;void&gt;. Is my interpretation
+correct?
+</p>
+</discussion>
+
+<resolution>
+<p>
+Change 2.2.3.5p6
+</p>
+
+<blockquote><p>
+-6- <del><i>Notes:</i></del> When <tt>T</tt> is <tt>void</tt>, <del>attempting to instantiate
+this member function renders the program ill-formed. [<i>Note:</i>
+Instantiating <tt>shared_ptr&lt;void&gt;</tt> does not necessarily result in
+instantiating this member function. <i>--end note</i>]</del> <ins>it is
+unspecified whether this member function is declared or not, and if so, what its
+return type is, except that the declaration (although not necessarily the
+definition) of the function shall be well-formed.</ins>
+</p></blockquote>
+
+</resolution>
+
+</issue>

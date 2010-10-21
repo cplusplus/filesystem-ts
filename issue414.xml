@@ -1,0 +1,79 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="414" status="CD1">
+<title>Which iterators are invalidated by v.erase()?</title>
+<section><sref ref="[vector.modifiers]"/></section>
+<submitter>Matt Austern</submitter>
+<date>19 Aug 2003</date>
+
+<discussion>
+<p>
+Consider the following code fragment:
+</p>
+<blockquote>
+<pre>
+int A[8] = { 1,3,5,7,9,8,4,2 };
+std::vector&lt;int&gt; v(A, A+8);
+
+std::vector&lt;int&gt;::iterator i1 = v.begin() + 3;
+std::vector&lt;int&gt;::iterator i2 = v.begin() + 4;
+v.erase(i1);
+</pre>
+</blockquote>
+
+<p>
+Which iterators are invalidated by <tt>v.erase(i1)</tt>: i1, i2,
+both, or neither?
+</p>
+
+<p>
+On all existing implementations that I know of, the status of i1 and
+i2 is the same: both of them will be iterators that point to some
+elements of the vector (albeit not the same elements they did
+before).  You won't get a crash if you use them.  Depending on 
+exactly what you mean by "invalidate", you might say that neither one
+has been invalidated because they still point to <i>something</i>,
+or you might say that both have been invalidated because in both
+cases the elements they point to have been changed out from under the
+iterator.
+</p>
+
+<p>
+The standard doesn't say either of those things.  It says that erase
+invalidates all iterators and references "after the point of the
+erase".  This doesn't include i1, since it's at the point of the
+erase instead of after it.  I can't think of any sensible definition
+of invalidation by which one can say that i2 is invalidated but i1
+isn't.
+</p>
+
+<p>
+(This issue is important if you try to reason about iterator validity
+based only on the guarantees in the standard, rather than reasoning
+from typical implementation techniques.  Strict debugging modes,
+which some programmers find useful, do not use typical implementation
+techniques.)
+</p>
+</discussion>
+
+<resolution>
+<p>
+In <sref ref="[vector.modifiers]"/> paragraph 3, change "Invalidates all the
+iterators and references after the point of the erase" to
+"Invalidates iterators and references at or after the point of the
+erase". 
+</p>
+</resolution>
+
+<rationale>
+<p>I believe this was essentially a typographical error, and that it
+  was taken for granted that erasing an element invalidates iterators
+  that point to it.  The effects clause in question treats iterators
+  and references in parallel, and it would seem counterintuitive to
+  say that a reference to an erased value remains valid.</p>
+</rationale>
+
+</issue>

@@ -1,0 +1,33 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="141" status="TC1">
+<title>basic_string::find_last_of, find_last_not_of say pos instead of xpos</title>
+<section><sref ref="[string::insert]"/> <sref ref="[string::replace]"/></section>
+<submitter>Arch Robison</submitter>
+<date>28 Apr 1999</date>
+
+<discussion>
+<p>Sections 21.3.6.4 paragraph 1 and 21.3.6.6 paragraph 1 surely have misprints where they
+say:<br/>
+<br/>
+&#151; <tt>xpos &lt;= pos</tt> and <tt>pos &lt; size();</tt></p>
+
+<p>Surely the document meant to say ``<tt>xpos &lt; size()</tt>'' in both places.</p>
+
+<note>Judy Ward also sent in this issue for 21.3.6.4 with the same
+proposed resolution.</note>
+</discussion>
+
+<resolution>
+<p>Change Sections 21.3.6.4 paragraph 1 and 21.3.6.6 paragraph 1, the line which says:<br/>
+<br/>
+&#151; <tt>xpos &lt;= pos</tt> and <tt>pos &lt; size();<br/>
+<br/>
+</tt>to:<br/>
+<tt><br/>
+</tt>&#151; <tt>xpos &lt;= pos</tt> and <tt>xpos &lt; size();</tt></p>
+</resolution>
+</issue>

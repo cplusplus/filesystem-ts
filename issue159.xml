@@ -1,0 +1,27 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="159" status="TC1">
+<title>Strange use of <tt>underflow()</tt></title>
+<section><sref ref="[streambuf.virt.get]"/></section>
+<submitter>Dietmar K&uuml;hl</submitter>
+<date>20 Jul 1999</date>
+
+<discussion>
+<p>The description of the meaning of the result of
+<tt>showmanyc()</tt> seems to be rather strange: It uses calls to
+<tt>underflow()</tt>. Using <tt>underflow()</tt> is strange because
+this function only reads the current character but does not extract
+it, <tt>uflow()</tt> would extract the current character. This should
+be fixed to use <tt>sbumpc()</tt> instead.</p>
+</discussion>
+
+<resolution>
+<p>Change <sref ref="[streambuf.virt.get]"/> paragraph 1,
+<tt>showmanyc()</tt>returns clause, by replacing the word
+&quot;supplied&quot; with the words &quot;extracted from the
+stream&quot;.</p>
+</resolution>
+</issue>

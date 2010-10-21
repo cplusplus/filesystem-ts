@@ -1,0 +1,112 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="1070" status="WP">
+<title>Ambiguous move overloads in function</title>
+<section><sref ref="[func.wrap.func]"/></section>
+<submitter>Howard Hinnant</submitter>
+<date>19 Mar 2009</date>
+
+<discussion>
+<p>
+The synopsis in <sref ref="[func.wrap.func]"/> says:
+</p>
+
+<blockquote><pre>
+template&lt;Returnable R, CopyConstructible... ArgTypes&gt; 
+class function&lt;R(ArgTypes...)&gt;
+{
+    ...
+    template&lt;class F&gt; 
+      requires CopyConstructible&lt;F&gt; &amp;&amp; Callable&lt;F, ArgTypes...&gt; 
+            &amp;&amp; Convertible&lt;Callable&lt;F, ArgTypes...&gt;::result_type, R&gt; 
+      function(F); 
+    template&lt;class F&gt; 
+      requires CopyConstructible&lt;F&gt; &amp;&amp; Callable&lt;F, ArgTypes...&gt; 
+            &amp;&amp; Convertible&lt;Callable&lt;F, ArgTypes...&gt;::result_type, R&gt; 
+      function(F&amp;&amp;);
+    ...
+    template&lt;class F, Allocator Alloc&gt; function(allocator_arg_t, const Alloc&amp;, F); 
+    template&lt;class F, Allocator Alloc&gt; function(allocator_arg_t, const Alloc&amp;, F&amp;&amp;);
+    ...
+    template&lt;class F&gt; 
+      requires CopyConstructible&lt;F&gt; &amp;&amp; Callable&lt;F, ArgTypes..&gt; 
+            &amp;&amp; Convertible&lt;Callable&lt;F, ArgTypes...&gt;::result_type 
+      function&amp; operator=(F); 
+    template&lt;class F&gt; 
+      requires CopyConstructible&lt;F&gt; &amp;&amp; Callable&lt;F, ArgTypes...&gt; 
+            &amp;&amp; Convertible&lt;Callable&lt;F, ArgTypes...&gt;::result_type, R&gt; 
+      function&amp; operator=(F&amp;&amp;);
+    ...
+};
+</pre></blockquote>
+
+<p>
+Each of the 3 pairs above are ambiguous.  We need only one of each pair, and we
+could do it with either one.  If we choose the <tt>F&amp;&amp;</tt> version we
+need to bring <tt>decay</tt> into the definition to get the pass-by-value behavior.
+In the proposed wording I've gotten lazy and just used the pass-by-value signature.
+</p>
+
+<note>
+2009-05-01 Daniel adds:
+</note>
+
+<blockquote>
+<iref ref="1024"/> modifies the second removed constructor.
+</blockquote>
+
+<note>
+Batavia (2009-05):
+</note>
+<blockquote>
+<p>
+We briefly discussed whether we ought support moveable function objects,
+but decided that should be a separate issue if someone cares to propose it.
+</p>
+<p>
+Move to Tentatively Ready.
+</p>
+</blockquote>
+</discussion>
+
+<resolution>
+<p>
+Change the synopsis of <sref ref="[func.wrap.func]"/>, and remove the associated definitions in
+<sref ref="[func.wrap.func.con]"/>:
+</p>
+
+<blockquote><pre>
+template&lt;Returnable R, CopyConstructible... ArgTypes&gt; 
+class function&lt;R(ArgTypes...)&gt;
+{
+    ...
+    template&lt;class F&gt; 
+      requires CopyConstructible&lt;F&gt; &amp;&amp; Callable&lt;F, ArgTypes...&gt; 
+            &amp;&amp; Convertible&lt;Callable&lt;F, ArgTypes...&gt;::result_type, R&gt; 
+      function(F); 
+    <del>template&lt;class F&gt; 
+      requires CopyConstructible&lt;F&gt; &amp;&amp; Callable&lt;F, ArgTypes...&gt; 
+            &amp;&amp; Convertible&lt;Callable&lt;F, ArgTypes...&gt;::result_type, R&gt; 
+      function(F&amp;&amp;);</del>
+    ...
+    template&lt;class F, Allocator Alloc&gt; function(allocator_arg_t, const Alloc&amp;, F); 
+    <del>template&lt;class F, Allocator Alloc&gt; function(allocator_arg_t, const Alloc&amp;, F&amp;&amp;);</del>
+    ...
+    template&lt;class F&gt; 
+      requires CopyConstructible&lt;F&gt; &amp;&amp; Callable&lt;F, ArgTypes..&gt; 
+            &amp;&amp; Convertible&lt;Callable&lt;F, ArgTypes...&gt;::result_type 
+      function&amp; operator=(F); 
+    <del>template&lt;class F&gt; 
+      requires CopyConstructible&lt;F&gt; &amp;&amp; Callable&lt;F, ArgTypes...&gt; 
+            &amp;&amp; Convertible&lt;Callable&lt;F, ArgTypes...&gt;::result_type, R&gt; 
+      function&amp; operator=(F&amp;&amp;);</del>
+    ...
+};
+</pre></blockquote>
+
+</resolution>
+
+</issue>

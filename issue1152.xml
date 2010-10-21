@@ -1,0 +1,86 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="1152" status="WP">
+<title>expressions parsed differently than intended</title>
+<section><sref ref="[facet.num.put.virtuals]"/></section>
+<submitter>Seungbeom Kim</submitter>
+<date>27 Jun 2009</date>
+
+<discussion>
+<p>
+In Table 73 -- Floating-point conversions, <sref ref="[facet.num.put.virtuals]"/>, 
+in
+<a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2009/n2914.pdf">N2914</a>,
+we have the following entries: 
+</p>
+<table border="1">
+<caption>Table 73 &mdash; Floating-point conversions</caption>
+<tr>
+<th>State</th> <th><tt>stdio</tt> equivalent</th>
+</tr>
+<tr>
+<td><tt>floatfield == ios_base::fixed | ios_base::scientific && !uppercase</tt></td>
+<td align="center"><tt>%a</tt></td>
+</tr>
+
+<tr>
+<td><tt>floatfield == ios_base::fixed | ios_base::scientific</tt></td>
+<td align="center"><tt>%A</tt></td>
+</tr>
+</table>
+
+<p>
+These expressions are supposed to mean: 
+</p>
+
+<blockquote><pre>
+floatfield == (ios_base::fixed | ios_base::scientific) && !uppercase 
+floatfield == (ios_base::fixed | ios_base::scientific) 
+</pre></blockquote>
+<p>
+but technically parsed as: 
+</p>
+<blockquote><pre>
+((floatfield == ios_base::fixed) | ios_base::scientific) && (!uppercase) 
+((floatfield == ios_base::fixed) | ios_base::scientific) 
+</pre></blockquote>
+<p>
+and should be corrected with additional parentheses, as shown above. 
+</p>
+
+<note>
+2009-10-28 Howard:
+</note>
+
+<blockquote>
+Moved to Tentatively Ready after 5 positive votes on c++std-lib.
+</blockquote>
+
+</discussion>
+
+<resolution>
+<p>
+Change Table 83 &mdash; Floating-point conversions in  <sref ref="[facet.num.put.virtuals]"/>:
+</p>
+
+<table border="1">
+<caption>Table 83 &mdash; Floating-point conversions</caption>
+<tr>
+<th>State</th> <th><tt>stdio</tt> equivalent</th>
+</tr>
+<tr>
+<td><tt>floatfield == <ins>(</ins>ios_base::fixed | ios_base::scientific<ins>)</ins> && !uppercase</tt></td>
+<td align="center"><tt>%a</tt></td>
+</tr>
+
+<tr>
+<td><tt>floatfield == <ins>(</ins>ios_base::fixed | ios_base::scientific<ins>)</ins></tt></td>
+<td align="center"><tt>%A</tt></td>
+</tr>
+</table>
+</resolution>
+
+</issue>

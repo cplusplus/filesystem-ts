@@ -1,0 +1,358 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="955" status="NAD">
+<title>Various threading bugs #5</title>
+<section><sref ref="[time.clock.req]"/></section>
+<submitter>Pete Becker</submitter>
+<date>7 Jan 2009</date>
+
+<discussion>
+<p>
+<sref ref="[time.clock.req]"/> requires that a clock type have a member
+typedef named <tt>time_point</tt> that names an instantiation of the
+template <tt>time_point</tt>, and a member named <tt>duration</tt> that
+names an instantiation of the template <tt>duration</tt>. This mixing of
+levels is confusing. The typedef names should be different from the
+template names.
+</p>
+
+<note>
+Post Summit, Anthony provided proposed wording.
+</note>
+
+<note>
+2009-05-04 Howard adds:
+</note>
+
+<blockquote>
+<p>
+The reason that the typedef names were given the same name as the class templates
+was so that clients would not have to stop and think about whether they were
+using the clock's native <tt>time_point</tt> / <tt>duration</tt> or the class
+template directly.  In this case, one person's confusion is another person's
+encapsulation.  The detail that sometimes one is referring to the clock's
+native types, and sometimes one is referring to an independent type is
+<em>purposefully</em> "hidden" because it is supposed to be an unimportant
+detail.  It can be confusing to have to remember when to type <tt>duration</tt>
+and when to type <tt>duration_type</tt>, and there is no need to require the
+client to remember something like that.
+</p>
+
+<p>
+For example, here is code that I once wrote in testing out the usability of
+this facility:
+</p>
+
+<blockquote><pre>
+template &lt;class Clock, class Duration&gt;
+void do_until(const std::chrono::<b>time_point</b>&lt;Clock, Duration&gt;&amp; t)
+{
+    typename Clock::<b>time_point now</b> = Clock::now();
+    if (t &gt; now)
+    {
+        typedef typename std::common_type
+        &lt;
+            Duration,
+            typename std::chrono::system_clock::<b>duration</b>
+        &gt;::type CD;
+        typedef std::chrono::<b>duration</b>&lt;double, std::nano&gt; ID;
+
+        CD d = t - now;
+        ID us = duration_cast&lt;ID&gt;(d);
+        if (us &lt; d)
+            ++us;
+        ...
+    }
+}
+</pre></blockquote>
+
+<p>
+I see no rationale to require the client to append <tt>_type</tt> to <em>some</em>
+of those declarations.  It seems overly burdensome on the author of <tt>do_until</tt>:
+</p>
+
+<blockquote><pre>
+template &lt;class Clock, class Duration&gt;
+void do_until(const std::chrono::<b>time_point</b>&lt;Clock, Duration&gt;&amp; t)
+{
+    typename Clock::<b>time_point<font color="#C80000">_type</font></b> now = Clock::now();
+    if (t &gt; now)
+    {
+        typedef typename std::common_type
+        &lt;
+            Duration,
+            typename std::chrono::system_clock::<b>duration<font color="#C80000">_type</font></b>
+        &gt;::type CD;
+        typedef std::chrono::<b>duration</b>&lt;double, std::nano&gt; ID;
+
+        CD d = t - now;
+        ID us = duration_cast&lt;ID&gt;(d);
+        if (us &lt; d)
+            ++us;
+        ...
+    }
+}
+</pre></blockquote>
+
+<p>
+Additionally I'm fairly certain that this suggestion hasn't been implemented.
+If it had, it would have been discovered that it is incomplete.  <tt>time_point</tt>
+also has a nested type (purposefully) named <tt>duration</tt>.
+</p>
+<blockquote>
+That is, the current proposed wording would put the WP into an inconsistent state.
+</blockquote>
+<p>
+In contrast,
+the current WP has been implemented and I've received very favorable feedback
+from people using this interface in real-world code.
+</p>
+
+</blockquote>
+
+<note>
+Batavia (2009-05):
+</note>
+<blockquote>
+<p>
+Bill agrees that distinct names should be used for distinct kinds of entities.
+</p>
+<p>
+Walter would prefer not to suffix type names,
+especially for such well-understood terms as "duration".
+</p>
+<p>
+Howard reminds us that the proposed resolution is incomplete, per his comment
+in the issue.
+</p>
+<p>
+Move to Open.
+</p>
+</blockquote>
+
+<note>
+2009-06-07 Howard adds:
+</note>
+
+<blockquote>
+<p>
+Not meaning to be argumentative, but we have a decade of positive experience
+with the precedent of using the same name for the nested type as an external
+class representing an identical concept.
+</p>
+
+<blockquote><pre>
+template&lt;class Category, class T, class Distance = ptrdiff_t,
+         class Pointer = T*, class Reference = T&amp;&gt;
+struct <b>iterator</b>
+{
+    ...
+};
+
+template &lt;BidirectionalIterator Iter&gt;
+class <b>reverse_iterator</b>
+{
+    ...
+};
+
+template &lt;ValueType T, Allocator Alloc = allocator&lt;T&gt; &gt;
+    requires NothrowDestructible&lt;T&gt;
+class list
+{
+public:
+    typedef <i>implementation-defined</i>     <b>iterator</b>;
+    ...
+    typedef reverse_iterator&lt;iterator&gt; <b>reverse_iterator</b>;
+    ...
+};
+</pre></blockquote>
+
+<p>
+I am aware of <em>zero</em> complaints regarding the use of <tt>iterator</tt>
+and <tt>reverse_iterator</tt> as nested types of the containers despite these
+names also having related meaning at namespace std scope.
+</p>
+
+<p>
+Would we really be doing programmers a favor by renaming these nested types?
+</p>
+
+<blockquote><pre>
+template &lt;ValueType T, Allocator Alloc = allocator&lt;T&gt; &gt;
+    requires NothrowDestructible&lt;T&gt;
+class list
+{
+public:
+    typedef <i>implementation-defined</i>     <b>iterator_type</b>;
+    ...
+    typedef reverse_iterator&lt;iterator&gt; <b>reverse_iterator_type</b>;
+    ...
+};
+</pre></blockquote>
+
+<p>
+I submit that such design contributes to needless verbosity which ends up
+reducing readability.
+</p>
+</blockquote>
+
+<note>
+2009-10 Santa Cruz:
+</note>
+
+<blockquote>
+Mark as NAD.  No concensus for changing the WP.
+</blockquote>
+
+</discussion>
+
+<resolution>
+<p>
+Change <sref ref="[time]"/>:
+</p>
+
+<blockquote><pre>
+...
+template &lt;class Clock, class Duration = typename Clock::duration<ins>_type</ins>&gt; class time_point;
+...
+</pre></blockquote>
+
+<p>
+Change <sref ref="[time.clock.req]"/>:
+</p>
+
+<blockquote>
+<table border="1">
+<caption>Table 45 -- Clock requirements</caption>
+<tr>
+<th>Expression</th>
+<th>Return type</th>
+<th>Operational semantics</th>
+</tr>
+<tr>
+<td>...</td>
+<td>...</td>
+<td>...</td>
+</tr>
+<tr>
+<td><tt>C1::duration<ins>_type</ins></tt></td>
+<td><tt>chrono::duration&lt;C1::rep, C1::period&gt;</tt></td>
+<td>The native <tt>duration</tt> type of the clock.</td>
+</tr>
+<tr>
+<td><tt>C1::time_point<ins>_type</ins></tt></td>
+<td><tt>chrono::time_point&lt;C1&gt;</tt> or <tt>chrono::time_point&lt;C2, C1::duration<ins>_type</ins>&lt;</tt></td>
+<td>The native <tt>time_point</tt> type of the clock.   Different clocks may  share a <tt>time_point<ins>_type</ins></tt>
+definition if it is valid to 
+compare their <tt>time_point<ins>_type</ins></tt>s by 
+comparing their respective 
+<tt>duration<ins>_type</ins></tt>s. <tt>C1</tt> and <tt>C2</tt> shall 
+refer to the same epoch.</td>
+</tr>
+<tr>
+<td>...</td>
+<td>...</td>
+<td>...</td>
+</tr>
+<tr>
+<td><tt>C1::now()</tt></td>
+<td><tt>C1::time_point<ins>_type</ins></tt></td>
+<td>Returns a <tt>time_point<ins>_type</ins></tt> object 
+representing the current point 
+in time.
+</td>
+</tr>
+</table>
+</blockquote>
+
+<p>
+Change <sref ref="[time.clock.system]"/>:
+</p>
+
+<blockquote>
+<p>
+-1- Objects of class <tt>system_clock</tt> represent wall clock time from the system-wide realtime clock.
+</p>
+
+<blockquote><pre>
+class system_clock { 
+public: 
+  typedef <i>see below</i> rep; 
+  typedef ratio&lt;<i>unspecified</i>, <i>unspecified</i>&gt; period; 
+  typedef chrono::duration&lt;rep, period&gt; duration<ins>_type</ins>; 
+  typedef chrono::time_point&lt;system_clock&gt; time_point<ins>_type</ins>; 
+  static const bool is_monotonic = <i>unspecified</i> ; 
+
+  static time_point<ins>_type</ins> now(); 
+
+  // Map to C API 
+  static time_t to_time_t (const time_point<ins>_type</ins>&amp; t); 
+  static time_point<ins>_type</ins> from_time_t(time_t t); 
+};
+</pre></blockquote>
+
+<p>
+-2- <tt>system_clock::duration<ins>_type</ins>::min() &lt; system_clock::duration<ins>_type</ins>::zero()</tt> shall be <tt>true</tt>.
+</p>
+
+<pre>
+time_t to_time_t(const time_point<ins>_type</ins>&amp; t);
+</pre>
+
+<blockquote>
+-3- <i>Returns:</i> A <tt>time_t</tt> object that represents the same
+point in time as <tt>t</tt> when both values are truncated to the
+coarser of the precisions of <tt>time_t</tt> and <tt>time_point<ins>_type</ins></tt>.
+</blockquote>
+
+<pre>
+<tt>time_point<ins>_type</ins></tt> from_time_t(time_t t);
+</pre>
+
+<blockquote>
+-4- <i>Returns:</i> A <tt>time_point<ins>_type</ins></tt> object that represents the same point
+in time as <tt>t</tt> when both values are truncated to the coarser of the
+precisions of <tt>time_t</tt> and <tt>time_point<ins>_type</ins></tt>.
+</blockquote>
+</blockquote>
+
+<p>
+Change <sref ref="[time.clock.monotonic]"/>:
+</p>
+
+<blockquote><pre>
+class monotonic_clock { 
+public: 
+  typedef <i>unspecified</i>                                rep; 
+  typedef ratio&lt;<i>unspecified</i> , <i>unspecified</i>&gt;           period; 
+  typedef chrono::duration&lt;rep, period&gt;              duration<ins>_type</ins>; 
+  typedef chrono::time_point&lt;<i>unspecified</i> , duration<ins>_type</ins>&gt; time_point<ins>_type</ins>; 
+  static const bool is_monotonic =                   true; 
+
+  static time_point<ins>_type</ins> now();
+};
+</pre></blockquote>
+
+<p>
+Change <sref ref="[time.clock.hires]"/>:
+</p>
+
+<blockquote><pre>
+class high_resolution_clock { 
+public: 
+  typedef <i>unspecified</i>                                rep; 
+  typedef ratio&lt;<i>unspecified</i> , <i>unspecified</i>&gt;           period; 
+  typedef chrono::duration&lt;rep, period&gt;              duration<ins>_type</ins>; 
+  typedef chrono::time_point&lt;<i>unspecified</i> , duration<ins>_type</ins>&gt; time_point<ins>_type</ins>; 
+  static const bool is_monotonic =                   true; 
+
+  static time_point<ins>_type</ins> now();
+};
+</pre></blockquote>
+
+</resolution>
+
+</issue>

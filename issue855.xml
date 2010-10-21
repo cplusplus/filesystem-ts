@@ -1,0 +1,176 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="855" status="NAD">
+<title>capacity() and reserve() for deque?</title>
+<section><sref ref="[deque.capacity]"/></section>
+<submitter>Herv&eacute; Br&ouml;nnimann</submitter>
+<date>11 Jun 2008</date>
+
+<discussion>
+<p>
+The main point is that <tt>capacity</tt> can be viewed as a mechanism to  
+guarantee the validity of <tt>iterators</tt> when only <tt>push_back/pop_back</tt>
+operations are used.  For <tt>vector</tt>, this goes with reallocation.  For  
+<tt>deque</tt>, this is a bit more subtle:  <tt>capacity()</tt> of a <tt>deque</tt> may shrink,  
+whereas that of <tt>vector</tt> doesn't.   In a circular buffer impl. of the  
+map, as Howard did, there is very similar notion of capacity: as long  
+as <tt>size()</tt> is less than <tt>B * (</tt>total size of the map <tt>- 2)</tt>, it is  
+guaranteed that no <tt>iterator</tt> is invalidated after any number of  
+<tt>push_front/back</tt> and <tt>pop_front/back</tt> operations.  But this does not  
+hold for other implementations.
+</p>
+<p>
+Still, I believe, <tt>capacity()</tt> can be defined by <tt>size() +</tt>  how many  
+<tt>push_front/back</tt> minus <tt>pop_front/back</tt> that can be performed before  
+terators are invalidated.  In a classical impl., <tt>capacity() = size()
++ </tt> the min distance to either "physical" end of the deque (i.e.,  
+counting the empty space in the last block plus all the blocks until  
+the end of the map of block pointers).  In Howard's circular buffer  
+impl., <tt>capacity() = B * (</tt>total size of the map <tt>- 2)</tt> still works with  
+this definition, even though the guarantee could be made stronger.
+</p>
+<p>
+A simple picture of a deque:
+</p>
+<blockquote><pre>
+A-----|----|-----|---F+|++++|++B--|-----|-----Z
+</pre></blockquote>
+<p>
+(A,Z mark the beginning/end, | the block boundaries, F=front, B=back,  
+and - are uninitialized, + are initialized)
+In that picture:  <tt>capacity = size() + min(dist(A,F),dist(B,Z)) = min 
+(dist(A,B),dist(F,Z))</tt>.
+</p>
+<p>
+<tt>Reserve(n)</tt> can grow the map of pointers and add possibly a number of  
+empty blocks to it, in order to guarantee that the next <tt>n-size()
+push_back/push_front</tt> operations will not invalidate iterators, and  
+also will not allocate (i.e. cannot throw).  The second guarantee is  
+not essential and can be left as a QoI.  I know well enough existing  
+implementations of <tt>deque</tt> (sgi/stl, roguewave, stlport, and  
+dinkumware) to know that either can be implemented with no change to  
+the existing class layout and code, and only a few modifications if  
+blocks are pre-allocated (instead of always allocating a new block,  
+check if the next entry in the map of block pointers is not zero).
+</p>
+<p>
+Due to the difference with <tt>vector</tt>, wording is crucial.  Here's a  
+proposed wording to make things concrete;  I tried to be reasonably  
+careful but please double-check me:
+</p>
+
+<note>
+San Francisco:
+</note>
+
+<blockquote>
+<p>
+Hans: should the Returns clause for capacity read "1 Returns: A lower
+bound..." rather than "1 Returns: An upper bound..."
+</p>
+<p>
+Howard: maybe what's needed is capacity_front and capacity_back. In
+fact, I think I implemented a deque that had these members as
+implementation details.
+</p>
+</blockquote>
+
+</discussion>
+
+<resolution>
+
+<p>
+Add new signatures to synopsis in <sref ref="[deque]"/>:
+</p>
+
+<blockquote><pre>
+size_type capacity() const;
+bool reserve(size_type n);
+</pre></blockquote>
+
+<p>
+Add new signatures to <sref ref="[deque.capacity]"/>:
+</p>
+
+<blockquote>
+<pre>
+size_type capacity() const;
+</pre>
+<blockquote>
+<p>
+1 <i>Returns:</i> An upper bound on <tt>n + max(n_f - m_f, n_b - m_b)</tt>  such  
+that, for any sequence of <tt>n_f push_front</tt>, <tt>m_f pop_front</tt>, <tt>n_b  
+push_back</tt>, and <tt>m_b pop_back</tt> operations, interleaved in any order,  
+starting with the current <tt>deque</tt> of size <tt>n</tt>, the <tt>deque</tt> does not  
+invalidate any of its iterators except to the erased elements.
+</p>
+<p>
+2 <i>Remarks:</i>  Unlike a <tt>vector</tt>'s capacity, the capacity of a <tt>deque</tt> can  
+decrease after a sequence of insertions at both ends, even if none of  
+the operations caused the <tt>deque</tt> to invalidate any of its iterators  
+except to the erased elements.
+</p>
+</blockquote>
+</blockquote>
+
+<blockquote>
+<pre>
+bool reserve(size_type n);
+</pre>
+<blockquote>
+<p>
+2 <i>Effects:</i> A directive that informs a <tt>deque</tt> of a planned sequence of  
+<tt>push_front</tt>, <tt>pop_front</tt>, <tt>push_back</tt>, and <tt>pop_back</tt> operations, so that it  
+can manage iterator invalidation accordingly. After <tt>reserve()</tt>,  
+<tt>capacity()</tt> is greater or equal to the argument of <tt>reserve</tt> if this  
+operation returns <tt>true</tt>; and equal to the previous value of <tt>capacity()</tt>
+otherwise.  If an exception is thrown, there are no effects.
+</p>
+<p>
+3 <i>Returns:</i> <tt>true</tt> if iterators are invalidated as a result of this  
+operation, and false otherwise.
+</p>
+<p>
+4 <i>Complexity:</i> It does not change the size of the sequence and takes  
+at most linear time in <tt>n</tt>.
+</p>
+<p>
+5 <i>Throws:</i> <tt>length_error</tt> if <tt>n &gt; max_size()</tt>.
+</p>
+<p>
+6 <i>Remarks:</i> It is guaranteed that no invalidation takes place during a  
+sequence of <tt>insert</tt> or <tt>erase</tt> operations at either end that happens  
+after a call to <tt>reserve()</tt> except to the erased elements, until the  
+time when an insertion would make <tt>max(n_f-m_f, n_b-m_b)</tt> larger than  
+<tt>capacity()</tt>, where <tt>n_f</tt> is the number of <tt>push_front</tt>, <tt>m_f</tt> of <tt>pop_front</tt>,  
+<tt>n_b</tt> of <tt>push_back</tt>, and <tt>m_b</tt> of <tt>pop_back</tt> operations since the call to  
+<tt>reserve()</tt>.
+</p>
+<p>
+7        An implementation is free to pre-allocate buffers so as to  
+offer the additional guarantee that no exception will be thrown  
+during such a sequence other than by the element constructors.
+</p>
+</blockquote>
+</blockquote>
+
+<p>
+And <sref ref="[deque.modifiers]"/> para 1, can be enhanced:
+</p>
+
+<blockquote>
+1 <i>Effects:</i> An insertion in the middle of the deque invalidates all the iterators and references to elements of the
+deque. An insertion at either end of the deque invalidates all the iterators to the deque,
+<ins>unless provisions have been made with reserve,</ins>
+but has no effect on the validity of references to elements of the deque.
+</blockquote>
+</resolution>
+
+<rationale>
+Complication outweighs the benefit.
+</rationale>
+
+</issue>

@@ -1,0 +1,152 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="765" status="WP">
+<title>more on iterator validity</title>
+<section><sref ref="[iterator.concepts]"/></section>
+<submitter>Martin Sebor</submitter>
+<date>14 Dec 2007</date>
+
+<discussion>
+       <p>
+
+Issue <iref ref="278"/>
+defines the meaning of the term "invalid iterator" as one that may be
+singular.
+
+       </p>
+       <p>
+
+Consider the following code:
+
+       </p>
+       <pre>
+   std::deque&lt;int&gt; x, y;
+   std::deque&lt;int&gt;::iterator i = x.end(), j = y.end();
+   x.swap(y);
+       </pre>
+       <p>
+
+Given that <code>swap()</code> is required not to invalidate iterators
+and using the definition above, what should be the expected result of
+comparing <code>i</code> and <code>j</code> to <code>x.end()</code>
+and <code>y.end()</code>, respectively, after the <code>swap()</code>?
+
+       </p>
+       <p>
+
+I.e., is the expression below required to evaluate
+to <code>true</code>?
+
+       </p>
+       <pre>
+   i == y.end() &amp;&amp; j == x.end()
+       </pre>
+       <p>
+
+(There are at least two implementations where the expression
+returns <code>false</code>.)
+
+       </p>
+       <p>
+
+More generally, is the definition introduced in issue <iref ref="278"/> meant to
+make any guarantees about whether iterators actually point to the same
+elements or be associated with the same containers after a
+non-invalidating operation as they did before?
+
+       </p>
+       <p>
+
+Here's a motivating example intended to demonstrate the importance of
+the question:
+
+       </p>
+       <pre>
+   Container x, y ({ 1, 2});   // pseudocode to initialize y with { 1, 2 }
+   Container::iterator i = y.begin() + 1;
+   Container::iterator j = y.end();
+   std::swap(x, y);
+   std::find(i, j, 3);
+       </pre>
+       <p>
+
+<code>swap()</code> guarantees that <code>i</code> and <code>j</code>
+continue to be valid. Unless the spec says that even though they are
+valid they may no longer denote a valid range the code above must be
+well-defined. Expert opinions on this differ as does the behavior of
+popular implementations for some standard <code>Containers</code>.
+
+       </p>
+<note>
+San Francisco:
+</note>
+
+<blockquote>
+<p>
+Pablo: add a note to the last bullet of paragraph 11 of 23.1.1 clarifying that the end() iterator doesn't refer to an element and that it can therefore be invalidated.
+</p>
+<p>
+Proposed wording:
+</p>
+<blockquote>
+[<i>Note:</i> The <tt>end()</tt> iterator does not refer to any element and can
+therefore be invalidated. <i>-- end note</i>]
+</blockquote>
+<p>
+Howard will add this proposed wording to the issue and then move it to Review.
+</p>
+</blockquote>
+
+<note>
+Post Summit:
+</note>
+
+<blockquote>
+<p>
+Lawrence: suggestion: "Note: The <tt>end()</tt> iterator does not refer to any element"
+</p>
+<p>
+Walter: "Note: The <tt>end()</tt> iterator can nevertheless be invalidated,
+because it does not refer to any element."
+</p>
+<p>
+Nick: "The <tt>end()</tt> iterator does not refer to any element. It is therefore
+subject to being invalidated."
+</p>
+<p>
+Consensus: go with Nick
+</p>
+<p>
+With that update, Recommend Tentatively Ready.
+</p>
+</blockquote>
+
+</discussion>
+
+<resolution>
+<p>
+Add to <sref ref="[container.requirements.general]"/>, p11:
+</p>
+
+<blockquote>
+<p>
+Unless otherwise specified (see 23.1.4.1, 23.1.5.1, 23.2.2.3, and
+23.2.6.4) all container types defined in this Clause meet the following
+additional requirements:
+</p>
+<ul>
+<li>...</li>
+<li>
+no <tt>swap()</tt> function invalidates any references, pointers, or
+iterators referring to the elements of the containers being swapped.
+<ins>[<i>Note:</i> The <tt>end()</tt> iterator does not refer to any element. It is therefore
+subject to being invalidated. <i>-- end note</i>]</ins>
+</li>
+</ul>
+</blockquote>
+</resolution>
+
+</issue>

@@ -1,0 +1,148 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="498" status="WP">
+<title>Requirements for partition() and stable_partition() too strong</title>
+<section><sref ref="[alg.partitions]"/></section>
+<submitter>Sean Parent, Joe Gottman</submitter>
+<date>4 May 2005</date>
+
+<discussion>
+<p>
+Problem:
+The iterator requirements for partition() and stable_partition() [25.2.12]
+are listed as BidirectionalIterator, however, there are efficient algorithms
+for these functions that only require ForwardIterator that have been known
+since before the standard existed. The SGI implementation includes these (see
+<a href="http://www.sgi.com/tech/stl/partition.html">http://www.sgi.com/tech/stl/partition.html</a>
+and
+<a href="http://www.sgi.com/tech/stl/stable_partition.html">http://www.sgi.com/tech/stl/stable_partition.html</a>).
+</p>
+
+<note>
+2009-04-30 Alisdair adds:
+</note>
+
+<blockquote>
+<p>
+Now we have concepts this is easier to express!
+</p>
+<p>
+Proposed resolution:
+</p>
+<p>
+Add the following signature to:
+</p>
+<p>
+Header <tt>&lt;algorithm&gt;</tt> synopsis <sref ref="[algorithms.syn]"/><br/>
+p3 Partitions <sref ref="[alg.partitions]"/>
+</p>
+<blockquote><pre>
+ template&lt;ForwardIterator Iter, Predicate&lt;auto, Iter::value_type&gt; Pred&gt;
+   requires ShuffleIterator&lt;Iter&gt;
+         &amp;&amp; CopyConstructible&lt;Pred&gt;
+   Iter partition(Iter first, Iter last, Pred pred);
+</pre></blockquote>
+
+<p>
+Update p3 Partitions <sref ref="[alg.partitions]"/>:
+</p>
+
+<blockquote>
+<p>
+<i>Complexity:</i> <del>At most <tt>(last - first)/2</tt> swaps. Exactly <tt>last - first</tt>
+applications of the predicate
+are done.</del>
+<ins>
+If <tt>Iter</tt> satisfies <tt>BidirectionalIterator</tt>, at most <tt>(last -
+first)/2</tt> swaps. Exactly <tt>last - first</tt> applications of the predicate
+are done.
+</ins>
+</p>
+<p><ins>
+If <tt>Iter</tt> merely satisfied <tt>ForwardIterator</tt> at most <tt>(last - first)</tt> swaps
+are done. Exactly <tt>(last - first)</tt> applications of the predicate are done.
+</ins></p>
+</blockquote>
+
+<p>
+[Editorial note: I looked for existing precedent in how we might call out
+distinct overloads overloads from a set of constrained templates, but there
+is not much existing practice to lean on.   advance/distance were the only
+algorithms I could find, and that wording is no clearer.]
+</p>
+
+</blockquote>
+
+<note>
+2009-07 Frankfurt
+</note>
+
+<blockquote>
+<p>
+Hinnant: if you want to partition your std::forward_list, you'll need
+partition() to accept ForwardIterators.
+</p>
+<p>
+No objection to Ready.
+</p>
+<p>
+Move to Ready.
+</p>
+</blockquote>
+
+</discussion>
+
+<resolution>
+<p>
+Change 25.2.12 from </p>
+<blockquote><pre>
+template&lt;class BidirectionalIterator, class Predicate&gt; 
+BidirectionalIterator partition(BidirectionalIterato r first, 
+                                BidirectionalIterator last, 
+                                Predicate pred); 
+</pre></blockquote>
+<p>to </p>
+<blockquote><pre>
+template&lt;class ForwardIterator, class Predicate&gt; 
+ForwardIterator partition(ForwardIterator first, 
+                          ForwardIterator last, 
+                          Predicate pred); 
+</pre></blockquote>
+<p>Change the complexity from </p>
+
+<blockquote><p>
+At most (last - first)/2 swaps are done. Exactly (last - first) 
+applications of the predicate are done. 
+</p></blockquote>
+
+<p>to </p>
+
+<blockquote><p>
+If ForwardIterator is a bidirectional_iterator, at most (last - first)/2 
+swaps are done; otherwise at most (last - first) swaps are done. Exactly 
+(last - first) applications of the predicate are done. 
+</p></blockquote>
+
+</resolution>
+
+<rationale>
+<p>
+Partition is a "foundation" algorithm useful in many contexts (like sorting
+as just one example) - my motivation for extending it to include forward
+iterators is foward_list - without this extension you can't partition an foward_list
+(without writing your own partition). Holes like this in the standard
+library weaken the argument for generic programming (ideally I'd be able
+to provide a library that would refine std::partition() to other concepts
+without fear of conflicting with other libraries doing the same - but
+that is a digression). I consider the fact that partition isn't defined
+to work for ForwardIterator a minor embarrassment.
+</p>
+
+<note>Mont Tremblant:  Moved to Open, request motivation and use cases by next meeting. Sean provided further rationale by post-meeting mailing.</note>
+
+</rationale>
+
+</issue>

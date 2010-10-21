@@ -1,0 +1,41 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="67" status="Dup">
+<title>Setw useless for strings</title>
+<section><sref ref="[string.io]"/></section>
+<submitter>Steve Clamage</submitter>
+<date>9 Jul 1998</date>
+
+<discussion>
+<p>In a comp.std.c++ posting Michel Michaud wrote: What
+should be output by: </p>
+
+<pre>   string text(&quot;Hello&quot;);
+   cout &lt;&lt; '[' &lt;&lt; setw(10) &lt;&lt; right &lt;&lt; text &lt;&lt; ']';
+</pre>
+
+<p>Shouldn't it be:</p>
+
+<pre>   [     Hello]</pre>
+
+<p>Another person replied: Actually, according to the FDIS, the width
+of the field should be the minimum of width and the length of the
+string, so the output shouldn't have any padding. I think that this is
+a typo, however, and that what is wanted is the maximum of the
+two. (As written, setw is useless for strings. If that had been the
+intent, one wouldn't expect them to have mentioned using its value.)
+</p>
+
+<p>It's worth pointing out that this is a recent correction anyway;
+IIRC, earlier versions of the draft forgot to mention formatting
+parameters whatsoever.</p>
+</discussion>
+
+<rationale>
+<duplicate><iref ref="25"/></duplicate>
+</rationale>
+
+</issue>

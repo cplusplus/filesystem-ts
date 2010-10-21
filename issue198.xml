@@ -1,0 +1,142 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="198" status="CD1">
+<title>Validity of pointers and references unspecified after iterator destruction</title>
+<section><sref ref="[iterator.concepts]"/></section>
+<submitter>Beman Dawes</submitter>
+<date>3 Nov 1999</date>
+
+<discussion>
+<p>
+Is a pointer or reference obtained from an iterator still valid after
+destruction of the iterator?
+</p>
+<p>
+Is a pointer or reference obtained from an iterator still valid after the value
+of the iterator changes?
+</p>
+<blockquote>
+<pre>
+#include &lt;iostream&gt;
+#include &lt;vector&gt;
+#include &lt;iterator&gt;
+
+int main()
+{
+    typedef std::vector&lt;int&gt; vec_t;
+    vec_t v;
+    v.push_back( 1 );
+
+    // Is a pointer or reference obtained from an iterator still
+    // valid after destruction of the iterator?
+    int * p = &amp;*v.begin();
+    std::cout &lt;&lt; *p &lt;&lt; '\n';  // OK?
+
+    // Is a pointer or reference obtained from an iterator still
+    // valid after the value of the iterator changes?
+    vec_t::iterator iter( v.begin() );
+    p = &amp;*iter++;
+    std::cout &lt;&lt; *p &lt;&lt; '\n';  // OK?
+
+    return 0;
+}
+</pre>
+</blockquote>
+
+<p>The standard doesn't appear to directly address these
+questions. The standard needs to be clarified. At least two real-world
+cases have been reported where library implementors wasted
+considerable effort because of the lack of clarity in the
+standard. The question is important because requiring pointers and
+references to remain valid has the effect for practical purposes of
+prohibiting iterators from pointing to cached rather than actual
+elements of containers.</p>
+
+<p>The standard itself assumes that pointers and references obtained
+from an iterator are still valid after iterator destruction or
+change. The definition of reverse_iterator::operator*(), <sref ref="[reverse.iter.conv]"/>, which returns a reference, defines
+effects:</p>
+
+<blockquote>
+  <pre>Iterator tmp = current;
+return *--tmp;</pre>
+</blockquote>
+<p>The definition of reverse_iterator::operator-&gt;(), <sref ref="[reverse.iter.op.star]"/>, which returns a pointer, defines effects:</p>
+<blockquote>
+  <pre>return &amp;(operator*());</pre>
+</blockquote>
+
+<p>Because the standard itself assumes pointers and references remain
+valid after iterator destruction or change, the standard should say so
+explicitly. This will also reduce the chance of user code breaking
+unexpectedly when porting to a different standard library
+implementation.</p>
+</discussion>
+
+<resolution>
+<p>Add a new paragraph to <sref ref="[iterator.concepts]"/>:</p>
+<blockquote><p>
+Destruction of an iterator may invalidate pointers and references
+previously obtained from that iterator.
+</p></blockquote>
+
+<p>Replace paragraph 1 of <sref ref="[reverse.iter.conv]"/> with:</p>
+
+<blockquote>
+<p><b>Effects:</b></p>
+<pre>
+  this->tmp = current;
+  --this->tmp;
+  return *this->tmp;
+</pre>
+
+<p>
+[<i>Note:</i> This operation must use an auxiliary member variable,
+rather than a temporary variable, to avoid returning a reference that
+persists beyond the lifetime of its associated iterator.  (See
+<sref ref="[iterator.concepts]"/>.)  The name of this member variable is shown for
+exposition only.  <i>--end note</i>]
+</p>
+</blockquote>
+
+<note>Post-Tokyo: The issue has been reformulated purely
+in terms of iterators.</note>
+
+<note>Pre-Toronto: Steve Cleary pointed out the no-invalidation
+assumption by reverse_iterator. The issue and proposed resolution was
+reformulated yet again to reflect this reality.</note>
+
+<note>Copenhagen: Steve Cleary pointed out that reverse_iterator
+assumes its underlying iterator has persistent pointers and
+references.  Andy Koenig pointed out that it is possible to rewrite
+reverse_iterator so that it no longer makes such an assupmption.
+However, this issue is related to issue <iref ref="299"/>.  If we
+decide it is intentional that <tt>p[n]</tt> may return by value
+instead of reference when <tt>p</tt> is a Random Access Iterator,
+other changes in reverse_iterator will be necessary.</note>
+</resolution>
+
+<rationale>
+<p>This issue has been discussed extensively.  Note that it is
+<i>not</i> an issue about the behavior of predefined iterators.  It is
+asking whether or not user-defined iterators are permitted to have
+transient pointers and references.  Several people presented examples
+of useful user-defined iterators that have such a property; examples
+include a B-tree iterator, and an "iota iterator" that doesn't point
+to memory.  Library implementors already seem to be able to cope with
+such iterators: they take pains to avoid forming references to memory
+that gets iterated past.  The only place where this is a problem is
+<tt>reverse_iterator</tt>, so this issue changes
+<tt>reverse_iterator</tt> to make it work.</p>
+
+<p>This resolution does not weaken any guarantees provided by
+predefined iterators like <tt>list&lt;int&gt;::iterator</tt>.
+Clause 23 should be reviewed to make sure that guarantees for
+predefined iterators are as strong as users expect.</p>
+
+</rationale>
+
+</issue>

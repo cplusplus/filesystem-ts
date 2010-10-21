@@ -1,0 +1,158 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="622" status="CD1">
+<title>behavior of <code>filebuf</code> dtor and <code>close</code> on error</title>
+<section><sref ref="[fstream.members]"/></section>
+<submitter>Martin Sebor</submitter>
+<date>20 Jan 2007</date>
+
+<discussion>
+        <p>
+
+<code>basic_filebuf</code>  dtor is  specified to  have  the following
+straightforward effects:
+
+        </p>
+        <blockquote><p>
+
+<i>Effects</i>:       Destroys      an      object       of      class
+<code>basic_filebuf</code>. Calls <code>close()</code>.
+
+        </p></blockquote>
+        <p>
+
+<code>close()</code> does a lot of potentially complicated processing,
+including calling <code>overflow()</code> to write out the termination
+sequence  (to   bring  the  output  sequence  to   its  initial  shift
+state). Since  any of the  functions called during the  processing can
+throw an exception, what should the  effects of an exception be on the
+dtor? Should the  dtor catch and swallow it or  should it propagate it
+to the caller?  The text doesn't  seem to provide any guidance in this
+regard  other  than  the  general  restriction on  throwing  (but  not
+propagating)  exceptions  from   destructors  of  library  classes  in
+<sref ref="[res.on.exception.handling]"/>.
+
+        </p>
+        <p>
+
+Further,  the last thing  <code>close()</code> is  specified to  do is
+call <code>fclose()</code> to close the <code>FILE</code> pointer. The
+last sentence of the <i>Effects</i> clause reads:
+
+        </p>
+        <blockquote><p>
+
+...   If    any   of    the   calls   to    <code>overflow</code>   or
+<code>std::fclose</code> fails then <code>close</code> fails.
+
+        </p></blockquote>
+        <p>
+
+This  suggests that  <code>close()</code>  might be  required to  call
+<code>fclose()</code>   if  and  only   if  none   of  the   calls  to
+<code>overflow()</code> fails, and avoid closing the <code>FILE</code>
+otherwise. This  way, if  <code>overflow()</code> failed to  flush out
+the data, the caller  would have  the opportunity to  try to  flush it
+again (perhaps  after trying  to deal with  whatever problem  may have
+caused the failure), rather than losing it outright.
+
+        </p>
+        <p>
+
+On the other hand,  the function's <i>Postcondition</i> specifies that
+<code>is_open() ==  false</code>, which  suggests that it  should call
+<code>fclose()</code>       unconditionally.       However,      since
+<i>Postcondition</i> clauses  are specified for many  functions in the
+standard,  including constructors  where they  obviously  cannot apply
+after an  exception, it's not clear  whether this <i>Postcondition</i>
+clause is intended to apply even after an exception.
+
+        </p>
+        <p>
+
+It  might  be worth  noting  that  the  traditional behavior  (Classic
+Iostreams  <code>fstream::close()</code> and  C <code>fclose()</code>)
+is  to  close  the  <code>FILE</code> unconditionally,  regardless  of
+errors.
+
+        </p>
+
+<note>
+See <iref ref="397"/> and <iref ref="418"/> for related issues.
+</note>
+
+</discussion>
+
+<resolution>
+        <p>
+
+After discussing this  on the reflector (see the  thread starting with
+c++std-lib-17650) we propose that <code>close()</code> be clarified to
+match the traditional behavior, that is to close the <code>FILE</code>
+unconditionally,  even after  errors or  exceptions.  In  addition, we
+propose the dtor description be amended so as to explicitly require it
+to catch and swallow any exceptions thrown by <code>close()</code>.
+
+        </p>
+        <p>
+
+Specifically,   we   propose   to   make  the   following   edits   in
+<sref ref="[filebuf.members]"/>:
+
+        </p>
+        <blockquote>
+            <pre>
+
+<code>basic_filebuf&lt;charT,traits&gt;* close();</code>
+
+            </pre>
+            <p>
+
+<i>Effects</i>:  If <code>is_open()  == false</code>,  returns  a null
+pointer.        If      a       put      area       exists,      calls
+<code>overflow(traits::eof())</code> to flush  characters. If the last
+virtual   member  function   called  on   <code>*this</code>  (between
+<code>underflow</code>,  <code>overflow</code>,  <code>seekoff</code>,
+and   <code>seekpos</code>)  was   <code>overflow</code>   then  calls
+<code>a_codecvt.unshift</code> (possibly several times) to determine a
+termination   sequence,    inserts   those   characters    and   calls
+<code>overflow(traits::eof())</code>  again.  Finally<ins>, regardless
+of whether  any of the preceding  calls fails or  throws an exception,
+the  function</ins> <del>it</del>  closes   the  file   ("as   if"  by   calling
+<code>std::fclose(file)</code>).<sup>334)</sup>  If any  of  the calls
+<ins>made    by   the    function</ins><del>to   <code>overflow</code>
+or</del><ins>,  including  </ins><code>std::fclose</code><ins>, </ins>
+fails then <code>close</code> fails<ins>  by returning a null pointer.
+If one of these calls throws an exception, the exception is caught and
+rethrown after closing the file.</ins>
+
+            </p>
+        </blockquote>
+        <p>
+
+And to make the following edits in <sref ref="[filebuf.cons]"/>.
+
+        </p>
+        <blockquote>
+            <pre>
+
+<code>virtual ~basic_filebuf();</code>
+
+            </pre>
+            <p>
+
+<i>Effects</i>:       Destroys      an      object       of      class
+<code>basic_filebuf&lt;charT,traits&gt;</code>.                   Calls
+<code>close()</code>.    <ins>If  an   exception  occurs   during  the
+destruction of the object, including the call to <code>close()</code>,
+the     exception    is     caught    but     not     rethrown    (see
+<sref ref="[res.on.exception.handling]"/>).</ins>
+
+            </p>
+        </blockquote>
+</resolution>
+
+</issue>

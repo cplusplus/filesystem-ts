@@ -1,0 +1,89 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="924" status="NAD Editorial">
+<title>structs with internal padding</title>
+<section><sref ref="[atomics]"/></section>
+<submitter>Herb Sutter</submitter>
+<date>17 Oct 2008</date>
+
+<discussion>
+<p>
+Right now, the <tt>compare_exchange_weak</tt> loop should rapidly converge on the
+padding contents. But <tt>compare_exchange_strong</tt> will require a bit more
+compiler work to ignore padding for comparison purposes.
+</p>
+<p>
+Note that this isn't a problem for structs with no padding, and we do
+already have one portable way to ensure that there is no padding that
+covers the key use cases: Have elements be the same type. I suspect that
+the greatest need is for a structure of two pointers, which has no
+padding problem. I suspect the second need is a structure of a pointer
+and some form of an integer. If that integer is <tt>intptr_t</tt>, there will be
+no padding.
+</p>
+<p>
+Related but separable issue: For unused bitfields, or other unused
+fields for that matter, we should probably say it's the programmer's
+responsibility to set them to zero or otherwise ensure they'll be
+ignored by <tt>memcmp</tt>.
+</p>
+
+<p>
+<b>Proposed resolutions:</b> Using
+<tt>atomic&lt;struct-with-padding&gt;::compare_exchange_strong</tt> should be either:
+</p>
+
+<ol>
+<li>
+ill-formed, or
+</li>
+<li>
+well-defined.
+</li>
+</ol>
+
+<p>
+I propose Option 1 for C++0x for expediency, though I'm not sure how to
+say it. I would be happy with Option 2, which I believe would mean that
+<tt>compare_exchange_strong</tt> would be implemented to avoid comparing padding
+bytes, or something equivalent such as always zeroing out padding when
+loading/storing/comparing. (Either implementation might require compiler
+support.)
+</p>
+
+<note>
+Summit:
+</note>
+
+<blockquote>
+Move to open. Blocked until concepts for atomics are addressed.
+</blockquote>
+
+<note>
+Post Summit Anthony adds:
+</note>
+
+<blockquote>
+The resoultion of LWG <iref ref="923"/> should resolve this issue as well.
+</blockquote>
+
+<note>
+2009-10 Santa Cruz:
+</note>
+
+<blockquote>
+NAD Editorial.  Solved by
+<a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2009/n2992.html">N2992</a>.
+</blockquote>
+
+</discussion>
+
+<resolution>
+<p>
+</p>
+</resolution>
+
+</issue>

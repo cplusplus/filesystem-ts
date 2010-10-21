@@ -1,0 +1,45 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="520" status="CD1">
+<title>Result_of and pointers to data members</title>
+<section><sref ref="[func.bind]"/><sref ref="[tr.func.bind]"/></section>
+<submitter>Pete Becker</submitter>
+<date>3 Jul 2005</date>
+
+<discussion>
+<p>
+In the original proposal for binders, the return type of bind() when
+called with a pointer to member data as it's callable object was
+defined to be mem_fn(ptr); when Peter Dimov and I  unified the
+descriptions of the TR1 function objects we hoisted the descriptions
+of return types into the INVOKE pseudo-function and into result_of.
+Unfortunately, we left pointer to member data out of result_of, so
+bind doesn't have any specified behavior when called with a pointer
+to  member data.
+</p>
+</discussion>
+
+<resolution>
+<note>
+Pete and Peter will provide wording.
+</note>
+
+<p>
+In 20.5.4 [lib.func.ret] ([tr.func.ret]) p3 add the following bullet after bullet 2:
+</p>
+<ol start="3">
+<li>If <tt>F</tt> is a member data pointer type <tt>R T::*</tt>, <tt>type</tt>
+shall be <tt><i>cv</i> R&amp;</tt> when <tt>T1</tt> is <tt><i>cv</i> U1&amp;</tt>,
+<tt>R</tt> otherwise.</li>
+</ol>
+
+<note>
+Peter provided wording.
+</note>
+</resolution>
+
+
+</issue>

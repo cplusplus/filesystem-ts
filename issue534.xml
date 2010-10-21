@@ -1,0 +1,141 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="534" status="CD1">
+<title>Missing basic_string members</title>
+<section><sref ref="[basic.string]"/></section>
+<submitter>Alisdair Meredith</submitter>
+<date>16 Nov 2005</date>
+
+<discussion>
+<p>
+OK, we all know std::basic_string is bloated and already has way too
+many members.  However, I propose it is missing 3 useful members that
+are often expected by users believing it is a close approximation of the
+container concept.  All 3 are listed in table 71 as 'optional'
+</p>
+
+<p>
+i/  pop_back.
+</p>
+
+<p>
+This is the one I feel most strongly about, as I only just discovered it
+was missing as we are switching to a more conforming standard library
+&lt;g&gt;
+</p>
+
+<p>
+I find it particularly inconsistent to support push_back, but not
+pop_back.
+</p>
+
+<p>
+ii/ back.
+</p>
+
+<p>
+There are certainly cases where I want to examine the last character of
+a string before deciding to append, or to trim trailing path separators
+from directory names etc.  *rbegin() somehow feels inelegant.
+</p>
+
+<p>
+iii/ front
+</p>
+
+<p>
+This one I don't feel strongly about, but if I can get the first two,
+this one feels that it should be added as a 'me too' for consistency.
+</p>
+
+<p>
+I believe this would be similarly useful to the data() member recently
+added to vector, or at() member added to the maps.
+</p>
+</discussion>
+
+<resolution>
+<p>
+Add the following members to definition of class template basic_string, 21.3p7
+</p>
+<blockquote><pre>
+void pop_back ()
+
+const charT &amp; front() const
+charT &amp; front()
+
+const charT &amp; back() const
+charT &amp; back()
+</pre></blockquote>
+<p>
+Add the following paragraphs to basic_string description
+</p>
+
+<p>
+21.3.4p5
+</p>
+<blockquote>
+<pre>
+const charT &amp; front() const
+charT &amp; front()
+</pre>
+<p>
+<i>Precondition:</i> <tt>!empty()</tt>
+</p>
+<p>
+<i>Effects:</i> Equivalent to <tt>operator[](0)</tt>.
+</p>
+</blockquote>
+
+<p>
+21.3.4p6
+</p>
+<blockquote>
+<pre>
+const charT &amp; back() const
+charT &amp; back()
+</pre>
+<p>
+<i>Precondition:</i> <tt>!empty()</tt>
+</p>
+<p>
+<i>Effects:</i> Equivalent to <tt>operator[]( size() - 1)</tt>.
+</p>
+</blockquote>
+
+<p>
+21.3.5.5p10
+</p>
+<blockquote>
+<pre>
+void pop_back ()
+</pre>
+<p>
+<i>Precondition:</i> <tt>!empty()</tt>
+</p>
+<p>
+<i>Effects:</i> Equivalent to <tt>erase( size() - 1, 1 )</tt>.
+</p>
+</blockquote>
+
+<p>
+Update Table 71: (optional sequence operations)
+Add basic_string to the list of containers for the following operations.
+</p>
+<blockquote><pre>
+a.front()
+a.back()
+a.push_back()
+a.pop_back()
+a[n]
+</pre></blockquote>
+
+<note>
+Berlin: Has support.  Alisdair provided wording.
+</note>
+</resolution>
+
+</issue>

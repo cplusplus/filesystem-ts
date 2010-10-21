@@ -1,0 +1,76 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp " ">
+] >
+
+<issue num="339" status="CD1">
+<title>definition of bitmask type restricted to clause 27</title>
+<section><sref ref="[category.ctype]"/> <sref ref="[bitmask.types]"/></section>
+<submitter>Martin Sebor</submitter>
+<date>17 Sep 2001</date>
+
+<discussion>
+<p>
+The ctype_category::mask type is declared to be an enum in <sref ref="[category.ctype]"/> with p1 then stating that it is a bitmask type, most
+likely referring to the definition of bitmask type in <sref ref="[bitmask.types]"/>, p1. However, the said definition only applies to
+clause 27, making the reference in 22.2.1 somewhat dubious.
+</p>
+</discussion>
+
+<resolution>
+<p>Clarify 17.3.2.1.2, p1 by changing the current text from</p>
+    <blockquote><p>
+    Several types defined in clause 27 are bitmask types. Each bitmask type
+    can be implemented as an enumerated type that overloads certain operators,
+    as an integer type, or as a bitset (<sref ref="[template.bitset]"/>).
+    </p></blockquote>
+<p>to read</p>
+    <blockquote><p>
+    Several types defined in clauses lib.language.support through 
+    lib.input.output and Annex D are bitmask types. Each bitmask type can
+    be implemented as an enumerated type that overloads certain operators,
+    as an integer  type, or as a bitset (lib.template.bitset).
+    </p></blockquote>
+
+<p>
+Additionally, change the definition in 22.2.1 to adopt the same
+convention as in clause 27 by replacing the existing text with the
+following (note, in particluar, the cross-reference to 17.3.2.1.2 in
+22.2.1, p1):
+</p>
+
+<blockquote>
+<p>22.2.1 The ctype category [lib.category.ctype]</p>
+<pre>
+namespace std {
+    class ctype_base {
+    public:
+        typedef <b><i>T</i></b> mask;
+
+        // numeric values are for exposition only.
+        static const mask space = 1 &lt;&lt; 0;
+        static const mask print = 1 &lt;&lt; 1;
+        static const mask cntrl = 1 &lt;&lt; 2;
+        static const mask upper = 1 &lt;&lt; 3;
+        static const mask lower = 1 &lt;&lt; 4;
+        static const mask alpha = 1 &lt;&lt; 5;
+        static const mask digit = 1 &lt;&lt; 6;
+        static const mask punct = 1 &lt;&lt; 7;
+        static const mask xdigit = 1 &lt;&lt; 8;
+        static const mask alnum = alpha | digit;
+        static const mask graph = alnum | punct;
+    };
+}
+</pre>
+
+<p>The type <tt>mask</tt> is a bitmask type (<sref ref="[bitmask.types]"/>).</p>
+</blockquote>
+
+<note>Cura&ccedil;ao: The LWG notes that T above should be bold-italics to be
+consistent with the rest of the standard.</note>
+
+</resolution>
+
+</issue>
+
+

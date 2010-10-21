@@ -1,0 +1,83 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="1329" status="NAD Editorial">
+<title>Data races on <code>vector&lt;bool&gt;</code></title>
+<section><sref ref="[container.requirements.dataraces]"/></section>
+<submitter>Jeffrey Yaskin</submitter>
+<date>9 Mar 2010</date>
+
+<discussion>
+<p>
+The common implementation of <tt>vector&lt;bool&gt;</tt> is as an
+unsynchronized bitfield.  The addition of <sref
+ref="[container.requirements.dataraces]"/>/2 would require either a
+change in representation or a change in access synchronization, both of
+which are undesireable with respect to compatibility and performance.
+</p>
+
+<note>
+2010 Pittsburgh:  Moved to NAD Editorial.  Rationale added below.
+</note>
+
+</discussion>
+
+<rationale>
+<p>
+Solved by
+<a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2010/n3069.html">N3069</a>.
+</p>
+</rationale>
+
+<resolution>
+<p>
+Container data races <sref ref="[container.requirements.dataraces]"/>
+</p>
+
+<p>
+Paragraph 1 is unchanged as follows:
+</p>
+
+<blockquote>
+1 For purposes of avoiding data races (17.6.4.8), implementations shall
+consider the following functions to be <code>const</code>:
+<code>begin</code>, <code>end</code>, <code>rbegin</code>,
+<code>rend</code>, <code>front</code>, <code>back</code>,
+<code>data</code>, <code>find</code>, <code>lower_bound</code>,
+<code>upper_bound</code>, <code>equal_range</code>, and, except in
+associative containers, <code>operator[]</code>.
+</blockquote>
+
+<p>
+Edit paragraph 2 as follows:
+</p>
+
+<blockquote>
+2 Notwithstanding (17.6.4.8), implementations are required to avoid data
+races when the contents of the contained object in different elements in
+the same sequence<ins>, excepting <code>vector&lt;bool&gt;</code>,</ins>
+are modified concurrently.
+</blockquote>
+
+<p>
+Edit paragraph 3 as follows:
+</p>
+
+<blockquote>
+3 [<i>Note:</i>
+For a <code>vector&lt;int&gt; x</code> with a size greater than one,
+<code>x[1] = 5</code> and <code>*x.begin() = 10</code>
+can be executed concurrently without a data race,
+but <code>x[0] = 5</code> and <code>*x.begin() = 10</code>
+executed concurrently may result in a data race.
+<ins>As an exception to the general rule,
+for a <code>vector&lt;bool&gt; y</code>,
+<code>y[i] = true</code> may race with <code>y[j] = true</code>.</ins>
+&mdash;<i>end note</i>]
+</blockquote>
+
+</resolution>
+
+</issue>

@@ -1,0 +1,151 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="935" status="NAD Future">
+<title>clock error handling needs to be specified</title>
+<section><sref ref="[time.clock]"/></section>
+<submitter>Beman Dawes</submitter>
+<date>24 Nov 2008</date>
+
+<discussion>
+<p>
+Each of the three clocks specified in Clocks <sref ref="[time.clock]"/>
+provides the member function:
+</p>
+
+<blockquote><pre>
+static time_point now();
+</pre></blockquote>
+
+<p>
+The semantics specified by Clock requirements <sref ref="[time.clock.req]"/>
+make no mention of error handling. Thus the function may throw <tt>bad_alloc</tt>
+or an implementation-defined exception (<sref ref="[res.on.exception.handling]"/>
+paragraph 4).
+</p>
+
+<p>
+Some implementations of these functions on POSIX, Windows, and
+presumably on other operating systems, may fail in ways only detectable
+at runtime. Some failures on Windows are due to supporting chipset
+errata and can even occur after successful calls to a clock's <tt>now()</tt>
+function.
+</p>
+
+<p>
+These functions are used in cases where exceptions are not appropriate
+or where the specifics of the exception or cause of error need to be
+available to the user. See
+<a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2009/n2828.html">N2828</a>,
+<i>Library Support for hybrid error
+handling (Rev 1)</i>, for more specific discussion of use cases. Thus some change in
+the interface of now is required.
+</p>
+
+<p>
+The proposed resolution has been implemented in the Boost version of the
+chrono library. No problems were encountered.
+</p>
+
+<note>
+Batavia (2009-05):
+</note>
+<blockquote>
+<p>
+We recommend this issue be deferred until the next Committee Draft
+has been issued and the prerequisite paper has been accepted.
+</p>
+<p>
+Move to Open.
+</p>
+</blockquote>
+
+<note>
+2009-10 Santa Cruz:
+</note>
+
+<blockquote>
+Mark as NAD future. Too late to make this change without having already
+accepted the hybrid error handling proposal.
+</blockquote>
+
+</discussion>
+
+<resolution>
+<p>
+Accept the proposed wording of
+<a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2009/n2828.html">N2828</a>,
+<i>Library Support for hybrid error handling (Rev 1)</i>.
+</p>
+
+<p>
+Change Clock requirements <sref ref="[time.clock.req]"/> as indicated:
+</p>
+
+<blockquote>
+<p>
+-2- In Table 55 <tt>C1</tt> and <tt>C2</tt> denote clock types. <tt>t1</tt> and
+<tt>t2</tt> are values returned by <tt>C1::now()</tt> where the call 
+returning <tt>t1</tt> happens before (1.10) the call returning <tt>t2</tt> and
+both of these calls happen before <tt>C1::time_point::max()</tt>.
+<ins><tt>ec</tt> denotes an object of type <tt>error_code</tt> 
+(<sref ref="[syserr.errcode.overview]"/>).</ins>
+</p>
+
+<table border="1">
+<caption>Table 55 -- Clock requirements</caption>
+<tr>
+<th>Expression</th><th>Return type</th><th>Operational semantics</th>
+</tr>
+
+<tr>
+<td>...</td>
+<td>...</td>
+<td>...</td>
+</tr>
+
+<tr>
+<td><tt>C1::now()</tt></td>
+<td><tt>C1::time_point</tt></td>
+<td>Returns a <tt>time_point</tt> object representing the current point in time.
+</td>
+</tr>
+
+<tr>
+<td><tt><ins>C1::now(ec)</ins></tt></td>
+<td><tt><ins>C1::time_point</ins></tt></td>
+<td><ins>Returns a <tt>time_point</tt> object representing the current point in time.</ins>
+</td>
+</tr>
+</table>
+</blockquote>
+
+<p>
+Change Class system_clock <sref ref="[time.clock.system]"/> as indicated:
+</p>
+
+<blockquote><pre>
+static time_point now(<ins>error_code&amp; ec=throws()</ins>);
+</pre></blockquote>
+
+<p>
+Change Class monotonic_clock <sref ref="[time.clock.monotonic]"/> as indicated:
+</p>
+
+<blockquote><pre>
+static time_point now(<ins>error_code&amp; ec=throws()</ins>);
+</pre></blockquote>
+
+<p>
+Change Class high_resolution_clock <sref ref="[time.clock.hires]"/> as indicated:
+</p>
+
+<blockquote><pre>
+static time_point now(<ins>error_code&amp; ec=throws()</ins>);
+</pre></blockquote>
+
+</resolution>
+
+</issue>

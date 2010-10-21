@@ -1,0 +1,154 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="998" status="WP">
+<title>Smart pointer referencing its owner</title>
+<section><sref ref="[unique.ptr.single.modifiers]"/></section>
+<submitter>Pavel Minaev</submitter>
+<date>26 Feb 2009</date>
+
+<discussion>
+<p>
+Consider the following (simplified) implementation of 
+<tt>std::auto_ptr&lt;T&gt;::reset()</tt>: 
+</p>
+
+<blockquote><pre>
+void reset(T* newptr = 0) { 
+   if (this-&gt;ptr &amp;&amp; this-&gt;ptr != newptr) { 
+     delete this-&gt;ptr; 
+   } 
+   this-&gt;ptr = newptr; 
+} 
+</pre></blockquote>
+
+<p>
+Now consider the following code which uses the above implementation: 
+</p>
+
+<blockquote><pre>
+struct foo { 
+   std::auto_ptr&lt;foo&gt; ap; 
+   foo() : ap(this) {} 
+   void reset() { ap.reset(); } 
+}; 
+int main() { 
+   (new foo)-&gt;reset(); 
+} 
+</pre></blockquote>
+
+<p>
+With the above implementation of auto_ptr, this results in U.B. at the 
+point of auto_ptr::reset(). If this isn't obvious yet, let me explain 
+how this goes step by step: 
+</p>
+
+<ol>
+<li>
+<tt>foo::reset()</tt> entered 
+</li>
+<li>
+<tt>auto_ptr::reset()</tt> entered 
+</li>
+<li>
+<tt>auto_ptr::reset()</tt> tries to delete <tt>foo</tt>
+</li>
+<li>
+<tt>foo::~foo()</tt> entered, tries to destruct its members 
+</li>
+<li>
+<tt>auto_ptr::~auto_ptr()</tt> executed - <tt>auto_ptr</tt> is no longer a valid object! 
+</li>
+<li>
+<tt>foo::~foo()</tt> left 
+</li>
+<li>
+<tt>auto_ptr::reset()</tt> sets its "ptr" field to 0 &lt;- U.B.! <tt>auto_ptr</tt>
+is not a valid object here already! 
+</li>
+</ol>
+
+<note>
+Thanks to Peter Dimov who recognized the connection to <tt>unique_ptr</tt> and
+brought this to the attention of the LWG, and helped with the solution.
+</note>
+
+<note>
+Howard adds:
+</note>
+
+<blockquote>
+To fix this behavior <tt>reset</tt> must be specified such that deleting the
+pointer is the last action to be taken within <tt>reset</tt>.
+</blockquote>
+
+<note>
+Alisdair adds:
+</note>
+
+<blockquote>
+<p>
+The example providing the rationale for LWG <iref ref="998"/> is poor, as it relies on
+broken semantics of having two object believing they are unique owners of a
+single resource.  It should not be surprising that UB results from such
+code, and I feel no need to go out of our way to support such behaviour.
+</p>
+<p>
+If an example is presented that does not imply multiple ownership of a
+unique resource, I would be much more ready to accept the proposed
+resolution.
+</p>
+</blockquote>
+
+<note>
+Batavia (2009-05):
+</note>
+<blockquote>
+<p>
+Howard summarizes:
+</p>
+<blockquote>
+This issue has to do with circular ownership,
+and affects <tt>auto_ptr</tt>, too (but we don't really care about that).
+It is intended to spell out the order in which operations must be performed
+so as to avoid the possibility
+of undefined behavior in the self-referential case.
+</blockquote>
+<p>
+Howard points to message c++std-lib-23175 for another example,
+requested by Alisdair.
+</p>
+<p>
+We agree with the issue and with the proposed resolution.
+Move to Tentatively Ready.
+</p>
+</blockquote>
+
+</discussion>
+
+<resolution>
+<p>
+Change <sref ref="[unique.ptr.single.modifiers]"/>, p5 (<i>Effects</i> clause for <tt>reset</tt>), and p6:
+</p>
+
+<blockquote>
+<p>
+-5- <i>Effects:</i> <del>If <tt>get() == nullptr</tt> there are no effects. Otherwise <tt>get_deleter()(get())</tt>.</del>
+<ins>Assigns <tt>p</tt> to the stored <tt>pointer</tt>, and then if the old value of the <tt>pointer</tt> is not
+equal to <tt>nullptr</tt>, calls <tt>get_deleter()(</tt>the old value of the <tt>pointer)</tt>.
+[<i>Note:</i> The order of these operations is significant because the call to <tt>get_deleter()</tt>
+may destroy <tt>*this</tt>. <i>-- end note</i>]</ins>
+</p>
+
+<p>
+-6- Postconditions: <tt>get() == p</tt>.
+<ins>[<i>Note:</i> The postcondition does not hold if the call to
+<tt>get_deleter()</tt> destroys <tt>*this</tt> since <tt>this-&gt;get()</tt> is no longer a valid
+expression. <i>-- end note</i>]</ins>
+</p>
+</blockquote>
+</resolution>
+
+</issue>

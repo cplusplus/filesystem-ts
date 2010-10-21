@@ -1,0 +1,62 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="203" status="NAD">
+<title>basic_istream::sentry::sentry() is uninstantiable with ctype&lt;user-defined type&gt;</title>
+<section><sref ref="[istream::sentry]"/></section>
+<submitter>Matt McClure and Dietmar K&uuml;hl</submitter>
+<date>1 Jan 2000</date>
+
+<discussion>
+<p>27.6.1.1.2 Paragraph 4 states:</p>
+<blockquote>
+  <p>To decide if the character c is a whitespace character, the constructor      
+     performs ''as if'' it executes the following code fragment:&nbsp;</p>
+  <pre>const ctype&lt;charT&gt;&amp; ctype = use_facet&lt;ctype&lt;charT&gt; &gt;(is.getloc());
+if (ctype.is(ctype.space,c)!=0)
+// c is a whitespace character.</pre>
+</blockquote>
+
+<p> But Table 51 in 22.1.1.1.1 only requires an implementation to
+provide specializations for ctype&lt;char&gt; and
+ctype&lt;wchar_t&gt;.  If sentry's constructor is implemented using
+ctype, it will be uninstantiable for a user-defined character type
+charT, unless the implementation has provided non-working (since it
+would be impossible to define a correct ctype&lt;charT&gt; specialization
+for an arbitrary charT) definitions of ctype's virtual member
+functions.</p>
+
+<p>
+It seems the intent the standard is that sentry should behave, in
+every respect, not just during execution, as if it were implemented
+using ctype, with the burden of providing a ctype specialization
+falling on the user.  But as it is written, nothing requires the
+translation of sentry's constructor to behave as if it used the above
+code, and it would seem therefore, that sentry's constructor should be
+instantiable for all character types.
+</p>
+
+<p> 
+Note: If I have misinterpreted the intent of the standard with
+respect to sentry's constructor's instantiability, then a note should
+be added to the following effect:
+</p>
+
+<blockquote><p>
+An implementation is forbidden from using the above code if it renders
+the constructor uninstantiable for an otherwise valid character
+type.
+</p></blockquote>
+
+<p>In any event, some clarification is needed.</p>
+
+</discussion>
+
+<rationale>
+<p>It is possible but not easy to instantiate on types other than char
+or wchar_t; many things have to be done first. That is by intention
+and is not a defect.</p>
+</rationale>
+</issue>

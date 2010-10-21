@@ -1,0 +1,269 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="270" status="CD1">
+<title>Binary search requirements overly strict</title>
+<section><sref ref="[alg.binary.search]"/></section>
+<submitter>Matt Austern</submitter>
+<date>18 Oct 2000</date>
+
+<discussion>
+<p>
+Each of the four binary search algorithms (lower_bound, upper_bound,
+equal_range, binary_search) has a form that allows the user to pass a
+comparison function object.  According to 25.3, paragraph 2, that
+comparison function object has to be a strict weak ordering.
+</p>
+
+<p>
+This requirement is slightly too strict.  Suppose we are searching
+through a sequence containing objects of type X, where X is some
+large record with an integer key.  We might reasonably want to look
+up a record by key, in which case we would want to write something
+like this:
+</p>
+<pre>
+    struct key_comp {
+      bool operator()(const X&amp; x, int n) const {
+        return x.key() &lt; n;
+      }
+    }
+
+    std::lower_bound(first, last, 47, key_comp());
+</pre>
+
+<p>
+key_comp is not a strict weak ordering, but there is no reason to
+prohibit its use in lower_bound.
+</p>
+
+<p>
+There's no difficulty in implementing lower_bound so that it allows
+the use of something like key_comp.  (It will probably work unless an
+implementor takes special pains to forbid it.)  What's difficult is
+formulating language in the standard to specify what kind of
+comparison function is acceptable.  We need a notion that's slightly
+more general than that of a strict weak ordering, one that can encompass
+a comparison function that involves different types.  Expressing that
+notion may be complicated.
+</p>
+
+<p><i>Additional questions raised at the Toronto meeting:</i></p>
+<ul>
+<li> Do we really want to specify what ordering the implementor must
+     use when calling the function object?  The standard gives 
+     specific expressions when describing these algorithms, but it also
+     says that other expressions (with different argument order) are
+     equivalent.</li>
+<li> If we are specifying ordering, note that the standard uses both
+     orderings when describing <tt>equal_range</tt>.</li>
+<li> Are we talking about requiring these algorithms to work properly
+     when passed a binary function object whose two argument types
+     are not the same, or are we talking about requirements when
+     they are passed a binary function object with several overloaded
+     versions of <tt>operator()</tt>?</li>
+<li> The definition of a strict weak ordering does not appear to give
+     any guidance on issues of overloading; it only discusses expressions,
+     and all of the values in these expressions are of the same type.
+     Some clarification would seem to be in order.</li>
+</ul>
+
+<p><i>Additional discussion from Copenhagen:</i></p>
+<ul>
+<li>It was generally agreed that there is a real defect here: if
+the predicate is merely required to be a Strict Weak Ordering, then
+it's possible to pass in a function object with an overloaded
+operator(), where the version that's actually called does something
+completely inappropriate.  (Such as returning a random value.)</li>
+
+<li>An alternative formulation was presented in a paper distributed by
+David Abrahams at the meeting, "Binary Search with Heterogeneous
+Comparison", J16-01/0027 = WG21 N1313: Instead of viewing the
+predicate as a Strict Weak Ordering acting on a sorted sequence, view
+the predicate/value pair as something that partitions a sequence.
+This is almost equivalent to saying that we should view binary search
+as if we are given a unary predicate and a sequence, such that f(*p)
+is true for all p below a specific point and false for all p above it.
+The proposed resolution is based on that alternative formulation.</li>
+</ul>
+</discussion>
+
+<resolution>
+
+<p>Change 25.3 [lib.alg.sorting] paragraph 3 from:</p>
+
+<blockquote><p>
+  3 For all algorithms that take Compare, there is a version that uses
+  operator&lt; instead. That is, comp(*i, *j) != false defaults to *i &lt;
+  *j != false. For the algorithms to work correctly, comp has to
+  induce a strict weak ordering on the values.
+</p></blockquote>
+
+<p>to:</p>
+
+<blockquote><p>
+  3 For all algorithms that take Compare, there is a version that uses
+  operator&lt; instead. That is, comp(*i, *j) != false defaults to *i
+  &lt; *j != false. For algorithms other than those described in
+  lib.alg.binary.search (25.3.3) to work correctly, comp has to induce
+  a strict weak ordering on the values.
+</p></blockquote>
+
+<p>Add the following paragraph after 25.3 [lib.alg.sorting] paragraph 5:</p>
+
+<blockquote><p>
+  -6- A sequence [start, finish) is partitioned with respect to an
+  expression f(e) if there exists an integer n such that
+  for all 0 &lt;= i &lt; distance(start, finish), f(*(begin+i)) is true if
+  and only if i &lt; n.
+</p></blockquote>
+
+<p>Change 25.3.3 [lib.alg.binary.search] paragraph 1 from:</p>
+
+<blockquote><p>
+  -1- All of the algorithms in this section are versions of binary
+   search and assume that the sequence being searched is in order
+   according to the implied or explicit comparison function. They work
+   on non-random access iterators minimizing the number of
+   comparisons, which will be logarithmic for all types of
+   iterators. They are especially appropriate for random access
+   iterators, because these algorithms do a logarithmic number of
+   steps through the data structure. For non-random access iterators
+   they execute a linear number of steps.
+</p></blockquote>
+
+<p>to:</p>
+
+<blockquote><p>
+   -1- All of the algorithms in this section are versions of binary
+    search and assume that the sequence being searched is partitioned
+    with respect to an expression formed by binding the search key to
+    an argument of the implied or explicit comparison function. They
+    work on non-random access iterators minimizing the number of
+    comparisons, which will be logarithmic for all types of
+    iterators. They are especially appropriate for random access
+    iterators, because these algorithms do a logarithmic number of
+    steps through the data structure. For non-random access iterators
+    they execute a linear number of steps.
+</p></blockquote>
+
+<p>Change 25.3.3.1 [lib.lower.bound] paragraph 1 from:</p>
+
+<blockquote><p>
+   -1- Requires: Type T is LessThanComparable
+    (lib.lessthancomparable). 
+</p></blockquote>
+
+<p>to:</p>
+
+<blockquote><p>
+   -1- Requires: The elements e of [first, last) are partitioned with
+   respect to the expression e &lt; value or comp(e, value)
+</p></blockquote>
+
+
+<p>Remove 25.3.3.1 [lib.lower.bound] paragraph 2:</p>
+
+<blockquote><p>
+   -2- Effects: Finds the first position into which value can be
+    inserted without violating the ordering. 
+</p></blockquote>
+
+<p>Change 25.3.3.2 [lib.upper.bound] paragraph 1 from:</p>
+
+<blockquote><p>
+  -1- Requires: Type T is LessThanComparable (lib.lessthancomparable).
+</p></blockquote>
+
+<p>to:</p>
+
+<blockquote><p>
+   -1- Requires: The elements e of [first, last) are partitioned with
+   respect to the expression !(value &lt; e) or !comp(value, e)
+</p></blockquote>
+
+<p>Remove 25.3.3.2 [lib.upper.bound] paragraph 2:</p>
+
+<blockquote><p>
+   -2- Effects: Finds the furthermost position into which value can be
+    inserted without violating the ordering.
+</p></blockquote>
+
+<p>Change 25.3.3.3 [lib.equal.range] paragraph 1 from:</p>
+
+<blockquote><p>
+   -1- Requires: Type T is LessThanComparable
+    (lib.lessthancomparable).
+</p></blockquote>
+
+<p>to:</p>
+
+<blockquote><p>
+   -1- Requires: The elements e of [first, last) are partitioned with
+   respect to the expressions e &lt; value and !(value &lt; e) or
+   comp(e, value) and !comp(value, e).  Also, for all elements e of
+   [first, last), e &lt; value implies !(value &lt; e) or comp(e,
+   value) implies !comp(value, e)
+</p></blockquote>
+
+<p>Change 25.3.3.3 [lib.equal.range] paragraph 2 from:</p>
+
+<blockquote><p>
+   -2- Effects: Finds the largest subrange [i, j) such that the value
+    can be inserted at any iterator k in it without violating the
+    ordering. k satisfies the corresponding conditions: !(*k &lt; value)
+    &amp;&amp; !(value &lt; *k) or comp(*k, value) == false &amp;&amp; comp(value, *k) ==
+    false.
+</p></blockquote>
+
+<p>to:</p>
+
+<pre>
+   -2- Returns: 
+         make_pair(lower_bound(first, last, value),
+                   upper_bound(first, last, value))
+       or
+         make_pair(lower_bound(first, last, value, comp),
+                   upper_bound(first, last, value, comp))
+</pre>
+
+<p>Change 25.3.3.3 [lib.binary.search] paragraph 1 from:</p>
+
+<blockquote><p>
+   -1- Requires: Type T is LessThanComparable
+    (lib.lessthancomparable).
+</p></blockquote>
+
+<p>to:</p>
+
+<blockquote><p>
+   -1- Requires: The elements e of [first, last) are partitioned with
+   respect to the expressions e &lt; value and !(value &lt; e) or comp(e,
+   value) and !comp(value, e). Also, for all elements e of [first,
+   last), e &lt; value implies !(value &lt; e) or comp(e, value) implies
+   !comp(value, e)
+</p></blockquote>
+
+<note>Copenhagen: Dave Abrahams provided this wording</note>
+
+<note>Redmond: Minor changes in wording.  (Removed "non-negative", and
+changed the "other than those described in" wording.) Also, the LWG
+decided to accept the "optional" part.</note>
+
+</resolution>
+
+<rationale>
+<p>The proposed resolution reinterprets binary search. Instead of
+thinking about searching for a value in a sorted range, we view that
+as an important special case of a more general algorithm: searching
+for the partition point in a partitioned range.</p>
+
+<p>We also add a guarantee that the old wording did not: we ensure
+that the upper bound is no earlier than the lower bound, that
+the pair returned by equal_range is a valid range, and that the first
+part of that pair is the lower bound.</p>
+</rationale>
+
+</issue>

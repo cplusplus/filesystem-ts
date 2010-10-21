@@ -1,0 +1,102 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="1028" status="NAD Concepts">
+<title>Response to UK 214</title>
+<section><sref ref="[storage.iterator]"/></section>
+<submitter>Alisdair Meredith</submitter>
+<date>11 Mar 2009</date>
+
+<discussion>
+
+<p><b>Addresses UK 214</b></p>
+
+<p>
+<tt>raw_storage_iterator</tt> needs constraining as an iterator adaptor to be safely
+used in constrained templates 
+</p>
+
+<note>
+Summit:
+</note>
+
+<blockquote>
+We look forward to a paper on this topic. We recommend no action until a
+paper is available.
+</blockquote>
+
+<note>
+Post Summit Alisdair provided wording and rationale.
+</note>
+
+</discussion>
+
+<resolution>
+<p>
+<sref ref="[memory]"/> p2
+</p>
+<p>
+Update the synopsis for <tt>&lt;memory&gt;</tt>
+</p>
+<blockquote><pre>
+// 20.7.8, raw storage iterator:
+template &lt;<del>class</del> <ins>ForwardIterator</ins> Out<del>put</del>Iter<del>ator</del>, <del>class</del> <ins>ObjectType</ins> T&gt; 
+  <ins>requires OutputIterator&lt; OutIter, T &gt;</ins>
+    class raw_storage_iterator;
+
+<ins>template &lt;ForwardIterator OutIter, ObjectType T&gt; 
+  requires OutputIterator&lt; OutIter, T &gt;
+  concept_map Iterator&lt;raw_storage_iterator&lt; OutIter, T &gt; &gt; { }</ins>
+</pre></blockquote>
+
+
+<p>
+<sref ref="[storage.iterator]"/> p1
+</p>
+<p>
+Replace class template definition with:
+</p>
+<blockquote><pre>
+namespace std { 
+  template &lt;<del>class</del> <ins>ForwardIterator</ins> Out<del>put</del>Iter<del>ator</del>, <del>class</del> <ins>ObjectType</ins> T&gt; 
+    <ins>requires OutputIterator&lt; OutIter, T &gt;</ins>
+  class raw_storage_iterator 
+    : public iterator&lt;output_iterator_tag,void,void,void,void&gt; { 
+  public: 
+    explicit raw_storage_iterator(Out<del>put</del>Iter<del>ator</del> x); 
+
+    raw_storage_iterator<del>&lt;OutputIterator,T&gt;</del>&amp; operator*(); 
+    raw_storage_iterator<del>&lt;OutputIterator,T&gt;</del>&amp; operator=(const T&amp; element); 
+    raw_storage_iterator<del>&lt;OutputIterator,T&gt;</del>&amp; operator++(); 
+    raw_storage_iterator<del>&lt;OutputIterator,T&gt;</del> operator++(int); 
+  }; 
+
+  <ins>template &lt;ForwardIterator OutIter, ObjectType T&gt; 
+    requires OutputIterator&lt; OutIter, T &gt;
+    concept_map Iterator&lt;raw_storage_iterator&lt; OutIter, T &gt; &gt; { }</ins>
+}
+</pre></blockquote>
+</resolution>
+
+<rationale>
+<p>
+<tt>raw_storage_iterator</tt> has to adapt a <tt>ForwardIterator</tt>,
+rather than just an <tt>InputIterator</tt> for two reasons:
+</p>
+
+<ol type="i">
+<li>
+The initial iterator passed by value is expected to remain valid,
+pointing to the initialized region of memory.
+</li>
+<li>
+to avoid breaking the declaration of post-increment operator which would
+require some kind of proxy formulation to support generalised InputIterators.
+</li>
+</ol>
+
+</rationale>
+
+</issue>

@@ -1,0 +1,141 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="1100" status="NAD Editorial">
+<title><tt>auto_ptr</tt> to <tt>unique_ptr</tt> conversion</title>
+<section><sref ref="[unique.ptr.single.ctor]"/></section>
+<submitter>Howard Hinnant</submitter>
+<date>25 Apr 2009</date>
+
+<discussion>
+<p>
+Message c++std-lib-23182 led to a discussion in which several people
+expressed interest in being able to convert an <tt>auto_ptr</tt> to a
+<tt>unique_ptr</tt> without the need to call <tt>release</tt>.  Below is
+wording to accomplish this.
+</p>
+
+<note>
+Batavia (2009-05):
+</note>
+<blockquote>
+<p>
+Pete believes it not a good idea to separate parts of a class's definition.
+Therefore, if we do this,
+it should be part of <tt>unique-ptr</tt>'s specification.
+</p>
+<p>
+Alisdair believes the lvalue overload may be not necessary.
+</p>
+<p>
+Marc believes it is more than just sugar,
+as it does ease the transition to <tt>unique-ptr</tt>.
+</p>
+<p>
+We agree with the resolution as presented.
+Move to Tentatively Ready.
+</p>
+</blockquote>
+
+<note>
+2009-07 Frankfurt
+</note>
+
+<blockquote>
+Moved from Tentatively Ready to Open only because the wording needs to be
+tweaked for concepts removal.
+</blockquote>
+
+<note>
+2009-08-01 Howard deconceptifies wording:
+</note>
+
+<blockquote>
+I also moved the change from <sref ref="[depr.auto.ptr]"/>
+to <sref ref="[unique.ptr.single]"/> per the Editor's request
+in Batavia (as long as I was making changes anyway).  Set back
+to Review.
+</blockquote>
+
+<note>
+2009-10 Santa Cruz:
+</note>
+
+<blockquote>
+Move to Ready.
+</blockquote>
+
+<note>
+2010-03-14 Howard adds:
+</note>
+
+<blockquote>
+We moved
+<a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2010/n3073.html">N3073</a>
+to the formal motions page in Pittsburgh which should obsolete this issue.  I've
+moved this issue to NAD Editorial, solved by N3073.
+</blockquote>
+
+</discussion>
+
+<rationale>
+<p>
+Solved by <a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2010/n3073.html">N3073</a>.
+</p>
+</rationale>
+
+<resolution>
+<p>
+Add to <sref ref="[unique.ptr.single]"/>:
+</p>
+
+<blockquote><pre>
+template &lt;class T, class D&gt;
+class unique_ptr
+{
+public:
+<ins>    template &lt;class U&gt;
+      unique_ptr(auto_ptr&lt;U&gt;&amp; u);
+    template &lt;class U&gt;
+      unique_ptr(auto_ptr&lt;U&gt;&amp;&amp; u);</ins>
+};
+</pre></blockquote>
+
+<p>
+Add to <sref ref="[unique.ptr.single.ctor]"/>:
+</p>
+
+<blockquote><pre>
+template &lt;class U&gt;
+  unique_ptr(auto_ptr&lt;U&gt;&amp; u);
+template &lt;class U&gt;
+  unique_ptr(auto_ptr&lt;U&gt;&amp;&amp; u);
+</pre>
+<blockquote>
+<p>
+<i>Effects:</i> Constructs a <tt>unique_ptr</tt> with <tt>u.release()</tt>.
+</p>
+
+<p>
+<i>Postconditions:</i> <tt>get() == </tt> the value <tt>u.get()</tt> had before
+the construciton, modulo any required offset adjustments resulting from the cast from
+<tt>U*</tt> to <tt>T*</tt>.  <tt>u.get() == nullptr</tt>.
+</p>
+
+<p>
+<i>Throws:</i> nothing.
+</p>
+
+<p>
+<i>Remarks:</i> <tt>U*</tt> shall be implicitly convertible to <tt>T*</tt> and
+<tt>D</tt> shall be the same type as <tt>default_delete&lt;T&gt;</tt>, else these
+constructors shall not participate in overload resolution.
+</p>
+</blockquote>
+</blockquote>
+
+</resolution>
+
+</issue>

@@ -1,0 +1,33 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="235" status="CD1">
+<title>No specification of default ctor for reverse_iterator</title>
+<section><sref ref="[reverse.iterator]"/></section>
+<submitter>Dietmar K&uuml;hl</submitter>
+<date>24 Apr 2000</date>
+
+<discussion>
+<p>The declaration of <tt>reverse_iterator</tt> lists a default
+constructor.  However, no specification is given what this constructor
+should do.</p>
+</discussion>
+
+<resolution>
+  <p>In section <sref ref="[reverse.iter.cons]"/> add the following
+  paragraph:</p>
+      <blockquote>
+      <p><tt>reverse_iterator()</tt></p>
+
+      <p>Default initializes <tt>current</tt>. Iterator operations
+      applied to the resulting iterator have defined behavior if and
+      only if the corresponding operations are defined on a default
+      constructed iterator of type <tt>Iterator</tt>.</p>
+      </blockquote>
+  <note>pre-Copenhagen: Dietmar provide wording for proposed
+  resolution.</note>
+</resolution>
+
+</issue>

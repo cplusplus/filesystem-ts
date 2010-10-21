@@ -1,0 +1,51 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="1286" status="WP">
+<title><tt>allocator_traits::select_on_container_copy_construction</tt> type-o</title>
+<section><sref ref="[allocator.traits.members]"/></section>
+<submitter>Howard Hinnant</submitter>
+<date>10 Dec 2009</date>
+
+<discussion>
+<p>
+<tt>allocator_traits::select_on_container_copy_construction</tt> refers to an
+unknown "<tt>a</tt>":
+</p>
+
+<blockquote><pre>
+static Alloc select_on_container_copy_construction(const Alloc&amp; rhs);
+</pre>
+
+<blockquote>
+7 <i>Returns:</i> <tt>rhs.select_on_container_copy_construction(a)</tt> if that
+expression is well-formed; otherwise, <tt>rhs</tt>.
+</blockquote>
+</blockquote>
+
+<note>
+2009-12-13 Moved to Tentatively Ready after 5 positive votes on c++std-lib.
+</note>
+
+</discussion>
+
+<resolution>
+<p>
+Change <sref ref="[allocator.traits.members]"/>, p7:
+</p>
+
+<blockquote><pre>
+static Alloc select_on_container_copy_construction(const Alloc&amp; rhs);
+</pre>
+
+<blockquote>
+7 <i>Returns:</i>
+<tt>rhs.select_on_container_copy_construction(<del>a</del>)</tt> if that
+expression is well-formed; otherwise, <tt>rhs</tt>.
+</blockquote>
+</blockquote>
+</resolution>
+
+</issue>

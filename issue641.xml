@@ -1,0 +1,38 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="641" status="NAD Editorial">
+<title>Editorial fix for 27.6.4 (N2134)</title>
+<section><sref ref="[ext.manip]"/></section>
+<submitter>Daniel Kr&uuml;gler</submitter>
+<date>18 Feb 2007</date>
+
+<discussion>
+<p>
+The function <tt>f</tt> in para 4 (<sref ref="[ext.manip]"/>) references an unknown <tt>strm</tt>
+in the following line:
+</p>
+
+<blockquote><pre>
+mg.get(Iter(str.rdbuf()), Iter(), intl, strm, err, mon);
+</pre></blockquote>
+</discussion>
+
+<resolution>
+<p>
+Change <sref ref="[ext.manip]"/>, p4:
+</p>
+
+<blockquote><pre>
+mg.get(Iter(str.rdbuf()), Iter(), intl, str<del>m</del>, err, mon);
+</pre></blockquote>
+
+<note>
+Oxford:  Editorial.
+</note>
+
+</resolution>
+
+</issue>

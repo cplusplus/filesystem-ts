@@ -1,0 +1,67 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="1275" status="NAD Editorial">
+<title>creating and setting futures</title>
+<section><sref ref="[futures]"/></section>
+<submitter>Jonathan Wakely</submitter>
+<date>22 Nov 2009</date>
+
+<discussion>
+<p>
+<sref ref="[futures.unique_future]"/>/1 should be updated to mention
+<tt>async</tt>.
+</p>
+
+<p>
+<sref ref="[futures.shared_future]"/>/1 should also be updated for
+<tt>async</tt>. That paragraph also says
+</p>
+
+<blockquote>
+... Its value or exception can be set by use of a
+<tt>shared_future</tt>, <tt>promise</tt> (<sref
+ref="[futures.promise]"/>), or <tt>packaged_task</tt> (<sref
+ref="[futures.task]"/>) object that shares the same associated state.
+</blockquote>
+
+<p>
+How can the value be set by a <tt>shared_future</tt>?
+</p>
+
+<p>
+<sref ref="[futures.atomic_future]"/>/1 says
+</p>
+
+<blockquote>
+An <tt>atomic_future</tt> object can only be created by use of a
+<tt>promise</tt> (<sref ref="[futures.promise]"/>) or
+<tt>packaged_task</tt> (<sref ref="[futures.task]"/>) object.
+</blockquote>
+
+<p>
+which is wrong, it's created from a <tt>std::future</tt>, which could
+have been default-cosntructed. That paragraph should be closer to the
+text of <sref ref="[futures.shared_future]"/>/1, and should also mention
+<tt>async</tt>.
+</p>
+
+<note>
+2010 Pittsburgh:  Moved to NAD Editorial.  Rationale added below.
+</note>
+
+</discussion>
+
+<rationale>
+<p>
+Solved by
+<a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2010/n3058.html">N3058</a>.
+</p>
+</rationale>
+
+<resolution>
+</resolution>
+
+</issue>

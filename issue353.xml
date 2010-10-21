@@ -1,0 +1,58 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="353" status="NAD Editorial">
+<title><tt>std::pair</tt> missing template assignment</title>
+<section><sref ref="[pairs]"/></section>
+<submitter>Martin Sebor</submitter>
+<date>2 Dec 2001</date>
+
+<discussion>
+<p>
+The class template <tt>std::pair</tt> defines a template ctor (20.2.2, p4) but
+no template assignment operator. This may lead to inefficient code since
+assigning an object of <tt>pair&lt;C, D&gt;</tt> to <tt>pair&lt;A, B&gt;</tt>
+where the types <tt>C</tt> and <tt>D</tt> are distinct from but convertible to
+<tt>A</tt> and <tt>B</tt>, respectively, results in a call to the template copy
+ctor to construct an unnamed temporary of type <tt>pair&lt;A, B&gt;</tt>
+followed by an ordinary (perhaps implicitly defined) assignment operator,
+instead of just a straight assignment.
+</p>
+</discussion>
+
+<resolution>
+<p>
+Add the following declaration to the definition of <tt>std::pair</tt>:
+</p>
+<pre>
+    template&lt;class U, class V&gt;
+    pair&amp; operator=(const pair&lt;U, V&gt; &amp;p);
+</pre>
+<p>
+And also add a paragraph describing the effects of the function template to the
+end of 20.2.2:
+</p>
+<pre>
+    template&lt;class U, class V&gt;
+    pair&amp; operator=(const pair&lt;U, V&gt; &amp;p);
+</pre>
+<p>
+    <b>Effects</b>: <tt>first = p.first;</tt>
+                    <tt>second = p.second;</tt>
+    <b>Returns</b>: <tt>*this</tt>
+</p>
+
+<note>Cura&ccedil;ao: There is no indication this is was anything other than
+a design decision, and thus NAD.&nbsp; May be appropriate for a future
+standard.</note>
+
+<note>
+Pre Bellevue:  It was recognized that this was taken care of by
+<a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2005/n1856.html">N1856</a>,
+and thus moved from NAD Future to NAD Editorial.
+</note>
+
+</resolution>
+</issue>

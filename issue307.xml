@@ -1,0 +1,281 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="307" status="CD1">
+<title>Lack of reference typedefs in container adaptors</title>
+<section><sref ref="[list]"/></section>
+<submitter>Howard Hinnant</submitter>
+<date>13 Mar 2001</date>
+
+<discussion>
+
+<p>From reflector message c++std-lib-8330.  See also lib-8317.</p>
+
+<p>
+The standard is currently inconsistent in <sref ref="[list.capacity]"/>
+paragraph 1 and <sref ref="[list.modifiers]"/> paragraph 1.
+23.2.3.3/1, for example, says:
+</p>
+
+<blockquote><p>
+-1- Any sequence supporting operations back(), push_back() and pop_back() 
+can be used to instantiate stack. In particular, vector (lib.vector), list 
+(lib.list) and deque (lib.deque) can be used. 
+</p></blockquote>
+
+<p>But this is false: vector&lt;bool&gt; can not be used, because the
+container adaptors return a T&amp; rather than using the underlying
+container's reference type.</p>
+
+<p>This is a contradiction that can be fixed by:</p>
+
+<ol>
+<li>Modifying these paragraphs to say that vector&lt;bool&gt;
+    is an exception.</li>
+<li>Removing the vector&lt;bool&gt; specialization.</li>
+<li>Changing the return types of stack and priority_queue to use 
+    reference typedef's.</li>
+</ol>
+
+<p>
+I propose 3.  This does not preclude option 2 if we choose to do it
+later (see issue <iref ref="96"/>); the issues are independent.  Option
+3 offers a small step towards support for proxied containers.  This
+small step fixes a current contradiction, is easy for vendors to
+implement, is already implemented in at least one popular lib, and
+does not break any code.
+</p>
+
+</discussion>
+
+<resolution>
+<p>Summary: Add reference and const_reference typedefs to queue,
+priority_queue and stack.  Change return types of "value_type&amp;" to
+"reference".  Change return types of "const value_type&amp;" to
+"const_reference".  Details:</p>
+
+<p>Change 23.2.3.1/1 from:</p>
+
+<pre>
+  namespace std {
+    template &lt;class T, class Container = deque&lt;T&gt; &gt;
+    class queue {
+    public:
+      typedef typename Container::value_type            value_type;
+      typedef typename Container::size_type             size_type;
+      typedef          Container                        container_type;
+    protected:
+      Container c;
+
+    public:
+      explicit queue(const Container&amp; = Container());
+
+      bool      empty() const             { return c.empty(); }
+      size_type size()  const             { return c.size(); }
+      value_type&amp;       front()           { return c.front(); }
+      const value_type&amp; front() const     { return c.front(); }
+      value_type&amp;       back()            { return c.back(); }
+      const value_type&amp; back() const      { return c.back(); }
+      void push(const value_type&amp; x)      { c.push_back(x); }
+      void pop()                          { c.pop_front(); }
+    };
+</pre>
+
+<p>to:</p>
+
+<pre>
+  namespace std {
+    template &lt;class T, class Container = deque&lt;T&gt; &gt;
+    class queue {
+    public:
+      typedef typename Container::value_type            value_type;
+      typedef typename Container::reference             reference;
+      typedef typename Container::const_reference       const_reference;
+      typedef typename Container::value_type            value_type;
+      typedef typename Container::size_type             size_type;
+      typedef          Container                        container_type;
+    protected:
+      Container c;
+
+    public:
+      explicit queue(const Container&amp; = Container());
+
+      bool      empty() const             { return c.empty(); }
+      size_type size()  const             { return c.size(); }
+      reference         front()           { return c.front(); }
+      const_reference   front() const     { return c.front(); }
+      reference         back()            { return c.back(); }
+      const_reference   back() const      { return c.back(); }
+      void push(const value_type&amp; x)      { c.push_back(x); }
+      void pop()                          { c.pop_front(); }
+    };
+</pre>
+
+<p>Change 23.2.3.2/1 from:</p>
+
+<pre>
+  namespace std {
+    template &lt;class T, class Container = vector&lt;T&gt;,
+              class Compare = less&lt;typename Container::value_type&gt; &gt;
+    class priority_queue {
+    public:
+      typedef typename Container::value_type            value_type;
+      typedef typename Container::size_type             size_type;
+      typedef          Container                        container_type;
+    protected:
+      Container c;
+      Compare comp;
+
+    public:
+      explicit priority_queue(const Compare&amp; x = Compare(),
+                              const Container&amp; = Container());
+      template &lt;class InputIterator&gt;
+        priority_queue(InputIterator first, InputIterator last,
+                       const Compare&amp; x = Compare(),
+                       const Container&amp; = Container());
+
+      bool      empty() const       { return c.empty(); }
+      size_type size()  const       { return c.size(); }
+      const value_type&amp; top() const { return c.front(); }
+      void push(const value_type&amp; x);
+      void pop();
+    };
+                                  //  no equality is provided
+  }
+</pre>
+
+<p>to:</p>
+
+<pre>
+  namespace std {
+    template &lt;class T, class Container = vector&lt;T&gt;,
+              class Compare = less&lt;typename Container::value_type&gt; &gt;
+    class priority_queue {
+    public:
+      typedef typename Container::value_type            value_type;
+      typedef typename Container::reference             reference;
+      typedef typename Container::const_reference       const_reference;
+      typedef typename Container::size_type             size_type;
+      typedef          Container                        container_type;
+    protected:
+      Container c;
+      Compare comp;
+
+    public:
+      explicit priority_queue(const Compare&amp; x = Compare(),
+                              const Container&amp; = Container());
+      template &lt;class InputIterator&gt;
+        priority_queue(InputIterator first, InputIterator last,
+                       const Compare&amp; x = Compare(),
+                       const Container&amp; = Container());
+
+      bool      empty() const       { return c.empty(); }
+      size_type size()  const       { return c.size(); }
+      const_reference   top() const { return c.front(); }
+      void push(const value_type&amp; x);
+      void pop();
+    };
+                                  //  no equality is provided
+  }
+</pre>
+
+<p>And change 23.2.3.3/1 from:</p>
+
+<pre>
+  namespace std {
+    template &lt;class T, class Container = deque&lt;T&gt; &gt;
+    class stack {
+    public:
+      typedef typename Container::value_type            value_type;
+      typedef typename Container::size_type             size_type;
+      typedef          Container                        container_type;
+    protected:
+      Container c;
+
+    public:
+      explicit stack(const Container&amp; = Container());
+
+      bool      empty() const             { return c.empty(); }
+      size_type size()  const             { return c.size(); }
+      value_type&amp;       top()             { return c.back(); }
+      const value_type&amp; top() const       { return c.back(); }
+      void push(const value_type&amp; x)      { c.push_back(x); }
+      void pop()                          { c.pop_back(); }
+    };
+
+    template &lt;class T, class Container&gt;
+      bool operator==(const stack&lt;T, Container&gt;&amp; x,
+                      const stack&lt;T, Container&gt;&amp; y);
+    template &lt;class T, class Container&gt;
+      bool operator&lt; (const stack&lt;T, Container&gt;&amp; x,
+                      const stack&lt;T, Container&gt;&amp; y);
+    template &lt;class T, class Container&gt;
+      bool operator!=(const stack&lt;T, Container&gt;&amp; x,
+                      const stack&lt;T, Container&gt;&amp; y);
+    template &lt;class T, class Container&gt;
+      bool operator&gt; (const stack&lt;T, Container&gt;&amp; x,
+                      const stack&lt;T, Container&gt;&amp; y);
+    template &lt;class T, class Container&gt;
+      bool operator&gt;=(const stack&lt;T, Container&gt;&amp; x,
+                      const stack&lt;T, Container&gt;&amp; y);
+    template &lt;class T, class Container&gt;
+      bool operator&lt;=(const stack&lt;T, Container&gt;&amp; x,
+                      const stack&lt;T, Container&gt;&amp; y);
+  }
+</pre>
+
+<p>to:</p>
+
+<pre>
+  namespace std {
+    template &lt;class T, class Container = deque&lt;T&gt; &gt;
+    class stack {
+    public:
+      typedef typename Container::value_type            value_type;
+      typedef typename Container::reference             reference;
+      typedef typename Container::const_reference       const_reference;
+      typedef typename Container::size_type             size_type;
+      typedef          Container                        container_type;
+    protected:
+      Container c;
+
+    public:
+      explicit stack(const Container&amp; = Container());
+
+      bool      empty() const             { return c.empty(); }
+      size_type size()  const             { return c.size(); }
+      reference         top()             { return c.back(); }
+      const_reference   top() const       { return c.back(); }
+      void push(const value_type&amp; x)      { c.push_back(x); }
+      void pop()                          { c.pop_back(); }
+    };
+
+    template &lt;class T, class Container&gt;
+      bool operator==(const stack&lt;T, Container&gt;&amp; x,
+                      const stack&lt;T, Container&gt;&amp; y);
+    template &lt;class T, class Container&gt;
+      bool operator&lt; (const stack&lt;T, Container&gt;&amp; x,
+                      const stack&lt;T, Container&gt;&amp; y);
+    template &lt;class T, class Container&gt;
+      bool operator!=(const stack&lt;T, Container&gt;&amp; x,
+                      const stack&lt;T, Container&gt;&amp; y);
+    template &lt;class T, class Container&gt;
+      bool operator&gt; (const stack&lt;T, Container&gt;&amp; x,
+                      const stack&lt;T, Container&gt;&amp; y);
+    template &lt;class T, class Container&gt;
+      bool operator&gt;=(const stack&lt;T, Container&gt;&amp; x,
+                      const stack&lt;T, Container&gt;&amp; y);
+    template &lt;class T, class Container&gt;
+      bool operator&lt;=(const stack&lt;T, Container&gt;&amp; x,
+                      const stack&lt;T, Container&gt;&amp; y);
+  }
+</pre>
+
+<note>Copenhagen: This change was discussed before the IS was released
+and it was deliberately not adopted.  Nevertheless, the LWG believes
+(straw poll: 10-2) that it is a genuine defect.</note>
+
+</resolution>
+</issue>

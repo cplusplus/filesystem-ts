@@ -1,0 +1,23 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="273" status="CD1">
+<title>Missing ios_base qualification on members of a dependent class</title>
+<section><sref ref="[input.output]"/></section>
+<submitter>Martin Sebor</submitter>
+<date>02 Nov 2000</date>
+
+<discussion>
+<p>27.5.2.4.2, p4, and 27.8.1.6, p2, 27.8.1.7, p3, 27.8.1.9, p2,
+27.8.1.10, p3 refer to in and/or out w/o ios_base:: qualification.
+That's incorrect since the names are members of a dependent base
+class (14.6.2 [temp.dep]) and thus not visible.</p>
+</discussion>
+
+<resolution>
+<p>Qualify the names with the name of the class of which they are
+members, i.e., ios_base.</p>
+</resolution>
+</issue>

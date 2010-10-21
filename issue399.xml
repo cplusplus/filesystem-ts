@@ -1,0 +1,51 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg_issue.dtd" [
+  <!ENTITY nbsp " ">
+]>
+
+<issue num="399" status="NAD">
+
+  <title>volations of unformatted input function requirements</title>
+  <section><sref ref="[istream.unformatted]"/></section>
+  <submitter>Martin Sebor</submitter>
+  <date>5 Jan 2003</date>
+
+  <discussion>
+    <p>
+The Effects clauses for the two functions below violate the
+general requirements on unformatted input functions outlined
+in 27.6.1.3: they do not begin by constructing a sentry object.
+Instead, they begin by calling widen ('\n'), which may throw
+an exception. The exception is then allowed to propagate from
+the unformatted input function irrespective of the setting of
+exceptions().
+    </p>
+    <p>
+Note that in light of 27.6.1.1, p3 and p4, the fact that the
+functions allow exceptions thrown from widen() to propagate
+may not strictly speaking be a defect (but the fact that the
+functions do not start by constructing a sentry object still
+is). However, since an exception thrown from ctype&lt;charT>
+::widen() during any other input operation (say, from within
+a call to num_get&lt;charT>::get()) will be caught and cause
+badbit to be set, these two functions should not be treated
+differently for the sake of consistency.
+    </p>
+  </discussion>
+
+<resolution>
+</resolution>
+
+<rationale>
+<p>
+Not a defect.  The standard is consistent, and the behavior required
+by the standard is unambiguous.  Yes, it's theoretically possible for
+widen to throw.  (Not that this will happen for the default ctype
+facet or for most real-world replacement ctype facets.)  Users who
+define ctype facets that can throw, and who care about this behavior,
+can use alternative signatures that don't call widen.
+</p>
+</rationale>
+
+
+</issue>

@@ -1,0 +1,206 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="962" status="WP">
+<title>Various threading bugs #12</title>
+<section><sref ref="[thread.lock.unique.locking]"/></section>
+<submitter>Pete Becker</submitter>
+<date>7 Jan 2009</date>
+
+<discussion>
+<p>
+<sref ref="[thread.lock.unique.locking]"/>:  <tt>unique_lock::lock</tt> is
+required to throw an object of type <tt>std::system_error</tt> "when the
+postcondition cannot be achieved." The postcondition is <tt>owns == true</tt>,
+and this is trivial to achieve. Presumably, the requirement is intended
+to mean something more than that.
+</p>
+
+<note>
+Summit:
+</note>
+<blockquote>
+Move to open.
+</blockquote>
+
+<note>
+Beman has volunteered to provide proposed wording.
+</note>
+
+<note>
+2009-07-21 Beman added wording to address <sref ref="[thread.req.exception]"/>
+in response to the Frankfurt notes in <iref ref="859"/>.
+</note>
+
+<note>
+2009-09-25 Beman: minor update to wording.
+</note>
+
+<note>
+2009-10 Santa Cruz:
+</note>
+
+<blockquote>
+Move to Ready.
+</blockquote>
+
+</discussion>
+
+<resolution>
+
+<p><i>Change Exceptions <sref ref="[thread.req.exception]"/> as indicated:</i></p>
+<blockquote>
+<p>Some functions described in this Clause are specified to throw exceptions of 
+type <code>system_error</code> (19.5.5). Such exceptions shall be thrown if <ins>
+any of the <i>Error conditions</i> are detected or</ins> a call to an operating 
+system or other underlying API results in an error that prevents the library 
+function from <del>satisfying its postconditions or from returning a meaningful 
+value</del> <ins>meeting its specifications</ins>. <ins>Failure to
+allocate storage shall be reported as described in
+<sref ref="[res.on.exception.handling]"/>.</ins></p>
+</blockquote>
+
+<p><i>Change thread assignment <sref ref="[thread.thread.member]"/>, join(), 
+paragraph 8 as indicated:</i></p>
+<blockquote>
+<p><i>Throws:</i> <code>std::system_error</code> when <del>the postconditions cannot be achieved</del> <ins>an exception is required (<sref ref="[thread.req.exception]"/>)</ins>.</p>
+
+</blockquote>
+
+<p><i>Change thread assignment <sref ref="[thread.thread.member]"/>, detach(), paragraph 
+13 as indicated:</i></p>
+<blockquote>
+
+<p><i>Throws:</i> <code>std::system_error</code> when <del>the effects or 
+postconditions cannot be achieved</del> <ins>an exception is required (<sref ref="[thread.req.exception]"/>)</ins>.</p>
+
+</blockquote>
+
+<p><i>Change Mutex requirements <sref ref="[thread.mutex.requirements]"/>, paragraph 
+11, as indicated:</i></p>
+<blockquote>
+
+<p><i>Throws:</i> <code>std::system_error</code> when <del>the effects or 
+postcondition cannot be achieved</del> <ins>an exception is required (<sref ref="[thread.req.exception]"/>)</ins>.</p>
+</blockquote>
+<p><i>Change unique_lock locking <sref ref="[thread.lock.unique.locking]"/>, 
+paragraph 3, as indicated:</i></p>
+<blockquote>
+
+<p><i>Throws:</i> <code>std::system_error</code> when <del>the  postcondition cannot be achieved</del> <ins>an exception is required (<sref ref="[thread.req.exception]"/>)</ins>.</p>
+</blockquote>
+<p><i>Change unique_lock locking <sref ref="[thread.lock.unique.locking]"/>, 
+paragraph 8, as indicated:</i></p>
+<blockquote>
+
+<p><i>Throws:</i> <code>std::system_error</code> when <del>the  postcondition cannot be achieved</del> <ins>an exception is required (<sref ref="[thread.req.exception]"/>)</ins>.</p>
+</blockquote>
+<p><i>Change unique_lock locking <sref ref="[thread.lock.unique.locking]"/>, 
+paragraph 13, as indicated:</i></p>
+<blockquote>
+
+<p><i>Throws:</i> <code>std::system_error</code> when <del>the  postcondition cannot be achieved</del> <ins>an exception is required (<sref ref="[thread.req.exception]"/>)</ins>.</p>
+</blockquote>
+<p><i>Change unique_lock locking <sref ref="[thread.lock.unique.locking]"/>, 
+paragraph 18, as indicated:</i></p>
+<blockquote>
+
+<p><i>Throws:</i> <code>std::system_error</code> when <del>the  postcondition cannot be achieved</del> <ins>an exception is required (<sref ref="[thread.req.exception]"/>)</ins>.</p>
+</blockquote>
+<p><i>Change unique_lock locking <sref ref="[thread.lock.unique.locking]"/>, 
+paragraph 22, as indicated:</i></p>
+<blockquote>
+
+<p><i>Throws:</i> <code>std::system_error</code> when <del>the  postcondition cannot be achieved</del> <ins>an exception is required (<sref ref="[thread.req.exception]"/>)</ins>.</p>
+</blockquote>
+<p><i>Change Function call_once <sref ref="[thread.once.callonce]"/>, paragraph 4, as 
+indicated</i></p>
+<blockquote>
+  <p><i>Throws:</i> <code>std::system_error</code> when <del>the effects cannot be achieved</del> <ins>an exception is required (<sref ref="[thread.req.exception]"/>)</ins>, 
+  or any exception thrown by <code>func</code>.</p>
+</blockquote>
+<p><i>Change Class condition_variable <sref ref="[thread.condition.condvar]"/>, 
+paragraph 12, as indicated:</i></p>
+<blockquote>
+
+<p><i>Throws:</i> <code>std::system_error</code> when <del>the effects or 
+postcondition cannot be achieved</del> <ins>an exception is required (<sref ref="[thread.req.exception]"/>)</ins>.</p>
+</blockquote>
+<p><i>Change Class condition_variable <sref ref="[thread.condition.condvar]"/>, 
+paragraph 19, as indicated:</i></p>
+<blockquote>
+
+<p><i>Throws:</i> <code>std::system_error</code> when <del>the effects or 
+postcondition cannot be achieved</del> <ins>an exception is required (<sref ref="[thread.req.exception]"/>)</ins>.</p>
+</blockquote>
+<p><i>Change Class condition_variable_any <sref ref="[thread.condition.condvarany]"/>, 
+paragraph 10, as indicated:</i></p>
+<blockquote>
+
+<p><i>Throws:</i> <code>std::system_error</code> when <del>the effects or 
+postcondition cannot be achieved</del> <ins>an exception is required (<sref ref="[thread.req.exception]"/>)</ins>.</p>
+</blockquote>
+<p><i>Change Class condition_variable_any <sref ref="[thread.condition.condvarany]"/>, 
+paragraph 16, as indicated:</i></p>
+<blockquote>
+
+<p><i>Throws:</i> <code>std::system_error</code> when <del>the returned value, effects, or 
+postcondition cannot be achieved</del> <ins>an exception is required (<sref ref="[thread.req.exception]"/>)</ins>.</p>
+</blockquote>
+
+<p><i>Assuming issue <iref ref="859"/>, Monotonic Clock is Conditionally Supported?, has been 
+applied to the working paper, change Change <sref ref="[thread.condition.condvar]"/> as 
+indicated:</i></p>
+<blockquote>
+<pre>template &lt;class Rep, class Period&gt; 
+bool wait_for(unique_lock&lt;mutex&gt;&amp; lock, 
+              const chrono::duration&lt;Rep, Period&gt;&amp; rel_time);</pre>
+<pre>...</pre>
+
+<p><i>Throws:</i> <code>std::system_error</code> when <del>the effects or 
+postcondition cannot be achieved</del> <ins>an exception is required ([thread.req.exception])</ins>.</p>
+</blockquote>
+
+<p><i>Assuming issue <iref ref="859"/>, Monotonic Clock is Conditionally Supported?, has been 
+applied to the working paper, change Change <sref ref="[thread.condition.condvar]"/> as 
+indicated:</i></p>
+<blockquote>
+<pre>template &lt;class Rep, class Period, class Predicate&gt; 
+  bool wait_for(unique_lock&lt;mutex&gt;&amp; lock, 
+                const chrono::duration&lt;Rep, Period&gt;&amp; rel_time, 
+                Predicate pred);</pre>
+  <pre>...</pre>
+
+<p><i>Throws:</i> <code>std::system_error</code> when <del>the effects or 
+postcondition cannot be achieved</del> <ins>an exception is required (<sref ref="[thread.req.exception]"/>)</ins>.</p>
+</blockquote>
+
+<p><i>Assuming issue <iref ref="859"/>, Monotonic Clock is Conditionally Supported?, has been 
+applied to the working paper, change <sref ref="[thread.condition.condvarany]"/> as 
+indicated:</i></p>
+<blockquote>
+<pre>template &lt;class Lock, class Rep, class Period&gt; 
+  bool wait_for(Lock&amp; lock, const chrono::duration&lt;Rep, Period&gt;&amp; rel_time);</pre>
+  <pre>...</pre>
+
+<p><i>Throws:</i> <code>std::system_error</code> when <del>the returned value, effects or 
+postcondition cannot be achieved</del> <ins>an exception is required (<sref ref="[thread.req.exception]"/>)</ins>.</p>
+</blockquote>
+
+<p><i>Assuming issue <iref ref="859"/>, Monotonic Clock is Conditionally Supported?, has been 
+applied to the working paper, change <sref ref="[thread.condition.condvarany]"/> as 
+indicated:</i></p>
+<blockquote>
+<pre>template &lt;class Lock, class Rep, class Period, class Predicate&gt; 
+  bool wait_for(Lock&amp; lock, const chrono::duration&lt;Rep, Period&gt;&amp; rel_time, Predicate pred);</pre>
+  <pre>...</pre>
+
+<p><i>Throws:</i> <code>std::system_error</code> when <del>the returned value, effects or 
+postcondition cannot be achieved</del> <ins>an exception is required (<sref ref="[thread.req.exception]"/>)</ins>.</p>
+</blockquote>
+
+</resolution>
+
+</issue>

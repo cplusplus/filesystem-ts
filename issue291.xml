@@ -1,0 +1,118 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="291" status="CD1">
+<title>Underspecification of set algorithms</title>
+<section><sref ref="[alg.set.operations]"/></section>
+<submitter>Matt Austern</submitter>
+<date>03 Jan 2001</date>
+
+<discussion>
+<p>
+The standard library contains four algorithms that compute set
+operations on sorted ranges: <tt>set_union</tt>, <tt>set_intersection</tt>,
+<tt>set_difference</tt>, and <tt>set_symmetric_difference</tt>.  Each
+of these algorithms takes two sorted ranges as inputs, and writes the
+output of the appropriate set operation to an output range.  The elements
+in the output range are sorted.
+</p>
+
+<p>
+The ordinary mathematical definitions are generalized so that they
+apply to ranges containing multiple copies of a given element.  Two
+elements are considered to be &quot;the same&quot; if, according to an
+ordering relation provided by the user, neither one is less than the
+other.  So, for example, if one input range contains five copies of an
+element and another contains three, the output range of <tt>set_union</tt>
+will contain five copies, the output range of
+<tt>set_intersection</tt> will contain three, the output range of
+<tt>set_difference</tt> will contain two, and the output range of
+<tt>set_symmetric_difference</tt> will contain two.
+</p>
+
+<p>
+Because two elements can be &quot;the same&quot; for the purposes
+of these set algorithms, without being identical in other respects
+(consider, for example, strings under case-insensitive comparison),
+this raises a number of unanswered questions:
+</p>
+
+<ul>
+<li>If we're copying an element that's present in both of the
+input ranges, which one do we copy it from?</li>
+<li>If there are <i>n</i> copies of an element in the relevant
+input range, and the output range will contain fewer copies (say
+<i>m</i>) which ones do we choose?  The first <i>m</i>, or the last
+<i>m</i>, or something else?</li>
+<li>Are these operations stable?  That is, does a run of equivalent
+elements appear in the output range in the same order as as it
+appeared in the input range(s)?</li>
+</ul>
+
+<p>
+The standard should either answer these questions, or explicitly
+say that the answers are unspecified.  I prefer the former option,
+since, as far as I know, all existing implementations behave the
+same way.
+</p>
+
+</discussion>
+
+<resolution>
+
+<p>Add the following to the end of <sref ref="[set.union]"/> paragraph 5:</p>
+<blockquote><p>
+If [first1, last1) contains <i>m</i> elements that are equivalent to
+each other and [first2, last2) contains <i>n</i> elements that are
+equivalent to them, then max(<i>m</i>, <i>n</i>) of these elements
+will be copied to the output range: all <i>m</i> of these elements
+from [first1, last1), and the last max(<i>n-m</i>, 0) of them from
+[first2, last2), in that order.
+</p></blockquote>
+
+<p>Add the following to the end of <sref ref="[set.intersection]"/> paragraph 5:</p>
+<blockquote><p>
+If [first1, last1) contains <i>m</i> elements that are equivalent to each
+other and [first2, last2) contains <i>n</i> elements that are
+equivalent to them, the first min(<i>m</i>, <i>n</i>) of those 
+elements from [first1, last1) are copied to the output range.
+</p></blockquote>
+
+<p>Add a new paragraph, <b>Notes</b>, after <sref ref="[set.difference]"/>
+paragraph 4:</p>
+<blockquote><p>
+If [first1, last1) contains <i>m</i> elements that are equivalent to each
+other and [first2, last2) contains <i>n</i> elements that are
+equivalent to them, the last max(<i>m-n</i>, 0) elements from 
+[first1, last1) are copied to the output range.
+</p></blockquote>
+
+<p>Add a new paragraph, <b>Notes</b>, after <sref ref="[set.symmetric.difference]"/>
+paragraph 4:</p>
+<blockquote><p>
+If [first1, last1) contains <i>m</i> elements that are equivalent to
+each other and [first2, last2) contains <i>n</i> elements that are
+equivalent to them, then |<i>m - n</i>| of those elements will be
+copied to the output range: the last <i>m - n</i> of these elements
+from [first1, last1) if <i>m</i> &gt; <i>n</i>, and the last <i>n -
+m</i> of these elements from [first2, last2) if <i>m</i> &lt; <i>n</i>.
+</p></blockquote>
+
+<note>Santa Cruz: it's believed that this language is clearer than
+  what's in the Standard.  However, it's also believed that the
+  Standard may already make these guarantees (although not quite in
+  these words).  Bill and Howard will check and see whether they think
+  that some or all of these changes may be redundant.  If so, we may
+  close this issue as NAD.</note>
+
+</resolution>
+
+<rationale>
+<p>For simple cases, these descriptions are equivalent to what's
+  already in the Standard.  For more complicated cases, they describe
+  the behavior of existing implementations.</p>
+</rationale>
+
+</issue>

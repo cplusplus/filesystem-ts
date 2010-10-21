@@ -1,0 +1,89 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="508" status="CD1">
+<title>Bad parameters for ranlux64_base_01</title>
+<section><sref ref="[rand.predef]"/><sref ref="[tr.rand.predef]"/></section>
+<submitter>Walter Brown</submitter>
+<date>3 Jul 2005</date>
+
+<discussion>
+<p>
+The fifth of these engines with predefined parameters, ranlux64_base_01,
+appears to have an unintentional error for which there is a simple correction.
+The two pre-defined  subtract_with_carry_01 engines are given as: 
+</p>
+<blockquote><pre>
+typedef subtract_with_carry_01&lt;float,  24, 10, 24&gt; ranlux_base_01;
+typedef subtract_with_carry_01&lt;double, 48, 10, 24&gt; ranlux64_base_01;
+</pre></blockquote>
+<p>
+We demonstrate below that ranlux64_base_01 fails to meet the intent of the
+random number generation proposal, but that the simple correction to
+</p>
+<blockquote><pre>
+typedef subtract_with_carry_01&lt;double, 48,  5, 12&gt; ranlux64_base_01;
+</pre></blockquote>
+<p>
+does meet the intent of defining well-known good parameterizations.
+</p>
+<p>
+The ranlux64_base_01 engine as presented fails to meet the intent for
+predefined engines, stated in proposal N1398 (section E):
+</p>
+<blockquote><p>
+In order to make good random numbers available to a large number of library
+users, this proposal not only defines generic random-number engines, but also
+provides a number of predefined well-known good parameterizations for those.
+</p></blockquote>
+<p>
+The predefined ranlux_base_01 engine has been proven [1,2,3] to have a very
+long period and so meets this criterion.  This property makes it suitable for
+use in the excellent discard_block  engines defined subsequently.  The proof
+of long period relies on the fact (proven in [1]) that 2**(w*r) - 2**(w*s)
++ 1 is prime (w, r, and s are template parameters to subtract_with_carry_01,
+as defined in [tr.rand.eng.sub1]).
+</p>
+<p>
+The ranlux64_base_01 engine as presented in [tr.rand.predef] uses w=48, r=24, s=10.
+For these numbers, the combination 2**(w*r)-2**(w*s)+1 is non-prime (though
+explicit factorization  would be a challenge).  In consequence, while it is
+certainly possible for some seeding states that this engine would have a very
+long period, it is not at all "well-known" that this is the case. The intent
+in the N1398 proposal involved the base of the ranlux64 engine, which finds heavy
+use in the physics community.  This is isomorphic to the predefined ranlux_base_01,
+but exploits the ability of double variables to hold (at least) 48 bits of mantissa,
+to deliver 48 random bits at a time rather than 24.
+</p>
+</discussion>
+
+<resolution>
+<p>
+To achieve this intended behavior, the correct template parameteriztion  would be:
+</p>
+<blockquote><pre>
+typedef subtract_with_carry_01&lt;double, 48, 5, 12&gt; ranlux64_base_01;
+</pre></blockquote>
+<p>
+The sequence of mantissa bits delivered by this is isomorphic (treating each
+double as having the  bits of two floats) to that delivered by ranlux_base_01.
+</p>
+<p>
+<b>References:</b>
+</p>
+<ol>
+<li>F. James, Comput. Phys. Commun. 60(1990) 329</li>
+<li>G. Marsaglia and A. Zaman, Ann. Appl. Prob 1(1991) 462</li>
+<li>M. Luscher, Comput. Phys. Commun. 79(1994) 100-110</li>
+</ol>
+
+<note>
+Berlin: Voted to WP.  N1932 adopts the proposed resolution in 26.3.5,
+just above paragraph 5.
+</note>
+
+</resolution>
+
+</issue>

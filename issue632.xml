@@ -1,0 +1,96 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="632" status="NAD">
+<title>Time complexity of size() for std::set</title>
+<section><sref ref="[container.requirements]"/></section>
+<submitter>Lionel B</submitter>
+<date>1 Feb 2007</date>
+
+<discussion>
+<p>
+A recent news group discussion:
+</p>
+<blockquote>
+<p>
+Anyone know if the Standard has anything to say about the time complexity
+of size() for std::set?   I need to access a set's size (/not/ to know if it is empty!) heavily
+during an algorithm and was thus wondering whether I'd be better off
+tracking the size "manually" or whether that'd be pointless.
+</p>
+<p>
+That would be pointless. size() is O(1).
+</p>
+<p>
+Nit: the standard says "should" have constant time. Implementations may take
+license to do worse. I know that some do this for <tt>std::list&lt;&gt;</tt> as a part of
+some trade-off with other operation.
+</p>
+
+<p>
+I was aware of that, hence my reluctance to use size() for std::set.
+</p>
+<p>
+However, this reason would not apply to <tt>std::set&lt;&gt;</tt> as far as I can see.
+</p>
+<p>
+Ok, I guess the only option is to try it and see...
+</p>
+</blockquote>
+
+<p>
+If I have any recommendation to the C++ Standards Committee it is that
+implementations must (not "should"!) document clearly[1], where known, the
+time complexity of *all* container access operations.
+</p>
+<p>
+[1] In my case (gcc 4.1.1) I can't swear that the time complexity of size()
+for std::set is not documented... but if it is it's certainly well hidden
+away.
+</p>
+
+<note>
+Kona (2007): This issue affects all the containers. We'd love to see a
+paper dealing with the broad issue. We think that the complexity of the
+<tt>size()</tt> member of every container -- except possibly <tt>list</tt> -- should be
+O(1). Alan has volunteered to provide wording.
+</note>
+
+<note>
+Bellevue:
+</note>
+
+<blockquote>
+Mandating O(1) size will not fly, too many implementations would be
+invalidated. Alan to provide wording that toughens wording, but that
+does not absolutely mandate O(1).
+</blockquote>
+
+<note>
+Batavia (2009-05):
+</note>
+<blockquote>
+We observed that the wording "should" (in note a) has no effect.
+Howard prefers that O(1) size be mandated.
+It is not clear that this issue can be resolved to everyone's satisfaction,
+but Alan will provide wording nonetheless.
+</blockquote>
+
+<note>
+2009-07 Frankfurt
+</note>
+
+<blockquote>
+Fixed by paper N2923.
+</blockquote>
+
+</discussion>
+
+<resolution>
+<p>
+</p>
+</resolution>
+
+</issue>

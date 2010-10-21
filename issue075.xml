@@ -1,0 +1,52 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="75" status="TC1">
+<title>Contradiction in <tt>codecvt::length</tt>'s argument types</title>
+<section><sref ref="[locale.codecvt]"/></section>
+<submitter> Matt
+Austern</submitter>
+<date> 18 Sep 1998</date>
+
+<discussion>
+<p>The class synopses for classes <tt>codecvt&lt;&gt;</tt> (22.2.1.5)
+and <tt>codecvt_byname&lt;&gt;</tt> (22.2.1.6) say that the first
+parameter of the member functions <tt>length</tt> and
+<tt>do_length</tt> is of type <tt>const stateT&amp;</tt>. The member
+function descriptions, however (22.2.1.5.1, paragraph 6; 22.2.1.5.2,
+paragraph 9) say that the type is <tt>stateT&amp;</tt>.  Either the
+synopsis or the summary must be changed. </p>
+
+<p>If (as I believe) the member function descriptions are correct,
+then we must also add text saying how <tt>do_length</tt> changes its
+<tt>stateT</tt> argument. </p>
+</discussion>
+
+<resolution>
+<p>In <sref ref="[locale.codecvt]"/>, and also in <sref ref="[locale.codecvt.byname]"/>,
+change the <tt>stateT</tt> argument type on both member
+<tt>length()</tt> and member <tt>do_length()</tt> from </p>
+
+<blockquote>
+  <p><tt>const stateT&amp;</tt></p>
+</blockquote>
+
+<p>to</p>
+
+<blockquote>
+  <p><tt>stateT&amp;</tt></p>
+</blockquote>
+
+<p>In <sref ref="[locale.codecvt.virtuals]"/>, add to the definition for member
+<tt>do_length</tt> a paragraph:</p>
+
+<blockquote>
+  <p>Effects: The effect on the <tt>state</tt> argument is ``as if''
+  it called <tt>do_in(state, from, from_end, from, to, to+max,
+  to)</tt> for <tt>to</tt> pointing to a buffer of at least
+  <tt>max</tt> elements.</p>
+</blockquote>
+</resolution>
+</issue>

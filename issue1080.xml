@@ -1,0 +1,115 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="1080" status="NAD Concepts">
+<title>Concept ArithmeticLike should provide explicit boolean  conversion</title>
+<section><sref ref="[concept.arithmetic]"/></section>
+<submitter>Daniel Kr&uuml;gler</submitter>
+<date>21 Mar 2009</date>
+
+<discussion>
+<p>
+Astonishingly, the current concept ArithmeticLike as specified in
+<sref ref="[concept.arithmetic]"/> does not provide explicit conversion
+to <tt>bool</tt> although this is a common property of arithmetic types
+(<sref ref="[conv.bool]"/>). Recent proposals that introduced such types
+(integers of arbitrary precision,
+<a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2007/n2143.pdf">n2143</a>,
+decimals
+<a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2008/n2732.pdf">n2732</a>
+indirectly
+via conversion to <tt>long long</tt>) also took care of such a feature.
+</p>
+<p>
+Adding such an explicit conversion associated function would also
+partly solve a currently invalid effects clause in library, which bases
+on this property, <sref ref="[random.access.iterators]"/>/2:
+</p>
+<blockquote><pre>
+{ difference_type m = n;
+ if (m &gt;= 0) while (m--) ++r;
+ else while (m++) --r;
+ return r; }
+</pre></blockquote>
+
+<p>
+Both while-loops take advantage of a contextual conversion to <tt>bool</tt>
+(Another problem is that the &gt;= comparison uses the no
+longer supported existing implicit conversion from <tt>int</tt> to <tt>IntegralLike</tt>).
+</p>
+
+<b>Original proposed resolution:</b>
+<ol>
+<li>
+<p>
+In <sref ref="[concept.arithmetic]"/>, add to the list of less refined
+concepts one further concept:
+</p>
+
+<blockquote><pre>
+concept ArithmeticLike&lt;typename T&gt;
+  : Regular&lt;T&gt;, LessThanComparable&lt;T&gt;, HasUnaryPlus&lt;T&gt;, HasNegate&lt;T&gt;,
+    HasPlus&lt;T, T&gt;, HasMinus&lt;T, T&gt;, HasMultiply&lt;T, T&gt;, HasDivide&lt;T, T&gt;,
+    HasPreincrement&lt;T&gt;, HasPostincrement&lt;T&gt;, HasPredecrement&lt;T&gt;,
+    HasPostdecrement&lt;T&gt;,
+    HasPlusAssign&lt;T, const T&amp;&gt;, HasMinusAssign&lt;T, const T&amp;&gt;,
+    HasMultiplyAssign&lt;T, const T&amp;&gt;,
+    HasDivideAssign&lt;T, const T&amp;&gt;<ins>, ExplicitlyConvertible&lt;T, bool&gt;</ins> {
+</pre></blockquote>
+</li>
+<li>
+<p>
+In <sref ref="[random.access.iterators]"/>/2 change the current effects clause
+as indicated [The proposed insertion fixes the problem that the previous
+implicit construction from integrals has been changed to an explicit
+constructor]:
+</p>
+<blockquote><pre>
+{ difference_type m = n;
+ if (m &gt;= <ins>difference_type(</ins>0<ins>)</ins>) while (m--) ++r;
+ else while (m++) --r;
+ return r; }
+</pre></blockquote>
+</li>
+</ol>
+
+<note>
+Batavia (2009-05):
+</note>
+<blockquote>
+<p>
+We agree that arithmetic types ought be convertible to <tt>bool</tt>,
+and we therefore agree with the proposed resolution's paragraph 1.
+</p>
+<p>
+We do not agree that the cited effects clause is invalid,
+as it expresses intent rather than specific code.
+</p>
+<p>
+Move to Review, pending input from concepts experts.
+</p>
+</blockquote>
+
+</discussion>
+
+<resolution>
+<p>
+In <sref ref="[concept.arithmetic]"/>, add to the list of less refined
+concepts one further concept:
+</p>
+
+<blockquote><pre>
+concept ArithmeticLike&lt;typename T&gt;
+  : Regular&lt;T&gt;, LessThanComparable&lt;T&gt;, HasUnaryPlus&lt;T&gt;, HasNegate&lt;T&gt;,
+    HasPlus&lt;T, T&gt;, HasMinus&lt;T, T&gt;, HasMultiply&lt;T, T&gt;, HasDivide&lt;T, T&gt;,
+    HasPreincrement&lt;T&gt;, HasPostincrement&lt;T&gt;, HasPredecrement&lt;T&gt;,
+    HasPostdecrement&lt;T&gt;,
+    HasPlusAssign&lt;T, const T&amp;&gt;, HasMinusAssign&lt;T, const T&amp;&gt;,
+    HasMultiplyAssign&lt;T, const T&amp;&gt;,
+    HasDivideAssign&lt;T, const T&amp;&gt;<ins>, ExplicitlyConvertible&lt;T, bool&gt;</ins> {
+</pre></blockquote>
+</resolution>
+
+</issue>

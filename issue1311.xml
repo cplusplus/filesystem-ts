@@ -1,0 +1,103 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="1311" status="NAD Editorial">
+<title>multi-pass property of Forward Iterator underspecified</title>
+<section><sref ref="[forward.iterators]"/></section>
+<submitter>Alisdair Meredith</submitter>
+<date>7 Feb 2010</date>
+
+<discussion>
+<p>
+The following example demonstrates code that would meet the guarantees of a
+Forward Iterator, but only permits a single traversal of the underlying
+sequence:
+</p>
+
+<blockquote><pre>
+template&lt; typename ForwardIterator&gt;
+struct bad_iterator {
+  shared_ptr&lt;ForwardIterator&gt; impl;
+
+  bad_iterator( ForwardIterator iter ) {
+     : impl{new ForwardIterator{iter} } 
+     {
+  }
+
+  auto operator*() const -&gt; decltype(*ForwardIterator{}) {
+     return **impl;
+  }
+
+  auto operator-&gt;() const -&gt; ForwardIterator {
+     return *impl;
+  }
+
+  auto operator==(bad_iterator const &amp; rhs) {
+     return impl == rhs.impl;
+  }
+
+  auto operator++() {
+     ++(*imp);
+  }
+  // other operations as necessary...
+};
+</pre></blockquote>
+
+<p>
+Here, we use <tt>shared_ptr</tt> to wrap a forward iterator, so all iterators
+constructed from the same original iterator share the same 'value', and
+incrementing any one copy increments all others.
+</p>
+
+<p>
+There is a missing guarantee, expressed by the following code sequence
+</p>
+
+<blockquote><pre>
+FwdIter x = seq.begin();  // obtain forward iterator from a sequence
+FwdIter y = x;            // copy the iterator
+assert(x == y);           // iterators must be the same
+++x;                      // increment *just one* iterator
+assert(x != y);           // iterators *must now be different*
+++y;                      // increment the other iterator
+assert(x == y);           // now the iterators must be the same again
+</pre></blockquote>
+
+<p>
+That inequality in the middle is an essential guarantee.  Note that this list is
+simplified, as each assertion should also note that they refer to exactly the
+same element <tt>(&amp;*x == &amp;*y)</tt> but I am not complicating the issue
+with tests to support proxy iterators, or value types overloading unary
+<tt>operator+</tt>.
+</p>
+
+<p>
+I have not yet found a perverse example that can meet this additional
+constraint, and not meet the multi-pass expectations of a Forward Iterator
+without also violating other Forward Iterator requirements.
+</p>
+
+<p>
+Note that I do not yet have standard-ready wording to resolve the problem, as
+saying this neatly and succinctly in 'standardese' is more difficult.
+</p>
+
+<note>
+2010 Pittsburgh:  Moved to NAD Editorial.  Rationale added below.
+</note>
+
+</discussion>
+
+<rationale>
+<p>
+Solved by
+<a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2010/n3066.html">N3066</a>.
+</p>
+</rationale>
+
+<resolution>
+</resolution>
+
+</issue>

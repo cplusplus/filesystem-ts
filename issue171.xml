@@ -1,0 +1,67 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="171" status="CD1">
+<title>Strange <tt>seekpos()</tt> semantics due to joint position</title>
+<section><sref ref="[filebuf.virtuals]"/></section>
+<submitter>Dietmar K&uuml;hl</submitter>
+<date>20 Jul 1999</date>
+
+<discussion>
+<p>Overridden virtual functions, seekpos()</p> <p>In <sref ref="[filebuf]"/> paragraph 3, it is stated that a joint input and
+output position is maintained by <tt>basic_filebuf</tt>. Still, the
+description of <tt>seekpos()</tt> seems to talk about different file
+positions. In particular, it is unclear (at least to me) what is
+supposed to happen to the output buffer (if there is one) if only the
+input position is changed. The standard seems to mandate that the
+output buffer is kept and processed as if there was no positioning of
+the output position (by changing the input position). Of course, this
+can be exactly what you want if the flag <tt>ios_base::ate</tt> is
+set. However, I think, the standard should say something like
+this:</p>
+<ul>
+  <li>If <tt>(which &amp; mode) == 0</tt> neither read nor write position is
+    changed and the call fails. Otherwise, the joint read and write position is
+    altered to correspond to <tt>sp</tt>.</li>
+  <li>If there is an output buffer, the output sequences is updated and any
+    unshift sequence is written before the position is altered.</li>
+  <li>If there is an input buffer, the input sequence is updated after the
+    position is altered.</li>
+</ul>
+<p>Plus the appropriate error handling, that is...</p>
+</discussion>
+
+<resolution>
+<p>Change the unnumbered paragraph in 27.8.1.4 (lib.filebuf.virtuals) before
+paragraph 14 from:</p>
+<blockquote>
+  <p>pos_type seekpos(pos_type sp, ios_base::openmode = ios_base::in |
+  ios_base::out);</p>
+  <p>Alters the file position, if possible, to correspond to the position stored
+  in sp (as described below).</p>
+  <p>- if (which&amp;ios_base::in)!=0, set the file position to sp, then update
+  the input sequence</p>
+  <p>- if (which&amp;ios_base::out)!=0, then update the output sequence, write
+  any unshift sequence, and set the file position to sp.</p>
+</blockquote>
+<p>to:</p>
+<blockquote>
+  <p>pos_type seekpos(pos_type sp, ios_base::openmode = ios_base::in |
+  ios_base::out);</p>
+  <p>Alters the file position, if possible, to correspond to the position stored
+  in sp (as described below). Altering the file position performs as follows:</p>
+  <p>1. if (om &amp; ios_base::out)!=0, then update the output sequence and
+  write any unshift sequence;</p>
+  <p>2. set the file position to sp;</p>
+  <p>3. if (om &amp; ios_base::in)!=0, then update the input sequence;</p>
+  <p>where om is the open mode passed to the last call to open(). The operation
+  fails if is_open() returns false.</p>
+</blockquote>
+
+<note>Kona: Dietmar is working on a proposed resolution.</note>
+<note>Post-Tokyo: Dietmar supplied the above wording.</note>
+</resolution>
+
+</issue>

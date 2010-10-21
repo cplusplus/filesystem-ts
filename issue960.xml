@@ -1,0 +1,81 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="960" status="WP">
+<title>Various threading bugs #10</title>
+<section><sref ref="[thread.mutex.requirements]"/></section>
+<submitter>Pete Becker</submitter>
+<date>7 Jan 2009</date>
+
+<discussion>
+<p>
+<sref ref="[thread.mutex.requirements]"/>: paragraph 4 is entitled
+"Error conditions", but according to <sref ref="[structure.specifications]"/>, "Error
+conditions:" specifies "the error conditions for error codes reported by
+the function." It's not clear what this should mean when there is no
+function in sight.
+</p>
+
+<note>
+Summit:
+</note>
+
+<blockquote>
+Move to open.
+</blockquote>
+
+<note>
+Beman provided proposed wording.
+</note>
+
+<note>
+2009-10 Santa Cruz:
+</note>
+
+<blockquote>
+Move to Ready. Fix the proposed wording with "functions of type Mutex"
+-> "functions of Mutex type"
+</blockquote>
+
+</discussion>
+
+<resolution>
+<p>
+Change <sref ref="[thread.mutex.requirements]"/> Mutex requirements,
+paragraph 4 as indicated:
+</p>
+
+<blockquote>
+<p>
+-4- <del><i>Error conditions:</i></del>
+<ins>The error conditions for error codes, if any, reported by member
+functions of Mutex type shall be:</ins>
+</p>
+<ul>
+<li>
+<tt>not_enough_memory</tt> -- if there is not enough memory to construct
+the mutex object.
+</li>
+<li>
+<tt>resource_unavailable_try_again</tt> -- if any native handle type
+manipulated is not available.
+</li>
+<li>
+<tt>operation_not_permitted</tt> -- if the thread does not have the
+necessary permission to change the state of the mutex object.
+</li>
+<li>
+<tt>device_or_resource_busy</tt> -- if any native handle type
+manipulated is already locked.
+</li>
+<li>
+<tt>invalid_argument</tt> -- if any native handle type manipulated as
+part of mutex construction is incorrect.
+</li>
+</ul>
+</blockquote>
+</resolution>
+
+</issue>

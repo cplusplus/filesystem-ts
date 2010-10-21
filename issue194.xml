@@ -1,0 +1,57 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="194" status="NAD">
+<title>rdbuf() functions poorly specified</title>
+<section><sref ref="[ios]"/></section>
+<submitter>Steve Clamage</submitter>
+<date>7 Sep 1999</date>
+
+<discussion>
+<p>In classic iostreams, base class ios had an rdbuf function that returned a
+pointer to the associated streambuf. Each derived class had its own rdbuf
+function that returned a pointer of a type reflecting the actual type derived
+from streambuf. Because in ARM C++, virtual function overrides had to have the
+same return type, rdbuf could not be virtual.</p>
+<p>In standard iostreams, we retain the non-virtual rdbuf function design, and
+in addition have an overloaded rdbuf function that sets the buffer pointer.
+There is no need for the second function to be virtual nor to be implemented in
+derived classes.</p>
+<p>Minor question: Was there a specific reason not to make the original rdbuf
+function virtual?</p>
+<p>Major problem: Friendly compilers warn about functions in derived classes
+that hide base-class overloads. Any standard implementation of iostreams will
+result in such a warning on each of the iostream classes, because of the
+ill-considered decision to overload rdbuf only in a base class.</p>
+<p>In addition, users of the second rdbuf function must use explicit
+qualification or a cast to call it from derived classes. An explicit
+qualification or cast to basic_ios would prevent access to any later overriding
+version if there was one.</p>
+<p>What I'd like to do in an implementation is add a using- declaration for the
+second rdbuf function in each derived class. It would eliminate warnings about
+hiding functions, and would enable access without using explicit qualification.
+Such a change I don't think would change the behavior of any valid program, but
+would allow invalid programs to compile:</p>
+<blockquote>
+  <pre> filebuf mybuf;
+ fstream f;
+ f.rdbuf(mybuf); // should be an error, no visible rdbuf</pre>
+</blockquote>
+<p>I'd like to suggest this problem as a defect, with the proposed resolution to
+require the equivalent of a using-declaration for the rdbuf function that is not
+replaced in a later derived class. We could discuss whether replacing the
+function should be allowed.</p>
+</discussion>
+
+<rationale>
+<p>For historical reasons, the standard is correct as written. There is a subtle difference between the base
+class <tt> rdbuf()</tt> and derived class <tt>rdbuf()</tt>. The derived
+class <tt> rdbuf()</tt> always returns the original streambuf, whereas the base class
+<tt> rdbuf()</tt> will return the "current streambuf" if that has been changed by the variant you mention.</p>
+
+<p>Permission is not required to add such an extension.  See 
+<sref ref="[member.functions]"/>.</p>
+</rationale>
+</issue>

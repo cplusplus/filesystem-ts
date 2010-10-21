@@ -1,0 +1,51 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="1337" status="New">
+<title>Swapped arguments in <tt>regex_traits::isctype</tt></title>
+<section><sref ref="[re.traits]"/></section>
+<submitter>Howard Hinnant</submitter>
+<date>21 Jun 2010</date>
+
+<discussion>
+<p>
+<sref ref="[re.traits]"/>/12 describes <tt>regex_traits::isctype</tt> in terms
+of <tt>ctype::is(c, m)</tt>, where <tt>c</tt> is a <tt>charT</tt> and <tt>m</tt>
+is a <tt>ctype_base::mask</tt>.  Unfortunately <sref ref="[locale.ctype.members]"/>
+specifies this function as <tt>ctype::is(m, c)</tt>
+</p>
+</discussion>
+
+<resolution>
+<p>
+Change <sref ref="[re.traits]"/>/12:
+</p>
+
+<blockquote><pre>
+bool isctype(charT c, char_class_type f) const;
+</pre>
+<blockquote>
+<p>
+11 ...
+</p>
+<p>
+12 <i>Returns:</i> Converts <tt>f</tt> into a value <tt>m</tt> of type
+<tt>std::ctype_base::mask</tt> in an unspecified manner, and returns
+<tt>true</tt> if <tt>use_facet&lt;ctype&lt;charT&gt;
+&gt;(getloc()).is(<del>c</del><ins>m</ins>, <del>m</del><ins>c</ins>)</tt> is
+<tt>true</tt>. Otherwise returns <tt>true</tt> if <tt>f</tt> bitwise or'ed with
+the result of calling <tt>lookup_classname</tt> with an iterator pair that
+designates the character sequence <tt>"w"</tt> is not equal to 0 and <tt>c ==
+'_'</tt>, or if <tt>f</tt> bitwise or'ed with the result of calling
+<tt>lookup_classname</tt> with an iterator pair that designates the character
+sequence <tt>"blank"</tt> is not equal to 0 and <tt>c</tt> is one of an
+implementation-defined subset of the characters for which <tt>isspace(c,
+getloc())</tt> returns <tt>true</tt>, otherwise returns <tt>false</tt>.
+</p>
+</blockquote>
+</blockquote>
+</resolution>
+
+</issue>

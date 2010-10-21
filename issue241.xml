@@ -1,0 +1,70 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="241" status="CD1">
+<title>Does unique_copy() require CopyConstructible and Assignable?</title>
+<section><sref ref="[alg.unique]"/></section>
+<submitter>Angelika Langer</submitter>
+<date>15 May 2000</date>
+
+<discussion>
+
+<p>Some popular implementations of unique_copy() create temporary
+copies of values in the input sequence, at least if the input iterator
+is a pointer.  Such an implementation is built on the assumption that
+the value type is CopyConstructible and Assignable.</p>
+
+<p>It is common practice in the standard that algorithms explicitly
+specify any additional requirements that they impose on any of the
+types used by the algorithm. An example of an algorithm that creates
+temporary copies and correctly specifies the additional requirements
+is accumulate(), <sref ref="[rand.req]"/>.</p>
+
+<p>Since the specifications of unique() and unique_copy() do not
+require CopyConstructible and Assignable of the InputIterator's value
+type the above mentioned implementations are not standard-compliant. I
+cannot judge whether this is a defect in the standard or a defect in
+the implementations.</p>
+</discussion>
+
+<resolution>
+<p>In 25.2.8 change:</p>
+
+<blockquote><p>
+-4- Requires: The ranges [first, last) and [result, result+(last-first))
+shall not overlap.
+</p></blockquote>
+
+<p>to:</p>
+
+<blockquote>
+  <p>-4- Requires: The ranges [first, last) and [result,
+  result+(last-first)) shall not overlap. The expression *result =
+  *first must be valid. If neither InputIterator nor OutputIterator
+  meets the requirements of forward iterator then the value type of
+  InputIterator must be copy constructible. Otherwise copy
+  constructible is not required. </p>
+</blockquote>
+
+<note>Redmond: the original proposed resolution didn't impose an
+explicit requirement that the iterator's value type must be copy
+constructible, on the grounds that an input iterator's value type must
+always be copy constructible.  Not everyone in the LWG thought that
+this requirement was clear from table 72.  It has been suggested that
+it might be possible to implement <tt>unique_copy</tt> without
+requiring assignability, although current implementations do impose
+that requirement.  Howard provided new wording.</note>
+
+<note>
+Cura&ccedil;ao: The LWG changed the PR editorially to specify
+&quot;neither...nor...meet...&quot; as clearer than
+&quot;both...and...do not meet...&quot;. Change believed to be so
+minor as not to require re-review.
+</note>
+
+</resolution>
+
+
+</issue>

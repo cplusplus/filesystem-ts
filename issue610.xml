@@ -1,0 +1,76 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="610" status="CD1">
+<title>Suggested non-normative note for C++0x</title>
+<section><sref ref="[func.wrap.func.con]"/><sref ref="[tr.func.wrap.func.con]"/></section>
+<submitter>Scott Meyers</submitter>
+<date>2 Nov 2006</date>
+
+<discussion>
+<p>
+My suggestion is that implementers of both tr1::function and its 
+official C++0x successor be explicitly encouraged (but not required) to 
+optimize for the cases mentioned above, i.e., function pointers and 
+small function objects.  They could do this by using a small internal 
+buffer akin to the buffer used by implementations of the small string 
+optimization.  (That would make this the small functor optimization -- 
+SFO :-})  The form of this encouragement could be a note in the standard 
+akin to footnote 214 of the current standard.
+</p>
+
+<p>
+Dave Abrahams notes:
+</p>
+
+<p>
+"shall not throw exceptions" should really be "nothing," both to be more
+grammatical and to be consistent with existing wording in the standard.
+</p>
+
+<p>
+Doug Gregor comments: I think this is a good idea. Currently, implementations of
+tr1::function are required to have non-throwing constructors and assignment
+operators when the target function object is a function pointer or a
+reference_wrapper. The common case, however, is for a tr1::function to store
+either an empty function object or a member pointer + an object pointer.
+</p>
+<p>
+The function implementation in the upcoming Boost 1.34.0 uses the
+"SFO", so that the function objects for typical bind expressions like
+</p>
+<blockquote><pre>
+bind(&amp;X::f, this, _1, _2, _3)
+</pre></blockquote>
+
+<p>
+do not require heap allocation when stored in a boost::function. I
+believe Dinkumware's implementation also performs this optimization.
+</p>
+
+</discussion>
+
+<resolution>
+<p>
+Revise 20.5.14.2.1 p6 [func.wrap.func.con] to add a note as follows:
+</p>
+
+<blockquote>
+<p>
+<i>Throws:</i> shall not throw exceptions if <tt>f</tt>'s target is a function
+pointer or a function object passed via <tt>reference_wrapper</tt>. Otherwise,
+may throw <tt>bad_alloc</tt> or any exception thrown by the copy constructor of
+the stored function object.
+</p>
+<p>
+<ins><i>Note:</i> Implementations are encouraged to avoid the use of dynamically
+allocated memory for "small" function objects, e.g., where <tt>f</tt>'s target
+is an object holding only a pointer or reference to an object and a member
+function pointer (a "bound member function").</ins>
+</p>
+</blockquote>
+</resolution>
+
+</issue>

@@ -1,0 +1,42 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="856" status="CD1">
+<title>Removal of <tt>aligned_union</tt></title>
+<section><sref ref="[meta.trans.other]"/></section>
+<submitter>Jens Maurer</submitter>
+<date>12 Jun 2008</date>
+
+<discussion>
+<p>
+With the arrival of extended unions 
+(<a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2008/n2544.pdf">N2544</a>),
+there is no
+known use of <tt>aligned_union</tt> that couldn't be handled by
+the "extended unions" core-language facility.
+</p>
+</discussion>
+
+<resolution>
+<p>
+Remove the following signature from <sref ref="[meta.type.synop]"/>:
+</p>
+<blockquote><pre>
+template &lt;std::size_t Len, class... Types&gt; struct aligned_union;
+</pre></blockquote>
+
+<p>
+Remove the second row from table 51 in <sref ref="[meta.trans.other]"/>,
+starting with:
+</p>
+
+<blockquote><pre>
+template &lt;std::size_t Len,
+class... Types&gt;
+struct aligned_union;
+</pre></blockquote>
+</resolution>
+
+</issue>

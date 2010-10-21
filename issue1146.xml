@@ -1,0 +1,236 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="1146" status="NAD Editorial">
+<title>"lockfree" does not say enough</title>
+<section><sref ref="[atomics.lockfree]"/></section>
+<submitter>Jeffrey Yasskin</submitter>
+<date>16 Jun 2009</date>
+
+<discussion>
+
+<p><b>Addresses US 88</b></p>
+
+<p>
+The "lockfree" facilities do not tell the programmer enough.
+</p>
+
+<p>
+There are 2 problems here.
+First, at least on x86,
+it's less important to me whether some integral types are lock free
+than what is the largest type I can pass to atomic and have it be lock-free.
+For example, if <tt>long long</tt>s are not lock-free,
+<tt>ATOMIC_INTEGRAL_LOCK_FREE</tt> is probably 1,
+but I'd still be interested in knowing whether longs are always lock-free.
+Or if long longs at any address are lock-free,
+I'd expect <tt>ATOMIC_INTEGRAL_LOCK_FREE</tt> to be 2,
+but I may actually care whether I have access to
+the <code>cmpxchg16b</code> instruction.
+None of the support here helps with that question.
+(There are really 2 related questions here:
+what alignment requirements are there for lock-free access;
+and what processor is the program actually running on,
+as opposed to what it was compiled for?)
+</p>
+
+<p>
+Second, having <tt>atomic_is_lock_free</tt> only apply to individual objects
+is pretty useless
+(except, as Lawrence Crowl points out,
+for throwing an exception when an object is unexpectedly not lock-free).
+I'm likely to want to use its result to decide what algorithm to use,
+and that algorithm is probably going to allocate new memory
+containing atomic objects and then try to act on them.
+If I can't predict the lock-freedom of the new object
+by checking the lock-freedom of an existing object,
+I may discover after starting the algorithm that I can't continue.
+</p>
+
+<note>
+2009-06-16 Jeffrey Yasskin adds:
+</note>
+
+<blockquote>
+<p>
+To solve the first problem, I think 2 macros would help:
+<tt>MAX_POSSIBLE_LOCK_FREE_SIZE</tt> and <tt>MAX_GUARANTEED_LOCK_FREE_SIZE</tt>,
+which expand to the maximum value of <tt>sizeof(T)</tt> for which atomic may
+(or will, respectively) use lock-free operations.
+Lawrence points out that this
+"relies heavily on implementations
+using word-size compare-swap on sub-word-size types,
+which in turn requires address modulation."
+He expects that to be the end state anyway, so it doesn't bother him much.
+</p>
+
+<p>
+To solve the second,
+I think one could specify that equally aligned objects of the same type
+will return the same value from <tt>atomic_is_lock_free()</tt>.
+I don't know how to specify "equal alignment".
+Lawrence suggests an additional function, <tt>atomic_is_always_lock_free()</tt>.
+</p>
+</blockquote>
+
+<note>
+2009-10-22 Benjamin Kosnik:
+</note>
+
+<blockquote>
+<p>
+In the evolution discussion of N2925, "More Collected Issues with
+Atomics," there is an action item with respect to
+LWG <iref ref="1146"/>, US 88
+</p>
+
+<p>
+This is stated in the paper as:
+</p>
+<p>
+Relatedly, Mike Sperts will create an issue to propose adding a traits
+mechanism to check the compile-time properties through a template
+mechanism rather than macros
+</p>
+
+<p>
+Here is my attempt to do this. I don't believe that a separate trait is
+necessary for this, and that instead <tt>atomic_integral::is_lock_free</tt> can
+be re-purposed with minimal work as follows.
+</p>
+
+<note>
+Howard: Put Benjamin's wording in the proposed wording section.
+</note>
+
+</blockquote>
+
+<note>
+2009-10-22 Alberto Ganesh Barbati:
+</note>
+
+<blockquote>
+<p>
+Just a thought... wouldn't it be better to use a scoped enum instead of
+plain integers? For example:
+</p>
+
+<blockquote><pre>
+enum class is_lock_free
+{
+    never = 0, sometimes = 1, always = 2;
+};
+</pre></blockquote>
+
+<p>
+if compatibility with C is deemed important, we could use an unscoped
+enum with suitably chosen names.  It would still be more descriptive
+than 0, 1 and 2.
+</p>
+
+</blockquote>
+
+<note>
+2009-10 Santa Cruz:
+</note>
+
+<blockquote>
+NAD Editorial.  Solved by
+<a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2009/n2992.html">N2992</a>.
+</blockquote>
+
+</discussion>
+
+<resolution>
+<p>
+Header <tt>&lt;cstdatomic&gt;</tt> synopsis <sref ref="[atomics.synopsis]"/>
+</p>
+
+<p>
+Edit  as follows:
+</p>
+
+<blockquote><pre>
+namespace std {
+...
+// 29.4, lock-free property
+<del>#define ATOMIC_INTEGRAL_LOCK_FREE unspecified</del>
+<ins>#define ATOMIC_CHAR_LOCK_FREE unspecified
+#define ATOMIC_CHAR16_T_LOCK_FREE unspecified
+#define ATOMIC_CHAR32_T_LOCK_FREE unspecified
+#define ATOMIC_WCHAR_T_LOCK_FREE unspecified
+#define ATOMIC_SHORT_LOCK_FREE unspecified
+#define ATOMIC_INT_LOCK_FREE unspecified
+#define ATOMIC_LONG_LOCK_FREE unspecified
+#define ATOMIC_LLONG_LOCK_FREE unspecified</ins>
+#define ATOMIC_ADDRESS_LOCK_FREE unspecified
+</pre></blockquote>
+
+<p>
+Lock-free Property <sref ref="[atomics.lockfree]"/>
+</p>
+
+<p>
+Edit the synopsis as follows.
+</p>
+
+<blockquote><pre>
+namespace std {
+   <del>#define ATOMIC_INTEGRAL_LOCK_FREE unspecified</del>
+   <ins>#define ATOMIC_CHAR_LOCK_FREE unspecified
+   #define ATOMIC_CHAR16_T_LOCK_FREE unspecified
+   #define ATOMIC_CHAR32_T_LOCK_FREE unspecified
+   #define ATOMIC_WCHAR_T_LOCK_FREE unspecified
+   #define ATOMIC_SHORT_LOCK_FREE unspecified
+   #define ATOMIC_INT_LOCK_FREE unspecified
+   #define ATOMIC_LONG_LOCK_FREE unspecified
+   #define ATOMIC_LLONG_LOCK_FREE unspecified</ins>
+   #define ATOMIC_ADDRESS_LOCK_FREE unspecified
+}
+</pre></blockquote>
+
+<p>
+Edit paragraph 1 as follows.
+</p>
+
+<blockquote>
+The <ins>ATOMIC_...._LOCK_FREE</ins> macros <del>ATOMIC_INTEGRAL_LOCK_FREE and ATOMIC_ADDRESS_LOCK_FREE</del> indicate the general lock-free
+property of <del>integral and address atomic</del> <ins>the corresponding atomic integral</ins> types<ins>, with the
+signed and unsigned variants grouped together</ins>.
+<del>The properties also apply to the corresponding specializations of the atomic template.</del>
+A value of 0
+indicates that the types are never lock-free. A value of 1
+indicates that the types are sometimes lock-free. A value of 2
+indicates that the types are always lock-free.
+</blockquote>
+
+<p>
+Operations on Atomic Types <sref ref="[atomics.types.operations]"/>
+</p>
+
+<p>
+Edit as follows.
+</p>
+
+<blockquote><pre>
+<del>void</del> <ins>static constexpr bool</ins> A::is_lock_free() const volatile;
+</pre>
+<blockquote>
+<i>Returns:</i> True if the <del>object's</del> <ins>types's</ins> operations are lock-free, false
+otherwise.
+<ins>
+[<i>Note:</i> In the same way that <tt>&lt;limits&gt;</tt>
+<tt>std::numeric_limits&lt;short&gt;::max()</tt> is related to
+<tt>&lt;limits.h&gt;</tt> <tt>__LONG_LONG_MAX__</tt>, <tt>&lt;atomic&gt;
+std::atomic_short::is_lock_free</tt> is related to
+<tt>&lt;stdatomic.h&gt;</tt> and <tt>ATOMIC_SHORT_LOCK_FREE</tt> &mdash;
+<i>end note</i>]
+</ins>
+</blockquote>
+</blockquote>
+
+</resolution>
+
+</issue>

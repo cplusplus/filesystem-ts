@@ -1,0 +1,75 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="791" status="NAD">
+<title><tt>piecewise_constant_distribution::densities</tt> has wrong name</title>
+<section><sref ref="[rand.dist.samp.pconst]"/></section>
+<submitter>P.J. Plauger</submitter>
+<date>9 Feb 2008</date>
+
+<discussion>
+<p>
+<tt>piecewise_constant_distribution::densities()</tt> should be <tt>probabilities()</tt>,
+just like <tt>discrete_distribution</tt>. (There's no real use for weights divided
+by areas.)
+</p>
+
+<note>
+Bellevue:
+</note>
+
+<blockquote>
+<p>
+Fermilab does not agree with this summary. As defined in the equation in
+26.4.8.5.2/4, the quantities are indeed probability densities not
+probabilities. Because we view this distribution as a parameterization
+of a *probability density function*, we prefer to work in terms of
+probability densities.
+</p>
+
+<p>
+We don't think this should be changed.
+</p>
+
+<p>
+If there is a technical argument about why the implementation dealing
+with these values can't be as efficient as one dealing with
+probabilities, we might reconsider. We don't care about this one member
+function being somewhat more or less efficient; we care about the size
+of the distribution object and the speed of the calls to generate
+variates.
+</p>
+</blockquote>
+
+</discussion>
+
+<resolution>
+
+<p>
+Change synopsis in <sref ref="[rand.dist.samp.pconst]"/>:
+</p>
+
+<blockquote><pre>
+template &lt;class RealType = double&gt; 
+class piecewise_constant_distribution 
+{ 
+public:
+    ...
+    vector&lt;double&gt; <del>densities</del> <ins>probabilities</ins>() const;
+    ...
+};
+</pre></blockquote>
+
+<p>
+Change <sref ref="[rand.dist.samp.pconst]"/>/6:
+</p>
+
+<blockquote><pre>
+vector&lt;double&gt; <del>densities</del> <ins>probabilities</ins>() const;
+</pre></blockquote>
+
+</resolution>
+
+</issue>

@@ -1,0 +1,65 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="551" status="CD1">
+<title>&lt;ccomplex&gt;</title>
+<section><sref ref="[cmplxh]"/><sref ref="[tr.c99.cmplxh]"/></section>
+<submitter>Howard Hinnant</submitter>
+<date>23 Jan 2006</date>
+
+<discussion>
+<p>
+Previously xxx.h was parsable by C++.  But in the case of C99's &lt;complex.h&gt;
+it isn't.  Otherwise we could model it just like &lt;string.h&gt;, &lt;cstring&gt;, &lt;string&gt;:
+</p>
+
+<ul>
+<li>&lt;string&gt;   : C++ API in namespace std</li>
+<li>&lt;cstring&gt;  : C API in namespace std</li>
+<li>&lt;string.h&gt; : C API in global namespace</li>
+</ul>
+
+<p>
+In the case of C's complex, the C API won't compile in C++.  So we have:
+</p>
+
+<ul>
+<li>&lt;complex&gt;   : C++ API in namespace std</li>
+<li>&lt;ccomplex&gt;  : ?</li>
+<li>&lt;complex.h&gt; : ?</li>
+</ul>
+
+<p>
+The ? can't refer to the C API.  TR1 currently says:
+</p>
+
+<ul>
+<li>&lt;complex&gt;   : C++ API in namespace std</li>
+<li>&lt;ccomplex&gt;  : C++ API in namespace std</li>
+<li>&lt;complex.h&gt; : C++ API in global namespace</li>
+</ul>
+
+</discussion>
+
+<resolution>
+<p>
+Change 26.3.11 [cmplxh]:
+</p>
+
+<blockquote>
+<p>
+The header behaves as if it includes the header
+<tt>&lt;ccomplex&gt;</tt><ins>.</ins><del>, and provides sufficient using
+declarations to declare in the global namespace all function and type names
+declared or defined in the neader <tt>&lt;complex&gt;</tt>.</del>
+<ins>[<i>Note:</i> <tt>&lt;complex.h&gt;</tt> does not promote any interface
+into the global namespace as there is no C interface to promote. <i>--end
+note</i>]</ins>
+</p>
+</blockquote>
+
+</resolution>
+
+</issue>

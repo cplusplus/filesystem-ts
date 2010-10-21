@@ -1,0 +1,29 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="34" status="TC1">
+<title>True/falsename() not in ctype&lt;&gt;</title>
+<section><sref ref="[facet.num.put.virtuals]"/></section>
+<submitter>Nathan Myers</submitter>
+<date>6 Aug 1998</date>
+
+<discussion>
+<p>In paragraph 19, Effects:, members truename() and falsename are used from facet
+ctype&lt;charT&gt;, but it has no such members. Note that this is also a problem in
+22.2.2.1.2, addressed in (4). </p>
+</discussion>
+
+<resolution>
+<p>In <sref ref="[facet.num.put.virtuals]"/>, paragraph 19, in the Effects:
+clause for member put(...., bool), replace the initialization of the
+string_type value s as follows: </p>
+
+<blockquote>
+  <pre>const numpunct&amp; np = use_facet&lt;numpunct&lt;charT&gt; &gt;(loc);
+string_type s = val ? np.truename() : np.falsename(); </pre>
+</blockquote>
+</resolution>
+
+</issue>

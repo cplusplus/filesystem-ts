@@ -1,0 +1,137 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="1314" status="NAD">
+<title><tt>NULL</tt> and <tt>nullptr</tt></title>
+<section><sref ref="[support.types]"/></section>
+<submitter>Sean Hunt</submitter>
+<date>7 Feb 2010</date>
+
+<discussion>
+<p>
+Currently, the <sref ref="[support.types]"/>/3 allows <tt>NULL</tt> to be any
+null pointer constant. The footnote marks that 0 or 0L might be appropriate.
+However, this definition also allows the implementation to define <tt>NULL</tt>
+to be <tt>nullptr</tt>. This may lead to overload and conversion issues more
+serious than with the C++98 version:
+</p>
+
+<blockquote><pre>
+void f(void*);
+void f(int);
+
+void g()
+{
+ // calls f(int) if NULL is integral
+ // calls f(void*) if NULL is nullptr
+ f(NULL);
+}
+</pre></blockquote>
+
+<p>
+Possible resolutions:
+</p>
+<ul>
+<li>
+Forbid <tt>NULL</tt> from being <tt>nullptr</tt>
+</li>
+<li>
+Require <tt>NULL</tt> to be <tt>nullptr</tt>
+</li>
+<li>
+Leave it as is
+</li>
+</ul>
+
+<p>
+Making <tt>NULL</tt> <tt>nullptr</tt> would improve code correctness, and
+breaking backwards compatibility shouldn't be a huge concern as <tt>NULL</tt>
+shouldn't be used except as a null pointer constant anyways.
+</p>
+
+<note>
+2010-02-10  Chris provided wording.
+</note>
+
+<note>
+2010 Pittsburgh:  Moved to NAD, rationale added below.
+</note>
+
+</discussion>
+
+<rationale>
+<p>
+The LWG discussed the proposed resolution and several other options.  There was
+no concensus to make this or any other changes.
+</p>
+</rationale>
+
+<resolution>
+<p>
+<sref ref="[support.types]"/>
+</p>
+
+<blockquote>
+<p>
+3 The macro <tt>NULL</tt> <ins>is defined to be <tt>nullptr</tt>.</ins> <del>is
+an implementation-defined C++ null pointer constant in this International
+Standard (4.10).<sup>196</sup></del>
+</p>
+
+<p><del>
+196) Possible definitions include <tt>0</tt> and <tt>0L</tt>, but not
+<tt>(void*)0</tt>.
+</del></p>
+</blockquote>
+
+<p>
+<sref ref="[c.malloc]"/>
+</p>
+
+<blockquote>
+7 The contents are the same as the Standard C library header
+<tt>&lt;string.h&gt;</tt>, with the change to <tt>memchr()</tt> specified in
+21.6 <ins>and the macro <tt>NULL</tt> defined to be <tt>nullptr</tt></ins>.
+</blockquote>
+
+
+<p>
+<sref ref="[date.time]"/>
+</p>
+
+<blockquote>
+2 The contents are the same as the Standard C library header
+<tt>&lt;time.h&gt;</tt><del>.</del><sup>232</sup> <ins>except the macro
+<tt>NULL</tt>, which is defined to be <tt>nullptr</tt>.</ins> The functions
+<tt>asctime</tt>, <tt>ctime</tt>, <tt>gmtime</tt>, and <tt>localtime</tt> are
+not required to avoid data races (17.6.4.8).
+</blockquote>
+
+
+<p>
+<sref ref="[c.locales]"/>
+</p>
+
+<blockquote>
+2 The contents are the same as the Standard C library header
+<tt>&lt;locale.h&gt;</tt> <ins>except the macro <tt>NULL</tt>, which is defined
+to be <tt>nullptr</tt></ins>.
+</blockquote>
+
+<p>
+<sref ref="[diff.null]"/>
+</p>
+
+<blockquote>
+1 The macro <tt>NULL</tt>, defined in any of <tt>&lt;clocale&gt;</tt>,
+<tt>&lt;cstddef&gt;</tt>, <tt>&lt;cstdio&gt;</tt>, <tt>&lt;cstdlib&gt;</tt>,
+<tt>&lt;cstring&gt;</tt>, <tt>&lt;ctime&gt;</tt>, or <tt>&lt;cwchar&gt;</tt>, is
+<ins>nullptr</ins> <del>an implementation-defined C++ null pointer constant in
+this International Standard (18.2).</del>
+</blockquote>
+
+</resolution>
+
+</issue>

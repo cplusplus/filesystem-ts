@@ -1,0 +1,74 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="1185" status="NAD Editorial">
+<title>iterator categories and output iterators</title>
+<section><sref ref="[iterator.requirements]"/></section>
+<submitter>Alisdair Meredith</submitter>
+<date>31 Jul 2009</date>
+
+<discussion>
+<p>
+(wording relative to
+<a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2008/n2723.pdf">N2723</a>
+pending new working paper)
+</p>
+
+<p>
+According to p3 <sref ref="[iterator.requirements]"/>, Forward iterators,
+Bidirectional iterators and Random Access iterators all satisfy the
+requirements for an Output iterator:
+</p>
+
+<blockquote>
+XXX iterators satisfy all the requirements of the input and output iterators
+and can be used whenever either kind is specified ...
+</blockquote>
+
+<p>
+Meanwhile, p4 goes on to contradict this:
+</p>
+
+<blockquote>
+Besides its category, a forward, bidirectional, or random access
+iterator can also be mutable or constant...
+</blockquote>
+
+<blockquote>
+... Constant iterators do not satisfy the requirements for output iterators
+</blockquote>
+
+<p>
+The latter seems to be the overriding concern, as the iterator tag
+hierarchy does not define <tt>forward_iterator_tag</tt> as multiply derived from
+both <tt>input_iterator_tag</tt> and <tt>output_iterator_tag</tt>.
+</p>
+
+<p>
+The work on concepts for iterators showed us that output iterator really
+is fundamentally a second dimension to the iterator categories, rather
+than part of the linear input -&gt; forward -&gt; bidirectional -&gt;
+random-access sequence.  It would be good to clear up these words to
+reflect that, and separately list output iterator requirements in the
+requires clauses for the appropriate algorithms and operations.
+</p>
+
+<note>
+2010 Pittsburgh:  Moved to NAD Editorial.  Rationale added below.
+</note>
+
+</discussion>
+
+<rationale>
+<p>
+Solved by
+<a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2010/n3066.html">N3066</a>.
+</p>
+</rationale>
+
+<resolution>
+</resolution>
+
+</issue>

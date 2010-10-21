@@ -1,0 +1,44 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="455" status="CD1">
+<title>cerr::tie() and wcerr::tie() are overspecified</title>
+<section><sref ref="[iostream.objects]"/></section>
+<submitter>Bill Plauger</submitter>
+<date>30 Jan 2004</date>
+
+<discussion>
+<p>
+Both cerr::tie() and wcerr::tie() are obliged to be null at program
+startup. This is overspecification and overkill. It is both traditional
+and useful to tie cerr to cout, to ensure that standard output is drained
+whenever an error message is written. This behavior should at least be
+permitted if not required. Same for wcerr::tie().
+</p>
+</discussion>
+
+<resolution>
+
+<p>Add to the description of cerr:</p>
+<blockquote><p>
+After the object cerr is initialized, cerr.tie() returns &amp;cout.
+Its state is otherwise the same as required for basic_ios&lt;char>::init
+(lib.basic.ios.cons).
+</p></blockquote>
+
+<p>Add to the description of wcerr:</p>
+
+<blockquote><p>
+After the object wcerr is initialized, wcerr.tie() returns &amp;wcout.
+Its state is otherwise the same as required for basic_ios&lt;wchar_t>::init
+(lib.basic.ios.cons).
+</p></blockquote>
+
+<note>Sydney: straw poll (3-1): we should <i>require</i>, not just
+  permit, cout and cerr to be tied on startup.  Pre-Redmond: Bill will
+  provide wording.</note>
+</resolution>
+
+</issue>

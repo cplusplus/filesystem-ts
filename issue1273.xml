@@ -1,0 +1,62 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="1273" status="NAD Editorial">
+<title><tt>future::valid</tt> should be callable on an invalid future</title>
+<section><sref ref="[futures.unique_future]"/></section>
+<submitter>Jonathan Wakely</submitter>
+<date>22 Nov 2009</date>
+
+<discussion>
+<p>
+<sref ref="[futures.unique_future]"/>/3 says:
+</p>
+
+<blockquote>
+The effect of calling any member function other than the destructor or
+the move-assignment operator on a <tt>future</tt> object for which <tt>valid() ==
+false</tt> is undefined.
+</blockquote>
+
+<p>
+This means calling <tt>future::valid()</tt> is undefined unless it will
+return <tt>true</tt>, so you can only use it if you know the answer!
+</p>
+
+<note>
+2009-12-08 Moved to Tentatively Ready after 5 positive votes on c++std-lib.
+</note>
+
+<note>
+2010 Pittsburgh:
+</note>
+
+<blockquote>
+Moved to NAD Editorial.  Rationale added below.
+</blockquote>
+
+</discussion>
+
+<rationale>
+<p>
+Solved by N3058.
+</p>
+</rationale>
+
+<resolution>
+<p>
+Change <sref ref="[futures.unique_future]"/>/3:
+</p>
+
+<blockquote>
+The effect of calling any member function other than the
+destructor<ins>,</ins> or the move-assignment operator<ins>, or
+<tt>valid</tt>,</ins> on a <tt>future</tt> object for which <tt>valid()
+== false</tt> is undefined.
+</blockquote>
+
+</resolution>
+
+</issue>

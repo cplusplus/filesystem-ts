@@ -1,0 +1,171 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="580" status="NAD Editorial">
+    <title>unused allocator members</title>
+    <section><sref ref="[container.requirements.general]"/></section>
+    <submitter>Martin Sebor</submitter>
+    <date>14 Jun 2006</date>
+
+    <discussion>
+        <p>
+
+C++ Standard Library  templates that take an allocator  as an argument
+are    required    to    call    the    <code>allocate()</code>    and
+<code>deallocate()</code>  members of the  allocator object  to obtain
+storage.  However, they do not appear to be required to call any other
+allocator      members      such     as      <code>construct()</code>,
+<code>destroy()</code>,           <code>address()</code>,          and
+<code>max_size()</code>.  This makes these allocator members less than
+useful in portable programs.
+
+        </p>
+        <p>
+
+It's unclear to me whether the absence of the requirement to use these
+allocator  members  is  an  unintentional  omission  or  a  deliberate
+choice. However,  since the functions exist in  the standard allocator
+and  since  they are  required  to  be  provided by  any  user-defined
+allocator I  believe the standard  ought to be clarified  to explictly
+specify  whether programs  should or  should not  be able  to  rely on
+standard containers calling the functions.
+
+        </p>
+        <p>
+
+I  propose  that all  containers  be required  to  make  use of  these
+functions.
+
+        </p>
+<note>
+Batavia:  We support this resolution.  Martin to provide wording.
+</note>
+<note>
+pre-Oxford:  Martin provided wording.
+</note>
+
+<note>
+2009-04-28 Pablo adds:
+</note>
+
+<blockquote>
+<a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2008/n2554.pdf">N2554</a>
+(scoped allocators),
+<a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2008/n2768.pdf">N2768</a>
+(allocator concepts), and
+<a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2008/n2810.pdf">N2810</a>
+(allocator defects), address all of these points EXCEPT <tt>max_size()</tt>.
+So, I would add a note to that affect and re-class the defect as belonging
+to section <sref ref="[container.requirements.general]"/>.
+</blockquote>
+
+<note>
+2009-07 Frankfurt
+</note>
+
+<blockquote>
+The comment in the description of this issue that this "would be"
+rendered editorial by the adoption of N2257 is confusing. It appears
+that N2257 was never adopted.
+</blockquote>
+
+<note>
+2009-10 Santa Cruz:
+</note>
+
+<blockquote>
+NAD Editorial.  Addressed by
+<a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2009/n2982.pdf">N2982</a>.
+</blockquote>
+
+</discussion>
+
+    <resolution>
+       <p>
+
+Specifically, I propose to change <sref ref="[container.requirements]"/>,
+p9 as follows:
+
+       </p>
+           <blockquote>
+<p>
+-9- Copy constructors  for all container types defined  in this clause
+<ins>that   are  parametrized  on   <code>Allocator</code></ins>  copy
+<del>an</del><ins>the</ins>  allocator argument from  their respective
+first parameters.
+
+All other  constructors for  these container types  take a<del>n</del>
+<ins>const</ins>  <code>Allocator&amp;</code>  argument  (20.1.6),  an
+allocator whose <code>value_type</code> is the same as the container's
+<code>value_type</code>.
+
+A copy of this  argument <del>is</del><ins>shall be</ins> used for any
+memory  allocation <ins> and  deallocation</ins> performed<del>,</del>
+by these  constructors and by all  member functions<del>,</del> during
+the  lifetime  of each  container  object.   <ins>Allocation shall  be
+performed  "as  if"  by  calling  the  <code>allocate()</code>  member
+function on  a copy  of the allocator  object of the  appropriate type
+<sup>New  Footnote)</sup>,   and  deallocation  "as   if"  by  calling
+<code>deallocate()</code> on  a copy of  the same allocator  object of
+the corresponding type.</ins>
+
+<ins>A  copy of  this argument  shall also  be used  to  construct and
+destroy objects whose lifetime  is managed by the container, including
+but not  limited to those of  the container's <code>value_type</code>,
+and  to  obtain  their  address.   All  objects  residing  in  storage
+allocated by a  container's allocator shall be constructed  "as if" by
+calling the <code>construct()</code> member  function on a copy of the
+allocator object of  the appropriate type.  The same  objects shall be
+destroyed "as if"  by calling <code>destroy()</code> on a  copy of the
+same allocator object  of the same type.  The  address of such objects
+shall be obtained "as if" by calling the <code>address()</code> member
+function  on  a  copy  of  the allocator  object  of  the  appropriate
+type.</ins>
+
+<ins>Finally, a copy  of this argument shall be  used by its container
+object to determine  the maximum number of objects  of the container's
+<code>value_type</code> the container may  store at the same time. The
+container  member function <code>max_size()</code> obtains  this number
+from      the      value      returned      by     a      call      to
+<code>get_allocator().max_size()</code>.</ins>
+
+In   all  container   types  defined   in  this   clause <ins>that  are
+parametrized     on    <code>Allocator</code></ins>,     the    member
+<code>get_allocator()</code>     returns     a     copy     of     the
+<code>Allocator</code>     object     used     to    construct     the
+container.<sup>258)</sup>
+</p>
+<p>
+New Footnote: This type  may be different from <code>Allocator</code>:
+it     may    be     derived    from     <code>Allocator</code>    via
+<code>Allocator::rebind&lt;U&gt;::other</code>   for  the  appropriate
+type <code>U</code>.
+</p>
+           </blockquote>
+       <p>
+
+The proposed wording seems cumbersome but I couldn't think of a better
+way   to  describe   the   requirement  that   containers  use   their
+<code>Allocator</code>  to manage  only objects  (regardless  of their
+type)  that  persist  over  their  lifetimes  and  not,  for  example,
+temporaries  created on the  stack. That  is, containers  shouldn't be
+required  to  call  <code>Allocator::construct(Allocator::allocate(1),
+elem)</code>  just to  construct a  temporary copy  of an  element, or
+<code>Allocator::destroy(Allocator::address(temp),     1)</code>    to
+destroy temporaries.
+
+       </p>
+</resolution>
+
+<note>
+Howard: This same paragraph will need some work to accommodate <iref ref="431"/>.
+</note>
+
+<note>
+post Oxford:  This would be rendered NAD Editorial by acceptance of
+<a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2007/n2257.html">N2257</a>.
+</note>
+
+</issue>

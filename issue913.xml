@@ -1,0 +1,125 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="913" status="NAD Concepts">
+<title>Superfluous requirements for replace algorithms</title>
+<section><sref ref="[alg.replace]"/></section>
+<submitter>Daniel Kr&uuml;gler</submitter>
+<date>3 Oct 2008</date>
+
+<discussion>
+<p>
+(A) <sref ref="[alg.replace]"/>/1:
+</p>
+
+<blockquote>
+<i>Requires:</i> The expression <tt>*first = new_value</tt> shall be valid.
+</blockquote>
+
+<p>
+(B) <sref ref="[alg.replace]"/>/4:
+</p>
+
+<blockquote>
+<i>Requires:</i> The results of the expressions <tt>*first</tt> and <tt>new_value</tt> shall
+be writable to the result output iterator.[..]
+</blockquote>
+
+<p>
+Since conceptualization, the quoted content of these clauses is covered
+by the existing requirements
+</p>
+
+<p>
+(A) <tt>OutputIterator&lt;Iter, const T&amp;&gt;</tt>
+</p>
+
+<p>
+and
+</p>
+
+<p>
+(B) <tt>OutputIterator&lt;OutIter, InIter::reference&gt; &amp;&amp; OutputIterator&lt;OutIter, const T&amp;&gt;</tt>
+</p>
+
+<p>
+resp, and thus should be removed.
+</p>
+
+<note>
+Batavia (2009-05):
+</note>
+<blockquote>
+<p>
+We agree with the proposed resolution.
+</p>
+<p>
+Move to Tentatively Ready.
+</p>
+</blockquote>
+</discussion>
+
+<resolution>
+<ol type="A">
+<li>
+<p>
+Remove <sref ref="[alg.replace]"/>/1.
+</p>
+<blockquote><pre>
+template&lt;ForwardIterator Iter, class T&gt; 
+  requires OutputIterator&lt;Iter, Iter::reference&gt; 
+        &amp;&amp; OutputIterator&lt;Iter, const T&amp;&gt; 
+        &amp;&amp; HasEqualTo&lt;Iter::value_type, T&gt; 
+  void replace(Iter first, Iter last, 
+               const T&amp; old_value, const T&amp; new_value); 
+
+template&lt;ForwardIterator Iter, Predicate&lt;auto, Iter::value_type&gt; Pred, class T&gt; 
+  requires OutputIterator&lt;Iter, Iter::reference&gt; 
+        &amp;&amp; OutputIterator&lt;Iter, const T&amp;&gt; 
+        &amp;&amp; CopyConstructible&lt;Pred&gt; 
+  void replace_if(Iter first, Iter last, 
+                  Pred pred, const T&amp; new_value);
+</pre>
+<blockquote>
+<del>1 <i>Requires:</i> The expression <tt>*first = new_value</tt> shall be valid.</del>
+</blockquote>
+</blockquote>
+</li>
+<li>
+<p>
+<sref ref="[alg.replace]"/>/4: Remove the sentence "The results of the
+expressions <tt>*first</tt> and
+<tt>new_value</tt> shall be writable to the result output iterator.".
+</p>
+<blockquote><pre>
+template&lt;InputIterator InIter, typename OutIter, class T&gt; 
+  requires OutputIterator&lt;OutIter, InIter::reference&gt; 
+        &amp;&amp; OutputIterator&lt;OutIter, const T&amp;&gt; 
+        &amp;&amp; HasEqualTo&lt;InIter::value_type, T&gt; 
+  OutIter replace_copy(InIter first, InIter last, 
+                       OutIter result, 
+                       const T&amp; old_value, const T&amp; new_value);
+
+template&lt;InputIterator InIter, typename OutIter,
+         Predicate&lt;auto, InIter::value_type&gt; Pred, class T&gt; 
+  requires OutputIterator&lt;OutIter, InIter::reference&gt; 
+        &amp;&amp; OutputIterator&lt;OutIter, const T&amp;&gt; 
+        &amp;&amp; CopyConstructible&lt;Pred&gt; 
+  OutIter replace_copy_if(InIter first, InIter last, 
+                          OutIter result, 
+                          Pred pred, const T&amp; new_value);
+</pre>
+<blockquote>
+4 <i>Requires:</i> <del>The results of the expressions <tt>*first</tt> and
+<tt>new_value</tt> shall be writable to the <tt>result</tt> output
+iterator.</del> The ranges <tt>[first,last)</tt> and <tt>[result,result +
+(last - first))</tt> shall not overlap.
+</blockquote>
+</blockquote>
+</li>
+</ol>
+</resolution>
+
+</issue>

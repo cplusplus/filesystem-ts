@@ -1,0 +1,57 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="1153" status="NAD">
+<title>Standard library needs review for constructors to be
+explicit to avoid treatment as initializer-list constructor</title>
+<section><sref ref="[library]"/>, <sref ref="[thread]"/>, , <sref ref="[depr]"/></section>
+<submitter>LWG</submitter>
+<date>28 Jun 2009</date>
+
+<discussion>
+
+<p><b>Addresses DE 2</b></p>
+
+<p><b>Description</b></p>
+        <p>Marking a constructor with <tt>explicit</tt> has semantics
+        even for a constructor with zero or several parameters:
+        Such a constructor cannot be used with list-initialization
+        in a copy-initialization context, see <sref ref="[over.match.list]"/>. The
+        standard library apparently has not been reviewed for
+        marking non-single-parameter constructors as <tt>explicit</tt>.</p>
+<p><b>Suggestion</b></p>
+        <p>Consider marking zero-parameter and multi-parameter
+        constructors <tt>explicit</tt> in classes that have at least one
+        constructor marked <tt>explicit</tt> and that do not have an
+        initializer-list constructor.</p>
+
+<p><b>Notes</b></p>
+        <p>Robert Klarer to address this one.</p>
+
+<note>
+2009 Santa Cruz:
+</note>
+
+<blockquote>
+Move to "Open". Robert Klarer has promised to provide wording.
+</blockquote>
+
+<note>
+2010 Pittsburgh:  Moved to NAD, rationale added below.
+</note>
+
+</discussion>
+
+<rationale>
+<p>
+We are unaware of any cases where initializer lists cause problem in this
+context, but if problems arise in the future the issue can be reopened.
+</p>
+</rationale>
+
+<resolution>
+</resolution>
+
+</issue>

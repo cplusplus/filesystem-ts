@@ -1,0 +1,53 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+    <!DOCTYPE issue SYSTEM "lwg_issue.dtd" [
+        <!ENTITY nbsp " ">
+     ]
+>
+<issue num="418" status="NAD">
+    <title>exceptions thrown during iostream cleanup</title>
+    <section><sref ref="[ios::Init]"/></section>
+    <submitter>Martin Sebor</submitter>
+    <date>18 Sep 2003</date>
+
+<discussion>
+<p>
+The dtor of the ios_base::Init object is supposed to call flush() on the
+6 standard iostream objects cout, cerr, clog, wcout, wcerr, and wclog.
+This call may cause an exception to be thrown.
+</p>
+
+<p>
+17.4.4.8, p3 prohibits all library destructors from throwing exceptions.
+</p>
+
+<p>
+The question is: What should this dtor do if one or more of these calls
+to flush() ends up throwing an exception? This can happen quite easily
+if one of the facets installed in the locale imbued in the iostream
+object throws.
+</p>
+<note>Kona: We probably can't do much better than what we've got, so
+  the LWG is leaning toward NAD.  At the point where the standard
+  stream objects are being cleaned up, the usual error reporting
+  mechanism are all unavailable.  And exception from flush at this
+  point will definitely cause problems.  A quality implementation
+  might reasonably swallow the exception, or call abort, or do
+  something even more drastic.</note>
+
+<note>
+See <iref ref="397"/> and <iref ref="622"/> for related issues.
+</note>
+
+<note>
+2009-07 Frankfurt
+</note>
+
+<blockquote>
+Moved to NAD, no consensus for change.
+</blockquote>
+
+</discussion>
+
+<resolution>
+</resolution>
+</issue>

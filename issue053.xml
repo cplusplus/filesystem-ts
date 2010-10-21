@@ -1,0 +1,36 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="53" status="TC1">
+<title>Basic_ios destructor unspecified</title>
+<section><sref ref="[basic.ios.cons]"/></section>
+<submitter>Matt Austern</submitter>
+<date>23 Jun 1998</date>
+
+<discussion>
+<p>There's nothing in 27.4.4 saying what basic_ios's destructor does.
+The important question is whether basic_ios::~basic_ios() destroys
+rdbuf().</p>
+</discussion>
+
+<resolution>
+<p>Add after <sref ref="[basic.ios.cons]"/> paragraph 2:</p>
+
+<blockquote>
+  <p><tt>virtual ~basic_ios();</tt></p>
+  <p><b>Notes</b>: The destructor does not destroy <tt>rdbuf()</tt>.</p>
+</blockquote>
+</resolution>
+
+<rationale> 
+<p>The LWG reviewed the additional question of whether or not
+<tt>rdbuf(0)</tt> may set <tt>badbit</tt>.  The answer is
+clearly yes; it may be set via <tt>clear()</tt>.  See <sref ref="[basic.ios.members]"/>, paragraph 6.  This issue was reviewed at length
+by the LWG, which removed from the original proposed resolution a
+footnote which incorrectly said &quot;<tt>rdbuf(0)</tt> does not set
+<tt>badbit</tt>&quot;.</p>
+</rationale>
+
+</issue>

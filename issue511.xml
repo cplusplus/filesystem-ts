@@ -1,0 +1,94 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="511" status="NAD">
+<title>Input_type for binomial_distribution</title>
+<section><sref ref="[rand.dist]"/><sref ref="[tr.rand.dist.bin]"/></section>
+<submitter>Walter Brown</submitter>
+<date>3 Jul 2005</date>
+
+<discussion>
+<p>
+Unlike all other distributions in TR1, this binomial_distribution has an
+implementation-defined  input_type.  We believe this is an unfortunate choice,
+because it hinders users from writing portable code.  It also hinders the
+writing of compliance tests.  We recommend instead:
+</p>
+<blockquote><pre>
+typedef  RealType  input_type;
+</pre></blockquote>
+<p>
+While this choice is somewhat arbitrary (as it was for some of the other
+distributions), we make  this particular choice because (unlike all other
+distributions) otherwise this template would not publish its RealType
+argument and so users could not write generic code that accessed this
+second template parameter.  In this respect, the choice is consistent with
+the other distributions in  TR1. 
+</p>
+<p>
+We have two reasons for recommending that a real type be specified instead.
+One reason is  based specifically on characteristics of binomial distribution
+implementations, while the other is based on mathematical characteristics of
+probability distribution functions in general.
+</p>
+<p>
+Implementations of binomial distributions commonly use Stirling approximations
+for values in certain ranges.  It is far more natural to use real values to
+represent these approximations than it would be to use integral values to do
+so.  In other ranges, implementations reply on the Bernoulli  distribution to
+obtain values.  While TR1's bernoulli_distribution::input_type is specified as
+int, we believe this would be better specified as double.
+</p>
+<p>
+This brings us to our main point:  The notion of a random distribution rests
+on the notion of a cumulative distribution function, which in turn mathematically
+depends on a continuous dependent variable.  Indeed, such a distribution function
+would be meaningless if it depended on  discrete values such as integers - and this
+remains true even if the distribution function were to take discrete steps.
+</p>
+<p>
+Although this note is specifically about binomial_distribution::input_type,
+we intend to recommend that all of the random distributions input_types be
+specified as a real type (either a RealType template parameter, or double,
+as appropriate).
+</p>
+<p>
+Of the nine distributions in TR1, four already have this characteristic
+(uniform_real, exponential_distribution, normal_distribution, and
+gamma_distribution).  We have already argued the case for the binomial the
+remaining four distributions.
+</p>
+<p>
+In the case of uniform_int, we believe that the calculations to produce an
+integer result in a  specified range from an integer in a different specified
+range is best done using real arithmetic.  This is because it involves a
+product, one of whose terms is the ratio of the extents of the two ranges.
+Without real arithmetic, the results become less uniform: some numbers become
+more  (or less) probable that they should be.  This is, of course, undesireable
+behavior in a uniform distribution.
+</p>
+<p>
+Finally, we believe that in the case of the bernoulli_distribution (briefly
+mentioned earlier), as well as the cases of the geometric_distribution and the
+poisson_distribution, it would be far more natural to have a real input_type.
+This is because the most natural computation involves the  random number
+delivered and the distribution's parameter p (in the case of bernoulli_distribution,
+for example, the computation is a comparison against p), and p is already specified
+in each case as having some real type.
+</p>
+</discussion>
+
+<resolution>
+<blockquote><pre>
+typedef  RealType  input_type;
+</pre></blockquote>
+
+<note>
+Berlin:  Moved to NAD.  N1932 makes this moot: the input_type template parameter has been
+eliminated.
+</note>
+</resolution>
+
+</issue>

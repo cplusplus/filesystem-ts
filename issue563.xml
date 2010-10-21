@@ -1,0 +1,60 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="563" status="CD1">
+<title>stringbuf seeking from end</title>
+<section><sref ref="[stringbuf.virtuals]"/></section>
+<submitter>Martin Sebor</submitter>
+<date>23 Feb 2006</date>
+
+<discussion>
+<p>
+According to  Table 92  (unchanged by issue  432), when  <code>(way ==
+end)</code> the  <code>newoff</code> value in out mode  is computed as
+the difference between <code>epptr()</code> and <code>pbase()</code>.
+</p>
+        <p>
+
+This value  isn't meaningful unless the  value of <code>epptr()</code>
+can be  precisely controlled by a  program.  That used  to be possible
+until  we accepted the  resolution of  issue 432,  but since  then the
+requirements on <code>overflow()</code> have  been relaxed to allow it
+to  make  more than  1  write  position  available (i.e.,  by  setting
+<code>epptr()</code>     to     some     unspecified    value     past
+<code>pptr()</code>).      So    after     the    first     call    to
+<code>overflow()</code>  positioning the  output sequence  relative to
+end will have unspecified results.
+
+        </p>
+        <p>
+
+In  addition,  in <code>in|out</code>  mode,  since <code>(egptr()  ==
+epptr())</code> need not hold, there are two different possible values
+for   <code>newoff</code>:    <code>epptr()   -   pbase()</code>   and
+<code>egptr() - eback()</code>.
+
+        </p>
+</discussion>
+
+<resolution>
+        <p>
+
+Change the <code>newoff</code>  column in the last row  of Table 94 to
+read:
+
+        </p>
+<blockquote><p>
+
+the <del>end</del> <ins>high mark</ins> pointer minus the beginning 
+pointer (<code><del>xend</del> <ins>high_mark</ins> - xbeg</code>).
+
+</p></blockquote>
+</resolution>
+
+<note>
+Kona (2007) Moved to Ready.
+</note>
+
+</issue>

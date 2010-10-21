@@ -1,0 +1,66 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="1149" status="NAD Concepts">
+<title>Reformulating NonemptyRange axiom</title>
+<section><sref ref="[rand.concept.urng]"/></section>
+<submitter>Walter Brown</submitter>
+<date>25 Jun 2009</date>
+
+<discussion>
+<p>
+In <sref ref="[rand.concept.urng]"/>, we have the following:
+</p>
+<blockquote><pre>
+concept UniformRandomNumberGenerator&lt;typename G&gt; : Callable&lt;G&gt; {
+  ...
+  axiom NonemptyRange(G&amp; g) {
+    G::min() &lt; G::max();
+  }
+  ...
+}
+</pre></blockquote>
+
+<p>
+Since the parameter <tt>G</tt> is in scope throughout the concept, there is no
+need for the axiom to be further parameterized, and so the axiom can be
+slightly simplified as:
+</p>
+
+<blockquote><pre>
+axiom NonemptyRange()  {
+  G::min() &lt; G::max();
+}
+</pre></blockquote>
+
+<p>
+We can further reformulate so as to avoid any axiom machinery as:
+</p>
+
+<blockquote><pre>
+requires True&lt; G::min() &lt; G::max() &gt;;
+</pre></blockquote>
+
+<p>
+This is not only a simpler statement of the same requirement, but also
+forces the requirement to be checked.
+</p>
+</discussion>
+
+<resolution>
+<p>
+In <sref ref="[rand.concept.urng]"/>, replace the <tt>NonemptyRange</tt> axiom by:
+</p>
+
+<blockquote><pre>
+<del>axiom NonemptyRange(G&amp; g) { 
+   G::min() &lt; G::max(); 
+}</del>
+<ins>requires True&lt; G::min() &lt; G::max() &gt;;</ins>
+</pre></blockquote>
+
+</resolution>
+
+</issue>

@@ -1,0 +1,69 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="392" status="NAD">
+<title>'equivalence' for input iterators</title>
+<section><sref ref="[input.iterators]"/></section>
+<submitter>Corwin Joy</submitter>
+<date>11 Dec 2002</date>
+
+<discussion>
+
+<p>
+In section <sref ref="[input.iterators]"/> table 72 -
+'Input Iterator Requirements' we have as a postcondition of *a:
+"If a==b and (a, b) is in the domain of == then *a is equivalent to *b".
+</p>
+
+<p>
+In section <sref ref="[istreambuf.iterator::equal]"/> it states that
+"istreambuf_iterator::equal returns true if and only if both iterators
+are at end-of-stream, or neither is at end-of-stream, <i>regardless of
+what streambuf object they use</i>."  (My emphasis).
+</p>
+
+<p>
+The defect is that either 'equivalent' needs to be more precisely
+defined or the conditions for equality in <sref ref="[istreambuf.iterator::equal]"/>
+are incorrect. (Or both).
+</p>
+
+<p>Consider the following example:</p>
+<pre>
+   #include &lt;iostream&gt;
+   #include &lt;fstream&gt;
+   #include &lt;iterator&gt;
+   using namespace std;
+
+   int main() {
+    ifstream file1("file1.txt"), file2("file2.txt");
+    istreambuf_iterator&lt;char&gt; f1(file1), f2(file2);
+    cout &lt;&lt; "f1 == f2 : " &lt;&lt; boolalpha &lt;&lt; (f1 == f2) &lt;&lt; endl;
+    cout &lt;&lt; "f1 = " &lt;&lt; *f1 &lt;&lt; endl;
+    cout &lt;&lt; "f2 = " &lt;&lt; *f2 &lt;&lt; endl;
+    return 0;
+   }
+</pre>
+
+<p>Now assuming that neither f1 or f2 are at the end-of-stream then
+f1 == f2 by <sref ref="[istreambuf.iterator::equal]"/>.</p>
+
+<p>However, it is unlikely that *f1 will give the same value as *f2 except
+by accident.</p>
+
+<p>So what does *f1 'equivalent' to *f2 mean?  I think the standard should
+be clearer on this point, or at least be explicit that this does not
+mean that *f1 and *f2 are required to have the same value in the case
+of input iterators.</p>
+</discussion>
+
+<resolution>
+</resolution>
+
+<rationale><p>The two iterators aer not in the domain of ==</p></rationale>
+
+</issue>
+
+

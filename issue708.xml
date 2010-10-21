@@ -1,0 +1,72 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="708" status="NAD Future">
+<title>Locales need to be per thread and updated for POSIX changes</title>
+<section><sref ref="[localization]"/></section>
+<submitter>Peter Dimov</submitter>
+<date>28 Jul 2007</date>
+
+<discussion>
+<p>
+The POSIX "Extended API Set Part 4,"
+</p>
+<blockquote><p>
+<a href="http://www.opengroup.org/sib/details.tpl?id=C065">http://www.opengroup.org/sib/details.tpl?id=C065</a>
+</p></blockquote>
+<p>
+introduces extensions to the C locale mechanism that
+allow multiple concurrent locales to be used in the same application
+by introducing a type <tt>locale_t</tt> that is very similar to
+<tt>std::locale</tt>, and a number of <tt>_l</tt> functions that make use of it.
+</p>
+<p>
+The global locale (set by setlocale) is now specified to be per-
+process. If a thread does not call <tt>uselocale</tt>, the global locale is
+in effect for that thread. It can install a per-thread locale by
+using <tt>uselocale</tt>.
+</p>
+<p>
+There is also a nice <tt>querylocale</tt> mechanism by which one can obtain
+the name (such as "de_DE") for a specific <tt>facet</tt>, even for combined
+locales, with no <tt>std::locale</tt> equivalent.
+</p>
+<p>
+<tt>std::locale</tt> should be harmonized with the new POSIX <tt>locale_t</tt>
+mechanism and provide equivalents for <tt>uselocale</tt> and <tt>querylocale</tt>.
+</p>
+
+<note>
+Kona (2007): Bill and Nick to provide wording.
+</note>
+
+<note>
+San Francisco: Bill and Nick still intend to provide wording, but this
+is a part of the task to be addressed by the group that will look into
+issue <iref ref="860"/>.
+</note>
+
+<note>
+2009-07 Frankfurt:
+</note>
+
+<blockquote>
+<p>
+It's our intention to stay in sync with WG14. If WG14 makes a decision
+that requires a change in WG21 the issue will be reopened.
+</p>
+<p>
+Move to NAD Future.
+</p>
+</blockquote>
+
+</discussion>
+
+<resolution>
+<p>
+</p>
+</resolution>
+
+</issue>

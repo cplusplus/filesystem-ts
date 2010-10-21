@@ -1,0 +1,599 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="861" status="WP">
+<title>Incomplete specification of EqualityComparable for std::forward_list</title>
+<section><sref ref="[container.requirements]"/></section>
+<submitter>Daniel Kr&uuml;gler</submitter>
+<date>24 Jun 2008</date>
+
+<discussion>
+<p>
+Table 89, Container requirements, defines <tt>operator==</tt> in terms of the container
+member function <tt>size()</tt> and the algorithm <tt>std::equal</tt>:
+</p>
+
+<blockquote>
+<tt>==</tt> is an equivalence relation. <tt>a.size() == b.size() &amp;&amp;
+equal(a.begin(), a.end(), b.begin()</tt>
+</blockquote>
+
+<p>
+The new container <tt>forward_list</tt> does not provide a <tt>size</tt> member function
+by design but does provide <tt>operator==</tt> and <tt>operator!=</tt> without specifying it's semantic.
+</p>
+<p>
+Other parts of the (sequence) container requirements do also depend on
+<tt>size()</tt>, e.g. <tt>empty()</tt>
+or <tt>clear()</tt>, but this issue explicitly attempts to solve the missing
+<tt>EqualityComparable</tt> specification,
+because of the special design choices of <tt>forward_list</tt>.
+</p>
+<p>
+I propose to apply one of the following resolutions, which are described as:
+</p>
+
+<ol type="A">
+<li>
+Provide a definition, which is optimal for this special container without
+previous size test. This choice prevents two <tt>O(N)</tt> calls of <tt>std::distance()</tt>
+with the corresponding container ranges and instead uses a special
+<tt>equals</tt> implementation which takes two container ranges instead of 1 1/2.
+</li>
+<li>
+The simple fix where the usual test is adapted such that <tt>size()</tt> is replaced
+by <tt>distance</tt> with corresponding performance disadvantages.
+</li>
+</ol>
+<p>
+Both proposal choices are discussed, the preferred choice of the author is
+to apply (A).
+</p>
+
+<note>
+San Francisco:
+</note>
+
+<blockquote>
+<p>
+There's an Option C: change the requirements table to use distance().
+</p>
+<p>
+LWG found Option C acceptable.
+</p>
+<p>
+Martin will draft the wording for Option C.
+</p>
+</blockquote>
+
+<note>
+post San Francisco:
+</note>
+
+<blockquote>
+Martin provided wording for Option C.
+</blockquote>
+
+<note>
+2009-07 Frankfurt
+</note>
+
+<blockquote>
+<p>
+Other operational semantics (see, for example, Tables 82 and 83) are
+written in terms of a container's size() member. Daniel to update
+proposed resolution C.
+</p>
+<note>
+Howard: Commented out options A and B.
+</note>
+</blockquote>
+
+<note>
+2009-07-26 Daniel updated proposed resolution C.
+</note>
+
+<note>
+2009-10 Santa Cruz:
+</note>
+
+<blockquote>
+Mark NAD Editorial. Addressed by
+<a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2009/n2986.pdf">N2986</a>.
+</blockquote>
+
+<note>
+2009-10 Santa Cruz:
+</note>
+
+<blockquote>
+Reopened.
+<a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2009/n2986.pdf">N2986</a>
+was rejected in full committee on procedural grounds.
+</blockquote>
+
+<note>
+2010-01-30 Howard updated Table numbers.
+</note>
+
+<note>
+2010 Pittsburgh:
+</note>
+
+<blockquote>
+Moved to Ready for Pittsburgh.
+</blockquote>
+
+</discussion>
+
+<resolution>
+<!-- 
+<p>
+Common part:
+</p>
+<ul>
+<li>
+<p>
+Just betwen <sref ref="[forwardlist.ops]"/> and <sref ref="[forwardlist.spec]"/>
+add a new
+section "forwardlist comparison operators" [forwardlist.compare] (and
+also add the
+new section number to <sref ref="[forwardlist]"/>/2 in front of "Comparison operators"):
+</p>
+<blockquote>
+forwardlist comparison operators [forwardlist.compare]
+</blockquote>
+</li>
+</ul>
+
+<p>
+Option (A):
+</p>
+<blockquote>
+<ul>
+<li>
+<p>
+Add to the new section [forwardlist.compare] the following paragraphs:
+</p>
+
+<blockquote>
+<pre>
+template &lt;class T, class Allocator&gt;
+bool operator==(const forward_list&lt;T,Allocator&gt;&amp; x, const forward_list&lt;T,Allocator&gt;&amp; y);
+</pre>
+<blockquote>
+<p>
+<i>Requires:</i> Type <tt>T</tt> is <tt>EqualityComparable</tt> ([equalitycomparable]).
+</p>
+<p>
+<i>Returns:</i> <tt>true</tt> if
+</p>
+<ul>
+<li>
+<p>
+for every iterator <tt>i</tt> in the range <tt>[x.begin(), E)</tt>, where <tt>E ==
+x.begin() + M</tt> and <tt>M ==
+   min(distance(x.begin(), x.end()), distance(y.begin(), y.end()))</tt>,
+the following condition holds:
+</p>
+<blockquote><pre>
+*i == *(y.begin() + (i - x.begin())).
+</pre></blockquote>
+</li>
+<li>
+if <tt>i == E</tt> then <tt>i == x.end() &amp;&amp; (y.begin() + (i - x.begin())) == y.end()</tt>.
+</li>
+<li>
+Otherwise, returns <tt>false</tt>.
+</li>
+</ul>
+<p>
+<i>Throws:</i> Nothing unless an exception is thrown by the equality comparison.
+</p>
+<p>
+<i>Complexity:</i> At most <tt>M</tt> comparisons.
+</p>
+</blockquote>
+<pre>
+template &lt;class T, class Allocator&gt;
+bool operator!=(const forward_list&lt;T,Allocator&gt;&amp; x, const forward_list&lt;T,Allocator&gt;&amp; y);
+</pre>
+<blockquote>
+<i>Returns:</i> <tt>!(x == y)</tt>.
+</blockquote>
+</blockquote>
+</li>
+</ul>
+</blockquote>
+
+<p>
+Option (B):
+</p>
+<blockquote>
+<ul>
+<li>
+<p>
+Add to the new section [forwardlist.compare] the following paragraphs:
+</p>
+<blockquote>
+<pre>
+template &lt;class T, class Allocator&gt;
+bool operator==(const forward_list&lt;T,Allocator&gt;&amp; x, const forward_list&lt;T,Allocator&gt;&amp; y);
+</pre>
+<blockquote>
+<p>
+<i>Requires:</i> Type <tt>T</tt> is <tt>EqualityComparable</tt> ([equalitycomparable]).
+</p>
+<p>
+<i>Returns:</i> <tt>distance(x.begin(), x.end()) == distance(y.begin(), y.end())
+&amp;&amp; equal(x.begin(), x.end(), y.begin())</tt>.
+</p>
+</blockquote>
+<pre>
+template &lt;class T, class Allocator&gt;
+bool operator!=(const forward_list&lt;T,Allocator&gt;&amp; x, const forward_list&lt;T,Allocator&gt;&amp; y);
+</pre>
+<blockquote>
+<i>Returns:</i> <tt>!(x == y)</tt>.
+</blockquote>
+</blockquote>
+</li>
+
+</ul>
+</blockquote>
+ -->
+
+<p>
+Option (C):
+</p>
+<blockquote>
+
+<ol>
+<li>
+<p>
+In <sref ref="[container.requirements.general]"/> change Table 90 -- Container requirements as indicated:
+</p>
+
+<ol type="a">
+<li>
+<p>
+Change the text in the Assertion/note column in the row for "<tt>X u</tt>;"
+as follows:
+</p>
+
+<blockquote>
+post: <tt>u.<del>size() == 0</del><ins>empty() == true</ins></tt>
+</blockquote>
+</li>
+
+<li>
+<p>
+Change the text in the Assertion/note column in the row for "<tt>X();</tt>"
+as follows:
+</p>
+
+<blockquote>
+<tt>X().<del>size() == 0</del><ins>empty() == true</ins></tt>
+</blockquote>
+</li>
+
+<li>
+<p>
+Change the text in the Operational Semantics column in the row for
+"<tt>a == b</tt>" as follows:
+</p>
+<blockquote>
+<tt>==</tt> is an equivalence relation.
+<tt><del>a.size()</del><ins>distance(a.begin(), a.end())</ins> ==
+   <del>b.size()</del><ins>distance(b.begin(), b.end())</ins> &amp;&amp;
+equal(a.begin(), a.end(), b.begin())</tt>
+</blockquote>
+</li>
+
+<li>
+<p>
+Add text in the Ass./Note/pre-/post-condition column in the row for
+"<tt>a == b</tt>" as follows:
+</p>
+<blockquote><ins>
+<i>Requires:</i> <tt>T</tt> is <tt>EqualityComparable</tt>
+</ins></blockquote>
+</li>
+
+<li>
+<p>
+Change the text in the Operational Semantics column in the row for
+"<tt>a.size()</tt>" as follows:
+</p>
+
+<blockquote>
+<tt><del>a.end() - a.begin()</del><ins>distance(a.begin(), a.end())</ins></tt>
+</blockquote>
+</li>
+
+<li>
+<p>
+Change the text in the Operational Semantics column in the row for
+"<tt>a.max_size()</tt>" as follows:
+</p>
+
+<blockquote>
+<tt><del>size()</del><ins>distance(begin(), end())</ins></tt> of the largest
+possible container
+</blockquote>
+</li>
+
+<li>
+<p>
+Change the text in the Operational Semantics column in the row for
+"<tt>a.empty()</tt>" as follows:
+</p>
+
+<blockquote>
+<tt><del>a.size() == 0</del><ins>a.begin() == a.end()</ins></tt>
+</blockquote>
+</li>
+</ol>
+</li>
+
+<li>
+<p>
+In <sref ref="[container.requirements.general]"/> change Table 93 -- Allocator-aware container requirements as indicated:
+</p>
+
+<ol type="a">
+<li>
+<p>
+Change the text in the Assertion/note column in the row for "<tt>X() /
+X u;</tt>" as follows:
+</p>
+
+<blockquote>
+<i>Requires:</i> <tt>A</tt> is <tt>DefaultConstructible</tt> post: <tt><del>u.size() ==
+0</del><ins>u.empty() == true</ins></tt>, <tt>get_allocator() == A()</tt>
+</blockquote>
+</li>
+
+<li>
+<p>
+Change the text in the Assertion/note column in the row for "<tt>X(m) /
+X u(m);</tt>" as follows:
+</p>
+
+<blockquote>
+post: <tt><del>u.size() == 0</del><ins>u.empty() == true</ins>,
+get_allocator() == m</tt>
+</blockquote>
+</li>
+</ol>
+</li>
+
+<li>
+<p>
+In <sref ref="[sequence.reqmts]"/> change Table 94 -- Sequence container requirements as indicated:
+</p>
+
+<ol type="a">
+<li>
+<p>
+Change the text in the Assertion/note column in the row for "<tt>X(n,
+t) / X a(n, t)</tt>" as follows:
+</p>
+
+<blockquote>
+post: <tt><del>size()</del><ins>distance(begin(), end())</ins> == n [..]</tt>
+</blockquote>
+</li>
+
+<li>
+<p>
+Change the text in the Assertion/note column in the row for "<tt>X(i,
+j) / X a(i, j)</tt>" as follows:
+</p>
+
+<blockquote>
+[..] post: <del><tt>size() ==</tt> distance between <tt>i</tt> and
+<tt>j</tt></del><ins><tt>distance(begin(), end()) == distance(i, j)</tt></ins> [..]
+</blockquote>
+</li>
+
+<li>
+<p>
+Change the text in the Assertion/note column in the row for
+"<tt>a.clear()</tt>" as follows:
+</p>
+<blockquote>
+<tt><ins>a.</ins>erase(<ins>a.</ins>begin(), <ins>a.</ins>end())</tt> post:
+<tt><del>size() == 0</del><ins>a.empty() == true</ins></tt>
+</blockquote>
+</li>
+</ol>
+</li>
+
+<li>
+<p>
+In <sref ref="[associative.reqmts]"/> change Table 96 -- Associative container requirements as indicated:
+</p>
+
+<note>
+Not every occurrence of <tt>size()</tt> was replaced, because all current
+associative containers
+have a <tt>size</tt>. The following changes ensure consistency regarding the
+semantics of "<tt>erase</tt>"
+for all tables and adds some missing objects
+</note>
+
+<ol type="a">
+
+<li>
+<p>
+Change the text in the Complexity column in the row for <tt>X(i,j,c)/X
+a(i,j,c);</tt> as follows:
+</p>
+
+<blockquote>
+<tt>N</tt> log <tt>N</tt> in general (<tt>N</tt> <ins><tt> == distance(i,
+j)</tt></ins><del>is the distance from <tt>i</tt> to <tt>j</tt></del>); ...
+</blockquote>
+
+</li>
+
+<li>
+<p>
+Change the text in the Complexity column in the row for
+"<tt>a.insert(i, j)</tt>" as follows:
+</p>
+<blockquote>
+<tt>N log(<ins>a.</ins>size() + N)</tt> <del>(<tt>N</tt> is the distance from <tt>i</tt> to
+<tt>j</tt>)</del><ins> where <tt>N == distance(i, j)</tt></ins>
+</blockquote>
+</li>
+
+<li>
+<p>
+Change the text in the Complexity column in the row for
+"<tt>a.erase(k)</tt>" as follows:
+</p>
+<blockquote>
+<tt>log(<ins>a.</ins>size()) + <ins>a.</ins>count(k)</tt>
+</blockquote>
+</li>
+
+<li>
+<p>
+Change the text in the Complexity column in the row for
+"<tt>a.erase(q1, q2)</tt>" as follows:
+</p>
+
+<blockquote>
+<tt>log(<ins>a.</ins>size()) + N</tt> where <tt>N</tt> <del>is the distance from <tt>q1</tt>
+to <tt>q2</tt></del>
+   <ins><tt>== distance(q1, q2)</tt></ins>.
+</blockquote>
+</li>
+
+<li>
+<p>
+Change the text in the Assertion/note column in the row for
+"<tt>a.clear()</tt>" as follows:
+</p>
+
+<blockquote>
+<tt><ins>a.</ins>erase(a.begin(),a.end())</tt> post: <tt><del>size() ==
+0</del><ins>a.empty() == true</ins></tt>
+</blockquote>
+</li>
+
+<li>
+<p>
+Change the text in the Complexity column in the row for "<tt>a.clear()</tt>"
+as follows:
+</p>
+
+<blockquote>
+linear in <tt><ins>a.</ins>size()</tt>
+</blockquote>
+</li>
+
+<li>
+<p>
+Change the text in the Complexity column in the row for
+"<tt>a.count(k)</tt>" as follows:
+</p>
+
+<blockquote>
+<tt>log(<ins>a.</ins>size()) + <ins>a.</ins>count(k)</tt>
+</blockquote>
+</li>
+</ol>
+</li>
+
+<li>
+<p>
+In <sref ref="[unord.req]"/> change Table 98 -- Unordered associative container requirements as indicated:
+</p>
+<note>
+The same rational as for Table 96 applies here
+</note>
+
+<ol type="a">
+<li>
+<p>
+Change the text in the Assertion/note column in the row for
+"<tt>a.clear()</tt>" as follows:
+</p>
+
+<blockquote>
+[..] Post: <tt>a.<del>size() == 0</del><ins>empty() == true</ins></tt>
+</blockquote>
+</li>
+</ol>
+</li>
+</ol>
+
+<!-- 
+<ul>
+<li>
+<p>
+Change Table 91 - Container Requirements in <sref ref="[container.requirements.general]"/>
+(<a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2008/n2798.pdf">N2798</a>) like so:
+</p>
+
+<ol>
+<li>
+<p>
+Change the text in the <b>Operational Semantics</b> column in
+  the row for <tt>a == b</tt> as follows:
+</p>
+<blockquote>
+<tt>==</tt> is an equivalence relation.
+  <tt><ins>distance(a.begin(), a.end())</ins>
+  <del>a.size()</del> ==
+  <ins>distance(b.begin(), b.end())</ins> <del>b.size()</del> &amp;&amp;
+  equal(a.begin(), a.end(), b.begin())</tt>
+</blockquote>
+</li>
+
+<li>
+<p>
+Change the text in the <b>Operational Semantics</b> column in
+  the row for <tt>a.max_size()</tt> as follows:
+</p>
+<blockquote>
+<tt><ins>distance(a.begin(), a.end())</ins>
+  <del>a.size()</del></tt> of the largest possible container
+</blockquote>
+</li>
+
+<li>
+<p>
+Change the text in the <b>Operational Semantics</b> column in
+  the row for <tt>a.empty()</tt> as follows:
+</p>
+<blockquote>
+<tt><ins>a.begin() == a.end()</ins>
+  <del>a.size() == 0</del></tt>
+</blockquote>
+</li>
+
+<li>
+<p>
+In addition, for consistency, change the text in the
+  <b>Operational Semantics</b> column in the row for <tt>a.size()</tt>
+  as follows:
+</p>
+<blockquote>
+<tt><ins>distance(a.begin(), a.end())</ins>
+  <del>a.end() - a.begin()</del></tt>
+</blockquote>
+</li>
+</ol>
+</li>
+</ul>
+ -->
+</blockquote>
+</resolution>
+
+</issue>

@@ -1,0 +1,59 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="153" status="CD1">
+<title>Typo in <tt>narrow()</tt> semantics</title>
+<section><sref ref="[facet.ctype.char.members]"/></section>
+<submitter>Dietmar K&uuml;hl</submitter> 
+<date>20 Jul 1999</date>
+
+<discussion>
+<p>The description of the array version of <tt>narrow()</tt> (in
+paragraph 11) is flawed: There is no member <tt>do_narrow()</tt> which
+takes only three arguments because in addition to the range a default
+character is needed.</p>
+
+<p>Additionally, for both <tt>widen</tt> and <tt>narrow</tt> we have
+two signatures followed by a <b>Returns</b> clause that only addresses
+one of them.</p>
+
+</discussion>
+
+<resolution>
+<p>Change the returns clause in <sref ref="[facet.ctype.char.members]"/>
+paragraph 10 from:</p>
+<p>&nbsp;&nbsp;&nbsp; Returns: do_widen(low, high, to).</p>
+
+<p>to:</p>
+<p>&nbsp;&nbsp;&nbsp; Returns: do_widen(c) or do_widen(low, high, to), 
+respectively.</p>
+
+<p>Change <sref ref="[facet.ctype.char.members]"/> paragraph 10 and 11 from:</p>
+<pre>        char        narrow(char c, char /*dfault*/) const;
+        const char* narrow(const char* low, const char* high,
+                           char /*dfault*/, char* to) const;</pre>
+<pre>        Returns: do_narrow(low, high, to).</pre>
+<p>to:</p>
+<pre>        char        narrow(char c, char dfault) const;
+        const char* narrow(const char* low, const char* high,
+                           char dfault, char* to) const;</pre>
+<pre>        Returns: do_narrow(c, dfault) or
+                 do_narrow(low, high, dfault, to), respectively.</pre>
+
+<note>Kona: 1) the problem occurs in additional places, 2) a user
+defined version could be different.</note>
+
+<note>Post-Tokyo: Dietmar provided the above wording at the request of
+the LWG. He could find no other places the problem occurred. He
+asks for clarification of the Kona &quot;a user defined
+version...&quot; comment above.  Perhaps it was a circuitous way of
+saying &quot;dfault&quot; needed to be uncommented?</note>
+
+<note>Post-Toronto: the issues list maintainer has merged in the
+proposed resolution from issue <iref ref="207"/>, which addresses the
+same paragraphs.</note>
+</resolution>
+
+</issue>

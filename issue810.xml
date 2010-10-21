@@ -1,0 +1,120 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="810" status="WP">
+<title>Missing traits dependencies in operational semantics of extended manipulators</title>
+<section><sref ref="[ext.manip]"/></section>
+<submitter>Daniel Kr&uuml;gler</submitter>
+<date>1 Mar 2008</date>
+
+<discussion>
+<p>
+The recent draft (as well as the original proposal n2072) uses an
+operational semantic
+for <tt>get_money</tt> ([ext.manip]/4) and <tt>put_money</tt> ([ext.manip]/6), which uses
+</p>
+
+<blockquote><pre>
+istreambuf_iterator&lt;charT&gt;
+</pre></blockquote>
+
+<p>
+and
+</p>
+
+<blockquote><pre>
+ostreambuf_iterator&lt;charT&gt;
+</pre></blockquote>
+
+<p>
+resp, instead of the iterator instances, with explicitly provided
+traits argument (The operational semantic defined by <tt>f</tt> is also traits
+dependent). This is an obvious oversight because both <tt>*stream_buf</tt>
+c'tors expect a <tt>basic_streambuf&lt;charT,traits&gt;</tt> as argument.
+</p>
+<p>
+The same problem occurs within the <tt>get_time</tt> and <tt>put_time</tt> semantic 
+where additional to the problem we
+have an editorial issue in <tt>get_time</tt> (<tt>streambuf_iterator</tt> instead of
+<tt>istreambuf_iterator</tt>).
+</p>
+
+<note>
+Batavia (2009-05):
+</note>
+<blockquote>
+<p>
+This appears to be an issue of presentation.
+</p>
+<p>
+We agree with the proposed resolution.
+Move to Tentatively Ready.
+</p>
+</blockquote>
+</discussion>
+
+<resolution>
+<p>
+In <sref ref="[ext.manip]"/>/4 within function <tt>f</tt> replace the first line
+</p>
+
+<blockquote><pre>
+template &lt;class charT, class traits, class moneyT&gt; 
+void f(basic_ios&lt;charT, traits&gt;&amp; str, moneyT&amp; mon, bool intl) { 
+   typedef istreambuf_iterator&lt;charT<ins>, traits</ins>&gt; Iter;
+   ...
+</pre></blockquote>
+
+<p>
+In <sref ref="[ext.manip]"/>/5 remove the first template <tt>charT</tt> parameter:
+</p>
+
+<blockquote><pre>
+template &lt;<del>class charT, </del>class moneyT&gt; unspecified put_money(const moneyT&amp; mon, bool intl = false<ins>)</ins>;
+</pre></blockquote>
+
+<p>
+In <sref ref="[ext.manip]"/>/6 within function <tt>f</tt> replace the first line
+</p>
+
+<blockquote><pre>
+template &lt;class charT, class traits, class moneyT&gt; 
+void f(basic_ios&lt;charT, traits&gt;&amp; str, const moneyT&amp; mon, bool intl) { 
+  typedef ostreambuf_iterator&lt;charT<ins>, traits</ins>&gt; Iter;
+  ...
+</pre></blockquote>
+
+<p>
+In <sref ref="[ext.manip]"/>/8 within function <tt>f</tt> replace the first line
+</p>
+
+<blockquote><pre>
+template &lt;class charT, class traits&gt; 
+void f(basic_ios&lt;charT, traits&gt;&amp; str, struct tm *tmb, const charT *fmt) { 
+  typedef <ins>i</ins>streambuf_iterator&lt;charT<ins>, traits</ins>&gt; Iter;
+  ...
+</pre></blockquote>
+
+<p>
+In <sref ref="[ext.manip]"/>/10 within function <tt>f</tt> replace the first line
+</p>
+
+<blockquote><pre>
+template &lt;class charT, class traits&gt; 
+void f(basic_ios&lt;charT, traits&gt;&amp; str, const struct tm *tmb, const charT *fmt) { 
+  typedef ostreambuf_iterator&lt;charT<ins>, traits</ins>&gt; Iter;
+  ...
+</pre></blockquote>
+
+<p>
+In <sref ref="[iostream.format]"/>, Header <tt>&lt;iomanip&gt;</tt> synopsis change:
+</p>
+
+<blockquote><pre>
+template &lt;<del>class charT, </del>class moneyT&gt; T8 put_money(const moneyT&amp; mon, bool intl = false);
+</pre></blockquote>
+</resolution>
+
+</issue>

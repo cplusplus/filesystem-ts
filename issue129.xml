@@ -1,0 +1,39 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="129" status="TC1">
+<title>Need error indication from seekp() and seekg()</title>
+<section><sref ref="[istream.unformatted]"/>  <sref ref="[ostream.seeks]"/></section>
+<submitter>Angelika Langer</submitter>
+<date>22 Feb 1999</date>
+
+<discussion>
+<p>Currently, the standard does not specify how seekg() and seekp()
+indicate failure. They are not required to set failbit, and they can't
+return an error indication because they must return *this, i.e. the
+stream. Hence, it is undefined what happens if they fail. And they
+<i>can</i> fail, for instance, when a file stream is disconnected from the
+underlying file (is_open()==false) or when a wide character file
+stream must perform a state-dependent code conversion, etc. </p>
+
+<p>The stream functions seekg() and seekp() should set failbit in the
+stream state in case of failure.</p>
+</discussion>
+
+<resolution>
+<p>Add to the Effects: clause of&nbsp; seekg() in 
+<sref ref="[istream.unformatted]"/> and to the Effects: clause of seekp() in
+<sref ref="[ostream.seeks]"/>: </p>
+
+<blockquote>
+  <p>In case of failure, the function calls <tt>setstate(failbit)</tt> (which may throw <tt>ios_base::failure</tt>).
+  </p>
+</blockquote>
+</resolution>
+
+<rationale>
+<p>Setting failbit is the usual error reporting mechanism for streams</p>
+</rationale>
+</issue>

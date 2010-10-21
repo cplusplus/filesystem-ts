@@ -1,0 +1,92 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="111" status="NAD">
+<title>istreambuf_iterator::equal overspecified, inefficient</title>
+<section><sref ref="[istreambuf.iterator::equal]"/></section>
+<submitter>Nathan Myers</submitter>
+<date>15 Oct 1998</date>
+
+<discussion>
+<p>The member istreambuf_iterator&lt;&gt;::equal is specified to be
+unnecessarily inefficient. While this does not affect the efficiency
+of conforming implementations of iostreams, because they can
+&quot;reach into&quot; the iterators and bypass this function, it does
+affect users who use istreambuf_iterators. </p>
+
+<p>The inefficiency results from a too-scrupulous definition, which
+requires a &quot;true&quot; result if neither iterator is at eof. In
+practice these iterators can only usefully be compared with the
+&quot;eof&quot; value, so the extra test implied provides no benefit,
+but slows down users' code. </p>
+
+<p>The solution is to weaken the requirement on the function to return
+true only if both iterators are at eof. </p>
+
+<note>
+Summit:
+</note>
+
+<blockquote>
+Reopened by Alisdair.
+</blockquote>
+
+<note>
+Post Summit Daniel adds:
+</note>
+
+<blockquote>
+<p>
+Recommend NAD. The proposed wording would violate the axioms of
+concept requirement <tt>EqualityComparable</tt> axioms as part of concept <tt>InputIterator</tt>
+and more specifically it would violate the explicit wording of
+<sref ref="[input.iterators]"/>/7:
+</p>
+
+<blockquote>
+If two iterators <tt>a</tt> and <tt>b</tt> of the same type are equal, then either <tt>a</tt>
+and <tt>b</tt> are both
+dereferenceable or else neither is dereferenceable.
+</blockquote>
+
+<note>
+2009-07 Frankfurt
+</note>
+
+<blockquote>
+Agree NAD.
+</blockquote>
+
+</blockquote>
+
+</discussion>
+
+<resolution>
+<p>Replace <sref ref="[istreambuf.iterator::equal]"/>,
+paragraph 1, </p>
+
+<blockquote>
+  <p>-1- Returns: true if and only if both iterators are at end-of-stream, or neither is at
+  end-of-stream, regardless of what streambuf object they use. </p>
+</blockquote>
+
+<p>with</p>
+
+<blockquote>
+  <p>-1- Returns: true if and only if both iterators are at
+  end-of-stream, regardless of what streambuf object they use. </p>
+</blockquote>
+
+</resolution>
+
+<rationale>
+<p>It is not clear that this is a genuine defect.  Additionally, the
+LWG was reluctant to make a change that would result in 
+operator== not being a equivalence relation.  One consequence of
+this change is that an algorithm that's passed the range [i, i)
+would no longer treat it as an empty range.</p>
+</rationale>
+
+</issue>

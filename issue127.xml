@@ -1,0 +1,79 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="127" status="TC1">
+<title>auto_ptr&lt;&gt; conversion issues</title>
+<section><sref ref="[auto.ptr]"/></section>
+<submitter>Greg Colvin</submitter>
+<date>17 Feb 1999</date>
+
+<discussion>
+<p>There are two problems with the current <tt>auto_ptr</tt> wording
+in the standard: </p>
+
+<p>First, the <tt>auto_ptr_ref</tt> definition cannot be nested
+because <tt>auto_ptr&lt;Derived&gt;::auto_ptr_ref</tt> is unrelated to
+<tt>auto_ptr&lt;Base&gt;::auto_ptr_ref</tt>.  <i>Also submitted by
+Nathan Myers, with the same proposed resolution.</i></p>
+
+<p>Second, there is no <tt>auto_ptr</tt> assignment operator taking an
+<tt>auto_ptr_ref</tt> argument. </p>
+
+<p>I have discussed these problems with my proposal coauthor, Bill
+Gibbons, and with some compiler and library implementors, and we
+believe that these problems are not desired or desirable implications
+of the standard. </p>
+
+<p>25 Aug 1999: The proposed resolution now reflects changes suggested
+by Dave Abrahams, with Greg Colvin's concurrence; 1) changed
+&quot;assignment operator&quot; to &quot;public assignment
+operator&quot;, 2) changed effects to specify use of release(), 3)
+made the conversion to auto_ptr_ref const. </p>
+
+<p>2 Feb 2000: Lisa Lippincott comments: [The resolution of] this issue
+states that the conversion from auto_ptr to auto_ptr_ref should
+be const.  This is not acceptable, because it would allow
+initialization and assignment from _any_ const auto_ptr!  It also
+introduces an implementation difficulty in writing this conversion
+function -- namely, somewhere along the line, a const_cast will be
+necessary to remove that const so that release() may be called.  This
+may result in undefined behavior [7.1.5.1/4]. The conversion
+operator does not have to be const, because a non-const implicit
+object parameter may be bound to an rvalue [13.3.3.1.4/3]
+[13.3.1/5]. </p>
+
+  <p>Tokyo: The LWG removed the following from the proposed resolution:</p>
+
+  <p>In <sref ref="[meta.unary]"/>, paragraph 2, and <sref ref="[meta.unary.prop]"/>, 
+  paragraph 2, make the conversion to auto_ptr_ref const:</p>
+  <blockquote>
+    <pre>template&lt;class Y&gt; operator auto_ptr_ref&lt;Y&gt;() const throw();</pre>
+  </blockquote>
+</discussion>
+
+<resolution>
+<p>In <sref ref="[meta.unary]"/>, paragraph 2, move
+the <tt>auto_ptr_ref</tt> definition to namespace scope.</p>
+
+<p>In <sref ref="[meta.unary]"/>, paragraph 2, add
+a public assignment operator to the <tt>auto_ptr</tt> definition: </p>
+
+<blockquote>
+  <pre>auto_ptr&amp; operator=(auto_ptr_ref&lt;X&gt; r) throw();</pre>
+</blockquote>
+
+<p>Also add the assignment operator to <sref ref="[meta.unary.prop]"/>: </p>
+
+<blockquote>
+  <pre>auto_ptr&amp; operator=(auto_ptr_ref&lt;X&gt; r) throw()</pre>
+
+  <p><b>Effects:</b> Calls <tt>reset(p.release())</tt> for the <tt>auto_ptr
+  p</tt> that <tt>r</tt> holds a reference to.<br/>
+  <b>Returns: </b><tt>*this</tt>.</p>
+
+</blockquote>
+</resolution>
+
+</issue>

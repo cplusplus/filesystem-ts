@@ -1,0 +1,37 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="145" status="NAD">
+<title>adjustfield lacks default value</title>
+<section><sref ref="[basic.ios.cons]"/></section>
+<submitter>Angelika Langer</submitter>
+<date>12 May 1999</date>
+
+<discussion>
+<p>There is no initial value for the adjustfield defined, although
+many people believe that the default adjustment were right. This is a
+common misunderstanding. The standard only defines that, if no
+adjustment is specified, all the predefined inserters must add fill
+characters before the actual value, which is &quot;as if&quot; the
+right flag were set. The flag itself need not be set.</p>
+
+<p>When you implement a user-defined inserter you cannot rely on right
+being the default setting for the adjustfield. Instead, you must be
+prepared to find none of the flags set and must keep in mind that in
+this case you should make your inserter behave &quot;as if&quot; the
+right flag were set. This is surprising to many people and complicates
+matters more than necessary.</p>
+
+<p>Unless there is a good reason why the adjustfield should not be
+initialized I would suggest to give it the default value that
+everybody expects anyway.</p>
+
+</discussion>
+
+<rationale>
+<p>This is not a defect. It is deliberate that the default is no bits
+set. Consider Arabic or Hebrew, for example. See <sref ref="[facet.num.put.virtuals]"/> paragraph 19, Table 61 - Fill padding.</p>
+</rationale>
+</issue>

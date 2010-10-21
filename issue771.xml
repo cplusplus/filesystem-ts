@@ -1,0 +1,71 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="771" status="CD1">
+<title>Impossible throws clause in [string.conversions]</title>
+<section><sref ref="[string.conversions]"/></section>
+<submitter>Daniel Kr&uuml;gler</submitter>
+<date>13 Jan 2008</date>
+
+<discussion>
+<p>
+The new <tt>to_string</tt> and <tt>to_wstring</tt> functions described in <sref ref="[string.conversions]"/>
+have throws clauses (paragraphs 8 and 16) which say:
+</p>
+
+<blockquote>
+<i>Throws:</i> nothing
+</blockquote>
+
+<p>
+Since all overloads return either a <tt>std::string</tt> or a <tt>std::wstring</tt> by value
+this throws clause is impossible to realize in general, since the <tt>basic_string</tt>
+constructors can fail due to out-of-memory conditions. Either these throws
+clauses should be removed or should be more detailled like:
+</p>
+
+<blockquote>
+<i>Throws:</i> Nothing if the string construction throws nothing
+</blockquote>
+
+<p>
+Further there is an editorial issue in p. 14: All three <tt>to_wstring</tt>
+overloads return a <tt>string</tt>, which should be <tt>wstring</tt> instead (The
+header <tt>&lt;string&gt;</tt> synopsis of <sref ref="[string.classes]"/> is correct in this
+regard).
+</p>
+
+</discussion>
+
+<resolution>
+<p>
+In <sref ref="[string.conversions]"/>, remove the paragraphs 8 and 16.
+</p>
+
+<blockquote>
+<pre>
+string to_string(long long val); 
+string to_string(unsigned long long val); 
+string to_string(long double val); 
+</pre>
+<blockquote>
+<del><i>Throws:</i> nothing</del>
+</blockquote>
+</blockquote>
+
+<blockquote>
+<pre>
+<ins>w</ins>string to_wstring(long long val); 
+<ins>w</ins>string to_wstring(unsigned long long val); 
+<ins>w</ins>string to_wstring(long double val); 
+</pre>
+<blockquote>
+<del><i>Throws:</i> nothing</del>
+</blockquote>
+</blockquote>
+
+</resolution>
+
+</issue>

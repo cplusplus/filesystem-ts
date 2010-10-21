@@ -1,0 +1,51 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="651" status="CD1">
+<title>Missing preconditions for regex_token_iterator c'tors</title>
+<section><sref ref="[re.tokiter.cnstr]"/></section>
+<submitter>Daniel Kr&uuml;gler</submitter>
+<date>5 Mar 2007</date>
+
+<discussion>
+<p>
+The text provided in <sref ref="[re.tokiter.cnstr]"/>/2+3 describes
+the effects of the three non-default constructors of class
+template regex_token_iterator but is does not clarify which values
+are legal values for submatch/submatches. This becomes
+an issue, if one takes <sref ref="[re.tokiter]"/>/9 into account, which explains
+the notion of a "current match" by saying:
+</p>
+
+<blockquote><p>
+The <i>current match</i> is <tt>(*position).prefix()</tt> if <tt>subs[N]
+== -1</tt>, or <tt>(*position)[subs[N]]</tt> for any other value of
+<tt>subs[N]</tt>.
+</p></blockquote>
+
+<p>
+It's not clear to me, whether other negative values except -1
+are legal arguments or not - it seems they are not.
+</p>
+</discussion>
+
+<resolution>
+<p>
+Add the following precondition paragraph just before the current
+<sref ref="[re.tokiter.cnstr]"/>/2:
+</p>
+
+<blockquote><p>
+<i>Requires:</i> Each of the initialization values of <tt>subs</tt> must be <tt>&gt;= -1</tt>.
+</p></blockquote>
+</resolution>
+
+<note>
+Kona (2007): The LWG adopted the proposed resolution of N2409 for this issue (which
+is to adopt the proposed wording in this issue).
+The LWG voted to accelerate this issue to Ready status to be voted into the WP at Kona.
+</note>
+
+</issue>

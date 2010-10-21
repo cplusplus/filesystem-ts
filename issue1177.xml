@@ -1,0 +1,327 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="1177" status="WP">
+<title>Improve "diagnostic required" wording</title>
+<section><sref ref="[time.duration]"/></section>
+<submitter>Howard Hinnant</submitter>
+<date>18 Jul 2009</date>
+
+<discussion>
+<p>
+"diagnostic required" has been used (by me) for code words meaning "use
+<tt>enable_if</tt> to constrain templated functions.  This needs to be
+improved by referring to the function signature as not participating in
+the overload set, and moving this wording to a <i>Remarks</i> paragraph.
+</p>
+
+<note>
+2009-10 Santa Cruz:
+</note>
+
+<blockquote>
+Moved to Ready.
+</blockquote>
+
+<note>
+2009-11-19 Pete opens:
+</note>
+
+<blockquote>
+<p>
+Oh, and speaking of 1177, most of the changes result in rather convoluted prose.
+Instead of saying
+</p>
+
+<blockquote>
+A shall be B, else C
+</blockquote>
+
+<p>
+it should be
+</p>
+
+<blockquote>
+C if A is not B
+</blockquote>
+
+<p>
+That is:
+</p>
+
+<blockquote>
+<tt>Rep2</tt> shall be implicitly convertible to <tt>CR(Rep1, Rep2)</tt>, else
+this signature shall not participate in overload resolution.
+</blockquote>
+
+<p>
+should be
+</p>
+
+<blockquote>
+This signature shall not participate in overload resolution if <tt>Rep2</tt> is
+not implicitly convertible to <tt>CR(Rep1, Rep2)</tt>.
+</blockquote>
+
+<p>
+That is clearer, and eliminates the false requirement that <tt>Rep2</tt> "shall
+be" convertible.
+</p>
+
+</blockquote>
+
+<note>
+2009-11-19 Howard adds:
+</note>
+
+<blockquote>
+I've updated the wording to match Pete's suggestion and included bullet 16
+from <iref ref="1195"/>.
+</blockquote>
+
+<note>
+2009-11-19 Jens adds:
+</note>
+
+<blockquote>
+<p>
+Further wording suggestion using "unless":
+</p>
+
+<blockquote>
+This signature shall not participate in overload resolution unless <tt>Rep2</tt>
+is implicitly convertible to <tt>CR(Rep1, Rep2)</tt>.
+</blockquote>
+</blockquote>
+
+<note>
+2009-11-20 Howard adds:
+</note>
+
+<blockquote>
+I've updated the wording to match Jens' suggestion.
+</blockquote>
+
+<note>
+2009-11-22 Moved to Tentatively Ready after 5 positive votes on c++std-lib.
+</note>
+
+</discussion>
+
+<resolution>
+<note>
+This proposed resolution addresses <iref ref="947"/> and <iref ref="974"/>. 
+</note>
+
+<ol>
+<li>
+<p>
+Change <sref ref="[time.duration.cons]"/> (and reorder the <i>Remarks</i>
+paragraphs per <sref ref="[structure.specifications]"/>):
+</p>
+
+<blockquote>
+<pre>
+template &lt;class Rep2&gt; 
+  explicit duration(const Rep2&amp; r);
+</pre>
+<blockquote>
+<p>
+<i><del>Requires:</del> <ins>Remarks:</ins></i> <ins>This constructor shall not
+participate in overload resolution unless</ins> <tt>Rep2</tt> <del>shall be</del>
+<ins>is</ins> implicitly convertible to <tt>rep</tt> and
+</p>
+<ul>
+<li>
+<tt>treat_as_floating_point&lt;rep&gt;::value</tt> <del>shall be</del>
+<ins>is</ins> <tt>true</tt><ins>,</ins> or
+</li>
+<li>
+<tt>treat_as_floating_point&lt;Rep2&gt;::value</tt> <del>shall be</del>
+<ins>is</ins> <tt>false</tt>.
+</li>
+</ul>
+<p>
+<del>Diagnostic required</del> [<i>Example:</i>
+</p>
+<blockquote><pre>
+duration&lt;int, milli&gt; d(3); // OK 
+duration&lt;int, milli&gt; d(3.5); // error 
+</pre></blockquote>
+
+<p>
+&mdash; <i>end example</i>]
+</p>
+
+<p>
+<i>Effects:</i> Constructs an object of type <tt>duration</tt>.
+</p>
+
+<p>
+<i>Postcondition:</i> <tt>count() == static_cast&lt;rep&gt;(r)</tt>.
+</p>
+
+</blockquote>
+
+<pre>
+template &lt;class Rep2, class Period2&gt;
+  duration(const duration&lt;Rep2, Period2&gt;&amp; d);
+</pre>
+<blockquote>
+<p>
+<i><del>Requires:</del> <ins>Remarks:</ins></i> <ins>This constructor shall not
+participate in overload resolution unless</ins>
+<tt>treat_as_floating_point&lt;rep&gt;::value</tt> <del>shall be</del>
+<ins>is</ins> <tt>true</tt> or <tt>ratio_divide&lt;Period2,
+period&gt;::type::den</tt> <del>shall be</del> <ins>is</ins> 1. <del>Diagnostic
+required.</del> [<i>Note:</i> This requirement prevents implicit truncation
+error when converting between integral-based duration types. Such a construction
+could easily lead to confusion about the value of the duration. &mdash; <i>end
+note</i>] [<i>Example:</i>
+</p>
+
+<blockquote><pre>
+duration&lt;int, milli&gt; ms(3); 
+duration&lt;int, micro&gt; us = ms; // OK 
+duration&lt;int, milli&gt; ms2 = us; // error 
+</pre></blockquote>
+
+<p>
+&mdash; <i>end example</i>]
+</p>
+
+<p>
+<i>Effects:</i> Constructs an object of type <tt>duration</tt>, constructing
+<tt>rep_</tt> from
+<tt>duration_cast&lt;duration&gt;(d).count()</tt>.
+</p>
+
+</blockquote>
+
+
+</blockquote>
+</li>
+
+<li>
+<p>
+Change the following paragraphs in <sref ref="[time.duration.nonmember]"/>:
+</p>
+
+<blockquote>
+<pre>
+template &lt;class Rep1, class Period, class Rep2&gt; 
+  duration&lt;typename common_type&lt;Rep1, Rep2&gt;::type, Period&gt; 
+  operator*(const duration&lt;Rep1, Period&gt;&amp; d, const Rep2&amp; s);
+</pre>
+<blockquote>
+<i><del>Requires</del> <ins>Remarks</ins>:</i> <ins>This operator shall not
+participate in overload resolution unless</ins> <tt>Rep2</tt> <del>shall
+be</del> <ins>is</ins> implicitly convertible to <tt>CR(Rep1, Rep2)</tt>.
+<del>Diagnostic required.</del>
+</blockquote>
+
+<pre>
+template &lt;class Rep1, class Period, class Rep2&gt; 
+  duration&lt;typename common_type&lt;Rep1, Rep2&gt;::type, Period&gt; 
+  operator*(const Rep1&amp; s, const duration&lt;Rep2, Period&gt;&amp; d);
+</pre>
+<blockquote>
+<i><del>Requires</del> <ins>Remarks</ins>:</i> <ins>This operator shall not
+participate in overload resolution unless</ins> <tt>Rep1</tt> <del>shall
+be</del> <ins>is</ins> implicitly convertible to <tt>CR(Rep1, Rep2)</tt>.
+<del>Diagnostic required.</del>
+</blockquote>
+
+<pre>
+template &lt;class Rep1, class Period, class Rep2&gt; 
+  duration&lt;typename common_type&lt;Rep1, Rep2&gt;::type, Period&gt; 
+  operator/(const duration&lt;Rep1, Period&gt;&amp; d, const Rep2&amp; s);
+</pre>
+<blockquote>
+<i><del>Requires</del> <ins>Remarks</ins>:</i> <ins>This operator shall not
+participate in overload resolution unless</ins> <tt>Rep2</tt> <del>shall
+be</del> <ins>is</ins> implicitly convertible to <tt>CR(Rep1, Rep2)</tt> and
+<tt>Rep2</tt> <del>shall not be</del> <ins>is not</ins> an instantiation of
+<tt>duration</tt>. <del>Diagnostic required.</del>
+</blockquote>
+
+<pre>
+template &lt;class Rep1, class Period, class Rep2&gt; 
+  duration&lt;typename common_type&lt;Rep1, Rep2&gt;::type, Period&gt; 
+  operator%(const duration&lt;Rep1, Period&gt;&amp; d, const Rep2&amp; s);
+</pre>
+<blockquote>
+<i><del>Requires</del> <ins>Remarks</ins>:</i> <ins>This operator shall not
+participate in overload resolution unless</ins> <tt>Rep2</tt> <del>shall
+be</del> <ins>is</ins> implicitly convertible to <tt>CR(Rep1, Rep2)</tt> and
+<tt>Rep2</tt> <del>shall not be</del> <ins>is not</ins> an instantiation of
+<tt>duration</tt>. <del>Diagnostic required.</del>
+</blockquote>
+
+</blockquote>
+</li>
+
+<li>
+<p>
+Change the following paragraphs in <sref ref="[time.duration.cast]"/>:
+</p>
+
+<blockquote><pre>
+template &lt;class ToDuration, class Rep, class Period&gt; 
+  ToDuration duration_cast(const duration&lt;Rep, Period&gt;&amp; d);
+</pre>
+
+<blockquote>
+<i><del>Requires</del> <ins>Remarks</ins>:</i> <ins>This function shall not
+participate in overload resolution unless</ins> <tt>ToDuration</tt> <del>shall
+be</del> <ins>is</ins> an instantiation of <tt>duration</tt>. <del>Diagnostic
+required.</del>
+</blockquote>
+</blockquote>
+</li>
+
+<li>
+<p>
+Change <sref ref="[time.point.cons]"/>/3 as indicated:
+</p>
+
+<blockquote>
+<p>
+<del><i>Requires:</i> <tt>Duration2</tt> shall be implicitly convertible to <tt>duration</tt>.
+Diagnostic required.</del>
+</p>
+
+<p>
+<ins><i>Remarks:</i> This constructor shall not participate in overload
+resolution unless <tt>Duration2</tt> is implicitly convertible to
+<tt>duration</tt>.</ins>
+</p>
+</blockquote>
+
+</li>
+
+<li>
+<p>
+Change the following paragraphs in <sref ref="[time.point.cast]"/>:
+</p>
+
+<blockquote><pre>
+template &lt;class ToDuration, class Clock, class Duration&gt; 
+  time_point&lt;Clock, ToDuration&gt; time_point_cast(const time_point&lt;Clock, Duration&gt;&amp; t);
+</pre>
+
+<blockquote>
+<i><del>Requires</del> <ins>Remarks</ins>:</i> <ins>This function shall not
+participate in overload resolution unless</ins> <tt>ToDuration</tt> <del>shall
+be</del> <ins>is</ins> an instantiation of <tt>duration</tt>. <del>Diagnostic
+required.</del>
+</blockquote>
+</blockquote>
+</li>
+</ol>
+
+</resolution>
+
+</issue>

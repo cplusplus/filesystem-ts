@@ -1,0 +1,87 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="1157" status="WP">
+<title>Local types can now instantiate templates</title>
+<section><sref ref="[namespace.std]"/></section>
+<submitter>LWG</submitter>
+<date>28 Jun 2009</date>
+
+<discussion>
+
+<p><b>Addresses UK 175</b></p>
+
+<p><b>Description</b></p>
+        <p>Local types can
+        now be used to instantiate templates, but don't have
+        external linkage.</p>
+<p><b>Suggestion</b></p>
+        <p>Remove the reference to external linkage.</p>
+
+<p><b>Notes</b></p>
+<p>We accept the proposed solution. Martin will draft an issue.</p>
+
+<note>
+2009-07-28 Alisdair provided wording.
+</note>
+
+<note>
+2009-10 Santa Cruz:
+</note>
+
+<blockquote>
+Moved to Ready.
+</blockquote>
+
+</discussion>
+
+<resolution>
+<p>
+<sref ref="[namespace.std]"/>
+</p>
+<p>
+Strike "of external linkage" in p1 and p2:
+</p>
+
+<blockquote>
+<p>
+-1- The behavior of a C++ program is undefined if it adds declarations or
+definitions to namespace <tt>std</tt> or to a namespace within namespace <tt>std</tt>
+unless otherwise specified. A program may add a concept map for any
+standard library concept or a template specialization for any standard
+library template to namespace <tt>std</tt> only if the declaration depends on a
+user-defined type <del>of external linkage</del> and the specialization meets the
+standard library requirements for the original template and is not
+explicitly prohibited.<sup>179</sup>
+</p>
+
+<p>
+-2- The behavior of a C++ program is undefined if it declares
+</p>
+<ul>
+<li>
+an explicit specialization of any member function of a standard library
+class template, or
+</li>
+<li>
+an explicit specialization of any member function template of a standard
+library class or class template, or
+</li>
+<li>
+an explicit or partial specialization of any member class template of a
+standard library class or class template.
+</li>
+</ul>
+<p>
+A program may explicitly instantiate a template defined in the standard
+library only if the declaration depends on the name of a user-defined
+type <del>of external linkage</del> and the instantiation meets the standard
+library requirements for the original template.
+</p>
+</blockquote>
+
+</resolution>
+
+</issue>

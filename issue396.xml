@@ -1,0 +1,140 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg_issue.dtd" [
+  <!ENTITY nbsp " ">
+]>
+
+<issue num="396" status="CD1">
+  <title>what are characters zero and one</title>
+  <section><sref ref="[bitset.cons]"/></section>
+  <submitter>Martin Sebor</submitter>
+  <date>5 Jan 2003</date>
+
+  <discussion>
+    <p>
+23.3.5.1, p6 [lib.bitset.cons] talks about a generic character
+having the value of 0 or 1 but there is no definition of what
+that means for charT other than char and wchar_t. And even for
+those two types, the values 0 and 1 are not actually what is
+intended -- the values '0' and '1' are. This, along with the
+converse problem in the description of to_string() in 23.3.5.2,
+p33, looks like a defect remotely related to DR 303.
+    </p>
+    <p>
+http://anubis.dkuug.dk/jtc1/sc22/wg21/docs/lwg-defects.html#303
+    </p>
+    <pre>
+23.3.5.1:
+  -6-  An element of the constructed string has value zero if the
+       corresponding character in str, beginning at position pos,
+       is 0. Otherwise, the element has the value one.
+    </pre>
+    <pre>
+23.3.5.2:
+  -33-  Effects: Constructs a string object of the appropriate
+        type and initializes it to a string of length N characters.
+        Each character is determined by the value of its
+        corresponding bit position in *this. Character position N
+        ?- 1 corresponds to bit position zero. Subsequent decreasing
+        character positions correspond to increasing bit positions.
+        Bit value zero becomes the character 0, bit value one becomes
+        the character 1.
+    </pre>
+    <p>
+Also note the typo in 23.3.5.1, p6: the object under construction
+is a bitset, not a string.
+    </p>
+
+<note>
+Sophia Antipolis:
+</note>
+
+<blockquote>
+<p>
+We note that <tt>bitset</tt> has been moved from section 23 to section 20, by
+another issue (<iref ref="842"/>) previously resolved at this meeting.
+</p>
+<p>
+Disposition: move to ready.
+</p>
+<p>
+We request that Howard submit a separate issue regarding the three to_string overloads.
+</p>
+</blockquote>
+
+  </discussion>
+
+<resolution>
+<p>Change the constructor's function declaration immediately before 
+<sref ref="[bitset.cons]"/> p3 to:</p>
+<pre>
+    template &lt;class charT, class traits, class Allocator&gt;
+    explicit
+    bitset(const basic_string&lt;charT, traits, Allocator&gt;&amp; str,
+           typename basic_string&lt;charT, traits, Allocator&gt;::size_type pos = 0,
+           typename basic_string&lt;charT, traits, Allocator&gt;::size_type n =
+             basic_string&lt;charT, traits, Allocator&gt;::npos,
+           charT zero = charT('0'), charT one = charT('1'))
+</pre>
+<p>Change the first two sentences of <sref ref="[bitset.cons]"/> p6 to: "An
+element of the constructed string has value 0 if the corresponding
+character in <i>str</i>, beginning at position <i>pos</i>,
+is <i>zero</i>. Otherwise, the element has the value 1.</p>
+
+<p>Change the text of the second sentence in 23.3.5.1, p5 to read:
+    "The function then throws invalid_argument if any of the rlen
+    characters in str beginning at position pos is other than <i>zero</i>
+    or <i>one</i>. The function uses traits::eq() to compare the character
+    values."
+</p>
+
+<p>Change the declaration of the <tt>to_string</tt> member function
+  immediately before <sref ref="[bitset.members]"/> p33 to:</p>
+<pre>
+    template &lt;class charT, class traits, class Allocator&gt;
+    basic_string&lt;charT, traits, Allocator&gt; 
+    to_string(charT zero = charT('0'), charT one = charT('1')) const;
+</pre>
+<p>Change the last sentence of <sref ref="[bitset.members]"/> p33 to: "Bit
+  value 0 becomes the character <tt><i>zero</i></tt>, bit value 1 becomes the
+  character <tt><i>one</i></tt>.</p>
+<p>Change <sref ref="[bitset.operators]"/> p8 to:</p>
+<p><b>Returns</b>:</p> 
+<pre>
+  os &lt;&lt; x.template to_string&lt;charT,traits,allocator&lt;charT&gt; &gt;(
+      use_facet&lt;ctype&lt;charT&gt; &gt;(<i>os</i>.getloc()).widen('0'),
+      use_facet&lt;ctype&lt;charT&gt; &gt;(<i>os</i>.getloc()).widen('1'));
+</pre>
+</resolution>
+
+<rationale>
+<p>There is a real problem here: we need the character values of '0'
+  and '1', and we have no way to get them since strings don't have
+  imbued locales. In principle the "right" solution would be to
+  provide an extra object, either a ctype facet or a full locale,
+  which would be used to widen '0' and '1'. However, there was some
+  discomfort about using such a heavyweight mechanism.  The proposed
+  resolution allows those users who care about this issue to get it
+  right.</p>
+<p>We fix the inserter to use the new arguments.  Note that we already
+  fixed the analogous problem with the extractor in issue <iref
+  ref="303"/>.</p>
+
+</rationale>
+
+<note>
+post Bellevue:
+</note>
+
+<blockquote>
+We are happy with the resolution as proposed, and we move this to Ready.
+</blockquote>
+
+<note>
+Howard adds:
+</note>
+
+<blockquote>
+The proposed wording neglects the 3 newer to_string overloads.
+</blockquote>
+
+</issue>

@@ -1,0 +1,110 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="1105" status="NAD Concepts">
+<title>Shouldn't <tt>Range</tt> be an <tt>auto concept</tt></title>
+<section><sref ref="[iterator.concepts.range]"/></section>
+<submitter>David Abrahams</submitter>
+<date>23 Apr 2009</date>
+
+<discussion>
+
+<note>
+2009-04-26 Herb adds:
+</note>
+
+<blockquote>
+<p>
+Here's a common example: We have many ISV customers who have built lots of
+in-house STL-like containers. Imagine that, for the past ten years, the user
+has been happily using his <tt>XYZCorpContainer&lt;T&gt;</tt> that has <tt>begin()</tt> and <tt>end()</tt>
+and an iterator typedef, and indeed satisfies nearly all of <tt>Container</tt>,
+though maybe not quite all just like <tt>valarray</tt>. The user upgrades to a
+range-enabled version of a library, and now <tt>lib_algo( xyz.begin(), xyz.end());</tt>
+no longer works -- compiler error.
+</p>
+<p>
+Even though <tt>XYZCorpContainer</tt> matches the pre-conceptized version of the
+algorithm, and has been working for years, it appears the user has to write
+at least this:
+</p>
+<blockquote><pre>
+template&lt;class T&gt; concept_map Range&lt;XYZCorpContainer&lt;T&gt;&gt; {};
+
+template&lt;class T&gt; concept_map Range&lt;const XYZCorpContainer&lt;T&gt;&gt; {};
+</pre></blockquote>
+<p>
+Is that correct?
+</p>
+<p>
+But he may actually have to write this as we do for initializer list:
+</p>
+<blockquote><pre>
+template&lt;class T&gt;
+concept_map Range&lt;XYZCorpContainer&lt;T&gt;&gt; {
+   typedef T* iterator;
+   iterator begin(XYZCorpContainer&lt;T&gt; c) { return c.begin(); }
+   iterator end(XYZCorpContainer&lt;T&gt; c) { return c.end(); }
+};
+
+template&lt;class T&gt;
+concept_map Range&lt;const XYZCorpContainer&lt;T&gt;&gt; {
+   typedef T* iterator;
+   iterator begin(XYZCorpContainer&lt;T&gt; c) { return c.begin(); }
+   iterator end(XYZCorpContainer&lt;T&gt; c) { return c.end(); }
+};
+</pre></blockquote>
+
+</blockquote>
+
+<note>
+2009-04-28 Alisdair adds:
+</note>
+
+<blockquote>
+<p>
+I recommend NAD, although remain concerned about header organisation.
+</p>
+<p>
+A user container will satisfy the <tt>MemberContainer</tt> concept, which IS auto.
+There is a concept_map for all <tt>MemberContainers</tt> to <tt>Container</tt>, and then a
+further concept_map for all <tt>Container</tt> to <tt>Range</tt>, so the stated problem is not
+actually true.  User defined containers will automatically match the <tt>Range</tt>
+concept without explicitly declaring a concept_map.
+</p>
+<p>
+The problem is that they should now provide an additional two headers,
+<tt>&lt;iterator_concepts&gt;</tt> and <tt>&lt;container_concepts&gt;</tt>.
+ The only difference from
+making <tt>Range</tt> an auto concept would be this reduces to a single header,
+<tt>&lt;iterator_concepts&gt;</tt>.
+</p>
+<p>
+I am strongly in favour of any resolution that tackles the issue of
+explicitly requiring concept headers to make these concept maps available.
+</p>
+</blockquote>
+
+<note>
+Batavia (2009-05):
+</note>
+<blockquote>
+<p>
+We observe there is a recent paper by Bjarne that overlaps this issue.
+</p>
+<p>
+Alisdair continues to recommend NAD.
+</p>
+<p>
+Move to Open, and recommend the issue be deferred until after the next
+Committee Draft is issued.
+</p>
+</blockquote>
+</discussion>
+
+<resolution>
+</resolution>
+
+</issue>

@@ -1,0 +1,100 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="1088" status="NAD Editorial">
+<title>Response to UK 342</title>
+<section><sref ref="[futures.promise]"/></section>
+<submitter>Howard Hinnant</submitter>
+<date>22 Mar 2009</date>
+
+<discussion>
+<p><b>Addresses UK 342</b></p>
+
+<p>
+<tt>std::promise</tt> is missing a non-member overload of <tt>swap</tt>. This is
+inconsistent with other types that provide a <tt>swap</tt> member function.
+</p>
+
+<p>
+Add a non-member overload <tt>void swap(promise&amp;&amp; x,promise&amp;&amp; y){ x.swap(y); }</tt>
+</p>
+
+<note>
+Summit:
+</note>
+<blockquote>
+Create an issue. Move to review, attention: Howard. Detlef will also
+look into it.
+</blockquote>
+
+<note>
+Post Summit Daniel provided wording.
+</note>
+
+<note>
+2009-10 Santa Cruz:
+</note>
+
+<blockquote>
+NAD Editorial.  Solved by
+<a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2009/n2997.html">N2997</a>.
+</blockquote>
+
+</discussion>
+
+<resolution>
+<ol>
+<li>
+<p>
+In <sref ref="[futures.promise]"/>, before p.1, immediately after class template
+promise add:
+</p>
+<blockquote><pre>
+<ins>
+template &lt;class R&gt;
+void swap(promise&lt;R&gt;&amp; x, promise&lt;R&gt;&amp; y);
+</ins>
+</pre></blockquote>
+</li>
+<li>
+<p>
+Change <sref ref="[futures.promise]"/>/10 as indicated (to fix a circular definition):
+</p>
+<blockquote>
+<p>
+-10- <i>Effects:</i> <del>swap(*this, other)</del><ins>Swaps the associated state
+of <tt>*this</tt> and <tt>other</tt></ins>
+</p>
+<p>
+<ins><i>Throws:</i> Nothing.</ins>
+</p>
+</blockquote>
+</li>
+<li>
+<p>
+After the last paragraph in <sref ref="[futures.promise]"/> add the following
+prototype description:
+</p>
+<blockquote><pre>
+<ins>
+template &lt;class R&gt;
+void swap(promise&lt;R&gt;&amp; x, promise&lt;R&gt;&amp; y);
+</ins></pre>
+<blockquote>
+<p>
+<ins><i>Effects:</i> <tt>x.swap(y)</tt></ins>
+</p>
+<p>
+<ins><i>Throws:</i> Nothing.</ins>
+</p>
+</blockquote>
+</blockquote>
+</li>
+
+</ol>
+
+</resolution>
+
+</issue>

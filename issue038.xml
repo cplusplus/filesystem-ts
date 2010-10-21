@@ -1,0 +1,45 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="38" status="TC1">
+<title>Facet definition incomplete</title>
+<section><sref ref="[locale.global.templates]"/></section>
+<submitter>Nathan Myers</submitter>
+<date>6 Aug 1998</date>
+
+<discussion>
+<p>It has been noticed by Esa Pulkkinen that the definition of
+&quot;facet&quot; is incomplete. In particular, a class derived from
+another facet, but which does not define a member <i>id</i>, cannot
+safely serve as the argument <i>F</i> to use_facet&lt;F&gt;(loc),
+because there is no guarantee that a reference to the facet instance
+stored in <i>loc</i> is safely convertible to <i>F</i>. </p>
+</discussion>
+
+<resolution>
+<p>In the definition of std::use_facet&lt;&gt;(), replace the text in paragraph 1 which
+reads: </p>
+
+<blockquote>
+  <p>Get a reference to a facet of a locale. </p>
+</blockquote>
+
+<p>with: </p>
+
+<blockquote>
+  <p>Requires: <tt>Facet</tt> is a facet class whose definition
+  contains the public static member <tt>id</tt> as defined in <sref ref="[locale.facet]"/>. </p>
+</blockquote>
+
+<note>
+Kona: strike as overspecification the text &quot;(not inherits)&quot;
+from the original resolution, which read &quot;... whose definition
+contains (not inherits) the public static member
+<tt>id</tt>...&quot;
+</note>
+
+</resolution>
+
+</issue>

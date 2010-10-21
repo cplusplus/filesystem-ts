@@ -1,0 +1,55 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="264" status="CD1">
+<title>Associative container <tt>insert(i, j)</tt> complexity requirements are not feasible.</title>
+<section><sref ref="[associative.reqmts]"/></section>
+<submitter>John Potter</submitter>
+<date>07 Sep 2000</date>
+
+<discussion>
+<p>
+Table 69 requires linear time if [i, j) is sorted.  Sorted is necessary but not sufficient.
+Consider inserting a sorted range of even integers into a set&lt;int&gt; containing the odd
+integers in the same range.
+</p>
+
+<p><i>Related issue: <iref ref="102"/></i></p>
+</discussion>
+
+<resolution>
+<p>
+In Table 69, in section 23.1.2, change the complexity clause for
+insertion of a range from &quot;N log(size() + N) (N is the distance
+from i to j) in general; linear if [i, j) is sorted according to
+value_comp()&quot; to &quot;N log(size() + N), where N is the distance
+from i to j&quot;.
+</p>
+
+<note>Copenhagen: Minor fix in proposed resolution: fixed unbalanced
+parens in the revised wording.</note>
+
+</resolution>
+
+<rationale>
+<p>
+Testing for valid insertions could be less efficient than simply
+inserting the elements when the range is not both sorted and between
+two adjacent existing elements; this could be a QOI issue.
+</p>
+
+<p> 
+The LWG considered two other options: (a) specifying that the
+complexity was linear if [i, j) is sorted according to value_comp()
+and between two adjacent existing elements; or (b) changing to
+Klog(size() + N) + (N - K) (N is the distance from i to j and K is the
+number of elements which do not insert immediately after the previous
+element from [i, j) including the first).  The LWG felt that, since
+we can't guarantee linear time complexity whenever the range to be
+inserted is sorted, it's more trouble than it's worth to say that it's
+linear in some special cases.
+</p>
+</rationale>
+</issue>

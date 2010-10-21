@@ -1,0 +1,98 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="674" status="CD1">
+<title><tt>shared_ptr</tt> interface changes for consistency with N1856</title>
+<section><sref ref="[util.smartptr.shared]"/></section>
+<submitter>Peter Dimov</submitter>
+<date>5 May 2007</date>
+
+<discussion>
+<p>
+<a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2005/n1856.html">N1856</a> does not propose
+any changes to <tt>shared_ptr</tt>. It needs to be updated to use a rvalue reference where appropriate
+and to interoperate with <tt>unique_ptr</tt> as it does with <tt>auto_ptr</tt>.
+</p>
+</discussion>
+
+<resolution>
+
+<p>
+Change <sref ref="[util.smartptr.shared]"/> as follows:
+</p>
+
+<blockquote>
+<pre>template&lt;class Y&gt; explicit shared_ptr(auto_ptr&lt;Y&gt;<del>&amp;</del><ins>&amp;&amp;</ins> r);
+<ins>template&lt;class Y, class D&gt; explicit shared_ptr(const unique_ptr&lt;Y,D&gt;&amp; r) = delete;
+template&lt;class Y, class D&gt; explicit shared_ptr(unique_ptr&lt;Y,D&gt;&amp;&amp; r);</ins>
+...
+template&lt;class Y&gt; shared_ptr&amp; operator=(auto_ptr&lt;Y&gt;<del>&amp;</del><ins>&amp;&amp;</ins> r);
+<ins>template&lt;class Y, class D&gt; shared_ptr&amp; operator=(const unique_ptr&lt;Y,D&gt;&amp; r) = delete;
+template&lt;class Y, class D&gt; shared_ptr&amp; operator=(unique_ptr&lt;Y,D&gt;&amp;&amp; r);</ins></pre>
+</blockquote>
+
+<p>
+Change <sref ref="[util.smartptr.shared.const]"/> as follows:
+</p>
+
+<blockquote>
+<pre><ins>template&lt;class Y&gt; shared_ptr(auto_ptr&lt;Y&gt;<del>&amp;</del><ins>&amp;&amp;</ins> r);</ins></pre>
+</blockquote>
+
+<p>
+Add to <sref ref="[util.smartptr.shared.const]"/>:
+</p>
+
+<blockquote>
+<pre><ins>template&lt;class Y, class D&gt; shared_ptr(unique_ptr&lt;Y, D&gt;&amp;&amp; r);</ins></pre>
+<blockquote>
+
+<p><ins>
+<i>Effects:</i> Equivalent to <tt>shared_ptr( r.release(), r.get_deleter() )</tt> when <tt>D</tt> is
+          not a reference type, <tt>shared_ptr( r.release(), ref( r.get_deleter() ) )</tt>
+          otherwise.
+</ins></p>
+
+<p><ins>
+<i>Exception safety:</i> If an exception is thrown, the constructor has no effect.
+</ins></p>
+</blockquote>
+
+</blockquote>
+
+<p>
+Change <sref ref="[util.smartptr.shared.assign]"/> as follows:
+</p>
+
+<blockquote>
+<pre>template&lt;class Y&gt; shared_ptr&amp; operator=(auto_ptr&lt;Y&gt;<del>&amp;</del><ins>&amp;&amp;</ins> r);</pre>
+</blockquote>
+
+<p>
+Add to <sref ref="[util.smartptr.shared.assign]"/>:
+</p>
+
+<blockquote>
+<pre><ins>template&lt;class Y, class D&gt; shared_ptr&amp; operator=(unique_ptr&lt;Y,D&gt;&amp;&amp; r);</ins></pre>
+
+<blockquote>
+<p><ins>
+-4- <i>Effects:</i> Equivalent to <tt>shared_ptr(std::move(r)).swap(*this)</tt>.
+</ins></p>
+<p><ins>
+-5- <i>Returns:</i> <tt>*this</tt>.
+</ins></p>
+</blockquote>
+
+</blockquote>
+
+</resolution>
+
+<note>
+Kona (2007): We may need to open an issue (<iref ref="743"/>) to deal with the question of
+whether <tt>shared_ptr</tt> needs an rvalue <tt>swap</tt>.
+</note>
+
+</issue>

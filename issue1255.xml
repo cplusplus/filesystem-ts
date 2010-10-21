@@ -1,0 +1,278 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="1255" status="WP">
+<title><tt>declval</tt> should be added to the library</title>
+<section><sref ref="[utility]"/></section>
+<submitter>Daniel Kr&uuml;gler</submitter>
+<date>3 Nov 2009</date>
+
+<discussion>
+<p>
+During the Santa Cruz meeting it was decided to split off the provision
+of the library utility <tt>value()</tt> proposed in <a
+href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2009/n2979.html">N2979</a>
+from the concrete request of the
+<a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2009/n2939.html#uk300">UK 300</a>
+comment.
+The provision of a new library component that allows the production of
+values in unevaluated expressions is considered as important
+to realize constrained templates in C++0x where concepts are not
+available.
+</p>
+
+<p>
+The following proposed resolution is an improvement over that suggested in
+<a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2009/n2958.html">N2958</a>,
+because the proposed component can now be defined without loss of
+general usefulness and any <i>use</i> by user-code will make the program ill-formed.
+A possible prototype implementation that satisfies the core language
+requirements
+can be written as:
+</p>
+
+<blockquote><pre>
+template&lt;class T&gt;
+  struct declval_protector {
+    static const bool stop = false;
+    static typename std::add_rvalue_reference&lt;T&gt;::type delegate(); <font color="#C80000">// undefined</font>
+  };
+
+template&lt;class T&gt;
+typename std::add_rvalue_reference&lt;T&gt;::type declval() {
+  static_assert(declval_protector&lt;T&gt;::stop, "declval() must not be used!");
+  return declval_protector&lt;T&gt;::delegate();
+}
+</pre></blockquote>
+
+<p>
+Further-on the earlier suggested name <tt>value()</tt> has been changed to <tt>declval()</tt>
+after discussions with committee members.
+</p>
+
+<p>
+Finally the suggestion shown below demonstrates that it can simplify
+existing standard wording by directly using it in the library
+specification, and that it also improves an overlooked corner case for
+<tt>common_type</tt> by adding support for <tt>cv void</tt>.
+</p>
+
+<note>
+2009-11-19 Moved to Tentatively Ready after 6 positive votes on c++std-lib.
+</note>
+</discussion>
+
+<resolution>
+<note>
+The proposed resolution has been updated to
+<a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2009/n3000.pdf">N3000</a>
+numbering and wording
+</note>
+
+<ol>
+<li>
+<p>
+Change <sref ref="[utility]"/>, header <tt>&lt;utility&gt;</tt> synopsis
+as indicated:
+</p>
+
+<blockquote><pre>
+// 20.3.3, forward/move:
+template &lt;class T&gt; struct identity;
+template &lt;class T, class U&gt; T&amp;&amp; forward(U&amp;&amp;);
+template &lt;class T&gt; typename remove_reference&lt;T&gt;::type&amp;&amp; move(T&amp;&amp;);
+
+<ins>// 20.3.4, declval:</ins>
+<ins>template &lt;class T&gt; typename add_rvalue_reference&lt;T&gt;::type declval(); // as unevaluated operand</ins>
+</pre></blockquote>
+</li>
+
+<li>
+<p>
+Immediately after the current section <sref ref="[forward]"/> insert a
+new section:
+</p>
+<p>
+<ins>20.3.4 Function template declval [declval]</ins>
+</p>
+<p>
+<ins>The library provides the function template <tt>declval</tt> to simplify
+the definition of expressions which occur as
+unevaluated operands (<sref ref="[expr]"/>). The
+template parameter <tt>T</tt> of <tt>declval</tt> may
+be an incomplete type.</ins>
+</p>
+
+<pre>
+<ins>template &lt;class T&gt; typename add_rvalue_reference&lt;T&gt;::type declval(); // as unevaluated operand</ins>
+</pre>
+
+<blockquote>
+<p>
+<ins><i>Remarks:</i> If this function is used according to <sref ref="[basic.def.odr]"/>,
+the program is ill-formed.</ins>
+</p>
+
+<p>
+<ins>[<i>Example:</i></ins>
+</p>
+
+<blockquote><pre><ins>
+template&lt;class To, class From&gt;
+decltype(static_cast&lt;To&gt;(declval&lt;From&gt;())) convert(From&amp;&amp;);
+</ins></pre></blockquote>
+
+<p>
+<ins>
+declares a function template <tt>convert</tt>, which only participates in
+overloading if the type <tt>From</tt> can be explicitly cast to type <tt>To</tt>.
+For another example see class template <tt>common_type</tt>
+(<sref ref="[meta.trans.other]"/>).
+&mdash; <i>end example</i>]</ins>
+</p>
+</blockquote>
+
+</li>
+
+<li>
+<p>
+This bullet just makes clear that after applying <a
+href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2009/n2984.html
+">N2984</a>, the changes in <sref ref="[meta.unary.prop]"/>, before
+table Type property queries should <em>not</em> use <tt>declval</tt>,
+because the well-formedness requirement of the specification of
+<tt>is_constructible</tt> would become more complicated, because we
+would need to make sure that the expression <i>CE</i> is checked in an
+unevaluated context.
+</p>
+</li>
+
+<li>
+<p>
+Also <sref ref="[meta.rel]"/>/4 is not modified similar to the previous bullet,
+because with
+the stricter requirements of not using <tt>declval()</tt> the well-formedness condition
+would be harder to specify. The following changes are only editorial ones (e.g.
+the removal of the duplicate declaration of <tt>create()</tt>):
+</p>
+
+<blockquote>
+<p>
+Given the following function prototype:
+</p>
+
+<blockquote><pre>
+template &lt;class T&gt;
+  typename add_rvalue_reference&lt;T&gt;::type create();
+</pre></blockquote>
+
+<p>
+the predicate condition for a template specialization
+<tt>is_convertible&lt;From, To&gt;</tt> shall be satisfied if and only
+if the return expression in the following code would be well-formed,
+including any
+implicit conversions to the return type of the function:
+</p>
+
+<blockquote><pre>
+<del>template &lt;class T&gt;
+typename add_rvalue_reference&lt;T&gt;::type create();</del>
+To test() {
+  return create&lt;From&gt;();
+}
+</pre></blockquote>
+</blockquote>
+</li>
+
+<li>
+<p>
+Change the entry in column "Comments" for <tt>common_type</tt> in Table 51 &mdash;
+Other transformations (<sref ref="[meta.trans.other]"/>):
+</p>
+
+<note>
+NB: This wording change extends the type domain of <tt>common_type</tt> for <tt>cv
+void =&gt; cv void</tt> transformations and thus makes <tt>common_type</tt> usable for
+all binary type combinations that are supported by <tt>is_convertible</tt>
+</note>
+
+<blockquote>
+The member typedef <tt>type</tt> shall be defined as set out below. All
+types in the parameter pack <tt>T</tt> shall be complete <ins>or
+(possibly cv-qualified) <tt>void</tt></ins>. A program may specialize
+this trait if at least one template parameter in the specialization is a
+user-defined type. [<i>Note:</i> Such specializations are needed when
+only explicit conversions are desired among the template arguments.
+&mdash; <i>end note</i>]
+</blockquote>
+</li>
+
+<li>
+<p>
+Change <sref ref="[meta.trans.other]"/>/3 as indicated:
+</p>
+
+<note>
+NB: This wording change is more than an editorial simplification of
+the definition of <tt>common_type</tt>: It also extends its usefulness for <tt>cv
+void</tt> types as outlined above
+</note>
+
+<blockquote>
+<p>
+The nested typedef <tt>common_type::type</tt> shall be defined as follows:
+</p>
+
+<blockquote>
+<p>
+[..]
+</p>
+<pre>
+template &lt;class T, class U&gt;
+struct common_type&lt;T, U&gt; {
+<del>private:
+  static T&amp;&amp; __t();
+  static U&amp;&amp; __u();
+public:</del>
+  typedef decltype(true ? <del>__t</del><ins>declval&lt;T&gt;</ins>() : <del>__u</del><ins>declval&lt;U&gt;</ins>()) type;
+};
+</pre>
+</blockquote>
+</blockquote>
+</li>
+
+<li>
+<p>
+Change <sref ref="[func.ret]"/>/1 as indicated
+[<i>This part solves some main aspects of issue <iref ref="1225"/></i>]:
+</p>
+
+<blockquote><pre>
+namespace std {
+  template &lt;class&gt; class result_of; // undefined
+
+  template &lt;class Fn, class... ArgTypes&gt;
+  class result_of&lt;Fn(ArgTypes...)&gt; {
+  public :
+    <del>// types</del>
+    typedef <del>see below</del><ins>decltype(declval&lt;Fn&gt;() ( declval&lt;ArgTypes&gt;()... ))</ins> type;
+  };
+}
+</pre>
+<p>
+<del>1 Given an rvalue <tt>fn</tt> of type <tt>Fn</tt> and values <tt>t1, t2, ..., tN</tt> of
+types <tt>T1, T2, ..., TN</tt> in <tt>ArgTypes</tt>,
+respectively, the <tt>type</tt> member is the result type of the expression
+<tt>fn(t1, t2, ...,tN)</tt>. The values <tt>ti</tt>
+are lvalues when the corresponding type <tt>Ti</tt> is an lvalue-reference
+type, and rvalues otherwise.</del>
+</p>
+</blockquote>
+</li>
+</ol>
+
+</resolution>
+
+</issue>

@@ -1,0 +1,57 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="715" status="CD1">
+<title><tt>minmax_element</tt> complexity is too lax</title>
+<section><sref ref="[alg.min.max]"/></section>
+<submitter>Matt Austern</submitter>
+<date>30 Aug 2007</date>
+
+<discussion>
+<p>
+The complexity for <tt>minmax_element</tt> (<sref ref="[alg.min.max]"/> par 16) says "At most <tt>max(2 *
+(last - first ) - 2, 0)</tt> applications of the corresponding comparisons",
+i.e. the worst case complexity is no better than calling <tt>min_element</tt> and
+<tt>max_element</tt> separately. This is gratuitously inefficient. There is a
+well known technique that does better: see section 9.1 of CLRS
+(Introduction to Algorithms, by Cormen, Leiserson, Rivest, and Stein).
+</p>
+</discussion>
+
+<resolution>
+<p>
+Change <sref ref="[alg.min.max]"/> to:
+</p>
+
+<blockquote>
+<pre>
+template&lt;class ForwardIterator&gt; 
+  pair&lt;ForwardIterator, ForwardIterator&gt; 
+    minmax_element(ForwardIterator first , ForwardIterator last); 
+template&lt;class ForwardIterator, class Compare&gt; 
+  pair&lt;ForwardIterator, ForwardIterator&gt; 
+    minmax_element(ForwardIterator first , ForwardIterator last , Compare comp);
+</pre>
+<blockquote>
+<p>
+<i>Returns:</i> <tt>make_pair(m, M)</tt>, where <tt>m</tt> is
+<del><tt>min_element(first, last)</tt> or <tt>min_element(first, last,
+comp)</tt></del> <ins>the first iterator in <tt>[first,
+last)</tt> such that no iterator in the range refers to a smaller element,</ins> and
+<ins>where</ins> <tt>M</tt> is <del><tt>max_element(first, last)</tt> or
+<tt>max_element(first, last, comp)</tt></del> <ins>the last iterator
+in <tt>[first, last)</tt> such that no iterator in the range refers to a larger element</ins>.
+</p>
+<p>
+<i>Complexity:</i> At most <del><tt>max(2 * (last - first ) - 2, 0)</tt></del>
+<ins><tt>max(&lfloor;(3/2) (N-1)&rfloor;, 0)</tt></ins> applications of the
+corresponding <del>comparisons</del> <ins>predicate, where <tt>N</tt> is <tt>distance(first, last)</tt></ins>.
+</p>
+</blockquote>
+</blockquote>
+
+</resolution>
+
+</issue>

@@ -1,0 +1,99 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="916" status="NAD">
+<title>Redundant move-assignment operator of <tt>pair</tt> should be removed</title>
+<section><sref ref="[pairs]"/></section>
+<submitter>Daniel Kr&uuml;gler</submitter>
+<date>4 Oct 2008</date>
+
+<discussion>
+<p><b>see also <iref ref="917"/>.</b></p>
+
+<p>
+The current WP provides the following assignment operators for <tt>pair</tt>
+in <sref ref="[pairs]"/>/1:
+</p>
+
+<ol>
+<li>
+<pre>
+template&lt;class U , class V&gt;
+requires HasAssign&lt;T1, const U&amp;&gt; &amp;&amp; HasAssign&lt;T2, const V&amp;&gt;
+pair&amp; operator=(const pair&lt;U , V&gt;&amp; p);
+</pre>
+</li>
+<li>
+<pre>
+requires MoveAssignable&lt;T1&gt; &amp;&amp; MoveAssignable&lt;T2&gt; pair&amp; operator=(pair&amp;&amp; p );
+</pre>
+</li>
+<li>
+<pre>
+template&lt;class U , class V&gt;
+requires HasAssign&lt;T1, RvalueOf&lt;U&gt;::type&gt; &amp;&amp; HasAssign&lt;T2, RvalueOf&lt;V&gt;::type&gt;
+pair&amp; operator=(pair&lt;U , V&gt;&amp;&amp; p);
+</pre>
+</li>
+</ol>
+
+<p>
+It seems that the functionality of (2) is completely covered by (3), therefore
+(2) should be removed.
+</p>
+
+<note>
+Batavia (2009-05):
+</note>
+<blockquote>
+<p>
+Bill believes the extra assignment operators are necessary for resolving
+ambiguities, but that does not mean it needs to be part of the specification.
+</p>
+<p>
+Move to Open.
+We recommend this be looked at in the context of the ongoing work
+related to the pair templates.
+</p>
+</blockquote>
+
+<note>
+2009-07 Frankfurt:
+</note>
+
+<blockquote>
+Leave this open pending the removal of concepts from the WD.
+</blockquote>
+
+<note>
+2009-10 Santa Cruz:
+</note>
+
+<blockquote>
+Mark as NAD, see issue <iref ref="801"/>.
+</blockquote>
+
+</discussion>
+
+<resolution>
+<ol type="A">
+<li>
+<p>
+In <sref ref="[pairs]"/> p. 1, class <tt>pair</tt> and just before p. 13 remove the declaration:
+</p>
+
+<blockquote><pre>
+requires MoveAssignable&lt;T1&gt; &amp;&amp; MoveAssignable&lt;T2&gt; pair&amp; operator=(pair&amp;&amp; p );
+</pre></blockquote>
+</li>
+
+<li>
+Remove p.13+p.14
+</li>
+
+</ol>
+</resolution>
+
+</issue>

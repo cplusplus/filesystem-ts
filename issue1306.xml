@@ -1,0 +1,46 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="1306" status="WP">
+<title><tt>pointer</tt> and <tt>const_pointer</tt> for <tt>&lt;array&gt;</tt></title>
+<section><sref ref="[array]"/></section>
+<submitter>Nicolai Josuttis</submitter>
+<date>24 Jan 2010</date>
+
+<discussion>
+<p>
+Class <tt>&lt;array&gt;</tt> is the only sequence container class that has no
+types <tt>pointer</tt> and <tt>const_pointer</tt> defined. You might argue that
+this makes no sense because there is no allocator support, but on the other
+hand, types <tt>reference</tt> and <tt>const_reference</tt> are defined for
+<tt>array</tt>.
+</p>
+
+<note>
+2010-02-11 Moved to Tentatively Ready after 6 positive votes on c++std-lib.
+</note>
+
+</discussion>
+
+<resolution>
+<p>
+Add to Class template array <sref ref="[array]"/>:
+</p>
+
+<blockquote><pre>
+namespace std {
+  template &lt;class T, size_t N &gt;
+  struct array {
+    ...
+    typedef T value_type;
+    <ins>typedef T * pointer;</ins>
+    <ins>typedef const T * const_pointer;</ins>
+    ...
+  };
+}
+</pre></blockquote>
+</resolution>
+
+</issue>

@@ -1,0 +1,136 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="837" status="NAD Editorial">
+ <title>
+   <code>basic_ios::copyfmt()</code> overly loosely specified
+ </title>
+ <section><sref ref="[basic.ios.members]"/></section>
+ <submitter>Martin Sebor</submitter>
+ <date>17 May 2008</date>
+ <discussion>
+   <p>
+
+The <code>basic_ios::copyfmt()</code> member function is specified in <sref ref="[basic.ios.members]"/> to have the following effects:
+
+   </p>
+   <blockquote>
+
+<i>Effects</i>: If <code>(this == &amp;rhs)</code> does
+nothing. Otherwise assigns to the member objects of <code>*this</code>
+the corresponding member objects of <code>rhs</code>, except that
+
+     <ul>
+       <li>
+
+<code>rdstate()</code> and <code>rdbuf()</code> are left unchanged;
+
+       </li>
+       <li>
+
+<code>exceptions()</code> is altered last by
+calling <code>exceptions(rhs.except)</code>
+
+       </li>
+       <li>
+
+the contents of arrays pointed at by <code>pword</code>
+and <code>iword</code> are copied not the pointers themselves
+
+       </li>
+     </ul>
+   </blockquote>
+   <p>
+
+Since the rest of the text doesn't specify what the member objects
+of <code>basic_ios</code> are this seems a little too loose.
+
+</p>
+
+<note>
+Batavia (2009-05):
+</note>
+<blockquote>
+We agree with the proposed resolution.
+Move to NAD Editorial.
+</blockquote>
+</discussion>
+
+<resolution>
+<p>
+
+I propose to tighten things up by adding a <i>Postcondition</i> clause
+to the function like so:
+
+   </p>
+   <blockquote>
+     <i>Postconditions:</i>
+
+     <table border="1">
+       <thead>
+         <tr>
+           <th colspan="2"><code>copyfmt()</code> postconditions</th>
+         </tr>
+         <tr>
+           <th>Element</th>
+           <th>Value</th>
+         </tr>
+       </thead>
+       <tbody>
+         <tr>
+           <td><code>rdbuf()</code></td>
+           <td><i>unchanged</i></td>
+         </tr>
+         <tr> 
+           <td><code>tie()</code></td>
+           <td><code>rhs.tie()</code></td>
+         </tr>
+         <tr> 
+           <td><code>rdstate()</code></td>
+           <td><i>unchanged</i></td>
+         </tr>
+         <tr> 
+           <td><code>exceptions()</code></td>
+           <td><code>rhs.exceptions()</code></td>
+         </tr>
+         <tr> 
+           <td><code>flags()</code></td>
+           <td><code>rhs.flags()</code></td>
+         </tr>
+         <tr> 
+           <td><code>width()</code></td>
+           <td><code>rhs.width()</code></td>
+         </tr>
+         <tr> 
+           <td><code>precision()</code></td>
+           <td><code>rhs.precision()</code></td>
+         </tr>
+         <tr> 
+           <td><code>fill()</code></td>
+           <td><code>rhs.fill()</code></td>
+         </tr>
+         <tr> 
+           <td><code>getloc()</code></td>
+           <td><code>rhs.getloc()</code></td>
+         </tr>
+       </tbody>
+     </table>
+   </blockquote>
+   <p>
+
+The format of the table follows Table 117 (as
+of <a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2008/n2588.pdf">N2588</a>): <code>basic_ios::init()</code>
+effects.
+
+   </p>
+   <p>
+
+The intent of the new table is not to impose any new requirements or
+change existing ones, just to be more explicit about what I believe is
+already there.
+
+   </p>
+ </resolution>
+</issue>

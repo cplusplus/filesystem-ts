@@ -1,0 +1,81 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="1325" status="New">
+<title>bitset</title>
+<section><sref ref="[bitset.cons]"/></section>
+<submitter>Christopher Jefferson</submitter>
+<date>7 Mar 2010</date>
+
+<discussion>
+<p>
+As mentioned on the boost mailing list:
+</p>
+
+<p>
+The following code, valid in C++03, is broken in C++0x due to ambiguity
+between the "<tt>unsigned long long</tt>" and "<tt>char*</tt>"
+constructors.
+</p>
+
+<blockquote><pre>
+#include &lt;bitset&gt;
+std::bitset&lt;10&gt; b(0);
+</pre></blockquote>
+
+<note>
+The proposed resolution has been reviewed by Stephan T. Lavavej.
+</note>
+
+</discussion>
+
+<resolution>
+<p>
+In WD N3035, <sref ref="[template.bitset]"/>/1, replace the fourth
+bitset constructor:
+</p>
+
+<blockquote><pre>
+<del>explicit bitset(const char *str);</del>
+<ins>template &lt;class charT&gt;
+   explicit bitset(
+     const charT *str,
+     typename basic_string&lt;charT&gt;::size_type pos = 0,
+     typename basic_string&lt;charT&gt;::size_type n =
+       basic_string&lt;charT&gt;::npos,
+     charT zero = charT('0'), charT one = charT('1'));</ins>
+</pre></blockquote>
+
+<p>
+And in <sref ref="[bitset.cons]"/>/8:
+</p>
+
+<blockquote><pre>
+<del>explicit bitset(const char *str);</del>
+</pre>
+<blockquote>
+<del><i>Effects:</i> Constructs an object of class
+<tt>bitset&lt;N&gt;</tt> as if by <tt>bitset(string(str))</tt>.</del>
+</blockquote>
+
+<pre>
+<ins>template &lt;class charT&gt;
+ explicit
+ bitset(const charT *str,
+   typename basic_string&lt;charT&gt;::size_type pos = 0,
+   typename basic_string&lt;charT&gt;::size_type n =
+     basic_string&lt;charT&gt;::npos,
+     charT zero = charT('0'), charT one = charT('1'));</ins>
+</pre>
+
+<blockquote>
+<ins><i>Effects:</i> Constructs an object of class <tt>bitset&lt;N&gt;</tt>
+as if by <tt>bitset(basic_string&lt;charT&gt;(str), pos, n, zero,
+one)</tt>.</ins>
+</blockquote>
+</blockquote>
+</resolution>
+
+</issue>

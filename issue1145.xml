@@ -1,0 +1,47 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="1145" status="NAD Editorial">
+<title>inappropriate headers for atomics</title>
+<section><sref ref="[atomics]"/></section>
+<submitter>LWG</submitter>
+<date>16 Jun 2009</date>
+
+<discussion>
+
+<p><b>Addresses UK 312</b></p>
+
+<p>
+The contents of the <tt>&lt;stdatomic.h&gt;</tt> header are not listed anywhere,
+and <tt>&lt;cstdatomic&gt;</tt> is listed as a C99 header in chapter 17.
+If we intend to use these for compatibility with a future C standard,
+we should not use them now.
+</p>
+
+<note>
+2009-10 Santa Cruz:
+</note>
+
+<blockquote>
+NAD Editorial.  Solved by
+<a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2009/n2992.html">N2992</a>.
+</blockquote>
+
+</discussion>
+
+<resolution>
+<p>
+Remove <tt>&lt;cstdatomic&gt;</tt> from the C99 headers in table 14.
+Add a new header <tt>&lt;atomic&gt;</tt> to the headers in table 13.
+Update chapter 29 to remove reference to <tt>&lt;stdatomic.h&gt;</tt>
+and replace the use of <tt>&lt;cstdatomic&gt;</tt> with <tt>&lt;atomic&gt;</tt>.
+</p>
+<note>
+If and when WG14 adds atomic operations to C
+we can add corresponding headers to table 14 with a TR.
+</note>
+</resolution>
+
+</issue>

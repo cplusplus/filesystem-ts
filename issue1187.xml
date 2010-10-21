@@ -1,0 +1,73 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="1187" status="Ready">
+<title>std::decay</title>
+<section><sref ref="[meta.trans.other]"/></section>
+<submitter>Jason Merrill</submitter>
+<date>7 Aug 2009</date>
+
+<discussion>
+<p>
+I notice that <tt>std::decay</tt> is specified to strip the cv-quals from
+anything but an array or pointer.  This seems incorrect for values of
+class type, since class rvalues can have cv-qualified type (<sref ref="[basic.lval]"/>/9).
+</p>
+
+<note>
+2009-08-09 Howard adds:
+</note>
+
+<blockquote>
+See the thread starting with c++std-lib-24568 for further discussion.  And
+here is a convenience link to the
+<a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2006/n2069.html">original proposal</a>.
+Also see the closely related issue <iref ref="705"/>.
+</blockquote>
+
+<note>
+2010 Pittsburgh:  Moved to Ready.
+</note>
+
+</discussion>
+
+<resolution>
+
+<p>
+Add a note to <tt>decay</tt> in <sref ref="[meta.trans.other]"/>:
+</p>
+
+<blockquote>
+[<i>Note:</i> This behavior is similar to the lvalue-to-rvalue (4.1),
+array-to-pointer (4.2), and function-to-pointer (4.3) conversions
+applied when an lvalue expression is used as an rvalue, but also strips
+cv-qualifiers from class types in order to more closely model by-value
+argument passing. &mdash; <i>end note</i>]
+</blockquote>
+
+<!-- 
+<p>
+Change the comments for <tt>decay</tt> in <sref ref="[meta.trans.other]"/>:
+</p>
+
+<blockquote>
+Let <tt>U</tt> be
+<tt>remove_reference&lt;T&gt;::type</tt>. If 
+<tt>is_array&lt;U&gt;::value</tt> is <tt>true</tt>, the 
+member typedef type shall equal 
+<tt>remove_extent&lt;U&gt;::type*</tt>. If 
+<tt>is_function&lt;U&gt;::value</tt> is <tt>true</tt>, the 
+member typedef type shall equal 
+<tt>add_pointer&lt;U&gt;::type</tt>.
+<del>Otherwise</del> <ins>If <tt>is_class&lt;U&gt;::value</tt> is <tt>false</tt> and
+<tt>is_union&lt;U&gt;::value</tt> is <tt>false</tt>,</ins> the member typedef type equals
+<tt>remove_cv&lt;U&gt;::type</tt>.  <ins>Otherwise, the member typedef type equals
+<tt>U</tt>.</ins>
+</blockquote>
+ -->
+
+</resolution>
+
+</issue>

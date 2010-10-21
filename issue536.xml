@@ -1,0 +1,72 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="536" status="Dup">
+<title>Container iterator constructor and explicit convertibility</title>
+<section><sref ref="[container.requirements]"/></section>
+<submitter>Joaqu&iacute;n M L&oacute;pez Mu&ntilde;oz</submitter>
+<date>17 Dec 2005</date>
+
+<discussion>
+<p>
+The iterator constructor X(i,j) for containers as defined in 23.1.1 and
+23.2.2 does only require that i and j be input iterators but
+nothing is said about their associated value_type. There are three
+sensible
+options:
+</p>
+<ol>
+<li>iterator's value_type is exactly X::value_type (modulo cv).</li>
+<li>iterator's value_type is *implicitly* convertible to X::value_type.</li>
+<li>iterator's value_type is *explicitly* convertible to X::value_type.</li>
+</ol>
+<p>
+The issue has practical implications, and stdlib vendors have
+taken divergent approaches to it: Dinkumware follows 2,
+libstdc++ follows 3.
+</p>
+<p>
+The same problem applies to the definition of insert(p,i,j) for
+sequences and insert(i,j) for associative contianers, as well as
+assign.
+</p>
+
+<note>
+The following added by Howard and the example code was originally written by
+Dietmar.
+</note>
+<p>
+Valid code below?
+</p>
+
+<blockquote><pre>
+#include &lt;vector&gt; 
+#include &lt;iterator&gt; 
+#include &lt;iostream&gt; 
+
+struct foo 
+{ 
+    explicit foo(int) {} 
+}; 
+
+int main() 
+{ 
+    std::vector&lt;int&gt; v_int; 
+    std::vector&lt;foo&gt; v_foo1(v_int.begin(), v_int.end()); 
+    std::vector&lt;foo&gt; v_foo2((std::istream_iterator&lt;int&gt;(std::cin)), 
+                             std::istream_iterator&lt;int&gt;()); 
+} 
+</pre></blockquote>
+<note>
+Berlin: Some support, not universal, for respecting the explicit qualifier.
+</note>
+
+</discussion>
+
+<resolution>
+<duplicate><iref ref="589"/></duplicate>
+</resolution>
+
+</issue>

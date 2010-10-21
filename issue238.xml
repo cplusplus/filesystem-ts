@@ -1,0 +1,42 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="238" status="CD1">
+<title>Contradictory results of stringbuf initialization.</title>
+<section><sref ref="[stringbuf.cons]"/></section>
+<submitter>Dietmar K&uuml;hl</submitter>
+<date>11 May 2000</date>
+
+<discussion>
+<p>In 27.7.1.1 paragraph 4 the results of calling the constructor of
+'basic_stringbuf' are said to be <tt>str() == str</tt>. This is fine
+that far but consider this code:</p>
+
+<pre>
+  std::basic_stringbuf&lt;char&gt; sbuf("hello, world", std::ios_base::openmode(0));
+  std::cout &lt;&lt; "'" &lt;&lt; sbuf.str() &lt;&lt; "'\n";
+</pre>
+
+<p>Paragraph 3 of 27.7.1.1 basically says that in this case neither
+the output sequence nor the input sequence is initialized and
+paragraph 2 of 27.7.1.2 basically says that <tt>str()</tt> either
+returns the input or the output sequence. None of them is initialized,
+ie. both are empty, in which case the return from <tt>str()</tt> is
+defined to be <tt>basic_string&lt;cT&gt;()</tt>.</p>
+
+<p>However, probably only test cases in some testsuites will detect this
+"problem"...</p>
+</discussion>
+
+<resolution>
+<p>Remove 27.7.1.1 paragraph 4.</p>
+</resolution>
+
+<rationale>
+<p>We could fix 27.7.1.1 paragraph 4, but there would be no point.  If
+we fixed it, it would say just the same thing as text that's already
+in the standard.</p>
+</rationale>
+</issue>

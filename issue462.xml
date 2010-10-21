@@ -1,0 +1,156 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="462" status="NAD">
+<title>Destroying objects with static storage duration</title>
+<section><sref ref="[basic.start.term]"/> <sref ref="[cstdint]"/></section>
+<submitter>Bill Plauger</submitter>
+<date>23 Mar 2004</date>
+
+<discussion>
+<p>
+3.6.3 Termination spells out in detail the interleaving of static
+destructor calls and calls to functions registered with atexit. To
+match this behavior requires intimate cooperation between the code
+that calls destructors and the exit/atexit machinery. The former
+is tied tightly to the compiler; the latter is a primitive mechanism
+inherited from C that traditionally has nothing to do with static
+construction and destruction. The benefits of intermixing destructor
+calls with atexit handler calls is questionable at best, and <i>very</i>
+difficult to get right, particularly when mixing third-party C++
+libraries with different third-party C++ compilers and C libraries
+supplied by still other parties.
+</p>
+
+<p>
+I believe the right thing to do is defer all static destruction
+until after all atexit handlers are called. This is a change in
+behavior, but one that is likely visible only to perverse test
+suites. At the very least, we should <i>permit</i> deferred destruction
+even if we don't require it.
+</p>
+
+<note>If this is to be changed, it should probably be changed by CWG.
+  At this point, however, the LWG is leaning toward NAD.  Implementing
+  what the standard says is hard work, but it's not impossible and
+  most vendors went through that pain years ago.  Changing this
+  behavior would be a user-visible change, and would break at least
+  one real application.</note>
+
+<note>
+Batavia:  Send to core with our recommendation that we should permit deferred
+destruction but not require it.
+</note>
+
+<note>
+Howard:  The course of action recommended in Batavia would undo LWG
+issue <iref ref="3"/> and break current code implementing the "phoenix
+singleton". Search the net for "phoenix singleton atexit" to get a feel
+for the size of the adverse impact this change would have.  Below is
+sample code which implements the phoenix singleton and would break if
+<tt>atexit</tt> is changed in this way:
+</note>
+
+<blockquote><pre>
+#include &lt;cstdlib&gt;
+#include &lt;iostream&gt;
+#include &lt;type_traits&gt;
+#include &lt;new&gt;
+
+class A
+{
+    bool alive_;
+    A(const A&amp;);
+    A&amp; operator=(const A&amp;);
+public:
+    A() : alive_(true) {std::cout &lt;&lt; "A()\n";}
+    ~A() {alive_ = false; std::cout &lt;&lt; "~A()\n";}
+    void use()
+    {
+        if (alive_)
+            std::cout &lt;&lt; "A is alive\n";
+        else
+            std::cout &lt;&lt; "A is dead\n";
+    }
+};
+
+void deallocate_resource();
+
+// This is the phoenix singleton pattern
+A&amp; get_resource(bool create = true)
+{
+    static std::aligned_storage&lt;sizeof(A), std::alignment_of&lt;A&gt;::value&gt;::type buf;
+    static A* a;
+    if (create)
+    {
+        if (a != (A*)&amp;buf)
+        {
+            a = ::new (&amp;buf) A;
+            std::atexit(deallocate_resource);
+        }
+    }
+    else
+    {
+        a-&gt;~A();
+        a = (A*)&amp;buf + 1;
+    }
+    return *a;
+}
+
+void deallocate_resource()
+{
+    get_resource(false);
+}
+
+void use_A(const char* message)
+{
+    A&amp; a = get_resource();
+    std::cout &lt;&lt; "Using A " &lt;&lt; message &lt;&lt; "\n";
+    a.use();
+}
+
+struct B
+{
+    ~B() {use_A("from ~B()");}
+};
+
+B b;
+
+int main()
+{
+    use_A("from main()");
+}
+</pre></blockquote>
+
+<p>
+The correct output is:
+</p>
+
+<blockquote><pre>
+A()
+Using A from main()
+A is alive
+~A()
+A()
+Using A from ~B()
+A is alive
+~A()
+</pre></blockquote>
+
+<note>
+Bellevue: Confirmed no interaction with <tt>quick_exit</tt>.
+Strong feeling against mandating the change. Leaning towards NAD rather than permitting the change,
+as this would make common implementations of pheonix-singleton pattern implementation defined, as noted by Howard.
+Bill agrees issue is no longer serious, and accepts NAD.
+</note>
+
+</discussion>
+
+<resolution>
+<p>
+</p>
+</resolution>
+
+</issue>

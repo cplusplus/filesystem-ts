@@ -1,0 +1,50 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="730" status="NAD">
+<title>Comment on [rand.req.adapt]/3 e)</title>
+<section><sref ref="[rand.req.adapt]"/></section>
+<submitter>Stephan Tolksdorf</submitter>
+<date>21 Sep 2007</date>
+
+<discussion>
+<p>
+If an engine adaptor is invoked with an argument of type <tt>seed_seq</tt>, then all base 
+engines are specified to be seeded with this <tt>seed_seq</tt>. As <tt>seed_seq</tt>'s randomization method is 
+qualified as constant, this procedure will ef fectively initialize all base engines with the same seed 
+(though the resulting state might still dif fer to a certain degree if the engines are of different types). 
+It is not clear whether this mode of operation is in general appropriate, hence -- as far as the 
+stated requirements are of general nature and not just specific to the engine adaptors provided by 
+the library -- it might be better to leave the behaviour unspecified, since the current definition of 
+<tt>seed_seq</tt> does not allow for a generally satisfying specification.
+</p>
+
+<p>
+<b>Posssible resolution:</b> [As above]
+</p>
+
+<p>
+See <a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2007/n2424.pdf">N2424</a>
+for further discussion.
+</p>
+
+<note>
+Bellevue:
+</note>
+
+<blockquote>
+Close NAD for the reasons given in N2424.
+</blockquote>
+
+</discussion>
+
+<resolution>
+<p>
+See <a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2007/n2424.pdf">N2424</a>
+for the proposed resolution.
+</p>
+</resolution>
+
+</issue>

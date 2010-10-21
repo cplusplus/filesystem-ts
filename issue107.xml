@@ -1,0 +1,33 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="107" status="NAD">
+<title>Valarray constructor is strange</title>
+<section><sref ref="[template.valarray]"/></section>
+<submitter>AFNOR</submitter>
+<date>7 Oct 1998</date>
+
+<discussion>
+<p>The order of the arguments is (elem, size) instead of the normal
+(size, elem) in the rest of the library. Since elem often has an
+integral or floating point type, both types are convertible to each
+other and reversing them leads to a well formed program.</p>
+</discussion>
+
+<resolution>
+<p>Inverting the arguments could silently break programs. Introduce
+the two signatures (const T&amp;, size_t) and (size_t, const T&amp;),
+but make the one we do not want private so errors result in a
+diagnosed access violation. This technique can also be applied to STL
+containers.</p>
+</resolution>
+
+<rationale>
+<p>The LWG believes that while the order of arguments is unfortunate,
+it does not constitute a defect in the standard. The LWG believes that
+the proposed solution will not work for valarray&lt;size_t&gt; and
+perhaps other cases.</p>
+</rationale>
+</issue>

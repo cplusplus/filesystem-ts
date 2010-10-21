@@ -1,0 +1,48 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="1212" status="NAD Editorial">
+<title>result of post-increment/decrement operator</title>
+<section><sref ref="[iterator.requirements]"/></section>
+<submitter>Alisdair Meredith</submitter>
+<date>18 Sep 2009</date>
+
+<discussion>
+<p>
+Forward iterator and bidirectional iterator place different requirements on the result of post-increment/decrement operator.  The same form should be used in each case.
+</p>
+
+<p>
+Merging row from:
+</p>
+
+<blockquote><pre>
+Table 102 -- Forward iterator requirements
+Table 103 -- Bidirectional iterator requirements
+
+    r++ : convertible to const X&amp;
+    r-- : convertible to const X&amp;
+    
+    *r++ : T&amp; if X is mutable, otherwise const T&amp;
+    *r-- : convertible to T
+</pre></blockquote>
+
+<note>
+2010 Pittsburgh:  Moved to NAD Editorial.  Rationale added below.
+</note>
+
+</discussion>
+
+<rationale>
+<p>
+Solved by
+<a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2010/n3066.html">N3066</a>.
+</p>
+</rationale>
+
+<resolution>
+</resolution>
+
+</issue>

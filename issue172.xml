@@ -1,0 +1,36 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="172" status="TC1">
+<title>Inconsistent types for <tt>basic_istream::ignore()</tt></title>
+<section><sref ref="[istream.unformatted]"/></section>
+<submitter>Greg Comeau, Dietmar K&uuml;hl</submitter>
+<date>23 Jul 1999</date>
+
+<discussion>
+<p>In <sref ref="[istream]"/> the function
+<tt>ignore()</tt> gets an object of type <tt>streamsize</tt> as first
+argument. However, in <sref ref="[istream.unformatted]"/>
+paragraph 23 the first argument is of type <tt>int.</tt></p>
+
+<p>As far as I can see this is not really a contradiction because
+everything is consistent if <tt>streamsize</tt> is typedef to be
+<tt>int</tt>. However, this is almost certainly not what was
+intended. The same thing happened to <tt>basic_filebuf::setbuf()</tt>,
+as described in issue <iref ref="173"/>.</p>
+
+<p>Darin Adler also
+submitted this issue, commenting: Either 27.6.1.1 should be modified
+to show a first parameter of type int, or 27.6.1.3 should be modified
+to show a first parameter of type streamsize and use
+numeric_limits&lt;streamsize&gt;::max.</p>
+</discussion>
+
+<resolution>
+<p>In <sref ref="[istream.unformatted]"/> paragraph 23 and 24, change both uses
+of <tt>int</tt> in the description of <tt>ignore()</tt> to
+<tt>streamsize</tt>.</p>
+</resolution>
+</issue>

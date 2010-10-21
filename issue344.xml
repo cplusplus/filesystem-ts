@@ -1,0 +1,43 @@
+<issue num="344" status="NAD">
+<title>grouping + showbase</title>
+<section><sref ref="[category.numeric]"/></section>
+<submitter>Howard Hinnant</submitter>
+<date>13 Oct 2001</date>
+
+<discussion>
+<p>
+When both grouping and showbase are active and the basefield is octal, 
+does the leading 0 participate in the grouping or not?  For example, 
+should one format as: 0,123,456 or 0123,456?
+</p>
+<p>
+An analogy can be drawn with hexadecimal.  It appears that 0x123,456 is 
+preferred over 0x,123,456.  However, this analogy is not universally 
+accepted to apply to the octal base.  The standard is not clear on how 
+to format (or parse) in this manner.
+</p>
+</discussion>
+<resolution>
+<p>
+Insert into <sref ref="[facet.numpunct.virtuals]"/> paragraph 3, just before the last
+sentence:
+</p>
+<blockquote><p>
+The leading hexadecimal base specifier "0x" does not participate in 
+grouping.  The leading '0' octal base specifier may participate in 
+grouping.  It is unspecified if the leading '0' participates in 
+formatting octal numbers.  In parsing octal numbers, the implementation 
+is encouraged to accept both the leading '0' participating in the 
+grouping, and not participating (e.g. 0123,456 or 0,123,456).
+</p></blockquote>
+</resolution>
+<rationale>
+<p>
+The current behavior may be unspecified, but it's not clear that it
+matters.  This is an obscure corner case, since grouping is usually
+intended for the benefit of humans and oct/hex prefixes are usually
+intended for the benefit of machines.  There is not a strong enough
+consensus in the LWG for action.
+</p>
+</rationale>
+</issue>

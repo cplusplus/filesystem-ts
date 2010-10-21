@@ -1,0 +1,83 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="280" status="CD1">
+<title>Comparison of reverse_iterator to const reverse_iterator</title>
+<section><sref ref="[reverse.iterators]"/></section>
+<submitter>Steve Cleary</submitter>
+<date>27 Nov 2000</date>
+
+<discussion>
+<p>
+This came from an email from Steve Cleary to Fergus in reference to
+issue <iref ref="179"/>. The library working group briefly discussed
+this in Toronto and believed it should be a separate issue.  There was
+also some reservations about whether this was a worthwhile problem to
+fix.
+</p>
+
+<p>
+Steve said: &quot;Fixing reverse_iterator. std::reverse_iterator can
+(and should) be changed to preserve these additional
+requirements.&quot; He also said in email that it can be done without
+breaking user's code: &quot;If you take a look at my suggested
+solution, reverse_iterator doesn't have to take two parameters; there
+is no danger of breaking existing code, except someone taking the
+address of one of the reverse_iterator global operator functions, and
+I have to doubt if anyone has ever done that. . .  <i>But</i>, just in
+case they have, you can leave the old global functions in as well --
+they won't interfere with the two-template-argument functions.  With
+that, I don't see how <i>any</i> user code could break.&quot;
+</p>
+</discussion>
+
+<resolution>
+<p>
+<b>Section:</b> <sref ref="[reverse.iterator]"/>
+add/change the following declarations:</p>
+<pre>
+  A) Add a templated assignment operator, after the same manner
+        as the templated copy constructor, i.e.:
+
+  template &lt; class U &gt;
+  reverse_iterator &lt; Iterator &gt;&amp; operator=(const reverse_iterator&lt; U &gt;&amp; u);
+
+  B) Make all global functions (except the operator+) have
+  two template parameters instead of one, that is, for
+  operator ==, !=, &lt;, &gt;, &lt;=, &gt;=, - replace:
+
+       template &lt; class Iterator &gt;
+       typename reverse_iterator&lt; Iterator &gt;::difference_type operator-(
+                 const reverse_iterator&lt; Iterator &gt;&amp; x,
+                 const reverse_iterator&lt; Iterator &gt;&amp; y);
+
+  with:
+
+      template &lt; class Iterator1, class Iterator2 &gt;
+      typename reverse_iterator &lt; Iterator1 &gt;::difference_type operator-(
+                 const reverse_iterator &lt; Iterator1 &gt; &amp; x,
+                 const reverse_iterator &lt; Iterator2 &gt; &amp; y);
+</pre>
+<p>
+Also make the addition/changes for these signatures in 
+<sref ref="[reverse.iter.ops]"/>.
+</p>
+
+<note>
+Copenhagen: The LWG is concerned that the proposed resolution 
+introduces new overloads.  Experience shows that introducing
+overloads is always risky, and that it would be inappropriate to
+make this change without implementation experience.  It may be
+desirable to provide this feature in a different way.
+</note>
+
+<note>
+Lillehammer: We now have implementation experience, and agree that
+this solution is safe and correct.
+</note>
+
+</resolution>
+
+</issue>

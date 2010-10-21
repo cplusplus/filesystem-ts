@@ -1,0 +1,60 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="444" status="CD1">
+<title>Bad use of casts in fstream</title>
+<section><sref ref="[fstreams]"/></section>
+<submitter>Vincent Leloup</submitter>
+<date>20 Nov 2003</date>
+
+<discussion>
+<p>
+<sref ref="[ifstream.members]"/> p1, <sref ref="[ofstream.members]"/> p1, <sref ref="[fstream.members]"/> p1 seems have same problem as exposed in LWG issue
+<iref ref="252"/>.
+</p>
+</discussion>
+
+<resolution>
+
+<note>Sydney: Genuine defect. 27.8.1.13 needs a cast to cast away
+ constness. The other two places are stylistic: we could change the
+ C-style casts to const_cast. Post-Sydney: Howard provided wording.
+</note>
+
+<p>Change 27.8.1.7/1 from:</p>
+<blockquote><p>
+  Returns: (basic_filebuf&lt;charT,traits>*)&amp;sb.
+</p></blockquote>
+
+<p>to:</p>
+<blockquote><p>
+  Returns: const_cast&lt;basic_filebuf&lt;charT,traits>*>(&amp;sb).
+</p></blockquote>
+
+<p>Change 27.8.1.10/1 from:</p>
+<blockquote><p>
+  Returns: (basic_filebuf&lt;charT,traits>*)&amp;sb.
+</p></blockquote>
+
+<p>to:</p>
+<blockquote><p>
+  Returns: const_cast&lt;basic_filebuf&lt;charT,traits>*>(&amp;sb).
+</p></blockquote>
+
+<p>Change 27.8.1.13/1 from:</p>
+<blockquote><p>
+  Returns: &amp;sb.
+</p></blockquote>
+
+<p>to:</p>
+<blockquote><p>
+  Returns: const_cast&lt;basic_filebuf&lt;charT,traits>*>(&amp;sb).
+</p></blockquote>
+
+
+
+</resolution>
+
+</issue>

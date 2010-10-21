@@ -1,0 +1,50 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="714" status="CD1">
+<title><tt>search_n</tt> complexity is too lax</title>
+<section><sref ref="[alg.search]"/></section>
+<submitter>Matt Austern</submitter>
+<date>30 Aug 2007</date>
+
+<discussion>
+<p>
+The complexity for <tt>search_n</tt> (<sref ref="[alg.search]"/> par 7) is specified as "At most
+(last - first ) * count applications of the corresponding predicate if
+count is positive, or 0 otherwise." This is unnecessarily pessimistic.
+Regardless of the value of count, there is no reason to examine any
+element in the range more than once.
+</p>
+</discussion>
+
+<resolution>
+<p>
+Change the complexity to "At most (last - first) applications of the corresponding predicate".
+</p>
+
+<blockquote>
+<pre>
+template&lt;class ForwardIterator, class Size, class T&gt; 
+  ForwardIterator 
+    search_n(ForwardIterator first , ForwardIterator last , Size count , 
+             const T&amp; value ); 
+
+template&lt;class ForwardIterator, class Size, class T, 
+         class BinaryPredicate&gt; 
+  ForwardIterator 
+    search_n(ForwardIterator first , ForwardIterator last , Size count , 
+             const T&amp; value , BinaryPredicate pred );
+</pre>
+<blockquote>
+<p>
+<i>Complexity:</i> At most <tt>(last - first ) <del>* count</del></tt> applications of the corresponding predicate
+<del>if <tt>count</tt> is positive, or 0 otherwise</del>.
+</p>
+</blockquote>
+</blockquote>
+
+</resolution>
+
+</issue>

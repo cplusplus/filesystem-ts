@@ -1,0 +1,96 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="871" status="WP">
+<title>Iota's requirements on T are too strong</title>
+<section><sref ref="[numeric.iota]"/></section>
+<submitter>Daniel Kr&uuml;gler</submitter>
+<date>20 Aug 2008</date>
+
+<discussion>
+<p>
+According to the recent WP
+<a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2008/n2691.pdf">N2691</a>,
+<sref ref="[numeric.iota]"/>/1, the requires clause
+of <tt>std::iota</tt> says:
+</p>
+
+<blockquote>
+<tt>T</tt> shall meet the requirements of <tt>CopyConstructible</tt> and <tt>Assignable</tt> types, and
+shall be convertible to <tt>ForwardIterator</tt>'s value type.[..]
+</blockquote>
+
+<p>
+Neither <tt>CopyConstructible</tt> nor <tt>Assignable</tt> is needed, instead <tt>MoveConstructible</tt>
+seems to be the correct choice. I guess the current wording resulted as an
+artifact from comparing it with similar numerical algorithms like <tt>accumulate</tt>.
+</p>
+
+<p>
+Note: If this function will be conceptualized, the here proposed
+<tt>MoveConstructible</tt>
+requirement can be removed, because this is an implied requirement of
+function arguments, see
+<a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2008/n2710.pdf">N2710</a>/[temp.req.impl]/3, last bullet.
+</p>
+
+<note>
+post San Francisco:
+</note>
+
+<blockquote>
+Issue pulled by author prior to review.
+</blockquote>
+
+<note>
+2009-07-30 Daniel reopened:
+</note>
+
+<blockquote>
+with the absence of concepts, this issue (closed) is valid again and I
+suggest to reopen it.
+I also revised by proposed resolution based on N2723 wording:
+</blockquote>
+
+<note>
+2009-10 Santa Cruz:
+</note>
+
+<blockquote>
+Change 'convertible' to 'assignable', Move To Ready.
+</blockquote>
+
+</discussion>
+
+<resolution>
+<p>
+Change the first sentence of <sref ref="[numeric.iota]"/>/1:
+</p>
+
+<blockquote>
+<i>Requires:</i> <tt>T</tt> shall <del>meet the requirements of <tt>CopyConstructible</tt> and
+<tt>Assignable</tt> types, and shall</del> be
+assignable to <tt>ForwardIterator</tt>'s value type. [..]
+</blockquote>
+
+<!-- 
+<p>
+Change the first sentence of <sref ref="[numeric.iota]"/>/1:
+</p>
+
+<blockquote>
+<i>Requires:</i> <tt>T</tt> shall <del>meet the requirements of
+<tt>CopyConstructible</tt> and <tt>Assignable</tt> types,</del>
+<ins>
+be <tt>MoveConstructible</tt> (Table 34)
+</ins>
+and shall be
+convertible to <tt>ForwardIterator</tt>'s value type. [..]
+</blockquote>
+ -->
+
+</resolution>
+
+</issue>

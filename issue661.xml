@@ -1,0 +1,91 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="661" status="CD1">
+<title>New 27.6.1.2.2 changes make special extractions useless</title>
+<section><sref ref="[istream.formatted.arithmetic]"/></section>
+<submitter>Daniel Kr&uuml;gler</submitter>
+<date>1 Apr 2007</date>
+
+<discussion>
+<p>
+To the more drastic changes of <sref
+ref="[istream.formatted.arithmetic]"/> in the current draft N2134 belong
+the explicit description of the extraction of the types short and int in
+terms of as-if code fragments.
+</p>
+
+<ol>
+<li>
+The corresponding as-if extractions in paragraph 2 and 3 will never
+result in a change of the operator&gt;&gt; argument val, because the
+contents of the local variable lval is in no case written into val.
+Furtheron both fragments need a currently missing parentheses in the
+beginning of the if-statement to be valid C++.
+</li>
+<li>
+I would like to ask whether the omission of a similar explicit
+extraction of unsigned short and unsigned int in terms of long -
+compared to their corresponding new insertions, as described in <sref
+ref="[ostream.inserters.arithmetic]"/>, is a deliberate decision or an
+oversight.
+</li>
+</ol>
+</discussion>
+
+<resolution>
+<ol>
+<li>
+<p>
+In <sref ref="[istream.formatted.arithmetic]"/>/2 change the current as-if code fragment
+</p>
+<blockquote><pre>
+typedef num_get&lt;charT,istreambuf_iterator&lt;charT,traits&gt; &gt; numget;
+iostate err = 0;
+long lval;
+use_facet&lt;numget&gt;(loc).get(*this, 0, *this, err, lval );
+if (err == 0) <ins>{</ins>
+  <del>&amp;&amp;</del> <ins>if</ins> (lval &lt; numeric_limits&lt;short&gt;::min() || numeric_limits&lt;short&gt;::max() &lt; lval)<del>)</del>
+      err = ios_base::failbit;
+  <ins>else
+    val = static_cast&lt;short&gt;(lval);
+}</ins>
+setstate(err);
+</pre></blockquote>
+
+<p>
+Similarily in <sref ref="[istream.formatted.arithmetic]"/>/3 change the current as-if fragment
+</p>
+
+<blockquote><pre>
+typedef num_get&lt;charT,istreambuf_iterator&lt;charT,traits&gt; &gt; numget;
+iostate err = 0;
+long lval;
+use_facet&lt;numget&gt;(loc).get(*this, 0, *this, err, lval );
+if (err == 0) <ins>{</ins>
+  <del>&amp;&amp;</del> <ins>if</ins> (lval &lt; numeric_limits&lt;int&gt;::min() || numeric_limits&lt;int&gt;::max() &lt; lval)<del>)</del>
+      err = ios_base::failbit;
+  <ins>else
+    val = static_cast&lt;int&gt;(lval);
+}</ins>
+setstate(err);
+</pre></blockquote>
+</li>
+<li>
+---
+</li>
+</ol>
+</resolution>
+
+<note>
+Kona (2007): Note to the editor: the name lval in the call to <tt>use_facet</tt>
+is incorrectly italicized in the code fragments corresponding to
+<tt>operator&gt;&gt;(short &amp;)</tt> and <tt>operator &gt;&gt;(int &amp;)</tt>. Also, val -- which appears
+twice on the line with the <tt>static_cast</tt> in the proposed resolution --
+should be italicized. Also, in response to part two of the issue: this
+is deliberate.
+</note>
+
+</issue>

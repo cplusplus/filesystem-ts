@@ -1,0 +1,218 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="492" status="NAD">
+<title>Invalid iterator arithmetic expressions</title>
+<section><sref ref="[structure.specifications]"/></section>
+<submitter>Thomas Mang</submitter>
+<date>12 Dec 2004</date>
+
+<discussion>
+<p>Various clauses other than clause 25 make use of iterator arithmetic not
+supported by the iterator category in question.
+Algorithms in clause 25 are exceptional because of 25 [lib.algorithms],
+paragraph 9, but this paragraph does not provide semantics to the
+expression "iterator - n", where n denotes a value of a distance type
+between iterators.</p>
+
+<p>1) Examples of current wording:</p>
+
+<p>Current wording outside clause 25:</p>
+
+<p>
+23.2.2.4 [lib.list.ops], paragraphs 19-21: "first + 1", "(i - 1)",
+"(last - first)"
+23.3.1.1 [lib.map.cons], paragraph 4: "last - first"
+23.3.2.1 [lib.multimap.cons], paragraph 4: "last - first"
+23.3.3.1 [lib.set.cons], paragraph 4: "last - first"
+23.3.4.1 [lib.multiset.cons], paragraph 4: "last - first"
+24.4.1 [lib.reverse.iterators], paragraph 1: "(i - 1)"
+</p>
+
+<p>
+[Important note: The list is not complete, just an illustration. The
+same issue might well apply to other paragraphs not listed here.]</p>
+
+<p>None of these expressions is valid for the corresponding iterator
+category.</p>
+
+<p>Current wording in clause 25:</p>
+
+<p>
+25.1.1 [lib.alg.foreach], paragraph 1: "last - 1"
+25.1.3 [lib.alg.find.end], paragraph 2: "[first1, last1 -
+(last2-first2))"
+25.2.8 [lib.alg.unique], paragraph 1: "(i - 1)"
+25.2.8 [lib.alg.unique], paragraph 5: "(i - 1)"
+</p>
+
+<p>
+However, current wording of 25 [lib.algorithms], paragraph 9 covers
+neither of these four cases:</p>
+
+<p>Current wording of 25 [lib.algorithms], paragraph 9:</p>
+
+<p>
+"In the description of the algorithms operator + and - are used for some
+of the iterator categories for which they do not have to be defined. In
+these cases the semantics of a+n is the same as that of</p>
+<pre>
+{X tmp = a;
+advance(tmp, n);
+return tmp;
+}
+</pre>
+<p>and that of b-a is the same as of return distance(a, b)"</p>
+
+<p>
+This paragrpah does not take the expression "iterator - n" into account,
+where n denotes a value of a distance type between two iterators [Note:
+According to current wording, the expression "iterator - n" would be
+resolved as equivalent to "return distance(n, iterator)"]. Even if the
+expression "iterator - n" were to be reinterpreted as equivalent to
+"iterator + -n" [Note: This would imply that "a" and "b" were
+interpreted implicitly as values of iterator types, and "n" as value of
+a distance type], then 24.3.4/2 interfers because it says: "Requires: n
+may be negative only for random access and bidirectional iterators.",
+and none of the paragraphs quoted above requires the iterators on which
+the algorithms operate to be of random access or bidirectional category.
+</p>
+
+<p>2) Description of intended behavior:</p>
+
+<p>
+For the rest of this Defect Report, it is assumed that the expression
+"iterator1 + n" and "iterator1 - iterator2" has the semantics as
+described in current 25 [lib.algorithms], paragraph 9, but applying to
+all clauses. The expression "iterator1 - n" is equivalent to an
+result-iterator for which the expression "result-iterator + n" yields an
+iterator denoting the same position as iterator1 does. The terms
+"iterator1", "iterator2" and "result-iterator" shall denote the value of
+an iterator type, and the term "n" shall denote a value of a distance
+type between two iterators.</p>
+
+<p>
+All implementations known to the author of this Defect Report comply
+with these assumptions.
+No impact on current code is expected.</p>
+
+<p>3) Proposed fixes:</p>
+
+
+<p>Change 25 [lib.algorithms], paragraph 9 to:</p>
+
+<p>
+"In the description of the algorithms operator + and - are used for some
+of the iterator categories for which they do not have to be defined. In
+this paragraph, a and b denote values of an iterator type, and n denotes
+a value of a distance type between two iterators. In these cases the
+semantics of a+n is the same as that of</p>
+<pre>
+{X tmp = a;
+advance(tmp, n);
+return tmp;
+}
+</pre>
+<p>,the semantics of a-n denotes the value of an iterator i for which the
+following condition holds:
+advance(i, n) == a,
+and that of b-a is the same as of
+return distance(a, b)".
+</p>
+
+<p>Comments to the new wording:</p>
+
+<p>
+a) The wording " In this paragraph, a and b denote values of an iterator
+type, and n denotes a value of a distance type between two iterators."
+was added so the expressions "b-a" and "a-n" are distinguished regarding
+the types of the values on which they operate.
+b) The wording ",the semantics of a-n denotes the value of an iterator i
+for which the following condition holds: advance(i, n) == a" was added
+to cover the expression 'iterator - n'. The wording "advance(i, n) == a"
+was used to avoid a dependency on the semantics of a+n, as the wording
+"i + n == a" would have implied. However, such a dependency might well
+be deserved.
+c) DR 225 is not considered in the new wording.
+</p>
+
+<p>
+Proposed fixes regarding invalid iterator arithmetic expressions outside
+clause 25:</p>
+
+<p>
+Either
+a) Move modified 25 [lib.algorithms], paragraph 9 (as proposed above)
+before any current invalid iterator arithmetic expression. In that case,
+the first sentence of 25 [lib.algorithms], paragraph 9, need also to be
+modified and could read: "For the rest of this International Standard,
+...." / "In the description of the following clauses including this
+...." / "In the description of the text below ..." etc. - anyways
+substituting the wording "algorithms", which is a straight reference to
+clause 25.
+In that case, 25 [lib.algorithms] paragraph 9 will certainly become
+obsolete.
+Alternatively,
+b) Add an appropiate paragraph similar to resolved 25 [lib.algorithms],
+paragraph 9, to the beginning of each clause containing invalid iterator
+arithmetic expressions.
+Alternatively,
+c) Fix each paragraph (both current wording and possible resolutions of
+DRs) containing invalid iterator arithmetic expressions separately.
+</p>
+
+<p>5) References to other DRs:</p>
+
+<p>
+See DR 225.
+See DR 237. The resolution could then also read "Linear in last -
+first".
+</p>
+
+<note>
+Bellevue:
+</note>
+
+<blockquote>
+Keep open and ask Bill to provide wording.
+</blockquote>
+
+<note>
+2009-05-09 Alisdair adds:
+</note>
+
+<blockquote>
+This issue is related to <iref ref="997"/>.
+</blockquote>
+
+<note>
+2009-07 Frankfurt
+</note>
+
+<blockquote>
+<p>
+Hinnant: this isn't going to change any user's code or any vendor's implementation.
+</p>
+<p>
+No objection to "NAD without prejudice." If anyone proposes a
+resolution, the LWG will consider it.
+</p>
+<p>
+Move to NAD.
+</p>
+</blockquote>
+
+</discussion>
+
+<resolution>
+
+<note>Lillehammer: Minor issue, but real. We have a blanket statement
+about this in 25/11. But (a) it should be in 17, not 25; and (b) it's
+not quite broad enough, because there are some arithmetic expressions
+it doesn't cover. Bill will provide wording.</note>
+
+</resolution>
+
+</issue>

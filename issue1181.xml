@@ -1,0 +1,229 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="1181" status="New">
+<title>Invalid <tt>sub_match</tt> comparison operators</title>
+<section><sref ref="[re.submatch.op]"/></section>
+<submitter>Daniel Kr&uuml;gler</submitter>
+<date>25 Jul 2009</date>
+
+<discussion>
+<p>
+Several heterogeneous comparison operators of class template
+<tt>sub_match</tt> are specified by return clauses that are not valid
+in general. E.g. <sref ref="[re.submatch.op]"/>/7:
+</p>
+
+<blockquote><pre>
+template &lt;class BiIter, class ST, class SA&gt;
+bool operator==(
+  const basic_string&lt;
+    typename iterator_traits&lt;BiIter&gt;::value_type, ST, SA&gt;&amp; lhs,
+  const sub_match&lt;BiIter&gt;&amp; rhs);
+</pre>
+<blockquote>
+<i>Returns:</i> <tt>lhs == rhs.str()</tt>.
+</blockquote>
+</blockquote>
+
+<p>
+The returns clause would be ill-formed for all cases where
+<tt>ST != std::char_traits&lt;iterator_traits&lt;BiIter&gt;::value_type&gt;</tt>
+or <tt>SA != std::allocator&lt;iterator_traits&lt;BiIter&gt;::value_type&gt;</tt>.
+</p>
+<p>
+The generic character of the comparison was intended, so
+there are basically two approaches to fix the problem: The
+first one would define the semantics of the comparison
+using the traits class <tt>ST</tt> (The semantic of <tt>basic_string::compare</tt>
+is defined in terms of the compare function of the corresponding
+traits class), the second one would define the semantics of the
+comparison using the traits class
+</p>
+
+<blockquote><pre>
+std::char_traits&lt;iterator_traits&lt;BiIter&gt;::value_type&gt;
+</pre></blockquote>
+
+<p>
+which is essentially identical to
+</p>
+
+<blockquote><pre>
+std::char_traits&lt;sub_match&lt;BiIter&gt;::value_type&gt;
+</pre></blockquote>
+
+<p>
+I suggest to follow the second approach, because
+this emphasizes the central role of the <tt>sub_match</tt>
+object as part of the comparison and would also
+make sure that a <tt>sub_match</tt> comparison using some
+<tt>basic_string&lt;char_t, ..&gt;</tt> always is equivalent to
+a corresponding comparison with a string literal
+because of the existence of further overloads (beginning
+from <sref ref="[re.submatch.op]"/>/19). If users really want to
+take advantage of their own <tt>traits::compare</tt>, they can
+simply write a corresponding compare function that
+does so.
+</p>
+</discussion>
+
+<resolution>
+<ol>
+<li>
+<p>
+In <sref ref="[re.submatch.op]"/> change as indicated:
+</p>
+
+<blockquote>
+<pre>
+template &lt;class BiIter, class ST, class SA&gt;
+  bool operator==(
+    const basic_string&lt;
+      typename iterator_traits&lt;BiIter&gt;::value_type, ST, SA&gt;&amp; lhs,
+    const sub_match&lt;BiIter&gt;&amp; rhs);
+</pre>
+<blockquote>
+7 <i>Returns:</i> <tt><del>lhs</del><ins>typename
+sub_match&lt;BiIter&gt;::string_type(lhs.begin(), lhs.end())</ins> ==
+rhs.str()</tt>.
+</blockquote>
+
+<pre>
+template &lt;class BiIter, class ST, class SA&gt;
+  bool operator!=(
+    const basic_string&lt;
+      typename iterator_traits&lt;BiIter&gt;::value_type, ST, SA&gt;&amp; lhs,
+    const sub_match&lt;BiIter&gt;&amp; rhs);
+</pre>
+
+<blockquote>
+8 <i>Returns:</i> <tt><ins>!(lhs == rhs)</ins><del>lhs != rhs.str()</del></tt>.
+</blockquote>
+
+<pre>
+template &lt;class BiIter, class ST, class SA&gt;
+  bool operator&lt;(
+    const basic_string&lt;
+      typename iterator_traits&lt;BiIter&gt;::value_type, ST, SA&gt;&amp; lhs,
+    const sub_match&lt;BiIter&gt;&amp; rhs);
+</pre>
+
+<blockquote>
+9 <i>Returns:</i> <tt><del>lhs</del><ins>typename
+sub_match&lt;BiIter&gt;::string_type(lhs.begin(), lhs.end())</ins> &lt;
+rhs.str()</tt>.
+</blockquote>
+
+<pre>
+template &lt;class BiIter, class ST, class SA&gt;
+  bool operator&gt;(
+    const basic_string&lt;
+      typename iterator_traits&lt;BiIter&gt;::value_type, ST, SA&gt;&amp; lhs,
+    const sub_match&lt;BiIter&gt;&amp; rhs);
+</pre>
+
+<blockquote>
+10 <i>Returns:</i> <tt><ins>rhs &lt; lhs</ins><del>lhs &gt; rhs.str()</del></tt>.
+</blockquote>
+
+<pre>
+template &lt;class BiIter, class ST, class SA&gt;
+  bool operator&gt;=(
+    const basic_string&lt;
+      typename iterator_traits&lt;BiIter&gt;::value_type, ST, SA&gt;&amp; lhs,
+    const sub_match&lt;BiIter&gt;&amp; rhs);
+</pre>
+
+<blockquote>
+11 <i>Returns:</i> <tt><ins>!(lhs &lt; rhs)</ins><del>lhs &gt;= rhs.str()</del></tt>.
+</blockquote>
+
+<pre>
+template &lt;class BiIter, class ST, class SA&gt;
+  bool operator&lt;=(
+    const basic_string&lt;
+      typename iterator_traits&lt;BiIter&gt;::value_type, ST, SA&gt;&amp; lhs,
+    const sub_match&lt;BiIter&gt;&amp; rhs);
+</pre>
+
+<blockquote>
+12 <i>Returns:</i> <tt><ins>!(rhs &lt; lhs)</ins><del>lhs &lt;= rhs.str()</del></tt>.
+</blockquote>
+
+<pre>
+template &lt;class BiIter, class ST, class SA&gt;
+  bool operator==(const sub_match&lt;BiIter&gt;&amp; lhs,
+    const basic_string&lt;
+      typename iterator_traits&lt;BiIter&gt;::value_type, ST, SA&gt;&amp; rhs);
+</pre>
+
+<blockquote>
+13 <i>Returns:</i> <tt>lhs.str() == <del>rhs</del><ins>typename
+sub_match&lt;BiIter&gt;::string_type(rhs.begin(), rhs.end())</ins></tt>.
+</blockquote>
+
+<pre>
+template &lt;class BiIter, class ST, class SA&gt;
+  bool operator!=(const sub_match&lt;BiIter&gt;&amp; lhs,
+    const basic_string&lt;
+      typename iterator_traits&lt;BiIter&gt;::value_type, ST, SA&gt;&amp; rhs);
+</pre>
+
+<blockquote>
+14 <i>Returns:</i> <tt><ins>!(lhs == rhs)</ins><del>lhs.str() != rhs</del></tt>.
+</blockquote>
+
+<pre>
+template &lt;class BiIter, class ST, class SA&gt;
+  bool operator&lt;(const sub_match&lt;BiIter&gt;&amp; lhs,
+    const basic_string&lt;
+      typename iterator_traits&lt;BiIter&gt;::value_type, ST, SA&gt;&amp; rhs);
+</pre>
+
+<blockquote>
+15 <i>Returns:</i> <tt>lhs.str() &lt; <del>rhs</del><ins>typename
+sub_match&lt;BiIter&gt;::string_type(rhs.begin(), rhs.end())</ins></tt>.
+</blockquote>
+
+<pre>
+template &lt;class BiIter, class ST, class SA&gt;
+  bool operator&gt;(const sub_match&lt;BiIter&gt;&amp; lhs,
+    const basic_string&lt;
+      typename iterator_traits&lt;BiIter&gt;::value_type, ST, SA&gt;&amp; rhs);
+</pre>
+
+<blockquote>
+16 <i>Returns:</i> <tt><ins>rhs &lt; lhs</ins><del>lhs.str() &gt; rhs</del></tt>.
+</blockquote>
+
+<pre>
+template &lt;class BiIter, class ST, class SA&gt;
+  bool operator&gt;=(const sub_match&lt;BiIter&gt;&amp; lhs,
+    const basic_string&lt;
+      typename iterator_traits&lt;BiIter&gt;::value_type, ST, SA&gt;&amp; rhs);
+</pre>
+
+<blockquote>
+17 <i>Returns:</i> <tt><ins>!(lhs &lt; rhs)</ins><del>lhs.str() &gt;= rhs</del></tt>.
+</blockquote>
+
+<pre>
+template &lt;class BiIter, class ST, class SA&gt;
+  bool operator&lt;=(const sub_match&lt;BiIter&gt;&amp; lhs,
+    const basic_string&lt;
+      typename iterator_traits&lt;BiIter&gt;::value_type, ST, SA&gt;&amp; rhs);
+</pre>
+
+<blockquote>
+18 <i>Returns:</i> <tt><ins>!(rhs &lt; lhs)</ins><del>lhs.str() &lt;= rhs</del></tt>.
+</blockquote>
+</blockquote>
+
+</li>
+</ol>
+</resolution>
+
+</issue>

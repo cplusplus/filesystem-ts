@@ -1,0 +1,161 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="387" status="CD1">
+<title>std::complex over-encapsulated</title>
+<section><sref ref="[complex.numbers]"/></section>
+<submitter>Gabriel Dos Reis</submitter>
+<date>8 Nov 2002</date>
+
+<discussion>
+<p>
+The absence of explicit description of std::complex&lt;T&gt; layout
+makes it imposible to reuse existing software developed in traditional
+languages like Fortran or C with unambigous and commonly accepted
+layout assumptions.  There ought to be a way for practitioners to
+predict with confidence the layout of std::complex&lt;T&gt; whenever T
+is a numerical datatype.  The absence of ways to access individual
+parts of a std::complex&lt;T&gt; object as lvalues unduly promotes
+severe pessimizations. For example, the only way to change,
+independently, the real and imaginary parts is to write something like
+</p>
+
+<pre>
+complex&lt;T&gt; z;
+// ...
+// set the real part to r
+z = complex&lt;T&gt;(r, z.imag());
+// ...
+// set the imaginary part to i
+z = complex&lt;T&gt;(z.real(), i);
+</pre>
+
+<p>
+At this point, it seems appropriate to recall that a complex number
+is, in effect, just a pair of numbers with no particular invariant to
+maintain.  Existing practice in numerical computations has it that a
+complex number datatype is usually represented by Cartesian
+coordinates. Therefore the over-encapsulation put in the specification
+of std::complex&lt;&gt; is not justified.
+</p>
+
+</discussion>
+
+<resolution>
+<p>Add the following requirements to <sref ref="[complex.numbers]"/> as 26.3/4:</p>
+<blockquote>
+<p>If z is an lvalue expression of type cv std::complex&lt;T&gt; then</p>
+
+<ul>
+<li>the expression reinterpret_cast&lt;cv T(&amp;)[2]&gt;(z)
+is well-formed; and</li>
+<li>reinterpret_cast&lt;cv T(&amp;)[2]&gt;(z)[0]designates the
+real part of z; and</li>
+<li>reinterpret_cast&lt;cv T(&amp;)[2]&gt;(z)[1]designates the
+imaginary part of z.</li>
+</ul>
+
+<p>
+Moreover, if a is an expression of pointer type cv complex&lt;T&gt;*
+and the expression a[i] is well-defined for an integer expression
+i then:
+</p>
+
+<ul>
+<li>reinterpret_cast&lt;cv T*&gt;(a)[2*i] designates the real
+part of a[i]; and</li>
+<li>reinterpret_cast&lt;cv T*&gt;(a)[2*i+1] designates the
+imaginary part of a[i].</li>
+</ul>
+</blockquote>
+
+<p>
+In <sref ref="[complex]"/> and <sref ref="[complex.special]"/> add the following member functions
+(changing <tt>T</tt> to concrete types as appropriate for the specializations).
+</p>
+
+<blockquote><pre>
+void real(T);
+void imag(T);
+</pre></blockquote>
+
+<p>
+Add to <sref ref="[complex.members]"/>
+</p>
+
+<blockquote>
+<pre>
+T real() const;
+</pre>
+<blockquote>
+<i>Returns:</i> the value of the real component
+</blockquote>
+<pre>
+void real(T val);
+</pre>
+<blockquote>
+Assigns val to the real component.
+</blockquote>
+<pre>
+T imag() const;
+</pre>
+<blockquote>
+<i>Returns:</i> the value of the imaginary component
+</blockquote>
+<pre>
+void imag(T val);
+</pre>
+<blockquote>
+Assigns val to the imaginary component.
+</blockquote>
+</blockquote>
+
+<note>Kona: The layout guarantee is absolutely necessary for C
+  compatibility.  However, there was disagreement about the other part
+  of this proposal: retrieving elements of the complex number as
+  lvalues.  An alternative: continue to have real() and imag() return
+  rvalues, but add set_real() and set_imag().  Straw poll: return
+  lvalues - 2, add setter functions - 5.  Related issue: do we want
+  reinterpret_cast as the interface for converting a complex to an
+  array of two reals, or do we want to provide a more explicit way of
+  doing it?  Howard will try to resolve this issue for the next
+  meeting.</note>
+
+<note>pre-Sydney: Howard summarized the options in n1589.</note>
+
+<note>
+Bellevue:
+</note>
+
+<blockquote>
+Second half of proposed wording replaced and moved to Ready.
+</blockquote>
+
+<note>
+Pre-Sophia Antipolis, Howard adds:
+</note>
+
+<blockquote>
+Added the members to <sref ref="[complex.special]"/> and changed from Ready to Review.
+</blockquote>
+
+<note>
+Post-Sophia Antipolis:
+</note>
+
+<blockquote>
+Moved from WP back to Ready so that the "and <sref ref="[complex.special]"/>" in the proposed
+resolution can be officially applied.
+</blockquote>
+
+</resolution>
+
+<rationale>
+<p>The LWG believes that C99 compatibility would be enough
+justification for this change even without other considerations.  All
+existing implementations already have the layout proposed here.</p>
+</rationale>
+
+</issue>

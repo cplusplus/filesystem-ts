@@ -1,0 +1,62 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="844" status="CD1">
+<title><tt>complex pow</tt> return type is ambiguous</title>
+<section><sref ref="[cmplx.over]"/></section>
+<submitter>Howard Hinnant</submitter>
+<date>3 Jun 2008</date>
+
+<discussion>
+<p>
+The current working draft is in an inconsistent state.
+</p>
+
+<p>
+<sref ref="[complex.transcendentals]"/> says that:
+</p>
+
+<blockquote>
+<tt>pow(complex&lt;float&gt;(), int())</tt> returns a <tt>complex&lt;float&gt;</tt>.
+</blockquote>
+
+<p>
+<sref ref="[cmplx.over]"/> says that:
+</p>
+
+<blockquote>
+<tt>pow(complex&lt;float&gt;(), int())</tt> returns a <tt>complex&lt;double&gt;</tt>.
+</blockquote>
+
+<note>
+Sophia Antipolis:
+</note>
+
+<blockquote>
+<p>
+Since <tt>int</tt> promotes to <tt>double</tt>, and C99 doesn't have an <tt>int</tt>-based
+overload for <tt>pow</tt>, the C99 result is <tt>complex&lt;double&gt;</tt>, see also C99
+7.22, see also library issue <iref ref="550"/>.
+</p>
+<p>
+Special note: ask P.J. Plauger.
+</p>
+<blockquote>
+Looks fine.
+</blockquote>
+</blockquote>
+</discussion>
+
+<resolution>
+<p>
+Strike this <tt>pow</tt> overload in <sref ref="[complex.syn]"/> and in <sref ref="[complex.transcendentals]"/>:
+</p>
+
+<blockquote><pre>
+<del>template&lt;class T&gt; complex&lt;T&gt; pow(const complex&lt;T&gt;&amp; x, int y);</del>
+</pre></blockquote>
+</resolution>
+
+</issue>

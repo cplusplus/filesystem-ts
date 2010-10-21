@@ -1,0 +1,68 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="1210" status="NAD Editorial">
+<title>iterator reachability should not require a container</title>
+<section><sref ref="[iterator.requirements]"/></section>
+<submitter>Alisdair Meredith</submitter>
+<date>18 Sep 2009</date>
+
+<discussion>
+<p>
+p6 Iterator requirements <sref ref="[iterator.requirements]"/>
+</p>
+
+<blockquote>
+An iterator <tt>j</tt> is called reachable from an iterator <tt>i</tt> if and only if
+there is a finite sequence of applications of the expression <tt>++i</tt> that
+makes <tt>i == j</tt>. If <tt>j</tt> is reachable from <tt>i</tt>, they refer to the same
+container.
+</blockquote>
+
+<p>
+A good example would be stream iterators, which do not refer to a
+container.  Typically, the end iterator from a range of stream iterators
+will compare equal for many such ranges.  I suggest striking the second
+sentence.
+</p>
+
+<p>
+An alternative wording might be:
+</p>
+
+<blockquote>
+If <tt>j</tt> is reachable from <tt>i</tt>, and both <tt>i</tt> and
+<tt>j</tt> are dereferencable iterators, then they refer to the same
+range.
+</blockquote>
+
+<note>
+2010 Pittsburgh:  Moved to NAD Editorial.  Rationale added below.
+</note>
+
+</discussion>
+
+<rationale>
+<p>
+Solved by
+<a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2010/n3066.html">N3066</a>.
+</p>
+</rationale>
+
+<resolution>
+<p>
+Change <sref ref="[iterator.requirements]"/>, p6:
+</p>
+
+<blockquote>
+An iterator <tt>j</tt> is called <i>reachable</i> from an iterator
+<tt>i</tt> if and only if there is a finite sequence of applications of
+the expression <tt>++i</tt> that makes <tt>i == j</tt>. <del>If
+<tt>j</tt> is reachable from <tt>i</tt>, they refer to the same
+container.</del>
+</blockquote>
+</resolution>
+
+</issue>

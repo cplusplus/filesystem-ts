@@ -1,0 +1,265 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="1103" status="WP">
+<title><tt>system_error</tt> constructor postcondition overly strict</title>
+<section><sref ref="[syserr.syserr.members]"/></section>
+<submitter>Howard Hinnant</submitter>
+<date>25 Apr 2009</date>
+
+<discussion>
+<p>
+<sref ref="[syserr.syserr.members]"/> says:
+</p>
+
+<blockquote><pre>
+system_error(error_code ec, const string&amp; what_arg);
+</pre>
+<blockquote>
+<p>
+<i>Effects:</i> Constructs an object of class <tt>system_error</tt>.
+</p>
+<p>
+<i>Postconditions:</i> <tt>code() == ec</tt> and <tt>strcmp(runtime_error::what(), what_arg.c_str()) == 0</tt>.
+</p>
+</blockquote>
+</blockquote>
+
+<p>
+However the intent is for:
+</p>
+
+<blockquote><pre>
+std::system_error se(std::errc::not_a_directory, "In FooBar");
+...
+se.what();  <font color="#C80000">// returns something along the lines of:</font>
+            <font color="#C80000">//   "In FooBar: Not a directory"</font>
+</pre></blockquote>
+
+<p>
+The way the constructor postconditions are set up now, to achieve both
+conformance, and the desired intent in the <tt>what()</tt> string, the
+<tt>system_error</tt> constructor must store "In FooBar" in the base class,
+and then form the desired output each time <tt>what()</tt> is called.  Or
+alternatively, store "In FooBar" in the base class, and store the desired
+<tt>what()</tt> string in the derived <tt>system_error</tt>, and override
+<tt>what()</tt> to return the string in the derived part.
+</p>
+
+<p>
+Both of the above implementations seem suboptimal to me.  In one I'm computing
+a new string every time <tt>what()</tt> is called.  And since <tt>what()</tt>
+can't propagate exceptions, the client may get a different string on different
+calls.
+</p>
+
+<p>
+The second solution requires storing two strings instead of one.
+</p>
+
+<p>
+What I would like to be able to do is form the desired <tt>what()</tt> string
+once in the <tt>system_error</tt> constructor, and store <em>that</em> in the
+base class.  Now I'm:
+</p>
+
+<ol>
+<li>Computing the desired <tt>what()</tt> only once.</li>
+<li>The base class <tt>what()</tt> definition is sufficient and nothrow.</li>
+<li>I'm not storing multiple strings.</li>
+</ol>
+
+<p>
+This is smaller code, smaller data, and faster.
+</p>
+
+<p>
+<tt>ios_base::failure</tt> has the same issue.
+</p>
+
+<note>
+Comments about this change received favorable comments from the <tt>system_error</tt>
+designers.
+</note>
+
+<note>
+Batavia (2009-05):
+</note>
+
+<blockquote>
+<p>
+We agree with the proposed resolution.
+</p>
+<p>
+Move to Tentatively Ready.
+</p>
+</blockquote>
+</discussion>
+
+<resolution>
+<p>
+In <sref ref="[syserr.syserr.members]"/>, change the following constructor postconditions:
+</p>
+
+<blockquote>
+<pre>
+system_error(error_code ec, const string&amp; what_arg);
+</pre>
+<blockquote>
+-2- <i>Postconditions:</i> <tt>code() == ec</tt>
+and <tt><del>strcmp(runtime_error::what(), what_arg.c_str()) == 0</del>
+<ins>string(what()).find(what_arg) != string::npos</ins></tt>.
+</blockquote>
+
+<pre>
+system_error(error_code ec, const char* what_arg);
+</pre>
+<blockquote>
+-4- <i>Postconditions:</i> <tt>code() == ec</tt>
+and <tt><del>strcmp(runtime_error::what(), what_arg) == 0</del>
+<ins>string(what()).find(what_arg) != string::npos</ins></tt>.
+</blockquote>
+
+<pre>
+system_error(error_code ec);
+</pre>
+<blockquote>
+-6- <i>Postconditions:</i> <tt>code() == ec</tt>
+<del>and <tt>strcmp(runtime_error::what(), ""</tt></del>.
+</blockquote>
+
+<pre>
+system_error(int ev, const error_category&amp; ecat, const string&amp; what_arg);
+</pre>
+<blockquote>
+-8- <i>Postconditions:</i> <tt>code() == error_code(ev, ecat)</tt>
+and <tt><del>strcmp(runtime_error::what(), what_arg.c_str()) == 0</del>
+<ins>string(what()).find(what_arg) != string::npos</ins></tt>.
+</blockquote>
+
+<pre>
+system_error(int ev, const error_category&amp; ecat, const char* what_arg);
+</pre>
+<blockquote>
+-10- <i>Postconditions:</i> <tt>code() == error_code(ev, ecat)</tt>
+and <tt><del>strcmp(runtime_error::what(), what_arg) == 0</del>
+<ins>string(what()).find(what_arg) != string::npos</ins></tt>.
+</blockquote>
+
+<pre>
+system_error(int ev, const error_category&amp; ecat);
+</pre>
+<blockquote>
+-12- <i>Postconditions:</i> <tt>code() == error_code(ev, ecat)</tt>
+<del>and <tt>strcmp(runtime_error::what(), "") == 0</tt></del>.
+</blockquote>
+
+</blockquote>
+
+<p>
+In <sref ref="[syserr.syserr.members]"/>, change the description of <tt>what()</tt>:
+</p>
+
+<blockquote>
+<pre>
+const char *what() const throw();
+</pre>
+<blockquote>
+<p>
+-14- <i>Returns:</i> An NTBS incorporating <del><tt>runtime_error::what()</tt> and
+<tt>code().message()</tt></del> <ins>the arguments supplied in the constructor</ins>.
+</p>
+<p>
+[<i>Note:</i> <del>One possible implementation would be:</del>
+<ins>The return NTBS might take the form: <tt>what_arg + ": " + code().message()</tt></ins>
+</p>
+<blockquote><pre><del>
+if (msg.empty()) { 
+  try { 
+    string tmp = runtime_error::what(); 
+    if (code()) { 
+      if (!tmp.empty()) 
+        tmp += ": "; 
+      tmp += code().message(); 
+    } 
+    swap(msg, tmp); 
+  } catch(...) { 
+    return runtime_error::what(); 
+  } 
+return msg.c_str();
+</del></pre></blockquote>
+<p>
+&mdash; <i>end note</i>]
+</p>
+</blockquote>
+</blockquote>
+
+<p>
+In <sref ref="[ios::failure]"/>, change the synopsis:
+</p>
+
+<blockquote><pre>
+namespace std { 
+  class ios_base::failure : public system_error { 
+  public: 
+    explicit failure(const string&amp; msg, const error_code&amp; ec = io_errc::stream); 
+    explicit failure(const char* msg, const error_code&amp; ec = io_errc::stream); 
+    <del>virtual const char* what() const throw();</del>
+  }; 
+}
+</pre></blockquote>
+
+<p>
+In <sref ref="[ios::failure]"/>, change the description of the constructors:
+</p>
+
+<blockquote>
+
+<pre>
+explicit failure(const string&amp; msg, , const error_code&amp; ec = io_errc::stream);
+</pre>
+<blockquote>
+<p>
+-3- <i>Effects:</i> Constructs an object of class <tt>failure</tt>
+<ins>by constructing the base class with <tt>msg</tt> and <tt>ec</tt></ins>.
+</p>
+<p>
+<del>-4- <i>Postcondition:</i> <tt>code() == ec</tt> and <tt>strcmp(what(), msg.c_str()) == 0</tt></del>
+</p>
+</blockquote>
+
+<pre>
+explicit failure(const char* msg, const error_code& ec = io_errc::stream);
+</pre>
+<blockquote>
+<p>
+-5- <i>Effects:</i> Constructs an object of class <tt>failure</tt>
+<ins>by constructing the base class with <tt>msg</tt> and <tt>ec</tt></ins>.
+</p>
+<p>
+<del>-6- <i>Postcondition:</i> <tt>code() == ec and strcmp(what(), msg) == 0</tt></del>
+</p>
+</blockquote>
+
+</blockquote>
+
+<p>
+In <sref ref="[ios::failure]"/>, remove <tt>what</tt> (the base class definition
+need not be repeated here).
+</p>
+
+<blockquote>
+<pre>
+<del>const char* what() const;</del>
+</pre>
+<blockquote>
+<del>-7- <i>Returns:</i> The message <tt>msg</tt> with which the exception was created.</del>
+</blockquote>
+
+</blockquote>
+
+</resolution>
+
+</issue>

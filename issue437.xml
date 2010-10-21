@@ -1,0 +1,50 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="437" status="NAD">
+<title>Formatted output of function pointers is confusing</title>
+<section><sref ref="[ostream.inserters.arithmetic]"/></section>
+<submitter>Ivan Godard</submitter>
+<date>24 Oct 2003</date>
+
+<discussion>
+<p>
+Given:
+</p>
+<pre>
+void f(int) {}
+void(*g)(int) = f;
+cout &lt;&lt; g;
+</pre>
+
+<p>
+(with the expected #include and usings), the value printed is a rather
+surprising "true". Rather useless too.
+</p>
+
+<p>The standard defines:</p>
+
+<pre>ostream&amp; operator&lt;&lt;(ostream&amp;, void*);</pre>
+
+<p>which picks up all data pointers and prints their hex value, but does
+not pick up function pointers because there is no default conversion
+from function pointer to void*. Absent that, we fall back to legacy
+conversions from C and the function pointer is converted to bool.
+</p>
+
+<p>There should be an analogous inserter that prints the address of a
+  function pointer.</p>
+</discussion>
+
+<resolution>
+</resolution>
+
+<rationale>
+<p>This is indeed a wart, but there is no good way to solve it.  C
+  doesn't provide a portable way of outputting the address of a
+  function point either.</p>
+</rationale>
+
+</issue>

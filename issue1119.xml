@@ -1,0 +1,44 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="1119" status="Open">
+<title>tuple query APIs do not support references</title>
+<section><sref ref="[tuple.helper]"/></section>
+<submitter>Alisdair Meredith</submitter>
+<date>23 May 2009</date>
+
+<discussion>
+<p>
+The <tt>tuple</tt> query APIs <tt>tuple_size</tt> and
+<tt>tuple_element</tt> do not support references-to-tuples.  This can be
+annoying when a template deduced a parameter type to be a reference,
+which must be explicitly stripped with <tt>remove_reference</tt> before calling
+these APIs.
+</p>
+<p>
+I am not proposing a resolution at this point, as there is a
+combinatorial explosion with lvalue/rvalue references and
+cv-qualification (see previous issue) that suggests some higher
+refactoring is in order.  This might be something to kick back over to
+Core/Evolution.
+</p>
+<p>
+Note that we have the same problem in numeric_limits.
+</p>
+
+<note>
+2009-10 post-Santa Cruz:
+</note>
+
+<blockquote>
+Move to Open. Alisdair to provide wording.
+</blockquote>
+
+</discussion>
+
+<resolution>
+</resolution>
+
+</issue>

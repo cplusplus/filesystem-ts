@@ -1,0 +1,133 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="654" status="CD1">
+<title>Missing IO roundtrip for random number engines</title>
+<section><sref ref="[rand.req.eng]"/></section>
+<submitter>Daniel Kr&uuml;gler</submitter>
+<date>8 Mar 2007</date>
+
+<discussion>
+<p>
+Table 98 and para 5 in <sref ref="[rand.req.eng]"/> specify
+the IO insertion and extraction semantic of random
+number engines. It can be shown, v.i., that the specification
+of the extractor cannot guarantee to fulfill the requirement
+from para 5:
+</p>
+
+<blockquote><p>
+If a textual representation written via os &lt;&lt; x was
+subsequently read via is &gt;&gt; v, then x == v provided that
+there have been no intervening invocations of x or of v.
+</p></blockquote>
+
+<p>
+The problem is, that the extraction process described in
+table 98 misses to specify that it will initially set the
+if.fmtflags to ios_base::dec, see table 104:
+</p>
+
+<blockquote><p>
+dec: converts integer input or generates integer output
+in decimal base
+</p></blockquote>
+
+<p>
+Proof: The following small program demonstrates the violation
+of requirements (exception safety not fulfilled):
+</p>
+
+<blockquote><pre>
+#include &lt;cassert&gt;
+#include &lt;ostream&gt;
+#include &lt;iostream&gt;
+#include &lt;iomanip&gt;
+#include &lt;sstream&gt;
+
+class RanNumEngine {
+  int state;
+public:
+  RanNumEngine() : state(42) {}
+
+  bool operator==(RanNumEngine other) const {
+      return state == other.state;
+  }
+
+  template &lt;typename Ch, typename Tr&gt;
+  friend std::basic_ostream&lt;Ch, Tr&gt;&amp; operator&lt;&lt;(std::basic_ostream&lt;Ch, Tr&gt;&amp; os, RanNumEngine engine) {
+    Ch old = os.fill(os.widen(' ')); // Sets space character
+    std::ios_base::fmtflags f = os.flags();
+    os &lt;&lt; std::dec &lt;&lt; std::left &lt;&lt; engine.state; // Adds ios_base::dec|ios_base::left
+    os.fill(old); // Undo
+    os.flags(f);
+    return os;
+  }
+
+  template &lt;typename Ch, typename Tr&gt;
+  friend std::basic_istream&lt;Ch, Tr&gt;&amp; operator&gt;&gt;(std::basic_istream&lt;Ch, Tr&gt;&amp; is, RanNumEngine&amp; engine) {
+       // Uncomment only for the fix.
+
+    //std::ios_base::fmtflags f = is.flags();
+    //is &gt;&gt; std::dec;
+    is &gt;&gt; engine.state;
+    //is.flags(f);
+    return is;
+  }
+};
+
+int main() {
+    std::stringstream s;
+    s &lt;&lt; std::setfill('#'); // No problem
+        s &lt;&lt; std::oct; // Yikes!
+        // Here starts para 5 requirements:
+    RanNumEngine x;
+    s &lt;&lt; x;
+    RanNumEngine v;
+    s &gt;&gt; v;
+    assert(x == v); // Fails: 42 == 34
+}
+</pre></blockquote>
+
+<p>
+A second, minor issue seems to be, that the insertion
+description from table 98 unnecessarily requires the
+addition of ios_base::fixed (which only influences floating-point
+numbers). Its not entirely clear to me whether the proposed
+standard does require that the state of random number engines
+is stored in integral types or not, but I have the impression
+that this is the indent, see e.g. p. 3
+</p>
+
+<blockquote><p>
+The specification of each random number engine defines the
+size of its state in multiples of the size of its result_type.
+</p></blockquote>
+
+<p>
+If other types than integrals are supported, then I wonder why
+no requirements are specified for the precision of the stream.
+</p>
+
+<p>
+See <a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2007/n2391.pdf">N2391</a> and
+<a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2007/n2423.pdf">N2423</a>
+for some further discussion.
+</p>
+</discussion>
+
+<resolution>
+<p>
+Adopt the proposed resolution in
+<a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2007/n2423.pdf">N2423</a>.
+</p>
+</resolution>
+
+<note>
+Kona (2007): The LWG adopted the proposed resolution of N2423 for this issue.
+The LWG voted to accelerate this issue to Ready status to be voted into the WP at Kona.
+</note>
+
+</issue>

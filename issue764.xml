@@ -1,0 +1,82 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="764" status="NAD">
+<title><tt>equal_range</tt> on unordered containers should return a <tt>pair</tt> of <tt>local_iterators</tt></title>
+<section><sref ref="[unord.req]"/></section>
+<submitter>Joe Gottman</submitter>
+<date>29 Nov 2007</date>
+
+<discussion>
+<p>
+    A major attribute of the unordered containers is that iterating 
+though them inside a bucket is very fast while iterating between buckets 
+can be much slower.  If an unordered container has a low load factor, 
+iterating between the last iterator in one bucket and the next iterator, 
+which is in another bucket, is <tt>O(bucket_count())</tt> which may be much 
+larger than <tt>O(size())</tt>.
+</p>
+<p>
+    If <tt>b</tt> is an non-const unordered container of type <tt>B</tt> and <tt>k</tt> is an 
+object of it's <tt>key_type</tt>, then <tt>b.equal_range(k)</tt> currently returns 
+<tt>pair&lt;B::iterator, B::iterator&gt;</tt>. Consider the following code:
+</p>
+
+<blockquote><pre>
+B::iterator lb, ub;
+tie(lb, ub) = b.equal_range(k);
+for (B::iterator it = lb; it != ub; ++it) {
+        // Do something with *it
+}
+</pre></blockquote>
+
+<p>
+If <tt>b.equal_range(k)</tt> returns a non-empty range (i.e. <tt>b</tt> contains at least 
+on element whose key is equivalent to <tt>k</tt>), then every iterator in the 
+half-open range <tt>[lb, ub)</tt> will be in the same bucket, but <tt>ub</tt> will likely 
+either be in a different bucket or be equal to <tt>b.end()</tt>.  In either case, 
+iterating between <tt>ub - 1</tt> and <tt>ub</tt> could take a much longer time than 
+iterating through the rest of the range.
+</p>
+<p>
+If instead of returning <tt>pair&lt;iterator, iterator&gt;</tt>, <tt>equal_range</tt> were to 
+return <tt>pair&lt;local_iterator, local_iterator&gt;</tt>, then <tt>ub</tt> (which, like <tt>lb</tt>, 
+would now be a <tt>local_iterator</tt>) could be guaranteed to always be in the 
+same bucket as <tt>lb</tt>. In the cases where currently <tt>ub</tt> is equal to <tt>b.end()</tt>
+or is in a different bucket, <tt>ub</tt> would be equal to <tt>b.end(b.bucket(key))</tt>. 
+  This would make iterating between <tt>lb</tt> and <tt>ub</tt> much faster, as every 
+iteration would be constant time.
+</p>
+
+<note>
+Bellevue:
+</note>
+
+<blockquote>
+The proposed resolution breaks consistency with other container types
+for dubious benefit, and iterators are already constant time.
+</blockquote>
+
+</discussion>
+
+<resolution>
+<p>
+Change the entry for <tt>equal_range</tt> in Table 93 (<sref ref="[unord.req]"/>) as follows:
+</p>
+<table border="1">
+<tr>
+<th>expression</th> <th>return type</th> <th>assertion/note pre/post-condition</th> <th>complexity</th>
+</tr>
+
+<tr>
+<td><tt>b.equal_range(k)</tt></td>
+<td><tt>pair&lt;<ins>local_</ins>iterator,<ins>local_</ins>iterator&gt;; pair&lt;const_<ins>local_</ins>iterator,const_<ins>local_</ins>iterator&gt;</tt> for <tt>const b</tt>.</td>
+<td>Returns a range containing all elements with keys equivalent to <tt>k</tt>. Returns <tt>make_pair(b.end(<ins>b.bucket(key)</ins>),b.end(<ins>b.bucket(key)</ins>))</tt> if no such elements exist.</td>
+<td>Average case &Theta;<tt>(b.count(k))</tt>. Worst case &Theta;<tt>(b.size())</tt>. </td>
+</tr>
+</table>
+</resolution>
+
+</issue>

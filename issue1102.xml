@@ -1,0 +1,138 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="1102" status="NAD">
+<title><tt>std::vector</tt>'s reallocation policy still unclear</title>
+<section><sref ref="[vector.capacity]"/></section>
+<submitter>Daniel Kr&uuml;gler</submitter>
+<date>20 Apr 2009</date>
+
+<discussion>
+<p>
+I have the impression that even the wording of current draft
+<a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2009/n2857.pdf">N2857</a>
+does insufficiently express the intent of <tt>vector</tt>'s
+reallocation strategy. This has produced not too old library
+implementations which release memory in the <tt>clear()</tt> function
+and even modern articles about C++ programming cultivate
+the belief that <tt>clear</tt> is allowed to do exactly this. A typical
+example is something like this:
+</p>
+
+<blockquote><pre>
+const int buf_size = ...;
+std::vector&lt;T&gt; buf(buf_size);
+for (int i = 0; i &lt; some_condition; ++i) {
+  buf.resize(buf_size);
+  write_or_read_data(buf.data());
+  buf.clear(); // Ensure that the next round get's 'zeroed' elements
+}
+</pre></blockquote>
+<p>
+where still the myth is ubiquitous that <tt>buf</tt> might be
+allowed to reallocate it's memory *inside* the <tt>for</tt> loop.
+</p>
+<p>
+IMO the problem is due to the fact, that
+</p>
+
+<ol type="a">
+<li>
+the actual memory-reallocation stability of <tt>std::vector</tt>
+is explained in <sref ref="[vector.capacity]"/>/3 and /6 which
+are describing just the effects of the <tt>reserve</tt>
+function, but in many examples (like above) there
+is no explicit call to <tt>reserve</tt> involved. Further-more
+<sref ref="[vector.capacity]"/>/6 does only mention <em>insertions</em>
+and never mentions the consequences of erasing
+elements.
+</li>
+<li>
+<p>
+the effects clause of <tt>std::vector</tt>'s <tt>erase</tt> overloads in
+<sref ref="[vector.modifiers]"/>/4 is silent about capacity changes. This
+easily causes a misunderstanding, because the counter
+parting insert functions described in <sref ref="[vector.modifiers]"/>/2
+explicitly say, that
+</p>
+<blockquote>
+Causes reallocation if the new size is greater than the
+old capacity. If no reallocation happens, all the iterators
+and references before the insertion point remain valid.
+</blockquote>
+<p>
+It requires a complex argumentation chain about four
+different places in the standard to provide the - possibly
+weak - proof that calling <tt>clear()</tt> also does <em>never</em> change
+the capacity of the <tt>std::vector</tt> container. Since <tt>std::vector</tt>
+is the de-facto replacement of C99's dynamic arrays this
+type is near to a built-in type and it's specification should
+be clear enough that usual programmers can trust their
+own reading.
+</p>
+</li>
+</ol>
+
+<note>
+Batavia (2009-05):
+</note>
+<blockquote>
+<p>
+Bill believes paragraph 1 of the proposed resolution is unnecessary
+because it is already implied (even if tortuously) by the current wording.
+</p>
+<p>
+Move to Review.
+</p>
+</blockquote>
+
+<note>
+2009-10 Santa Cruz:
+</note>
+
+<blockquote>
+Mark as NAD. Rationale: there is no consensus to clarify the standard,
+general consensus that the standard is correct as written.
+</blockquote>
+
+</discussion>
+
+<resolution>
+<note>
+This is a minimum version. I also
+suggest that the wording explaining the allocation strategy
+of <tt>std::vector</tt> in <sref ref="[vector.capacity]"/>/3 and /6 is moved into
+a separate sub paragraph of <sref ref="[vector.capacity]"/> <em>before</em>
+any of the prototype's are discussed, but I cannot provide
+reasonable wording changes now
+</note>
+
+<ol>
+<li>
+<p>
+Change <sref ref="[vector.capacity]"/>/6 as follows:
+</p>
+<blockquote>
+It is guaranteed that no reallocation takes place during
+insertions <ins>or erasures</ins> that happen after a call
+to <tt>reserve()</tt> until the time when an insertion would make
+the size of the vector greater than the value of <tt>capacity()</tt>.
+</blockquote>
+</li>
+<li>
+<p>
+Change <sref ref="[vector.modifiers]"/>/4 as follows:
+</p>
+<blockquote>
+<i>Effects:</i> <ins>The capacity shall remain unchanged and no reallocation shall
+happen.</ins>
+Invalidates iterators and references at or after the point
+of the erase.
+</blockquote>
+</li>
+</ol>
+</resolution>
+
+</issue>

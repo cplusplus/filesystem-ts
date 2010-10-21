@@ -1,0 +1,97 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="755" status="CD1">
+<title><tt>std::vector</tt> and <tt>std:string</tt> lack explicit shrink-to-fit operations</title>
+<section><sref ref="[vector.capacity]"/>, <sref ref="[string.capacity]"/></section>
+<submitter>Beman Dawes</submitter>
+<date>31 Oct 2007</date>
+
+<discussion>
+<p>
+A <tt>std::vector</tt> can be shrunk-to-fit via the swap idiom:
+</p>
+
+<blockquote><pre>
+vector&lt;int&gt; v;
+...
+v.swap(vector&lt;int&gt;(v));  // shrink to fit
+</pre>
+<blockquote><p>
+or:
+</p></blockquote>
+<pre>
+vector&lt;int&gt;(v).swap(v);  // shrink to fit
+</pre>
+<blockquote><p>
+or:
+</p></blockquote>
+<pre>
+swap(v, vector&lt;int&gt;(v));  // shrink to fit
+</pre>
+</blockquote>
+
+<p>
+A non-binding request for shrink-to-fit can be made to a <tt>std::string</tt> via:
+</p>
+
+<blockquote><pre>
+string s;
+...
+s.reserve(0);
+</pre></blockquote>
+
+<p>
+Neither of these is at all obvious to beginners, and even some
+experienced C++ programmers are not aware that shrink-to-fit is
+trivially available.
+</p>
+<p>
+Lack of explicit functions to perform these commonly requested
+operations makes vector and string less usable for non-experts. Because
+the idioms are somewhat obscure, code readability is impaired. It is
+also unfortunate that two similar vector-like containers use different
+syntax for the same operation.
+</p>
+<p>
+The proposed resolution addresses these concerns. The proposed function
+takes no arguments to keep the solution simple and focused.
+</p>
+</discussion>
+
+<resolution>
+<p>
+To Class template basic_string <sref ref="[basic.string]"/> synopsis,
+Class template vector <sref ref="[vector]"/> synopsis, and Class
+vector&lt;bool&gt; <sref ref="[vector.bool]"/> synopsis, add:
+</p>
+
+<blockquote><pre>    
+void shrink_to_fit();
+</pre></blockquote>
+
+<p>
+To basic_string capacity <sref ref="[string.capacity]"/> and vector
+capacity <sref ref="[vector.capacity]"/>, add:
+</p>
+
+<blockquote>
+<pre>
+void shrink_to_fit();
+</pre>
+<blockquote>
+<i>Remarks:</i> <tt>shrink_to_fit</tt> is a non-binding request to reduce
+<tt>capacity()</tt> to <tt>size()</tt>. [<i>Note:</i> The request is non-binding to
+allow latitude for implementation-specific optimizations.
+<i>-- end note</i>]
+</blockquote>
+</blockquote>
+
+<note>
+<iref ref="850"/> has been added to deal with this issue with respect to <tt>deque</tt>.
+</note>
+</resolution>
+
+</issue>

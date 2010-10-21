@@ -1,0 +1,61 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="618" status="CD1">
+<title>valarray::cshift() effects on empty array</title>
+<section><sref ref="[valarray.members]"/></section>
+<submitter>Gabriel Dos Reis</submitter>
+<date>10 Jan 2007</date>
+
+<discussion>
+<p>
+I would respectfully request an issue be opened with the intention to
+clarify the wording for <tt>size() == 0</tt> for <tt>cshift</tt>.
+</p>
+</discussion>
+
+<resolution>
+<p>
+Change <sref ref="[valarray.members]"/>, paragraph 10:
+</p>
+
+<blockquote>
+
+<pre>
+valarray&lt;T&gt; cshift(int <i>n</i>) const;
+</pre>
+
+<blockquote>
+<p>
+This function returns an object of class <tt>valarray&lt;T&gt;</tt>, of
+length <tt>size()</tt>, <del>each of whose elements <tt>I</tt> is
+<tt>(*this)[(I + n ) % size()]</tt>. Thus, if element zero is taken as
+the leftmost element, a positive value of <i>n</i> shifts the elements
+circularly left <i>n</i> places.</del> <ins>that is a circular shift of <tt>*this</tt>. If
+element zero is taken as the leftmost element, a non-negative value of
+<i>n</i> shifts the elements circularly left <i>n</i> places and a
+negative value of <i>n</i> shifts the elements circularly right
+-<i>n</i> places.</ins>
+</p>
+</blockquote>
+</blockquote>
+
+</resolution>
+
+<rationale>
+<p>
+We do not believe that there is any real ambiguity about what happens
+when <tt>size() == 0</tt>, but we do believe that spelling this out as a C++
+expression causes more trouble that it solves. The expression is
+certainly wrong when <tt>n &lt; 0</tt>, since the sign of % with negative arguments
+is implementation defined.
+</p>
+</rationale>
+
+<note>
+Kona (2007) Changed proposed wording, added rationale and set to Review.
+</note>
+
+</issue>

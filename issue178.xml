@@ -1,0 +1,36 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="178" status="NAD">
+<title>Should clog and cerr initially be tied to cout?</title>
+<section><sref ref="[narrow.stream.objects]"/></section>
+<submitter>Judy Ward</submitter>
+<date>2 Jul 1999</date>
+
+<discussion>
+<p>
+Section 27.3.1 says &quot;After the object cerr is initialized,
+cerr.flags() &amp; unitbuf is nonzero. Its state is otherwise the same as
+required for ios_base::init (lib.basic.ios.cons).  It doesn't say
+anything about the the state of clog.  So this means that calling
+cerr.tie() and clog.tie() should return 0 (see Table 89 for
+ios_base::init effects).
+</p>
+<p>
+Neither of the popular standard library implementations
+that I tried does this, they both tie cerr and clog
+to &amp;cout. I would think that would be what users expect.
+</p>
+</discussion>
+
+<rationale>
+<p>The standard is clear as written.</p>
+<p>27.3.1/5 says that &quot;After the object cerr is initialized, cerr.flags()
+&amp; unitbuf is nonzero. Its state is otherwise the same as required for
+ios_base::init (27.4.4.1).&quot; Table 89 in 27.4.4.1, which gives the
+postconditions of basic_ios::init(), says that tie() is 0. (Other issues correct
+ios_base::init to basic_ios::init().)</p>
+</rationale>
+</issue>

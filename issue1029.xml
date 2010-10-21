@@ -1,0 +1,228 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="1029" status="NAD Concepts">
+<title>Response to UK 210</title>
+<section><sref ref="[specialized.algorithms]"/></section>
+<submitter>Alisdair Meredith</submitter>
+<date>11 Mar 2009</date>
+
+<discussion>
+
+<p><b>Addresses UK 210</b></p>
+
+<p>Related to <iref ref="582"/></p>
+
+<p>
+Specialized algorithms for memory managenment need requirements to be
+easily usable in constrained templates.
+</p>
+
+<note>
+Summit:
+</note>
+
+<blockquote>
+We look forward to a paper on this topic. We recommend no action until a
+paper is available.
+</blockquote>
+
+<note>
+Post Summit Alisdair provided wording.
+</note>
+
+<note>
+Post Summit:
+</note>
+
+<blockquote>
+<p>
+Daniel adds:
+</p>
+
+<blockquote>
+<ol>
+<li>
+I suggest <tt>Size</tt> should require <tt>IntegralLike</tt> and not <tt>UnsignedIntegralLike</tt>,
+because otherwise simple int-literals could not be provided as arguments
+and it would conflict with other algorithms that only require <tt>IntegralLike</tt>.
+</li>
+<li>
+<p>
+The current for-loop-test relies on evaluation in boolean context which is
+not provided by <tt>ArithmeticLike</tt> and it's refinements. I propose to change the
+corresponding for-loop-headers to:
+</p>
+<ol type = "a">
+<li>
+for <tt>uninitialized_copy_n</tt>: <tt>for ( ; n &gt; Size(0); ++result, ++first, --n) {</tt>
+</li>
+<li>
+for <tt>uninitialized_fill_n</tt>: <tt>for (; n &gt; Size(0); ++first, --n) {</tt>
+</li>
+</ol>
+</li>
+</ol>
+</blockquote>
+
+<p>
+Alisdair adds:
+</p>
+<blockquote>
+For the record I agree with Daniel's suggestion.
+</blockquote>
+
+</blockquote>
+
+</discussion>
+
+<resolution>
+<p>
+<sref ref="[memory]"/> p2
+</p>
+<p>
+Update the synopsis for <tt>&lt;memory&gt;</tt>
+</p>
+<blockquote><pre>
+template &lt;<del>class</del> InputIterator <ins>InIter</ins>,
+         <del>class ForwardIterator</del> <ins>OutputIterator&lt;auto, InIter::reference&gt; OutIter</ins>&gt; 
+   <ins>requires ForwardIterator&lt;OutIter&gt;</ins>
+   <del>ForwardIterator</del> <ins>OutIter</ins>
+   uninitialized_copy(<del>InputIterator</del> <ins>InIter</ins> first, <del>InputIterator</del> <ins>InIter</ins> last, 
+                      <del>ForwardIterator</del> <ins>OutIter</ins> result);
+
+template &lt;<del>class</del> InputIterator <ins>InIter</ins>,
+          <del>class</del> <ins>IntegralLike</ins> Size,
+          <del>class ForwardIterator</del> <ins>OutputIterator&lt;auto, InIter::reference&gt; OutIter</ins>&gt; 
+  <ins>requires ForwardIterator&lt;OutIter&gt;</ins>
+  <del>ForwardIterator</del> <ins>OutIter</ins>
+  uninitialized_copy_n(<del>InputIterator</del> <ins>InIter</ins> first, Size n, 
+                       <del>ForwardIterator</del> <ins>OutIter</ins> result);
+
+template &lt;<del>class</del> ForwardIterator <ins>Iter</ins>, <del>class</del> <ins>ObjectType</ins> T&gt;
+  <ins>requires Constructible&lt; Iter::value_type, const T&amp; &gt;</ins>
+  void uninitialized_fill(<del>ForwardIterator</del> <ins>Iter</ins> first, <del>ForwardIterator</del> <ins>Iter</ins> last, 
+                          const T&amp; x);
+
+template &lt;<del>class</del> ForwardIterator <ins>Iter</ins>, <del>class</del> <ins>IntegralLike</ins> Size, <del>class</del> <ins>ObjectType</ins> T&gt; 
+  <ins>requires Constructible&lt; Iter::value_type, const T&amp; &gt;</ins>
+  void
+  uninitialized_fill_n(<del>ForwardIterator</del> <ins>Iter</ins> first, Size n, const T&amp; x);
+</pre></blockquote>
+
+<p>
+Update as follows:
+</p>
+
+<p>
+uninitialized_copy <sref ref="[uninitialized.copy]"/>
+</p>
+
+<blockquote><pre>
+template &lt;<del>class</del> InputIterator <ins>InIter</ins>,
+         <del>class ForwardIterator</del> <ins>OutputIterator&lt;auto, InIter::reference&gt; OutIter</ins>&gt; 
+   <ins>requires ForwardIterator&lt;OutIter&gt;</ins>
+   <del>ForwardIterator</del> <ins>OutIter</ins>
+   uninitialized_copy(<del>InputIterator</del> <ins>InIter</ins> first, <del>InputIterator</del> <ins>InIter</ins> last, 
+                      <del>ForwardIterator</del> <ins>OutIter</ins> result);
+</pre>
+
+<blockquote>
+<p>
+-1- <i>Effects:</i>
+</p>
+<blockquote><pre>
+for (; first != last; ++result, ++first)  {
+   new (static_cast&lt;void*&gt;(&amp;*result))
+       <del>typename iterator_traits&lt;ForwardIterator&gt;</del> <ins>OutIter</ins>::value_type(*first);
+}
+</pre></blockquote>
+
+<p>
+-2- <i>Returns:</i> <tt>result</tt>
+</p>
+
+</blockquote>
+
+<pre>
+template &lt;<del>class</del> InputIterator <ins>InIter</ins>,
+          <del>class</del> <ins>IntegralLike</ins> Size,
+          <del>class ForwardIterator</del> <ins>OutputIterator&lt;auto, InIter::reference&gt; OutIter</ins>&gt; 
+  <ins>requires ForwardIterator&lt;OutIter&gt;</ins>
+  <del>ForwardIterator</del> <ins>OutIter</ins>
+  uninitialized_copy_n(<del>InputIterator</del> <ins>InIter</ins> first, Size n, 
+                       <del>ForwardIterator</del> <ins>OutIter</ins> result);
+</pre>
+
+<blockquote>
+<p>
+-3- Effects:
+</p>
+<blockquote><pre>
+for ( ; n &gt; <ins>Size(</ins>0<ins>)</ins>; ++result, ++first, --n) {
+   new (static_cast&lt;void*&gt;(&amp;*result))
+       <del>typename iterator_traits&lt;ForwardIterator&gt;</del> <ins>OutIter</ins>::value_type(*first);
+}
+</pre></blockquote>
+<p>
+-4- <i>Returns:</i> result
+</p>
+</blockquote>
+
+</blockquote>
+
+
+<p>
+uninitialized_fill <sref ref="[uninitialized.fill]"/>
+</p>
+
+<blockquote><pre>
+template &lt;<del>class</del> ForwardIterator <ins>Iter</ins>, <del>class</del> <ins>ObjectType</ins> T&gt;
+  <ins>requires Constructible&lt; Iter::value_type, const T&amp; &gt;</ins>
+  void uninitialized_fill(<del>ForwardIterator</del> <ins>Iter</ins> first, <del>ForwardIterator</del> <ins>Iter</ins> last, 
+                          const T&amp; x);
+</pre>
+
+<blockquote>
+<p>
+-1- <i>Effects:</i>
+</p>
+<blockquote><pre>
+for (; first != last; ++first) {
+   new ( static_cast&lt;void*&gt;( &amp;*first) ) 
+       <del>typename iterator_traits&lt;ForwardIterator&gt;</del> <ins>Iter</ins>::value_type(x);
+}
+</pre></blockquote>
+</blockquote>
+</blockquote>
+
+
+<p>
+uninitialized_fill_n <sref ref="[uninitialized.fill.n]"/>
+</p>
+
+<blockquote><pre>
+template &lt;<del>class</del> ForwardIterator <ins>Iter</ins>, <del>class</del> <ins>IntegralLike</ins> Size, <del>class</del> <ins>ObjectType</ins> T&gt; 
+  <ins>requires Constructible&lt; Iter::value_type, const T&amp; &gt;</ins>
+  void
+  uninitialized_fill_n(<del>ForwardIterator</del> <ins>Iter</ins> first, Size n, const T&amp; x);
+</pre>
+
+<blockquote>
+<p>
+-1- <i>Effects:</i>
+</p>
+<blockquote><pre>
+for (; n<del>--</del> <ins>&gt; Size(0)</ins>; ++first<ins>, --n</ins>) {
+   new ( static_cast&lt;void*&gt;( &amp;*first) ) 
+       <del>typename iterator_traits&lt;ForwardIterator&gt;</del> <ins>Iter</ins>::value_type(x);
+}
+</pre></blockquote>
+</blockquote>
+</blockquote>
+
+</resolution>
+
+</issue>

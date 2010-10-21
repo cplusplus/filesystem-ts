@@ -1,0 +1,84 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="785" status="NAD">
+<title>Random Number Requirements in TR1</title>
+<section><sref ref="[tr.rand.eng.disc]"/>, <sref ref="[tr.rand.eng.xor]"/></section>
+<submitter>John Maddock</submitter>
+<date>15 Jan 2008</date>
+
+<discussion>
+<p>
+Table 16 of TR1 requires that all Pseudo Random Number generators have a
+</p>
+
+<blockquote><pre>
+seed(integer-type s)
+</pre></blockquote>
+
+<p>
+member function that is equivalent to:
+</p>
+
+<blockquote><pre>
+mygen = Generator(s)
+</pre></blockquote>
+
+<p>
+But the generators <tt>xor_combine</tt> and <tt>discard_block</tt> have no such seed member, only the
+</p>
+
+<blockquote><pre>
+template &lt;class Gen&gt;
+seed(Gen&amp;);
+</pre></blockquote>
+
+<p>
+member, which will not accept an integer literal as an argument: something that appears to violate the intent of Table 16.
+</p>
+
+<p>
+So... is this a bug in TR1?
+</p>
+
+<p>
+This is a real issue BTW, since the Boost implementation does adhere to the requirements of Table 16, while at least one commercial implementation does not and follows a strict adherence to sections 5.1.4.5 and 5.1.4.6 instead.
+</p>
+
+<note>
+Jens adds:
+</note>
+
+<blockquote>
+Both engines do have the necessary
+constructor, therefore the omission of the <tt>seed()</tt> member
+functions appears to be an oversight.
+</blockquote>
+
+<note>
+Post Summit Daniel adds:
+</note>
+
+<blockquote>
+Recommend NAD: <tt>xor_combine</tt> does no longer exist and <tt>discard_block[_engine]</tt>
+has now the required seed overload accepting a <tt>result_type</tt>, which shall be an
+unsigned integral type.
+</blockquote>
+
+<note>
+Batavia (2009-05):
+</note>
+<blockquote>
+Move to NAD as recommended.
+</blockquote>
+</discussion>
+
+<resolution>
+<p>
+NAD Recommended.
+</p>
+</resolution>
+
+</issue>

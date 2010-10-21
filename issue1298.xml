@@ -1,0 +1,52 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="1298" status="WP">
+<title>Missing specialization of <tt>ctype_byname&lt;char&gt;</tt></title>
+<section><sref ref="[locale.syn]"/></section>
+<submitter>Alisdair Meredith</submitter>
+<date>25 Dec 2009</date>
+
+<discussion>
+<p>
+The <tt>&lt;locale&gt;</tt> synopsis in <sref ref="[locale.syn]"/> calls out an
+explicit specialization for <tt>ctype_byname&lt;char&gt;</tt>, however no such
+specialization is defined in the standard.  The only reference I can find to
+<tt>ctype_byname&lt;char&gt;</tt> is <sref ref="[locale.facet]"/>:Table 77
+&mdash; Required specializations (for facets) which also refers to
+<tt>ctype_byname&lt;wchar_t&gt;</tt> which has no special consideration.
+</p>
+
+<p>
+Is the intent an explicit <em>instantiation</em> which would use a slightly
+different syntax? Should the explicit specialization simply be struck?
+</p>
+
+<note>
+2010-01-31 Moved to Tentatively Ready after 5 positive votes on c++std-lib.
+</note>
+
+</discussion>
+
+<resolution>
+<p>
+<sref ref="[locale.syn]"/>
+</p>
+
+<blockquote>
+<p>
+Strike the explicit specialization for <tt>ctype_byname&lt;char&gt;</tt> from
+the <tt>&lt;locale&gt;</tt> synopsis
+</p>
+<blockquote><pre>
+...
+template &lt;class charT&gt; class ctype_byname;
+<del>template &lt;&gt;            class ctype_byname&lt;char&gt;;  // <i>specialization</i></del>
+...
+</pre></blockquote>
+</blockquote>
+</resolution>
+
+</issue>

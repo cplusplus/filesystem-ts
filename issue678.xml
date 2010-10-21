@@ -1,0 +1,58 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="678" status="CD1">
+<title>Changes for [rand.req.eng]</title>
+<section><sref ref="[rand.req.eng]"/></section>
+<submitter>Charles Karney</submitter>
+<date>15 May 2007</date>
+
+<discussion>
+<p>
+Section <sref ref="[rand.req.eng]"/> Random number engine requirements:
+</p>
+
+<p>
+This change follows naturally from the proposed change to
+<tt>seed_seq::randomize</tt> in <iref ref="677"/>.
+</p>
+
+<p>
+In table 104 the description of <tt>X(q)</tt> contains a special treatment of
+the case <tt>q.size() == 0</tt>.  This is undesirable for 4 reasons:
+</p>
+
+<ol>
+<li>It replicates the functionality provided by <tt>X()</tt>.</li>
+<li>It leads to the possibility of a collision in the state provided
+    by some other <tt>X(q)</tt> with <tt>q.size() &gt; 0</tt>.</li>
+<li>It is inconsistent with the description of the <tt>X(q)</tt> in
+paragraphs <sref ref="[rand.eng.lcong]"/> p5, <sref
+ref="[rand.eng.mers]"/> p8, and <sref ref="[rand.eng.sub]"/> p10 where
+there is no special treatment of <tt>q.size() == 0</tt>.</li>
+<li>The proposed replacement for <tt>seed_seq::randomize</tt> given above
+    allows for the case <tt>q.size() == 0</tt>.</li>
+</ol>
+
+<p>
+See <a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2007/n2391.pdf">N2391</a> and
+<a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2007/n2423.pdf">N2423</a>
+for some further discussion.
+</p>
+</discussion>
+
+<resolution>
+<p>
+Adopt the proposed resolution in
+<a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2007/n2423.pdf">N2423</a>.
+</p>
+</resolution>
+
+<note>
+Kona (2007): The LWG adopted the proposed resolution of N2423 for this issue.
+The LWG voted to accelerate this issue to Ready status to be voted into the WP at Kona.
+</note>
+
+</issue>

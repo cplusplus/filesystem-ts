@@ -1,0 +1,341 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="877" status="NAD Future">
+   <title>to <tt>throw()</tt> or to <i>Throw:</i> Nothing.</title>
+   <section><sref ref="[library]"/></section>
+   <submitter>Martin Sebor</submitter>
+   <date>23 Aug 2008</date>
+   <discussion>
+       <p>
+
+Recent changes to
+the <a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2008/n2691.pdf">working
+draft</a> have introduced a gratuitous inconsistency with the C++ 2003
+version of the specification with respect to exception guarantees
+provided by standard functions. While the C++ 2003 standard
+consistenly uses the empty exception specification, <tt>throw()</tt>,
+to declare functions that are guaranteed not to throw exceptions, the
+current working draft contains a number of "<i>Throws:</i> Nothing."
+clause to specify essentially the same requirement. The difference
+between the two approaches is that the former specifies the behavior
+of programs that violate the requirement (<tt>std::unexpected()</tt>
+is called) while the latter leaves the behavior undefined.
+
+       </p>
+       <p>
+
+A survey of the working draft reveals that there are a total of 209
+occurrences of <tt>throw()</tt> in the library portion of the spec,
+the majority in clause 18, a couple (literally) in 19, a handful in
+20, a bunch in 22, four in 24, one in 27, and about a dozen in D.9.
+
+       </p>
+       <p>
+
+There are also 203 occurrences of "<i>Throws:</i> Nothing." scattered
+throughout the spec.
+
+       </p>
+       <p>
+
+While sometimes there are good reasons to use the "<i>Throws:</i>
+Nothing."  approach rather than making use of <tt>throw()</tt>, these
+reasons do not apply in most of the cases where this new clause has
+been introduced and the empty exception specification would be a
+better approach.
+
+       </p>
+       <p>
+
+First, functions declared with the empty exception specification
+permit compilers to generate better code for calls to such
+functions. In some cases, the compiler might even be able to eliminate
+whole chunks of user-written code when instantiating a generic
+template on a type whose operations invoked from the template
+specialization are known not to throw. The prototypical example are
+the <tt>std::uninitialized_copy()</tt>
+and <tt>std::uninitialized_fill()</tt> algorithms where the
+entire <tt>catch(...)</tt> block can be optimized away.
+
+       </p>
+       <p>
+
+For example, given the following definition of
+the <tt>std::uninitialized_copy</tt> function template and a
+user-defined type <tt>SomeType</tt>:
+
+       </p>
+       <blockquote>
+           <pre>
+template &lt;class InputIterator, class ForwardIterator&gt;
+ForwardIterator
+uninitialized_copy (InputIterator first, InputIterator last, ForwardIterator res)
+{
+   typedef iterator_traits&lt;ForwardIterator&gt;::value_type ValueType;
+
+   ForwardIterator start = res;
+
+   try {
+       for (; first != last; ++first, ++res)
+           ::new (&amp;*res) ValueType (*first);
+   }
+   catch (...) {
+       for (; start != res; --start)
+           (&amp;*start)->~ValueType ();
+       throw;
+   }
+   return res;
+}
+
+struct SomeType {
+   SomeType (const SomeType&amp;) <ins>throw ()</ins>;
+}</pre>
+       </blockquote>
+       <p>
+
+compilers are able to emit the following efficient specialization
+of <tt>std::uninitialized_copy&lt;const SomeType*, SomeType*&gt;</tt>
+(note that the <tt>catch</tt> block has been optimized away):
+
+       </p>
+       <blockquote>
+           <pre>
+template &lt;&gt; SomeType*
+uninitialized_copy (const SomeType *first, const SomeType *last, SomeType *res)
+{
+   for (; first != last; ++first, ++res)
+       ::new (res) SomeType (*first);
+
+   return res;
+}</pre>
+       </blockquote>
+       <p>
+
+Another general example is default constructors which, when decorated
+with <tt>throw()</tt>, allow the compiler to eliminate the
+implicit <tt>try</tt> and <tt>catch</tt> blocks that it otherwise must
+emit around each the invocation of the constructor
+in <i>new-expressions</i>.
+
+       </p>
+       <p>
+
+For example, given the following definitions of
+class <tt>MayThrow</tt> and <tt>WontThrow</tt> and the two
+statements below:
+
+       </p>
+       <blockquote>
+           <pre>
+struct MayThrow {
+   MayThrow ();
+};
+
+struct WontThrow {
+   WontThrow () <ins>throw ()</ins>;
+};
+
+MayThrow  *a = new MayThrow [N];
+WontThrow *b = new WontThrow [N];</pre>
+
+       </blockquote>
+       <p>
+
+the compiler generates the following code for the first statement:
+
+       </p>
+       <blockquote>
+           <pre>
+MayThrow *a;
+{
+   MayThrow *first = operator new[] (N * sizeof (*a));
+   MayThrow *last  = first + N;
+   MayThrow *next  = first;
+   try {
+       for ( ; next != last; ++next)
+           new (next) MayThrow;
+   }
+   catch (...) {
+       for ( ; first != first; --next)
+           next->~MayThrow ();
+       operator delete[] (first);
+       throw;
+   }
+   a = first;
+}</pre>
+       </blockquote>
+       <p>
+
+but it is can generate much more compact code for the second statement:
+
+       </p>
+       <blockquote>
+           <pre>
+WontThrow *b    = operator new[] (N * sizeof (*b));
+WontThrow *last = b + N;
+for (WontThrow *next = b; next != last; ++next)
+   new (next) WontThrow;
+</pre>
+       </blockquote>
+       <p>
+
+Second, in order for users to get the maximum benefit out of the new
+<tt>std::has_nothrow_xxx</tt> traits when using standard library types
+it will be important for implementations to decorate all non throwing
+copy constructors and assignment operators with <tt>throw()</tt>. Note
+that while an optimizer may be able to tell whether a function without
+an explicit exception specification can throw or not based on its
+definition, it can only do so when it can see the source code of the
+definition. When it can't it must assume that the function may
+throw. To prevent violating the One Definition Rule,
+the <tt>std::has_nothrow_xxx</tt> trait must return the most
+pessimistic guess across all translation units in the program, meaning
+that <tt>std::has_nothrow_xxx&lt;T&gt;::value</tt> must evaluate to
+<tt>false</tt> for any <tt>T</tt> whose <tt>xxx</tt>
+(where <tt>xxx</tt> is default or copy ctor, or assignment operator)
+is defined out-of-line.
+
+       </p>
+       <p>
+
+<b>Counterarguments:</b>
+
+       </p>
+       <p>
+
+During the discussion of this issue
+on <a href="mailto:c++std-lib@accu.org">c++std-lib@accu.org</a>
+(starting with post <tt>c++std-lib-21950</tt>) the following arguments
+in favor of the "<i>Throws:</i> Nothing." style have been made.
+
+       </p>
+       <p>
+         <ol>
+           <li>
+
+Decorating functions that cannot throw with the empty exception
+specification can cause the compiler to generate suboptimal code for
+the implementation of the function when it calls other functions that
+aren't known to the compiler not to throw (i.e., that aren't decorated
+with <tt>throw()</tt> even if they don't actually throw). This is a
+common situation when the called function is a C or POSIX function.
+
+           </li>
+           <li>
+
+Alternate, proprietary mechanisms exist (such as
+GCC <a href="http://gcc.gnu.org/onlinedocs/gcc-4.3.0/gcc/Function-Attributes.html#index-g_t_0040code_007bnothrow_007d-function-attribute-2160"><tt>__attribute__((nothrow))</tt></a>
+or Visual
+C++ <a href="http://msdn.microsoft.com/en-us/library/49147z04(VS.80).aspx"><tt>__declspec(nothrow)</tt></a>)
+that let implementers mark up non-throwing functions, often without
+the penalty mentioned in (1) above. The C++ standard shouldn't
+preclude the use of these potentially more efficient mechanisms.
+
+           </li>
+           <li>
+
+There are functions, especially function templates, that invoke
+user-defined functions that may or may not be
+declared <tt>throw()</tt>. Declaring such functions with the empty
+exception specification will cause compilers to generate suboptimal
+code when the user-defined function isn't also declared not to throw.
+
+           </li>
+        </ol>
+       </p>
+       <p>
+
+The answer to point (1) above is that implementers can (and some have)
+declare functions with <tt>throw()</tt> to indicate to the compiler
+that calls to the function can safely be assumed not to throw in order
+to allow it to generate efficient code at the call site without also
+having to define the functions the same way and causing the compiler
+to generate suboptimal code for the function definition. That is, the
+function is declared with <tt>throw()</tt> in a header but it's
+defined without it in the source file. The <tt>throw()</tt>
+declaration is suppressed when compiling the definition to avoid
+compiler errors. This technique, while strictly speaking no permitted
+by the language, is safe and has been employed in practice. For
+example, the GNU C library takes this approach. Microsoft Visual C++
+takes a similar approach by simply assuming that no function with C
+language linkage can throw an exception unless it's explicitly
+declared to do so using the language extension <tt>throw(...)</tt>.
+
+       </p>
+       <p>
+
+Our answer to point (2) above is that there is no existing practice
+where C++ Standard Library implementers have opted to make use of the
+proprietary mechanisms to declare functions that don't throw. The
+language provides a mechanism specifically designed for this
+purpose. Avoiding its use in the specification itself in favor of
+proprietary mechanisms defeats the purpose of the feature. In
+addition, making use of the empty exception specification
+inconsistently, in some areas of the standard, while conspicuously
+avoiding it and making use of the "<i>Throws:</i> Nothing." form in
+others is confusing to users.
+
+       </p>
+       <p>
+
+The answer to point (3) is simply to exercise caution when declaring
+functions and especially function templates with the empty exception
+specification. Functions that required not to throw but that may call
+back into user code are poor candidates for the empty exception
+specification and should instead be specified using "<i>Throws:</i>
+Nothing." clause.
+
+      </p>
+
+<note>
+2009-07 Frankfurt
+</note>
+
+<blockquote>
+<p>
+We need someone to do an extensive review.
+</p>
+<p>
+NAD Future.
+</p>
+</blockquote>
+
+   </discussion>
+   <resolution>
+       <p>
+
+We propose two possible solutions. Our recommendation is to adopt
+Option 1 below.
+
+       </p>
+       <p>
+
+<b>Option 1:</b>
+
+       </p>
+       <p>
+
+Except for functions or function templates that make calls back to
+user-defined functions that may not be declared <tt>throw()</tt>
+replace all occurrences of the "<i>Throws:</i> Nothing." clause with
+the empty exception specification. Functions that are required not to
+throw but that make calls back to user code should be specified to
+"<i>Throw:</i> Nothing."
+
+       </p>
+       <p>
+
+<b>Option 2:</b>
+
+       </p>
+       <p>
+
+For consistency, replace all occurrences of the empty exception
+specification with a "<i>Throws:</i> Nothing." clause.
+
+       </p>
+   </resolution>
+</issue>

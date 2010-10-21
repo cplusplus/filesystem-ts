@@ -1,0 +1,74 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="1049" status="NAD Editorial">
+<title>Response to UK 339</title>
+<section><sref ref="[futures.promise]"/></section>
+<submitter>Alisdair Meredith</submitter>
+<date>12 Mar 2009</date>
+
+<discussion>
+
+<p><b>Addresses UK 339</b></p>
+
+<p>
+Move assignment is goiing in the wrong direction, assigning from
+<tt>*this</tt> to the passed rvalue, and then returning a reference to
+an unusable <tt>*this</tt>.
+</p>
+
+<note>
+Summit:
+</note>
+
+<blockquote>
+<p>
+Agree, move to Review.
+</p>
+</blockquote>
+
+<note>
+Batavia (2009-05):
+</note>
+<blockquote>
+We recommend deferring this issue until after Detlef's paper (on futures)
+has been issued.
+</blockquote>
+
+<note>
+2009-10 Santa Cruz:
+</note>
+
+<blockquote>
+NAD Editorial.  Solved by
+<a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2009/n2997.html">N2997</a>.
+</blockquote>
+
+</discussion>
+
+<resolution>
+<p>
+Strike <sref ref="[futures.promise]"/> p6 and change p7:
+</p>
+
+<blockquote><pre>
+promise&amp; operator=(promise&amp;&amp; rhs);
+</pre>
+<blockquote>
+<p>
+<del>-6- <i>Effects:</i> move assigns its associated state to <tt>rhs</tt>.</del>
+</p>
+<p>
+-7- <i>Postcondition:</i> <del><tt>*this</tt> has no associated
+state.</del> <ins>associated state of <tt>*this</tt> is the same as the
+associated state of <tt>rhs</tt> before the call. <tt>rhs</tt> has no
+associated state.</ins>
+</p>
+</blockquote>
+</blockquote>
+
+</resolution>
+
+</issue>

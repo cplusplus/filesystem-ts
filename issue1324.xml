@@ -1,0 +1,297 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="1324" status="New">
+<title>Still too many implicit conversions for <tt>pair</tt> and  <tt>tuple</tt></title>
+<section><sref ref="[pairs.pair]"/>, <sref ref="[tuple.cnstr]"/></section>
+<submitter>Daniel Kr&uuml;gler</submitter>
+<date>20 Mar 2010</date>
+
+<discussion>
+<p>
+In analogy to library defect <iref ref="811"/>, <tt>tuple</tt>'s variadic
+constructor
+</p>
+
+<blockquote><pre>
+template &lt;class... UTypes&gt;
+explicit tuple(UTypes&amp;&amp;... u);
+</pre></blockquote>
+
+<p>
+creates the same problem as pair:
+</p>
+
+<blockquote><pre>
+#include &lt;tuple&gt;
+
+int main()
+{
+  std::tuple&lt;char*&gt; p(0);
+}
+</pre></blockquote>
+
+<p>
+produces a similar compile error for a recent gcc implementation.
+</p>
+
+<p>
+I suggest to follow the same resolution path as has been applied to
+<tt>pair</tt>'s corresponding c'tor, that is require that these c'tors should
+not participate in overload resolution, if the arguments are not implicitly
+convertible to the element types.
+</p>
+
+<p>
+Further-on both <tt>pair</tt> and <tt>tuple</tt> provide converting constructors
+from different <tt>pairs</tt>/<tt>tuples</tt> that should be not available, if
+the corresponding element types are not implicitly convertible. It seems
+astonishing that in the following example
+</p>
+
+<blockquote><pre>
+struct A {
+  explicit A(int);
+};
+
+A  a = 1; <font color="#C80000">// Error</font>
+
+std::tuple&lt;A&gt; ta = std::make_tuple(1); <font color="#C80000">// # OK?</font>
+</pre></blockquote>
+
+<p>
+the initialization marked with # could be well-formed.
+</p>
+</discussion>
+
+<resolution>
+<note>
+Only constraints on constructors are suggested. Adding similar constraints on
+assignment operators is considered as QoI, because the assigments wouldn't be
+well-formed anyway.
+</note>
+
+<ol>
+
+<li>
+<p>
+Following <sref ref="[pairs.pair]"/>/5 add a new Remarks element:
+</p>
+
+<blockquote><pre>
+template&lt;class U, class V&gt; pair(const pair&lt;U, V&gt;&amp; p);
+</pre>
+
+<blockquote>
+<p>
+5 <i>Effects:</i> Initializes members from the corresponding members of the
+argument<del>, performing implicit conversions as needed</del>.
+</p>
+
+<p>
+<ins><i>Remarks:</i> This constructor shall not participate in overload
+resolution unless <tt>U</tt> is implicitly convertible to <tt>first_type</tt>
+and <tt>V</tt> is implicitly convertible to <tt>second_type</tt>.</ins>
+</p>
+</blockquote>
+</blockquote>
+
+</li>
+
+<li>
+<p>
+Following <sref ref="[pairs.pair]"/>/6 add a new Remarks element:
+</p>
+
+<blockquote><pre>
+template&lt;class U, class V&gt; pair(pair&lt;U, V&gt;&amp;&amp; p);
+</pre>
+
+<blockquote>
+<p>
+6 <i>Effects:</i> The constructor initializes <tt>first</tt> with
+<tt>std::move(p.first)</tt> and second with <tt>std::move(p.second)</tt>.
+</p>
+
+<p>
+<ins><i>Remarks:</i> This constructor shall not participate in overload
+resolution unless <tt>U</tt> is implicitly convertible to <tt>first_type</tt>
+and <tt>V</tt> is implicitly convertible to <tt>second_type</tt>.</ins>
+</p>
+</blockquote>
+</blockquote>
+</li>
+
+<li>
+<p>
+Following <sref ref="[tuple.cnstr]"/>/7 add a new Remarks element:
+</p>
+
+<blockquote><pre>
+template &lt;class... UTypes&gt;
+explicit tuple(UTypes&amp;&amp;... u);
+</pre>
+
+<blockquote>
+<p>
+6 <i>Requires:</i> Each type in <tt>Types</tt> shall satisfy the requirements of
+<tt>MoveConstructible</tt> (Table 33) from the corresponding type in
+<tt>UTypes</tt>. <tt>sizeof...(Types) == sizeof...(UTypes)</tt>.
+</p>
+
+<p>
+7 <i>Effects:</i> Initializes the elements in the <tt>tuple</tt> with the
+corresponding value in <tt>std::forward&lt;UTypes&gt;(u)</tt>.
+</p>
+
+<p>
+<ins><i>Remarks:</i> This constructor shall not participate in overload
+resolution unless each type in <tt>UTypes</tt> is implicitly convertible to its
+corresponding type in <tt>Types</tt>.</ins>
+</p>
+</blockquote>
+</blockquote>
+</li>
+
+<li>
+<p>
+Following <sref ref="[tuple.cnstr]"/>/13 add a new Remarks element:
+</p>
+
+<blockquote><pre>
+template &lt;class... UTypes&gt; tuple(const tuple&lt;UTypes...&gt;&amp; u);
+</pre>
+
+<blockquote>
+<p>
+12 <i>Requires:</i> Each type in <tt>Types</tt> shall be constructible from the
+corresponding type in <tt>UTypes</tt>. <tt>sizeof...(Types) ==
+sizeof...(UTypes)</tt>.
+</p>
+
+<p>
+13 <i>Effects:</i> Constructs each element of <tt>*this</tt> with the
+corresponding element of <tt>u</tt>.
+</p>
+
+<p>
+<ins><i>Remarks:</i> This constructor shall not participate in overload
+resolution unless each type in <tt>UTypes</tt> is implicitly convertible to its
+corresponding type in <tt>Types</tt>.</ins>
+</p>
+
+<p>
+14 [<i>Note:</i> <tt>enable_if</tt> can be used to make the converting
+constructor and assignment operator exist only in the cases where the source and
+target have the same number of elements. &mdash; <i>end note</i>]
+</p>
+</blockquote>
+</blockquote>
+</li>
+
+<li>
+<p>
+Following <sref ref="[tuple.cnstr]"/>/16 add a new Remarks element:
+</p>
+
+<blockquote><pre>
+template &lt;class... UTypes&gt; tuple(tuple&lt;UTypes...&gt;&amp;&amp; u);
+</pre>
+
+<blockquote>
+<p>
+15 <i>Requires:</i> Each type in <tt>Types</tt> shall shall satisfy the
+requirements of <tt>MoveConstructible</tt> (Table 33) from the corresponding
+type in <tt>UTypes</tt>. <tt>sizeof...(Types) == sizeof...(UTypes)</tt>.
+</p>
+
+<p>
+16 <i>Effects:</i> Move-constructs each element of <tt>*this</tt> with the
+corresponding element of <tt>u</tt>.
+</p>
+
+<p>
+<ins><i>Remarks:</i> This constructor shall not participate in overload
+resolution unless each type in <tt>UTypes</tt> is implicitly convertible to its
+corresponding type in <tt>Types</tt>.</ins>
+</p>
+
+<p>
+[<i>Note:</i> <tt>enable_if</tt> can be used to make the converting constructor
+and assignment operator exist only in the cases where the source and target have
+the same number of elements. &mdash; <i>end note</i>]
+</p>
+</blockquote>
+</blockquote>
+</li>
+
+<li>
+<p>
+Following <sref ref="[tuple.cnstr]"/>/18 add a new Remarks element:
+</p>
+
+<blockquote><pre>
+template &lt;class U1, class U2&gt; tuple(const pair&lt;U1, U2&gt;&amp; u);
+</pre>
+
+<blockquote>
+<p>
+17 <i>Requires:</i> The first type in <tt>Types</tt> shall be constructible from
+<tt>U1</tt> and the second type in <tt>Types</tt> shall be constructible from
+<tt>U2</tt>. <tt>sizeof...(Types) == 2</tt>.
+</p>
+
+<p>
+18 <i>Effects:</i> Constructs the first element with <tt>u.first</tt> and the
+second element with <tt>u.second</tt>.
+</p>
+
+<p>
+<ins><i>Remarks:</i> This constructor shall not participate in overload
+resolution unless <tt>U1</tt> is implicitly convertible to the first type in
+<tt>Types</tt> and <tt>U2</tt> is implicitly convertible to the second type in
+<tt>Types</tt>.</ins>
+</p>
+</blockquote>
+</blockquote>
+</li>
+
+<li>
+<p>
+Following <sref ref="[tuple.cnstr]"/>/20 add a new Remarks element:
+</p>
+
+<blockquote><pre>
+template &lt;class U1, class U2&gt; tuple(pair&lt;U1, U2&gt;&amp;&amp; u);
+</pre>
+
+<blockquote>
+<p>
+19 <i>Requires:</i> The first type in <tt>Types</tt> shall shall satisfy the
+requirements of <tt>MoveConstructible</tt>(Table 33) from <tt>U1</tt> and the
+second type in <tt>Types</tt> shall be move-constructible from <tt>U2</tt>.
+<tt>sizeof...(Types) == 2</tt>.
+</p>
+
+<p>
+20 <i>Effects:</i> Constructs the first element with <tt>std::move(u.first)</tt>
+and the second element with <tt>std::move(u.second)</tt>
+</p>
+
+<p>
+<ins><i>Remarks:</i> This constructor shall not participate in overload
+resolution unless <tt>U1</tt> is implicitly convertible to the first type in
+<tt>Types</tt> and <tt>U2</tt> is implicitly convertible to the second type in
+<tt>Types</tt>.</ins>
+</p>
+</blockquote>
+</blockquote>
+</li>
+
+</ol>
+
+</resolution>
+
+</issue>

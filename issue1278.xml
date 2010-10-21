@@ -1,0 +1,131 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="1278" status="Ready">
+<title>inconsistent return values for <tt>forward_list::insert_after</tt></title>
+<section><sref ref="[forwardlist.modifiers]"/></section>
+<submitter>Bo Persson</submitter>
+<date>25 Nov 2009</date>
+
+<discussion>
+<p>
+After applying LDR<iref ref="149"/>, <tt>forward_list</tt> now has 5
+overloads of <tt>insert_after</tt>, all returning an iterator.
+</p>
+
+<p>
+However, two of those - inserting a single object - return "An iterator
+pointing to a copy of <tt>x</tt> [the inserted object]" while the other
+three - inserting zero or more objects - return an iterator equivalent
+to the position parameter, pointing before any possibly inserted
+objects.
+</p>
+
+<p>
+Is this the intended change? 
+</p>
+
+<p>
+I don't really know what <tt>insert_after(position, empty_range)</tt>
+should really return, but always returning <tt>position</tt> seems less
+than useful.
+</p>
+
+<note>
+2010-02-04 Howard adds:
+</note>
+
+<blockquote>
+<p>
+I agree this inconsistency will be error prone and needs to be fixed. 
+Additionally <tt>emplace_after</tt>'s return value is unspecified.
+</p>
+</blockquote>
+
+<note>
+2010-02-04 Nico provides wording.
+</note>
+
+<note>
+2010 Pittsburgh:
+</note>
+
+<blockquote>
+We prefer to return an iterator to the last inserted element.  Modify the
+proposed wording and then set to Ready.
+</blockquote>
+
+<note>
+2010-03-15 Howard adds:
+</note>
+
+<blockquote>
+Wording updated and set to Ready.
+</blockquote>
+
+</discussion>
+
+<resolution>
+<p>
+In <tt>forward_list</tt> modifiers <sref ref="[forwardlist.modifiers]"/>
+make the following modifications:
+</p>
+
+<blockquote>
+<pre>
+iterator insert_after(const_iterator position, size_type n, const T&amp; x);
+</pre>
+<blockquote>
+<p>...</p>
+<p>
+10 <i>Returns:</i> <del>position.</del> <ins>An iterator pointing to the last
+inserted copy of <tt>x</tt> or <tt>position</tt> if <tt>n == 0</tt>.</ins>
+</p>
+</blockquote>
+
+<pre>
+template &lt;class InputIterator&gt;
+  iterator insert_after(const_iterator position, InputIterator first, InputIterator last);
+</pre>
+<blockquote>
+<p>...</p>
+
+<p>
+13 <i>Returns:</i> <del>position.</del> <ins>An iterator pointing to the last
+inserted element or <tt>position</tt> if <tt>first == last</tt>.</ins>
+</p>
+</blockquote>
+
+<pre>
+iterator insert_after(const_iterator position, initializer_list&lt;T&gt; il);
+</pre>
+<blockquote>
+<p>...</p>
+
+<p>
+15 <i>Returns:</i> <del>position.</del> <ins>An iterator pointing to the last
+inserted element or <tt>position</tt> if <tt>il</tt> is empty.</ins>
+</p>
+</blockquote>
+
+<pre>
+template &lt;class... Args&gt;
+  iterator emplace_after(const_iterator position, Args&amp;&amp;... args);
+</pre>
+<blockquote>
+<p>...</p>
+<p>17 ...</p>
+
+<p><ins>
+<i>Returns:</i> An iterator pointing to the new constructed element from
+args.
+</ins></p>
+</blockquote>
+
+</blockquote>
+
+</resolution>
+
+</issue>

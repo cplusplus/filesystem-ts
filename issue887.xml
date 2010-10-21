@@ -1,0 +1,390 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="887" status="NAD">
+<title>issue with condition::wait_...</title>
+<section><sref ref="[thread.condition.condvar]"/></section>
+<submitter>Lawrence Crowl</submitter>
+<date>15 Sep 2008</date>
+
+<discussion>
+<p>
+The Posix/C++ working group has identified an inconsistency between
+Posix and the C++ working draft in that Posix requires the clock to be
+identified at creation, whereas C++ permits identifying the clock at the
+call to wait.  The latter cannot be implemented with the former.
+</p>
+
+<note>
+San Francisco:
+</note>
+
+<blockquote>
+<p>
+Howard recommends NAD with the following explanation:
+</p>
+
+<p>
+The intent of the current wording is for the <tt>condtion_variable::wait_until</tt>
+be able to handle user-defined clocks as well as clocks the system knows about.
+This can be done by providing overloads for the known clocks, and another
+overload for unknown clocks which synchs to a known clock before waiting.
+For example:
+</p>
+
+<blockquote><pre>
+template &lt;class Duration&gt;
+bool
+condition_variable::wait_until(unique_lock&lt;mutex&gt;&amp; lock,
+                               const chrono::time_point&lt;chrono::system_clock, Duration&gt;&amp; abs_time)
+{
+    using namespace chrono;
+    nanoseconds d = __round_up&lt;nanoseconds&gt;(abs_time.time_since_epoch());
+    __do_timed_wait(lock.mutex()-&gt;native_handle(), time_point&lt;system_clock, nanoseconds&gt;(d));
+    return system_clock::now() &lt; abs_time;
+}
+
+template &lt;class Clock, class Duration&gt;
+bool
+condition_variable::wait_until(unique_lock&lt;mutex&gt;&amp; lock,
+                               const chrono::time_point&lt;Clock, Duration&gt;&amp; abs_time)
+{
+    using namespace chrono;
+    system_clock::time_point    s_entry = system_clock::now();
+    typename Clock::time_point  c_entry = Clock::now();
+    nanoseconds dn = __round_up&lt;nanoseconds&gt;(abs_time.time_since_epoch() -
+                                              c_entry.time_since_epoch());
+    __do_timed_wait(lock.mutex()-&gt;native_handle(), s_entry + dn);
+    return Clock::now() &lt; abs_time;
+}
+</pre></blockquote>
+
+<p>
+In the above example, <tt>system_clock</tt> is the only clock which the underlying
+condition variable knows how to deal with.  One overload just passes that clock
+through.  The second overload (approximately) converts the unknown clock into
+a <tt>system_clock  time_point</tt> prior to passing it down to the native
+condition variable.
+</p>
+
+<p>
+On Posix systems vendors are free to add implementation defined constructors which
+take a clock.  That clock can be stored in the condition_variable, and converted
+to (or not as necessary) as shown above.
+</p>
+
+<p>
+If an implementation defined constructor takes a clock (for example), then part
+of the semantics for that implementation defined ctor might include that a
+<tt>wait_until</tt> using a clock other than the one constructed with results
+in an error (exceptional condition) instead of a conversion to the stored clock.
+Such a design is up to the vendor as once an implementation defined ctor is used,
+the vendor is free to specifiy the behavior of waits and/or notifies however
+he pleases (when the cv is constructed in an implementation defined manner).
+</p>
+</blockquote>
+
+<note>
+Post Summit:
+</note>
+
+<blockquote>
+<p>
+"POSIX people will review the proposed NAD resolution at their upcoming NY
+meeting.
+</p>
+
+<p>
+See the minutes at: <a href="http://wiki.dinkumware.com/twiki/bin/view/Posix/POSIX-CppBindingWorkingGroupNewYork2009">http://wiki.dinkumware.com/twiki/bin/view/Posix/POSIX-CppBindingWorkingGroupNewYork2009</a>.
+</p>
+</blockquote>
+
+<note>
+2009-07 Frankfurt
+</note>
+
+<blockquote>
+Move to NAD.
+</blockquote>
+
+<note>
+2009-07-18 Detlef reopens the issue:
+</note>
+
+<blockquote>
+<p>
+On Friday afternoon in Frankfurt is was decided that 887 is NAD.
+This decision was mainly based on a sample implementation presented
+by Howard that implemented one clock on top of another.
+Unfortunately this implementation doesn't work for the probably most
+important case where a system has a monotonic clock and a real-time
+clock (or "wall time" clock):
+</p>
+<p>
+If the underlying "system_clock" is a monotonic clock, and
+the program waits on the real-time clock, and the real-time clock
+is set forward, the wait will unblock too late.
+</p>
+
+<p>
+If the underlying "system_clock" is a real-time clock, and the
+program waits on the monotonic clock, and the real-time clock
+is set back, the wait again will unblock too late.
+</p>
+
+<p>
+Sorry that I didn't remember this on Friday, but it was Friday
+afternoon after a busy week...
+</p>
+
+<p>
+So as the decision was made on a wrong asumption, I propose to re-open
+the issue.
+</p>
+</blockquote>
+
+<note>
+2009-07-26 Howard adds:
+</note>
+
+<blockquote>
+<p>
+Detlef correctly argues that <tt>condition_variable::wait_until</tt> could
+return "too late" in the context of clocks being adjusted during the wait.  I agree
+with his logic.  But I disagree that this makes this interface unimplementable
+on POSIX.
+</p>
+
+<p>
+The POSIX spec also does not guarantee that <tt>pthread_cond_timedwait</tt> does
+not return "too late" when clocks are readjusted during the wait.  Indeed, the
+POSIX specification lacks any requirements at all concerning how soon
+<tt>pthread_cond_timedwait</tt> returns after a time out.  This is evidently a
+QOI issue by the POSIX standard.  Here is a quote of the most relevant normative
+text concerning <tt>pthread_cond_timedwait</tt> found
+<a href="http://www.unix.org/single_unix_specification/">here</a>.
+</p>
+
+<blockquote>
+The <tt>pthread_cond_timedwait()</tt> function shall be equivalent to
+<tt>pthread_cond_wait()</tt>, except that an error is returned if the absolute
+time specified by <tt>abstime</tt> passes (that is, system time equals or exceeds
+<tt>abstime</tt>) before the condition <tt>cond</tt> is signaled or broadcasted, or if the
+absolute time specified by <tt>abstime</tt> has already been passed at the time
+of the call.
+</blockquote>
+
+<p>
+I.e. the POSIX specification speaks of the error code returned in case of a time
+out, but not on the timeliness of that return.
+</p>
+
+<p>
+Might this simply be an oversight, or minor defect in the POSIX specification?
+</p>
+
+<p>
+I do not believe so.  This same section goes on to say in <em>non-normative</em>
+text:
+</p>
+
+<blockquote>
+For cases when the system clock is advanced discontinuously by an
+operator, it is expected that implementations process any timed wait
+expiring at an intervening time as if that time had actually occurred.
+</blockquote>
+
+<p>
+Here is non-normative wording encouraging the implementation to ignore an advancing
+underlying clock and subsequently causing an early (spurious) return.  There is
+no wording at all which addresses Detlef's example of a "late return".  With
+<tt>pthread_cond_timedwait</tt> this would be caused by setting the system clock
+backwards.  It seems reasonable to assume, based on the wording that is already
+in the POSIX spec, that again, the discontinuously changed clock would be ignored
+by <tt>pthread_cond_timedwait</tt>. 
+</p>
+
+<p>
+A noteworthy difference between <tt>pthread_cond_timedwait</tt> and
+<tt>condition_variable::wait_until</tt> is that the POSIX spec appears to
+say that <tt>ETIMEDOUT</tt> should be returned if <tt>pthread_cond_timedwait</tt>
+returns because of timeout signal, whether or not the system clock was discontinuously
+advanced during the wait.  In contrast <tt>condition_variable::wait_until</tt>
+always returns:
+</p>
+
+<blockquote><pre>
+<tt>Clock::now() &lt; abs_time</tt>
+</pre></blockquote>
+
+<p>
+That is, the C++ spec requires that the clock be rechecked (detecting discontinuous
+adjustments during the wait) at the time of return.  <tt>condition_variable::wait_until</tt>
+may indeed return early or late.  But regardless it will return a value
+reflecting timeout status at the time of return (even if clocks have been adjusted).
+Of course the clock may be adjusted after the return value is computed but before the client has
+a chance to read the result of the return.  Thus there are no iron-clad guarantees
+here.
+</p>
+
+<p>
+<tt>condition_variable::wait_until</tt> (and <tt>pthread_cond_timedwait</tt>)
+is little more than a convenience function for making sure
+<tt>condition_variable::wait</tt> doesn't hang for an unreasonable amount of
+time (where the client gets to define "unreasonable").  I do not think it
+is in anyone's interest to try to make it into anything more than that.
+</p>
+
+<p>
+I maintain that this is a useful and flexible specification in the spirit of
+C++, and is implementable on POSIX.  The implementation technique described above
+is a reasonable approach.  There may also be higher quality approaches.  This
+specification, like the POSIX specification, gives a wide latitude for QOI.
+</p>
+
+<p>
+I continue to recommend NAD, but would not object to a clarifying note regarding
+the behavior of <tt>condition_variable::wait_until</tt>.  At the moment, I do
+not have good wording for such a note, but welcome suggestions.
+</p>
+
+</blockquote>
+
+<note>
+2009-09-30: See <a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2009/n2969.html">N2969</a>.
+</note>
+
+<note>
+2009-10 Santa Cruz:
+</note>
+
+<blockquote>
+The LWG is in favor of Detlef to supply revision which adopts Option 2 from
+<a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2009/n2969.html">N2969</a>
+but is modified by saying that <tt>system_clock</tt> must be available for <tt>wait_until</tt>.
+</blockquote>
+
+<note>
+2010-02-11 Anthony provided wording.
+</note>
+
+<note>
+2010-02-22 Anthony adds:
+</note>
+
+<blockquote>
+<p>
+I am strongly against
+<a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2009/n2999.html">N2999</a>.
+</p>
+
+<p>
+Firstly, I think that the most appropriate use of a timed wait on a condition
+variable is with a monotonic clock, so it ought to be guaranteed to be available
+on systems that support such a clock. Also, making the set of supported clocks
+implementation defined essentially kills portability around the use of
+user-defined clocks.
+</p>
+
+<p>
+I also think that <tt>wait_for</tt> is potentially useful, and trivially
+implementable given a working templated <tt>wait_until</tt> and a monotonic
+clock.
+</p>
+
+<p>
+I also disagree with many of Detlef's points in the rationale. In a system with
+hard latency limits there is likely to be a monotonic clock, otherwise you have
+no way of measuring against these latency limits since the <tt>system_clock</tt>
+may change arbitrarily. In such systems, you <em>want</em> to be able to use
+<tt>wait_for</tt>, or <tt>wait_until</tt> with a monotonic clock.
+</p>
+
+<p>
+I disagree that the <tt>wait_*</tt> functions cannot be implemented correctly on
+top of POSIX: I have done so. The only guarantee in the working draft is that
+when the function returns certain properties are true; there is no guarantee
+that the function will return <em>immediately</em> that the properties are true.
+My resolution to issue 887 makes this clear. How small the latency is is QoI.
+</p>
+
+<p>
+On systems without a monotonic clock, you cannot measure the problem since the
+system clock can change arbitrarily so any timing calculations you make may be
+wrong due to clock changes.
+</p>
+
+<p>
+On systems with a monotonic clock, you can choose to use it for your condition
+variables. If you are waiting against a <tt>system_clock::time_point</tt> then
+you can check the clock when waking, and either return as a timeout or spurious
+wake depending on whether <tt>system_clock::now()</tt> is before or after the
+specified <tt>time_point</tt>.
+</p>
+
+<p>
+Windows <em>does</em> provide condition variables from Vista onwards. I choose
+not to use them, but they are there. If people are concerned about
+implementation difficulty, the Boost implementation can be used for most
+purposes; the Boost license is pretty liberal in that regard.
+</p>
+
+<p>
+My preferred resolution to issue 887 is currently the PR in the issues list.
+</p>
+</blockquote>
+
+<note>
+2010 Pittsburgh:
+</note>
+
+<blockquote>
+<p>
+There is no consensus for moving the related paper
+<a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2009/n2999.html">N2999</a>
+into the WP.
+</p>
+<p>
+There was support for moving this issue as proposed to Ready, but the support
+was insufficient to call a consensus.
+</p>
+<p>
+There was consensus for moving this issue to NAD as opposed to leaving it open.
+Rationale added.
+</p>
+</blockquote>
+
+</discussion>
+
+<rationale>
+<p>
+The standard as written is sufficiently implementable and self consistent.
+</p>
+</rationale>
+
+<resolution>
+<p>
+Add a new paragraph after <sref ref="[thread.req.timing]"/>p3:
+</p>
+
+<blockquote>
+<p>
+3 The resolution of timing provided by an implementation depends on both
+operating system and hardware. The finest resolution provided by an
+implementation is called the <i>native resolution</i>.
+</p>
+
+<p><ins>
+If a function in this clause takes a timeout argument, and the time point or
+elapsed time specified passes before the function returns, the latency between
+the timeout occurring and the function returning is unspecified [<i>Note:</i>
+Implementations should strive to keep such latency as small as possible, but
+portable code should not rely on any specific upper limits &mdash; <i>end
+note</i>]
+</ins></p>
+</blockquote>
+</resolution>
+
+</issue>

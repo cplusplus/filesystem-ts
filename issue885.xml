@@ -1,0 +1,121 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="885" status="WP">
+<title>pair assignment</title>
+<section><sref ref="[pairs]"/></section>
+<submitter>Alisdair Meredith</submitter>
+<date>15 Sep 2008</date>
+
+<discussion>
+<blockquote><pre>
+20.2.3 pairs
+Missing assignemnt operator:
+template&lt;class U , class V&gt;
+  requires CopyAssignable&lt;T1, U&gt; &amp;&amp; CopyAssignable&lt;T2, V&gt;
+    pair&amp; operator=(pair&lt;U , V&gt; const &amp; p );
+</pre></blockquote>
+
+<p>
+Well, that's interesting. This assignment operator isn't in the
+current working paper, either. Perhaps we deemed it acceptable to
+build a temporary of type <tt>pair</tt> from <tt>pair&lt;U, V&gt;</tt>, then move-assign
+from that temporary?
+</p>
+<p>
+It sounds more like an issue waiting to be opened, unless you want to plug
+it now.  As written we risk moving from lvalues.
+</p>
+
+<note>
+San Francisco:
+</note>
+
+<blockquote>
+<p>
+Would be NAD if better ctors fixed it.
+</p>
+<p>
+Related to <iref ref="811"/>.
+</p>
+</blockquote>
+
+<note>
+post San Francisco:
+</note>
+
+<blockquote>
+Possibly NAD Editorial, solved by
+<a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2008/n2770.pdf">N2770</a>.
+</blockquote>
+
+<note>
+2009-05-25 Alisdair adds:
+</note>
+
+<blockquote>
+Issue <iref ref="885"/> was something I reported while reviewing the library concepts
+documents ahead of San Francisco.  The missing operator was added as part of
+the paper adopted at that meeting
+(<a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2008/n2770.pdf">N2770</a>)
+and I can confirm this operator is
+present in the current working paper.  I recommend NAD.
+</blockquote>
+
+<note>
+2009-07 Frankfurt
+</note>
+
+<blockquote>
+We agree with the intent, but we need to wait for the dust to settle on concepts.
+</blockquote>
+
+<note>
+2010-03-11 Stefanus provided wording.
+</note>
+
+<note>
+2010 Pittsburgh:  Moved to Ready for Pittsburgh.
+</note>
+
+</discussion>
+
+<resolution>
+<p>
+Add the following declaration <sref ref="[pairs.pair]"/>, before the
+declaration of <tt>pair&amp; operator=(pair&amp;&amp; p);</tt>:
+</p>
+ 
+<blockquote><pre>
+template&lt;class U, class V&gt; pair&amp; operator=(const pair&lt;U, V&gt;&amp; p);
+</pre></blockquote>
+
+<p>
+Add the following description to <sref ref="[pairs.pair]"/> after paragraph 11 (before
+the description of <tt>pair&amp; operator=(pair&amp;&amp; p);)</tt>:
+</p>
+ 
+<blockquote><pre>
+template&lt;class U, class V&gt; pair&amp; operator=(const pair&lt;U, V&gt;&amp; p);
+</pre>
+<blockquote>
+<p>
+<i>Requires:</i> <tt>T1</tt> shall satisfy the requirements of
+<tt>CopyAssignable</tt> from <tt>U</tt>. <tt>T2</tt> shall
+satisfy the requirements of <tt>CopyAssignable</tt> from <tt>V</tt>.
+</p>
+<p>
+<i>Effects:</i> Assigns <tt>p.first</tt> to <tt>first</tt> and 
+<tt>p.second</tt> to <tt>second</tt>.
+</p>
+<p>
+<i>Returns:</i> <tt>*this</tt>.
+</p>
+</blockquote>
+</blockquote>
+
+</resolution>
+
+</issue>

@@ -1,0 +1,91 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="488" status="CD1">
+<title>rotate throws away useful information</title>
+<section><sref ref="[alg.rotate]"/></section>
+<submitter>Howard Hinnant</submitter>
+<date>22 Nov 2004</date>
+
+<discussion>
+<p>
+rotate takes 3 iterators:  first, middle and last which point into a
+sequence, and rearranges the sequence such that the subrange [middle,
+last) is now at the beginning of the sequence and the subrange [first,
+middle) follows.  The return type is void. 
+</p>
+
+<p>
+In many use cases of rotate, the client needs to know where the
+subrange [first, middle) starts after the rotate is performed.  This
+might look like: 
+</p>
+<pre>
+  rotate(first, middle, last);
+  Iterator i = advance(first, distance(middle, last));
+</pre>
+
+<p>
+Unless the iterators are random access, the computation to find the
+start of the subrange [first, middle) has linear complexity.  However,
+it is not difficult for rotate to return this information with
+negligible additional computation expense.  So the client could code: 
+</p>
+<pre>
+  Iterator i = rotate(first, middle, last);
+</pre>
+
+<p>
+and the resulting program becomes significantly more efficient.
+</p>
+
+<p>
+While the backwards compatibility hit with this change is not zero, it
+is very small (similar to that of lwg <iref ref="130"/>), and there is
+a significant benefit to the change. 
+</p>
+
+</discussion>
+
+<resolution>
+<p>In <sref ref="[algorithms]"/> p2, change:</p>
+
+<blockquote><pre>
+  template&lt;class ForwardIterator>
+    <del>void</del> <ins>ForwardIterator</ins> rotate(ForwardIterator first, ForwardIterator middle,
+                ForwardIterator last);
+</pre></blockquote>
+
+<p>In <sref ref="[alg.rotate]"/>, change:</p>
+
+<blockquote><pre>
+  template&lt;class ForwardIterator>
+    <del>void</del> <ins>ForwardIterator</ins> rotate(ForwardIterator first, ForwardIterator middle,
+                ForwardIterator last);
+</pre></blockquote>
+
+<p>In <sref ref="[alg.rotate]"/> insert a new paragraph after p1:</p>
+
+<blockquote>
+<p><b>Returns</b>: <tt>first + (last - middle)</tt>.</p>
+</blockquote>
+
+<note>
+The LWG agrees with this idea, but has one quibble: we want to make
+sure not to give the impression that the function "advance" is
+actually called, just that the nth iterator is returned.  (Calling
+advance is observable behavior, since users can specialize it for
+their own iterators.)  Howard will provide wording.
+</note>
+
+<note>Howard provided wording for mid-meeting-mailing Jun. 2005.</note>
+
+<note>
+Toronto: moved to Ready.
+</note>
+
+</resolution>
+
+</issue>

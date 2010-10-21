@@ -1,0 +1,30 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="79" status="TC1">
+<title>Inconsistent declaration of polar()</title>
+<section><sref ref="[complex.syn]"/> <sref ref="[complex.value.ops]"/></section>
+<submitter>Nico Josuttis</submitter>
+<date>29 Sep 1998</date>
+
+<discussion>
+<p>In <sref ref="[complex.syn]"/> polar is declared as follows:</p>
+<pre>   template&lt;class T&gt; complex&lt;T&gt; polar(const T&amp;, const T&amp;); </pre>
+
+<p>In <sref ref="[complex.value.ops]"/> it is declared as follows:</p>
+<pre>   template&lt;class T&gt; complex&lt;T&gt; polar(const T&amp; rho, const T&amp; theta = 0); </pre>
+
+<p>Thus whether the second parameter is optional is not clear. </p>
+</discussion>
+
+<resolution>
+<p>In <sref ref="[complex.syn]"/> change:</p>
+<pre>   template&lt;class T&gt; complex&lt;T&gt; polar(const T&amp;, const T&amp;);</pre>
+
+<p>to:</p>
+<pre>   template&lt;class T&gt; complex&lt;T&gt; polar(const T&amp; rho, const T&amp; theta = 0); </pre>
+</resolution>
+
+</issue>

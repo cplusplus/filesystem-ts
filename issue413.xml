@@ -1,0 +1,60 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="413" status="CD1">
+<title>Proposed resolution to LDR#64 still wrong</title>
+<section><sref ref="[istream::extractors]"/></section>
+<submitter>Bo Persson</submitter>
+<date>13 Jul 2003</date>
+
+<discussion>
+<p>
+The second sentence of the proposed resolution says:
+</p>
+
+<p>
+"If it inserted no characters because it caught an exception thrown
+while extracting characters from sb and ..."
+</p>
+
+<p>
+However, we are not extracting from sb, but extracting from the
+basic_istream (*this) and inserting into sb. I can't really tell if
+"extracting" or "sb" is a typo.
+</p>
+
+<note>
+Sydney: Definitely a real issue. We are, indeed, extracting characters
+from an istream and not from sb. The problem was there in the FDIS and
+wasn't fixed by issue <iref ref="64"/>. Probably what was intended was
+to have *this instead of sb. We're talking about the exception flag
+state of a basic_istream object, and there's only one basic_istream
+object in this discussion, so that would be a consistent
+interpretation.  (But we need to be careful: the exception policy of
+this member function must be consistent with that of other
+extractors.)  PJP will provide wording.
+</note>
+
+</discussion>
+
+<resolution>
+<p>Change the sentence from:</p>
+
+<blockquote><p>
+If it inserted no characters because it caught an exception thrown
+while extracting characters from sb and failbit is on in exceptions(),
+then the caught exception is rethrown.
+</p></blockquote>
+
+<p>to:</p>
+
+<blockquote><p>
+If it inserted no characters because it caught an exception thrown
+while extracting characters from *this and failbit is on in exceptions(),
+then the caught exception is rethrown.
+</p></blockquote>
+</resolution>
+
+</issue>

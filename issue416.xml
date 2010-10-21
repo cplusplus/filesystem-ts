@@ -1,0 +1,72 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+    <!DOCTYPE issue SYSTEM "lwg_issue.dtd" [
+        <!ENTITY nbsp " ">
+     ]
+>
+<issue num="416" status="CD1">
+    <title>definitions of XXX_MIN and XXX_MAX macros in climits</title>
+    <section><sref ref="[c.limits]"/></section>
+    <submitter>Martin Sebor</submitter>
+    <date>18 Sep 2003</date>
+    <discussion>
+        <p>
+
+Given two overloads of the function foo(), one taking an argument of type
+int and the other taking a long, which one will the call foo(LONG_MAX)
+resolve to? The expected answer should be foo(long), but whether that
+is true depends on the #defintion of the LONG_MAX macro, specifically
+its type. This issue is about the fact that the type of these macros
+is not actually required to be the same as the the type each respective
+limit.
+<br/>
+
+Section 18.2.2 of the C++ Standard does not specify the exact types of
+the XXX_MIN and XXX_MAX macros #defined in the &lt;climits> and &lt;limits.h>
+headers such as INT_MAX and LONG_MAX and instead defers to the C standard.
+<br/>
+
+Section 5.2.4.2.1, p1 of the C standard specifies that "The values [of
+these constants] shall be replaced by constant expressions suitable for use
+in #if preprocessing directives. Moreover, except for CHAR_BIT and MB_LEN_MAX,
+the following shall be replaced by expressions that have the same type as
+would an expression that is an object of the corresponding type converted
+according to the integer promotions."
+<br/>
+
+The "corresponding type converted according to the integer promotions" for
+LONG_MAX is, according to 6.4.4.1, p5 of the C standard, the type of long
+converted to the first of the following set of types that can represent it:
+int, long int, long long int. So on an implementation where (sizeof(long)
+== sizeof(int)) this type is actually int, while on an implementation where
+(sizeof(long) > sizeof(int)) holds this type will be long.
+<br/>
+
+This is not an issue in C since the type of the macro cannot be detected
+by any conforming C program, but it presents a portability problem in C++
+where the actual type is easily detectable by overload resolution.
+
+        </p>
+<note>Kona: the LWG does not believe this is a defect.  The C macro
+  definitions are what they are; we've got a better
+  mechanism, <tt>std::numeric_limits</tt>, that is specified more
+  precisely than the C limit macros.  At most we should add a
+  nonnormative note recommending that users who care about the exact
+  types of limit quantities should use &lt;limits&gt; instead of
+  &lt;climits&gt;.</note>
+
+    </discussion>
+
+<resolution>
+
+<p>
+Change <sref ref="[c.limits]"/>, paragraph 2:
+</p>
+
+<blockquote><p>
+-2- The contents are the same as the Standard C library header <tt>&lt;limits.h&gt;</tt>.
+<ins>[<i>Note:</i> The types of the macros in <tt>&lt;climits&gt;</tt> are not guaranteed
+to match the type to which they refer.<i>--end note</i>]</ins>
+</p></blockquote>
+
+</resolution>
+</issue>

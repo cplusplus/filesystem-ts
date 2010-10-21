@@ -1,0 +1,35 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="83" status="TC1">
+<title>String::npos vs. string::max_size()</title>
+<section><sref ref="[basic.string]"/></section>
+<submitter>Nico Josuttis</submitter>
+<date>29 Sep 1998</date>
+
+<discussion>
+<p>Many string member functions throw if size is getting or exceeding
+npos. However, I wonder why they don't throw if size is getting or
+exceeding max_size() instead of npos.  May be npos is known at compile
+time, while max_size() is known at runtime. However, what happens if
+size exceeds max_size() but not npos, then? It seems the standard
+lacks some clarifications here.</p>
+</discussion>
+
+<resolution>
+<p>After <sref ref="[basic.string]"/> paragraph 4 (&quot;The functions
+described in this clause...&quot;) add a new paragraph:</p>
+
+<blockquote>
+  <p>For any string operation, if as a result of the operation, <tt> size()</tt> would exceed
+  <tt> max_size()</tt> then
+  the operation throws <tt>length_error</tt>.</p>
+</blockquote>
+</resolution>
+
+<rationale>
+<p>The LWG believes length_error is the correct exception to throw.</p>
+</rationale>
+</issue>

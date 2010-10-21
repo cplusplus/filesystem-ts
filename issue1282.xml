@@ -1,0 +1,188 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="1282" status="NAD Future">
+<title>A proposal to add std::split algorithm</title>
+<section><sref ref="[algorithms]"/></section>
+<submitter>Igor Semenov</submitter>
+<date>7 Dec 2009</date>
+
+<discussion>
+<ol type="I">
+
+<li>
+<p>
+Motivation and Scope
+</p>
+<p>
+Splitting strings into parts by some set of delimiters is an often task, but
+there is no simple and generalized solution in C++ Standard. Usually C++
+developers use <tt>std::basic_stringstream&lt;&gt;</tt> to split string into
+parts, but there are several inconvenient restrictions:
+</p>
+
+<ul>
+<li>
+we cannot explicitly assign the set of delimiters;
+</li>
+<li>
+this approach is suitable only for strings, but not for other types of
+containers;
+</li>
+<li>
+we have (possible) performance leak due to string instantiation.
+</li>
+</ul>
+</li>
+
+<li>
+<p>
+Impact on the Standard
+</p>
+<p>
+This algorithm doesn't interfere with any of current standard algorithms.
+</p>
+</li>
+
+<li>
+<p>
+Design Decisions
+</p>
+<p>
+This algorithm is implemented in terms of input/output iterators. Also, there is
+one additional wrapper for <tt>const CharType *</tt> specified delimiters.
+</p>
+</li>
+
+<li>
+<p>
+Example implementation
+</p>
+<pre>
+template&lt; class It, class DelimIt, class OutIt &gt;
+void split( It begin, It end, DelimIt d_begin, DelimIt d_end, OutIt out )
+{
+   while ( begin != end )
+   {
+       It it = std::find_first_of( begin, end, d_begin, d_end );
+       *out++ = std::make_pair( begin, it );
+       begin = std::find_first_of( it, end, d_begin, d_end,
+           std::not2( std::equal_to&lt; typename It::value_type &gt;() ) );
+   }
+}
+
+template&lt; class It, class CharType, class OutIt &gt;
+void split( It begin, It end, const CharType * delim, OutIt out )
+{
+   split( begin, end, delim, delim + std::strlen( delim ), out );
+}
+</pre>
+</li>
+
+<li>
+<p>
+Usage
+</p>
+<pre>
+std::string ss( "word1 word2 word3" );
+std::vector&lt; std::pair&lt; std::string::const_iterator, std::string::const_iterator &gt; &gt; v;
+split( ss.begin(), ss.end(), " ", std::back_inserter( v ) );
+
+for ( int i = 0; i &lt; v.size(); ++i )
+{
+   std::cout &lt;&lt; std::string( v[ i ].first, v[ i ].second ) &lt;&lt; std::endl;
+}
+// word1
+// word2
+// word3
+</pre>
+</li>
+
+</ol>
+
+<note>
+2010-01-22 Moved to Tentatively NAD Future after 5 positive votes on c++std-lib.
+Rationale added below.
+</note>
+</discussion>
+
+<rationale>
+<p>
+The LWG is not considering completely new features for standardization at this
+time.  We would like to revisit this good suggestion for a future TR and/or
+standard.
+</p>
+</rationale>
+
+<resolution>
+<p>
+Add to the synopsis in <sref ref="[algorithms.general]"/>:
+</p>
+
+<blockquote><pre>
+template&lt; class ForwardIterator1, class ForwardIterator2, class OutputIterator &gt;
+  void split( ForwardIterator1 first, ForwardIterator1 last,
+              ForwardIterator2 delimiter_first, ForwardIterator2 delimiter_last,
+              OutputIterator result );
+
+template&lt; class ForwardIterator1, class CharType, class OutputIterator &gt;
+  void split( ForwardIterator1 first, ForwardIterator1 last,
+              const CharType * delimiters, OutputIterator result );
+</pre></blockquote>
+
+<p>
+Add a new section [alg.split]:
+</p>
+
+<blockquote><pre>
+template&lt; class ForwardIterator1, class ForwardIterator2, class OutputIterator &gt;
+  void split( ForwardIterator1 first, ForwardIterator1 last,
+              ForwardIterator2 delimiter_first, ForwardIterator2 delimiter_last,
+              OutputIterator result );
+</pre>
+
+<blockquote>
+<p>
+1. <i>Effects:</i> splits the range <tt>[first, last)</tt> into parts, using any
+element of <tt>[delimiter_first, delimiter_last)</tt> as a delimiter. Results
+are pushed to output iterator in the form of <tt>std::pair&lt;ForwardIterator1,
+ForwardIterator1&gt;</tt>. Each of these pairs specifies a maximal subrange of
+<tt>[first, last)</tt> which does not contain a delimiter.
+</p>
+<p>
+2. <i>Returns:</i> nothing.
+</p>
+<p>
+3. <i>Complexity:</i> Exactly <tt>last - first</tt> assignments.
+</p>
+</blockquote>
+
+<pre>
+template&lt; class ForwardIterator1, class CharType, class OutputIterator &gt;
+  void split( ForwardIterator1 first, ForwardIterator1 last,
+              const CharType * delimiters, OutputIterator result );
+</pre>
+
+<blockquote>
+<p>
+1. <i>Effects:</i> split the range <tt>[first, last)</tt> into parts, using any
+element of <tt>delimiters</tt> (interpreted as zero-terminated string) as a
+delimiter. Results are pushed to output iterator in the form of
+<tt>std::pair&lt;ForwardIterator1, ForwardIterator1&gt;</tt>. Each of these
+pairs specifies a maximal subrange of <tt>[first, last)</tt> which does not
+contain a delimiter.
+</p>
+<p>
+2. <i>Returns:</i> nothing.
+</p>
+<p>
+3. <i>Complexity:</i> Exactly <tt>last - first</tt> assignments.
+</p>
+</blockquote>
+
+</blockquote>
+</resolution>
+
+</issue>

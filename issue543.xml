@@ -1,0 +1,81 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="543" status="CD1">
+<title>valarray slice default constructor</title>
+<section><sref ref="[class.slice]"/></section>
+<submitter>Howard Hinnant</submitter>
+<date>3 Nov 2005</date>
+
+<discussion>
+<p>
+If one explicitly constructs a slice or glice with the default
+constructor, does the standard require this slice to have any usable
+state?  It says "creates a slice which specifies no elements", which
+could be interpreted two ways:
+</p>
+<ol>
+<li>There are no elements to which the slice refers (i.e. undefined).</li>
+<li>The slice specifies an array with no elements in it (i.e. defined).</li>
+</ol>
+<p>
+Here is a bit of code to illustrate:
+</p>
+<blockquote><pre>
+#include &lt;iostream&gt;
+#include &lt;valarray&gt;
+
+int main()
+{
+    std::valarray&lt;int&gt; v(10);
+    std::valarray&lt;int&gt; v2 = v[std::slice()];
+    std::cout &lt;&lt; "v[slice()].size() = " &lt;&lt; v2.size() &lt;&lt; '\n';
+}
+</pre></blockquote>
+
+<p>
+Is the behavior undefined?  Or should the output be:
+</p>
+
+<blockquote><pre>
+v[slice()].size() = 0
+</pre></blockquote>
+
+<p>
+There is a similar question and wording for gslice at 26.3.6.1p1.
+</p>
+</discussion>
+
+<resolution>
+
+<note>Martin suggests removing the second sentence in <sref ref="[cons.slice]"/> as well.</note>
+
+<p>
+Change <sref ref="[cons.slice]"/>:
+</p>
+
+<blockquote><p>
+1 - <del>The default constructor for <tt>slice</tt> creates a <tt>slice</tt>
+which specifies no elements.</del> <ins>The default constructor is equivalent to
+<tt>slice(0, 0, 0)</tt>.</ins> A default constructor is provided only to permit
+the declaration of arrays of slices. The constructor with arguments for a slice
+takes a start, length, and stride parameter.
+</p></blockquote>
+
+<p>
+Change <sref ref="[gslice.cons]"/>:
+</p>
+
+<blockquote><p>
+1 - <del>The default constructor creates a <tt>gslice</tt> which specifies no
+elements.</del> <ins>The default constructor is equivalent to <tt>gslice(0,
+valarray&lt;size_t&gt;(), valarray&lt;size_t&gt;())</tt>.</ins> The constructor
+with arguments builds a <tt>gslice</tt> based on a specification of start,
+lengths, and strides, as explained in the previous section.
+</p></blockquote>
+
+</resolution>
+
+</issue>

@@ -1,0 +1,106 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="1047" status="NAD Editorial">
+<title>Response to UK 334</title>
+<section><sref ref="[futures.unique_future]"/></section>
+<submitter>Alisdair Meredith</submitter>
+<date>12 Mar 2009</date>
+
+<discussion>
+
+<p><b>Addresses UK 334</b></p>
+
+<p>
+Behaviour of <tt>get()</tt> is undefined if calling <tt>get()</tt> while
+not <tt>is_ready()</tt>. The intent is that <tt>get()</tt> is a blocking
+call, and will wait for the future to become ready.
+</p>
+
+<note>
+Summit:
+</note>
+
+<blockquote>
+<p>
+Agree, move to Review.
+</p>
+</blockquote>
+
+<note>
+2009-04-03 Thomas J. Gritzan adds:
+</note>
+
+<blockquote>
+<p>
+This issue also applies to <tt>shared_future::get()</tt>.
+</p>
+
+<p>
+Suggested wording:
+</p>
+
+<p>
+Add a paragraph to <sref ref="[futures.shared_future]"/>:
+</p>
+
+<blockquote><pre>
+void shared_future&lt;void&gt;::get() const;
+</pre>
+<blockquote>
+<i>Effects:</i> If <tt>is_ready()</tt> would return <tt>false</tt>, block on the asynchronous 
+result associated with <tt>*this</tt>.
+</blockquote>
+</blockquote>
+</blockquote>
+
+<note>
+Batavia (2009-05):
+</note>
+<blockquote>
+It is not clear to us that this is an issue,
+because the proposed resolution's Effects clause seems to duplicate
+information already present in the Synchronization clause.
+Keep in Review status.
+</blockquote>
+
+<note>
+2009-10 Santa Cruz:
+</note>
+
+<blockquote>
+NAD Editorial.  Solved by
+<a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2009/n2997.html">N2997</a>.
+</blockquote>
+
+</discussion>
+
+<resolution>
+<p>
+Add a paragraph to <sref ref="[futures.unique_future]"/>:
+</p>
+
+<blockquote><pre>
+R&amp;&amp; unique_future::get(); 
+R&amp; unique_future&lt;R&amp;&gt;::get(); 
+void unique_future&lt;void&gt;::get();
+</pre>
+<blockquote>
+<p><i>Note:</i>...</p>
+<p>
+<ins><i>Effects:</i> If <tt>is_ready()</tt> would return <tt>false</tt>,
+block on the asynchronous result associated with <tt>*this</tt>.</ins>
+</p>
+<p>
+<i>Synchronization:</i> if <tt>*this</tt> is associated with a
+<tt>promise</tt> object, the completion of <tt>set_value()</tt> or
+<tt>set_exception()</tt> to that <tt>promise</tt> happens before (1.10)
+<tt>get()</tt> returns.
+</p>
+</blockquote>
+</blockquote>
+</resolution>
+
+</issue>

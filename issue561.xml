@@ -1,0 +1,175 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="561" status="CD1">
+<title>inserter overly generic</title>
+<section><sref ref="[inserter]"/></section>
+<submitter>Howard Hinnant</submitter>
+<date>21 Feb 2006</date>
+
+<discussion>
+<p>
+The declaration of <tt>std::inserter</tt> is:
+</p>
+
+<blockquote><pre>
+template &lt;class Container, class Iterator&gt;
+insert_iterator&lt;Container&gt;
+inserter(Container&amp; x, Iterator i);
+</pre></blockquote>
+
+<p>
+The template parameter <tt>Iterator</tt> in this function is completely unrelated
+to the template parameter <tt>Container</tt> when it doesn't need to be.  This
+causes the code to be overly generic.  That is, any type at all can be deduced
+as <tt>Iterator</tt>, whether or not it makes sense.  Now the same is true of
+<tt>Container</tt>.  However, for every free (unconstrained) template parameter
+one has in a signature, the opportunity for a mistaken binding grows geometrically.
+</p>
+
+<p>
+It would be much better if <tt>inserter</tt> had the following signature instead:
+</p>
+
+<blockquote><pre>
+template &lt;class Container&gt;
+insert_iterator&lt;Container&gt;
+inserter(Container&amp; x, typename Container::iterator i);
+</pre></blockquote>
+
+<p>
+Now there is only one free template parameter.  And the second argument to
+<tt>inserter</tt> must be implicitly convertible to the container's iterator,
+else the call will not be a viable overload (allowing other functions in the
+overload set to take precedence).  Furthermore, the first parameter must have a
+nested type named <tt>iterator</tt>, or again the binding to <tt>std::inserter</tt>
+is not viable.  Contrast this with the current situation
+where any type can bind to <tt>Container</tt> or <tt>Iterator</tt> and those
+types need not be anything closely related to containers or iterators.
+</p>
+
+<p>
+This can adversely impact well written code.  Consider:
+</p>
+
+<blockquote><pre>
+#include &lt;iterator&gt;
+#include &lt;string&gt;
+
+namespace my
+{
+
+template &lt;class String&gt;
+struct my_type {};
+
+struct my_container
+{
+template &lt;class String&gt;
+void push_back(const my_type&lt;String&gt;&amp;);
+};
+
+template &lt;class String&gt;
+void inserter(const my_type&lt;String&gt;&amp; m, my_container&amp; c) {c.push_back(m);}
+
+}  // my
+
+int main()
+{
+    my::my_container c;
+    my::my_type&lt;std::string&gt; m;
+    inserter(m, c);
+}
+</pre></blockquote>
+
+<p>
+Today this code fails because the call to <tt>inserter</tt> binds to
+<tt>std::inserter</tt> instead of to <tt>my::inserter</tt>.  However with the
+proposed change <tt>std::inserter</tt> will no longer be a viable function which
+leaves only <tt>my::inserter</tt> in the overload resolution set.  Everything
+works as the client intends.
+</p>
+
+<p>
+To make matters a little more insidious, the above example works today if you
+simply change the first argument to an rvalue:
+</p>
+
+<blockquote><pre>
+    inserter(my::my_type(), c);
+</pre></blockquote>
+
+<p>
+It will also work if instantiated with some string type other than
+<tt>std::string</tt> (or any other <tt>std</tt> type).  It will also work if
+<tt>&lt;iterator&gt;</tt> happens to not get included.
+</p>
+
+<p>
+And it will fail again for such inocuous reaons as <tt>my_type</tt> or
+<tt>my_container</tt> privately deriving from any <tt>std</tt> type.
+</p>
+
+<p>
+It seems unfortunate that such simple changes in the client's code can result
+in such radically differing behavior.
+</p>
+
+</discussion>
+
+<resolution>
+<p>
+Change 24.2:
+</p>
+
+<blockquote><p>
+<b>24.2 Header</b> <tt>&lt;iterator&gt;</tt> <b>synopsis</b>
+</p>
+<blockquote><pre>
+...
+template &lt;class Container<del>, class Iterator</del>&gt;
+   insert_iterator&lt;Container&gt; inserter(Container&amp; x, <del>Iterator</del> <ins>typename Container::iterator</ins> i);
+...
+</pre></blockquote>
+</blockquote>
+
+<p>
+Change 24.4.2.5:
+</p>
+
+<blockquote><p>
+<b>24.4.2.5 Class template</b> <tt>insert_iterator</tt></p>
+<blockquote><pre>
+...
+template &lt;class Container<del>, class Iterator</del>&gt;
+   insert_iterator&lt;Container&gt; inserter(Container&amp; x, <del>Iterator</del> <ins>typename Container::iterator</ins> i);
+...
+</pre></blockquote>
+</blockquote>
+
+<p>
+Change 24.4.2.6.5:
+</p>
+
+<blockquote>
+<p>
+<b>24.4.2.6.5</b> <tt>inserter</tt>
+</p>
+<pre>
+template &lt;class Container<del>, class Inserter</del>&gt;
+   insert_iterator&lt;Container&gt; inserter(Container&amp; x, <del>Inserter</del> <ins>typename Container::iterator</ins> i);
+</pre>
+<blockquote><p>
+-1- <i>Returns:</i> <tt>insert_iterator&lt;Container&gt;(x,<del>typename Container::iterator(</del>i<del>)</del>)</tt>.
+</p></blockquote>
+</blockquote>
+
+</resolution>
+
+<note>
+Kona (2007): This issue will probably be addressed as a part of the concepts overhaul of the library anyway, but the proposed resolution is correct in the absence of concepts. 
+Proposed Disposition: Ready
+</note>
+
+</issue>

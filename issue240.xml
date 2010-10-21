@@ -1,0 +1,63 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="240" status="CD1">
+<title>Complexity of adjacent_find() is meaningless</title>
+<section><sref ref="[alg.adjacent.find]"/></section>
+<submitter>Angelika Langer</submitter>
+<date>15 May 2000</date>
+
+<discussion>
+<p>The complexity section of adjacent_find is defective:</p>
+
+<blockquote>
+<pre>
+template &lt;class ForwardIterator&gt;
+ForwardIterator adjacent_find(ForwardIterator first, ForwardIterator last
+                              BinaryPredicate pred);
+</pre>
+
+<p>-1- Returns: The first iterator i such that both i and i + 1 are in
+the range [first, last) for which the following corresponding
+conditions hold: *i == *(i + 1), pred(*i, *(i + 1)) != false. Returns
+last if no such iterator is found.</p>
+
+<p>-2- Complexity: Exactly find(first, last, value) - first applications
+of the corresponding predicate.
+</p>
+</blockquote>
+
+<p>In the Complexity section, it is not defined what &quot;value&quot;
+is supposed to mean. My best guess is that &quot;value&quot; means an
+object for which one of the conditions pred(*i,value) or
+pred(value,*i) is true, where i is the iterator defined in the Returns
+section. However, the value type of the input sequence need not be
+equality-comparable and for this reason the term find(first, last,
+value) - first is meaningless.</p>
+
+<p>A term such as find_if(first, last, bind2nd(pred,*i)) - first or
+find_if(first, last, bind1st(pred,*i)) - first might come closer to
+the intended specification.  Binders can only be applied to function
+objects that have the function call operator declared const, which is
+not required of predicates because they can have non-const data
+members. For this reason, a specification using a binder could only be
+an &quot;as-if&quot; specification.</p>
+</discussion>
+
+<resolution>
+<p>Change the complexity section in <sref ref="[alg.adjacent.find]"/> to:</p>
+<blockquote><p>
+For a nonempty range, exactly <tt>min((<i>i</i> - <i>first</i>) + 1,
+(<i>last</i> - <i>first</i>) - 1)</tt> applications of the
+corresponding predicate, where <i>i</i> is <tt>adjacent_find</tt>'s
+return value.
+</p></blockquote>
+
+<note>Copenhagen: the original resolution specified an upper
+bound.  The LWG preferred an exact count.</note>
+
+</resolution>
+
+</issue>

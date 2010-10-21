@@ -1,0 +1,148 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="631" status="NAD">
+<title>conflicting requirements for <tt>BinaryPredicate</tt></title>
+<section><sref ref="[algorithms]"/></section>
+<submitter>James Kanze</submitter>
+<date>31 Jan 2007</date>
+
+<discussion>
+<p>
+The general requirements for <tt><tt>BinaryPredicate</tt></tt> (in <sref
+ref="[algorithms]"/>/8) contradict the implied specific requirements for
+some functions. In particular, it says that:
+</p>
+
+<blockquote><p>
+[...] if an algorithm takes <tt>BinaryPredicate <i>binary_pred</i></tt>
+as its argument and <tt><i>first1</i></tt> and <i>first2</i> as its
+iterator arguments, it should work correctly in the construct <tt>if
+(binary_pred (*<i>first1</i> , *<i>first2</i> )){...}</tt>.
+<tt>BinaryPredicate</tt> always takes the first iterator type as its
+first argument, that is, in those cases when <tt>T <i>value</i></tt> is
+part of the signature, it should work correctly in the context of <tt>if
+(binary_pred (*<i>first1</i> , <i>value</i>)){...}</tt>.
+</p></blockquote>
+
+<p>
+In the description of <tt>upper_bound</tt> (<sref
+ref="[upper.bound]"/>/2), however, the use is described as
+"<tt>!comp(<i>value</i>, <i>e</i>)</tt>", where <tt><i>e</i></tt> is an
+element of the sequence (a result of dereferencing
+<tt>*<i>first</i></tt>).
+</p>
+
+<p>
+In the description of <tt>lexicographical_compare</tt>, we have both
+"<tt>*<i>first1</i> &lt; *<i>first2</i></tt>" and "<tt>*<i>first2</i>
+&lt; *<i>first1</i></tt>" (which presumably implies "<tt>comp(
+*<i>first1</i>, *<i>first2</i> )</tt>" and "<tt>comp( *<i>first2</i>,
+*<i>first1</i> )</tt>".
+</p>
+
+<p>
+Logically, the <tt>BinaryPredicate</tt> is used as an ordering
+relationship, with the semantics of "less than".  Depending on the
+function, it may be used to determine equality, or any of the inequality
+relationships; doing this requires being able to use it with either
+parameter first.  I would thus suggest that the requirement be:
+</p>
+
+<p>
+Alternatively, one could specify an order for each function. IMHO, this
+would be more work for the committee, more work for the implementors,
+and of no real advantage for the user: some functions, such as
+<tt>lexicographical_compare</tt> or <tt>equal_range</tt>, will still require both
+functions, and it seems like a much easier rule to teach that both
+functions are always required, rather than to have a complicated list of
+when you only need one, and which one.
+</p>
+
+<note>
+Toronto:  Moved to Open.  ConceptGCC seems to get <tt>lower_bound</tt>
+and <tt>upper_bound</tt> to work withoutt these changes.
+</note>
+
+<note>
+2009-07-28 Reopened by Alisdair.  No longer solved by concepts.
+</note>
+
+<note>
+2009-10 Santa Cruz:
+</note>
+
+<blockquote>
+Move to Review. The small problem with the "iterator type"
+will be fixed. The cited functions (<tt>lower_bound</tt>, <tt>uppwer_bound</tt>,
+<tt>equal_range</tt>) don't actually use <tt>BinaryPredicate</tt> , and where it is used,
+it is consistent with <sref ref="[algorithm]"/>/8, so the main complaint of the issue
+is moot.
+</blockquote>
+
+<note>
+2010-01-16 Beman clarified wording.
+</note>
+
+<note>
+2010-01-31: Moved to Tentatively NAD after 5 positive votes on c++std-lib. 
+Rationale added below.
+</note>
+
+</discussion>
+
+<rationale>
+<note>
+post San Francisco:
+</note>
+
+<blockquote>
+<p>
+Solved by
+<a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2008/n2759.pdf">N2759</a>.
+</p>
+</blockquote>
+
+<p>
+2010-01-31: The draft standard is well specified as is, and this specification
+is desired.  Issues <iref ref="556"/> and <iref ref="870"/> solve the remaining
+unclearness regarding the meaning of BinaryPredicate.
+</p>
+
+</rationale>
+
+<resolution>
+<p><i>Change <sref ref="[algorithms]"/> paragraph 8 as indicated:</i></p>
+
+<blockquote>
+
+<p>
+8 The <tt>BinaryPredicate</tt> parameter is used whenever an algorithm expects a
+function object that when applied to the result of dereferencing two
+corresponding iterators or to dereferencing an iterator and type <tt>T</tt> when
+<tt>T</tt> is part of the signature returns a value testable as true. <ins>
+<tt>BinaryPredicate</tt> always takes the first iterator <tt>value_type</tt> as
+one of its arguments; which argument is unspecified.</ins> <del>In other words,
+if</del> <ins> If</ins> an algorithm takes <tt>BinaryPredicate binary_pred</tt>
+as its argument and <tt>first1</tt> and <tt>first2</tt> as its iterator
+arguments, it should work correctly <ins>both</ins> in the construct <tt>if
+(binary_pred(*first1, *first2)){...}</tt> <ins>and <tt>if (binary_pred (*first2,
+*first1)){...}</tt></ins>. <del><tt>BinaryPredicate</tt> always takes the first
+iterator type as its first argument, that is, in</del> <ins>In</ins> those cases
+when <tt>T value</tt> is part of the signature, it should work correctly in the
+context of <tt> if (binary_pred(*first1, value)){...}</tt> <ins>and of <tt>if
+(binary_pred (value, *first1)){...}</tt></ins>. <del> <tt>binary_pred</tt> shall
+not apply any non-constant function through the dereferenced iterators.</del>
+<ins>[<i>Note:</i> if the two types are not identical, and neither is
+convertable to the other, this may require that the <tt>BinaryPredicate</tt> be
+a functional object with two overloaded <tt>operator()()</tt> functions.
+&mdash; <i>end note</i>]</ins>
+</p>
+
+</blockquote>
+
+</resolution>
+
+</issue>

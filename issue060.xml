@@ -1,0 +1,313 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="60" status="TC1">
+<title>What is a formatted input function?</title>
+<section><sref ref="[istream.formatted.reqmts]"/></section>
+<submitter>Matt Austern</submitter>
+<date>3 Aug 1998</date>
+
+<discussion>
+<p>Paragraph 1 of 27.6.1.2.1 contains general requirements for all
+formatted input functions. Some of the functions defined in section
+27.6.1.2 explicitly say that those requirements apply (&quot;Behaves
+like a formatted input member (as described in 27.6.1.2.1)&quot;), but
+others don't. The question: is 27.6.1.2.1 supposed to apply to
+everything in 27.6.1.2, or only to those member functions that
+explicitly say &quot;behaves like a formatted input member&quot;? Or
+to put it differently: are we to assume that everything that appears
+in a section called &quot;Formatted input functions&quot; really is a
+formatted input function? I assume that 27.6.1.2.1 is intended to
+apply to the arithmetic extractors (27.6.1.2.2), but I assume that it
+is not intended to apply to extractors like </p>
+
+<pre>    basic_istream&amp; operator&gt;&gt;(basic_istream&amp; (*pf)(basic_istream&amp;));</pre>
+
+<p>and </p>
+
+<pre>    basic_istream&amp; operator&gt;&gt;(basic_streammbuf*);</pre>
+
+<p>There is a similar ambiguity for unformatted input, formatted output, and unformatted
+output. </p>
+
+<p>Comments from Judy Ward: It seems like the problem is that the
+basic_istream and basic_ostream operator &lt;&lt;()'s that are used
+for the manipulators and streambuf* are in the wrong section and
+should have their own separate section or be modified to make it clear
+that the &quot;Common requirements&quot; listed in section 27.6.1.2.1
+(for basic_istream) and section 27.6.2.5.1 (for basic_ostream) do not
+apply to them. </p>
+
+<p>Additional comments from Dietmar K&uuml;hl: It appears to be somewhat
+nonsensical to consider the functions defined in <sref ref="[istream::extractors]"/> paragraphs 1 to 5 to be &quot;Formatted input
+function&quot; but since these functions are defined in a section
+labeled &quot;Formatted input functions&quot; it is unclear to me
+whether these operators are considered formatted input functions which
+have to conform to the &quot;common requirements&quot; from <sref ref="[istream.formatted.reqmts]"/>: If this is the case, all manipulators, not
+just <tt>ws</tt>, would skip whitespace unless <tt>noskipws</tt> is
+set (... but setting <tt>noskipws</tt> using the manipulator syntax
+would also skip whitespace :-)</p> <p>It is not clear which functions
+are to be considered unformatted input functions. As written, it seems
+that all functions in <sref ref="[istream.unformatted]"/> are unformatted input
+functions. However, it does not really make much sense to construct a
+sentry object for <tt>gcount()</tt>, <tt>sync()</tt>, ... Also it is
+unclear what happens to the <tt>gcount()</tt> if
+eg. <tt>gcount()</tt>, <tt>putback()</tt>, <tt>unget()</tt>, or
+<tt>sync()</tt> is called: These functions don't extract characters,
+some of them even &quot;unextract&quot; a character. Should this still
+be reflected in <tt>gcount()</tt>? Of course, it could be read as if
+after a call to <tt>gcount()</tt> <tt>gcount()</tt> return <tt>0</tt>
+(the last unformatted input function, <tt>gcount()</tt>, didn't
+extract any character) and after a call to <tt>putback()</tt>
+<tt>gcount()</tt> returns <tt>-1</tt> (the last unformatted input
+function <tt>putback()</tt> did &quot;extract&quot; back into the
+stream). Correspondingly for <tt>unget()</tt>. Is this what is
+intended?  If so, this should be clarified. Otherwise, a corresponding
+clarification should be used.</p>
+</discussion>
+
+<resolution>
+<p>
+In 27.6.1.2.2 [lib.istream.formatted.arithmetic], paragraph 1.
+Change the beginning of the second sentence from &quot;The conversion
+occurs&quot; to &quot;These extractors behave as formatted input functions (as
+described in 27.6.1.2.1).  After a sentry object is constructed,
+the conversion occurs&quot;
+</p>
+
+<p>
+In 27.6.1.2.3, [lib.istream::extractors], before paragraph 1.
+Add an effects clause.  &quot;Effects: None.  This extractor does
+not behave as a formatted input function (as described in
+27.6.1.2.1).
+</p>
+
+<p>
+In 27.6.1.2.3, [lib.istream::extractors], paragraph 2.  Change the
+effects clause to &quot;Effects: Calls pf(*this).  This extractor does not
+behave as a formatted input function (as described in 27.6.1.2.1).
+</p>
+
+<p>
+In 27.6.1.2.3, [lib.istream::extractors], paragraph 4.  Change the
+effects clause to &quot;Effects: Calls pf(*this).  This extractor does not
+behave as a formatted input function (as described in 27.6.1.2.1).
+</p>
+
+<p>
+In 27.6.1.2.3, [lib.istream::extractors], paragraph 12.  Change the
+first two sentences from &quot;If sb is null, calls setstate(failbit),
+which may throw ios_base::failure (27.4.4.3).  Extracts characters
+from *this...&quot; to &quot;Behaves as a formatted input function (as described
+in 27.6.1.2.1).  If sb is null, calls setstate(failbit), which may
+throw ios_base::failure (27.4.4.3).  After a sentry object is
+constructed, extracts characters from *this...&quot;.
+</p>
+
+<p>
+In 27.6.1.3, [lib.istream.unformatted], before paragraph 2.  Add an
+effects clause.  &quot;Effects: none. This member function does not behave
+as an unformatted input function (as described in 27.6.1.3, paragraph 1).&quot;
+</p>
+
+<p>
+In 27.6.1.3, [lib.istream.unformatted], paragraph 3.  Change the
+beginning of the first sentence of the effects clause from &quot;Extracts a
+character&quot; to &quot;Behaves as an unformatted input function (as described
+in 27.6.1.3, paragraph 1).  After constructing a sentry object, extracts a
+character&quot;
+</p>
+
+<p>
+In 27.6.1.3, [lib.istream.unformatted], paragraph 5.  Change the
+beginning of the first sentence of the effects clause from &quot;Extracts a
+character&quot; to &quot;Behaves as an unformatted input function (as described
+in 27.6.1.3, paragraph 1).  After constructing a sentry object, extracts a
+character&quot;
+</p>
+
+<p>
+In 27.6.1.3, [lib.istream.unformatted], paragraph 7.  Change the
+beginning of the first sentence of the effects clause from &quot;Extracts
+characters&quot; to &quot;Behaves as an unformatted input function (as described
+in 27.6.1.3, paragraph 1).  After constructing a sentry object, extracts
+characters&quot;
+</p>
+
+<p>
+[No change needed in paragraph 10, because it refers to paragraph 7.]
+</p>
+
+<p>
+In 27.6.1.3, [lib.istream.unformatted], paragraph 12.  Change the
+beginning of the first sentence of the effects clause from &quot;Extracts
+characters&quot; to &quot;Behaves as an unformatted input function (as described
+in 27.6.1.3, paragraph 1).  After constructing a sentry object, extracts
+characters&quot;
+</p>
+
+<p>
+[No change needed in paragraph 15.]
+</p>
+
+<p>
+In 27.6.1.3, [lib.istream.unformatted], paragraph 17.  Change the
+beginning of the first sentence of the effects clause from &quot;Extracts
+characters&quot; to &quot;Behaves as an unformatted input function (as described
+in 27.6.1.3, paragraph 1).  After constructing a sentry object, extracts
+characters&quot;
+</p>
+
+<p>
+[No change needed in paragraph 23.]
+</p>
+
+<p>
+In 27.6.1.3, [lib.istream.unformatted], paragraph 24.  Change the
+beginning of the first sentence of the effects clause from &quot;Extracts
+characters&quot; to &quot;Behaves as an unformatted input function (as described
+in 27.6.1.3, paragraph 1).  After constructing a sentry object, extracts
+characters&quot;
+</p>
+
+<p>
+In 27.6.1.3, [lib.istream.unformatted], before paragraph 27.  Add an
+Effects clause: &quot;Effects: Behaves as an unformatted input function (as
+described in 27.6.1.3, paragraph 1).  After constructing a sentry
+object, reads but does not extract the current input character.&quot;
+</p>
+
+<p>
+In 27.6.1.3, [lib.istream.unformatted], paragraph 28.  Change the
+first sentence of the Effects clause from &quot;If !good() calls&quot; to
+Behaves as an unformatted input function (as described in 27.6.1.3,
+paragraph 1).  After constructing a sentry object, if !good() calls&quot;
+</p>
+
+<p>
+In 27.6.1.3, [lib.istream.unformatted], paragraph 30.  Change the
+first sentence of the Effects clause from &quot;If !good() calls&quot; to
+&quot;Behaves as an unformatted input function (as described in 27.6.1.3,
+paragraph 1).  After constructing a sentry object, if !good() calls&quot;
+</p>
+
+<p>
+In 27.6.1.3, [lib.istream.unformatted], paragraph 32.  Change the
+first sentence of the Effects clause from &quot;If !good() calls...&quot; to
+&quot;Behaves as an unformatted input function (as described in 27.6.1.3,
+paragraph 1).  After constructing a sentry object, if !good()
+calls...&quot;  Add a new sentence to the end of the Effects clause:
+&quot;[Note: this function extracts no characters, so the value returned
+by the next call to gcount() is 0.]&quot;
+</p>
+
+<p>
+In 27.6.1.3, [lib.istream.unformatted], paragraph 34.  Change the
+first sentence of the Effects clause from &quot;If !good() calls&quot; to
+&quot;Behaves as an unformatted input function (as described in 27.6.1.3,
+paragraph 1).  After constructing a sentry object, if !good() calls&quot;.
+Add a new sentence to the end of the Effects clause: &quot;[Note: this
+function extracts no characters, so the value returned by the next
+call to gcount() is 0.]&quot;
+</p>
+
+<p>
+In 27.6.1.3, [lib.istream.unformatted], paragraph 36.  Change the
+first sentence of the Effects clause from &quot;If !rdbuf() is&quot; to &quot;Behaves
+as an unformatted input function (as described in 27.6.1.3, paragraph
+1), except that it does not count the number of characters extracted
+and does not affect the value returned by subsequent calls to
+gcount().  After constructing a sentry object, if rdbuf() is&quot;
+</p>
+
+<p>
+In 27.6.1.3, [lib.istream.unformatted], before paragraph 37.  Add an
+Effects clause: &quot;Effects: Behaves as an unformatted input function (as
+described in 27.6.1.3, paragraph 1), except that it does not count the
+number of characters extracted and does not affect the value returned
+by subsequent calls to gcount().&quot;  Change the first sentence of
+paragraph 37 from &quot;if fail()&quot; to &quot;after constructing a sentry object,
+if fail()&quot;.
+</p>
+
+<p>
+In 27.6.1.3, [lib.istream.unformatted], paragraph 38.  Change the
+first sentence of the Effects clause from &quot;If fail()&quot; to &quot;Behaves
+as an unformatted input function (as described in 27.6.1.3, paragraph
+1), except that it does not count the number of characters extracted
+and does not affect the value returned by subsequent calls to
+gcount().  After constructing a sentry object, if fail()
+</p>
+
+<p>
+In 27.6.1.3, [lib.istream.unformatted], paragraph 40.  Change the
+first sentence of the Effects clause from &quot;If fail()&quot; to &quot;Behaves
+as an unformatted input function (as described in 27.6.1.3, paragraph
+1), except that it does not count the number of characters extracted
+and does not affect the value returned by subsequent calls to
+gcount().  After constructing a sentry object, if fail()
+</p>
+
+<p>
+In 27.6.2.5.2 [lib.ostream.inserters.arithmetic], paragraph 1.  Change
+the beginning of the third sentence from &quot;The formatting conversion&quot;
+to &quot;These extractors behave as formatted output functions (as
+described in 27.6.2.5.1).  After the sentry object is constructed, the
+conversion occurs&quot;.
+</p>
+
+<p>
+In 27.6.2.5.3 [lib.ostream.inserters], before paragraph 1.  Add an
+effects clause: &quot;Effects: None. Does not behave as a formatted output
+function (as described in 27.6.2.5.1).&quot;.
+</p>
+
+<p>
+In 27.6.2.5.3 [lib.ostream.inserters], paragraph 2.  Change the
+effects clause to &quot;Effects: calls pf(*this).  This extractor does not
+behave as a formatted output function (as described in 27.6.2.5.1).&quot;.
+</p>
+
+<p>
+In 27.6.2.5.3 [lib.ostream.inserters], paragraph 4.  Change the
+effects clause to &quot;Effects: calls pf(*this).  This extractor does not
+behave as a formatted output function (as described in 27.6.2.5.1).&quot;.
+</p>
+
+<p>
+In 27.6.2.5.3 [lib.ostream.inserters], paragraph 6.  Change the first
+sentence from &quot;If sb&quot; to &quot;Behaves as a formatted output function (as
+described in 27.6.2.5.1).  After the sentry object is constructed, if
+sb&quot;.
+</p>
+
+<p>
+In 27.6.2.6 [lib.ostream.unformatted], paragraph 2.  Change the first
+sentence from &quot;Inserts the character&quot; to &quot;Behaves as an unformatted
+output function (as described in 27.6.2.6, paragraph 1).  After
+constructing a sentry object, inserts the character&quot;.
+</p>
+
+<p>
+In 27.6.2.6 [lib.ostream.unformatted], paragraph 5.  Change the first
+sentence from &quot;Obtains characters&quot; to &quot;Behaves as an unformatted
+output function (as described in 27.6.2.6, paragraph 1).  After
+constructing a sentry object, obtains characters&quot;.
+</p>
+
+<p>
+In 27.6.2.6 [lib.ostream.unformatted], paragraph 7.  Add a new
+sentence at the end of the paragraph: &quot;Does not behave as an
+unformatted output function (as described in 27.6.2.6, paragraph 1).&quot;
+</p>
+</resolution>
+
+<rationale>
+<p>See J16/99-0043==WG21/N1219, Proposed Resolution to Library Issue 60,
+by Judy Ward and Matt Austern.  This proposed resolution is section
+VI of that paper.</p>
+</rationale>
+
+</issue>

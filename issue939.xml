@@ -1,0 +1,187 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="939" status="WP">
+<title>Problem with <tt>std::identity</tt> and reference-to-temporaries</title>
+<section><sref ref="[forward]"/></section>
+<submitter>Alisdair Meredith</submitter>
+<date>11 Dec 2008</date>
+
+<discussion>
+<p>
+<tt>std::identity</tt> takes an argument of type <tt>T const &amp;</tt>
+and returns a result of <tt>T const &amp;</tt>.
+</p>
+<p>
+Unfortunately, this signature will accept a value of type other than <tt>T</tt> that
+is convertible-to-<tt>T</tt>, and then return a reference to the dead temporary.  The
+constraint in the concepts version simply protects against returning
+reference-to-<tt>void</tt>.
+</p>
+<p>
+Solutions:
+</p>
+<blockquote>
+<p>
+i/  Return-by-value, potentially slicing bases and rejecting non-copyable
+types
+</p>
+<p>
+ii/ Provide an additional overload:
+</p>
+<blockquote><pre>
+template&lt; typename T &gt;
+template operator( U &amp; ) = delete;
+</pre></blockquote>
+<p>
+This seems closer on intent, but moves beyond the original motivation for
+the operator, which is compatibility with existing (non-standard)
+implementations.
+</p>
+<p>
+iii/ Remove the <tt>operator()</tt> overload.  This restores the original definition
+of the <tt>identity</tt>, although now effectively a type_trait rather than part of
+the perfect forwarding protocol.
+</p>
+<p>
+iv/ Remove <tt>std::identity</tt> completely; its original reason to exist is
+replaced with the <tt>IdentityOf</tt> concept.
+</p>
+</blockquote>
+<p>
+My own preference is somewhere between (ii) and (iii) - although I stumbled
+over the issue with a specific application hoping for resolution (i)!
+</p>
+
+<note>
+Batavia (2009-05):
+</note>
+<blockquote>
+<p>
+We dislike options i and iii, and option ii seems like overkill.
+If we remove it (option iv), implementers can still provide it under a
+different name.
+</p>
+<p>
+Move to Open pending wording (from Alisdair) for option iv.
+</p>
+</blockquote>
+
+<note>
+2009-05-23 Alisdair provided wording for option iv.
+</note>
+
+<note>
+2009-07-20 Alisdair adds:
+</note>
+
+<blockquote>
+<p>
+I'm not sure why this issue was not discussed at Frankfurt (or I missed
+the discussion) but the rationale is now fundamentally flawed.  With the
+removal of concepts, <tt>std::identity</tt> again becomes an important library
+type so we cannot simply remove it.
+</p>
+<p>
+At that point, we need to pick one of the other suggested resolutions,
+but have no guidance at the moment.
+</p>
+</blockquote>
+
+<note>
+2009-07-20 Howard adds:
+</note>
+
+<blockquote>
+<p>
+I believe the rationale for not addressing this issue in Frankfurt was that it did
+not address a national body comment.
+</p>
+<p>
+I also believe that removal of <tt>identity</tt> is still a practical option as
+my latest reformulation of <tt>forward</tt>, which is due to comments suggested
+at Summit, no longer uses <tt>identity</tt>. :-)
+</p>
+
+<blockquote><pre>
+template &lt;class T, class U,
+    class = typename enable_if
+            &lt;
+                !is_lvalue_reference&lt;T&gt;::value || 
+                 is_lvalue_reference&lt;T&gt;::value &amp;&amp;
+                 is_lvalue_reference&lt;U&gt;::value
+            &gt;::type,
+    class = typename enable_if
+            &lt;
+                is_same&lt;typename remove_all&lt;T&gt;::type,
+                        typename remove_all&lt;U&gt;::type&gt;::value
+            &gt;::type&gt;
+inline
+T&amp;&amp;
+forward(U&amp;&amp; t)
+{
+    return static_cast&lt;T&amp;&amp;&gt;(t);
+
+}
+</pre>
+
+<note>
+The above code assumes acceptance of <iref ref="1120"/> for the definition of
+<tt>remove_all</tt>.  This is just to make the syntax a little more palatable.
+Without this trait the above is still very implementable.
+</note>
+
+</blockquote>
+
+<p>
+Paper with rationale is on the way ... <i>really</i>, I promise this time! ;-)
+</p>
+</blockquote>
+
+<note>
+2009-07-30 Daniel adds:  See <iref ref="823"/> for an alternative resolution.
+</note>
+
+<note>
+2009-10 Santa Cruz:
+</note>
+
+<blockquote>
+Move to Ready. Howard will update proposed wording to reflect current draft.
+</blockquote>
+
+</discussion>
+
+<resolution>
+<p>
+Strike from <sref ref="[utility]"/>:
+</p>
+
+<blockquote><pre>
+<del>template &lt;class T&gt; struct identity;</del>
+</pre></blockquote>
+
+<p>
+Remove from <sref ref="[forward]"/>:
+</p>
+
+<blockquote>
+<pre>
+<del>template &lt;class T&gt; struct identity {
+  typedef T type;
+
+  const T&amp; operator()(const T&amp; x) const;
+};</del>
+
+<del>const T&amp; operator()(const T&amp; x) const;</del>
+</pre>
+<blockquote>
+<del>-2-  <i>Returns:</i> <tt>x</tt></del>
+</blockquote>
+</blockquote>
+
+</resolution>
+
+</issue>

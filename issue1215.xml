@@ -1,0 +1,68 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="1215" status="New">
+<title><tt>list::merge</tt> with unequal allocators</title>
+<section><sref ref="[list.ops]"/></section>
+<submitter>Pablo Halpern</submitter>
+<date>24 Sep 2009</date>
+
+<discussion>
+<p>
+In Bellevue (I think), we passed
+<a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2008/n2525.pdf">N2525</a>,
+which, among other things, specifies that the behavior of
+<tt>list::splice</tt> is undefined if the allocators of the two lists
+being spliced do not compare equal. The same rationale should apply to
+<tt>list::merge</tt>. The intent of <tt>list::merge</tt> (AFAIK) is to
+move nodes from one sorted <tt>list</tt> into another sorted
+<tt>list</tt> without copying the elements. This is possible only if the
+allocators compare equal.
+</p>
+</discussion>
+
+<resolution>
+<p>
+Relative to the August 2009 WP,
+<a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2009/n2857.pdf">N2857</a>,
+change <sref ref="[list.ops]"/>,
+paragraphs 22-25 as follows:
+</p>
+
+<blockquote>
+<pre>
+void merge(list&amp;&amp; x);
+template &lt;class Compare&gt; void merge(list&amp;&amp; x, Compare comp);
+</pre>
+<blockquote>
+<p>
+<i>Requires</i>: both the list and the argument list shall be sorted
+according to operator&lt; or comp.
+</p>
+<p>
+<i>Effects</i>: If <tt>(&amp;x == this)</tt> does nothing; otherwise, merges the
+two sorted ranges <tt>[begin(), end())</tt> and <tt>[x.begin(),
+x.end())</tt>. The result is a range in which the elements will be
+sorted in non-decreasing order according to the ordering defined by
+<tt>comp</tt>; that is, for every iterator <tt>i</tt>, in the range other than the
+<tt>first</tt>, the condition <tt>comp(*i, *(i - 1)<ins>)</ins></tt> will be
+<tt>false</tt>.
+</p>
+<p>
+<i>Remarks</i>: Stable. If <tt>(&amp;x != this)</tt> the range <tt>[x.begin(), x.end())</tt> is
+empty after the merge. <ins>No elements are copied by this operation.
+The behavior is undefined if <tt>this-&gt;get_allocator() !=
+x.get_allocator()</tt>.</ins>
+</p>
+<p>
+<i>Complexity</i>: At most <tt>size() + x.size() - 1</tt> applications of <tt>comp</tt>
+if <tt>(&amp;x != this)</tt>; otherwise, no applications of <tt>comp</tt> are performed. If an
+exception is thrown other than by a comparison there are no effects.
+</p>
+</blockquote>
+</blockquote>
+</resolution>
+
+</issue>

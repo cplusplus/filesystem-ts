@@ -1,0 +1,423 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+    <!DOCTYPE issue SYSTEM "lwg_issue.dtd" [
+        <!ENTITY nbsp " ">
+     ]
+>
+
+<issue num="873" status="NAD Editorial">
+  <title>signed integral type and unsigned integral type are not clearly defined</title>
+  <section>
+    <sref ref="[basic.fundamental]"/>
+  </section>
+  <submitter>Travis Vitek</submitter>
+  <date>30 Jun 2008</date>
+
+  <discussion>
+    <p>
+      Neither the term "signed integral type" nor the term "unsigned
+      integral type" is defined in the core language section of the
+      standard, therefore the library section should avoid its use.  The
+      terms <i>signed integer type</i> and <i>unsigned integer type</i> are
+      indeed defined (in <sref ref="[basic.fundamental]"/>), thus the usages should be
+      replaced accordingly.
+    </p>
+
+    <p>
+      Note that the key issue here is that "signed" + "integral type" !=
+      "signed integral type".
+      
+      The types <code>bool</code>, <code>char</code>, <code>char16_t</code>,
+      <code>char32_t</code> and <code>wchar_t</code> are all listed as
+      integral types, but are neither of <i>signed integer type</i> or
+      <i>unsigned integer type</i>. According to <sref ref="[basic.types]"/> p7, a synonym for
+      integral type is <i>integer type</i>.
+      
+      Given this, one may choose to assume that an <i>integral type</i> that
+      can represent values less than zero is a <i>signed integral type</i>.
+      Unfortunately this can cause ambiguities.
+      
+      As an example, if <code>T</code> is <code>unsigned char</code>, the
+      expression <code>make_signed&lt;T&gt;::type</code>, is supposed to
+      name a signed integral type. There are potentially two types that
+      satisfy this requirement, namely <code>signed char</code> and
+      <code>char</code> (assuming <code>CHAR_MIN &lt; 0</code>).
+    </p>
+
+<note>
+San Francisco:
+</note>
+
+<blockquote>
+Plum, Sebor to review.
+</blockquote>
+
+<note>
+Post Summit Daniel adds:
+</note>
+
+<blockquote>
+The proposed resolution needs to be "conceptualized". Currently we have
+in <sref ref="[concept.support]"/> only concept <tt>IntegralType</tt>
+for all "integral types", thus indeed the current <tt>Container</tt>
+concept and Iterator concepts are sufficiently satisfied with "integral
+types". If the changes are applied, we might ask core for concept
+<tt>BilateralIntegerType</tt> and add proper restrictions to the library
+concepts.
+</blockquote>
+
+  </discussion>
+
+  <resolution>
+    <p>
+      I propose to use the terms "signed integer type" and "unsigned integer
+      type" in place of "signed integral type" and "unsigned integral type"
+      to eliminate such ambiguities.
+    </p>
+    
+    <p>
+      The proposed change makes it absolutely clear that the difference
+      between two pointers cannot be <tt>char</tt> or <tt>wchar_t</tt>,
+      but could be any of the signed integer types.
+      <sref ref="[expr.add]"/> paragraph 6...
+    </p>
+    <blockquote>
+      <p>
+        <ol>
+          <li>
+            When two pointers to elements of the same array object are
+            subtracted, the result is the difference of the subscripts of
+            the two array elements. The type of the result is an
+            implementation-defined <del>signed integral
+            type</del><ins>signed integer type</ins>; this type shall be the
+            same type that is defined as <code>std::ptrdiff_t</code> in the
+            <code>&lt;cstdint&gt;</code> header (18.1)...
+          </li>
+        </ol>
+      </p>
+    </blockquote>
+
+    <p>
+      The proposed change makes it clear that <tt>X::size_type</tt> and
+      <tt>X::difference_type</tt> cannot be <tt>char</tt> or
+      <tt>wchar_t</tt>, but could be one of the signed or unsigned integer
+      types as appropriate.
+      <sref ref="[allocator.requirements]"/> table 40...
+    </p>
+    <blockquote>
+      Table 40: Allocator requirements
+      <table border="1">
+        <thead>
+          <tr>
+            <th>expression</th>
+            <th>return type</th>
+            <th>assertion/note/pre/post-condition</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><tt>X::size_type</tt></td>
+            <td>
+              <del>unsigned integral type</del>
+              <ins>unsigned integer type</ins>
+            </td>
+            <td>a type that can represent the size of the largest object in
+            the allocation model.</td>
+          </tr>
+          <tr>
+            <td><tt>X::difference_type</tt></td>
+            <td>
+              <del>signed integral type</del>
+              <ins>signed integer type</ins>
+            </td>
+            <td>a type that can represent the difference between any two
+            pointers in the allocation model.</td>
+          </tr>
+        </tbody>
+      </table>
+    </blockquote>
+
+    <p>
+      The proposed change makes it clear that <tt>make_signed&lt;T&gt;::type</tt>
+      must be one of the signed integer types as defined in 3.9.1. Ditto for
+      <tt>make_unsigned&lt;T&gt;type</tt> and unsigned integer types.
+      <sref ref="[meta.trans.sign]"/> table 48...
+    </p>
+    <blockquote>
+      Table 48: Sign modifications
+      <table border="1">
+        <thead>
+          <tr>
+            <th>Template</th>
+            <th>Comments</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>
+              <tt>template &lt;class T&gt; struct make_signed;</tt>
+            </td>
+            <td>
+              If <code>T</code> names a (possibly cv-qualified) <del>signed
+              integral type</del><ins>signed integer type</ins> (3.9.1) then
+              the member typedef <code>type</code> shall name the type
+              <code>T</code>; otherwise, if <code>T</code> names a (possibly
+              cv-qualified) <del>unsigned integral type</del><ins>unsigned
+              integer type</ins> then <code>type</code> shall name the
+              corresponding <del>signed integral type</del><ins>signed
+              integer type</ins>, with the same cv-qualifiers as
+              <code>T</code>; otherwise, <code>type</code> shall name the
+              <del>signed integral type</del><ins>signed integer type</ins>
+              with the smallest rank (4.13) for which <code>sizeof(T) ==
+              sizeof(type)</code>, with the same cv-qualifiers as
+              <code>T</code>.
+
+              <i>Requires:</i> <code>T</code> shall be a (possibly
+              cv-qualified) integral type or enumeration but not a
+              <code>bool</code> type.
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <tt>template &lt;class T&gt; struct make_unsigned;</tt>
+            </td>
+            <td>
+              If <code>T</code> names a (possibly cv-qualified)
+              <del>unsigned integral type</del><ins>unsigned integer
+              type</ins> (3.9.1) then the member typedef <code>type</code>
+              shall name the type <code>T</code>; otherwise, if
+              <code>T</code> names a (possibly cv-qualified) <del>signed
+              integral type</del><ins>signed integer type</ins> then
+              <code>type</code> shall name the corresponding <del>unsigned
+              integral type</del><ins>unsigned integer type</ins>, with the
+              same cv-qualifiers as <code>T</code>; otherwise,
+              <code>type</code> shall name the <del>unsigned integral
+              type</del><ins>unsigned integer type</ins> with the smallest
+              rank (4.13) for which <code>sizeof(T) == sizeof(type)</code>,
+              with the same cv-qualifiers as <code>T</code>.
+
+              <i>Requires:</i> <code>T</code> shall be a (possibly
+              cv-qualified) integral type or enumeration but not a
+              <code>bool</code> type.
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </blockquote>
+
+
+    <p>
+      Note: I believe that the basefield values should probably be
+      prefixed with <tt>ios_base::</tt> as they are in <sref
+      ref="[facet.num.put.virtuals]"/>
+
+      The listed virtuals are all overloaded on signed and unsigned integer
+      types, the new wording just maintains consistency.
+
+      <sref ref="[facet.num.get.virtuals]"/> table 78...
+    </p>
+    <blockquote>
+      Table 78: Integer Conversions
+      <table border="1">
+        <thead>
+          <tr>
+            <th>State</th>
+            <th><tt>stdio</tt> equivalent</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><tt>basefield == oct</tt></td>
+            <td><tt>%o</tt></td>
+          </tr>
+          <tr>
+            <td><tt>basefield == hex</tt></td>
+            <td><tt>%X</tt></td>
+          </tr>
+          <tr>
+            <td><tt>basefield == 0</tt></td>
+            <td><tt>%i</tt></td>
+          </tr>
+          <tr>
+            <td><del>signed integral type</del><ins>signed integer
+            type</ins></td>
+            <td><tt>%d</tt></td>
+          </tr>
+          <tr>
+            <td><del>unsigned integral type</del><ins>unsigned integer
+            type</ins></td>
+            <td><tt>%u</tt></td>
+          </tr>
+        </tbody>
+      </table>
+    </blockquote>
+
+    
+    
+    <p>
+      Rationale is same as above.
+      <sref ref="[facet.num.put.virtuals]"/> table 80...
+    </p>
+    <blockquote>
+      Table 80: Integer Conversions
+      <table border="1">
+        <thead>
+          <tr>
+            <th>State</th>
+            <th><tt>stdio</tt> equivalent</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><tt>basefield == ios_base::oct</tt></td>
+            <td><tt>%o</tt></td>
+          </tr>
+          <tr>
+            <td><tt>(basefield == ios_base::hex) &amp;&amp;
+            !uppercase</tt></td>
+            <td><tt>%x</tt></td>
+          </tr>
+          <tr>
+            <td><tt>(basefield == ios_base::hex)</tt></td>
+            <td><tt>%X</tt></td>
+          </tr>
+          <tr>
+            <td><tt>basefield == 0</tt></td>
+            <td><tt>%i</tt></td>
+          </tr>
+          <tr>
+            <td>for a <del>signed integral type</del><ins>signed integer
+            type</ins></td>
+            <td><tt>%d</tt></td>
+          </tr>
+          <tr>
+            <td>for a <del>unsigned integral type</del><ins>unsigned integer
+            type</ins></td>
+            <td><tt>%u</tt></td>
+          </tr>
+        </tbody>
+      </table>
+    </blockquote>
+
+    
+    <p>
+      <sref ref="[container.requirements]"/> table 80...
+    </p>
+    <blockquote>
+      Table 89: Container requirements
+      <table border="1">
+        <thead>
+          <tr>
+            <th>expression</th>
+            <th>return type</th>
+            <th>operational semantics</th>
+            <th>assertion/note/pre/post-condition</th>
+            <th>complexity</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><tt>X::difference_type</tt></td>
+            <td><del>signed integral type</del><ins>signed integer type</ins></td>
+            <td>&nbsp;</td>
+            <td>is identical to the difference type of <tt>X::iterator</tt>
+            and <tt>X::const_iterator</tt></td>
+            <td>compile time</td>
+          </tr>
+          <tr>
+            <td><tt>X::size_type</tt></td>
+            <td><del>unsigned integral type</del><ins>unsigned integer type</ins></td>
+            <td>&nbsp;</td>
+            <td><tt>size_type</tt> can represent any non-negative value of
+            <tt>difference_type</tt></td>
+            <td>compile time</td>
+          </tr>
+        </tbody>
+      </table>
+    </blockquote>
+
+    <p>
+      <sref ref="[iterator.concepts]"/> paragraph 1...
+    </p>
+    <blockquote>
+      Iterators are a generalization of pointers that allow a C++ program to
+      work with different data structures (containers) in a uniform manner.
+      To be able to construct template algorithms that work correctly and
+      efficiently on different types of data structures, the library
+      formalizes not just the interfaces but also the semantics and
+      complexity assumptions of iterators. All input iterators
+      <code>i</code> support the expression <code>*i</code>, resulting in a
+      value of some class, enumeration, or built-in type <code>T</code>,
+      called the <i>value type</i> of the iterator. All output iterators
+      support the expression <code>*i = o</code> where <code>o</code> is a
+      value of some type that is in the set of types that are
+      <i>writable</i> to the particular iterator type of <code>i</code>. All
+      iterators <code>i</code> for which the expression <code>(*i).m</code>
+      is well-defined, support the expression <code>i->m</code> with the
+      same semantics as <code>(*i).m</code>. For every iterator type
+      <code>X</code> for which equality is defined, there is a corresponding
+      <del>signed integral type</del> <ins>signed integer type</ins> called
+      the <i>difference type</i> of the iterator.
+    </blockquote>
+    
+    <p>
+      I'm a little unsure of this change. Previously this paragraph would
+      allow instantiations of <tt>linear_congruential_engine</tt> on
+      <tt>char</tt>, <tt>wchar_t</tt>, <tt>bool</tt>, and other types. The
+      new wording prohibits this.
+      <sref ref="[rand.eng.lcong]"/> paragraph 2...
+    </p>
+    <blockquote>
+      The template parameter <code>UIntType</code> shall denote an
+      <del>unsigned integral type</del><ins>unsigned integer type</ins>
+      large enough to store values as large as <code>m - 1</code>. If the
+      template parameter <code>m</code> is 0, the modulus <code>m</code>
+      used throughout this section 26.4.3.1 is
+      <code>numeric_limits&lt;result_type&gt;::max()</code> plus 1.  [Note:
+      The result need not be representable as a value of type
+      <code>result_type</code>. --end note] Otherwise, the following
+      relations shall hold: <code>a &lt; m</code> and <code>c &lt;
+      m</code>.
+    </blockquote>
+    
+    <p>
+      Same rationale as the previous change.
+      <sref ref="[rand.adapt.xor]"/> paragraph 6...
+    </p>
+    <blockquote>
+      Both <code>Engine1::result_type</code> and
+      <code>Engine2::result_type</code> shall denote (possibly different)
+      <del>unsigned integral types</del><ins>unsigned integer types</ins>.
+      The member <i>result_type</i> shall denote either the type
+      <i>Engine1::result_type</i> or the type <i>Engine2::result_type</i>,
+      whichever provides the most storage according to clause 3.9.1.
+    </blockquote>
+    
+    <p>
+      <sref ref="[rand.util.seedseq]"/> paragraph 7...
+    </p>
+    <blockquote>
+      <i>Requires:</i><code>RandomAccessIterator</code> shall meet the
+      requirements of a random access iterator (24.1.5) such that
+      <code>iterator_traits&lt;RandomAccessIterator&gt;::value_type</code>
+      shall denote an <del>unsigned integral type</del><ins>unsigned integer
+      type</ins> capable of accomodating 32-bit quantities.  
+    </blockquote>
+
+    <p>
+      By making this change, integral types that happen to have a signed
+      representation, but are not signed integer types, would no longer be
+      required to use a two's complement representation. This may go against
+      the original intent, and should be reviewed.
+      <sref ref="[atomics.types.operations]"/> paragraph 24...
+    </p>
+    <blockquote>
+      <i>Remark:</i> For <del>signed integral types</del><ins>signed integer
+      types</ins>, arithmetic is defined using two's complement
+      representation. There are no undefined results. For address types, the
+      result may be an undefined address, but the operations otherwise have
+      no undefined behavior.
+    </blockquote>
+    
+  </resolution>
+</issue>
+

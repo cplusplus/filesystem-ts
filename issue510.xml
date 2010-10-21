@@ -1,0 +1,36 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="510" status="NAD">
+<title>Input_type for bernoulli_distribution</title>
+<section><sref ref="[rand.dist.bern]"/><sref ref="[tr.rand.dist.bern]"/></section>
+<submitter>Walter Brown</submitter>
+<date>3 Jul 2005</date>
+
+<discussion>
+<p>
+In [tr.rand.dist.bern] the distribution currently requires;
+</p>
+<blockquote><pre>
+typedef  int  input_type;
+</pre></blockquote>
+</discussion>
+
+<resolution>
+<p>
+We believe this is an unfortunate choice, and recommend instead:
+</p>
+<blockquote><pre>
+typedef  unsigned int  input_type;
+</pre></blockquote>
+
+<note>
+Berlin:  Moved to NAD. N1932 makes this moot: the input_type template parameter has been
+eliminated.
+</note>
+
+</resolution>
+
+</issue>

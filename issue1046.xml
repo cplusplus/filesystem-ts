@@ -1,0 +1,99 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="1046" status="NAD Editorial">
+<title>Response to UK 329</title>
+<section><sref ref="[futures]"/></section>
+<submitter>Alisdair Meredith</submitter>
+<date>12 Mar 2009</date>
+
+<discussion>
+
+<p><b>Addresses UK 329</b></p>
+
+<p>
+<tt>future</tt>, <tt>promise</tt> and <tt>packaged_task</tt> provide a
+framework for creating future values, but a simple function to tie all
+three components together is missing. Note that we only need a *simple*
+facility for C++0x. Advanced thread pools are to be left for TR2.
+</p>
+
+<p>
+Simple Proposal:
+</p>
+
+<p>
+Provide a simple function along the lines of: 
+</p>
+<blockquote><pre>
+template&lt; typename F, typename ... Args &gt;
+  requires Callable&lt; F, Args... &gt;
+    future&lt; Callable::result_type &gt; async( F&amp;&amp; f, Args &amp;&amp; ... ); 
+</pre></blockquote>
+
+<p>
+Semantics are similar to creating a <tt>thread</tt> object with a <tt>packaged_task</tt>
+invoking <tt>f</tt> with <tt>forward&lt;Args&gt;(args...)</tt>
+but details are left unspecified to allow different scheduling and thread
+spawning implementations. 
+</p>
+<p>
+It is unspecified whether a task submitted to async is run on its own thread
+or a thread previously used for another async task. If a call to <tt>async</tt>
+succeeds, it shall be safe to wait for it from any thread. 
+</p>
+<p>
+The state of <tt>thread_local</tt> variables shall be preserved during <tt>async</tt> calls. 
+</p>
+<p>
+No two incomplete async tasks shall see the same value of
+<tt>this_thread::get_id()</tt>. 
+</p>
+<p>
+[<i>Note:</i> this effectively forces new tasks to be run on a new thread, or a
+fixed-size pool with no queue. If the 
+library is unable to spawn a new thread or there are no free worker threads
+then the <tt>async</tt> call should fail. <i>--end note</i>] 
+</p>
+
+<note>
+Summit:
+</note>
+
+<blockquote>
+<p>
+The concurrency subgroup has revisited this issue and decided that it
+could be considered a defect according to the Kona compromise. A task
+group was formed lead by Lawrence Crowl and Bjarne Stroustrup to write a
+paper for Frankfort proposing a simple asynchronous launch facility
+returning a <tt>future</tt>. It was agreed that the callable must be run on a
+separate thread from the caller, but not necessarily a brand-new thread.
+The proposal might or might not allow for an implementation that uses
+fixed-size or unlimited thread pools.
+</p>
+<p>
+Bjarne in c++std-lib-23121: I think that what we agreed was that to
+avoid deadlock <tt>async()</tt> would almost certainly be specified to  launch in
+a different thread from the thread that executed <tt>async()</tt>, but I don't
+think it was a specific design constraint.
+</p>
+</blockquote>
+
+<note>
+2009-10 Santa Cruz:
+</note>
+
+<blockquote>
+Proposed resolution: see
+<a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2009/n2996.html">N2996</a>
+(Herb's and Lawrence's paper on Async). Move state to NAD editorial.
+</blockquote>
+
+</discussion>
+
+<resolution>
+</resolution>
+
+</issue>

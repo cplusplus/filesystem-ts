@@ -1,0 +1,130 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="342" status="NAD">
+<title>seek and eofbit</title>
+<section><sref ref="[istream.unformatted]"/></section>
+<submitter>Howard Hinnant</submitter>
+<date>09 Oct 2001</date>
+
+<discussion>
+<p>I think we have a defect.</p>
+
+<p>According to lwg issue <iref ref="60"/> which is now a dr, the
+description of seekg in <sref ref="[istream.unformatted]"/> paragraph 38 now looks
+like:</p>
+
+<blockquote><p>
+Behaves as an unformatted input function (as described in 27.6.1.3, 
+paragraph 1), except that it does not count the number of characters 
+extracted and does not affect the value returned by subsequent calls to 
+gcount(). After constructing a sentry object, if fail() != true, 
+executes rdbuf()->pubseekpos( pos).
+</p></blockquote>
+
+<p>And according to lwg issue <iref ref="243"/> which is also now a dr,
+27.6.1.3, paragraph 1 looks like:</p>
+
+<blockquote><p>
+Each unformatted input function begins execution by constructing an 
+object of class sentry with the default argument noskipws (second) 
+argument true. If the sentry object returns true, when converted to a 
+value of type bool, the function endeavors to obtain the requested 
+input.  Otherwise, if the sentry constructor exits by throwing an 
+exception or if the sentry object returns false, when converted to a 
+value of type bool, the function returns without attempting to obtain 
+any input. In either case the number of extracted characters is set to 
+0; unformatted input functions taking a character array of non-zero 
+size as an argument shall also store a null character (using charT()) 
+in the first location of the array. If an exception is thrown during 
+input then ios::badbit is turned on in *this'ss error state. If 
+(exception()&amp;badbit)!= 0 then the exception is rethrown. It also counts 
+the number of characters extracted. If no exception has been thrown it 
+ends by storing the count in a member object and returning the value 
+specified. In any event the sentry object is destroyed before leaving 
+the unformatted input function.
+</p></blockquote>
+
+<p>And finally 27.6.1.1.2/5 says this about sentry:</p>
+
+<blockquote><p>
+If, after any preparation is completed, is.good() is true, ok_ != false 
+otherwise, ok_ == false.
+</p></blockquote>
+
+<p>
+So although the seekg paragraph says that the operation proceeds if 
+!fail(), the behavior of unformatted functions says the operation 
+proceeds only if good().  The two statements are contradictory when only 
+eofbit is set.  I don't think the current text is clear which condition 
+should be respected.
+</p>
+
+<p><b>Further discussion from Redmond:</b></p>
+
+<p>PJP: It doesn't seem quite right to say that <tt>seekg</tt> is
+"unformatted". That makes specific claims about sentry that
+aren't quite appropriate for seeking, which has less fragile failure
+modes than actual input.  If we do really mean that it's unformatted
+input, it should behave the same way as other unformatted input.  On
+the other hand, "principle of least surprise" is that seeking from EOF
+ought to be OK.</p>
+
+<p>
+Pre-Berlin:  Paolo points out several problems with the proposed resolution in
+Ready state:
+</p>
+
+<ul>
+<li>It should apply to both overloads of seekg.</li>
+<li>tellg has similar issues, except that it should not call clear().</li>
+<li>The point about clear() seems to apply to seekp().</li>
+<li>Depending on the outcome of <iref ref="419"/>
+if the sentry
+sets <tt>failbit</tt> when it finds <tt>eofbit</tt> already set, then
+you can never seek away from the end of stream.</li>
+</ul>
+
+<note>
+2009-07 Frankfurt
+</note>
+
+<blockquote>
+<p>
+Moved to NAD. Will reopen if proposed resolution is supplied.
+</p>
+</blockquote>
+
+</discussion>
+
+<resolution>
+
+<p>Change <sref ref="[istream.unformatted]"/> to:</p>
+<blockquote><p>
+Behaves as an unformatted input function (as described in 27.6.1.3,
+paragraph 1), except that it does not count the number of characters
+extracted, does not affect the value returned by subsequent calls to
+gcount(), and does not examine the value returned by the sentry
+object. After constructing a sentry object, if <tt>fail() !=
+true</tt>, executes <tt>rdbuf()->pubseekpos(pos)</tt>.  In
+case of success, the function calls clear().
+In case of failure, the function calls <tt>setstate(failbit)</tt>
+(which may throw <tt>ios_base::failure</tt>).
+</p></blockquote>
+
+<note>Lillehammer: Matt provided wording.</note>
+
+</resolution>
+
+<rationale>
+<p>In C, fseek does clear EOF.  This is probably what most users would
+  expect.  We agree that having eofbit set should not deter a seek,
+  and that a successful seek should clear eofbit. Note
+  that <tt>fail()</tt> is true only if <tt>failbit</tt>
+  or <tt>badbit</tt> is set, so using <tt>!fail()</tt>, rather
+  than <tt>good()</tt>, satisfies this goal.</p>
+</rationale>
+
+</issue>

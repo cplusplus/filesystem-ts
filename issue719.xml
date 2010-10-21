@@ -1,0 +1,160 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="719" status="NAD Editorial">
+<title><tt>std::is_literal</tt> type traits should be provided</title>
+<section><sref ref="[meta]"/></section>
+<submitter>Daniel Kr&uuml;gler</submitter>
+<date>25 Aug 2007</date>
+
+<discussion>
+<p>
+Since the inclusion of <tt>constexpr</tt> in the standard draft N2369 we have
+a new type category "literal", which is defined in <sref ref="[basic.types]"/>/p.11:
+</p>
+
+<blockquote>
+<p>
+-11- A type is a <i>literal</i> type if it is:
+</p>
+<ul>
+<li>a scalar type; or</li>
+<li><p>a class type (clause 9) with</p>
+<ul>
+<li>a trivial copy constructor,</li>
+<li>a trivial destructor,</li>
+<li>at least one constexpr constructor other than the copy constructor,</li>
+<li>no virtual base classes, and</li>
+<li>all non-static data members and base classes of literal types; or</li>
+</ul>
+</li>
+<li>an array of literal type.</li>
+</ul>
+</blockquote>
+
+<p>
+I strongly suggest that the standard provides a type traits for
+literal types in <sref ref="[meta.unary.prop]"/> for several reasons:
+</p>
+
+<ol type="a">
+<li>To keep the traits in sync with existing types.</li>
+<li>I see many reasons for programmers to use this trait in template
+   code to provide optimized template definitions for these types,
+   see below.</li>
+<li>A user-provided definition of this trait is practically impossible
+to write portably.</li>
+</ol>
+
+<p>
+The special problem of reason (c) is that I don't see currently a
+way to portably test the condition for literal class types:
+</p>
+
+<blockquote>
+<ul>
+<li>at least one constexpr constructor other than the copy constructor,</li>
+</ul>
+</blockquote>
+
+<!-- 
+<p>
+Here follows a simply example to demonstrate it's usefulness:
+</p>
+
+<blockquote><pre>
+template &lt;typename T&gt;
+constexpr typename std::enable_if&lt;std::is_literal&lt;T&gt;::value, T&gt;::type
+abs(T x) {
+  return x &lt; T() ? -x : x;
+}
+
+template &lt;typename T&gt;
+typename std::enable_if&lt;!std::is_literal&lt;T&gt;::value, T&gt;::type
+abs(const T&amp; x) {
+  return x &lt; T() ? -x : x;
+}
+</pre></blockquote>
+
+<p>
+Here we have the possibility to provide a general <tt>abs</tt> function
+template that can be used in ICE's if it's argument is a literal
+type which's value is a constant expression, otherwise we
+have an optimized version for arguments which are expensive
+to copy and therefore need the usage of arguments of
+reference type (instead of <tt>const T&amp;</tt> we could decide to
+use <tt>T&amp;&amp;</tt>, but that is another issue).
+</p>
+ -->
+
+<note>
+Alisdair is considering preparing a paper listing a number of missing
+type traits, and feels that it might be useful to handle them all
+together rather than piecemeal. This would affect issue 719 and 750.
+These two issues should move to OPEN pending AM paper on type traits.
+</note>
+
+<note>
+2009-07 Frankfurt:
+</note>
+
+<blockquote>
+Beman, Daniel, and Alisdair will work on a paper proposing new type traits.
+</blockquote>
+
+<note>
+Addressed in <a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2009/n2947.html">N2947</a>.
+</note>
+
+<note>
+2009-10 Santa Cruz:
+</note>
+
+<blockquote>
+NAD Editorial.  Solved by
+<a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2009/n2984.htm">N2984</a>.
+</blockquote>
+
+</discussion>
+
+<resolution>
+<p>
+In <sref ref="[meta.type.synop]"/> in the group "type properties",
+just below the line
+</p>
+
+<blockquote><pre>
+template &lt;class T&gt; struct is_pod;
+</pre></blockquote>
+
+<p>
+add a new one:
+</p>
+
+<blockquote><pre>
+template &lt;class T&gt; struct is_literal;
+</pre></blockquote>
+
+<p>
+In <sref ref="[meta.unary.prop]"/>, table Type Property Predicates, just
+below the line for the <tt>is_pod</tt> property add a new line:
+</p>
+
+<table border="1">
+<tr>
+<th>Template</th><th>Condition</th><th>Preconditions</th>
+</tr>
+<tr>
+<td><tt>template &lt;class T&gt; struct is_literal;</tt></td>
+<td><tt>T</tt> is a literal type (3.9)</td>
+<td><tt>T</tt> shall be a complete type, an
+array of unknown bound, or
+(possibly cv-qualified) <tt>void</tt>.</td>
+</tr>
+</table>
+
+</resolution>
+
+</issue>

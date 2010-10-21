@@ -1,0 +1,98 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="769" status="CD1">
+<title>std::function should use nullptr_t instead of "unspecified-null-pointer-type"</title>
+<section><sref ref="[func.wrap.func]"/></section>
+<submitter>Daniel Kr&uuml;gler</submitter>
+<date>10 Jan 2008</date>
+
+<discussion>
+<p>
+N2461 already replaced in <sref ref="[func.wrap.func]"/> it's originally proposed
+(implicit) conversion operator to "unspecified-bool-type" by the new
+explicit bool conversion, but the inverse conversion should also
+use the new <tt>std::nullptr_t</tt> type instead of "unspecified-null-pointer-
+type".
+</p>
+</discussion>
+
+<resolution>
+
+<p>
+In <sref ref="[function.objects]"/>, header <tt>&lt;functional&gt;</tt> synopsis replace:
+</p>
+
+<blockquote><pre>
+template&lt;class R, class... ArgTypes&gt;
+  bool operator==(const function&lt;R(ArgTypes...)&gt;&amp;, <del>unspecified-null-pointer-type</del> <ins>nullptr_t</ins>);
+template&lt;class R, class... ArgTypes&gt;
+  bool operator==(<del>unspecified-null-pointer-type</del> <ins>nullptr_t</ins> , const function&lt;R(ArgTypes...)&gt;&amp;);
+template&lt;class R, class... ArgTypes&gt;
+  bool operator!=(const function&lt;R(ArgTypes...)&gt;&amp;, <del>unspecified-null-pointer-type</del> <ins>nullptr_t</ins>);
+template&lt;class R, class... ArgTypes&gt;
+  bool operator!=(<del>unspecified-null-pointer-type</del> <ins>nullptr_t</ins> , const function&lt;R(ArgTypes...)&gt;&amp;);
+</pre></blockquote>
+
+<p>
+In the class function synopsis of <sref ref="[func.wrap.func]"/> replace
+</p>
+
+<blockquote><pre>
+function(<del>unspecified-null-pointer-type</del> <ins>nullptr_t</ins>);
+...
+function&amp; operator=(<del>unspecified-null-pointer-type</del> <ins>nullptr_t</ins>);
+</pre></blockquote>
+
+<p>
+In <sref ref="[func.wrap.func]"/>, "Null pointer comparisons" replace:
+</p>
+
+<blockquote><pre>
+template &lt;class R, class... ArgTypes&gt;
+  bool operator==(const function&lt;R(ArgTypes...)&gt;&amp;, <del>unspecified-null-pointer-type</del> <ins>nullptr_t</ins>);
+template &lt;class R, class... ArgTypes&gt;
+  bool operator==(<del>unspecified-null-pointer-type</del> <ins>nullptr_t</ins> , const function&lt;R(ArgTypes...)&gt;&amp;);
+template &lt;class R, class... ArgTypes&gt;
+  bool operator!=(const function&lt;R(ArgTypes...)&gt;&amp;, <del>unspecified-null-pointer-type</del> <ins>nullptr_t</ins>);
+template &lt;class R, class... ArgTypes&gt;
+  bool operator!=(<del>unspecified-null-pointer-type</del> <ins>nullptr_t</ins> , const function&lt;R(ArgTypes...)&gt;&amp;);
+</pre></blockquote>
+
+<p>
+In <sref ref="[func.wrap.func.con]"/>, replace
+</p>
+
+<blockquote><pre>
+function(<del>unspecified-null-pointer-type</del> <ins>nullptr_t</ins>);
+...
+function&amp; operator=(<del>unspecified-null-pointer-type</del> <ins>nullptr_t</ins>);
+</pre></blockquote>
+
+<p>
+In <sref ref="[func.wrap.func.nullptr]"/>, replace
+</p>
+
+<blockquote><pre>
+template &lt;class R, class... ArgTypes&gt;
+  bool operator==(const function&lt;R(ArgTypes...)&gt;&amp; f, <del>unspecified-null-pointer-type</del> <ins>nullptr_t</ins>);
+template &lt;class R, class... ArgTypes&gt;
+  bool operator==(<del>unspecified-null-pointer-type</del> <ins>nullptr_t</ins> , const function&lt;R(ArgTypes...)&gt;&amp; f);
+</pre></blockquote>
+
+<p>
+and replace
+</p>
+
+<blockquote><pre>
+template &lt;class R, class... ArgTypes&gt;
+  bool operator!=(const function&lt;R(ArgTypes...)&gt;&amp; f, <del>unspecified-null-pointer-type</del> <ins>nullptr_t</ins>);
+template &lt;class R, class... ArgTypes&gt;
+  bool operator!=(<del>unspecified-null-pointer-type</del> <ins>nullptr_t</ins> , const function&lt;R(ArgTypes...)&gt;&amp; f);
+</pre></blockquote>
+
+</resolution>
+
+</issue>

@@ -1,0 +1,37 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+    <!DOCTYPE issue SYSTEM "lwg_issue.dtd" [
+        <!ENTITY nbsp " ">
+     ]
+>
+<issue num="436" status="CD1">
+    <title>are cv-qualified facet types valid facets?</title>
+    <section><sref ref="[locale.facet]"/></section>
+    <submitter>Martin Sebor</submitter>
+    <date>15 Oct 2003</date>
+
+<discussion>
+<p>
+Is "const std::ctype&lt;char>" a valid template argument to has_facet, use_facet,
+and the locale template ctor? And if so, does it designate the same Facet as
+the non-const "std::ctype&lt;char>?" What about "volatile std::ctype&lt;char>?"
+Different implementations behave differently: some fail to compile, others
+accept such types but behave inconsistently.
+</p>
+</discussion>
+
+<resolution>
+<p>Change 22.1.1.1.2, p1 to read:</p>
+
+<p>Template parameters in this clause which are required to be facets
+are those named Facet in declarations. A program that passes a type
+that is not a facet, or a type that refers to volatile-qualified
+facet, as an (explicit or deduced) template parameter to a locale
+function expecting a facet, is ill-formed.  A const-qualified facet is
+a valid template argument to any locale function that expects a Facet
+template parameter.</p>
+
+<note>Kona: changed the last sentence from a footnote to normative
+text.</note>
+
+</resolution>
+</issue>

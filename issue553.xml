@@ -1,0 +1,42 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="553" status="NAD Editorial">
+<title>very minor editorial change intptr_t / uintptr_t</title>
+<section><sref ref="[cstdint.syn]"/><sref ref="[tr.c99.cstdint.syn]"/></section>
+<submitter>Paolo Carlini</submitter>
+<date>30 Jan 2006</date>
+
+<discussion>
+<p>
+In the synopsis, some types are identified as optional: int8_t, int16_t,
+and so on, consistently with C99, indeed.
+</p>
+<p>
+On the other hand, intptr_t and uintptr_t, are not marked as such and
+probably should, consistently with C99, 7.18.1.4.
+</p>
+</discussion>
+
+<resolution>
+<p>
+Change <sref ref="[cstdint.syn]"/>:
+</p>
+
+<blockquote><pre>
+...
+typedef <i>signed integer type</i> intptr_t;    <ins><i>// optional</i></ins>
+...
+typedef <i>unsigned integer type</i> uintptr_t;    <ins><i>// optional</i></ins>
+...
+</pre></blockquote>
+
+</resolution>
+
+<rationale>
+Recommend NAD and fix as editorial with the proposed resolution.
+</rationale>
+
+</issue>

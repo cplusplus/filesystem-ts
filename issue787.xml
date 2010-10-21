@@ -1,0 +1,57 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="787" status="CD1">
+<title>complexity of <tt>binary_search</tt></title>
+<section><sref ref="[binary.search]"/></section>
+<submitter>Daniel Kr&uuml;gler</submitter>
+<date>8 Sep 2007</date>
+
+<discussion>
+<p>
+In <sref ref="[binary.search]"/>/3 the complexity of <tt>binary_search</tt> is described as
+</p>
+
+<blockquote>
+At most <tt>log(last - first) + 2</tt> comparisons.
+</blockquote>
+
+<p>
+This should be precised and brought in line with the nomenclature used for
+<tt>lower_bound</tt>, <tt>upper_bound</tt>, and <tt>equal_range</tt>.
+</p>
+
+<p>
+All existing libraries I'm aware of, delegate to
+<tt>lower_bound</tt> (+ one further comparison). Since
+issue <iref ref="384"/>
+has now WP status, the resolution of #787 should
+be brought in-line with <iref ref="384"/> by changing the <tt>+ 2</tt>
+to <tt>+ O(1)</tt>.
+</p>
+
+<note>
+Sophia Antipolis:
+</note>
+
+<blockquote>
+Alisdair prefers to apply an upper bound instead of O(1), but that would
+require fixing for <tt>lower_bound</tt>, <tt>upper_bound</tt> etc. as well. If he really
+cares about it, he'll send an issue to Howard.
+</blockquote>
+
+</discussion>
+
+<resolution>
+<p>
+Change <sref ref="[binary.search]"/>/3
+</p>
+
+<blockquote>
+<i>Complexity:</i> At most <tt>log<ins><sub>2</sub></ins>(last - first) + <del>2</del> <ins><i>O</i>(1)</ins></tt> comparisons.
+</blockquote>
+</resolution>
+
+</issue>

@@ -1,0 +1,35 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="205" status="NAD">
+<title> numeric_limits unclear on how to determine floating point types</title>
+<section><sref ref="[numeric.limits.members]"/></section>
+<submitter>Steve Cleary</submitter>
+<date>28 Jan 2000</date>
+
+<discussion>
+<p>In several places in <sref ref="[numeric.limits.members]"/>, a member is
+described as &quot;Meaningful for all floating point types.&quot;
+However, no clear method of determining a floating point type is
+provided.</p>
+
+<p>In <sref ref="[numeric.special]"/>, paragraph 1 states &quot;. . . (for
+example, epsilon() is only meaningful if is_integer is
+false). . .&quot; which suggests that a type is a floating point type
+if is_specialized is true and is_integer is false; however, this is
+unclear.</p>
+
+<p>When clarifying this, please keep in mind this need of users: what
+exactly is the definition of floating point? Would a fixed point or
+rational representation be considered one? I guess my statement here
+is that there could also be types that are neither integer or
+(strictly) floating point.</p>
+</discussion>
+
+<rationale>
+<p>It is up to the implementor of a user define type to decide if it is a
+floating point type.</p>
+</rationale>
+</issue>

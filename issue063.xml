@@ -1,0 +1,46 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="63" status="TC1">
+<title>Exception-handling policy for unformatted output</title>
+<section><sref ref="[ostream.unformatted]"/></section>
+<submitter>Matt Austern</submitter>
+<date>11 Aug 1998</date>
+
+<discussion>
+<p>Clause 27 details an exception-handling policy for formatted input,
+unformatted input, and formatted output. It says nothing for
+unformatted output (27.6.2.6). 27.6.2.6 should either include the same
+kind of exception-handling policy as in the other three places, or
+else it should have a footnote saying that the omission is
+deliberate. </p>
+</discussion>
+
+<resolution>
+<p>
+In 27.6.2.6, paragraph 1, replace the last sentence (&quot;In any
+case, the unformatted output function ends by destroying the sentry
+object, then returning the value specified for the formatted output
+function.&quot;) with the following text:
+</p>
+<blockquote><p>
+If an exception is thrown during output, then <tt>ios::badbit</tt> is
+turned on [Footnote: without causing an <tt>ios::failure</tt> to be
+thrown.] in <tt>*this</tt>'s error state. If <tt>(exceptions() &amp;
+badbit) != 0</tt> then the exception is rethrown.  In any case, the
+unformatted output function ends by destroying the sentry object,
+then, if no exception was thrown, returning the value specified for
+the formatted output function.
+</p></blockquote>
+</resolution>
+
+<rationale>
+<p>
+This exception-handling policy is consistent with that of formatted
+input, unformatted input, and formatted output.
+</p>
+</rationale>
+
+</issue>

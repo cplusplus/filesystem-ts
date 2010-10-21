@@ -1,0 +1,123 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="1235" status="NAD Future">
+<title>Issue with C++0x random number proposal</title>
+<section><sref ref="[rand.concept.dist]"/></section>
+<submitter>Matthias Troyer</submitter>
+<date>12 Oct 2009</date>
+
+<discussion>
+<p>
+There exist optimized, vectorized vendor libraries for the creation of
+random number generators, such as Intel's MKL [1] and AMD's ACML [2]. In
+timing tests we have seen a performance gain of a factor of up to 80
+(eighty) compared to a pure C++ implementation (in Boost.Random) when
+using these generator to generate a sequence of normally distributed
+random numbers. In codes dominated by the generation of random numbers
+(we have application codes where random number generation is more than
+50% of the CPU time) this factor 80 is very significant.
+</p>
+
+<p>
+To make use of these vectorized generators, we use a C++ class modeling
+the <tt>RandomNumberEngine</tt> concept and forwarding the generation of random
+numbers to those optimized generators. For example:
+</p>
+
+<blockquote><pre>
+namespace mkl {
+ class mt19937 {.... };
+}
+</pre></blockquote>
+
+<p>
+For the generation of random variates we also want to dispatch to
+optimized vectorized functions in the MKL or ACML libraries. See this
+example:
+</p>
+
+<blockquote><pre>
+mkl::mt19937 eng;
+std::normal_distribution&lt;double&gt; dist;
+
+double n = dist(eng);
+</pre></blockquote>
+
+<p>
+Since the variate generation is done through the <tt>operator()</tt> of the
+distribution there is no customization point to dispatch to Intel's or
+AMD's optimized functions to generate normally distributed numbers based
+on the <tt>mt19937</tt> generator. Hence, the performance gain of 80 cannot be
+achieved.
+</p>
+
+<p>
+Contrast this with TR1:
+</p>
+
+<blockquote><pre>
+mkl::mt19937 eng;
+std::tr1::normal_distribution&lt;double&gt; dist;
+std::tr1::variate_generator&lt;mkl::mt19937,std::tr1::normal_distribution&lt;double&gt; &gt; rng(eng,dist);
+double n = rng();
+</pre></blockquote>
+
+<p>
+This - admittedly much uglier from an aestethic point of view - design
+allowed optimization by specializing the <tt>variate_generator</tt> template for
+<tt>mkl::mt19937</tt>:
+</p>
+
+<blockquote><pre>
+namespace std { namespace tr1 {
+
+template&lt;&gt;
+class variate_generator&lt;mkl::mt19937,std::tr1::normal_distribution&lt;double&gt; &gt; { .... };
+
+} }
+</pre></blockquote>
+
+<p>
+A similar customization point is missing in the C++0x design and
+prevents the optimized vectorized version to be used.
+</p>
+
+<p>
+Suggested resolution:
+</p>
+
+<p>
+Add a customization point to the distribution concept. Instead of the
+<tt>variate_generator</tt> template this can be done through a call to a
+free function <tt>generate_variate</tt> found by ADL instead of
+<tt>operator()</tt> of the distribution:
+</p>
+
+<blockquote><pre>
+template &lt;RandomNumberDistribution, class RandomNumberEngine&gt;
+typename RandomNumberDistribution ::result_type
+generate_variate(RandomNumberDistribution const&amp; dist, RandomNumberEngine&amp; eng);
+</pre></blockquote>
+
+<p>
+This function can be overloaded for optimized enginges like
+<tt>mkl::mt19937</tt>.
+</p>
+
+<note>
+2009-10 Santa Cruz:
+</note>
+
+<blockquote>
+NAD Future.  No time to add this feature for C++0X.
+</blockquote>
+
+</discussion>
+
+<resolution>
+</resolution>
+
+</issue>

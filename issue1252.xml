@@ -1,0 +1,51 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="1252" status="New">
+<title><tt>wbuffer_convert::state_type</tt> inconsistency</title>
+<section><sref ref="[conversions.buffer]"/></section>
+<submitter>Bo Persson </submitter>
+<date>21 Oct 2009</date>
+
+<discussion>
+<p>
+The synopisis for <tt>wbuffer_convert</tt> <sref
+ref="[conversions.buffer]"/>/2 contains
+</p>
+
+<blockquote><pre>
+typedef typename Tr::state_type   state_type; 
+</pre></blockquote>
+
+<p>
+making <tt>state_type</tt> a synonym for (possibly) some
+<tt>char_traits&lt;x&gt;::state_type</tt>. 
+</p>
+
+<p>
+However, in paragraph 9 of the same section, we have 
+</p>
+
+<blockquote><pre>
+typedef typename Codecvt::state_type state_type;
+</pre>
+
+<blockquote>
+The type shall be a synonym for <tt>Codecvt::state_type</tt>.
+</blockquote>
+</blockquote>
+
+<p>
+From what I can see, it might be hard to implement
+<tt>wbuffer_convert</tt> if the types were not both
+<tt>std::mbstate_t</tt>, but I cannot find a requirement that they must
+be the same type.
+</p>
+</discussion>
+
+<resolution>
+</resolution>
+
+</issue>

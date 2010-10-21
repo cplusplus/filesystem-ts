@@ -1,0 +1,45 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="311" status="CD1">
+<title>Incorrect wording in basic_ostream class synopsis</title>
+<section><sref ref="[ostream]"/></section>
+<submitter>Andy Sawyer</submitter>
+<date>21 Mar 2001</date>
+
+<discussion>
+
+<p>In <sref ref="[ostream]"/>, the synopsis of class basic_ostream says:</p>
+
+<pre>
+  // partial specializationss
+  template&lt;class traits&gt;
+    basic_ostream&lt;char,traits&gt;&amp; operator&lt;&lt;( basic_ostream&lt;char,traits&gt;&amp;,
+                                            const char * );
+</pre>
+
+<p>Problems:</p>
+<ul>
+<li>Too many 's's at the end of "specializationss" </li>
+<li>This is an overload, not a partial specialization</li>
+</ul>
+
+</discussion>
+
+<resolution>
+<p>In the synopsis in <sref ref="[ostream]"/>, remove the 
+<i>// partial specializationss</i> comment.  Also remove the same 
+comment (correctly spelled, but still incorrect) from the synopsis in 
+<sref ref="[ostream.inserters.character]"/>.
+</p>
+
+<note>
+Pre-Redmond: added <sref ref="[ostream.inserters.character]"/> because of Martin's
+comment in c++std-lib-8939.
+</note>
+
+</resolution>
+
+</issue>

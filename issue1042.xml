@@ -1,0 +1,189 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="1042" status="NAD">
+<title>Response to UK 244</title>
+<section><sref ref="[sequences]"/></section>
+<submitter>Alisdair Meredith</submitter>
+<date>12 Mar 2009</date>
+
+<discussion>
+
+<p><b>Addresses UK 244</b></p>
+
+<p>
+The validity of the expression <tt>&amp;a[n] == &amp;a[0] + n</tt> is contingent on
+<tt>operator&amp;</tt> doing the "right thing" (as captured by the <tt>CopyConstructible</tt>
+requirements in table 30 in C++2003). However this constraint has been
+lost in the Concepts of C++0x. This applies to <tt>vector</tt> and <tt>array</tt> (it
+actually applies to <tt>string</tt> also, but that's a different chapter, so I'll
+file a separate comment there and cross-reference).
+</p>
+
+<p>
+Suggested solution:
+</p>
+
+<p>
+Define a <tt>ContiguousStrorage</tt> and apply it to
+<tt>vector</tt>, <tt>array</tt> and <tt>string</tt>.
+</p>
+
+<note>
+Summit:
+</note>
+
+<blockquote>
+Agree with the issue but not the details of the proposed solution. Walter to
+provide wording for the new concept.
+</blockquote>
+
+<note>
+Post Summit Alisdair adds:
+</note>
+
+<blockquote>
+Another LWG subgroup wondered if this concept
+should extend to <tt>complex&lt;T&gt;</tt>, and so not be built on the container concept at
+all?
+</blockquote>
+
+<note>
+2009-07 post-Frankfurt:
+</note>
+
+<blockquote>
+Leave Open, pending a post-Concepts Working Draft.
+</blockquote>
+
+<note>
+2009-10 Santa Cruz:
+</note>
+
+<blockquote>
+Mark issue 1042 as NAD, in rationale state that this was solved by removal of concepts.
+</blockquote>
+
+</discussion>
+
+<resolution>
+<p>
+Add to <tt>&lt;container_concepts&gt;</tt> synopsis in <sref ref="[container.concepts]"/>
+</p>
+
+<blockquote><pre>
+<ins>concept&lt; typename C &gt; ContiguousStorageContainer <i>see below</i>;</ins>
+</pre></blockquote>
+
+<p>
+Add a new section to the end of <sref ref="[container.concepts]"/>
+</p>
+
+<blockquote>
+<p>
+23.1.6.x ContiguousStorageContainer concept [container.concepts.contiguous]
+</p>
+
+<pre>
+concept ContiguousStorageContainer&lt; typename C &gt;
+  : Container&lt;C&gt;
+{
+  value_type* data(C&amp;);
+
+  axiom Contiguity(C&amp; c, size_type i) {
+    if( i &lt; size(c) ) {
+         addressof( * (data(c) + i) )
+      == addressof( * advance(data(c), i) );
+    }
+  }
+}
+</pre>
+
+<p>
+The <tt>ContiguousStorageContainer</tt> concept describes a container whose elements
+are allocated in a single region of memory, and are stored sequentially
+without intervening padding other than to meet alignment requirements.
+For example, the elements may be stored in a
+single array of suitable length.
+</p>
+
+<pre>
+value_type * data( C&amp; );
+</pre>
+
+<blockquote>
+<i>Returns:</i> a pointer to the first element in the region of storage.
+Result is unspecified for an empty container.
+</blockquote>
+
+</blockquote>
+
+<p>
+Change <sref ref="[array]"/> p1:
+</p>
+
+<blockquote>
+-1- The header <tt>&lt;array&gt;</tt> defines a class template for
+storing fixed-size sequences of objects. An <tt>array</tt> supports
+random access iterators. An instance of <tt>array&lt;T, N&gt;</tt>
+stores <tt>N</tt> elements of type <tt>T</tt>, so that <tt>size() ==
+N</tt> is an invariant. The elements of an <tt>array</tt> are stored
+contiguously, meaning that <del>if <tt>a</tt> is</del> an
+<tt>array&lt;T, N&gt;</tt> <del>then it obeys the identity <tt>&amp;a[n]
+== &amp;a[0] + n</tt> for all <tt>0 &lt;= n &lt; N</tt></del>
+<ins>satisfies the concept <tt>ContiguousStorageContainer&lt; array&lt;T,
+N&gt;&gt;</tt></ins>.
+</blockquote>
+
+<p>
+Add to the synopsis in <sref ref="[array]"/>:
+</p>
+
+<blockquote><pre>
+    ...
+    T * data(); 
+    const T * data() const; 
+  };
+
+  <ins>template&lt; typename T, size_t N &gt;</ins>
+    <ins>concept_map ContiguousStorageContainer&lt; array&lt;T, N&gt;&gt; {};</ins>
+} 
+</pre></blockquote>
+
+<p>
+Change <sref ref="[vector]"/> p1:
+</p>
+
+<blockquote>
+A <tt>vector</tt> is a sequence container that supports random access
+iterators. In addition, it supports (amortized) constant time insert and
+erase operations at the end; insert and erase in the middle take linear
+time. Storage management is handled automatically, though hints can be
+given to improve efficiency. The elements of a vector are stored
+contiguously, meaning that <del>if <tt>v</tt> is</del> a
+<tt>vector&lt;T, Alloc&gt;</tt> <ins>(</ins>where <tt>T</tt> is some
+type other than <tt>bool</tt><ins>)</ins><del>, then it obeys the
+identity <tt>&amp;v[n] == &amp;v[0] + n</tt> for all <tt>0 &lt;= n &lt;
+v.size()</tt></del> <ins>satisfies the concept <tt>ContiguousStorageContainer&lt;
+vector&lt; T, Alloc&gt;&gt;</tt></ins>.
+</blockquote>
+
+<p>
+Add at the end of the synopsis in <sref ref="[vector]"/> p2:
+</p>
+
+<blockquote><pre>
+<ins>template&lt; typename T, typename A &gt;
+  requires !SameType&lt; T, bool &gt;
+  concept_map ContiguousStorageContainer&lt; vector&lt;T, A&gt;&gt; {};</ins>
+</pre></blockquote>
+
+</resolution>
+
+<rationale>
+Solved by removal of concepts.
+</rationale>
+
+</issue>

@@ -1,0 +1,50 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="700" status="CD1">
+<title>N1856 defines struct <tt>identity</tt></title>
+<section><sref ref="[forward]"/></section>
+<submitter>P.J. Plauger</submitter>
+<date>1 Jul 2007</date>
+
+<discussion>
+<p>
+<a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2005/n1856.html">N1856</a>
+defines struct <tt>identity</tt> in <tt>&lt;utility&gt;</tt> which clashes with
+the traditional definition of struct <tt>identity</tt> in <tt>&lt;functional&gt;</tt>
+(not standard, but a common extension from old STL). Be nice
+if we could avoid this name clash for backward compatibility.
+</p>
+</discussion>
+
+<resolution>
+<p>
+Change <sref ref="[forward]"/>:
+</p>
+
+<blockquote>
+<pre>
+template &lt;class T&gt; struct identity
+{
+    typedef T type;
+    <ins>const T&amp; operator()(const T&amp; x) const;</ins>
+};
+</pre>
+<blockquote>
+<pre>
+<ins>const T&amp; operator()(const T&amp; x) const;</ins>
+</pre>
+<blockquote>
+<p>
+<ins><i>Returns:</i> <tt>x</tt>.</ins>
+</p>
+</blockquote>
+</blockquote>
+
+</blockquote>
+
+</resolution>
+
+</issue>

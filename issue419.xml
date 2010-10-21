@@ -1,0 +1,120 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+    <!DOCTYPE issue SYSTEM "lwg_issue.dtd" [
+        <!ENTITY nbsp " ">
+     ]
+>
+<issue num="419" status="WP">
+    <title>istream extractors not setting failbit if eofbit is already set</title>
+    <section><sref ref="[istream::sentry]"/></section>
+    <submitter>Martin Sebor</submitter>
+    <date>18 Sep 2003</date>
+    <discussion>
+        <p>
+
+<sref ref="[istream::sentry]"/>, p2 says that istream::sentry ctor prepares for input if is.good()
+is true. p4 then goes on to say that the ctor sets the sentry::ok_ member to
+true if the stream state is good after any preparation. <sref ref="[istream.formatted.reqmts]"/>, p1 then
+says that a formatted input function endeavors to obtain the requested input
+if the sentry's operator bool() returns true.
+
+Given these requirements, no formatted extractor should ever set failbit if
+the initial stream rdstate() == eofbit. That is contrary to the behavior of
+all implementations I tested. The program below prints out
+
+eof = 1, fail = 0
+eof = 1, fail = 1
+
+on all of them.
+        </p>
+<pre>
+
+#include &lt;sstream>
+#include &lt;cstdio>
+
+int main()
+{
+    std::istringstream strm ("1");
+
+    int i = 0;
+
+    strm >> i;
+
+    std::printf ("eof = %d, fail = %d\n",
+                 !!strm.eof (), !!strm.fail ());
+
+    strm >> i;
+
+    std::printf ("eof = %d, fail = %d\n",
+                 !!strm.eof (), !!strm.fail ());
+}
+
+</pre>
+        <p>
+<br/>
+
+Comments from Jerry Schwarz (c++std-lib-11373):
+<br/>
+
+Jerry Schwarz wrote:
+<br/>
+
+I don't know where (if anywhere) it says it in the standard, but the
+formatted extractors are supposed to set failbit if they don't extract
+any characters. If they didn't then simple loops like
+<br/>
+
+while (cin >> x);
+<br/>
+
+would loop forever.
+<br/>
+
+Further comments from Martin Sebor:
+<br/>
+
+The question is which part of the extraction should prevent this from happening
+by setting failbit when eofbit is already set. It could either be the sentry
+object or the extractor. It seems that most implementations have chosen to
+set failbit in the sentry [...] so that's the text that will need to be
+corrected. 
+
+        </p>
+<p>
+Pre Berlin:  This issue is related to <iref ref="342"/>.  If the sentry
+sets <tt>failbit</tt> when it finds <tt>eofbit</tt> already set, then
+you can never seek away from the end of stream.
+</p>
+<p>Kona: Possibly NAD.  If eofbit is set then good() will return false.  We
+  then set <i>ok</i> to false.  We believe that the sentry's
+  constructor should always set failbit when <i>ok</i> is false, and
+  we also think the standard already says that.  Possibly it could be
+  clearer.</p> 
+
+
+<note>
+2009-07 Frankfurt
+</note>
+
+<blockquote>
+Moved to Ready.
+</blockquote>
+
+</discussion>
+
+<resolution>
+<p>
+Change <sref ref="[istream::sentry]"/>, p2 to:
+</p>
+
+<blockquote>
+<pre>explicit sentry(basic_istream&lt;charT,traits&gt;&amp; <i>is</i> , bool <i>noskipws</i> = false);</pre>
+<p>
+-2- <i>Effects:</i> If <tt>is.good()</tt> is <del><tt>true</tt></del>
+<ins><tt>false</tt></ins>, <ins>calls <tt>is.setstate(failbit)</tt>. 
+Otherwise</ins> prepares for formatted or unformatted input. ...
+</p>
+</blockquote>
+
+</resolution>
+
+</issue>

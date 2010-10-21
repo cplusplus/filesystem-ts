@@ -1,0 +1,55 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="607" status="CD1">
+<title>Concern about short seed vectors</title>
+<section><sref ref="[rand.util.seedseq]"/></section>
+<submitter>Charles Karney</submitter>
+<date>26 Oct 2006</date>
+
+<discussion>
+<p>
+Short seed vectors of 32-bit quantities all result in different states. However
+this is not true of seed vectors of 16-bit (or smaller) quantities.  For example
+these two seeds
+</p>
+
+<blockquote><pre>
+unsigned short seed = {1, 2, 3};
+unsigned short seed = {1, 2, 3, 0};
+</pre></blockquote>
+
+<p>
+both pack to
+</p>
+
+<blockquote><pre>
+unsigned seed = {0x20001, 0x3};
+</pre></blockquote>
+
+<p>
+yielding the same state.
+</p>
+
+<p>
+See <a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2007/n2391.pdf">N2391</a> and
+<a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2007/n2423.pdf">N2423</a>
+for some further discussion.
+</p>
+</discussion>
+
+<resolution>
+<p>
+Adopt the proposed resolution in
+<a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2007/n2423.pdf">N2423</a>.
+</p>
+</resolution>
+
+<note>
+Kona (2007): The LWG adopted the proposed resolution of N2423 for this issue.
+The LWG voted to accelerate this issue to Ready status to be voted into the WP at Kona.
+</note>
+
+</issue>

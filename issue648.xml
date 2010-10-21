@@ -1,0 +1,58 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="648" status="NAD Editorial">
+<title>regex_iterator c'tor needs clarification/editorial fix</title>
+<section><sref ref="[re.regiter.cnstr]"/></section>
+<submitter>Daniel Kr&uuml;gler</submitter>
+<date>3 Mar 2007</date>
+
+<discussion>
+<p>
+In <sref ref="[re.regiter.cnstr]"/>/2 the effects paragraph starts with:
+</p>
+
+<blockquote>
+<p>
+<i>Effects:</i> Initializes begin and end to point to the beginning and the
+end of the target sequence, sets pregex to &amp;re, sets flags to f,[..]
+</p></blockquote>
+
+<p>
+There are two issues with this description:
+</p>
+
+<ol>
+<li>
+The meaning of very first part of this quote is unclear, because
+there is no target sequence provided, instead there are given two
+parameters a and b, both of type BidirectionalIterator. The mentioned
+part does not explain what a and b represent.
+</li>
+<li>
+There does not exist any parameter f, but instead a parameter
+m in the constructor declaration, so this is actually an editorial
+fix.
+</li>
+</ol>
+</discussion>
+
+<resolution>
+<p>
+In <sref ref="[re.regiter.cnstr]"/>/2 change the above quoted part by
+</p>
+
+<blockquote><p>
+<i>Effects:</i> Initializes <tt>begin</tt> and <tt>end</tt> to point to
+the beginning and the end of the target sequence <ins>designated by the
+iterator range <tt>[a, b)</tt></ins>, sets <tt>pregex</tt> to
+<tt>&amp;re</tt>, sets <tt>flags</tt> to <tt><del>f</del>
+<ins>m</ins></tt>, then calls <tt>regex_search(begin, end, match,
+*pregex, flags)</tt>. If this call returns <tt>false</tt> the
+constructor sets <tt>*this</tt> to the end-of-sequence iterator.
+</p></blockquote>
+</resolution>
+
+</issue>

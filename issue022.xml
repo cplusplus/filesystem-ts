@@ -1,0 +1,43 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="22" status="TC1">
+<title>Member open vs. flags</title>
+<section><sref ref="[ifstream.members]"/></section>
+<submitter>Nathan Myers</submitter>
+<date>6 Aug 1998</date>
+
+<discussion>
+<p>The description of basic_istream&lt;&gt;::open leaves unanswered questions about how it
+responds to or changes flags in the error status for the stream. A strict reading
+indicates that it ignores the bits and does not change them, which confuses users who do
+not expect eofbit and failbit to remain set after a successful open. There are three
+reasonable resolutions: 1) status quo 2) fail if fail(), ignore eofbit 3) clear failbit
+and eofbit on call to open(). </p>
+</discussion>
+
+<resolution>
+<p>In <sref ref="[ifstream.members]"/> paragraph 3, <i>and</i> in <sref ref="[ofstream.members]"/> paragraph 3, under open() effects, add a footnote:
+</p>
+
+<blockquote>
+  <p>A successful open does not change the error state.</p>
+</blockquote>
+</resolution>
+
+<rationale>
+<p>This may seem surprising to some users, but it's just an instance
+of a general rule: error flags are never cleared by the
+implementation. The only way error flags are are ever cleared is if
+the user explicitly clears them by hand.</p>
+
+<p>The LWG believed that preserving this general rule was
+important enough so that an exception shouldn't be made just for this
+one case.  The resolution of this issue clarifies what the LWG
+believes to have been the original intent.</p>
+
+</rationale>
+
+</issue>

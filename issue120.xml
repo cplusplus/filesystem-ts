@@ -1,0 +1,117 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="120" status="CD1">
+<title>Can an implementor add specializations?</title>
+<section><sref ref="[reserved.names]"/></section>
+<submitter>Judy Ward</submitter>
+<date>15 Dec 1998</date>
+
+<discussion>
+
+<p>The original issue asked whether a library implementor could
+specialize standard library templates for built-in types.  (This was
+an issue because users are permitted to explicitly instantiate
+standard library templates.)</p>
+
+<p>Specializations are no longer a problem, because of the resolution
+to core issue 259.  Under the proposed resolution, it will be legal
+for a translation unit to contain both a specialization and an
+explicit instantiation of the same template, provided that the
+specialization comes first.  In such a case, the explicit
+instantiation will be ignored.  Further discussion of library issue
+120 assumes that the core 259 resolution will be adopted.</p>
+
+<p>However, as noted in lib-7047, one piece of this issue still
+remains: what happens if a standard library implementor explicitly
+instantiates a standard library templates?  It's illegal for a program
+to contain two different explicit instantiations of the same template
+for the same type in two different translation units (ODR violation),
+and the core working group doesn't believe it is practical to relax
+that restriction.</p>
+
+<p>The issue, then, is: are users allowed to explicitly instantiate
+standard library templates for non-user defined types?  The status quo
+answer is 'yes'.  Changing it to 'no' would give library implementors
+more freedom.</p>
+
+<p>This is an issue because, for performance reasons, library
+implementors often need to explicitly instantiate standard library
+templates.  (for example, std::basic_string&lt;char&gt;)  Does giving
+users freedom to explicitly instantiate standard library templates for
+non-user defined types make it impossible or painfully difficult for
+library implementors to do this?</p>
+
+<p>John Spicer suggests, in lib-8957, that library implementors have a
+mechanism they can use for explicit instantiations that doesn't
+prevent users from performing their own explicit instantiations: put
+each explicit instantiation in its own object file.  (Different
+solutions might be necessary for Unix DSOs or MS-Windows DLLs.)  On
+some platforms, library implementors might not need to do anything
+special: the "undefined behavior" that results from having two
+different explicit instantiations might be harmless.</p>
+
+</discussion>
+
+<resolution>
+  <p>Append to <sref ref="[reserved.names]"/> paragraph 1: </p>
+  <blockquote><p>
+    A program may explicitly instantiate any templates in the standard
+    library only if the declaration depends on the name of a user-defined
+    type of external linkage and the instantiation meets the standard library
+    requirements for the original template.
+  </p></blockquote>
+
+<note>Kona: changed the wording from "a user-defined name" to "the name of
+  a user-defined type"</note>
+
+</resolution>
+
+<rationale>
+<p>The LWG considered another possible resolution:</p>
+<blockquote>
+  <p>In light of the resolution to core issue 259, no normative changes
+  in the library clauses are necessary.  Add the following non-normative
+  note to the end of <sref ref="[reserved.names]"/> paragraph 1:</p>
+  <blockquote><p>
+    [<i>Note:</i> A program may explicitly instantiate standard library
+    templates, even when an explicit instantiation does not depend on
+    a user-defined name. <i>--end note</i>]
+  </p></blockquote>
+</blockquote>
+
+<p>The LWG rejected this because it was believed that it would make
+  it unnecessarily difficult for library implementors to write
+  high-quality implementations.  A program may not include an
+  explicit instantiation of the same template, for the same template
+  arguments, in two different translation units.  If users are
+  allowed to provide explicit instantiations of Standard Library
+  templates for built-in types, then library implementors aren't,
+  at least not without nonportable tricks.</p>
+
+<p>The most serious problem is a class template that has writeable
+  static member variables.  Unfortunately, such class templates are
+  important and, in existing Standard Library implementations, are
+  often explicitly specialized by library implementors: locale facets,
+  which have a writeable static member variable <tt>id</tt>.  If a
+  user's explicit instantiation collided with the implementations
+  explicit instantiation, iostream initialization could cause locales
+  to be constructed in an inconsistent state.</p>
+
+<p>One proposed implementation technique was for Standard Library
+  implementors to provide explicit instantiations in separate object
+  files, so that they would not be picked up by the linker when the
+  user also provides an explicit instantiation.  However, this
+  technique only applies for Standard Library implementations that
+  are packaged as static archives.  Most Standard Library
+  implementations nowadays are packaged as dynamic libraries, so this
+  technique would not apply.</p>
+
+<p>The Committee is now considering standardization of dynamic
+  linking.  If there are such changes in the future, it may be
+  appropriate to revisit this issue later.</p>
+</rationale>
+
+</issue>

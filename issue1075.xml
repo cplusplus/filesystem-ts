@@ -1,0 +1,257 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="1075" status="NAD Editorial">
+<title>Response to US 65, US 74.1</title>
+<section><sref ref="[utilities]"/>, <sref ref="[containers]"/></section>
+<submitter>Alan Talbot</submitter>
+<date>20 Mar 2009</date>
+
+<discussion>
+<p><b>Addresses US 65 and US 74.1</b></p>
+
+<p>US 65:</p>
+
+<blockquote>
+Scoped allocators and allocator propagation traits add a small amount of
+utility at the cost of a great deal of machinery. The machinery is user
+visible, and it extends to library components that don't have any
+obvious connection to allocators, including basic concepts and simple
+components like <tt>pair</tt> and <tt>tuple</tt>.
+
+<p>Suggested resolution:</p>
+
+<p>
+Sketch of proposed resolution: Eliminate scoped allocators, replace
+allocator propagation traits with a simple uniform rule (e.g. always
+propagate on copy and move), remove all mention of allocators from
+components that don't explicitly allocate memory (e.g. pair), and adjust
+container interfaces to reflect this simplification.
+</p>
+<p>
+Components that I propose eliminating include HasAllocatorType,
+is_scoped_allocator, allocator_propagation_map, scoped_allocator_adaptor,
+and ConstructibleAsElement.
+</p>
+</blockquote>
+
+<p>US 74.1:</p>
+
+<blockquote>
+<p>
+Scoped allocators represent a poor trade-off for standardization, since
+(1) scoped-allocator--aware containers can be implemented outside the
+C++ standard library but used with its algorithms, (2) scoped
+allocators only benefit a tiny proportion of the C++ community
+(since few C++ programmers even use today's allocators), and (3) all C++
+users, especially the vast majority of the C++ community that won't ever
+use scoped allocators are forced to cope with the interface complexity
+introduced by scoped allocators.
+</p>
+<p>
+In essence, the larger community will suffer to support a very small
+subset of the community who can already implement their own
+data structures outside of the standard library. Therefore, scoped
+allocators should be removed from the working paper.
+</p>
+<p>
+Some evidence of the complexity introduced by scoped allocators:
+</p>
+<blockquote>
+<p>
+<sref ref="[pairs]"/>, <sref ref="[tuple]"/>: Large increase in the
+number of pair and tuple constructors.
+</p>
+<p>
+<sref ref="[containers]"/>: Confusing "AllocatableElement" requirements throughout.
+</p>
+</blockquote>
+<p>Suggested resolution:</p>
+
+<p>
+Remove support for scoped allocators from the working paper. This
+includes at least the following changes:
+</p>
+
+<blockquote>
+<p>
+Remove <sref ref="[allocator.element.concepts]"/>
+</p>
+<p>
+Remove <sref ref="[allocator.adaptor]"/>
+</p>
+<p>
+Remove <sref ref="[construct.element]"/>
+</p>
+<p>
+In Clause <sref ref="[containers]"/>: replace requirements naming the
+<tt>AllocatableElement</tt> concept with requirements naming <tt>CopyConstructible</tt>,
+<tt>MoveConstructible</tt>, <tt>DefaultConstructible</tt>, or <tt>Constructible</tt>, as
+appropriate.
+</p>
+</blockquote>
+
+</blockquote>
+
+<note>
+Post Summit Alan moved from NAD to Open.
+</note>
+
+<note>
+2009-05-15 Ganesh adds:
+</note>
+
+<blockquote>
+<p>
+The requirement <tt>AllocatableElement</tt> should not be replaced with
+<tt>Constructible</tt> on the <tt>emplace_xxx()</tt> functions as suggested. In the
+one-parameter case the <tt>Constructible</tt> requirement is not satisfied when
+the constructor is explicit (as per <sref ref="[concept.map.fct]"/>, twelfth
+bullet) but we do want to allow explicit constructors in emplace, as the
+following example shows:
+</p>
+
+<blockquote><pre>
+vector&lt;shared_ptr&lt;int&gt;&gt; v;
+v.emplace_back(new int); <font color="#C80000">// should be allowed</font>
+</pre></blockquote>
+
+<p>
+If the issue is accepted and scoped allocators are removed, I suggest to
+add a new pair of concepts to <sref ref="[concept.construct]"/>, namely:
+</p>
+
+<blockquote><pre>
+auto concept HasExplicitConstructor&lt;typename T, typename... Args&gt; {
+ explicit T::T(Args...);
+}
+
+auto concept ExplicitConstructible&lt;typename T, typename... Args&gt;
+ : HasExplicitConstructor&lt;T, Args...&gt;, NothrowDestructible&lt;T&gt;
+{ }
+</pre></blockquote>
+
+<p>
+We should then use <tt>ExplicitConstructible</tt> as the requirement for all
+<tt>emplace_xxx()</tt> member functions.
+</p>
+<p>
+For coherence and consistency with the similar concepts
+<tt>Convertible/ExplicitlyConvertible</tt>, we might also consider changing
+<tt>Constructible</tt> to:
+</p>
+
+<blockquote><pre>
+auto concept Constructible&lt;typename T, typename... Args&gt;
+ : HasConstructor&lt;T, Args...&gt;, ExplicitConstructible&lt;T, Args...&gt;
+{ }
+</pre></blockquote>
+
+<p>
+Moreover, all emplace-related concepts in <sref ref="[container.concepts]"/>
+should also use <tt>ExplicitConstructible</tt> instead of <tt>Constructible</tt> in the
+definitions of their axioms. In fact the concepts in <sref ref="[container.concepts]"/> should be
+corrected even if the issue is not accepted.
+</p>
+<p>
+On the other hand, if the issue is not accepted, the scoped allocator
+adaptors should be fixed because the following code:
+</p>
+
+<blockquote><pre>
+template &lt;typename T&gt; using scoped_allocator = scoped_allocator_adaptor&lt;allocator&lt;T&gt;&gt;;
+
+vector&lt;shared_ptr&lt;int&gt;, scoped_allocator&lt;shared_ptr&lt;int&gt;&gt;&gt; v;
+v.emplace_back(new int); <font color="#C80000">// ops! doesn't compile</font>
+</pre></blockquote>
+
+<p>
+doesn't compile, as the member function <tt>construct()</tt> of the scoped
+allocator requires non-explicit constructors through concept
+<tt>ConstructibleWithAllocator</tt>. Fixing that is not difficult but probably
+more work than it's worth and is therefore, IMHO, one more reason in
+support of the complete removal of scoped allocators.
+</p>
+</blockquote>
+
+<note>
+2009-06-09 Alan adds:
+</note>
+
+<blockquote>
+<p>
+I reopened this issue because I did not think that these National Body
+comments were adequately addressed by marking them NAD. My understanding
+is that something can be marked NAD if it is clearly a misunderstanding
+or trivial, but a substantive issue that has any technical merit
+requires a disposition that addresses the concerns.
+</p>
+<p>
+The notes in the NB comment list (US 65 & US 74.1) say that:
+</p>
+<ol type="a">
+<li>
+this issue has not introduced any new arguments not previously discussed,
+</li>
+<li>
+the vote (4-9-3) was not a consensus for removing scoped allocators,
+</li>
+<li>
+the issue is resolved by
+<a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2009/n2840.pdf">N2840</a>.
+</li>
+</ol>
+<p>
+My opinion is:
+</p>
+<ol type="a">
+<li>
+there are new arguments in both comments regarding concepts (which were
+not present in the library when the scoped allocator proposal was voted
+in),
+</li>
+<li>
+the vote was clearly not a consensus for removal, but just saying there
+was a vote does not provide a rationale,
+</li>
+<li>
+I do not believe that N2840 addresses these comments (although it does
+many other things and was voted in with strong approval).
+</li>
+</ol>
+
+<p>
+My motivation to open the issue was to ensure that the NB comments were
+adequately addressed in a way that would not risk a "no" vote on our
+FCD. If there are responses to the technical concerns raised, then
+perhaps they should be recorded. If the members of the NB who authored
+the comments are satisfied with N2840 and the other disposition remarks
+in the comment list, then I am sure they will say so. In either case,
+this issue can be closed very quickly in Frankfurt, and hopefully will
+have helped make us more confident of approval with little effort. If in
+fact there is controversy, my thought is that it is better to know now
+rather than later so there is more time to deal with it.
+</p>
+</blockquote>
+
+<note>
+2009-10 Santa Cruz:
+</note>
+
+<blockquote>
+NAD Editorial.  Addressed by
+<a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2009/n2982.pdf">N2982</a>.
+</blockquote>
+
+</discussion>
+
+<resolution>
+</resolution>
+
+<rationale>
+Scoped allocators have been revised significantly.
+</rationale>
+
+</issue>

@@ -1,0 +1,163 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="782" status="CD1">
+<title>Extended <tt>seed_seq</tt> constructor is useless</title>
+<section><sref ref="[rand.util.seedseq]"/></section>
+<submitter>Daniel Kr&uuml;gler</submitter>
+<date>27 Jan 2008</date>
+
+<discussion>
+<p>
+Part of the resolution of n2423, issue 8 was the proposal to
+extend the <tt>seed_seq</tt> constructor accepting an input range
+as follows (which is now part of N2461):
+</p>
+
+<blockquote><pre>
+template&lt;class InputIterator,
+size_t u = numeric_limits&lt;iterator_traits&lt;InputIterator&gt;::value_type&gt;::digits&gt;
+seed_seq(InputIterator begin, InputIterator end);
+</pre></blockquote>
+
+<p>
+First, the expression <tt>iterator_traits&lt;InputIterator&gt;::value_type</tt>
+is invalid due to missing <tt>typename</tt> keyword, which is easy to
+fix.
+</p>
+
+<p>
+Second (and worse), while the language now supports default
+template arguments of function templates, this customization
+point via the second <tt>size_t</tt> template parameter is of no advantage,
+because <tt>u</tt> can never be deduced, and worse - because it is a
+constructor function template - it can also never be explicitly
+provided (<sref ref="[temp.arg.explicit]"/>/7).
+</p>
+
+<p>
+The question arises, which advantages result from a compile-time
+knowledge of <tt>u</tt> versus a run time knowledge? If run time knowledge
+suffices, this parameter should be provided as normal function
+default argument [Resolution marked (A)], if compile-time knowledge
+is important, this could be done via a tagging template or more
+user-friendly via a standardized helper generator function
+(<tt>make_seed_seq</tt>), which allows this [Resolution marked (B)].
+</p>
+
+<note>
+Bellevue:
+</note>
+
+<blockquote>
+<p>
+Fermilab does not have a strong opinion. Would prefer to go with
+solution A. Bill agrees that solution A is a lot simpler and does the
+job.
+</p>
+<p>
+Proposed Resolution: Accept Solution A.
+</p>
+</blockquote>
+
+<p>
+Issue <iref ref="803"/> claims to make this issue moot.
+</p>
+
+</discussion>
+
+<resolution>
+<ol type="A">
+<li>
+<p>
+In <sref ref="[rand.util.seedseq]"/>/2, class <tt>seed_seq</tt> synopsis replace:
+</p>
+
+<blockquote><pre>
+class seed_seq 
+{ 
+public:
+   ...
+   template&lt;class InputIterator<del>,
+      size_t u = numeric_limits&lt;iterator_traits&lt;InputIterator&gt;::value_type&gt;::digits</del>&gt;
+          seed_seq(InputIterator begin, InputIterator end<ins>,
+          size_t u = numeric_limits&lt;typename iterator_traits&lt;InputIterator&gt;::value_type&gt;::digits</ins>);
+   ...
+};
+</pre></blockquote>
+
+<p>
+and do a similar replacement in the member description between
+p.3 and p.4.
+</p>
+</li>
+
+<li>
+<p>
+In <sref ref="[rand.util.seedseq]"/>/2, class <tt>seed_seq</tt> synopsis <em>and</em> in the
+member description between p.3 and p.4 replace:
+</p>
+
+<blockquote><pre>
+template&lt;class InputIterator<del>,
+  size_t u = numeric_limits&lt;iterator_traits&lt;InputIterator&gt;::value_type&gt;::digits</del>&gt;
+      seed_seq(InputIterator begin, InputIterator end);
+<ins>template&lt;class InputIterator, size_t u&gt;
+seed_seq(InputIterator begin, InputIterator end, <i>implementation-defined</i> s);</ins>
+</pre></blockquote>
+
+<p>
+In <sref ref="[rand.synopsis]"/>, header <tt>&lt;random&gt;</tt> synopsis, immediately after the
+class <tt>seed_seq</tt> declaration <em>and</em> in <sref ref="[rand.util.seedseq]"/>/2, immediately
+after the class <tt>seed_seq</tt> definition add:
+</p>
+
+<blockquote><pre>
+template&lt;size_t u, class InputIterator&gt;
+  seed_seq make_seed_seq(InputIterator begin, InputIterator end);
+</pre></blockquote>
+
+<p>
+In <sref ref="[rand.util.seedseq]"/>, just before p.5 insert two paragraphs:
+</p>
+
+<blockquote>
+<p>
+The first constructor behaves as if it would provide an
+integral constant expression <tt>u</tt> of type <tt>size_t</tt> of value
+<tt>numeric_limits&lt;typename iterator_traits&lt;InputIterator&gt;::value_type&gt;::digits</tt>.
+</p>
+<p>
+The second constructor uses an implementation-defined mechanism
+to provide an integral constant expression <tt>u</tt> of type <tt>size_t</tt> and
+is called by the function <tt>make_seed_seq</tt>.
+</p>
+</blockquote>
+
+<p>
+In <sref ref="[rand.util.seedseq]"/>, just after the last paragraph add:
+</p>
+
+<blockquote>
+<pre>
+template&lt;size_t u, class InputIterator&gt;
+   seed_seq make_seed_seq(InputIterator begin, InputIterator end);
+</pre>
+<blockquote>
+<p>
+where <tt>u</tt> is used to construct an object <tt>s</tt> of implementation-defined type.
+</p>
+<p>
+<i>Returns:</i> <tt>seed_seq(begin, end, s)</tt>;
+</p>
+</blockquote>
+</blockquote>
+
+</li>
+</ol>
+
+</resolution>
+
+</issue>

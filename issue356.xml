@@ -1,0 +1,160 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="356" status="NAD">
+<title>Meaning of ctype_base::mask enumerators</title>
+<section><sref ref="[category.ctype]"/></section>
+<submitter>Matt Austern</submitter>
+<date>23 Jan 2002</date>
+
+<discussion>
+
+<p>What should the following program print?</p>
+
+<pre>
+  #include &lt;locale&gt;
+  #include &lt;iostream&gt;
+
+  class my_ctype : public std::ctype&lt;char&gt;
+  {
+    typedef std::ctype&lt;char&gt; base;
+  public:
+    my_ctype(std::size_t refs = 0) : base(my_table, false, refs)
+    {
+      std::copy(base::classic_table(), base::classic_table() + base::table_size,
+                my_table);
+      my_table[(unsigned char) '_'] = (base::mask) (base::print | base::space);
+    }
+  private:
+    mask my_table[base::table_size];
+  };
+
+  int main()
+  {
+    my_ctype ct;
+    std::cout &lt;&lt; "isspace: " &lt;&lt; ct.is(std::ctype_base::space, '_') &lt;&lt; "    "
+              &lt;&lt; "isalpha: " &lt;&lt; ct.is(std::ctype_base::alpha, '_') &lt;&lt; std::endl;
+  }
+</pre>
+
+<p>The goal is to create a facet where '_' is treated as whitespace.</p>
+
+<p>On gcc 3.0, this program prints "isspace: 1 isalpha: 0".  On
+Microsoft C++ it prints "isspace: 1 isalpha: 1".</p>
+
+<p>
+I believe that both implementations are legal, and the standard does not
+give enough guidance for users to be able to use std::ctype's
+protected interface portably.</p>
+
+<p>
+The above program assumes that ctype_base::mask enumerators like
+<tt>space</tt> and <tt>print</tt> are disjoint, and that the way to
+say that a character is both a space and a printing character is to or
+those two enumerators together.  This is suggested by the "exposition
+only" values in <sref ref="[category.ctype]"/>, but it is nowhere specified in
+normative text.  An alternative interpretation is that the more
+specific categories subsume the less specific.  The above program
+gives the results it does on the Microsoft compiler because, on that
+compiler, <tt>print</tt> has all the bits set for each specific
+printing character class.
+</p>
+
+<p>From the point of view of std::ctype's public interface, there's no
+important difference between these two techniques.  From the point of
+view of the protected interface, there is.  If I'm defining a facet
+that inherits from std::ctype&lt;char&gt;, I'm the one who defines the
+value that table()['a'] returns.  I need to know what combination of
+mask values I should use.  This isn't so very esoteric: it's exactly
+why std::ctype has a protected interface.  If we care about users
+being able to write their own ctype facets, we have to give them a
+portable way to do it.
+</p>
+
+<p>
+Related reflector messages:
+lib-9224, lib-9226, lib-9229, lib-9270, lib-9272, lib-9273, lib-9274,
+lib-9277, lib-9279.
+</p>
+
+<p>Issue <iref ref="339"/> is related, but not identical.  The
+proposed resolution if issue <iref ref="339"/> says that
+ctype_base::mask must be a bitmask type. It does not say that the
+ctype_base::mask elements are bitmask elements, so it doesn't
+directly affect this issue.</p>
+
+<p>More comments from Benjamin Kosnik, who believes that 
+that C99 compatibility essentially requires what we're
+calling option 1 below.</p>
+
+<blockquote>
+<pre>
+I think the C99 standard is clear, that isspace -&gt; !isalpha.
+--------
+
+#include &lt;locale&gt;
+#include &lt;iostream&gt;
+
+class my_ctype : public std::ctype&lt;char&gt;
+{
+private:
+  typedef std::ctype&lt;char&gt; base;
+  mask my_table[base::table_size];
+
+public:
+  my_ctype(std::size_t refs = 0) : base(my_table, false, refs)
+  {
+    std::copy(base::classic_table(), base::classic_table() + base::table_size,
+              my_table);
+    mask both = base::print | base::space;
+    my_table[static_cast&lt;mask&gt;('_')] = both;
+  }
+};
+
+int main()
+{
+  using namespace std;
+  my_ctype ct;
+  cout &lt;&lt; "isspace: " &lt;&lt; ct.is(ctype_base::space, '_') &lt;&lt; endl;
+  cout &lt;&lt; "isprint: " &lt;&lt; ct.is(ctype_base::print, '_') &lt;&lt; endl;
+
+  // ISO C99, isalpha iff upper | lower set, and !space.
+  // 7.5, p 193
+  // -&gt; looks like g++ behavior is correct.
+  // 356 -&gt; bitmask elements are required for ctype_base
+  // 339 -&gt; bitmask type required for mask
+  cout &lt;&lt; "isalpha: " &lt;&lt; ct.is(ctype_base::alpha, '_') &lt;&lt; endl;
+}
+</pre>
+</blockquote>
+
+</discussion>
+
+<resolution>
+<p>Informally, we have three choices:</p> 
+<ol>
+<li>Require that the enumerators are disjoint (except for alnum and
+graph)</li>
+<li>Require that the enumerators are not disjoint, and specify which
+of them subsume which others.  (e.g. mandate that lower includes alpha
+and print)</li>
+<li>Explicitly leave this unspecified, which the result that the above
+program is not portable.</li>
+</ol>
+
+<p>Either of the first two options is just as good from the standpoint
+of portability.  Either one will require some implementations to
+change.</p>
+</resolution>
+
+<rationale>
+<p>The LWG agrees that this is a real ambiguity, and that both
+interpretations are conforming under the existing standard. However,
+there's no evidence that it's causing problems for real users. Users
+who want to define ctype facets portably can test the ctype_base masks
+to see which interpretation is being used.</p>
+</rationale>
+
+</issue>

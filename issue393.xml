@@ -1,0 +1,64 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="393" status="NAD Editorial">
+<title>do_in/do_out operation on state unclear</title>
+<section><sref ref="[locale.codecvt.virtuals]"/></section>
+<submitter>Alberto Barbati</submitter>
+<date>24 Dec 2002</date>
+
+<discussion>
+<p>
+this DR follows the discussion on the previous thread "codecvt::do_in
+not consuming external characters". It's just a clarification issue
+and not a request for a change.
+</p>
+<p>
+Can do_in()/do_out() produce output characters without consuming input 
+characters as a result of operation on state?
+</p>
+</discussion>
+
+<resolution>
+<p>
+Add a note at the end of <sref ref="[locale.codecvt.virtuals]"/>, 
+paragraph 3:
+</p>
+
+<p>
+[Note: As a result of operations on state, it can return ok or partial 
+and set from_next == from and to_next != to. --end note]
+</p>
+</resolution>
+
+<rationale>
+<p>
+The submitter believes that standard already provides an affirmative
+answer to the question. However, the current wording has induced a few
+library implementors to make the incorrect assumption that
+do_in()/do_out() always consume at least one internal character when
+they succeed.
+</p>
+
+<p>
+The submitter also believes that the proposed resolution is not in
+conflict with the related issue 76. Moreover, by explicitly allowing
+operations on state to produce characters, a codecvt implementation
+may effectively implement N-to-M translations without violating the
+"one character at a time" principle described in such issue. On a side
+note, the footnote in the proposed resolution of issue 76 that
+informally rules out N-to-M translations for basic_filebuf should be
+removed if this issue is accepted as valid.
+</p>
+</rationale>
+
+<note>
+Kona (2007): The proposed resolution is to add a note. Since this is
+non-normative, the issue is editorial, but we believe that the note is
+correct. Proposed Disposition: NAD, Editorial
+</note>
+
+</issue>
+

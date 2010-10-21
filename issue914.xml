@@ -1,0 +1,67 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="914" status="NAD Concepts">
+<title>Superfluous requirement for unique</title>
+<section><sref ref="[alg.unique]"/></section>
+<submitter>Daniel Kr&uuml;gler</submitter>
+<date>3 Oct 2008</date>
+
+<discussion>
+<p>
+<sref ref="[alg.unique]"/>/2: "Requires: The comparison function shall be an
+equivalence relation."
+</p>
+
+<p>
+The essence of this is already covered by the given requirement
+</p>
+
+<blockquote><pre>
+EquivalenceRelation&lt;auto, Iter::value_type&gt; Pred
+</pre></blockquote>
+
+<p>
+and should thus be removed.
+</p>
+
+<note>
+Batavia (2009-05):
+</note>
+<blockquote>
+We agree with the proposed resolution.
+Move to Tentatively Ready.
+</blockquote>
+</discussion>
+
+<resolution>
+<p>
+Remove <sref ref="[alg.unique]"/>/2
+</p>
+
+<blockquote><pre>
+template&lt;ForwardIterator Iter&gt;
+  requires OutputIterator&lt;Iter, Iter::reference&gt;
+        &amp;&amp; EqualityComparable&lt;Iter::value_type&gt;
+  Iter unique(Iter first, Iter last);
+
+template&lt;ForwardIterator Iter, EquivalenceRelation&lt;auto, Iter::value_type&gt; Pred&gt;
+  requires OutputIterator&lt;Iter, RvalueOf&lt;Iter::reference&gt;::type&gt;
+        &amp;&amp; CopyConstructible&lt;Pred&gt;
+  Iter unique(Iter first, Iter last,
+               Pred pred);
+</pre>
+<blockquote>
+<p>
+1 <i>Effects:</i> ...
+</p>
+<p>
+<del>2 <i>Requires:</i> The comparison function shall be an equivalence relation.</del>
+</p>
+</blockquote>
+</blockquote>
+</resolution>
+
+</issue>

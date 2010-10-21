@@ -1,0 +1,118 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="830" status="NAD Editorial">
+<title>Incomplete list of char_traits specializations</title>
+<section><sref ref="[char.traits]"/></section>
+<submitter>Dietmar K&#252;hl</submitter>
+<date>23 Apr 2008</date>
+
+<discussion>
+<p>
+  Paragraph 4 of <sref ref="[char.traits]"/> mentions that this
+  section specifies two specializations (<code>char_traits&lt;char&gt;</code>
+  and (<code>char_traits&lt;wchar_t&gt;</code>). However, there are actually
+  four specializations provided, i.e. in addition to the two above also
+  <code>char_traits&lt;char16_t&gt;</code> and <code>char_traits&lt;char32_t&gt;</code>).
+  I guess this was just an oversight and there is nothing wrong with just
+  fixing this.
+</p>
+
+<note>
+Alisdair adds:
+</note>
+<blockquote>
+<tt>char_traits&lt; char16/32_t &gt;</tt>
+should also be added to <tt>&lt;ios_fwd&gt;</tt> in <sref ref="[iostream.forward]"/>, and all the specializations
+taking a <tt>char_traits</tt> parameter in that header.
+</blockquote>
+
+<note>
+Sophia Antipolis:
+</note>
+
+<blockquote>
+<p>
+Idea of the issue is ok.
+</p>
+<p>
+Alisdair to provide wording, once that wording arrives, move to review.
+</p>
+
+</blockquote>
+
+<note>
+2009-05-04 Alisdair adds:
+</note>
+
+<blockquote>
+<p>
+The main point of the issue was resolved editorially in
+<a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2008/n2723.pdf">N2723</a>,
+so we are
+close to NAD Editorial.
+However, exploring the issue we found a second tweak was necessary for
+<tt>&lt;iosfwd&gt;</tt> and that is still outstanding, so here are the words I am long
+overdue delivering:
+</p>
+
+<note>
+Howard:  I've put Alisdair's words into the proposed wording section and
+moved the issue to Review.
+</note>
+
+</blockquote>
+
+<note>
+Original proposed wording.
+</note>
+
+<blockquote>
+
+<p>
+  Replace paragraph 4 of <sref ref="[char.traits]"/> by:
+</p>
+<blockquote>
+<p>
+  This subclause specifies a struct template, <code>char_traits&lt;charT&gt;</code>,
+  and four explicit specializations of it, <code>char_traits&lt;char&gt;</code>,
+  <code>char_traits&lt;char16_t&gt;</code>, <code>char_traits&lt;char32_t&gt;</code>, and
+  <code>char_traits&lt;wchar_t&gt;</code>, all of which appear in the header
+  &lt;string&gt; and satisfy the requirements below.
+</p>
+</blockquote>
+</blockquote>
+
+<note>
+Batavia (2009-05):
+</note>
+<blockquote>
+We agree.  Move to NAD Editorial.
+</blockquote>
+</discussion>
+
+<resolution>
+<p>
+Change Forward declarations <sref ref="[iostream.forward]"/>:
+</p>
+
+<blockquote>
+<p>
+<b>Header <tt>&lt;iosfwd&gt;</tt> synopsis</b>
+</p>
+<pre>
+namespace std {
+   template&lt;class charT&gt; class char_traits;
+   template&lt;&gt; class char_traits&lt;char&gt;;
+   <ins>template&lt;&gt; class char_traits&lt;char16_t&gt;;</ins>
+   <ins>template&lt;&gt; class char_traits&lt;char32_t&gt;;</ins>
+   template&lt;&gt; class char_traits&lt;wchar_t&gt;;
+...
+}
+</pre>
+</blockquote>
+</resolution>
+
+</issue>

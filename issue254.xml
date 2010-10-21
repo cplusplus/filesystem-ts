@@ -1,0 +1,462 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="254" status="CD1">
+<title>Exception types in clause 19 are constructed from <tt>std::string</tt></title>
+<section><sref ref="[std.exceptions]"/>, <sref ref="[ios::failure]"/></section>
+<submitter>Dave Abrahams</submitter>
+<date>01 Aug 2000</date>
+
+<discussion>
+<p>
+Many of the standard exception types which implementations are
+required to throw are constructed with a const std::string&amp;
+parameter. For example:
+</p>
+
+<pre>
+     19.1.5  Class out_of_range                          [lib.out.of.range]
+     namespace std {
+       class out_of_range : public logic_error {
+       public:
+         explicit out_of_range(const string&amp; what_arg);
+       };
+     }
+
+   1 The class out_of_range defines the type of objects  thrown  as  excep-
+     tions to report an argument value not in its expected range.
+
+     out_of_range(const string&amp; what_arg);
+
+     Effects:
+       Constructs an object of class out_of_range.
+     Postcondition:
+       strcmp(what(), what_arg.c_str()) == 0.
+</pre>
+
+<p>
+There are at least two problems with this:
+</p>
+<ol>
+<li>A program which is low on memory may end up throwing
+std::bad_alloc instead of out_of_range because memory runs out while
+constructing the exception object.</li>
+<li>An obvious implementation which stores a std::string data member
+may end up invoking terminate() during exception unwinding because the
+exception object allocates memory (or rather fails to) as it is being
+copied.</li>
+</ol>
+
+<p>
+There may be no cure for (1) other than changing the interface to
+out_of_range, though one could reasonably argue that (1) is not a
+defect. Personally I don't care that much if out-of-memory is reported
+when I only have 20 bytes left, in the case when out_of_range would
+have been reported. People who use exception-specifications might care
+a lot, though.
+</p>
+
+<p>
+There is a cure for (2), but it isn't completely obvious. I think a
+note for implementors should be made in the standard. Avoiding
+possible termination in this case shouldn't be left up to chance.  The
+cure is to use a reference-counted &quot;string&quot; implementation
+in the exception object. I am not necessarily referring to a
+std::string here; any simple reference-counting scheme for a NTBS
+would do.
+</p>
+
+<p><b>Further discussion, in email:</b></p>
+
+<p>
+...I'm not so concerned about (1). After all, a library implementation
+can add const char* constructors as an extension, and users don't
+<i>need</i> to avail themselves of the standard exceptions, though this is
+a lame position to be forced into.  FWIW, std::exception and
+std::bad_alloc don't require a temporary basic_string.
+</p>
+
+<p>
+...I don't think the fixed-size buffer is a solution to the problem,
+strictly speaking, because you can't satisfy the postcondition
+<br/>
+    <tt>&nbsp;&nbsp;strcmp(what(), what_arg.c_str()) == 0</tt>
+<br/>
+For all values of what_arg (i.e. very long values). That means that
+the only truly conforming solution requires a dynamic allocation.
+</p>
+
+<p><b>Further discussion, from Redmond:</b></p>
+
+<p>The most important progress we made at the Redmond meeting was
+realizing that there are two separable issues here: the const
+string&amp; constructor, and the copy constructor.  If a user writes
+something like <tt>throw std::out_of_range("foo")</tt>, the const
+string&amp; constructor is invoked before anything gets thrown.  The
+copy constructor is potentially invoked during stack unwinding.</p>
+
+<p>The copy constructor is a more serious problem, becuase failure
+during stack unwinding invokes <tt>terminate</tt>.  The copy
+constructor must be nothrow. <i>Cura&ccedil;ao: Howard thinks this
+requirement may already be present.</i></p>
+
+<p>The fundamental problem is that it's difficult to get the nothrow
+requirement to work well with the requirement that the exception
+objects store a string of unbounded size, particularly if you also try
+to make the const string&amp; constructor nothrow.  Options discussed
+include:</p>
+
+<ul>
+<li>Limit the size of a string that exception objects are required to
+throw: change the postconditions of <sref ref="[domain.error]"/> paragraph 3
+and <sref ref="[runtime.error]"/> paragraph 3 to something like this:
+"strncmp(what(), what_arg._str(), N) == 0, where N is an
+implementation defined constant no smaller than 256".</li>
+<li>Allow the const string&amp; constructor to throw, but not the
+copy constructor.  It's the implementor's responsibility to get it
+right.  (An implementor might use a simple refcount class.)</li>
+<li>Compromise between the two: an implementation is not allowed to
+throw if the string's length is less than some N, but, if it doesn't
+throw, the string must compare equal to the argument.</li>
+<li>Add a new constructor that takes a const char*</li>
+</ul>
+
+<p>(Not all of these options are mutually exclusive.)</p>
+
+</discussion>
+
+<resolution>
+
+<p>
+Change <sref ref="[logic.error]"/>
+</p>
+
+<blockquote>
+<pre>
+namespace std {
+  class logic_error : public exception {
+  public:
+    explicit logic_error(const string&amp; <i>what_arg</i>);
+    <ins>explicit logic_error(const char* <i>what_arg</i>);</ins>
+  };
+}
+</pre>
+<p>...</p>
+<p>
+<ins><tt>logic_error(const char* <i>what_arg</i>);</tt></ins>
+</p>
+<blockquote>
+<p><ins>
+-4- <i>Effects:</i> Constructs an object of class <tt>logic_error</tt>.
+</ins></p>
+<p><ins>
+-5- <i>Postcondition:</i> <tt>strcmp(what(), <i>what_arg</i>) == 0</tt>.
+</ins></p>
+</blockquote>
+
+</blockquote>
+
+<p>
+Change <sref ref="[domain.error]"/>
+</p>
+
+<blockquote>
+<pre>
+namespace std {
+  class domain_error : public logic_error {
+  public:
+    explicit domain_error(const string&amp; <i>what_arg</i>);
+    <ins>explicit domain_error(const char* <i>what_arg</i>);</ins>
+  };
+}
+</pre>
+<p>...</p>
+<p>
+<ins><tt>domain_error(const char* <i>what_arg</i>);</tt></ins>
+</p>
+<blockquote>
+<p><ins>
+-4- <i>Effects:</i> Constructs an object of class <tt>domain_error</tt>.
+</ins></p>
+<p><ins>
+-5- <i>Postcondition:</i> <tt>strcmp(what(), <i>what_arg</i>) == 0</tt>.
+</ins></p>
+
+</blockquote>
+</blockquote>
+
+<p>
+Change <sref ref="[invalid.argument]"/>
+</p>
+
+<blockquote>
+<pre>
+namespace std {
+  class invalid_argument : public logic_error {
+  public:
+    explicit invalid_argument(const string&amp; <i>what_arg</i>);
+    <ins>explicit invalid_argument(const char* <i>what_arg</i>);</ins>
+  };
+}
+</pre>
+<p>...</p>
+<p>
+<ins><tt>invalid_argument(const char* <i>what_arg</i>);</tt></ins>
+</p>
+<blockquote>
+<p><ins>
+-4- <i>Effects:</i> Constructs an object of class <tt>invalid_argument</tt>.
+</ins></p>
+<p><ins>
+-5- <i>Postcondition:</i> <tt>strcmp(what(), <i>what_arg</i>) == 0</tt>.
+</ins></p>
+</blockquote>
+
+</blockquote>
+
+<p>
+Change <sref ref="[length.error]"/>
+</p>
+
+<blockquote>
+<pre>
+namespace std {
+  class length_error : public logic_error {
+  public:
+    explicit length_error(const string&amp; <i>what_arg</i>);
+    <ins>explicit length_error(const char* <i>what_arg</i>);</ins>
+  };
+}
+</pre>
+<p>...</p>
+<p>
+<ins><tt>length_error(const char* <i>what_arg</i>);</tt></ins>
+</p>
+<blockquote>
+<p><ins>
+-4- <i>Effects:</i> Constructs an object of class <tt>length_error</tt>.
+</ins></p>
+<p><ins>
+-5- <i>Postcondition:</i> <tt>strcmp(what(), <i>what_arg</i>) == 0</tt>.
+</ins></p>
+</blockquote>
+
+</blockquote>
+
+<p>
+Change <sref ref="[out.of.range]"/>
+</p>
+
+<blockquote>
+<pre>
+namespace std {
+  class out_of_range : public logic_error {
+  public:
+    explicit out_of_range(const string&amp; <i>what_arg</i>);
+    <ins>explicit out_of_range(const char* <i>what_arg</i>);</ins>
+  };
+}
+</pre>
+<p>...</p>
+<p>
+<ins><tt>out_of_range(const char* <i>what_arg</i>);</tt></ins>
+</p>
+<blockquote>
+<p><ins>
+-4- <i>Effects:</i> Constructs an object of class <tt>out_of_range</tt>.
+</ins></p>
+<p><ins>
+-5- <i>Postcondition:</i> <tt>strcmp(what(), <i>what_arg</i>) == 0</tt>.
+</ins></p>
+</blockquote>
+
+</blockquote>
+
+<p>
+Change <sref ref="[runtime.error]"/>
+</p>
+
+<blockquote>
+<pre>
+namespace std {
+  class runtime_error : public exception {
+  public:
+    explicit runtime_error(const string&amp; <i>what_arg</i>);
+    <ins>explicit runtime_error(const char* <i>what_arg</i>);</ins>
+  };
+}
+</pre>
+<p>...</p>
+<p>
+<ins><tt>runtime_error(const char* <i>what_arg</i>);</tt></ins>
+</p>
+<blockquote>
+<p><ins>
+-4- <i>Effects:</i> Constructs an object of class <tt>runtime_error</tt>.
+</ins></p>
+<p><ins>
+-5- <i>Postcondition:</i> <tt>strcmp(what(), <i>what_arg</i>) == 0</tt>.
+</ins></p>
+</blockquote>
+
+</blockquote>
+
+<p>
+Change <sref ref="[range.error]"/>
+</p>
+
+<blockquote>
+<pre>
+namespace std {
+  class range_error : public runtime_error {
+  public:
+    explicit range_error(const string&amp; <i>what_arg</i>);
+    <ins>explicit range_error(const char* <i>what_arg</i>);</ins>
+  };
+}
+</pre>
+<p>...</p>
+<p>
+<ins><tt>range_error(const char* <i>what_arg</i>);</tt></ins>
+</p>
+<blockquote>
+<p><ins>
+-4- <i>Effects:</i> Constructs an object of class <tt>range_error</tt>.
+</ins></p>
+<p><ins>
+-5- <i>Postcondition:</i> <tt>strcmp(what(), <i>what_arg</i>) == 0</tt>.
+</ins></p>
+</blockquote>
+
+</blockquote>
+
+<p>
+Change <sref ref="[overflow.error]"/>
+</p>
+
+<blockquote>
+<pre>
+namespace std {
+  class overflow_error : public runtime_error {
+  public:
+    explicit overflow_error(const string&amp; <i>what_arg</i>);
+    <ins>explicit overflow_error(const char* <i>what_arg</i>);</ins>
+  };
+}
+</pre>
+<p>...</p>
+<p>
+<ins><tt>overflow_error(const char* <i>what_arg</i>);</tt></ins>
+</p>
+<blockquote>
+<p><ins>
+-4- <i>Effects:</i> Constructs an object of class <tt>overflow_error</tt>.
+</ins></p>
+<p><ins>
+-5- <i>Postcondition:</i> <tt>strcmp(what(), <i>what_arg</i>) == 0</tt>.
+</ins></p>
+</blockquote>
+
+</blockquote>
+
+<p>
+Change <sref ref="[underflow.error]"/>
+</p>
+
+<blockquote>
+<pre>
+namespace std {
+  class underflow_error : public runtime_error {
+  public:
+    explicit underflow_error(const string&amp; <i>what_arg</i>);
+    <ins>explicit underflow_error(const char* <i>what_arg</i>);</ins>
+  };
+}
+</pre>
+<p>...</p>
+<p>
+<ins><tt>underflow_error(const char* <i>what_arg</i>);</tt></ins>
+</p>
+<blockquote>
+<p><ins>
+-4- <i>Effects:</i> Constructs an object of class <tt>underflow_error</tt>.
+</ins></p>
+<p><ins>
+-5- <i>Postcondition:</i> <tt>strcmp(what(), <i>what_arg</i>) == 0</tt>.
+</ins></p>
+</blockquote>
+
+</blockquote>
+
+<p>
+Change <sref ref="[ios::failure]"/>
+</p>
+
+<blockquote>
+<pre>
+namespace std {
+  class ios_base::failure : public exception {
+  public:
+    explicit failure(const string&amp; <i>msg</i>);
+    <ins>explicit failure(const char* <i>msg</i>);</ins>
+    virtual const char* what() const throw();
+};
+}
+</pre>
+<p>...</p>
+<p>
+<ins><tt>failure(const char* <i>msg</i>);</tt></ins>
+</p>
+<blockquote>
+<p><ins>
+-4- <i>Effects:</i> Constructs an object of class <tt>failure</tt>.
+</ins></p>
+<p><ins>
+-5- <i>Postcondition:</i> <tt>strcmp(what(), <i>msg</i>) == 0</tt>.
+</ins></p>
+</blockquote>
+
+</blockquote>
+
+</resolution>
+
+<rationale>
+
+<p>Throwing a bad_alloc while trying to construct a message for another
+exception-derived class is not necessarily a bad thing.  And the
+bad_alloc constructor already has a no throw spec on it (18.4.2.1).</p>
+
+<p><b>Future:</b></p>
+
+<p>All involved would like to see const char* constructors added, but
+this should probably be done for C++0X as opposed to a DR.</p>
+
+<p>I believe the no throw specs currently decorating these functions
+could be improved by some kind of static no throw spec checking
+mechanism (in a future C++ language).  As they stand, the copy
+constructors might fail via a call to unexpected.  I think what is
+intended here is that the copy constructors can't fail.</p>
+
+<note>Pre-Sydney: reopened at the request of Howard Hinnant.
+  Post-Redmond: James Kanze noticed that the copy constructors of
+  exception-derived classes do not have nothrow clauses.  Those
+  classes have no copy constructors declared, meaning the
+  compiler-generated implicit copy constructors are used, and those
+  compiler-generated constructors might in principle throw anything.</note>
+
+<note>
+Batavia:  Merged copy constructor and assignment operator spec into <tt>exception</tt>
+and added <tt>ios::failure</tt> into the proposed resolution.
+</note>
+
+<note>
+Oxford:  The proposed resolution simply addresses the issue of constructing
+the exception objects with <tt>const char*</tt> and string literals without
+the need to explicit include or construct a <tt>std::string</tt>.
+</note>
+
+</rationale>
+
+</issue>

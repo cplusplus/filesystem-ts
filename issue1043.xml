@@ -1,0 +1,112 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="1043" status="NAD Editorial">
+<title>Response to US 91</title>
+<section><sref ref="[atomics.types.operations]"/></section>
+<submitter>Alisdair Meredith</submitter>
+<date>12 Mar 2009</date>
+
+<discussion>
+
+<p><b>Addresses US 91</b></p>
+
+<p>
+It is unclear whether or not a failed <tt>compare_exchange</tt> is a RMW operation
+(as used in <sref ref="[intro.multithread]"/>).
+</p>
+
+<p>
+Suggested solution:
+</p>
+
+<p>
+Make failing <tt>compare_exchange</tt> operations <b>not</b> be RMW.
+</p>
+
+<note>
+Anthony Williams adds:
+</note>
+
+<blockquote>
+In <sref ref="[atomics.types.operations]"/> p18 it says that "These
+operations are atomic read-modify-write operations" (final sentence).
+This is overly restrictive on the implementations of
+<tt>compare_exchange_weak</tt> and <tt>compare_exchange_strong</tt> on platforms without a
+native CAS instruction.
+</blockquote>
+
+
+<note>
+Summit:
+</note>
+
+<blockquote>
+Group agrees with the resolution as proposed by Anthony Williams in the attached note.
+</blockquote>
+
+<note>
+Batavia (2009-05):
+</note>
+<blockquote>
+We recommend the proposed resolution be reviewed
+by members of the Concurrency Subgroup.
+</blockquote>
+
+<note>
+2009-07 post-Frankfurt:
+</note>
+
+<blockquote>
+This is likely to be addressed by Lawrence's upcoming paper. He will
+adopt the proposed resolution.
+</blockquote>
+
+<note>
+2009-08-17 Handled by
+<a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2009/n2925.html">N2925</a>.
+</note>
+
+<note>
+2009-10 Santa Cruz:
+</note>
+
+<blockquote>
+NAD Editorial.  Solved by
+<a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2009/n2992.html">N2992</a>.
+</blockquote>
+
+</discussion>
+
+<resolution>
+<p>
+Change <sref ref="[atomics.types.operations]"/> p18:
+</p>
+
+<blockquote>
+-18- <i>Effects:</i> Atomically, compares the value pointed to by
+<tt>object</tt> or by <tt>this</tt> for equality with that in
+<tt>expected</tt>, and if true, replaces the value pointed to by
+<tt>object</tt> or by <tt>this</tt> with desired, and if false, updates
+the value in <tt>expected</tt> with the value pointed to by
+<tt>object</tt> or by <tt>this</tt>. Further, if the comparison is true,
+memory is affected according to the value of <tt>success</tt>, and if the
+comparison is false, memory is affected according to the value of
+<tt>failure</tt>. When only one <tt>memory_order</tt> argument is
+supplied, the value of <tt>success</tt> is <tt>order</tt>, and the value
+of <tt>failure</tt> is <tt>order</tt> except that a value of
+<tt>memory_order_acq_rel</tt> shall be replaced by the value
+<tt>memory_order_acquire</tt> and a value of
+<tt>memory_order_release</tt> shall be replaced by the value
+<tt>memory_order_relaxed</tt>. <ins>If the comparison is <tt>true</tt>, </ins>
+<del>T</del><ins>t</ins>hese operations are atomic
+read-modify-write operations (1.10). 
+<ins>If the comparison is <tt>false</tt>, these
+operations are atomic load operations.</ins>
+</blockquote>
+
+</resolution>
+
+</issue>

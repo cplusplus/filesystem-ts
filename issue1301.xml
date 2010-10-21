@@ -1,0 +1,187 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="1301" status="NAD Editorial">
+<title><tt>clear()</tt> and assignment</title>
+<section><sref ref="[sequence.reqmts]"/></section>
+<submitter>Nicolai Josuttis</submitter>
+<date>1 Jan 2010</date>
+
+<discussion>
+<p>
+I propose that <tt>clear()</tt> be defined to be equivalent to
+<tt>erase(begin(),end())</tt> except not using copy or move of elements.
+</p>
+
+<blockquote>
+<p>
+To: C++ libraries mailing list<br/>
+Message c++std-lib-26465
+</p>
+
+<p>
+and specifiying as post: <tt>size()==0</tt> might also not be appropriate
+because forward-Lists provide no <tt>size()</tt>, this it should be:
+post: <tt>empty()==true</tt>
+</p>
+
+<p>
+Bjarne Stroustrup schrieb/wrote:
+</p>
+
+<blockquote>
+<p>
+To: C++ libraries mailing list<br/>
+Message c++std-lib-26458
+</p>
+
+<p>
+in table 94 we define <tt>clear()</tt> as:
+</p>
+
+<blockquote><pre>
+a.clear() void erase(begin(), end())
+post: size() == 0
+</pre></blockquote>
+
+<p>
+Now <tt>erase</tt> requires assignment (<tt>MoveAssignable</tt>) which makes
+sense if we have to move an element, but why should that be required from
+<tt>clear()</tt> where all elements are destroyed?
+</p>
+</blockquote>
+</blockquote>
+
+<note>
+2010-01-23 Alisdiar provides wording.
+</note>
+
+<note>
+2010-01-30 Moved to Tentatively Ready after 5 positive votes on c++std-lib.
+</note>
+
+<note>
+2010-01-30 Daniel opens:
+</note>
+
+<blockquote>
+<p>
+First, I read the newly proposed spec for <tt>clear()</tt> that it does in
+general <em>not</em> invalidate a previous past-the-end iterator value, but
+<tt>deque</tt> says in <sref ref="[deque.modifiers]"/> for the semantics of
+<tt>erase</tt> that erasures at the end will invalidate the past-the-end
+iterator. With removal of a direct binding between <tt>clear()</tt> and
+<tt>erase()</tt> there seem to be some fixes necessary. One way to fix that
+would be to mention in Table 94 that this "may also invalidate the past-the-end
+iterator" and then to mention for all specific containers where this does not
+happen, the exception, [1] e.g. in <tt>std::vector</tt>. <tt>std::vector</tt>
+has no own specification of <tt>clear()</tt> and one aspect of the closed issue
+<iref ref="1102"/> was to realize just that (indirectly via <tt>erase</tt>). IMO
+we should now add an extra specification for <tt>clear()</tt>. Btw.:
+<tt>std::vector::erase</tt> reads to me that it would invalidate previous
+past-the-end values (and that seems correct in general).
+</p>
+<p>
+Before I will provide explicit wording, I would like to
+discuss these points.
+</p>
+
+<p>
+[1] <tt>std::list</tt> does fortunately specify that clear does not invalidate
+the past-the-end iterator.
+</p>
+</blockquote>
+
+<note>
+2010-02-08 Moved to Tentatively NAD Editorial after 5 positive votes on c++std-lib.
+Rationale added below.
+</note>
+
+</discussion>
+
+<rationale>
+<p>
+Solved as proposed by LWG <iref ref="704"/>.
+</p>
+</rationale>
+
+<resolution>
+
+<p>
+Change <sref ref="[container.requirements.general]"/>/10:
+</p>
+
+<blockquote>
+<p>
+Unless otherwise specified (see 23.2.4.1, 23.2.5.1, 23.3.2.3, and 23.3.6.4) all
+container types defined in this Clause meet the following additional
+requirements:
+</p>
+
+<ul>
+<li>
+..
+</li>
+
+<li>
+no <tt>erase()</tt>, <ins><tt>clear()</tt>,</ins> <tt>pop_back()</tt> or
+<tt>pop_front()</tt> function throws an exception.
+</li>
+
+<li>
+...
+</li>
+</ul>
+
+</blockquote>
+
+<p>
+Replace the following words from Table 94 &mdash; Sequence container
+requirements (in addition to container) in <sref ref="[sequence.reqmts]"/>:
+</p>
+
+<blockquote>
+<table border="1">
+<caption>Table 94 &mdash; Sequence container requirements (in addition to
+container)</caption>
+<tr>
+<th>Expression</th>
+<th>Return type</th>
+<th>Assertion/note<br/>pre-/post-condition</th>
+</tr>
+
+<tr>
+<td><tt>a.clear()</tt></td>
+<td><tt>void</tt></td>
+<td><del><tt>erase(begin(), end())</tt></del><br/>
+<ins>Destroys all elements in the container a. Invalidates all references,
+pointers, and iterators referring to the elements of <tt>a</tt> and may
+invalidate the past-the-end iterator.</ins><br/>
+post: <tt><del>size() == 0</del> <ins>a.empty() == true</ins></tt>.  </td>
+</tr>
+</table>
+</blockquote>
+
+<p>
+Add a new paragraph after <sref ref="[forwardlist.modifiers]"/>/23:
+</p>
+
+<blockquote><pre>
+void clear();
+</pre>
+
+<blockquote>
+<p>
+23 <i>Effects:</i> Erases all elements in the range <tt>[begin(),end())</tt>.
+</p>
+<p><ins>
+<i>Remarks:</i> Does not invalidate past-the-end iterators.
+</ins></p>
+</blockquote>
+</blockquote>
+
+</resolution>
+
+</issue>

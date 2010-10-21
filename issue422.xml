@@ -1,0 +1,69 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+    <!DOCTYPE issue SYSTEM "lwg_issue.dtd" [
+        <!ENTITY nbsp " ">
+     ]
+>
+<issue num="422" status="CD1">
+<title>explicit specializations of member functions of class templates</title>
+<section><sref ref="[reserved.names]"/></section>
+<submitter>Martin Sebor</submitter>
+<date>18 Sep 2003</date>
+
+<discussion>
+<p>
+It has been suggested that 17.4.3.1, p1 may or may not allow programs to
+explicitly specialize members of standard templates on user-defined types.
+The answer to the question might have an impact where library requirements
+are given using the "as if" rule. I.e., if programs are allowed to specialize
+member functions they will be able to detect an implementation's strict
+conformance to Effects clauses that describe the behavior of the function
+in terms of the other member function (the one explicitly specialized by
+the program) by relying on the "as if" rule.
+</p>
+</discussion>
+
+<resolution>
+
+<p>
+  Add the following sentence to <sref ref="[reserved.names]"/>, p1:
+</p>
+
+<blockquote><p>
+It is undefined for a C++ program to add declarations or definitions to
+namespace std or namespaces within namespace <tt>std</tt> unless otherwise specified. A
+program may add template specializations for any standard library template to
+namespace <tt>std</tt>. Such a specialization (complete or partial) of a standard library
+template results in undefined behavior unless the declaration depends on a
+user-defined type of external linkage and unless the specialization meets the
+standard library requirements for the original template.<sup>168)</sup>
+<ins>A program has undefined behavior if it declares</ins>
+</p>
+<ul>
+<li><ins>an explicit specialization of any member function of a standard
+            library class template, or</ins></li>
+<li><ins>an explicit specialization of any member function template of a
+            standard library class or class template, or</ins></li>
+<li><ins>an explicit or partial specialization of any member class
+            template of a standard library class or class template.</ins></li>
+</ul>
+<p>
+A program may explicitly instantiate any templates in the standard library only
+if the declaration depends on the name of a user-defined type of external
+linkage and the instantiation meets the standard library requirements for the
+original template.
+</p></blockquote>
+
+<note>Kona: straw poll was 6-1 that user programs should not be
+  allowed to specialize individual member functions of standard
+  library class templates, and that doing so invokes undefined
+  behavior. Post-Kona: Martin provided wording.</note>
+
+<note>Sydney: The LWG agrees that the standard shouldn't permit users
+to specialize individual member functions unless they specialize the
+whole class, but we're not sure these words say what we want them to;
+they could be read as prohibiting the specialization of any standard
+library class templates. We need to consult with CWG to make sure we
+use the right wording.</note>
+
+</resolution>
+</issue>

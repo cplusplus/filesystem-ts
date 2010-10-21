@@ -1,0 +1,243 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="1237" status="WP">
+<title>Constrained error_code/error_condition members</title>
+<section><sref ref="[syserr]"/></section>
+<submitter>Daniel Kr&uuml;gler</submitter>
+<date>14 Oct 2009</date>
+
+<discussion>
+<p>
+I'm just reflecting on the now SFINAE-constrained constructors
+and assignment operators of <tt>error_code</tt> and <tt>error_condition</tt>:
+</p>
+<p>
+These are the <em>only</em> library components that are pro-actively
+announcing that they are using <tt>std::enable_if</tt> as constraining tool,
+which has IMO several disadvantages:
+</p>
+
+<ol>
+<li>
+<p>
+With the availability of template default arguments and
+decltype, using <tt>enable_if</tt> in C++0x standard library, seems
+unnecessary restricting implementation freedom. E.g. there
+should be not need for a useless specification of a dummy
+default function argument, which only confuses the reader.
+A more reasonable implementation could e.g. be
+</p>
+
+<blockquote><pre>
+template &lt;class ErrorCodeEnum
+ class = typename enable_if&lt;is_error_code_enum&lt;ErrorCodeEnum&gt;::value&gt;::type&gt;
+error_code(ErrorCodeEnum e);
+</pre></blockquote>
+
+<p>
+As currently specified, the function signatures are so unreadable,
+that errors quite easily happen, see e.g. <iref ref="1229"/>.
+</p>
+</li>
+
+<li>
+<p>
+We have a <em>lot</em> of constrained functions in other places, that
+now have a standard phrase that is easily understandable:
+</p>
+
+<blockquote>
+<i>Remarks:</i> This constructor/function shall participate in overload
+resolution if and only if X.
+</blockquote>
+
+<p>
+where X describes the condition. Why should these components deviate?
+</p>
+</li>
+
+<li>
+<p>
+If <tt>enable_if</tt> would <em>not</em> be explicitly specified, the standard library
+is much better prepared for the future. It would also be possible, that
+libraries with partial support for not-yet-standard-concepts could provide
+a much better diagnostic as is possible with <tt>enable_if</tt>. This again
+would allow for experimental concept implementations in the wild,
+which as a result would make concept standardization a much more
+natural thing, similar to the way as templates were standardized
+in C++.
+</p>
+
+<p>
+In summary: I consider it as a library defect that <tt>error_code</tt> and
+<tt>error_condition</tt> explicitly require a dependency to <tt>enable_if</tt> and
+do limit implementation freedom and I volunteer to prepare a
+corresponding resolution.
+</p>
+</li>
+</ol>
+
+<note>
+2009-10-18 Beman adds:
+</note>
+
+<blockquote>
+I support this proposed resolution, and thank Daniel for writing it up.
+</blockquote>
+
+<note>
+2009-10 Santa Cruz:
+</note>
+
+<blockquote>
+Moved to Ready.
+</blockquote>
+
+</discussion>
+
+<resolution>
+<note>
+Should this resolution be accepted, I recommend to resolve <iref ref="1229"/> as NAD
+</note>
+
+<ol>
+<li>
+<p>
+In <sref ref="[syserr.errcode.overview]"/>/1, class <tt>error_code</tt>,
+change as indicated:
+</p>
+
+<blockquote><pre>
+// 19.5.2.2 constructors:
+error_code();
+error_code(int val, const error_category&amp; cat);
+template &lt;class ErrorCodeEnum&gt;
+  error_code(ErrorCodeEnum e<del>,
+    typename enable_if&lt;is_error_code_enum&lt;ErrorCodeEnum&gt;::value&gt;::type * = 0</del>);
+
+// 19.5.2.3 modifiers:
+void assign(int val, const error_category&amp; cat);
+template &lt;class ErrorCodeEnum&gt;
+  <del>typename enable_if&lt;is_error_code_enum&lt;ErrorCodeEnum&gt;::value&gt;::type</del><ins>error_code</ins>&amp;
+    operator=(ErrorCodeEnum e);
+void clear();
+</pre></blockquote>
+</li>
+
+<li>
+<p>
+Change <sref ref="[syserr.errcode.constructors]"/> around the prototype before p. 7:
+</p>
+
+<blockquote><pre>
+template &lt;class ErrorCodeEnum&gt;
+error_code(ErrorCodeEnum e<del>,
+  typename enable_if&lt;is_error_code_enum&lt;ErrorCodeEnum&gt;::value&gt;::type * = 0</del>);
+</pre>
+<blockquote>
+<p>
+<ins><i>Remarks:</i> This constructor shall not participate in overload
+resolution, unless
+<tt>is_error_code_enum&lt;ErrorCodeEnum&gt;::value == true</tt>.</ins>
+</p>
+</blockquote>
+</blockquote>
+</li>
+
+<li>
+<p>
+Change <sref ref="[syserr.errcode.modifiers]"/> around the prototype before p. 3:
+</p>
+
+<blockquote><pre>
+template &lt;class ErrorCodeEnum&gt;
+  <del>typename enable_if&lt;is_error_code_enum&lt;ErrorCodeEnum&gt;::value&gt;::type</del><ins>error_code</ins>&amp;
+    operator=(ErrorCodeEnum e);
+</pre>
+
+<blockquote>
+<ins><i>Remarks:</i> This operator shall not participate in overload resolution, unless
+<tt>is_error_code_enum&lt;ErrorCodeEnum&gt;::value == true</tt>.</ins>
+</blockquote>
+</blockquote>
+</li>
+
+<li>
+<p>
+In <sref ref="[syserr.errcondition.overview]"/>/1, class <tt>error_condition</tt>, change
+as indicated:
+</p>
+
+<blockquote><pre>
+// 19.5.3.2 constructors:
+error_condition();
+error_condition(int val, const error_category& cat);
+template &lt;class ErrorConditionEnum&gt;
+  error_condition(ErrorConditionEnum e<del>,
+    typename enable_if&lt;is_error_condition_enum&lt;ErrorConditionEnum&gt;::type* = 0</del>);
+
+// 19.5.3.3 modifiers:
+void assign(int val, const error_category&amp; cat);
+template&lt;<del>typename</del><ins>class</ins> ErrorConditionEnum&gt;
+  <del>typename enable_if&lt;is_error_condition_enum&lt;ErrorConditionEnum&gt;, error_code&gt;::type</del><ins>error_condition</ins> &amp;
+    operator=( ErrorConditionEnum e );
+void clear();
+</pre></blockquote>
+</li>
+
+<li>
+<p>
+Change <sref ref="[syserr.errcondition.constructors]"/> around the
+prototype before p. 7:
+</p>
+
+<blockquote><pre>
+template &lt;class ErrorConditionEnum&gt;
+  error_condition(ErrorConditionEnum e<del>,
+    typename enable_if&lt;is_error_condition_enum&lt;ErrorConditionEnum&gt;::value&gt;::type* = 0</del>);
+</pre>
+<blockquote>
+<ins><i>Remarks:</i> This constructor shall not participate in overload
+resolution, unless
+<tt>is_error_condition_enum&lt;ErrorConditionEnum&gt;::value == true</tt>.</ins>
+</blockquote>
+</blockquote>
+</li>
+
+<li>
+<p>
+Change <sref ref="[syserr.errcondition.modifiers]"/> around the
+prototype before p. 3:
+</p>
+
+<blockquote><pre>
+template &lt;class ErrorConditionEnum&gt;
+  <del>typename enable_if&lt;is_error_condition_enum&lt;ErrorConditionEnum&gt;::value&gt;::type</del><ins>error_condition</ins>&amp;
+    operator=(ErrorConditionEnum e);
+</pre>
+
+<blockquote>
+<p>
+<ins><i>Remarks:</i> This operator shall not participate in overload resolution, unless
+<tt>is_error_condition_enum&lt;ErrorConditionEnum&gt;::value == true</tt>.</ins>
+</p>
+
+<p>
+<i>Postcondition:</i> <tt>*this == make_error_condition(e)</tt>.
+</p>
+
+<p>
+<ins><i>Returns:</i> <tt>*this</tt></ins>
+</p>
+</blockquote>
+</blockquote>
+
+</li>
+</ol>
+
+</resolution>
+
+</issue>

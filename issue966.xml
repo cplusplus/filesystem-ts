@@ -1,0 +1,218 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="966" status="Open">
+<title>Various threading bugs #16</title>
+<section><sref ref="[thread.condition.condvar]"/></section>
+<submitter>Pete Becker</submitter>
+<date>7 Jan 2009</date>
+
+<discussion>
+<p>
+<sref ref="[thread.condition.condvar]"/>:
+<tt>condition_variable::wait</tt> and
+<tt>condition_variable::wait_until</tt> both have a postcondition that
+<tt>lock</tt> is locked by the calling thread, and a throws clause that
+requires throwing an exception if this postcondition cannot be achieved.
+How can the implementation detect that this <tt>lock</tt> can never be
+obtained?
+</p>
+
+<note>
+Summit:
+</note>
+
+<blockquote>
+Move to open. Requires wording. Agreed this is an issue, and the
+specification should not require detecting deadlocks.
+</blockquote>
+
+<note>
+2009-08-01 Howard provides wording.
+</note>
+
+<blockquote>
+<p>
+The proposed wording is inspired by the POSIX spec which says:
+</p>
+
+<blockquote>
+<dl>
+<dt>[EINVAL]</dt>
+<dd>The value specified by cond or mutex is invalid.</dd>
+<dt>[EPERM]</dt>
+<dd>The mutex was not owned by the current thread at the time of the call.</dd>
+</dl>
+</blockquote>
+
+<p>
+I do not believe [EINVAL] is possible without memory corruption (which we don't
+specify).  [EPERM] is possible if this thread doesn't own the mutex, which is
+listed as a precondition.  "May" is used instead of "Shall" because not all
+OS's are POSIX.
+</p>
+</blockquote>
+
+<note>
+2009-10 Santa Cruz:
+</note>
+
+<blockquote>
+Leave open, Detlef to provide improved wording.
+</blockquote>
+
+<note>
+2009-10-23 Detlef Provided wording.
+</note>
+
+<blockquote>
+<p>
+Detlef's wording put in Proposed resolution.  Original wording here:
+</p>
+<blockquote>
+<p>
+Change <sref ref="[thread.condition.condvar]"/> p12, p19 and
+<sref ref="[thread.condition.condvarany]"/> p10, p16:
+</p>
+
+<blockquote>
+<i>Throws:</i> <ins>May throw</ins> <tt>std::system_error</tt> 
+<ins>
+if a precondition is not met.
+</ins>
+<del>when the effects or postcondition
+cannot be achieved.</del>
+</blockquote>
+</blockquote>
+</blockquote>
+
+<note>
+2009-10 Santa Cruz:
+</note>
+
+<blockquote>
+Leave open, Detlef to provide improved wording.
+</blockquote>
+
+<note>
+2009-11-18 Anthony adds:
+</note>
+
+<blockquote>
+<p>
+<tt>condition_variable::wait</tt> takes a <tt>unique_lock&lt;mutex&gt;</tt>. We
+know whether or not a <tt>unique_lock</tt> owns a lock, through use of its
+<tt>owns_lock()</tt> member.
+</p>
+
+<p>
+I would like to propose the following resolution:
+</p>
+
+<blockquote>
+<p>
+Modify the first sentence of <sref ref="[thread.condition.condvar]"/> p9:
+</p>
+
+<blockquote><pre>
+void wait(unique_lock&lt;mutex&gt;&amp; lock);
+</pre>
+<blockquote>
+9 <i>Precondition:</i> <del><tt>lock</tt> is locked by the calling thread</del>
+<ins><tt>lock.owns_lock()</tt> is <tt>true</tt></ins>, and either
+<p>...</p>
+</blockquote>
+</blockquote>
+
+<p>
+Replace <sref ref="[thread.condition.condvar]"/> p11-13 with:
+</p>
+
+<blockquote><pre>
+void wait(unique_lock&lt;mutex&gt;&amp; lock);
+</pre>
+<blockquote>
+<p>...</p>
+<p>
+11 <i>Postcondition:</i> <del><tt>lock</tt> is locked by the calling
+thread</del> <ins><tt>lock.owns_lock()</tt> is <tt>true</tt></ins>.
+</p>
+
+<p>
+12 <i>Throws:</i> <tt>std::system_error</tt> <del>when the effects or
+postcondition cannot be achieved</del> <ins>if the implementation detects that
+the preconditions are not met or the effects cannot be achieved. Any exception
+thrown by <tt>lock.lock()</tt> or <tt>lock.unlock()</tt></ins>.
+</p>
+
+<p>
+13 <i>Error Conditions:</i> <ins>The error conditions are implementation
+defined.</ins>
+</p>
+
+<ul>
+<li><del>
+equivalent error condition from <tt>lock.lock()</tt> or <tt>lock.unlock()</tt>.
+</del></li>
+</ul>
+
+</blockquote>
+</blockquote>
+</blockquote>
+</blockquote>
+
+<note>
+2010 Pittsburgh:
+</note>
+
+<blockquote>
+<p>
+There are heavy conflicts with adopted papers.
+</p>
+<p>
+This issue is dependent on LWG <iref ref="1268"/>.
+</p>
+<p>
+Leave open pending outstanding edits to the working draft. Detlef will provide
+wording.
+</p>
+<p>
+Possibly related to <iref ref="964"/>.
+</p>
+
+</blockquote>
+
+</discussion>
+
+<resolution>
+<p>
+Replace <sref ref="[thread.condition.condvar]"/> p12, p19 and
+<sref ref="[thread.condition.condvarany]"/> p10, p16:
+</p>
+
+<blockquote>
+<p><del>
+<i>Throws:</i> <tt>std::system_error</tt> when the effects or
+postcondition cannot be achieved.
+</del></p>
+<p><del>
+Error conditions:
+</del></p>
+<ul>
+<li><del>
+equivalent error condition from <tt>lock.lock()</tt> or <tt>lock.unlock()</tt>.
+</del></li>
+</ul>
+
+<p><ins>
+<i>Throws:</i> It is implementation-defined whether a <tt>std::system_error</tt>
+with implementation-defined error condition is thrown if the
+precondition is not met.
+</ins></p>
+</blockquote>
+
+</resolution>
+
+</issue>

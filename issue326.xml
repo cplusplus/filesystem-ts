@@ -1,0 +1,29 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="326" status="NAD">
+<title>Missing typedef in moneypunct_byname</title>
+<section><sref ref="[locale.moneypunct.byname]"/></section>
+<submitter>Martin Sebor</submitter>
+<date>05 Jul 2001</date>
+
+<discussion>
+<p>The definition of the moneypunct facet contains the typedefs char_type
+and string_type. Only one of these names, string_type, is defined in
+the derived facet, moneypunct_byname.</p>
+</discussion>
+
+<resolution>
+<p>For consistency with the numpunct facet, add a typedef for
+char_type to the definition of the moneypunct_byname facet in
+<sref ref="[locale.moneypunct.byname]"/>.</p>
+</resolution>
+
+<rationale>
+<p>The absence of the typedef is irrelevant.  Users can still access
+the typedef, because it is inherited from the base class.</p>
+</rationale>
+
+</issue>

@@ -1,0 +1,63 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="965" status="WP">
+<title>Various threading bugs #15</title>
+<section><sref ref="[thread.condition.condvar]"/></section>
+<submitter>Pete Becker</submitter>
+<date>7 Jan 2009</date>
+
+<discussion>
+<p>
+<sref ref="[thread.condition.condvar]"/>: the constructor for
+<tt>condition_variable</tt> throws an exception with error code
+<tt>device_or_resource_busy</tt> "if attempting to initialize a
+previously-initialized but as of yet undestroyed <tt>condition_variable</tt>."
+How can this occur?
+</p>
+
+<note>
+Summit:
+</note>
+<blockquote>
+<p>
+Move to review. Proposed resolution: strike the <tt>device_or_resource_busy</tt>
+error condition from the constructor of <tt>condition_variable</tt>.
+</p>
+<ul>
+<li>
+This is a POSIX error that cannot occur in this interface because the
+C++ interface does not separate declaration from initialization.
+</li>
+</ul>
+</blockquote>
+
+<note>
+Batavia (2009-05):
+</note>
+<blockquote>
+We agree with the proposed resolution.
+Move to Tentatively Ready.
+</blockquote>
+</discussion>
+
+<resolution>
+<p>
+Change <sref ref="[thread.condition.condvar]"/> p3:
+</p>
+
+<blockquote>
+<ul>
+<li>...</li>
+<li>
+<del><tt>device_or_resource_busy</tt> -- if attempting to initialize a
+previously-initialized but as of yet undestroyed
+<tt>condition_variable</tt>.</del>
+</li>
+</ul>
+</blockquote>
+</resolution>
+
+</issue>

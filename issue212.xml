@@ -1,0 +1,30 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="212" status="TC1">
+<title>Empty range behavior unclear for several algorithms</title>
+<section><sref ref="[alg.min.max]"/></section>
+<submitter>Nico Josuttis</submitter>
+<date>26 Feb 2000</date>
+
+<discussion>
+<p>The standard doesn't specify what min_element() and max_element() shall
+return if the range is empty (first equals last). The usual implementations
+return last. This problem seems also apply to partition(), stable_partition(),
+next_permutation(), and prev_permutation().</p>
+</discussion>
+
+<resolution>
+<p>In <sref ref="[alg.min.max]"/> - Minimum and maximum, paragraphs 7 and
+9, append: Returns last if first==last.</p>
+</resolution>
+
+<rationale>
+<p>The LWG looked in some detail at all of the above mentioned
+algorithms, but believes that except for min_element() and
+max_element() it is already clear that last is returned if first ==
+last.</p>
+</rationale>
+</issue>

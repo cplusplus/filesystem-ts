@@ -1,0 +1,35 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="215" status="NAD">
+<title>Can a map's key_type be const?</title>
+<section><sref ref="[associative.reqmts]"/></section>
+<submitter>Judy Ward</submitter>
+<date>29 Feb 2000</date>
+
+<discussion>
+<p>A user noticed that this doesn't compile with the Rogue Wave library because
+the rb_tree class declares a key_allocator, and allocator&lt;const int&gt; is
+not legal, I think:</p>
+<blockquote>
+  <pre>map &lt; const int, ... &gt; // legal?</pre>
+</blockquote>
+<p>which made me wonder whether it is legal for a map's key_type to be const. In
+email from Matt Austern he said:</p>
+<blockquote>
+<p>I'm not sure whether it's legal to declare a map with a const key type. I
+hadn't thought about that question until a couple weeks ago. My intuitive
+feeling is that it ought not to be allowed, and that the standard ought to say
+so. It does turn out to work in SGI's library, though, and someone in the
+compiler group even used it. Perhaps this deserves to be written up as an issue
+too.</p>
+</blockquote>
+</discussion>
+
+<rationale>
+<p>The &quot;key is assignable&quot; requirement from table 69 in
+<sref ref="[associative.reqmts]"/> already implies the key cannot be const.</p>
+</rationale>
+</issue>

@@ -1,0 +1,74 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="749" status="CD1">
+<title>Currently <tt>has_nothrow_copy_constructor&lt;T&gt;::value</tt> is true if T has 'a' nothrow copy constructor.</title>
+<section><sref ref="[meta.unary.prop]"/></section>
+<submitter>Alisdair Meredith</submitter>
+<date>10 Oct 2007</date>
+
+<discussion>
+<p>
+Unfortunately a class can have multiple copy constructors, and I believe to
+be useful this trait should only return true is ALL copy constructors are
+no-throw.
+</p>
+<p>
+For instance:
+</p>
+<blockquote>
+<pre>
+struct awkward {
+ awkward( const awkward &amp; ) throw() {}
+ awkward( awkward &amp; ) { throw "oops"; } };
+</pre>
+</blockquote>
+</discussion>
+
+<resolution>
+<p>
+Change <sref ref="[meta.unary.prop]"/>:
+</p>
+
+<blockquote>
+<pre>has_trivial_copy_constructor</pre>
+<blockquote>
+<tt>T</tt> is a trivial type (3.9) or a reference type or a class type <del>with a trivial copy constructor</del>
+<ins>where all copy constructors are trivial</ins> (12.8).
+</blockquote>
+</blockquote>
+
+<blockquote>
+<pre>has_trivial_assign</pre>
+<blockquote>
+<tt>T</tt> is neither <tt>const</tt> nor a reference type, and <tt>T</tt> is a trivial type (3.9)
+or a class type <del>with a trivial copy assignment operator</del> <ins>where all copy assignment operators are trivial</ins> (12.8).
+</blockquote>
+</blockquote>
+
+<blockquote>
+<pre>has_nothrow_copy_constructor</pre>
+<blockquote>
+<tt>has_trivial_copy_constructor&lt;T&gt;::value</tt> is <tt>true</tt> or <tt>T</tt> is a class type <del>with
+a</del> <ins>where all</ins> copy constructor<ins>s</ins> <del>that is</del> <ins>are</ins> 
+known not to throw any exceptions or <tt>T</tt> is an
+array of such a class type
+</blockquote>
+</blockquote>
+
+<blockquote>
+<pre>has_nothrow_assign</pre>
+<blockquote>
+<tt>T</tt> is neither <tt>const</tt> nor a reference type, and
+<tt>has_trivial_assign&lt;T&gt;::value</tt> is <tt>true</tt> or <tt>T</tt> is a class type <del>with a</del>
+<ins>where all</ins> copy
+assignment operator<ins>s</ins> tak<ins>e</ins><del>ing</del> an lvalue of type <tt>T</tt> that is known not to
+throw any exceptions or <tt>T</tt> is an array of such a class type.
+</blockquote>
+</blockquote>
+
+</resolution>
+
+</issue>

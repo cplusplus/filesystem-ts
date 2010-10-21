@@ -1,0 +1,151 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="679" status="CD1">
+<title>resize parameter by value</title>
+<section><sref ref="[sequences]"/></section>
+<submitter>Howard Hinnant</submitter>
+<date>11 Jun 2007</date>
+
+<discussion>
+<p>
+The C++98 standard specifies that one member function alone of the containers
+passes its parameter (<tt>T</tt>) by value instead of by const reference:
+</p>
+
+<blockquote><pre>
+void resize(size_type sz, T c = T());
+</pre></blockquote>
+
+<p>
+This fact has been discussed / debated repeatedly over the years, the first time
+being even before C++98 was ratified.  The rationale for passing this parameter by
+value has been:
+</p>
+
+<blockquote>
+<p>
+So that self referencing statements are guaranteed to work, for example:
+</p>
+<blockquote><pre>
+v.resize(v.size() + 1, v[0]);
+</pre></blockquote>
+</blockquote>
+
+<p>
+However this rationale is not convincing as the signature for <tt>push_back</tt> is:
+</p>
+
+<blockquote><pre>
+void push_back(const T&amp; x);
+</pre></blockquote>
+
+<p>
+And <tt>push_back</tt> has similar semantics to <tt>resize</tt> (append).
+And <tt>push_back</tt> must also work in the self referencing case:
+</p>
+
+<blockquote><pre>
+v.push_back(v[0]);  // must work
+</pre></blockquote>
+
+<p>
+The problem with passing <tt>T</tt> by value is that it can be significantly more
+expensive than passing by reference.  The converse is also true, however when it is
+true it is usually far less dramatic (e.g. for scalar types).
+</p>
+
+<p>
+Even with move semantics available, passing this parameter by value can be expensive.
+Consider for example <tt>vector&lt;vector&lt;int&gt;&gt;</tt>:
+</p>
+
+<blockquote><pre>
+std::vector&lt;int&gt; x(1000);
+std::vector&lt;std::vector&lt;int&gt;&gt; v;
+...
+v.resize(v.size()+1, x);
+</pre></blockquote>
+
+<p>
+In the pass-by-value case, <tt>x</tt> is copied once to the parameter of
+<tt>resize</tt>.  And then internally, since the code can not know at compile
+time by how much <tt>resize</tt> is growing the <tt>vector</tt>, <tt>x</tt> is
+usually copied (not moved) a second time from <tt>resize</tt>'s parameter into its proper place
+within the <tt>vector</tt>.
+</p>
+
+<p>
+With pass-by-const-reference, the <tt>x</tt> in the above example need be copied
+only once.  In this case, <tt>x</tt> has an expensive copy constructor and so any
+copies that can be saved represents a significant savings.
+</p>
+
+<p>
+If we can be efficient for <tt>push_back</tt>, we should be efficient for <tt>resize</tt>
+as well.  The resize taking a reference parameter has been coded and shipped in the
+CodeWarrior library with no reports of problems which I am aware of.
+</p>
+
+</discussion>
+
+<resolution>
+<p>
+Change <sref ref="[deque]"/>, p2:
+</p>
+
+<blockquote><pre>
+class deque {
+   ...
+   void resize(size_type sz, <ins>const </ins>T<ins>&amp;</ins> c);
+</pre></blockquote>
+
+<p>
+Change <sref ref="[deque.capacity]"/>, p3:
+</p>
+
+<blockquote><pre>
+void resize(size_type sz, <ins>const </ins>T<ins>&amp;</ins> c);
+</pre></blockquote>
+
+<p>
+Change <sref ref="[list]"/>, p2:
+</p>
+
+<blockquote><pre>
+class list {
+   ...
+   void resize(size_type sz, <ins>const </ins>T<ins>&amp;</ins> c);
+</pre></blockquote>
+
+<p>
+Change <sref ref="[list.capacity]"/>, p3:
+</p>
+
+<blockquote><pre>
+void resize(size_type sz, <ins>const </ins>T<ins>&amp;</ins> c);
+</pre></blockquote>
+
+<p>
+Change <sref ref="[vector]"/>, p2:
+</p>
+
+<blockquote><pre>
+class vector {
+   ...
+   void resize(size_type sz, <ins>const </ins>T<ins>&amp;</ins> c);
+</pre></blockquote>
+
+<p>
+Change <sref ref="[vector.capacity]"/>, p11:
+</p>
+
+<blockquote><pre>
+void resize(size_type sz, <ins>const </ins>T<ins>&amp;</ins> c);
+</pre></blockquote>
+
+</resolution>
+
+</issue>

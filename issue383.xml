@@ -1,0 +1,73 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="383" status="CD1">
+<title>Bidirectional iterator assertion typo</title>
+<section><sref ref="[bidirectional.iterators]"/></section>
+<submitter>ysapir (submitted via comp.std.c++)</submitter>
+<date>17 Oct 2002</date>
+
+<discussion>
+<p>
+Following a discussion on the boost list regarding end iterators and
+the possibility of performing operator--() on them, it seems to me
+that there is a typo in the standard.  This typo has nothing to do
+with that discussion.
+</p>
+
+<p>
+I have checked this newsgroup, as well as attempted a search of the
+Active/Defect/Closed Issues List on the site for the words "s is
+derefer" so I believe this has not been proposed before.  Furthermore,
+the "Lists by Index" mentions only DR <iref ref="299"/> on section
+24.1.4, and DR <iref ref="299"/> is not related to this issue.
+</p>
+
+<p>
+The standard makes the following assertion on bidirectional iterators,
+in section 24.1.4 [lib.bidirectional.iterators], Table 75:
+</p>
+
+<pre>
+                         operational  assertion/note
+expression  return type   semantics    pre/post-condition
+
+--r          X&amp;                        pre: there exists s such
+                                       that r == ++s.
+                                       post: s is dereferenceable.
+                                       --(++r) == r.
+                                       --r == --s implies r == s.
+                                       &amp;r == &amp;--r.
+</pre>
+
+<p>
+(See <a href="http://aspn.activestate.com/ASPN/Mail/Message/boost/1395763">http://aspn.activestate.com/ASPN/Mail/Message/boost/1395763</a>.)
+</p>
+
+<p>
+In particular, "s is dereferenceable" seems to be in error.  It seems
+that the intention was to say "r is dereferenceable".
+</p>
+
+<p>
+If it were to say "r is dereferenceable" it would
+make perfect sense.  Since s must be dereferenceable prior to
+operator++, then the natural result of operator-- (to undo operator++)
+would be to make r dereferenceable.  Furthermore, without other
+assertions, and basing only on precondition and postconditions, we
+could not otherwise know this.  So it is also interesting information.
+</p>
+
+</discussion>
+
+<resolution>
+<p>
+Change the guarantee to "postcondition: r is dereferenceable."
+</p>
+</resolution>
+
+<rationale><p>Fixes an obvious typo</p></rationale>
+
+</issue>

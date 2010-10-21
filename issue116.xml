@@ -1,0 +1,75 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="116" status="Dup">
+<title>bitset cannot be constructed with a const char*</title>
+<section><sref ref="[template.bitset]"/></section>
+<submitter>Judy Ward</submitter>
+<date>6 Nov 1998</date>
+
+
+<discussion>
+
+<duplicate><iref ref="778"/></duplicate>
+
+<p>The following code does not compile with the EDG compiler:</p>
+
+<blockquote>
+  <pre>#include &lt;bitset&gt;
+using namespace std;
+bitset&lt;32&gt; b(&quot;111111111&quot;);</pre>
+</blockquote>
+
+<p>If you cast the ctor argument to a string, i.e.:</p>
+
+<blockquote>
+  <pre>bitset&lt;32&gt; b(string(&quot;111111111&quot;));</pre>
+</blockquote>
+
+<p>then it will compile. The reason is that bitset has the following templatized
+constructor:</p>
+
+<blockquote>
+  <pre>template &lt;class charT, class traits, class Allocator&gt;
+explicit bitset (const basic_string&lt;charT, traits, Allocator&gt;&amp; str, ...);</pre>
+</blockquote>
+
+<p>According to the compiler vendor, Steve Adamcyk at EDG, the user
+cannot pass this template constructor a <tt>const char*</tt> and
+expect a conversion to <tt>basic_string</tt>.  The reason is
+&quot;When you have a template constructor, it can get used in
+contexts where type deduction can be done. Type deduction basically
+comes up with exact matches, not ones involving conversions.&quot;
+</p>
+
+<p>I don't think the intention when this constructor became
+templatized was for construction from a <tt>const char*</tt> to no
+longer work.</p>
+</discussion>
+
+<resolution>
+<p>Add to <sref ref="[template.bitset]"/> a bitset constructor declaration</p>
+
+<blockquote>
+  <pre>explicit bitset(const char*);</pre>
+</blockquote>
+
+<p>and in Section <sref ref="[bitset.cons]"/> add:</p>
+
+<blockquote>
+  <pre>explicit bitset(const char* str);</pre>
+  <p>Effects: <br/>
+  &nbsp;&nbsp;&nbsp; Calls <tt>bitset((string) str, 0, string::npos);</tt></p>
+</blockquote>
+</resolution>
+
+<rationale>
+<p>Although the problem is real, the standard is designed that way so
+it is not a defect.  Education is the immediate workaround. A future
+standard may wish to consider the Proposed Resolution as an
+extension.</p>
+</rationale>
+
+</issue>

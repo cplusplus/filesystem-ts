@@ -1,0 +1,136 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="1343" status="New">
+<title>unexpected output required of strings</title>
+<section><sref ref="[string.io]"/></section>
+<submitter>James Kanze</submitter>
+<date>23 Jul 2010</date>
+
+<discussion>
+<p>
+What should the following code output? 
+</p>
+
+<blockquote><pre>
+#include &lt;string&gt; 
+#include &lt;iostream&gt; 
+#include &lt;iomanip&gt; 
+
+int 
+main() 
+{ 
+   std::string test("0X1Y2Z"); 
+   std::cout.fill('*'); 
+   std::cout.setf(std::ios::internal, std::ios::adjustfield); 
+   std::cout &lt;&lt; std::setw(8) &lt;&lt; test &lt;&lt; std::endl; 
+} 
+</pre></blockquote>
+
+<p>
+I would expect "<tt>**0X1Y2Z</tt>", and this is what the compilers I have access
+to (VC++, g++ and Sun CC) do.  But according to the standard, it should be
+"<tt>0X**1Y2Z</tt>":
+</p>
+
+<p>
+<sref ref="[string.io]"/>/5: 
+</p>
+
+<blockquote><pre>
+template&lt;class charT, class traits, class Allocator&gt;
+  basic_ostream&lt;charT, traits&gt;&amp;
+    operator&lt;&lt;(basic_ostream&lt;charT, traits&gt;&amp; os, const basic_string&lt;charT,traits,Allocator&gt;&amp; str);
+</pre><blockquote>
+<i>Effects:</i> Behaves as a formatted output function (<sref
+ref="[ostream.formatted.reqmts]"/>). After constructing a <tt>sentry</tt>
+object, if this object returns <tt>true</tt> when converted to a value of type
+<tt>bool</tt>, determines padding as described in <sref
+ref="[facet.num.put.virtuals]"/>, then inserts the resulting sequence of
+characters seq as if by calling <tt>os.rdbuf()-&gt;sputn(seq, n)</tt>, where
+<tt>n</tt> is the larger of <tt>os.width()</tt> and <tt>str.size()</tt>; then
+calls <tt>os.width(0)</tt>.
+</blockquote>
+</blockquote>
+
+<p>
+<sref ref="[facet.num.put.virtuals]"/>/5: 
+</p>
+
+<blockquote>
+<p>
+[...] 
+</p>
+
+<p>
+<b>Stage 3:</b> A local variable is initialized as
+</p>
+
+<blockquote><pre>
+fmtflags adjustfield= (flags &amp; (ios_base::adjustfield));
+</pre></blockquote>
+
+<p>
+The location of any padding is determined according to Table 88. 
+</p>
+
+<p>
+If <tt>str.width()</tt> is nonzero and the number of <tt>charT</tt>'s in the
+sequence after stage 2 is less than <tt>str.width()</tt>, then enough fill
+characters are added to the sequence at the position indicated for padding to
+bring the length of the sequence to <tt>str.width()</tt>. <tt>str.width(0)</tt>
+is called.
+</p>
+
+<table border="1">
+<caption>Table 88 &mdash; Fill padding</caption>
+<tr>
+<th>State</th>
+<th>Location</th>
+</tr>
+
+<tr>
+<td><tt>adjustfield == ios_base::left</tt></td>
+<td>pad after</td>
+</tr>
+
+<tr>
+<td><tt>adjustfield == ios_base::right</tt></td>
+<td>pad before</td>
+</tr>
+
+<tr>
+<td><tt>adjustfield == internal</tt> and a sign occurs in the representation</td>
+<td>pad after the sign</td>
+</tr>
+
+<tr>
+<td><tt>adjustfield == internal</tt> and representation after stage 1 began with 0x or 0X</td>
+<td>pad after x or X</td>
+</tr>
+
+<tr>
+<td><i>otherwise</i></td>
+<td>pad before</td>
+</tr>
+</table>
+
+</blockquote>
+
+<p>
+Although it's not 100% clear what "the sequence after stage 2" should mean here,
+when there is no stage 2, the only reasonable assumption is that it is the
+contents of the string being output.  In the above code, the string being output
+is "<tt>0X1Y2Z</tt>", which starts with "<tt>0X</tt>", so the padding should be
+inserted "after x or X", and not before the string. I believe that this is a
+defect in the standard, and not in the three compilers I tried.
+</p>
+
+</discussion>
+
+<resolution>
+</resolution>
+
+</issue>

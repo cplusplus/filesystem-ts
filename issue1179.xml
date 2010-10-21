@@ -1,0 +1,114 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="1179" status="NAD Editorial">
+<title>Probably editorial in [structure.specifications]</title>
+<section><sref ref="[structure.specifications]"/></section>
+<submitter>Robert Klarer</submitter>
+<date>21 Jul 2009</date>
+
+<discussion>
+<p>
+While reviewing <iref ref="971"/> I noted that <sref
+ref="[structure.specifications]"/>/7 says:
+</p>
+
+<blockquote>
+-7- Error conditions specify conditions where a function may fail. The
+conditions are listed, together with a suitable explanation, as the <tt>enum
+class errc</tt> constants (19.5) that could be used as an argument to
+function <tt>make_error_condition</tt> (19.5.3.6).
+</blockquote>
+
+<p>
+This paragraph should mention <tt>make_error_code</tt> or the text "that
+could be used as an argument to function <tt>make_error_condition</tt>
+(19.5.3.6)" should be deleted.  I believe this is editorial.
+</p>
+
+<note>
+2009-07-21 Chris adds:
+</note>
+
+<blockquote>
+<p>
+I'm not convinced there's a problem there, because as far as the "Error
+conditions" clauses are concerned, make_error_condition() is used by a
+user to test for the condition, whereas make_error_code is not. For
+example:
+</p>
+
+<blockquote><pre>
+void foobar(error_code& ec = throws());
+</pre></blockquote>
+
+<p>
+ Error conditions:
+</p>
+<blockquote>
+permission_denied - Insufficient privilege to perform operation.
+</blockquote>
+
+<p>
+When a user writes:
+</p>
+
+<blockquote><pre>
+error_code ec;
+foobar(ec);
+if (ec == errc::permission_denied)
+   ...
+</pre></blockquote>
+
+<p>
+the implicit conversion <tt>errc-&gt;error_condition</tt> makes the if-test
+equivalent to:
+</p>
+
+<blockquote><pre>
+if (ec == make_error_condition(errc::permission_denied))
+</pre></blockquote>
+
+<p>
+On the other hand, if the user had written:
+</p>
+
+<blockquote><pre>
+if (ec == make_error_code(errc::permission_denied))
+</pre></blockquote>
+
+<p>
+the test is now checking for a specific error code. The test may
+evaluate to <tt>false</tt> even though <tt>foobar()</tt> failed due to the documented
+error condition "Insufficient privilege".
+</p>
+</blockquote>
+
+<note>
+2009 Santa Cruz:
+</note>
+
+<blockquote>
+<p>
+NAD Editorial.
+</p>
+<p>
+What the WP says right now is literally true: these codes can be used as
+an argument to <tt>make_error_condition</tt>. (It is also true that they can be
+used as an argument to <tt>make_error_code</tt>, which the WP doesn't say.) Maybe
+it would be clearer to just delete "that could be used as an argument to
+function <tt>make_error_condition</tt>", since that fact is already implied by
+other things that we say. We believe that this is editorial.
+</p>
+</blockquote>
+
+</discussion>
+
+<resolution>
+<p>
+</p>
+</resolution>
+
+</issue>

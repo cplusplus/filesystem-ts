@@ -1,0 +1,94 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="691" status="CD1">
+<title>const_local_iterator cbegin, cend missing from TR1</title>
+<section><sref ref="[unord]"/>, <sref ref="[tr.hash]"/></section>
+<submitter>Joaqu&iacute;n M L&oacute;pez Mu&ntilde;oz</submitter>
+<date>14 Jun 2007</date>
+
+<discussion>
+<p>
+The last version of TR1 does not include the following member
+functions
+for unordered containers:
+</p>
+
+<blockquote><pre>
+const_local_iterator cbegin(size_type n) const;
+const_local_iterator cend(size_type n) const;
+</pre></blockquote>
+
+<p>
+which looks like an oversight to me. I've checked th TR1 issues lists
+and the latest working draft of the C++0x std (N2284) and haven't
+found any mention to these menfuns or to their absence.
+</p>
+<p>
+Is this really an oversight, or am I missing something?
+</p>
+
+</discussion>
+
+<resolution>
+<p>
+Add the following two rows to table 93 (unordered associative container
+requirements) in section <sref ref="[unord.req]"/>:
+</p>
+
+<blockquote>
+<table border="1">
+<caption>Unordered associative container requirements (in addition to container)</caption>
+<tr>
+<th>expression</th> <th>return type</th> <th>assertion/note pre/post-condition</th> <th>complexity</th>
+</tr>
+<tr>
+<td><ins><tt>b.cbegin(n)</tt></ins></td> <td><ins><tt>const_local_iterator</tt></ins></td> <td><ins><tt>n</tt> shall be in the range <tt>[0, bucket_count())</tt>. Note: <tt>[b.cbegin(n), b.cend(n))</tt> is a valid range containing all of the elements in the <tt>n</tt><sup><i>th</i></sup> bucket.</ins></td> <td><ins>Constant</ins></td> 
+</tr>
+<tr>
+<td><ins><tt>b.cend(n)</tt></ins></td> <td><ins><tt>const_local_iterator</tt></ins></td> <td><ins><tt>n</tt> shall be in the range <tt>[0, bucket_count())</tt>.</ins></td> <td><ins>Constant</ins></td> 
+</tr>
+</table>
+</blockquote>
+
+<p>
+Add to the synopsis in <sref ref="[unord.map]"/>:
+</p>
+
+<blockquote><pre>
+<ins>const_local_iterator cbegin(size_type n) const;
+const_local_iterator cend(size_type n) const;</ins>
+</pre></blockquote>
+
+<p>
+Add to the synopsis in <sref ref="[unord.multimap]"/>:
+</p>
+
+<blockquote><pre>
+<ins>const_local_iterator cbegin(size_type n) const;
+const_local_iterator cend(size_type n) const;</ins>
+</pre></blockquote>
+
+<p>
+Add to the synopsis in <sref ref="[unord.set]"/>:
+</p>
+
+<blockquote><pre>
+<ins>const_local_iterator cbegin(size_type n) const;
+const_local_iterator cend(size_type n) const;</ins>
+</pre></blockquote>
+
+<p>
+Add to the synopsis in <sref ref="[unord.multiset]"/>:
+</p>
+
+<blockquote><pre>
+<ins>const_local_iterator cbegin(size_type n) const;
+const_local_iterator cend(size_type n) const;</ins>
+</pre></blockquote>
+
+</resolution>
+
+</issue>

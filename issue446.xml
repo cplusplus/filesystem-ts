@@ -1,0 +1,89 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="446" status="NAD Editorial">
+<title>Iterator equality between different containers</title>
+<section><sref ref="[iterator.requirements]"/><sref ref="[container.requirements]"/></section>
+<submitter>Andy Koenig</submitter>
+<date>16 Dec 2003</date>
+
+<discussion>
+<p>
+What requirements does the standard place on equality comparisons between
+iterators that refer to elements of different containers.  For example, if
+v1 and v2 are empty vectors, is v1.end() == v2.end() allowed to yield true?
+Is it allowed to throw an exception?
+</p>
+
+<p>
+The standard appears to be silent on both questions.
+</p>
+<note>Sydney: The intention is that comparing two iterators from
+different containers is undefined, but it's not clear if we say that,
+or even whether it's something we should be saying in clause 23 or in
+clause 24.  Intuitively we might want to say that equality is defined
+only if one iterator is reachable from another, but figuring out how
+to say it in any sensible way is a bit tricky: reachability is defined
+in terms of equality, so we can't also define equality in terms of
+reachability.
+</note>
+
+<note>
+2009-07 Frankfurt
+</note>
+
+<blockquote>
+Daniel volunteered to work on this.
+</blockquote>
+
+<note>
+2009-09-20 Daniel provided wording.
+</note>
+
+<note>
+2009-10 Santa Cruz:
+</note>
+
+<blockquote>
+Leave as Open. Alisdair has volunteered to refine the wording.
+</blockquote>
+
+<note>
+2010 Pittsburgh:  Moved to NAD Editorial.  Rationale added below.
+</note>
+
+</discussion>
+
+<rationale>
+<p>
+Solved by
+<a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2010/n3066.html">N3066</a>.
+</p>
+</rationale>
+
+<resolution>
+<p>
+Insert a new paragraph between <sref ref="[iterator.requirements]"/>/7+8:
+</p>
+
+<blockquote>
+<p>
+[..] The result of the application of functions in the library to invalid
+ranges is undefined.
+</p>
+
+<p><ins>The result of directly or indirectly evaluating any comparison function
+or the binary - operator with two iterator values as arguments that
+were obtained
+from two different ranges <tt>r1</tt> and <tt>r2</tt> (including their past-the-end values) which
+are not subranges of one common range is undefined, unless explicitly
+described otherwise.</ins>
+</p>
+
+</blockquote>
+
+</resolution>
+
+</issue>

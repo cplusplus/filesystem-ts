@@ -1,0 +1,43 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="1219" status="Dup">
+<title>unique_lock::lock and resource_deadlock_would_occur</title>
+<section><sref ref="[thread.lock.unique.locking]"/></section>
+<submitter>Jeffrey Yasskin</submitter>
+<date>30 Sep 2009</date>
+
+<discussion>
+
+<duplicate><iref ref="1159"/></duplicate>
+
+<p>
+<tt>unique_lock::lock</tt> and friends raise
+"<tt>resource_deadlock_would_occur</tt> -- if the current thread already
+owns the mutex (i.e., on entry, <tt>owns</tt> is <tt>true</tt>)."  1)
+The current thread owning a mutex is not the same as any particular
+<tt>unique_lock::owns</tt> being <tt>true</tt>. 2) There's no need to
+raise this exception for a <tt>recursive_mutex</tt> if <tt>owns</tt> is
+<tt>false</tt>. 3) If <tt>owns</tt> is true, we need to raise some
+exception or the unique_lock will lose track of whether to unlock itself
+on destruction, but "deadlock" isn't it. For (3), s/bool owns/int
+ownership_level/ would fix it.
+</p>
+
+<note>
+2009-11-11 Alisdair notes that this issue is very closely related to <iref ref="1159"/>,
+if not a dup.
+</note>
+
+<note>
+2009-11-14 Moved to Tentatively Dup after 5 positive votes on c++std-lib.
+</note>
+
+</discussion>
+
+<resolution>
+</resolution>
+
+</issue>

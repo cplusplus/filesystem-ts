@@ -1,0 +1,60 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="1236" status="NAD">
+<title>reserved identifiers in programs not using the library</title>
+<section><sref ref="[library]"/></section>
+<submitter>Sean Hunt</submitter>
+<date>13 Oct 2009</date>
+
+<discussion>
+<p>
+I wasn't sure whether to consider this a library or a language issue,
+because the issue is I think it's incorrectly categorized as being part
+of the library, so I thought I'd send a message to both of you and let
+you sort it out.
+</p>
+
+<p>
+Most reserved identifiers are treated as unilaterally available to the
+implementation, such as to implement language extensions, or provide
+macros documenting its functionality. However, the requirements for
+reserved identifers are in <sref ref="[reserved.names]"/>, which are a
+subsection of <sref ref="[constraints]"/>. <sref
+ref="[constraints.overview]"/> appears only to apply to "C++ programs
+that use the facilities of the C++ standard library", meaning that, in
+theory, all implementations are erroneous in having any non-standard
+identifiers predefined for programs that do not, at some point, include
+a standard library header.
+</p>
+
+<p>
+Furthermore, it's unclear whether the use of certain identifiers is UB
+or results in an ill-formed program. In particular, <sref
+ref="[macro.names]"/> uses a "shall not", where <sref
+ref="[global.names]"/> says that names are "reserved to the
+implementation". <sref ref="[reserved.names]"/> seems only to cover the
+instance of a name being described as "reserved", so are implementations
+required to diagnose a program that performs, as an example, "<tt>#undef
+get</tt>"?
+</p>
+
+<note>
+2009 Santa Cruz:
+</note>
+
+<blockquote>
+Move to NAD. There may in theory be multiple interpretations possible,
+but there's no evidence that this causes any genuine problems or
+uncertainty about what implementations are allowed to do. We do not
+believe this rises to the level of a defect.
+</blockquote>
+
+</discussion>
+
+<resolution>
+</resolution>
+
+</issue>

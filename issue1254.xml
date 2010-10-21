@@ -1,0 +1,47 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="1254" status="WP">
+<title>Misleading sentence in <tt>vector&lt;bool&gt;::flip</tt></title>
+<section><sref ref="[vector.bool]"/></section>
+<submitter>Christopher Jefferson</submitter>
+<date>1 Nov 2009</date>
+
+<discussion>
+<p>
+The effects of <tt>vector&lt;bool&gt;::flip</tt> has the line:
+</p>
+
+<blockquote>
+It is unspecified whether the function has any effect on allocated but
+unused bits.
+</blockquote>
+
+<p>
+While this is technically true, it is misleading, as any member function
+in any standard container may change unused but allocated memory. Users
+can never observe such changes as it would also be undefined behaviour
+to read such memory.
+</p>
+
+<note>
+2009-11-14 Moved to Tentatively Ready after 5 positive votes on c++std-lib.
+</note>
+</discussion>
+
+<resolution>
+<p>
+Strike second sentence from the definition of <tt>vector&lt;bool&gt;::flip()</tt>,
+<sref ref="[vector.bool]"/>, paragraph 5.
+</p>
+
+<blockquote>
+<i>Effects:</i> Replaces each element in the container with its complement.
+<del>It is unspecified whether the function has any effect on allocated
+but unused bits.</del>
+</blockquote>
+</resolution>
+
+</issue>

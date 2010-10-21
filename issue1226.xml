@@ -1,0 +1,219 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="1226" status="NAD Editorial">
+<title>Incomplete changes of #890</title>
+<section><sref ref="[futures.errors]"/></section>
+<submitter>Daniel Kr&uuml;gler</submitter>
+<date>5 Oct 2009</date>
+
+<discussion>
+<p>
+Defect issue <iref ref="890"/> overlooked to adapt the <tt>future_category</tt> from
+<sref ref="[futures.overview]"/> and <sref ref="[futures.errors]"/>:
+</p>
+
+<blockquote><pre>
+extern const error_category* const future_category;
+</pre></blockquote>
+
+<p>
+which should be similarly transformed into function form.
+</p>
+
+<note>
+2009-10-27 Howard:
+</note>
+
+<blockquote>
+Moved to Tentatively Ready after 5 positive votes on c++std-lib.
+</blockquote>
+
+<note>
+2009-11-11 Daniel adds:
+</note>
+
+<blockquote>
+<p>
+I just observe that the proposed resolution of this issue
+is incomplete and needs to reworded. The problem is that the
+corresponding declarations
+</p>
+
+<blockquote><pre>
+constexpr error_code make_error_code(future_errc e);
+constexpr error_condition make_error_condition(future_errc e);
+</pre></blockquote>
+
+<p>
+as constexpr functions are incompatible to the requirements of constexpr
+functions given their specified implementation. Note that the incompatibility
+is <em>not</em> a result of the modifications proposed by the issue resolution,
+but already existed within the
+<a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2009/n2960.pdf">N2960</a>
+state where we have
+</p>
+
+<blockquote><pre>
+extern const error_category* const future_category;
+</pre></blockquote>
+
+<p>
+combined with
+</p>
+
+<blockquote><pre>
+constexpr error_code make_error_code(future_errc e);
+</pre>
+<blockquote>
+3 <i>Returns:</i> <tt>error_code(static_cast&lt;int&gt;(e), *future_category)</tt>.
+</blockquote>
+
+<pre>
+constexpr error_code make_error_condition(future_errc e);
+</pre>
+<blockquote>
+4 <i>Returns:</i> <tt>error_condition(static_cast&lt;int&gt;(e), *future_category)</tt>.
+</blockquote>
+</blockquote>
+
+<p>
+Neither is any of the constructors of <tt>error_code</tt> and <tt>error_condition</tt>
+constexpr, nor does the expression <tt>*future_category</tt> satisfy the
+requirements for a constant expression (<sref ref="[expr.const]"/>/2 bullet 6 in
+<a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2009/n3000.pdf">N3000</a>).
+</p>
+
+<p>
+The simple solution is just to remove the constexpr qualifiers for both
+functions, which makes sense, because none of the remaining <tt>make_error_*</tt>
+overloads in the library is constexpr. One might consider to realize that
+those <tt>make_*</tt> functions could satisfy the constexpr requirements, but this
+looks not like an easy task to me, because it would need to rely on a not
+yet existing language feature. If such a change is wanted, a new issue
+should be opened after the language extension approval (if at all) [1].
+</p>
+
+<p>
+If no-one complaints I would like to ask Howard to add the following
+modifications to this issue, alternatively a new issue could be opened but I
+don't know what the best solution is that would cause as little overhead
+as possible.
+</p>
+<p>
+What-ever the route is, the following is my proposed resolution for this issue
+interaction part of the story:
+</p>
+
+<blockquote>
+<p>
+In <sref ref="[futures.overview]"/>/1, Header <tt>&lt;future&gt;</tt> synopsis <em>and</em>
+in <sref ref="[futures.errors]"/>/3+4
+change as indicated:
+</p>
+
+<blockquote><pre>
+<del>constexpr</del> error_code make_error_code(future_errc e);
+<del>constexpr</del> error_condition make_error_condition(future_errc e);
+</pre></blockquote>
+</blockquote>
+
+<p>
+[1] Let me add that we have a related  NAD issue here: <iref ref="832"/>
+so the chances for realization are little IMO.
+</p>
+
+<note>
+Howard: I've updated the proposed wording as Daniel suggests and set to Review.
+</note>
+</blockquote>
+
+<note>
+2009-11-13 Moved to Tentatively Ready after 5 positive votes on c++std-lib.
+</note>
+
+<note>
+2010 Pittsburgh:
+</note>
+
+<blockquote>
+Moved to NAD Editorial.  Rationale added below.
+</blockquote>
+
+</discussion>
+
+<rationale>
+<p>
+Solved by N3058.
+</p>
+</rationale>
+
+<resolution>
+<ol>
+<li>
+<p>
+Change in <sref ref="[futures.overview]"/>, header <tt>&lt;future&gt;</tt> synopsis:
+</p>
+
+<blockquote><pre>
+<del>extern</del> const error_category<ins>&amp;</ins><del>* const</del> future_category<ins>()</ins>;
+</pre></blockquote>
+</li>
+
+<li>
+<p>
+In <sref ref="[futures.overview]"/>/1, Header <tt>&lt;future&gt;</tt> synopsis 
+change as indicated:
+</p>
+
+<blockquote><pre>
+<del>constexpr</del> error_code make_error_code(future_errc e);
+<del>constexpr</del> error_condition make_error_condition(future_errc e);
+</pre></blockquote>
+</li>
+
+<li>
+<p>
+Change in <sref ref="[futures.errors]"/>:
+</p>
+
+<blockquote><pre>
+<del>extern</del> const error_category<ins>&amp;</ins><del>* const</del> future_category<ins>()</ins>;
+</pre>
+
+<blockquote>
+<p>
+<del>1- <tt>future_category</tt> shall point to a statically initialized object
+of a type derived from class <tt>error_category</tt>.</del>
+</p>
+<p>
+<ins>1- <i>Returns:</i> A reference to an object of a type
+derived from class <tt>error_category</tt>.</ins>
+</p>
+</blockquote>
+
+<pre>
+<del>constexpr</del> error_code make_error_code(future_errc e);
+</pre>
+
+<blockquote>
+3 <i>Returns:</i> <tt>error_code(static_cast&lt;int&gt;(e),
+<del>*</del>future_category<ins>()</ins>)</tt>.
+</blockquote>
+
+<pre>
+<del>constexpr</del> error_<del>code</del><ins>condition</ins> make_error_condition(future_errc e);
+</pre>
+
+<blockquote>
+4 <i>Returns:</i> <tt>error_condition(static_cast&lt;int&gt;(e),
+<del>*</del>future_category<ins>()</ins>)</tt>.
+</blockquote>
+</blockquote>
+</li>
+</ol>
+</resolution>
+
+</issue>

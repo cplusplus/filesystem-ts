@@ -1,0 +1,75 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="862" status="NAD Editorial">
+<title>Impossible complexity for 'includes'</title>
+<section><sref ref="[includes]"/></section>
+<submitter>Alisdair Meredith</submitter>
+<date>2 Jul 2008</date>
+
+<discussion>
+<p>
+In <sref ref="[includes]"/> the complexity is "at most -1 comparisons" if passed
+two empty ranges.  I don't know how to perform a negative number of
+comparisions!
+</p>
+
+<p>
+This same issue also applies to:
+</p>
+
+<ul>
+<li><tt>set_union</tt></li>
+<li><tt>set_intersection</tt></li>
+<li><tt>set_difference</tt></li>
+<li><tt>set_symmetric_difference</tt></li>
+<li><tt>merge</tt></li>
+</ul>
+
+<note>
+2009-03-30 Beman adds:
+</note>
+
+<blockquote>
+Suggest NAD. The complexity of empty ranges is -1 in other places in the
+standard. See <sref ref="[alg.merge]"/> <tt>merge</tt> and
+<tt>inplace_merge</tt>, and <tt>forward_list</tt> merge, for example.
+The time and effort to find and fix all places in the standard where
+empty range[s] result in negative complexity isn't worth the very
+limited benefit.
+</blockquote>
+
+<note>
+2009-05-09 Alisdair adds:
+</note>
+
+<blockquote>
+<p>
+I'm not happy with NAD if we can find a simple solution.
+</p>
+<p>
+How about adding a rider somewhere in clause 17 suggesting that complexities
+that specify a negative number of operations are treated as specifying zero
+operations?  That should generically solve the issue without looking for
+further cases.
+</p>
+</blockquote>
+
+<note>
+Batavia (2009-05):
+</note>
+<blockquote>
+Pete to provide "straightforward" wording.
+Move to NAD Editorial.
+</blockquote>
+</discussion>
+
+<resolution>
+<p>
+Recommend NAD.
+</p>
+</resolution>
+
+</issue>

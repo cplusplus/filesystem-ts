@@ -1,0 +1,59 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="1077" status="NAD Editorial">
+<title>Nonesense <tt>tuple</tt> declarations</title>
+<section><sref ref="[tuple.tuple]"/></section>
+<submitter>Pete Becker</submitter>
+<date>20 Mar 2009</date>
+
+<discussion>
+<p>
+Class template tuple <sref ref="[tuple.tuple]"/>:
+</p>
+
+<blockquote><pre>
+template &lt;class... UTypes&gt;
+  requires Constructible&lt;Types, const UTypes&amp;&gt;...
+template &lt;class... UTypes&gt;
+  requires Constructible&lt;Types, RvalueOf&lt;UTypes&gt;::type&gt;...
+</pre></blockquote>
+
+<p>
+Somebody needs to look at this and say what it should be.
+</p>
+
+<note>
+2009-03-21 Daniel provided wording.
+</note>
+
+<note>
+Batavia (2009-05):
+</note>
+<blockquote>
+The resolution looks correct; move to NAD Editorial.
+</blockquote>
+</discussion>
+
+<resolution>
+<p>
+In <sref ref="[tuple.tuple]"/>, class <tt>tuple</tt>, change as indicated:
+</p>
+
+<blockquote><pre>
+template &lt;class... UTypes&gt;
+  requires Constructible&lt;Types, const UTypes&amp;&gt;...
+  <ins>tuple(const pair&lt;UTypes...&gt;&amp;);</ins>
+template &lt;class... UTypes&gt;
+  requires Constructible&lt;Types, RvalueOf&lt;UTypes&gt;::type&gt;...
+  <ins>tuple(pair&lt;UTypes...&gt;&amp;&amp;);</ins>
+</pre></blockquote>
+
+<p>
+[NB.: The corresponding prototypes do already exist in <sref ref="[tuple.cnstr]"/>/7+8]
+</p>
+</resolution>
+
+</issue>

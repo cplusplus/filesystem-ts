@@ -1,0 +1,184 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="978" status="WP">
+<title>Hashing smart pointers</title>
+<section><sref ref="[unord.hash]"/></section>
+<submitter>Alisdair Meredith</submitter>
+<date>2 Feb 2009</date>
+
+<discussion>
+<p><b>Addresses UK 208</b></p>
+<p>
+I don't see an open issue on supporting <tt>std::hash</tt> for smart pointers
+(<tt>unique_ptr</tt> and <tt>shared_ptr</tt> at least).
+</p>
+<p>
+It seems reasonable to at least expect support for the smart
+pointers, especially as they support comparison for use in ordered
+associative containers.
+</p>
+
+<note>
+Batavia (2009-05):
+</note>
+<blockquote>
+<p>
+Howard points out that the client can always supply a custom hash function.
+</p>
+<p>
+Alisdair replies that the smart pointer classes are highly likely
+to be frequently used as hash keys.
+</p>
+<p>
+Bill would prefer to be conservative.
+</p>
+<p>
+Alisdair mentions that this issue may also be viewed as a subissue or
+duplicate of issue <iref ref="1025"/>.
+</p>
+<p>
+Move to Open, and recommend the issue be deferred until after the next
+Committee Draft is issued.
+</p>
+</blockquote>
+
+<note>
+2009-05-31 Peter adds:
+</note>
+
+<blockquote>
+<blockquote>
+Howard points out that the client can always supply a custom hash function.
+</blockquote>
+<p>
+Not entirely true. The client cannot supply the function that hashes the
+address of the control block (the equivalent of the old <tt>operator&lt;</tt>, now
+proudly carrying the awkward name of '<tt>owner_before</tt>'). Only the
+implementation can do that, not necessarily via specializing <tt>hash&lt;&gt;</tt>, of
+course.
+</p>
+<p>
+This hash function makes sense in certain situations for <tt>shared_ptr</tt>
+(when one needs to switch from <tt>set/map</tt> using ownership ordering to
+<tt>unordered_set/map</tt>) and is the only hash function that makes sense for
+<tt>weak_ptr</tt>.
+</p>
+</blockquote>
+
+<note>
+2009-07-28 Alisdair provides wording.
+</note>
+
+<note>
+2009-10 Santa Cruz:
+</note>
+
+<blockquote>
+Move to Ready.
+</blockquote>
+
+<note>
+2009-11-16 Moved from Ready to Open:
+</note>
+
+<blockquote>
+<p>
+Pete writes:
+</p>
+<blockquote>
+<p>
+As far as I can see, "...suitable for using this type as key in unordered
+associative containers..." doesn't define any semantics. It's advice to the
+reader, and if it's present at all it should be in a note. But we have far too
+much of this sort of editorial commentary as it is.
+</p>
+<p>
+And in the resolution of 978 it's clearly wrong: it says that if there is no
+hash specialization available for <tt>D::pointer</tt>, the implementation may provide
+<tt>hash&lt;unique_ptr&lt;T,D&gt;&gt;</tt> if the result is not suitable for use in unordered
+containers.
+</p>
+</blockquote>
+
+<p>
+Howard writes:
+</p>
+
+<blockquote>
+Is this a request to pull 978 from Ready?
+</blockquote>
+
+<p>
+Barry writes:
+</p>
+<blockquote>
+<p>
+I read this as more than a request. The PE says it's wrong, so it can't be
+Ready.
+</p>
+</blockquote>
+
+</blockquote>
+
+<note>
+2010-01-31 Alisdair: related to <iref ref="1245"/> and <iref ref="1182"/>.
+</note>
+
+<note>
+2010-02-08 Beman updates wording.
+</note>
+
+<note>
+2010-02-09 Moved to Tentatively Ready after 5 positive votes on c++std-lib.
+</note>
+
+</discussion>
+
+<resolution>
+
+<p><i>Add the following declarations to the synopsis of <tt>&lt;memory&gt;</tt> in 
+<sref ref="[memory]"/> </i></p>
+
+<blockquote>
+<pre><ins>// [util.smartptr.hash] hash support
+template &lt;class T&gt; struct hash;
+template &lt;class T, class D&gt; struct hash&lt;unique_ptr&lt;T,D&gt;&gt;;
+template &lt;class T&gt; struct hash&lt;shared_ptr&lt;T&gt;&gt;;</ins></pre>
+</blockquote>
+
+<p><i>Add a new subclause under <sref ref="[util.smartptr]"/> called hash support </i></p>
+
+<blockquote>
+<h3><ins>hash support [util.smartptr.hash]</ins></h3>
+
+<pre><ins>template &lt;class T, class D&gt; struct hash&lt;unique_ptr&lt;T,D&gt;&gt;;</ins></pre>
+
+<blockquote>
+<p><ins>
+Specialization meeting the requirements of class template <tt>hash</tt> (<sref
+ref="[unord.hash]"/>). For an object <tt>p</tt> of type <tt>UP</tt>, where
+<tt>UP</tt> is a type <tt>unique_ptr&lt;T,D&gt;</tt>,
+<tt>hash&lt;UP&gt;()(p)</tt> shall evaluate to the same value as
+<tt>hash&lt;typename UP::pointer&gt;()(p.get())</tt>. The specialization
+<tt>hash&lt;typename UP::pointer&gt;</tt> is required to be well-formed.
+</ins></p>
+</blockquote>
+
+<pre><ins>template &lt;class T&gt; struct hash&lt;shared_ptr&lt;T&gt;&gt;;</ins></pre>
+
+<blockquote>
+<p><ins>
+Specialization meeting the requirements of class template <tt>hash</tt> (<sref
+ref="[unord.hash]"/>). For an object <tt>p</tt> of type
+<tt>shared_ptr&lt;T&gt;</tt>, <tt>hash&lt;shared_ptr&lt;T&gt;&gt;()(p)</tt>
+shall evaluate to the same value as <tt> hash&lt;T*&gt;()(p.get())</tt>.
+</ins></p>
+</blockquote>
+</blockquote>
+
+</resolution>
+
+</issue>

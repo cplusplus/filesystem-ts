@@ -1,0 +1,45 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="207" status="Dup">
+<title>ctype&lt;char&gt; members return clause incomplete</title>
+<section><sref ref="[facet.ctype.char.members]"/></section>
+<submitter>Robert Klarer</submitter>
+<date>2 Nov 1999</date>
+
+<discussion>
+<p>
+The <tt>widen</tt> and <tt>narrow</tt> member functions are described
+in 22.2.1.3.2, paragraphs 9-11.  In each case we have two overloaded
+signatures followed by a <b>Returns</b> clause.  The <b>Returns</b>
+clause only describes one of the overloads.
+</p>
+</discussion>
+
+<resolution>
+<p>Change the returns clause in <sref ref="[facet.ctype.char.members]"/>
+paragraph 10 from:</p>
+<p>&nbsp;&nbsp;&nbsp; Returns: do_widen(low, high, to).</p>
+
+<p>to:</p>
+<p>&nbsp;&nbsp;&nbsp; Returns: do_widen(c) or do_widen(low, high, to), 
+respectively.</p>
+
+<p>Change the returns clause in <sref ref="[facet.ctype.char.members]"/> paragraph 11
+from:</p> 
+<p>&nbsp;&nbsp;&nbsp; Returns: do_narrow(low, high, to).</p>
+
+<p>to:</p>
+<p>&nbsp;&nbsp;&nbsp; Returns: do_narrow(c) or do_narrow(low, high, to), 
+respectively.</p>
+</resolution>
+
+<rationale>
+<p>Subsumed by issue <iref ref="153"/>, which addresses the same
+paragraphs.</p>
+<duplicate><iref ref="153"/></duplicate>
+</rationale>
+
+</issue>

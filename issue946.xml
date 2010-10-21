@@ -1,0 +1,73 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="946" status="NAD">
+<title><tt>duration_cast</tt> improperly specified</title>
+<section><sref ref="[time.duration.cast]"/></section>
+<submitter>Pete Becker</submitter>
+<date>20 Dec 2008</date>
+
+<discussion>
+<sref ref="[time.duration.cast]"/>/3:
+
+<blockquote>
+.... All intermediate computations shall be
+carried out in the widest possible representation... .
+</blockquote>
+
+<p>
+So ignoring
+floating-point types for the moment, all this arithmetic has to be done
+using the implementation's largest integral type, even if both arguments
+use int for their representation. This seems excessive. And it's not at
+all clear what this means if we don't ignore floating-point types.
+</p>
+
+<p>
+This issue is related to <iref ref="952"/>.
+</p>
+
+<note>
+Howard adds:
+</note>
+
+<blockquote>
+<p>
+The intent of this remark is that intermediate computations are carried out
+using:
+</p>
+
+<blockquote><pre>
+common_type&lt;typename ToDuration::rep, Rep, intmax_t&gt;::type
+</pre></blockquote>
+
+<p>
+The Remark was intended to be clarifying prose supporting the rather algorithmic description
+of the previous paragraph.  I'm open to suggestions.  Perhaps the entire paragraph
+3 (Remarks) would be better dropped?
+</p>
+</blockquote>
+
+<note>
+Batavia (2009-05):
+</note>
+<blockquote>
+<p>
+We view this as a specific case of issue <iref ref="952"/>,
+and should be resolved when that issue is resolved.
+</p>
+<p>
+Move to NAD.
+</p>
+</blockquote>
+
+</discussion>
+
+<resolution>
+<p>
+</p>
+</resolution>
+
+</issue>

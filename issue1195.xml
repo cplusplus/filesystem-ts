@@ -1,0 +1,436 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="1195" status="WP">
+<title>"Diagnostic required" wording is insufficient to  prevent UB</title>
+<section><sref ref="[library]"/></section>
+<submitter>Daniel Kr&uuml;gler</submitter>
+<date>18 Aug 2009</date>
+
+<discussion>
+<p>
+Several parts of the library use the notion of "Diagnostic required"
+to indicate that
+in the corresponding situation an error diagnostic should occur, e.g.
+<sref ref="[unique.ptr.dltr.dflt]"/>/2
+</p>
+<blockquote><pre>
+void operator()(T *ptr) const;
+</pre>
+
+<blockquote>
+<i>Effects:</i> calls <tt>delete</tt> on <tt>ptr</tt>. A diagnostic is required if <tt>T</tt> is an
+incomplete type.
+</blockquote>
+</blockquote>
+
+<p>
+The problem with this approach is that such a requirement is
+insufficient to prevent
+undefined behavior, if this situation occurs. According to <sref ref="[defns.diagnostic]"/>
+a <i>diagnostic message</i> is defined as
+</p>
+
+<blockquote>
+a message belonging to an implementation-defined subset of the
+implementation's output messages.
+</blockquote>
+
+<p>
+which doesn't indicate any relation to an ill-formed program. In fact,
+"compiler warnings"
+are a typical expression of such diagnostics. This means that above
+wording can be interpreted
+by compiler writers that they satisfy the requirements of the standard
+if they just produce
+such a "warning", if the compiler happens to compile code like this:
+</p>
+
+<blockquote><pre>
+#include &lt;memory&gt;
+
+struct Ukn; // defined somewhere else
+Ukn* create_ukn(); // defined somewhere else
+
+int main() {
+ std::default_delete&lt;Ukn&gt;()(create_ukn());
+}
+</pre></blockquote>
+
+<p>
+In this and other examples discussed here it was the authors intent to
+guarantee that the
+program is ill-formed with a required diagnostic, therefore such
+wording should be used instead.
+According to the general rules outlined in <sref ref="[intro.compliance]"/> it
+should be sufficient
+to require that these situations produce an ill-formed program and the
+"diagnostic
+required" part should be implied. The proposed resolution also
+suggests to remove
+several <i>redundant</i> wording of "Diagnostics required" to ensure that
+the absence of
+such saying does not cause a misleading interpretation.
+</p>
+
+<note>
+2009 Santa Cruz:
+</note>
+
+<blockquote>
+<p>
+Move to NAD.
+</p>
+<p>
+It's not clear that there's any important difference between
+"ill-formed" and "diagnostic required". From <sref
+ref="[intro.compliance]"/>, <sref ref="[defns.ill.formed]"/>, and <sref
+ref="[defns.well.formed]"/> it appears that an ill-formed program is one
+that is not correctly constructed according to the syntax rules and
+diagnosable semantic rules, which means that... "a conforming
+implementation shall issue at least one diagnostic message." The
+author's intent seems to be that we should be requiring a fatal error
+instead of a mere warning, but the standard just doesn't have language
+to express that distinction. The strongest thing we can ever require is
+a "diagnostic".
+</p>
+<p>
+The proposed rewording may be a clearer way of expressing the same thing
+that the WP already says, but such a rewording is editorial.
+</p>
+</blockquote>
+
+<note>
+2009 Santa Cruz:
+</note>
+
+<blockquote>
+Considered again.  Group disagrees that the change is technical, but likes
+it editorially.  Moved to NAD Editorial.
+</blockquote>
+
+<note>
+2009-11-19: Moved from NAD Editorial to Open.  Please see the thread starting
+with Message c++std-lib-25916.
+</note>
+
+<note>
+2009-11-20 Daniel updated wording.
+</note>
+
+<blockquote>
+<p>
+The following resolution differs from the previous one by avoiding the unusual
+and misleading term "shall be ill-formed", which does also not follow the core
+language style. This resolution has the advantage of a minimum impact on the
+current wording, but I would like to mention that a more intrusive solution
+might be preferrable - at least as a long-term solution: Jens Maurer suggested
+the following approach to get rid of the usage of the term "ill-formed" from the
+library by introducing a new category to existing elements to the list of <sref
+ref="[structure.specifications]"/>/3, e.g. "type requirements" or "static
+constraints" that define conditions that can be checked during compile-time and
+any violation would make the program ill-formed. As an example, the currently
+existing phrase <sref ref="[tuple.helper]"/>/1
+</p>
+
+<blockquote>
+<i>Requires:</i> <tt>I &lt; sizeof...(Types)</tt>. The program is ill-formed if
+<tt>I</tt> is out of bounds.
+</blockquote>
+
+<p>
+could then be written as
+</p>
+
+<blockquote>
+<i>Static constraints:</i> <tt>I &lt; sizeof...(Types)</tt>.
+</blockquote>
+
+</blockquote>
+
+<note>
+2009-11-21 Daniel updated wording.
+</note>
+
+<note>
+2009-11-22 Moved to Tentatively Ready after 5 positive votes on c++std-lib.
+</note>
+
+</discussion>
+
+<resolution>
+<ol>
+<li>
+<p>
+Change <sref ref="[ratio]"/>/2 as indicated:
+</p>
+
+<blockquote>
+Throughout this subclause, <ins>if</ins> the template argument types <tt>R1</tt>
+and <tt>R2</tt> <del>shall be</del> <ins>are not</ins> specializations of the
+<tt>ratio</tt> template<ins>, the program is ill-formed</ins>. <del>Diagnostic
+required.</del>
+</blockquote>
+</li>
+
+<li>
+<p>
+Change <sref ref="[ratio.ratio]"/>/1 as indicated:
+</p>
+
+<p>
+<ins>If t</ins><del>T</del>he template argument <tt>D</tt> <del>shall not
+be</del> <ins>is</ins> zero<del>, and</del> <ins>or</ins> the absolute values of
+the template arguments <tt>N</tt> and <tt>D</tt> <del>shall be</del> <ins>are
+not</ins> representable by type <tt>intmax_t</tt><ins>, the program is
+ill-formed</ins>. <del>Diagnostic required.</del> [..]
+</p>
+
+</li>
+
+<li>
+<p>
+Change <sref ref="[ratio.arithmetic]"/>/1 as indicated:
+</p>
+
+<blockquote>
+Implementations may use other algorithms to compute these values. If overflow
+occurs, <ins>the program is ill-formed</ins> <del>a diagnostic shall be
+issued</del>.
+</blockquote>
+
+</li>
+
+<li>
+<p>
+Change <sref ref="[ratio.comparison]"/>/2 as indicated:
+</p>
+
+<blockquote>
+[...] Implementations may use other algorithms to compute this relationship to
+avoid overflow. If overflow occurs, <ins>the program is ill-formed</ins> <del>a
+diagnostic is required</del>.
+</blockquote>
+
+</li>
+
+<li>
+<p>
+Change <sref ref="[unique.ptr.dltr.dflt]"/>/2 as indicated:
+</p>
+
+<blockquote>
+<p>
+<i>Effects:</i> calls <tt>delete</tt> on <tt>ptr</tt>. <del>A diagnostic is
+required if <tt>T</tt> is an incomplete type.</del>
+</p>
+
+<p>
+<ins><i>Remarks:</i> If <tt>T</tt> is an incomplete type, the program is
+ill-formed.</ins>
+</p>
+</blockquote>
+
+</li>
+
+<li>
+<p>
+Change <sref ref="[unique.ptr.dltr.dflt1]"/>/1 as indicated:
+</p>
+
+<blockquote><pre>
+void operator()(T* ptr) const;
+</pre>
+<blockquote>
+<p>
+<ins><i>Effects:</i></ins> <del><tt>operator()</tt></del> calls
+<tt>delete[]</tt> on <tt>ptr</tt>. <del>A diagnostic is required if <tt>T</tt>
+is an incomplete type.</del>
+</p>
+<p>
+<ins><i>Remarks:</i> If <tt>T</tt> is an incomplete type, the program is
+ill-formed.</ins>
+</p>
+</blockquote>
+</blockquote>
+
+</li>
+
+<li>
+<p>
+Change <sref ref="[unique.ptr.single.ctor]"/> as indicated: <i>[Note: This
+editorially improves the currently suggested wording of <iref ref="932"/> by
+replacing</i>
+</p>
+<blockquote>
+<i>"shall be ill-formed" by "is ill-formed"]</i>
+</blockquote>
+
+<p>
+<i>[If
+<a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2009/n3025.html">N3025</a>
+is accepted this bullet is applied identically in that paper as well.]</i>
+</p>
+
+<blockquote>
+<p>
+-1- <i>Requires:</i> <tt>D</tt> shall be default constructible, and that
+construction shall not throw an exception. <del><tt>D</tt> shall not be a
+reference type or pointer type (diagnostic required).</del>
+</p>
+
+<p>...</p>
+
+<p><ins>
+<i>Remarks:</i> If this constructor is instantiated with a pointer type
+or reference type for the template argument <tt>D</tt>, the program is
+ill-formed.
+</ins></p>
+</blockquote>
+
+</li>
+
+<li>
+<p>
+Change <sref ref="[unique.ptr.single.ctor]"/>/8 as indicated: <i>[Note: This
+editorially improves the currently suggested wording of <iref ref="932"/> by
+replacing</i>
+</p>
+<blockquote>
+<i>"shall be ill-formed" by "is ill-formed"]</i>
+</blockquote>
+
+<p>
+<i>[If
+<a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2009/n3025.html">N3025</a>
+is accepted this bullet is applied identically in that paper as well.]</i>
+</p>
+
+<blockquote><pre>
+unique_ptr(pointer p);
+</pre>
+<blockquote>
+<p>...</p>
+<p><ins>
+<i>Remarks:</i> If this constructor is instantiated with a pointer type
+or reference type for the template argument <tt>D</tt>, the program is
+ill-formed.
+</ins></p>
+</blockquote>
+</blockquote>
+
+</li>
+
+<li>
+<p>
+Change <sref ref="[unique.ptr.single.ctor]"/>/13 as indicated:
+</p>
+
+<blockquote>
+[..] If <tt>d</tt> is an rvalue, it will bind to the second constructor of this
+pair <ins>and the program is ill-formed</ins>. <del>That constructor shall emit
+a diagnostic.</del> [<i>Note:</i> The diagnostic could be implemented using a
+<tt>static_assert</tt> which assures that <tt>D</tt> is not a reference type.
+&mdash; <i>end note</i>] Else <tt>d</tt> is an lvalue and will bind to the first
+constructor of this pair. [..]
+</blockquote>
+
+</li>
+
+<li>
+<sref ref="[unique.ptr.single.ctor]"/>/20: Solved by <iref ref="950"/>.
+</li>
+
+<li>
+<p>
+Change <sref ref="[unique.ptr.runtime]"/>/1 as indicated:
+</p>
+
+<blockquote>
+<p>
+A specialization for array types is provided with a slightly altered interface.
+</p>
+<ul>
+<li>
+Conversions among different types of <tt>unique_ptr&lt;T[], D&gt;</tt> or to or
+from the non-array forms of <tt>unique_ptr</tt> <del>are disallowed (diagnostic
+required)</del> <ins>produce an ill-formed program</ins>.
+</li>
+<li>...</li>
+</ul>
+</blockquote>
+
+</li>
+
+<li>
+<p>
+Change <sref ref="[time.duration]"/>/2-4 as indicated:
+</p>
+
+<blockquote>
+<p>
+2 <i>Requires:</i> <tt>Rep</tt> shall be an arithmetic type or a class emulating
+an arithmetic type. <del>If a program instantiates <tt>duration</tt> with a
+<tt>duration</tt> type for the template argument <tt>Rep</tt> a diagnostic is
+required.</del>
+</p>
+<p>
+<ins>3 <i>Remarks:</i> If <tt>duration</tt> is instantiated with a
+<tt>duration</tt> type for the template argument <tt>Rep</tt>, the program is
+ill-formed.</ins>
+</p>
+
+<p>
+<del>3</del> <ins>4</ins> <i><del>Requires</del> <ins>Remarks</ins>:</i>
+<ins>If</ins> <tt>Period</tt> <del>shall be</del> <ins>is not</ins> a
+specialization of <tt>ratio</tt>, <del>diagnostic required</del> <ins>the
+program is ill-formed</ins>.
+</p>
+
+<p>
+<del>4</del> <ins>5</ins> <i><del>Requires</del> <ins>Remarks</ins>:</i>
+<ins>If</ins> <tt>Period::num</tt> <del>shall be</del> <ins>is not</ins>
+positive, <del>diagnostic required</del> <ins>the program is ill-formed</ins>.
+</p>
+</blockquote>
+
+</li>
+
+<li>
+<sref ref="[time.duration.cons]"/>/1+4: Apply <iref ref="1177"/>
+</li>
+
+<li>
+<sref ref="[time.duration.nonmember]"/>/4+6+8+11: Apply <iref ref="1177"/>
+</li>
+
+<li>
+<sref ref="[time.duration.cast]"/>/1: Apply <iref ref="1177"/>
+</li>
+
+<li>
+<p>
+Change <sref ref="[time.point]"/>/2 as indicated:
+</p>
+<blockquote>
+<ins>If</ins> <tt>Duration</tt> <del>shall be</del> <ins>is not</ins> an
+instance of <tt>duration</tt><ins>, the program is ill-formed</ins>.
+<del>Diagnostic required.</del>
+</blockquote>
+</li>
+
+<li>
+<sref ref="[time.point.cons]"/>/3: Apply <iref ref="1177"/>
+</li>
+
+<li>
+<sref ref="[time.point.cast]"/>/1: Apply <iref ref="1177"/>
+</li>
+
+</ol>
+
+</resolution>
+
+</issue>

@@ -1,0 +1,152 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="526" status="NAD">
+<title>Is it undefined if a function in the standard changes in parameters?</title>
+<section><sref ref="[sequence.reqmts]"/></section>
+<submitter>Chris Jefferson</submitter>
+<date>14 Sep 2005</date>
+
+<discussion>
+<p>
+Problem: There are a number of places in the C++ standard library where
+it is possible to write what appear to be sensible ways of calling
+functions, but which can cause problems in some (or all)
+implementations, as they cause the values given to the function to be
+changed in a way not specified in standard (and therefore not coded to
+correctly work). These fall into two similar categories.
+</p>
+
+<p>
+1) Parameters taken by const reference can be changed during execution
+of the function
+</p>
+
+<p>
+Examples:
+</p>
+
+<p>
+Given std::vector&lt;int&gt; v:
+</p>
+<p>
+v.insert(v.begin(), v[2]);
+</p>
+<p>
+v[2] can be changed by moving elements of vector
+</p>
+
+
+<p>
+Given std::list&lt;int&gt; l:
+</p>
+<p>
+l.remove(*l.begin());
+</p>
+<p>
+Will delete the first element, and then continue trying to access it.
+This is particularily vicious, as it will appear to work in almost all
+cases.
+</p>
+
+<p>
+2) A range is given which changes during the execution of the function:
+Similarly,
+</p>
+
+<p>
+v.insert(v.begin(), v.begin()+4, v.begin()+6);
+</p>
+
+<p>
+This kind of problem has been partly covered in some cases. For example
+std::copy(first, last, result) states that result cannot be in the range
+[first, last). However, does this cover the case where result is a
+reverse_iterator built from some iterator in the range [first, last)?
+Also, std::copy would still break if result was reverse_iterator(last +
+1), yet this is not forbidden by the standard
+</p>
+
+<p>
+Solution:
+</p>
+
+<p>
+One option would be to try to more carefully limit the requirements of
+each function. There are many functions which would have to be checked.
+However as has been shown in the std::copy case, this may be difficult.
+A simpler, more global option would be to somewhere insert text similar to:
+</p>
+
+<p>
+If the execution of any function would change either any values passed
+by reference or any value in any range passed to a function in a way not
+defined in the definition of that function, the result is undefined.
+</p>
+
+<p>
+Such code would have to at least cover chapters 23 and 25 (the sections
+I read through carefully). I can see no harm on applying it to much of
+the rest of the standard.
+</p>
+
+<p>
+Some existing parts of the standard could be improved to fit with this,
+for example the requires for 25.2.1 (Copy) could be adjusted to:
+</p>
+
+<p>
+Requires: For each non-negative integer n &lt; (last - first), assigning to
+*(result + n) must not alter any value in the range [first + n, last).
+</p>
+
+<p>
+However, this may add excessive complication.
+</p>
+
+<p>
+One other benefit of clearly introducing this text is that it would
+allow a number of small optimisations, such as caching values passed
+by const reference.
+</p>
+
+<p>
+Matt Austern adds that this issue also exists for the <tt>insert</tt> and
+<tt>erase</tt> members of the ordered and unordered associative containers.
+</p>
+
+<note>
+Berlin: Lots of controversey over how this should be solved. Lots of confusion
+as to whether we're talking about self referencing iterators or references.
+Needs a good survey as to the cases where this matters, for which
+implementations, and how expensive it is to fix each case.
+</note>
+
+</discussion>
+
+<resolution>
+</resolution>
+
+<rationale>
+<p>
+Recommend NAD.
+</p>
+<ul>
+<li><tt>vector::insert(iter, value)</tt> is required to work because the standard
+doesn't give permission for it not to work.</li>
+<li><tt>list::remove(value)</tt> is required to work because the standard
+doesn't give permission for it not to work.</li>
+<li><tt>vector::insert(iter, iter, iter)</tt> is not required to work because
+<sref ref="[sequence.reqmts]"/>, p4 says so.</li>
+<li><tt>copy</tt> has to work, except where <sref ref="[alg.copy]"/> says
+it doesn't have to work.  While a language lawyer can tear this wording apart,
+it is felt that the wording is not prone to accidental interpretation.</li>
+<li>The current working draft provide exceptions for the unordered associative
+containers similar to the containers requirements which exempt the member
+template insert functions from self referencing.</li>
+</ul>
+</rationale>
+
+</issue>

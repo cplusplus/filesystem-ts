@@ -1,0 +1,128 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="117" status="CD1">
+<title><tt>basic_ostream</tt> uses nonexistent <tt>num_put</tt> member functions</title>
+<section><sref ref="[ostream.inserters.arithmetic]"/></section>
+<submitter>Matt Austern</submitter>
+<date>20 Nov 1998</date>
+
+<discussion>
+<p>The <b>effects</b> clause for numeric inserters says that
+insertion of a value <tt>x</tt>, whose type is either <tt>bool</tt>,
+<tt>short</tt>, <tt>unsigned short</tt>, <tt>int</tt>, <tt>unsigned
+int</tt>, <tt>long</tt>, <tt>unsigned long</tt>, <tt>float</tt>,
+<tt>double</tt>, <tt>long double</tt>, or <tt>const void*</tt>, is
+delegated to <tt>num_put</tt>, and that insertion is performed as if
+through the following code fragment: </p>
+
+<pre>bool failed = use_facet&lt;
+   num_put&lt;charT,ostreambuf_iterator&lt;charT,traits&gt; &gt; 
+   &gt;(getloc()).put(*this, *this, fill(), val). failed();</pre>
+
+<p>This doesn't work, because <tt>num_put&lt;&gt;</tt>::put is only
+overloaded for the types <tt>bool</tt>, <tt>long</tt>, <tt>unsigned
+long</tt>, <tt>double</tt>, <tt>long double</tt>, and <tt>const
+void*</tt>. That is, the code fragment in the standard is incorrect
+(it is diagnosed as ambiguous at compile time) for the types
+<tt>short</tt>, <tt>unsigned short</tt>, <tt>int</tt>, <tt>unsigned
+int</tt>, and <tt>float</tt>. </p>
+
+<p>We must either add new member functions to <tt>num_put</tt>, or
+else change the description in <tt>ostream</tt> so that it only calls
+functions that are actually there. I prefer the latter. </p>
+</discussion>
+
+<resolution>
+<p>Replace 27.6.2.5.2, paragraph 1 with the following: </p>
+
+<blockquote>
+<p>
+The classes num_get&lt;&gt; and num_put&lt;&gt; handle locale-dependent numeric
+formatting and parsing.  These inserter functions use the imbued
+locale value to perform numeric formatting.  When val is of type bool,
+long, unsigned long, double, long double, or const void*, the
+formatting conversion occurs as if it performed the following code
+fragment:
+</p>
+
+<pre>
+bool failed = use_facet&lt;
+   num_put&lt;charT,ostreambuf_iterator&lt;charT,traits&gt; &gt;
+   &gt;(getloc()).put(*this, *this, fill(), val). failed();
+</pre>
+
+<p>
+When val is of type short the formatting conversion occurs as if it
+performed the following code fragment:
+</p>
+
+<pre>
+ios_base::fmtflags baseflags = ios_base::flags() &amp; ios_base::basefield;
+bool failed = use_facet&lt;
+   num_put&lt;charT,ostreambuf_iterator&lt;charT,traits&gt; &gt;
+   &gt;(getloc()).put(*this, *this, fill(),
+      baseflags == ios_base::oct || baseflags == ios_base::hex
+         ? static_cast&lt;long&gt;(static_cast&lt;unsigned short&gt;(val))
+         : static_cast&lt;long&gt;(val)). failed();
+</pre>
+
+<p>
+When val is of type int the formatting conversion occurs as if it performed
+the following code fragment:
+</p>
+
+<pre>
+ios_base::fmtflags baseflags = ios_base::flags() &amp; ios_base::basefield;
+bool failed = use_facet&lt;
+   num_put&lt;charT,ostreambuf_iterator&lt;charT,traits&gt; &gt;
+   &gt;(getloc()).put(*this, *this, fill(),
+      baseflags == ios_base::oct || baseflags == ios_base::hex
+         ? static_cast&lt;long&gt;(static_cast&lt;unsigned int&gt;(val))
+         : static_cast&lt;long&gt;(val)). failed();
+</pre>
+
+<p>
+When val is of type unsigned short or unsigned int the formatting conversion
+occurs as if it performed the following code fragment:
+</p>
+
+<pre>
+bool failed = use_facet&lt;
+   num_put&lt;charT,ostreambuf_iterator&lt;charT,traits&gt; &gt;
+   &gt;(getloc()).put(*this, *this, fill(), static_cast&lt;unsigned long&gt;(val)).
+failed();
+</pre>
+
+<p>
+When val is of type float the formatting conversion occurs as if it
+performed the following code fragment:
+</p>
+
+<pre>
+bool failed = use_facet&lt;
+   num_put&lt;charT,ostreambuf_iterator&lt;charT,traits&gt; &gt;
+   &gt;(getloc()).put(*this, *this, fill(), static_cast&lt;double&gt;(val)).
+failed();
+</pre>
+
+</blockquote>
+
+<note>post-Toronto: This differs from the previous proposed
+resolution; PJP provided the new wording.  The differences are in
+signed short and int output.</note>
+</resolution>
+
+<rationale>
+<p>The original proposed resolution was to cast int and short to long,
+unsigned int and unsigned short to unsigned long, and float to double,
+thus ensuring that we don't try to use nonexistent num_put&lt;&gt;
+member functions.  The current proposed resolution is more
+complicated, but gives more expected results for hex and octal output
+of signed short and signed int.  (On a system with 16-bit short, for
+example, printing short(-1) in hex format should yield 0xffff.)</p>
+</rationale>
+
+</issue>

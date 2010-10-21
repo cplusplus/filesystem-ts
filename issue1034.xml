@@ -1,0 +1,342 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="1034" status="WP">
+<title>Response to UK 222</title>
+<section><sref ref="[container.requirements.general]"/></section>
+<submitter>Alisdair Meredith</submitter>
+<date>12 Mar 2009</date>
+
+<discussion>
+
+<p><b>Addresses UK 222</b></p>
+
+<p>
+It is not clear what purpose the Requirement tables serve in the
+Containers clause. Are they the definition of a library Container? Or
+simply a conventient shorthand to factor common semantics into a single
+place, simplifying the description of each subsequent container? This
+becomes an issue for 'containers' like <tt>array</tt>, which does not meet the
+default-construct-to-empty requirement, or <tt>forward_list</tt> which does not
+support the size operation. Are these components no longer containers?
+Does that mean the remaining requirements don't apply? Or are these
+contradictions that need fixing, despite being a clear design decision?
+</p>
+
+<p>
+Recommend:
+</p>
+
+<p>
+Clarify all the tables in <sref ref="[container.requirements]"/> are
+there as a convenience for documentation, rather than a strict set of
+requirements. Containers should be allowed to relax specific
+requirements if they call attention to them in their documentation. The
+introductory text for <tt>array</tt> should be expanded to mention a
+default constructed <tt>array</tt> is not empty, and
+<tt>forward_list</tt> introduction should mention it does not provide
+the required <tt>size</tt> operation as it cannot be implemented
+efficiently.
+</p>
+
+<note>
+Summit:
+</note>
+
+<blockquote>
+Agree in principle.
+</blockquote>
+
+<note>
+2009-07 post-Frankfurt:
+</note>
+
+<blockquote>
+We agree in principle, but we have a timetable. This group feels that
+the issue should be closed as NAD unless a proposed resolution is
+submitted prior to the March 2010 meeting.
+</blockquote>
+
+<note>
+2009-10 Santa Cruz:
+</note>
+
+<blockquote>
+Looked at this and still intend to close as NAD in March
+2010 unless there is proposed wording that we like.
+</blockquote>
+
+<note>
+2010-02-02 Nicolai M. Josuttis updates proposed wording and adds:
+</note>
+
+<blockquote>
+<p>
+I just came across issue #1034 (response to UK 222),
+which covers the role of container requirements.
+The reason I found this issue was that I am wondering why
+<tt>array&lt;&gt;</tt> is specified to be a sequence container.
+For me, currently, this follows from
+Sequence containers <sref ref="[sequence.reqmts]"/>
+saying:
+</p>
+<blockquote>
+The library provides five basic kinds of sequence containers: <tt>array</tt>,
+<tt>vector</tt>, <tt>forward_list</tt>, <tt>list</tt>, and <tt>deque</tt>. while
+later on in Table 94 "Sequence container requirements" are defined.
+</blockquote>
+
+<p>
+IMO, you can hardly argue that this is NAD.
+We MUST say somewhere that either array is not a sequence container
+or does not provide all operations of a sequence container
+(even not all requirements of a container in general).
+</p>
+<p>
+Here is the number of requirements <tt>array&lt;&gt;</tt> does not meet
+(AFAIK):
+</p>
+<p>
+general container requirements:
+</p>
+<ul>
+<li>
+a default constructed <tt>array</tt> is not empty
+</li>
+<li>
+<tt>swap</tt> has no constant complexity
+</li>
+</ul>
+
+<p>
+ Note also that <tt>swap</tt> not only has linear complexity
+ it also invalidates iterators (or to be more precise,
+ assigns other values to the elements), which
+ is different from the effect swap has for other containers.
+ For this reason, I must say that i tend to propose to
+ remove <tt>swap()</tt> for <tt>arrays</tt>.
+ </p>
+
+<p>
+sequence container requirements:
+</p>
+
+<ul>
+<li>
+There is no constructor and assignment for a range
+</li>
+<li>
+There is no constructor and assignment for <tt>n</tt> copies of <tt>t</tt>
+</li>
+<li>
+ There are no <tt>emplace</tt>, <tt>insert</tt>, <tt>erase</tt>, <tt>clear</tt>,
+ <tt>assign</tt> operations
+</li>
+</ul>
+
+<p>
+In fact, out of all sequence container requirements <tt>array&lt;&gt;</tt> only
+provides the following operations:
+from sequence requirements (Table 94):
+</p>
+<blockquote><pre>
+X(il);
+a = il;
+</pre></blockquote>
+<p>
+and from optional requirements (Table 95):
+</p>
+<blockquote><pre>
+[], at(), front(), back()
+</pre></blockquote>
+<p>
+This is almost nothing!
+</p>
+
+<p>
+Note in addition, that due to the fact that
+<tt>array</tt> is an aggregate and not a container with
+<tt>initializer_lists</tt>
+a construction or assignment with an initializer list is valid
+for all sequence containers but not valid for array:
+</p>
+
+<blockquote><pre>
+vector&lt;int&gt;  v({1,2,3});   // OK
+v = {4,5,6};               // OK
+
+array&lt;int,3&gt; a({1,2,3});   // Error
+array&lt;int,3&gt; a = {1,2,3};  // OK
+a = {4,5,6};               // Error
+</pre></blockquote>
+
+<p>
+BTW, for this reason, I am wondering, why <tt>&lt;array&gt;</tt> includes
+<tt>&lt;initializer_list&gt;</tt>.
+</p>
+
+<p>
+IMO, we can't really say that <tt>array</tt> is a sequence container.
+<tt>array</tt> is special.
+As the solution to this issue seemed to miss some proposed wording
+where all could live with, let me try to suggest some.
+</p>
+
+</blockquote>
+
+<note>
+2010-02-12 Moved to Tentatively Ready after 5 positive votes on c++std-lib.
+</note>
+
+<note>
+2010 Pittsburgh:  Ok with move to Ready except for "OPEN:" part.
+</note>
+
+</discussion>
+
+<resolution>
+
+<p><i>In Sequence containers <sref ref="[sequence.reqmts]"/> modify paragraph 1 as 
+indicated: </i> </p>
+<blockquote>
+  <p>1 A sequence container organizes a finite set of objects, all of the same 
+  type, into a strictly linear arrangement. The library provides <del>five</del>
+  <ins>four</ins> basic kinds of sequence containers: <del><tt>array</tt>,</del>
+  <tt>vector</tt>, <tt>forward_list</tt>, <tt>list</tt>, and <tt>deque</tt>.
+  <ins>In addition, <tt>array</tt> is provided as a sequence container that 
+  only provides limited sequence operations because it has a fixed number of 
+  elements.</ins> <del>It</del> <ins>The library</ins> also provides container adaptors that make it easy to 
+  construct abstract data types, such as <tt>stack</tt>s or <tt>queue</tt>s, out 
+  of the basic sequence container kinds (or out of other kinds of sequence 
+  containers that the user might define). </p>
+</blockquote>
+<p><i>Modify paragraph 2 as follows (just editorial): </i> </p>
+<blockquote>
+  <p>2 The <del>five basic</del> sequence 
+  containers offer the programmer different complexity trade-offs and should be 
+  used accordingly. <tt>vector</tt> or <tt>array</tt> is the type of sequence 
+  container that should be used by default. <tt>list</tt> or <tt>forward_list</tt> 
+  should be used when there are frequent insertions and deletions from the 
+  middle of the sequence. <tt>deque</tt> is the data structure of choice when 
+  most insertions and deletions take place at the beginning or at the end of the 
+  sequence. </p>
+</blockquote>
+<p><i>In Class template array <sref ref="[array]"/> modify paragraph 3 as indicated:
+</i> </p>
+<blockquote>
+  <p>3 <del>Unless otherwise specified, all <tt>array</tt> operations are as 
+  described in 23.2.</del> <ins>An array satisfies all of the requirements of a 
+  container and of a reversible container (given in two tables in <sref ref="[container.requirements]"/>) 
+  except that a default constructed <tt>array</tt> is not empty, <tt>swap</tt> 
+  does not have constant complexity, and <tt>swap</tt> may throw exceptions. An <tt>array</tt> satisfies some of the requirements of a 
+  sequence container (given in <sref ref="[sequence.reqmts]"/>).</ins> Descriptions are 
+  provided here only for operations on <tt>array</tt> that are not described
+  <del>in that Clause</del> <ins>in one of these tables</ins> or for operations 
+  where there is additional semantic information. </p>
+</blockquote>
+<p><i>In array specialized algorithms <sref ref="[array.special]"/> add to the 
+specification of <tt>swap()</tt>: </i> </p>
+<blockquote>
+  <pre>template &lt;class T, size_t N&gt; void swap(array&lt;T,N&gt;&amp; x, array&lt;T,N&gt;&amp; y);
+</pre>
+  <blockquote>
+    <p>1 <i>Effects:</i> ... </p>
+    <p><ins><i>Complexity:</i> Linear in <tt>N</tt>. </ins></p>
+  </blockquote>
+</blockquote>
+
+
+<!-- 
+<p>
+In
+Sequence containers <sref ref="[sequence.reqmts]"/>
+modify paragraph 1 as follows:
+</p>
+
+<blockquote>
+1 A sequence container organizes a finite set of objects, all of the same type,
+into a strictly linear arrangement. The library provides <del>five</del> <ins>four</ins> basic kinds of
+sequence containers: <del><tt>array</tt>,</del> <tt>vector</tt>, <tt>forward_list</tt>,
+<tt>list</tt>, and <tt>deque</tt>.
+<ins>In addition, <tt>array</tt> is provided as a sequence container,
+which only provides limited sequence operations because it has
+a fixed number of elements.</ins>
+It also provides container adaptors that make
+it easy to construct abstract data types, such as <tt>stack</tt>s or
+<tt>queue</tt>s, out of the basic sequence container kinds (or out of other
+kinds of sequence containers that the user might define).
+</blockquote>
+
+<p>
+BTW, modify paragraph 2 as follows (just editorial):
+</p>
+
+<blockquote>
+2 <del><tt>list</tt>, and <tt>deque</tt></del> The five basic sequence containers offer the
+programmer different complexity trade-offs and should be used accordingly.
+<tt>vector</tt> or <tt>array</tt> is the type of sequence container that should
+be used by default. <tt>list</tt> or <tt>forward_list</tt> should be used when
+there are frequent insertions and deletions from the middle of the sequence.
+<tt>deque</tt> is the data structure of choice when most insertions and
+deletions take place at the beginning or at the end of the sequence.
+</blockquote>
+
+<p>
+In Class template array <sref ref="[array]"/> replace paragraph 3 by:
+</p>
+
+<blockquote>
+3 <del>Unless otherwise specified, all <tt>array</tt> operations are as described in
+23.2.</del>
+<ins>An array satisfies all of the requirements of a container and of a
+reversible container (given in two tables in <sref
+ref="[container.requirements]"/>) except that a default constructed
+<tt>array</tt> is not empty and that <tt>swap</tt> has no constant complexity.
+An <tt>array</tt> satisfies some of the requirements of a sequence container
+(given in <sref ref="[sequence.reqmts]"/>).</ins>
+Descriptions are provided here only for operations on <tt>array</tt> that are
+not described <del>in that Clause</del> <ins>in one of these tables</ins> or for
+operations where there is additional semantic information.
+</blockquote>
+
+<p>
+In
+array specialized algorithms <sref ref="[array.special]"/>
+add to the specification of <tt>swap()</tt>:
+</p>
+
+<blockquote><pre>
+template &lt;class T, size_t N&gt; void swap(array&lt;T,N&gt;&amp; x, array&lt;T,N&gt;&amp; y);
+</pre>
+<blockquote>
+<p>
+1 <i>Effects:</i> ...
+</p>
+<p><ins>
+<i>Complexity:</i> Linear in <tt>N</tt>.
+</ins></p>
+</blockquote>
+</blockquote>
+
+<p>
+OPEN: remove from <sref ref="[sequences]"/>:
+</p>
+
+<blockquote>
+<p>
+<b>Header <tt>&lt;array&gt;</tt> synopsis</b>
+</p>
+
+<blockquote><pre>
+namespace std {
+  <del>#include &lt;initializer_list&gt;</del>
+  ...
+</pre></blockquote>
+</blockquote>
+ -->
+
+</resolution>
+
+</issue>

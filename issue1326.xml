@@ -1,0 +1,717 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="1326" status="New">
+<title>Missing/wrong preconditions for <tt>pair</tt> and <tt>tuple</tt> functions</title>
+<section><sref ref="[pairs.pair]"/>, <sref ref="[tuple.cnstr]"/></section>
+<submitter>Daniel Kr&uuml;gler</submitter>
+<date>7 Mar 2010</date>
+
+<discussion>
+<p>
+There are several constructors and creation functions of std::tuple
+that impose requirements on it's arguments, that are unnecessary
+restrictive and don't match the intention for the supported argument
+types. This is related to the fact that tuple is supposed to accept both
+object types and lvalue-references and the usual MoveConstructible and
+CopyConstructible requirements are bad descriptions for non-const
+references. Some examples:
+</p>
+
+<ol type="a">
+<li>
+<p>
+<sref ref="[tuple.cnstr]"/> before p.4 and p.8, resp.:
+</p>
+
+<blockquote><pre>
+explicit tuple(const Types&amp;...);
+</pre>
+<blockquote>
+4 <i>Requires:</i> Each type in <tt>Types</tt> shall be copy constructible.
+</blockquote>
+
+<pre>
+tuple(const tuple& u) = default;
+</pre>
+<blockquote>
+8 <i>Requires:</i> Each type in <tt>Types</tt> shall satisfy the requirements of
+<tt>CopyConstructible</tt> (Table 34).
+
+</blockquote>
+</blockquote>
+
+<p>
+A tuple that contains lvalue-references to non-const can never
+satisfy the <tt>CopyConstructible</tt> requirements. <tt>CopyConstructible</tt>
+requirements <i>refine</i> the <tt>MoveConstructible</tt> requirements and
+this would require that these lvalue-references could bind
+rvalues. But the core language does not allow that. Even, if we
+would interpret that requirement as referring to the underlying
+non-reference type, this requirement would be wrong as well,
+because there is no reason to disallow a type such as
+</p>
+
+<blockquote><pre>
+struct NoMoveNoCopy {
+  NoMoveNoCopy(NoMoveNoCopy&amp;&amp;) = delete;
+  NoMoveNoCopy(const NoMoveNoCopy&amp;) = delete;
+  ...
+}:
+</pre></blockquote>
+
+<p>
+for the instantiation of <tt>std::tuple&lt;NoMoveNoCopy&amp;&gt;</tt> and
+that of it's copy constructor.
+</p>
+
+<p>
+A more reasonable requirement for this example would be to require that
+"<tt>is_constructible&lt;Ti, const Ti&amp;&gt;::value</tt> shall
+evaluate to true for all <tt>Ti</tt> in <tt>Types</tt>". In this case
+the special reference-folding and const-merging rules of references
+would make this well-formed in all cases. We could also add the further
+constraint "if <tt>Ti</tt> is an object type, it shall satisfy the
+<tt>CopyConstructible</tt> requirements", but this additional
+requirement seems not really to help here. Ignoring it would only mean
+that if a user would provide a curious object type <tt>C</tt> that
+satisfies the <tt>std::is_constructible&lt;C, const C&amp;&gt;</tt>
+test, but not the "<tt>C</tt> is <tt>CopyConstructible</tt>" test would
+produce a <tt>tuple&lt;C&gt;</tt> that does not satisfy the
+<tt>CopyConstructible</tt> requirements as well.
+</p>
+</li>
+
+<li>
+<p>
+<sref ref="[tuple.cnstr]"/> before p.6 and p.10, resp.:
+</p>
+
+<blockquote><pre>
+template &lt;class... UTypes&gt;
+explicit tuple(UTypes&amp;&amp;... u);
+</pre>
+
+<blockquote>
+6 <i>Requires:</i> Each type in <tt>Types</tt> shall satisfy the
+requirements of <tt>MoveConstructible</tt> (Table 33) from the
+corresponding type in <tt>UTypes</tt>. <tt>sizeof...(Types) ==
+sizeof...(UTypes)</tt>.
+</blockquote>
+
+<pre>
+tuple(tuple&amp;&amp; u);
+</pre>
+<blockquote>
+10 <i>Requires:</i> Each <tt>type</tt> in <tt>Types</tt> shall shall
+satisfy the requirements of <tt>MoveConstructible</tt> (Table 33).
+</blockquote>
+</blockquote>
+
+<p>
+We have a similar problem as in (a): Non-const lvalue-references
+are intended template arguments for <tt>std::tuple</tt>, but cannot satisfy
+the <tt>MoveConstructible</tt> requirements. In this case the correct
+requirements would be
+</p>
+
+<blockquote>
+<tt>is_constructible&lt;Ti, Ui&gt;::value</tt> shall evaluate to true
+for all <tt>Ti</tt> in <tt>Types</tt> and for all <tt>Ui</tt> in
+<tt>UTypes</tt>
+</blockquote>
+
+<p>
+and
+</p>
+
+<blockquote>
+<tt>is_constructible&lt;Ti, Ti&gt;::value</tt> shall evaluate to true
+for all <tt>Ti</tt> in <tt>Types</tt>
+</blockquote>
+
+<p>
+respectively.
+</p>
+</li>
+</ol>
+
+<p>
+Many <tt>std::pair</tt> member functions do not add proper requirements, e.g.
+the default c'tor does not require anything. This is corrected within the
+suggested resolution. Further-on the P/R has been adapted to the FCD numbering.
+</p>
+
+<note>
+2010-03-25 Daniel updated wording:
+</note>
+
+<blockquote>
+The issue became updated to fix some minor inconsistencies and to ensure a
+similarly required fix for <tt>std::pair</tt>, which has the same specification
+problem as <tt>std::tuple</tt>, since <tt>pair</tt> became extended to support
+reference members as well.
+</blockquote>
+
+</discussion>
+
+<resolution>
+<ol>
+
+<li>
+<p>
+Change <sref ref="[pairs.pair]"/>/1 as indicated <i>[The changes for the effects
+elements are not normative changes, they just ensure
+harmonization with existing wording style]</i>:
+</p>
+
+<blockquote><pre>
+constexpr pair();
+</pre>
+
+<blockquote>
+<p>
+<ins><i>Requires:</i> <tt>first_type</tt> and <tt>second_type</tt> shall satisfy
+the <tt>DefaultConstructible</tt> requirements.</ins>
+</p>
+
+<p>
+1 <i>Effects:</i> <ins>Value-initializes <tt>first</tt> and
+<tt>second</tt>.</ins><del>Initializes its members as if implemented: <tt>pair()
+: first(), second() { }</tt>.</del>
+</p>
+
+</blockquote>
+</blockquote>
+
+</li>
+
+<li>
+<p>
+Change <sref ref="[pairs.pair]"/>/2 as indicated:
+</p>
+
+<blockquote><pre>
+pair(const T1&amp; x, const T2&amp; y);
+</pre>
+
+<blockquote>
+<p>
+<ins><i>Requires:</i> <tt>is_constructible&lt;T1, const T1&amp;&gt;::value</tt>
+is <tt>true</tt> and <tt>is_constructible&lt;T2, const T2&amp;&gt;::value</tt>
+is <tt>true</tt>.</ins>
+</p>
+
+<p>
+2 <i>Effects:</i> The constructor initializes <tt>first</tt> with <tt>x</tt> and
+<tt>second</tt> with <tt>y</tt>.
+</p>
+
+</blockquote>
+</blockquote>
+
+</li>
+
+<li>
+<p>
+Change <sref ref="[pairs.pair]"/>/3 as indicated:
+</p>
+
+<blockquote><pre>
+template&lt;class U, class V&gt; pair(U&amp;&amp; x, V&amp;&amp; y);
+</pre>
+
+<blockquote>
+<p>
+<ins><i>Requires:</i> <tt>is_constructible&lt;first_type, U&gt;::value</tt> is
+<tt>true</tt> and <tt>is_constructible&lt;second_type, V&gt;::value</tt> is
+<tt>true</tt>.</ins>
+</p>
+
+<p>
+3 <i>Effects:</i> The constructor initializes <tt>first</tt> with
+<tt>std::forward&lt;U&gt;(x)</tt> and <tt>second</tt> with
+<tt>std::forward&lt;V&gt;(y)</tt>.
+</p>
+
+<p>
+4 <i>Remarks:</i> If <tt>U</tt> is not implicitly convertible to
+<tt>first_type</tt> or <tt>V</tt> is not implicitly convertible to
+<tt>second_type</tt> this constructor shall not participate in overload
+resolution.
+</p>
+
+</blockquote>
+</blockquote>
+
+</li>
+
+<li>
+<p>
+Change <sref ref="[pairs.pair]"/>/5 as indicated <i>[The change in the effects
+element should be non-normatively and is in compatible to the change suggestion
+of <iref ref="1324"/>]</i>:
+</p>
+
+<blockquote><pre>
+template&lt;class U, class V&gt; pair(const pair&lt;U, V&gt;&amp; p);
+</pre>
+
+<blockquote>
+<p>
+<ins><i>Requires:</i> <tt>is_constructible&lt;first_type, const
+U&amp;&gt;::value</tt> is <tt>true</tt> and <tt>is_constructible&lt;second_type,
+const V&amp;&gt;::value</tt> is <tt>true</tt>.</ins>
+</p>
+
+<p>
+5 <i>Effects:</i> Initializes members from the corresponding members of the
+argument<del>, performing implicit conversions as needed</del>.
+</p>
+
+</blockquote>
+</blockquote>
+
+</li>
+
+<li>
+<p>
+Change <sref ref="[pairs.pair]"/>/6 as indicated:
+</p>
+
+<blockquote><pre>
+template&lt;class U, class V&gt; pair(pair&lt;U, V&gt;&amp;&amp; p);
+</pre>
+
+<blockquote>
+<p>
+<ins><i>Requires:</i> <tt>is_constructible&lt;first_type, U&gt;::value</tt> is
+<tt>true</tt> and <tt>is_constructible&lt;second_type, V&gt;::value</tt> is
+<tt>true</tt>.</ins>
+</p>
+
+<p>
+6 <i>Effects:</i> The constructor initializes <tt>first</tt> with
+<tt>std::<del>move</del><ins>forward&lt;U&gt;</ins>(p.first)</tt> and
+<tt>second</tt> with
+<tt>std::<del>move</del><ins>forward&lt;V&gt;</ins>(p.second)</tt>.
+</p>
+</blockquote>
+</blockquote>
+</li>
+
+<li>
+<p>
+Change <sref ref="[pairs.pair]"/>/7+8 as indicated [The deletion in the effects
+element should be non-normatively]:
+</p>
+
+<blockquote><pre>
+template&lt;class... Args1, class... Args2&gt;
+  pair(piecewise_construct_t,
+       tuple&lt;Args1...&gt; first_args, tuple&lt;Args2...&gt; second_args);
+</pre>
+
+<blockquote>
+<p>
+7 <i>Requires:</i> <ins><tt>is_constructible&lt;first_type,
+Args1...&gt;::value</tt> is <tt>true</tt> and
+<tt>is_constructible&lt;second_type, Args2...&gt;::value</tt> is
+<tt>true</tt>.</ins> <del>All the types in <tt>Args1</tt> and <tt>Args2</tt>
+shall be <tt>CopyConstructible</tt> (Table 35). <tt>T1</tt> shall be
+constructible from <tt>Args1</tt>. <tt>T2</tt> shall be constructible from
+<tt>Args2</tt>.</del>
+</p>
+
+<p>
+8 <i>Effects:</i> The constructor initializes <tt>first</tt> with arguments of
+types <tt>Args1...</tt> obtained by forwarding the elements of
+<tt>first_args</tt> and initializes <tt>second</tt> with arguments of types
+<tt>Args2...</tt> obtained by forwarding the elements of <tt>second_args</tt>.
+<del>(Here, forwarding an element <tt>x</tt> of type <tt>U</tt> within a
+<tt>tuple</tt> object means calling <tt>std::forward&lt;U&gt;(x)</tt>.)</del>
+This form of construction, whereby constructor arguments for <tt>first</tt> and
+<tt>second</tt> are each provided in a separate <tt>tuple</tt> object, is called
+piecewise construction.
+</p>
+
+</blockquote>
+</blockquote>
+
+</li>
+
+<li>
+<p>
+Change <sref ref="[pairs.pair]"/> before 12 as indicated:
+</p>
+
+<blockquote><pre>
+pair&amp; operator=(pair&amp;&amp; p);
+</pre>
+
+<blockquote>
+<p>
+<ins><i>Requires:</i> <tt>first_type</tt> and <tt>second_type</tt> shall satisfy
+the <tt>MoveAssignable</tt> requirements.</ins>
+</p>
+
+<p>
+12 <i>Effects:</i> Assigns to <tt>first</tt> with <tt>std::move(p.first)</tt>
+and to <tt>second</tt> with <tt>std::move(p.second)</tt>.
+</p>
+
+<p>
+13 <i>Returns:</i> <tt>*this</tt>.
+</p>
+
+</blockquote>
+</blockquote>
+
+</li>
+
+<li>
+<p>
+Change [pairs.pair] before 14 as indicated: [The heterogeneous usage
+of MoveAssignable is actually not defined,
+but the library uses it at several places, so we follow this tradition
+until a better term has been agreed on. One
+alternative could be to write "first_type shall be assignable from an
+rvalue of U [..]"]
+</p>
+
+<blockquote><pre>
+template&lt;class U, class V&gt; pair&amp; operator=(pair&lt;U, V&gt;&amp;&amp; p);
+</pre>
+
+<blockquote>
+
+<p>
+<ins><i>Requires:</i> <tt>first_type</tt> shall be <tt>MoveAssignable</tt> from
+<tt>U</tt> and <tt>second_type</tt> shall be <tt>MoveAssignable</tt> from
+<tt>V</tt>.</ins>
+</p>
+
+<p>
+14 <i>Effects:</i> Assigns to <tt>first</tt> with <tt>std::move(p.first)</tt>
+and to <tt>second</tt> with <tt>std::move(p.second)</tt>.
+</p>
+
+<p>
+15 <i>Returns:</i> <tt>*this</tt>.
+</p>
+
+</blockquote>
+</blockquote>
+
+</li>
+
+<li>
+<p>
+Change <sref ref="[tuple.cnstr]"/>/4+5 as indicated:
+</p>
+
+<blockquote><pre>
+explicit tuple(const Types&amp;...);
+</pre>
+
+<blockquote>
+<p>
+4 <i>Requires:</i> <ins><tt>is_constructible&lt;Ti, const
+Ti&amp;&gt;::value == true</tt> for e</ins><del>E</del>ach type
+<ins><tt>Ti</tt></ins> in <tt>Types</tt><del> shall be copy
+constructible</del>.
+</p>
+
+<p>
+5 <i>Effects:</i> <del>Copy i</del><ins>I</ins>nitializes each element with the
+value of the corresponding parameter.
+</p>
+
+</blockquote>
+</blockquote>
+
+</li>
+
+<li>
+<p>
+Change <sref ref="[tuple.cnstr]"/>/6 as indicated:
+</p>
+
+<blockquote><pre>
+template &lt;class... UTypes&gt;
+explicit tuple(UTypes&amp;&amp;... u);
+</pre>
+
+<blockquote>
+<p>
+6 <i>Requires:</i> <ins><tt>is_constructible&lt;Ti, Ui&gt;::value ==
+true</tt> for e</ins><del>E</del>ach type <ins><tt>Ti</tt></ins> in
+<tt>Types</tt> <del>shall satisfy the requirements of
+<tt>MoveConstructible</tt> (Table 33) from</del><ins>and for</ins> the
+corresponding type <ins><tt>Ui</tt></ins> in <tt>UTypes</tt>.
+<tt>sizeof...(Types) == sizeof...(UTypes)</tt>.
+</p>
+
+<p>
+7 <i>Effects:</i> Initializes the elements in the <tt>tuple</tt> with the
+corresponding value in <tt>std::forward&lt;UTypes&gt;(u)</tt>.
+</p>
+
+</blockquote>
+</blockquote>
+</li>
+
+<li>
+<p>
+Change <sref ref="[tuple.cnstr]"/>/8+9 as indicated:
+</p>
+
+<blockquote><pre>
+tuple(const tuple&amp; u) = default;
+</pre>
+
+<blockquote>
+<p>
+8 <i>Requires:</i> <ins><tt>is_constructible&lt;Ti, const
+Ti&amp;&gt;::value == true</tt> for e</ins><del>E</del>ach type
+<ins><tt>Ti</tt></ins> in <tt>Types</tt><del> shall satisfy the
+requirements of <tt>CopyConstructible</tt>(Table 34)</del>.
+</p>
+
+<p>
+9 <i>Effects:</i> <ins>Initializes</ins><del>Copy constructs</del> each element
+of <tt>*this</tt> with the corresponding element of <tt>u</tt>.
+</p>
+
+</blockquote>
+</blockquote>
+</li>
+
+<li>
+<p>
+Change <sref ref="[tuple.cnstr]"/>/10+11 as indicated:
+</p>
+
+<blockquote><pre>
+tuple(tuple&amp;&amp; u);
+</pre>
+
+<blockquote>
+<p>
+10 <i>Requires:</i> <ins>Let <tt>i</tt> be in <tt>[0, sizeof...(Types))</tt> and
+let <tt>Ti</tt> be the <tt>i</tt><sup><i>th</i></sup> type in <tt>Types</tt>.
+Then <tt>is_constructible&lt;Ti, Ti&gt;::value</tt> shall be <tt>true</tt> for
+all <tt>i</tt>.</ins> <del>Each type in <tt>Types</tt> shall shall satisfy the
+requirements of <tt>MoveConstructible</tt> (Table 34)</del>.
+</p>
+
+<p>
+11 <i>Effects:</i> <ins>For each <tt>Ti</tt> in <tt>Types</tt>, initializes the
+<tt>i</tt><sup><i>th</i></sup></ins> <del>Move-constructs each</del> element of
+<tt>*this</tt> with <del>the corresponding element of</del>
+<ins><tt>std::forward&lt;Ti&gt;(get&lt;i&gt;(</tt></ins><tt>u</tt><ins><tt>))</tt></ins>.
+</p>
+</blockquote>
+</blockquote>
+</li>
+
+<li>
+<p>
+Change <sref ref="[tuple.cnstr]"/>/15+16 as indicated:
+</p>
+
+<blockquote><pre>
+template &lt;class... UTypes&gt; tuple(tuple&lt;UTypes...&gt;&amp;&amp; u);
+</pre>
+
+<blockquote>
+<p>
+15 <i>Requires:</i> <ins>Let <tt>i</tt> be in <tt>[0, sizeof...(Types))</tt>,
+<tt>Ti</tt> be the <tt>i</tt><sup><i>th</i></sup> type in <tt>Types</tt>, and
+<tt>Ui</tt> be the <tt>i</tt><sup><i>th</i></sup> type in <tt>UTypes</tt>. Then
+<tt>is_constructible&lt;Ti, Ui&gt;::value</tt> shall be <tt>true</tt> for all
+<tt>i</tt>.</ins> <del>Each type in <tt>Types</tt> shall shall satisfy the
+requirements of <tt>MoveConstructible</tt> (Table 34) from the corresponding
+type in <tt>UTypes</tt></del>. <tt>sizeof...(Types) == sizeof...(UTypes)</tt>.
+</p>
+
+<p>
+16 <i>Effects:</i> <ins>For each type <tt>Ti</tt>, initializes the
+<tt>i</tt><sup><i>th</i></sup></ins> <del>Move-constructs each</del> element of
+<tt>*this</tt> with <del>the corresponding element of</del>
+<ins><tt>std::forward&lt;Ui&gt;(get&lt;i&gt;(</tt></ins><tt>u</tt><ins><tt>))</tt></ins>.
+</p>
+
+</blockquote>
+</blockquote>
+
+</li>
+
+<li>
+<p>
+Change <sref ref="[tuple.cnstr]"/>/19+20 as indicated:
+</p>
+
+<blockquote><pre>
+template &lt;class U1, class U2&gt; tuple(pair&lt;U1, U2&gt;&amp;&amp; u);
+</pre>
+
+<blockquote>
+<p>
+19 <i>Requires:</i> <ins><tt>is_constructible&lt;T1, U1&gt;::value ==
+true</tt> for <tt>t</tt></ins><del><tt>T</tt></del>he first type
+<ins><tt>T1</tt></ins> in <tt>Types</tt> <del>shall shall satisfy the
+requirements of <tt>MoveConstructible</tt>(Table 33) from
+<tt>U1</tt></del> and <ins><tt>is_constructible&lt;T2, U2&gt;::value ==
+true</tt> for</ins> the second type <ins><tt>T2</tt></ins> in
+<tt>Types</tt> <del>shall be move-constructible from <tt>U2</tt></del>.
+<tt>sizeof...(Types) == 2</tt>.
+</p>
+
+<p>
+20 <i>Effects:</i> <ins>Initializes</ins><del>Constructs</del> the first
+element with
+<tt>std::<ins>forward&lt;U1&gt;</ins><del>move</del>(u.first)</tt> and
+the second element with
+<tt>std::<ins>forward&lt;U2&gt;</ins><del>move</del>(u.second)</tt>.
+</p>
+
+</blockquote>
+</blockquote>
+</li>
+
+<li>
+<p>
+Change <sref ref="[tuple.creation]"/>/9-16 as indicated:
+</p>
+
+<blockquote><pre>
+template &lt;class... TTypes, class... UTypes&gt;
+tuple&lt;TTypes..., UTypes...&gt; tuple_cat(const tuple&lt;TTypes...&gt;&amp; t, const tuple&lt;UTypes...&gt;&amp; u);
+</pre>
+
+<blockquote>
+<p>
+9 <i>Requires:</i> <ins><tt>is_constructible&lt;Ti, const
+Ti&amp;&gt;::value == true</tt> for each type <tt>Ti</tt></ins><del>All
+the types</del> in <tt>TTypes</tt> <del>shall be
+<tt>CopyConstructible</tt> (Table 34)</del>.
+<ins><tt>is_constructible&lt;Ui, const Ui&amp;&gt;::value == true</tt>
+for each type <tt>Ui</tt></ins><del>All the types</del> in
+<tt>UTypes</tt> <del>shall be <tt>CopyConstructible</tt> (Table
+34)</del>.
+</p>
+
+<p>
+10 <i>Returns:</i> A <tt>tuple</tt> object constructed by
+<ins>initializing</ins><del>copy constructing</del> its first
+<tt>sizeof...(TTypes)</tt> elements from the corresponding elements of
+<tt>t</tt> and <ins>initializing</ins><del>copy constructing</del> its
+last <tt>sizeof...(UTypes)</tt> elements from the corresponding elements
+of <tt>u</tt>.
+</p>
+</blockquote>
+
+<pre>
+template &lt;class... TTypes, class... UTypes&gt;
+tuple&lt;TTypes..., UTypes...&gt; tuple_cat(tuple&lt;TTypes...&gt;&amp;&amp; t, const tuple&lt;UTypes...&gt;&amp; u);
+</pre>
+
+<blockquote>
+<p>
+11 <i>Requires:</i> <ins>Let <tt>i</tt> be in <tt>[0, sizeof...(TTypes))</tt>,
+<tt>Ti</tt> be the <tt>i</tt><sup><i>th</i></sup> type in <tt>Types</tt>,
+<tt>j</tt> be in <tt>[0, sizeof...(UTypes))</tt>, and <tt>Uj</tt> be the
+<tt>j</tt><sup><i>th</i></sup> type in <tt>UTypes</tt>.
+<tt>is_constructible&lt;Ti, Ti&gt;::value</tt> shall be <tt>true</tt> for each
+type <tt>Ti</tt> and <tt>is_constructible&lt;Uj, const Uj&amp;&gt;::value</tt>
+shall be <tt>true</tt> for each type <tt>Uj</tt></ins> <del>All the types in
+<tt>TTypes</tt> shall be <tt>MoveConstructible</tt> (Table 34). All the types in
+<tt>UTypes</tt> shall be <tt>CopyConstructible</tt> (Table 35)</del>.
+</p>
+
+<p>
+12 <i>Returns:</i> A <tt>tuple</tt> object constructed by <ins>initializing the
+<tt>i</tt><sup><i>th</i></sup> element with
+<tt>std::forward&lt;Ti&gt;(get&lt;i&gt;(t))</tt> for all <tt>Ti</tt> in
+<tt>TTypes</tt> and initializing the
+<tt>(j+sizeof...(TTypes))</tt><sup><i>th</i></sup> element with
+<tt>get&lt;j&gt;(u)</tt> for all <tt>Uj</tt> in <tt>UTypes</tt>.</ins> <del>move
+constructing its first <tt>sizeof...(TTypes)</tt> elements from the
+corresponding elements of <tt>t</tt> and copy constructing its last
+<tt>sizeof...(UTypes)</tt> elements from the corresponding elements of
+<tt>u</tt></del>.
+</p>
+</blockquote>
+
+<pre>
+template &lt;class... TTypes, class... UTypes&gt;
+tuple&lt;TTypes..., UTypes...&gt; tuple_cat(const tuple&lt;TTypes...&gt;&amp; t, tuple&lt;UTypes...&gt;&amp;&amp; u);
+</pre>
+
+<blockquote>
+<p>
+13 <i>Requires:</i> <ins>Let <tt>i</tt> be in <tt>[0, sizeof...(TTypes))</tt>,
+<tt>Ti</tt> be the <tt>i</tt><sup><i>th</i></sup> type in <tt>Types</tt>,
+<tt>j</tt> be in <tt>[0, sizeof...(UTypes))</tt>, and <tt>Uj</tt> be the
+<tt>j</tt><sup><i>th</i></sup> type in <tt>UTypes</tt>.
+<tt>is_constructible&lt;Ti, const Ti&amp;&gt;::value</tt> shall be <tt>true</tt>
+for each type <tt>Ti</tt> and <tt>is_constructible&lt;Uj, Uj&gt;::value</tt>
+shall be <tt>true</tt> for each type <tt>Uj</tt></ins> <del>All the types in
+<tt>TTypes</tt> shall be <tt>CopyConstructible</tt> (Table 35). All the types in
+<tt>UTypes</tt> shall be <tt>MoveConstructible</tt> (Table 34)</del>.
+</p>
+
+<p>
+14 <i>Returns:</i> A <tt>tuple</tt> object constructed by <ins>initializing the
+<tt>i</tt><sup><i>th</i></sup> element with <tt>get&lt;i&gt;(t)</tt> for each
+type <tt>Ti</tt> and initializing the
+<tt>(j+sizeof...(TTypes))</tt><sup><i>th</i></sup> element with
+<tt>std::forward&lt;Uj&gt;(get&lt;j&gt;(u))</tt> for each type <tt>Uj</tt></ins>
+<del>copy constructing its first <tt>sizeof...(TTypes)</tt> elements from the
+corresponding elements of <tt>t</tt> and move constructing its last
+<tt>sizeof...(UTypes)</tt> elements from the corresponding elements of
+<tt>u</tt></del>.
+</p>
+</blockquote>
+
+<pre>
+template &lt;class... TTypes, class... UTypes&gt;
+tuple&lt;TTypes..., UTypes...&gt; tuple_cat(tuple&lt;TTypes...&gt;&amp;&amp; t, tuple&lt;UTypes...&gt;&amp;&amp; u);
+</pre>
+
+<blockquote>
+<p>
+15 <i>Requires:</i> <ins>Let <tt>i</tt> be in <tt>[0, sizeof...(TTypes))</tt>,
+<tt>Ti</tt> be the <tt>i</tt><sup><i>th</i></sup> type in <tt>Types</tt>,
+<tt>j</tt> be in <tt>[0, sizeof...(UTypes))</tt>, and <tt>Uj</tt> be the
+<tt>j</tt><sup><i>th</i></sup> type in <tt>UTypes</tt>.
+<tt>is_constructible&lt;Ti, Ti&gt;::value</tt> shall be <tt>true</tt> for each
+type <tt>Ti</tt> and <tt>is_constructible&lt;Uj, Uj&gt;::value</tt> shall be
+<tt>true</tt> for each type <tt>Uj</tt></ins> <del>All the types in
+<tt>TTypes</tt> shall be <tt>MoveConstructible</tt> (Table 34). All the types in
+<tt>UTypes</tt> shall be <tt>MoveConstructible</tt> (Table 34)</del>.
+</p>
+
+<p>
+16 <i>Returns:</i> A <tt>tuple</tt> object constructed by <ins>initializing the
+<tt>i</tt><sup><i>th</i></sup> element with
+<tt>std::forward&lt;Ti&gt;(get&lt;i&gt;(t))</tt> for each type <tt>Ti</tt> and
+initializing the <tt>(j+sizeof...(TTypes))</tt><sup><i>th</i></sup> element with
+<tt>std::forward&lt;Uj&gt;(get&lt;j&gt;(u))</tt> for each type <tt>Uj</tt></ins>
+<del>move constructing its first <tt>sizeof...(TTypes)</tt> elements from the
+corresponding elements of <tt>t</tt> and move constructing its last
+<tt>sizeof...(UTypes)</tt> elements from the corresponding elements of
+<tt>u</tt></del>.
+</p>
+</blockquote>
+</blockquote>
+</li>
+
+</ol>
+
+</resolution>
+
+</issue>

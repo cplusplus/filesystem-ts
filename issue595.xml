@@ -1,0 +1,160 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="595" status="CD1">
+<title>TR1/C++0x: fabs(complex&lt;T&gt;) redundant / wrongly specified</title>
+<section><sref ref="[complex.value.ops]"/></section>
+<submitter>Stefan Gro&szlig;e Pawig</submitter>
+<date>24 Sep 2006</date>
+
+<discussion>
+<p>
+TR1 introduced, in the C compatibility chapter, the function
+fabs(complex&lt;T&gt;):
+</p>
+<blockquote><pre>
+----- SNIP -----
+8.1.1 Synopsis                                [tr.c99.cmplx.syn]
+
+  namespace std {
+  namespace tr1 {
+[...]
+  template&lt;class T&gt; complex&lt;T&gt; fabs(const complex&lt;T&gt;&amp; x);
+  } // namespace tr1
+  } // namespace std
+
+[...]
+
+8.1.8 Function fabs                          [tr.c99.cmplx.fabs]
+
+1 Effects: Behaves the same as C99 function cabs, defined in
+  subclause 7.3.8.1.
+----- SNIP -----
+</pre></blockquote>
+
+<p>
+The current C++0X draft document (n2009.pdf) adopted this
+definition in chapter 26.3.1 (under the comment // 26.3.7 values)
+and 26.3.7/7.
+</p>
+<p>
+But in C99 (ISO/IEC 9899:1999 as well as the 9899:TC2 draft document
+n1124), the referenced subclause reads
+</p>
+
+<blockquote><pre>
+----- SNIP -----
+7.3.8.1 The cabs functions
+
+  Synopsis
+
+1 #include &lt;complex.h&gt;
+  double cabs(double complex z);
+  float cabsf(float complex z);
+  long double cabsl(long double z);
+
+  Description
+
+2 The cabs functions compute the complex absolute value (also called
+  norm, modulus, or magnitude) of z.
+
+  Returns
+
+3 The cabs functions return the complex absolute value.
+----- SNIP -----
+</pre></blockquote>
+
+<p>
+Note that the return type of the cabs*() functions is not a complex
+type.  Thus, they are equivalent to the already well established
+  template&lt;class T&gt; T abs(const complex&lt;T&gt;&amp; x);
+(26.2.7/2 in ISO/IEC 14882:1998, 26.3.7/2 in the current draft
+document n2009.pdf).
+</p>
+<p>
+So either the return value of fabs() is specified wrongly, or fabs()
+does not behave the same as C99's cabs*().
+</p>
+
+<b>Possible Resolutions</b>
+
+<p>
+This depends on the intention behind the introduction of fabs().
+</p>
+<p>
+If the intention was to provide a /complex/ valued function that
+calculates the magnitude of its argument, this should be
+explicitly specified.  In TR1, the categorization under "C
+compatibility" is definitely wrong, since C99 does not provide
+such a complex valued function.
+</p>
+<p>
+Also, it remains questionable if such a complex valued function
+is really needed, since complex&lt;T&gt; supports construction and
+assignment from real valued arguments.  There is no difference
+in observable behaviour between
+</p>
+<blockquote><pre>
+  complex&lt;double&gt; x, y;
+  y = fabs(x);
+  complex&lt;double&gt; z(fabs(x));
+</pre></blockquote>
+<p>
+and
+</p>
+<blockquote><pre>
+  complex&lt;double&gt; x, y;
+  y = abs(x);
+  complex&lt;double&gt; z(abs(x));
+</pre></blockquote>
+<p>
+If on the other hand the intention was to provide the intended
+functionality of C99, fabs() should be either declared deprecated
+or (for C++0X) removed from the standard, since the functionality
+is already provided by the corresponding overloads of abs().
+</p>
+
+<note>
+Bellevue:
+</note>
+
+<blockquote>
+Bill believes that abs() is a suitable overload. We should remove fabs().
+</blockquote>
+</discussion>
+
+<resolution>
+
+<p>
+Change the synopsis in <sref ref="[complex.syn]"/>:
+</p>
+
+<blockquote><pre>
+<del>template&lt;class T&gt; complex&lt;T&gt; fabs(const complex&lt;T&gt;&amp;);</del>
+</pre></blockquote>
+
+<p>
+Remove <sref ref="[complex.value.ops]"/>, p7:
+</p>
+
+<blockquote>
+<pre>
+<del>template&lt;class T&gt; complex&lt;T&gt; fabs(const complex&lt;T&gt;&amp; <i>x</i>);</del>
+</pre>
+<blockquote>
+<p>
+<del>-7- <i>Effects:</i> Behaves the same as C99 function <tt>cabs</tt>, defined in subclause 7.3.8.1.</del>
+</p>
+</blockquote>
+</blockquote>
+
+</resolution>
+
+<note>
+Kona (2007): Change the return type of <tt>fabs(complex)</tt> to <tt>T</tt>. 
+Proposed Disposition: Ready
+</note>
+
+</issue>

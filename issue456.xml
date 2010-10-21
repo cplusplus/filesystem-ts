@@ -1,0 +1,142 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="456" status="CD1">
+<title>Traditional C header files are overspecified</title>
+<section><sref ref="[headers]"/></section>
+<submitter>Bill Plauger</submitter>
+<date>30 Jan 2004</date>
+
+<discussion>
+
+<p>The C++ Standard effectively requires that the traditional C headers
+(of the form &lt;xxx.h&gt;) be defined in terms of the newer C++
+headers (of the form &lt;cxxx&gt;). Clauses 17.4.1.2/4 and D.5 combine
+to require that:</p>
+
+<ul>
+ <li>Including the header &lt;cxxx&gt; declares a C name in namespace std.</li>
+
+ <li> Including the header &lt;xxx.h&gt; declares a C name in namespace std
+    (effectively by including &lt;cxxx&gt;), then imports it into the global
+    namespace with an individual using declaration.</li>
+</ul>
+
+<p>
+The rules were left in this form despited repeated and heated objections
+from several compiler vendors. The C headers are often beyond the direct
+control of C++ implementors. In some organizations, it's all they can do
+to get a few #ifdef __cplusplus tests added. Third-party library vendors
+can perhaps wrap the C headers. But neither of these approaches supports
+the drastic restructuring required by the C++ Standard. As a result, it is
+still widespread practice to ignore this conformance requirement, nearly
+seven years after the committee last debated this topic. Instead, what is
+often implemented is:
+</p>
+
+<ul>
+ <li> Including the header &lt;xxx.h&gt; declares a C name in the
+ global namespace.</li> 
+
+ <li> Including the header &lt;cxxx&gt; declares a C name in the
+ global namespace (effectively by including &lt;xxx.h&gt;), then
+ imports it into namespace std with an individual using declaration.</li>
+</ul>
+
+<p>
+The practical benefit for implementors with the second approach is that
+they can use existing C library headers, as they are pretty much obliged
+to do. The practical cost for programmers facing a mix of implementations
+is that they have to assume weaker rules:</p>
+
+<ul>
+  <li> If you want to assuredly declare a C name in the global
+  namespace, include &lt;xxx.h&gt;. You may or may not also get the
+  declaration in namespace std.</li>
+
+  <li> If you want to assuredly declare a C name in namespace std,
+  include &lt;cxxx&gt;. You may or may not also get the declaration in
+  the global namespace.</li>
+</ul>
+
+<p>
+There also exists the <i>possibility</i> of subtle differences due to
+Koenig lookup, but there are so few non-builtin types defined in the C
+headers that I've yet to see an example of any real problems in this
+area.
+</p>
+
+<p>
+It is worth observing that the rate at which programmers fall afoul of
+these differences has remained small, at least as measured by newsgroup
+postings and our own bug reports. (By an overwhelming margin, the
+commonest problem is still that programmers include &lt;string&gt; and can't
+understand why the typename string isn't defined -- this a decade after
+the committee invented namespace std, nominally for the benefit of all
+programmers.)
+</p>
+
+<p>
+We should accept the fact that we made a serious mistake and rectify it,
+however belatedly, by explicitly allowing either of the two schemes for
+declaring C names in headers.
+</p>
+
+<note>Sydney: This issue has been debated many times, and will
+  certainly have to be discussed in full committee before any action
+  can be taken.  However, the preliminary sentiment of the LWG was in
+  favor of the change.  (6 yes, 0 no, 2 abstain) Robert Klarer
+  suggests that we might also want to undeprecate the
+  C-style <tt>.h</tt> headers.</note>
+
+</discussion>
+
+<resolution>
+<p>
+Add to <sref ref="[headers]"/>, para. 4:
+</p>
+
+<blockquote><p>
+Except as noted in clauses 18 through 27 and Annex D, the contents of each
+header <i>cname</i> shall be the same as that of the corresponding header
+<i>name.h</i>, as specified in ISO/IEC 9899:1990 Programming Languages C (Clause
+7), or ISO/IEC:1990 Programming Languages-C AMENDMENT 1: C Integrity, (Clause
+7), as appropriate, as if by inclusion. In the C++ Standard Library, however,
+the declarations <del>and definitions</del> (except for names which are defined
+as macros in C) are within namespace scope (3.3.5) of the namespace std. 
+<ins>It is unspecified whether these names are first declared within the global
+namespace scope and are then injected into namespace std by explicit
+using-declarations (<sref ref="[namespace.udecl]"/>).</ins>
+</p></blockquote>
+
+<p>
+Change <sref ref="[depr.c.headers]"/>, para. 2-3:
+</p>
+
+<blockquote>
+<p>
+-2- Every C header, each of which has a name of the form <i>name.h</i>, behaves
+as if each name placed in the Standard library namespace by the corresponding
+<i>cname</i> header is <del>also</del> placed within the <ins>global</ins>
+namespace scope<ins>.</ins> <del>of the namespace <tt>std</tt> and is followed
+by an explicit <i>using-declaration</i> (<sref ref="[namespace.udecl]"/>).</del>
+<ins>It is unspecified whether these names are first declared or defined within
+namespace scope (<sref ref="[basic.scope.namespace]"/>) of the namespace
+<tt>std</tt> and are then injected into the global namespace scope by explicit
+using-declarations (<sref ref="[namespace.udecl]"/>).</ins>
+</p>
+<p>
+-3- [<i>Example:</i> The header <tt>&lt;cstdlib&gt;</tt> <ins>assuredly</ins>
+provides its declarations and definitions within the namespace <tt>std</tt>.
+<ins>It may also provide these names within the global namespace.</ins> The
+header <tt>&lt;stdlib.h&gt;</tt> <del>makes these available also in</del>
+<ins>assuredly provides the same declarations and definitions within</ins> the
+global namespace, much as in the C Standard. <ins>It may also provide these
+names within the namespace <tt>std</tt>.</ins> <i>-- end example</i>]
+</p>
+</blockquote>
+</resolution>
+
+</issue>

@@ -1,0 +1,106 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="1265" status="NAD">
+<title><tt>longjmp</tt> and destructors</title>
+<section><sref ref="[support.runtime]"/></section>
+<submitter>Sean Hunt</submitter>
+<date>16 Nov 2009</date>
+
+<discussion>
+<p>
+<sref ref="[support.runtime]"/>/4 says that <tt>longjmp</tt> is undefined if
+unwinding by the mechanism used by catch and throw would invoke any nontrivial
+destructors. However, the text as written is rather vague, in particular when
+dealing with <tt>catch(...)</tt>:
+</p>
+
+<blockquote><pre>
+void foo() {
+  jump_buf buf;
+  non_trivial_dtor n1; // 1
+  if (!setjmp(buf)) {
+    non_trivial_dtor n2; // 2
+    try {
+      longjmp(buf, 1);
+    } catch (...) {
+    }
+  }
+}
+</pre></blockquote>
+
+<p>
+My interpretation of the meaning of <sref ref="[support.runtime]"/>/4 is that
+declaration 2, but not 1, would cause the <tt>longjmp</tt> to be undefined
+behavior. However,  it's not entirely clear from the text. Arguably, replacing
+the <tt>setjmp</tt> and <tt>longjmp</tt> with <tt>catch</tt> would still cause
+the destructor for <tt>n1</tt> to be called after the unwinding, which would
+lead to undefined behavior. This is clearly not an intended consequence of the
+wording. However, it is probably still UB, as <tt>n1</tt> now has
+"indeterminate" value, and running its destructor on <tt>foo</tt>'s exit will
+cause Bad Things.
+</p>
+
+<p>
+Declarations 2 has a more interesting issue. The <tt>catch(...)</tt> muddles up
+the definition that uses <tt>throw</tt> and <tt>catch</tt> - if
+<tt>longjmp()</tt> were indeed a <tt>throw</tt>, control would never return to
+the <tt>setjmp</tt>. As such, <tt>n2</tt>'s destructor wouldn't be called
+(except by the argument for <tt>n1</tt>, which is that the destructor would be
+called later as the frame was left in the normal control flow).
+</p>
+
+<p>
+I suggest that paragraph 4 of <sref ref="[support.runtime]"/> should be replaced
+with the following, or something that reads better but has the same effect:
+</p>
+
+<blockquote>
+The function signature <tt>longjmp(jmp_buf jbuf, int val)</tt> has more
+restricted behavior in this International Standard. A call to <tt>longjmp</tt>
+has undefined behavior if any non-trivial destructors would be called were the
+<tt>longjmp</tt> call replaced with a throw-expression whose nearest matching
+handler were a (possibly imaginary) function-try-block on the function
+containing the corresponding <tt>setjmp</tt> call.
+</blockquote>
+
+<note>
+2009-11-17 Moved to Tentatively NAD after 5 positive votes on c++std-lib. 
+Rationale added below.
+</note>
+</discussion>
+
+<resolution>
+<p>
+Change <sref ref="[support.runtime]"/>/4:
+</p>
+
+<blockquote>
+The function signature <tt>longjmp(jmp_buf jbuf, int val)</tt> has more
+restricted behavior in this International Standard. <del>A
+<tt>setjmp</tt>/<tt>longjmp</tt> call pair has undefined behavior if replacing
+the <tt>setjmp</tt> and <tt>longjmp</tt> by <tt>catch</tt> and <tt>throw</tt>
+would invoke any non-trivial destructors for any automatic objects.</del>
+<ins>A call to <tt>longjmp</tt> has undefined behavior if any non-trivial
+destructors would be called were the <tt>longjmp</tt> call replaced with a
+throw-expression whose nearest matching handler were a (possibly imaginary)
+function-try-block on the function containing the corresponding <tt>setjmp</tt>
+call.</ins>
+</blockquote>
+</resolution>
+
+<rationale>
+<p>
+In the given example, it is clear that it is only <tt>n2</tt> and not
+<tt>n1</tt> that is destroyed by the <tt>longjmp</tt>.
+</p>
+<p>
+At this late stage in the standards process, we are focusing on issues that
+impact users or implementers.  Trying to rewrite complex wording just for the
+sake of improved clarity is likely to do more harm than good.
+</p>
+</rationale>
+
+</issue>

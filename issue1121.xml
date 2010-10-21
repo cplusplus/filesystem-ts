@@ -1,0 +1,199 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="1121" status="NAD Future">
+<title>Support for multiple arguments</title>
+<section><sref ref="[ratio.arithmetic]"/></section>
+<submitter>Alisdair Meredith</submitter>
+<date>25 May 2009</date>
+
+<discussion>
+<p>
+Both add and multiply could sensibly be called with more than two arguments.
+The variadic template facility makes such declarations simple, and is likely
+to be frequently wrapped by end users if we do not supply the variant
+ourselves.
+</p>
+<p>
+We deliberately ignore divide at this point as it is not transitive.
+Likewise, subtract places special meaning on the first argument so I do not
+suggest extending that immediately.  Both could be supported with analogous
+wording to that for add/multiply below.
+</p>
+<p>
+Note that the proposed resolution is potentially incompatible with that
+proposed for <iref ref="921"/>, although the addition of the typedef to ratio would be
+equally useful.
+</p>
+
+<note>
+2009-10-30 Alisdair adds:
+</note>
+
+<blockquote>
+<p>
+The consensus of the group when we reviewed this in Santa Cruz was that
+<iref ref="921"/> would proceed to Ready as planned, and the
+multi-paramater add/multiply templates should be renamed as
+<tt>ratio_sum</tt> and <tt>ratio_product</tt> to avoid the problem
+mixing template aliases with partial specializations.
+</p>
+
+<p>
+It was also suggested to close this issue as NAD Future as it does not
+correspond directly to any NB comment.  NBs are free to submit a
+specific comment (and re-open) in CD2 though.
+</p>
+
+<p>
+Walter Brown also had concerns on better directing the order of
+evaluation to avoid overflows if we do proceed for 0x rather than TR1,
+so wording may not be complete yet.
+</p>
+
+<note>
+Alisdair updates wording.
+</note>
+
+</blockquote>
+
+<note>
+2009-10-30 Howard:
+</note>
+
+<blockquote>
+Moved to Tentatively NAD Future after 5 positive votes on c++std-lib.
+</blockquote>
+
+</discussion>
+
+<rationale>
+<p>
+Does not have sufficient support at this time. May wish to reconsider for a
+future standard.
+</p>
+</rationale>
+
+<resolution>
+
+<p>
+Add the following type traits to p3 <sref ref="[ratio]"/>
+</p>
+
+<blockquote><pre>
+// ratio arithmetic
+template &lt;class R1, class R2&gt; struct ratio_add;
+template &lt;class R1, class R2&gt; struct ratio_subtract;
+template &lt;class R1, class R2&gt; struct ratio_multiply;
+template &lt;class R1, class R2&gt; struct ratio_divide;
+<ins>template &lt;class R1, class ... RList&gt; struct ratio_sum;</ins>
+<ins>template &lt;class R1, class ... RList&gt; struct ratio_product;</ins>
+</pre></blockquote>
+
+<p>
+after <sref ref="[ratio.arithmetic]"/> p1: add
+</p>
+
+<blockquote><pre>
+template &lt;class R1, class ... RList&gt; struct ratio_sum; // declared, never defined
+
+template &lt;class R1&gt; struct ratio_sum&lt;R1&gt; : R1 {};
+</pre>
+
+<blockquote>
+<i>Requires:</i> <tt>R1</tt> is a specialization of class template <tt>ratio</tt>
+</blockquote>
+
+<pre>
+template &lt;class R1, class R2, class ... RList&gt; 
+ struct ratio_sum&lt;R1, R2, RList...&gt;
+   : ratio_add&lt; R1, ratio_sum&lt;R2, RList...&gt;&gt; {
+};
+</pre>
+
+<blockquote>
+<i>Requires:</i> <tt>R1</tt> and each element in parmater pack
+<tt>RList</tt> is a specialization of class template <tt>ratio</tt>
+</blockquote>
+</blockquote>
+
+<p>
+after <sref ref="[ratio.arithmetic]"/> p3: add
+</p>
+
+<blockquote><pre>
+template &lt;class R1, class ... RList&gt; struct ratio_product; // declared, never defined
+
+template &lt;class R1&gt; struct ratio_product&lt;R1&gt; : R1 {};
+</pre>
+
+<blockquote>
+<i>Requires:</i> <tt>R1</tt> is a specialization of class template <tt>ratio</tt>
+</blockquote>
+
+<pre>
+template &lt;class R1, class R2, class ... RList&gt; 
+ struct ratio_sum&lt;R1, R2, RList...&gt;
+   : ratio_add&lt; R1, ratio_product&lt;R2, RList...&gt;&gt; {
+};
+</pre>
+
+<blockquote>
+<i>Requires:</i> <tt>R1</tt> and each element in parmater pack
+<tt>RList</tt> is a specialization of class template <tt>ratio</tt>
+</blockquote>
+</blockquote>
+
+<!-- 
+<note>
+note that this wording relies on 'metafunction forwarding' as described by
+Boost MPL
+</note>
+
+<p>
+<sref ref="[ratio]"/> p3 synopsis: change
+</p>
+
+<blockquote><pre>
+// ratio arithmetic
+template &lt;class R1, class R2<ins>, class ... RList</ins>&gt; struct ratio_add;
+template &lt;class R1, class R2&gt; struct ratio_subtract;
+template &lt;class R1, class R2<ins>, class ... RList</ins>&gt; struct ratio_multiply;
+template &lt;class R1, class R2&gt; struct ratio_divide;
+</pre></blockquote>
+
+<p>
+<sref ref="[ratio.arithmetic]"/> p1: change
+</p>
+
+<blockquote><pre>
+<ins>template &lt;class R1, class R2, class ... RList&gt; struct ratio_add
+  : ratio_add&lt; R1, ratio_add&lt;R2, RList...&gt;&gt; {
+};</ins>
+
+template &lt;class R1, class R2&gt; struct ratio_add<ins>&lt;R1, R2&gt;</ins> {
+  typedef <i>see below</i> type;
+};
+</pre></blockquote>
+
+
+<p>
+<sref ref="[ratio.arithmetic]"/> p3: change
+</p>
+
+<blockquote><pre>
+<ins>template &lt;class R1, class R2, class ... RList&gt; struct ratio_multiply
+  : ratio_multiply&lt; R1, ratio_ multiply &lt;R2, RList...&gt;&gt; {
+};</ins>
+
+template &lt;class R1, class R2&gt; struct ratio_ multiply<ins>&lt;R1, R2&gt;</ins> {
+  typedef <i>see below</i> type;
+};
+</pre></blockquote>
+ -->
+
+</resolution>
+
+</issue>

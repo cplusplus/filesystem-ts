@@ -1,0 +1,85 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="808" status="CD1">
+<title>[forward] incorrect redundant specification</title>
+<section><sref ref="[forward]"/></section>
+<submitter>Jens Maurer</submitter>
+<date>13 Mar 2008</date>
+
+<discussion>
+<p>
+p4 (forward) says:
+</p>
+<blockquote>
+<i>Return type:</i> If <tt>T</tt> is an lvalue-reference type, an lvalue; otherwise, an rvalue.
+</blockquote>
+
+<p>
+First of all, lvalue-ness and rvalue-ness are properties of an expression,
+not of a type (see <sref ref="[basic.lval]"/>).  Thus, the phrasing "Return type" is wrong.
+Second, the phrase says exactly what the core language wording says for
+folding references in <sref ref="[temp.arg.type]"/>/p4  and for function return values
+in <sref ref="[expr.call]"/>/p10.  (If we feel the wording should be retained, it should
+at most be a note with cross-references to those sections.)
+</p>
+<p>
+The prose after the example talks about "forwarding as an <tt>int&amp;</tt> (an lvalue)" etc.
+In my opinion, this is a category error:  "<tt>int&amp;</tt>" is a type, "lvalue" is a
+property of an expression, orthogonal to its type.  (Btw, expressions cannot
+have reference type, ever.)
+</p>
+<p>
+Similar with move:
+</p>
+<blockquote>
+Return type: an rvalue.
+</blockquote>
+<p>
+is just wrong and also redundant.
+</p>
+</discussion>
+
+<resolution>
+<p>
+Change <sref ref="[forward]"/> as indicated:
+</p>
+
+<blockquote>
+<pre>
+template &lt;class T&gt; T&amp;&amp; forward(typename identity&lt;T&gt;::type&amp;&amp; t);
+</pre>
+
+<blockquote>
+<p>...</p>
+<p>
+<del><i>Return type:</i> If <tt>T</tt> is an lvalue-reference type, an lvalue; otherwise, an rvalue.</del>
+</p>
+<p>...</p>
+<p>
+-7- In the first call to <tt>factory</tt>, <tt>A1</tt> is deduced as <tt>int</tt>, so 2 is forwarded to <tt>A</tt>'s constructor
+as <del>an <tt>int&amp;&amp;</tt> (</del>an rvalue<del>)</del>. In the second call to factory, <tt>A1</tt> is deduced
+as <tt>int&amp;</tt>, so <tt>i</tt> is forwarded to <tt>A</tt>'s constructor as <del>an <tt>int&amp;</tt> (</del>an lvalue<del>)</del>.
+In both cases, <tt>A2</tt> is deduced as double, so 1.414 is forwarded to <tt>A</tt>'s constructor as
+<del><tt>double&amp;&amp;</tt> (</del>an rvalue<del>)</del>.
+</p>
+</blockquote>
+
+<pre>
+template &lt;class T&gt; typename remove_reference&lt;T&gt;::type&amp;&amp; move(T&amp;&amp; t);
+</pre>
+
+<blockquote>
+<p>...</p>
+<p>
+<del><i>Return type:</i>  an rvalue.</del>
+</p>
+</blockquote>
+
+</blockquote>
+
+</resolution>
+
+</issue>

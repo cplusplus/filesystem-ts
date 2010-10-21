@@ -1,0 +1,119 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="1209" status="WP">
+<title>match_results should be moveable</title>
+<section><sref ref="[re.results.const]"/></section>
+<submitter>Stephan T. Lavavej</submitter>
+<date>15 Sep 2009</date>
+
+<discussion>
+<p>
+In Working Draft
+<a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2009/n2914.pdf">N2914</a>,
+<tt>match_results</tt> lacks a move constructor and move
+assignment operator. Because it owns dynamically allocated memory, it
+should be moveable.
+</p>
+
+<p>
+As far as I can tell, this isn't tracked by an active issue yet; Library
+Issue <iref ref="723"/> doesn't talk about <tt>match_results</tt>.
+</p>
+
+<note>
+2009-09-21 Daniel provided wording.
+</note>
+
+<note>
+2009-11-18: Moved to Tentatively Ready after 5 positive votes on c++std-lib.
+</note>
+</discussion>
+
+<resolution>
+<ol>
+<li>
+<p>
+Add the following member declarations to <sref ref="[re.results]"/>/3:
+</p>
+
+<blockquote><pre>
+// 28.10.1, construct/copy/destroy:
+explicit match_results(const Allocator&amp; a = Allocator());
+match_results(const match_results&amp; m);
+<ins>match_results(match_results&amp;&amp; m);</ins>
+match_results&amp; operator=(const match_results&amp; m);
+<ins>match_results&amp; operator=(match_results&amp;&amp; m);</ins>
+~match_results();
+</pre></blockquote>
+</li>
+
+<li>
+<p>
+Add the following new prototype descriptions to <sref ref="[re.results.const]"/>
+using the table numbering of
+<a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2009/n3000.pdf">N3000</a>
+(referring to the table titled "<tt>match_results</tt> assignment operator effects"):
+</p>
+
+<blockquote>
+<pre>
+match_results(const match_results&amp; m);
+</pre>
+
+<blockquote>
+4 <i>Effects:</i> Constructs an object of class <tt>match_results</tt>, as a
+copy of <tt>m</tt>.
+</blockquote>
+
+<pre>
+<ins>match_results(match_results&amp;&amp; m);</ins>
+</pre>
+
+<blockquote>
+<p>
+<ins>5 <i>Effects:</i> Move-constructs an object of class <tt>match_results</tt>
+from <tt>m</tt> satisfying the same postconditions as Table 131. Additionally
+the stored <tt>Allocator</tt> value is move constructed from <tt>m.get_allocator()</tt>.
+After the initialization of <tt>*this</tt> sets <tt>m</tt> to an unspecified but valid
+state.</ins>
+</p>
+
+<p>
+<ins>6 <i>Throws:</i> Nothing if the allocator's move constructor throws nothing.</ins>
+</p>
+</blockquote>
+
+<pre>
+match_results&amp; operator=(const match_results&amp; m);
+</pre>
+
+<blockquote>
+7 <i>Effects:</i> Assigns <tt>m</tt> to <tt>*this</tt>. The postconditions of this function are
+indicated in Table 131.
+</blockquote>
+
+<pre>
+<ins>match_results&amp; operator=(match_results&amp;&amp; m);</ins>
+</pre>
+
+<blockquote>
+<p>
+<ins>8 <i>Effects:</i> Move-assigns <tt>m</tt> to <tt>*this</tt>. The postconditions of this
+function are indicated in Table 131. After the assignment, <tt>m</tt> is in
+a valid but unspecified state.</ins>
+</p>
+
+<p>
+<ins>9 <i>Throws:</i> Nothing.</ins>
+</p>
+</blockquote>
+</blockquote>
+</li>
+
+</ol>
+</resolution>
+
+</issue>

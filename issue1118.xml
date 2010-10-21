@@ -1,0 +1,193 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="1118" status="Open">
+<title>tuple query APIs do not support cv-qualification</title>
+<section><sref ref="[tuple.helper]"/></section>
+<submitter>Alisdair Meredith</submitter>
+<date>23 May 2009</date>
+
+<discussion>
+<p>
+The APIs <tt>tuple_size</tt> and <tt>tuple_element</tt> do not support
+cv-qualified <tt>tuple</tt>s, <tt>pair</tt>s or <tt>array</tt>s.
+</p>
+<p>
+The most generic solution would be to supply partial specializations once
+for each cv-type in the <tt>tuple</tt> header.  However, requiring this header for
+cv-qualified <tt>pair</tt>s/<tt>array</tt>s seems unhelpful.  The BSI editorial
+suggestion (UK-198/US-69,
+<a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2008/n2533.html">N2533</a>)
+to merge <tt>tuple</tt> into <tt>&lt;utility&gt;</tt> would help with <tt>pair</tt>,
+but not <tt>array</tt>.  That might be resolved by making a dependency between the
+<tt>&lt;array&gt;</tt> header and <tt>&lt;utility&gt;</tt>, or simply recognising
+the dependency be fulfilled in a Remark.
+</p>
+
+<note>
+2009-05-24 Daniel adds:
+</note>
+
+<blockquote>
+<p>
+All <tt>tuple_size</tt> templates with a base class need to derive publicly, e.g.
+</p>
+
+<blockquote><pre>
+template &lt;IdentityOf T&gt; class tuple_size&lt; const T &gt; :
+   <ins>public</ins> tuple_size&lt;T&gt; {};
+</pre></blockquote>
+
+<p>
+The same applies to the tuple_element class hierarchies.
+</p>
+<p>
+What is actually meant with the comment
+</p>
+<blockquote>
+this solution relies on 'metafunction forwarding' to inherit the
+nested typename type
+</blockquote>
+<p>
+?
+</p>
+<p>
+I ask, because all base classes are currently unconstrained and their
+instantiation is invalid in the constrained context of the <tt>tuple_element</tt> partial
+template specializations.
+</p>
+</blockquote>
+
+<note>
+2009-05-24 Alisdair adds:
+</note>
+
+<blockquote>
+<p>
+I think a better solution might be to ask Pete editorially to change all
+declarations of tupling APIs to use the struct specifier instead of class.
+</p>
+<p>
+"metafunction forwarding" refers to the MPL metafunction protocol, where a
+metafunction result is declared as a nested typedef with the name "type",
+allowing metafunctions to be chained by means of inheritance.  It is a
+neater syntax than repeatedly declaring a typedef, and inheritance syntax is
+slightly nicer when it comes to additional typename keywords.
+</p>
+<p>
+The constrained template with an unconstrained base is a good observation
+though.
+</p>
+</blockquote>
+
+<note>
+2009-10 post-Santa Cruz:
+</note>
+
+<blockquote>
+Move to Open, Alisdair to provide wording. Once wording is
+provided, Howard will move to Review.
+</blockquote>
+
+<note>
+2010-03-28 Daniel deconceptified wording.
+</note>
+
+</discussion>
+
+<resolution>
+<p>
+Add to <sref ref="[tuple.general]"/> p2 (Header <tt>&lt;tuple&gt;</tt> synopsis)
+</p>
+
+<blockquote><pre>
+// 20.4.2.5, tuple helper classes:
+template &lt;class T&gt; class tuple_size; // undefined
+<ins>template &lt;class T&gt; class tuple_size&lt;const T&gt; : public tuple_size&lt;T&gt; {};</ins>
+<ins>template &lt;class T&gt; class tuple_size&lt;volatile T&gt; : public tuple_size&lt;T&gt; {};</ins>
+<ins>template &lt;class T&gt; class tuple_size&lt;const volatile T&gt; : public tuple_size&lt;T&gt; {};</ins>
+template &lt;class... Types&gt; class tuple_size&lt;tuple&lt;Types...&gt; &gt;;
+
+template &lt;size_t I, class T&gt; class tuple_element; // undefined
+<ins>template &lt;size_t I, class T&gt; class tuple_element&lt;I, const T&gt;;</ins>
+<ins>template &lt;size_t I, class T&gt; class tuple_element&lt;I, volatile T&gt;;</ins>
+<ins>template &lt;size_t I, class T&gt; class tuple_element&lt;I, const volatile T&gt;;</ins>
+template &lt;size_t I, class... Types&gt; class tuple_element&lt;I, tuple&lt;Types...&gt; &gt;;
+</pre></blockquote>
+
+<!-- 
+<blockquote><pre>
+// 20.5.2.3, tuple helper classes:
+template &lt;IdentityOf T&gt; class tuple_size; // undefined
+<ins>template &lt;IdentityOf T&gt; class tuple_size&lt; const T &gt; : tuple_size&lt;T&gt; {};</ins>
+<ins>template &lt;IdentityOf T&gt; class tuple_size&lt; volatile T &gt; : tuple_size&lt;T&gt; {};</ins>
+<ins>template &lt;IdentityOf T&gt; class tuple_size&lt; const volatile T &gt; : tuple_size&lt;T&gt; {};</ins>
+
+template &lt;VariableType... Types&gt; class tuple_size&lt;tuple&lt;Types...&gt; &gt;;
+
+template &lt;size_t I, IdentityOf T&gt; class tuple_element; // undefined
+<ins>template &lt;size_t I, IdentityOf T&gt; class tuple_element&lt;I, const T&gt;;</ins>
+<ins>template &lt;size_t I, IdentityOf T&gt; class tuple_element&lt;I, volatile T&gt;;</ins>
+<ins>template &lt;size_t I, IdentityOf T&gt; class tuple_element&lt;I, const volatile T&gt;;</ins>
+
+template &lt;size_t I, VariableType... Types&gt;
+  requires True&lt;(I &lt; sizeof...(Types))&gt; class tuple_element&lt;I, tuple&lt;Types...&gt; &gt;;
+</pre></blockquote>
+ -->
+
+<p>
+Add to <sref ref="[tuple.helper]"/>
+</p>
+
+<blockquote><pre>
+template &lt;class... Types&gt;
+class tuple_size&lt;tuple&lt;Types...&gt; &gt;
+  : public integral_constant&lt;size_t, sizeof...(Types)&gt; { };
+
+template &lt;size_t I, class... Types&gt;
+class tuple_element&lt;I, tuple&lt;Types...&gt; &gt; {
+public:
+  typedef TI type;
+};
+
+<ins>template &lt;size_t I, class T&gt;
+  class tuple_element&lt;I, const T&gt; : public add_const&lt;tuple_element&lt;I, T&gt;&gt; {};</ins>
+<ins>template &lt;size_t I, class T&gt;
+  class tuple_element&lt;I, volatile T&gt; : public add_volatile&lt;tuple_element&lt;I, T&gt;&gt; {};</ins>
+<ins>template &lt;size_t I, class T&gt;
+  class tuple_element&lt;I, const volatile T&gt; : public add_cv&lt;tuple_element&lt;I, T&gt;&gt; {};</ins>
+</pre></blockquote>
+
+<!-- 
+<note>
+(note that this solution relies on 'metafunction forwarding' to inherit the
+nested typename type)
+</note>
+
+<blockquote><pre>
+template &lt;class... Types&gt;
+class tuple_size&lt;tuple&lt;Types...&gt; &gt;
+  : public integral_constant&lt;size_t, sizeof...(Types)&gt; { };
+
+template &lt;size_t I, class... Types&gt;
+requires True&lt;(I &lt; sizeof...(Types))&gt;
+class tuple_element&lt;I, tuple&lt;Types...&gt; &gt; {
+public:
+  typedef TI type;
+};
+
+<ins>template &lt;size_t I, IdentityOf T&gt;
+  class tuple_element&lt;I, const T&gt; : add_const&lt;tuple_element&lt;I,T&gt;&gt; {};</ins>
+
+<ins>template &lt;size_t I, IdentityOf T&gt;
+  class tuple_element&lt;I, volatile T&gt; : add_volatile&lt;tuple_element&lt;I,T&gt;&gt; {};</ins>
+
+<ins>template &lt;size_t I, IdentityOf T&gt;
+  class tuple_element&lt;I, const volatile T&gt; : add_cv&lt;tuple_element&lt;I,T&gt;&gt; {};</ins>
+</pre></blockquote>
+ -->
+</resolution>
+
+</issue>

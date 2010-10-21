@@ -1,0 +1,130 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="786" status="NAD Editorial">
+<title>Thread library timed waits, UTC and monotonic clocks</title>
+<section><sref ref="[time]"/></section>
+<submitter>Christopher Kohlhoff, Jeff Garland</submitter>
+<date>3 Feb 2008</date>
+
+<discussion>
+<p>
+The draft C++0x thread library requires that the time points of type
+<tt>system_time</tt> and returned by <tt>get_system_time()</tt> represent Coordinated
+Universal Time (UTC) (section <sref ref="[datetime.system]"/>). This can lead to
+surprising behavior when a library user performs a duration-based wait,
+such as <tt>condition_variable::timed_wait()</tt>. A complete explanation of the
+problem may be found in the
+<a href="http://www.opengroup.org/onlinepubs/009695399/xrat/xsh_chap02.html#tag_03_02_08_19">Rationale for the Monotonic Clock</a>
+section in POSIX, but in summary:
+</p>
+
+<ul>
+<li>
+Operations such as <tt>condition_variable::timed_wait()</tt> (and its POSIX
+equivalent, <tt>pthread_cond_timedwait()</tt>) are specified using absolute times
+to address the problem of spurious wakeups.
+</li>
+
+<li>
+The typical use of the timed wait operations is to perform a relative
+wait. This may be achieved by first calculating an absolute time as the
+sum of the current time and the desired duration. In fact, the C++0x
+thread library includes duration-based overloads of
+<tt>condition_variable::timed_wait()</tt> that behave as if by calling the
+corresponding absolute time overload with a time point value of
+<tt>get_system_time() + rel_time</tt>.
+</li>
+
+<li>
+A UTC clock may be affected by changes to the system time, such as
+synchronization with an external source, leap seconds, or manual changes
+to the clock.
+</li>
+
+<li>
+Should the clock change during a timed wait operation, the actual
+duration of the wait will not be the expected length. For example, a
+user may intend a timed wait of one second duration but, due to an
+adjustment of the system clock backwards by a minute, the wait instead
+takes 61 seconds.
+</li>
+</ul>
+
+<p>
+POSIX solves the problem by introducing a new monotonic clock, which is
+unaffected by changes to the system time. When a condition variable is
+initialized, the user may specify whether the monotonic clock is to be
+used. (It is worth noting that on POSIX systems it is not possible to
+use <tt>condition_variable::native_handle()</tt> to access this facility, since
+the desired clock type must be specified during construction of the
+condition variable object.)
+</p>
+
+<p>
+In the context of the C++0x thread library, there are added dimensions
+to the problem due to the need to support platforms other than POSIX:
+</p>
+
+<ul>
+<li>
+Some environments (such as embedded systems) do not have a UTC clock, but do have a monotonic clock.
+</li>
+
+<li>
+Some environments do not have a monotonic clock, but do have a UTC clock.
+</li>
+
+<li>
+The Microsoft Windows API's synchronization functions use relative
+timeouts based on an implied monotonic clock. A program that switches
+from the Windows API to the C++0x thread library will now find itself
+susceptible to clock changes.
+</li>
+</ul>
+
+<p>
+One possible minimal solution:
+</p>
+
+<ul>
+<li>
+Strike normative references to UTC and an epoch based on 1970-01-01.
+</li>
+
+<li>
+Make the semantics of <tt>system_time</tt> and <tt>get_system_time()</tt>
+implementation-defined (i.e standard library implementors may choose the
+appropriate underlying clock based on the capabilities of the target
+platform).
+</li>
+
+<li>
+Add a non-normative note encouraging use of a monotonic clock.
+</li>
+
+<li>
+Remove <tt>system_time::seconds_since_epoch()</tt>.
+</li>
+
+<li>
+Change the constructor <tt>explicit system_time(time_t secs, nanoseconds ns
+= 0)</tt> to <tt>explicit system_time(nanoseconds ns)</tt>.
+</li>
+</ul>
+
+</discussion>
+
+<resolution>
+<p>
+</p>
+</resolution>
+
+<rationale>
+Addressed by
+<a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2008/n2661.html">N2661: A Foundation to Sleep On</a>.
+</rationale>
+
+</issue>

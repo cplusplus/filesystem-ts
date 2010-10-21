@@ -1,0 +1,107 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="258" status="CD1">
+<title>Missing allocator requirement</title>
+<section><sref ref="[allocator.requirements]"/></section>
+<submitter>Matt Austern</submitter>
+<date>22 Aug 2000</date>
+
+<discussion>
+<p>
+From lib-7752:
+</p>
+
+<p>
+I've been assuming (and probably everyone else has been assuming) that
+allocator instances have a particular property, and I don't think that
+property can be deduced from anything in Table 32.
+</p>
+
+<p>
+I think we have to assume that allocator type conversion is a
+homomorphism.  That is, if x1 and x2 are of type X, where
+X::value_type is T, and if type Y is X::template
+rebind&lt;U&gt;::other, then Y(x1) == Y(x2) if and only if x1 == x2.
+</p>
+
+<p>
+Further discussion: Howard Hinnant writes, in lib-7757:
+</p>
+
+<p>
+I think I can prove that this is not provable by Table 32.  And I agree 
+it needs to be true except for the "and only if".  If x1 != x2, I see no 
+reason why it can't be true that Y(x1) == Y(x2).  Admittedly I can't 
+think of a practical instance where this would happen, or be valuable.  
+But I also don't see a need to add that extra restriction.  I think we 
+only need:
+</p>
+
+<blockquote><p>
+     if (x1 == x2) then Y(x1) == Y(x2)
+</p></blockquote>
+
+<p>
+If we decide that == on allocators is transitive, then I think I can 
+prove the above.  But I don't think == is necessarily transitive on 
+allocators.  That is:
+</p>
+
+<p>
+Given x1 == x2  and x2 == x3, this does not mean x1 == x3.
+</p>
+
+<p>Example:</p>
+
+<blockquote>
+<p>
+x1 can deallocate pointers from:  x1, x2, x3    <br/>
+x2 can deallocate pointers from:  x1, x2, x4    <br/>
+x3 can deallocate pointers from:  x1, x3        <br/>
+x4 can deallocate pointers from:  x2, x4 
+</p>
+
+<p>
+x1 == x2, and x2 == x4, but x1 != x4
+</p>
+</blockquote>
+<note>Toronto: LWG members offered multiple opinions.  One
+opinion is that it should not be required that <tt>x1 == x2</tt>
+implies <tt>Y(x1) == Y(x2)</tt>, and that it should not even be
+required that <tt>X(x1) == x1</tt>.  Another opinion is that 
+the second line from the bottom in table 32 already implies the
+desired property.  This issue should be considered in light of
+other issues related to allocator instances.</note>
+</discussion>
+
+<resolution>
+<p>
+Accept proposed wording from
+<a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2007/n2436.pdf">N2436</a> part 3.
+</p>
+</resolution>
+
+<note>Lillehammer: Same conclusion as before: this should be
+  considered as part of an allocator redesign, not solved on its own.</note>
+
+<note>
+Batavia:  An allocator redesign is not forthcoming and thus we fixed this one issue.
+</note>
+
+<note>
+Toronto:  Reopened at the request of the project editor (Pete) because the proposed
+wording did not fit within the indicated table.  The intent of the resolution remains
+unchanged.  Pablo to work with Pete on improved wording.
+</note>
+
+<note>
+Kona (2007): The LWG adopted the proposed resolution of N2387 for this issue which
+was subsequently split out into a separate paper N2436 for the purposes of voting.
+The resolution in N2436 addresses this issue.  The LWG voted to accelerate this
+issue to Ready status to be voted into the WP at Kona.
+</note>
+
+</issue>

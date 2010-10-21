@@ -1,0 +1,1362 @@
+<issueslist revision="D71"
+            maintainer="Howard Hinnant &lt;howard.hinnant@gmail.com&gt;"
+            active_docno="Dxxxx=xx-xxxx"
+            defect_docno="Dxxxx=xx-xxxx"
+            closed_docno="Dxxxx=xx-xxxx"
+            date="2007-01-28"
+>
+
+<intros>
+<intro list="Active">
+  <p>Reference ISO/IEC IS 14882:2003(E)</p>
+  <p>Also see:</p>
+  <ul>
+      <li><a href="lwg-toc.html">Table of Contents</a> for all library issues.</li>
+      <li><a href="lwg-index.html">Index by Section</a> for all library issues.</li>
+      <li><a href="lwg-status.html">Index by Status</a> for all library issues.</li>
+      <li><a href="lwg-defects.html">Library Defect Reports List</a></li>
+      <li><a href="lwg-closed.html">Library Closed Issues List</a></li>
+  </ul>
+  <p>The purpose of this document is to record the status of issues
+  which have come before the Library Working Group (LWG) of the ANSI
+  (J16) and ISO (WG21) C++ Standards Committee. Issues represent
+  potential defects in the ISO/IEC IS 14882:2003(E) document.  
+  </p>
+
+  <p>This document contains only library issues which are actively being
+  considered by the Library Working Group, i.e., issues which have a
+  status of <a href="lwg-active.html#New">New</a>, <a href="lwg-active.html#Open">Open</a>, 
+  <a href="lwg-active.html#Ready">Ready</a>, or <a href="lwg-active.html#Review">Review</a>. See
+  <a href="lwg-defects.html">Library Defect Reports List</a> for issues considered defects and 
+  <a href="lwg-closed.html">Library Closed Issues List</a> for issues considered closed.</p>
+
+  <p>The issues in these lists are not necessarily formal ISO Defect
+  Reports (DR's). While some issues will eventually be elevated to
+  official Defect Report status, other issues will be disposed of in
+  other ways. See <a href="#Status">Issue Status</a>.</p>
+
+  <p>Prior to Revision 14, library issues lists existed in two slightly
+  different versions; a Committee Version and a Public
+  Version. Beginning with Revision 14 the two versions were combined
+  into a single version.</p>
+
+  <p>This document includes <i>[bracketed italicized notes]</i> as a
+  reminder to the LWG of current progress on issues. Such notes are
+  strictly unofficial and should be read with caution as they may be
+  incomplete or incorrect. Be aware that LWG support for a particular
+  resolution can quickly change if new viewpoints or killer examples are
+  presented in subsequent discussions.</p>
+
+  <p>For the most current official version of this document see 
+  <a href="http://www.open-std.org/jtc1/sc22/wg21/">http://www.open-std.org/jtc1/sc22/wg21/</a>.
+  Requests for further information about this document should include
+  the document number above, reference ISO/IEC 14882:2003(E), and be
+  submitted to Information Technology Industry Council (ITI), 1250 Eye
+  Street NW, Washington, DC 20005.</p>
+
+  <p>Public information as to how to obtain a copy of the C++ Standard,
+  join the standards committee, submit an issue, or comment on an issue
+  can be found in the comp.std.c++ FAQ.
+  </p>
+
+<p><a name="submit_issue"></a><b>How to submit an issue</b></p>
+
+<ol type="A">
+<a name="submit_issue_A"></a><li>
+Mail your issue to the author of this list.
+</li>
+<a name="submit_issue_B"></a><li>
+Specify a short descriptive title.  If you fail to do so, the subject line of your
+mail will be used as the issue title.
+</li>
+<a name="submit_issue_C"></a><li>
+If the "From" on your email is not the name you wish to appear as issue submitter,
+then specify issue submitter.
+</li>
+<a name="submit_issue_D"></a><li>
+Provide a brief discussion of the problem you wish to correct.  Refer to the latest
+working draft or standard using [section.tag] and paragraph numbers where appropriate.
+</li>
+<a name="submit_issue_E"></a><li>
+Provide proposed wording.  This should indicate exactly how you want the standard
+to be changed.  General solution statements belong in the discussion area.  This
+area contains very clear and specific directions on how to modify the current
+draft.  If you are not sure how to word a solution, you may omit this part.
+But your chances of a successful issue greatly increase if you attempt wording.
+</li>
+<a name="submit_issue_F"></a><li>
+It is not necessary for you to use html markup.  However, if you want to, you can
+&lt;ins&gt;<ins>insert text like this</ins>&lt;/ins&gt; and &lt;del&gt;<del>delete text like
+this</del>&lt;/del&gt;.  The only strict requirement is to communicate clearly to
+the list maintainer exactly how you want your issue to look.
+</li>
+<a name="submit_issue_G"></a><li>
+It is not necessary for you to specify other html font/formatting
+mark-up, but if you do the list maintainer will attempt to respect your
+formatting wishes (as described by html markup, or other common idioms).
+</li>
+<a name="submit_issue_H"></a><li>
+It is not necessary for you to specify open date or last modified date (the date
+of your mail will be used).
+</li>
+<a name="submit_issue_I"></a><li>
+It is not necessary for you to cross reference other issues, but you can if you
+like.  You do not need to form the hyperlinks when you do, the list maintainer will
+take care of that.
+</li>
+<a name="submit_issue_J"></a><li>
+One issue per email is best.
+</li>
+<a name="submit_issue_K"></a><li>
+Between the time you submit the issue, and the next mailing deadline
+(date at the top of the Revision History), you <em>own</em> this issue. 
+You control the content, the stuff that is right, the stuff that is
+wrong, the format, the misspellings, etc.  You can even make the issue
+disappear if you want.  Just let the list maintainer know how you want
+it to look, and he will try his best to accommodate you.  After the
+issue appears in an official mailing, you no longer enjoy exclusive
+ownership of it.
+</li>
+</ol>
+
+</intro>
+
+<intro list="Defects">
+  <p>Reference ISO/IEC IS 14882:2003(E)</p>
+  <p>Also see:</p>
+    <ul>
+      <li><a href="lwg-toc.html">Table of Contents</a> for all library issues.</li>
+      <li><a href="lwg-index.html">Index by Section</a> for all library issues.</li>
+      <li><a href="lwg-status.html">Index by Status</a> for all library issues.</li>
+      <li><a href="lwg-active.html">Library Active Issues List</a></li>
+      <li><a href="lwg-closed.html">Library Closed Issues List</a></li>
+    </ul>
+  <p>This document contains only library issues which have been closed
+  by the Library Working Group (LWG) after being found to be defects
+  in the standard.  That is, issues which have a status of <a href="lwg-active.html#DR">DR</a>,
+  <a href="lwg-active.html#TC">TC</a>, or <a href="lwg-active.html#RR">RR</a>. See the
+  <a href="lwg-closed.html">Library Closed Issues List</a> for issues closed as non-defects.  See the
+  <a href="lwg-active.html">Library Active Issues List</a> for active issues and more information.  The
+  introductory material in that document also applies to this
+  document.</p>
+</intro>
+
+<intro list="Closed">
+  <p>Reference ISO/IEC IS 14882:2003(E)</p>
+  <p>Also see:</p>
+    <ul>
+      <li><a href="lwg-toc.html">Table of Contents</a> for all library issues.</li>
+      <li><a href="lwg-index.html">Index by Section</a> for all library issues.</li>
+      <li><a href="lwg-status.html">Index by Status</a> for all library issues.</li>
+      <li><a href="lwg-active.html">Library Active Issues List</a></li>
+      <li><a href="lwg-defects.html">Library Defect Reports List</a></li>
+    </ul>
+
+  <p>This document contains only library issues which have been closed
+  by the Library Working Group as duplicates or not defects. That is,
+  issues which have a status of <a href="lwg-active.html#Dup">Dup</a> or
+  <a href="lwg-active.html#NAD">NAD</a>. See the <a href="lwg-active.html">Library Active Issues List</a> active issues and more
+  information. See the <a href="lwg-defects.html">Library Defect Reports List</a> for issues considered
+  defects.  The introductory material in that document also applies to
+  this document.</p>
+</intro>
+
+<intro list="TOC">
+  <p>Reference ISO/IEC IS 14882:2003(E)</p>
+
+  <p>This document is the Table of Contents for the <a href="lwg-active.html">Library Active Issues List</a>,
+  <a href="lwg-defects.html">Library Defect Reports List</a>, and <a href="lwg-closed.html">Library Closed Issues List</a>.</p>
+
+  <p>Also see:</p>
+    <ul>
+      <li><a href="lwg-index.html">Index by Section</a></li>
+      <li><a href="lwg-status.html">Index by Status</a></li>
+    </ul>
+</intro>
+
+<intro list="Section">
+  <p>Reference ISO/IEC IS 14882:2003(E)</p>
+
+  <p>This document is the Index by Section for the <a href="lwg-active.html">Library Active Issues List</a>,
+  <a href="lwg-defects.html">Library Defect Reports List</a>, and <a href="lwg-closed.html">Library Closed Issues List</a>.</p>
+
+  <p>Also see:</p>
+    <ul>
+      <li><a href="lwg-toc.html">Table of Contents</a></li>
+      <li><a href="lwg-status.html">Index by Status</a></li>
+    </ul>
+</intro>
+
+<intro list="Status">
+  <p>Reference ISO/IEC IS 14882:2003(E)</p>
+
+  <p>This document is the Index by Status for the <a href="lwg-active.html">Library Active Issues List</a>,
+  <a href="lwg-defects.html">Library Defect Reports List</a>, and <a href="lwg-closed.html">Library Closed Issues List</a>.</p>
+
+  <p>Also see:</p>
+    <ul>
+      <li><a href="lwg-toc.html">Table of Contents</a></li>
+      <li><a href="lwg-index.html">Index by Section</a></li>
+    </ul>
+</intro>
+
+</intros>
+
+<revision_history>
+
+<revision tag="D71">
+2010-08-20 post-Rapperswil mailing.
+<ul>
+<li><b>Summary:</b><ul>
+<li>72 open issues, up by 9.</li>
+<li>1271 closed issues, up by 0.</li>
+<li>1343 issues total, up by 9.</li>
+</ul></li>
+<li><b>Details:</b><ul>
+<li>Added the following New issues: <iref ref="1335"/>, <iref ref="1336"/>, <iref ref="1337"/>, <iref ref="1338"/>, <iref ref="1339"/>, <iref ref="1340"/>, <iref ref="1341"/>, <iref ref="1342"/>, <iref ref="1343"/>.</li>
+</ul></li>
+</ul>
+</revision>
+
+<revision tag="R70">
+2010-03-26 post-Pittsburgh mailing.
+<ul>
+<li><b>Summary:</b><ul>
+<li>63 open issues, down by 203.</li>
+<li>1271 closed issues, up by 219.</li>
+<li>1334 issues total, up by 16.</li>
+</ul></li>
+<li><b>Details:</b><ul>
+<li>Added the following NAD Editorial issues: <iref ref="1321"/>, <iref ref="1329"/>.</li>
+<li>Added the following New issues: <iref ref="1319"/>, <iref ref="1320"/>, <iref ref="1322"/>, <iref ref="1323"/>, <iref ref="1324"/>, <iref ref="1325"/>, <iref ref="1326"/>, <iref ref="1328"/>, <iref ref="1330"/>, <iref ref="1331"/>, <iref ref="1332"/>, <iref ref="1333"/>, <iref ref="1334"/>.</li>
+<li>Added the following Open issues: <iref ref="1327"/>.</li>
+<li>Changed the following issues from Tentatively Dup to Dup: <iref ref="1219"/>.</li>
+<li>Changed the following issues from New to NAD: <iref ref="1302"/>, <iref ref="1308"/>, <iref ref="1313"/>, <iref ref="1314"/>.</li>
+<li>Changed the following issues from Open to NAD: <iref ref="887"/>, <iref ref="1008"/>, <iref ref="1068"/>, <iref ref="1069"/>, <iref ref="1153"/>, <iref ref="1156"/>, <iref ref="1228"/>.</li>
+<li>Changed the following issues from Tentatively NAD to NAD: <iref ref="631"/>, <iref ref="726"/>, <iref ref="959"/>, <iref ref="1056"/>, <iref ref="1099"/>, <iref ref="1125"/>, <iref ref="1176"/>, <iref ref="1202"/>, <iref ref="1223"/>, <iref ref="1224"/>, <iref ref="1246"/>, <iref ref="1251"/>, <iref ref="1259"/>, <iref ref="1263"/>, <iref ref="1265"/>, <iref ref="1296"/>.</li>
+<li>Changed the following issues from Tentatively NAD Concepts to NAD Concepts: <iref ref="910"/>, <iref ref="1186"/>.</li>
+<li>Changed the following issues from New to NAD Editorial: <iref ref="1185"/>, <iref ref="1210"/>, <iref ref="1212"/>, <iref ref="1225"/>, <iref ref="1244"/>, <iref ref="1266"/>, <iref ref="1269"/>, <iref ref="1272"/>, <iref ref="1275"/>, <iref ref="1291"/>, <iref ref="1305"/>, <iref ref="1307"/>, <iref ref="1311"/>.</li>
+<li>Changed the following issues from Open to NAD Editorial: <iref ref="299"/>, <iref ref="397"/>, <iref ref="408"/>, <iref ref="446"/>, <iref ref="594"/>, <iref ref="625"/>, <iref ref="742"/>, <iref ref="834"/>, <iref ref="915"/>, <iref ref="1093"/>, <iref ref="1151"/>, <iref ref="1211"/>, <iref ref="1248"/>.</li>
+<li>Changed the following issues from Ready to NAD Editorial: <iref ref="485"/>, <iref ref="932"/>, <iref ref="940"/>, <iref ref="950"/>, <iref ref="983"/>, <iref ref="1100"/>, <iref ref="1135"/>.</li>
+<li>Changed the following issues from Tentatively NAD Editorial to NAD Editorial: <iref ref="815"/>, <iref ref="816"/>, <iref ref="889"/>, <iref ref="1106"/>, <iref ref="1115"/>, <iref ref="1233"/>, <iref ref="1239"/>, <iref ref="1258"/>, <iref ref="1283"/>, <iref ref="1301"/>.</li>
+<li>Changed the following issues from Tentatively Ready to NAD Editorial: <iref ref="1090"/>, <iref ref="1226"/>, <iref ref="1273"/>, <iref ref="1274"/>, <iref ref="1293"/>, <iref ref="1300"/>, <iref ref="1304"/>, <iref ref="1315"/>.</li>
+<li>Changed the following issues from New to NAD Future: <iref ref="1154"/>, <iref ref="1317"/>.</li>
+<li>Changed the following issues from Ready to NAD Future: <iref ref="1052"/>.</li>
+<li>Changed the following issues from Tentatively NAD Future to NAD Future: <iref ref="1112"/>, <iref ref="1121"/>, <iref ref="1201"/>, <iref ref="1238"/>, <iref ref="1282"/>.</li>
+<li>Changed the following issues from New to Open: <iref ref="1234"/>, <iref ref="1268"/>.</li>
+<li>Changed the following issues from Tentatively Ready to Open: <iref ref="579"/>.</li>
+<li>Changed the following issues from New to Ready: <iref ref="1187"/>, <iref ref="1206"/>, <iref ref="1278"/>.</li>
+<li>Changed the following issues from New to Review: <iref ref="1281"/>.</li>
+<li>Changed the following issues from Ready to Review: <iref ref="868"/>.</li>
+<li>Changed the following issues from New to WP: <iref ref="1159"/>.</li>
+<li>Changed the following issues from Open to WP: <iref ref="427"/>, <iref ref="430"/>, <iref ref="774"/>, <iref ref="819"/>, <iref ref="835"/>, <iref ref="861"/>, <iref ref="885"/>, <iref ref="896"/>, <iref ref="900"/>, <iref ref="911"/>, <iref ref="1079"/>.</li>
+<li>Changed the following issues from Ready to WP: <iref ref="296"/>, <iref ref="471"/>, <iref ref="473"/>, <iref ref="539"/>, <iref ref="671"/>, <iref ref="836"/>, <iref ref="854"/>, <iref ref="860"/>, <iref ref="865"/>, <iref ref="871"/>, <iref ref="872"/>, <iref ref="920"/>, <iref ref="921"/>, <iref ref="939"/>, <iref ref="954"/>, <iref ref="957"/>, <iref ref="960"/>, <iref ref="962"/>, <iref ref="963"/>, <iref ref="967"/>, <iref ref="968"/>, <iref ref="974"/>, <iref ref="1011"/>, <iref ref="1030"/>, <iref ref="1094"/>, <iref ref="1095"/>, <iref ref="1097"/>, <iref ref="1098"/>, <iref ref="1104"/>, <iref ref="1123"/>, <iref ref="1134"/>, <iref ref="1136"/>, <iref ref="1144"/>, <iref ref="1157"/>, <iref ref="1194"/>, <iref ref="1204"/>, <iref ref="1216"/>, <iref ref="1227"/>, <iref ref="1237"/>.</li>
+<li>Changed the following issues from Tentatively Ready to WP: <iref ref="556"/>, <iref ref="676"/>, <iref ref="704"/>, <iref ref="724"/>, <iref ref="727"/>, <iref ref="780"/>, <iref ref="811"/>, <iref ref="817"/>, <iref ref="870"/>, <iref ref="891"/>, <iref ref="893"/>, <iref ref="929"/>, <iref ref="978"/>, <iref ref="987"/>, <iref ref="999"/>, <iref ref="1033"/>, <iref ref="1034"/>, <iref ref="1071"/>, <iref ref="1089"/>, <iref ref="1108"/>, <iref ref="1110"/>, <iref ref="1113"/>, <iref ref="1114"/>, <iref ref="1126"/>, <iref ref="1130"/>, <iref ref="1131"/>, <iref ref="1133"/>, <iref ref="1137"/>, <iref ref="1138"/>, <iref ref="1152"/>, <iref ref="1158"/>, <iref ref="1170"/>, <iref ref="1177"/>, <iref ref="1180"/>, <iref ref="1182"/>, <iref ref="1189"/>, <iref ref="1192"/>, <iref ref="1193"/>, <iref ref="1195"/>, <iref ref="1197"/>, <iref ref="1199"/>, <iref ref="1205"/>, <iref ref="1208"/>, <iref ref="1209"/>, <iref ref="1218"/>, <iref ref="1220"/>, <iref ref="1221"/>, <iref ref="1222"/>, <iref ref="1231"/>, <iref ref="1241"/>, <iref ref="1245"/>, <iref ref="1247"/>, <iref ref="1250"/>, <iref ref="1254"/>, <iref ref="1255"/>, <iref ref="1256"/>, <iref ref="1257"/>, <iref ref="1261"/>, <iref ref="1262"/>, <iref ref="1264"/>, <iref ref="1267"/>, <iref ref="1270"/>, <iref ref="1271"/>, <iref ref="1276"/>, <iref ref="1277"/>, <iref ref="1280"/>, <iref ref="1284"/>, <iref ref="1285"/>, <iref ref="1286"/>, <iref ref="1287"/>, <iref ref="1288"/>, <iref ref="1298"/>, <iref ref="1299"/>, <iref ref="1303"/>, <iref ref="1306"/>, <iref ref="1309"/>, <iref ref="1312"/>.</li>
+</ul></li>
+</ul>
+</revision>
+
+<revision tag="R69">
+2010-02-12 pre-Pittsburgh mailing.
+<ul>
+<li><b>Summary:</b><ul>
+<li>266 open issues, up by 61.</li>
+<li>1052 closed issues, down by 3.</li>
+<li>1318 issues total, up by 58.</li>
+</ul></li>
+<li><b>Details:</b><ul>
+<li>Added the following New issues: <iref ref="1266"/>, <iref ref="1268"/>, <iref ref="1269"/>, <iref ref="1272"/>, <iref ref="1275"/>, <iref ref="1278"/>, <iref ref="1279"/>, <iref ref="1281"/>, <iref ref="1289"/>, <iref ref="1290"/>, <iref ref="1291"/>, <iref ref="1292"/>, <iref ref="1294"/>, <iref ref="1295"/>, <iref ref="1297"/>, <iref ref="1302"/>, <iref ref="1305"/>, <iref ref="1307"/>, <iref ref="1308"/>, <iref ref="1310"/>, <iref ref="1311"/>, <iref ref="1313"/>, <iref ref="1314"/>, <iref ref="1316"/>, <iref ref="1317"/>, <iref ref="1318"/>.</li>
+<li>Added the following Tentatively NAD issues: <iref ref="1263"/>, <iref ref="1265"/>, <iref ref="1296"/>.</li>
+<li>Added the following Tentatively NAD Editorial issues: <iref ref="1283"/>, <iref ref="1301"/>.</li>
+<li>Added the following Tentatively NAD Future issues: <iref ref="1282"/>.</li>
+<li>Added the following Tentatively Ready issues: <iref ref="1261"/>, <iref ref="1262"/>, <iref ref="1264"/>, <iref ref="1267"/>, <iref ref="1270"/>, <iref ref="1271"/>, <iref ref="1273"/>, <iref ref="1274"/>, <iref ref="1276"/>, <iref ref="1277"/>, <iref ref="1280"/>, <iref ref="1284"/>, <iref ref="1285"/>, <iref ref="1286"/>, <iref ref="1287"/>, <iref ref="1288"/>, <iref ref="1293"/>, <iref ref="1298"/>, <iref ref="1299"/>, <iref ref="1300"/>, <iref ref="1303"/>, <iref ref="1304"/>, <iref ref="1306"/>, <iref ref="1309"/>, <iref ref="1312"/>, <iref ref="1315"/>.</li>
+<li>Changed the following issues from NAD to NAD Editorial: <iref ref="101"/>.</li>
+<li>Changed the following issues from NAD Future to Open: <iref ref="1248"/>.</li>
+<li>Changed the following issues from New to Open: <iref ref="1207"/>.</li>
+<li>Changed the following issues from Ready to Open: <iref ref="1079"/>.</li>
+<li>Changed the following issues from New to Tentatively Dup: <iref ref="1219"/>.</li>
+<li>Changed the following issues from New to Tentatively NAD: <iref ref="1125"/>, <iref ref="1176"/>, <iref ref="1202"/>, <iref ref="1223"/>, <iref ref="1224"/>, <iref ref="1246"/>, <iref ref="1251"/>, <iref ref="1259"/>.</li>
+<li>Changed the following issues from Open to Tentatively NAD: <iref ref="726"/>, <iref ref="959"/>.</li>
+<li>Changed the following issues from Review to Tentatively NAD: <iref ref="631"/>.</li>
+<li>Changed the following issues from Open to Tentatively NAD Concepts: <iref ref="910"/>.</li>
+<li>Changed the following issues from New to Tentatively NAD Editorial: <iref ref="1258"/>.</li>
+<li>Changed the following issues from Open to Tentatively NAD Editorial: <iref ref="815"/>, <iref ref="1106"/>.</li>
+<li>Changed the following issues from Ready to Tentatively NAD Editorial: <iref ref="816"/>, <iref ref="889"/>.</li>
+<li>Changed the following issues from NAD to Tentatively Ready: <iref ref="579"/>.</li>
+<li>Changed the following issues from NAD Editorial to Tentatively Ready: <iref ref="1195"/>.</li>
+<li>Changed the following issues from New to Tentatively Ready: <iref ref="1131"/>, <iref ref="1133"/>, <iref ref="1137"/>, <iref ref="1170"/>, <iref ref="1180"/>, <iref ref="1182"/>, <iref ref="1193"/>, <iref ref="1197"/>, <iref ref="1199"/>, <iref ref="1205"/>, <iref ref="1209"/>, <iref ref="1218"/>, <iref ref="1221"/>, <iref ref="1222"/>, <iref ref="1245"/>, <iref ref="1250"/>, <iref ref="1254"/>, <iref ref="1255"/>, <iref ref="1256"/>, <iref ref="1257"/>.</li>
+<li>Changed the following issues from Open to Tentatively Ready: <iref ref="704"/>, <iref ref="724"/>, <iref ref="811"/>, <iref ref="817"/>, <iref ref="870"/>, <iref ref="891"/>, <iref ref="1033"/>, <iref ref="1034"/>, <iref ref="1089"/>, <iref ref="1110"/>.</li>
+<li>Changed the following issues from Ready to Tentatively Ready: <iref ref="893"/>, <iref ref="978"/>, <iref ref="1177"/>.</li>
+<li>Changed the following issues from Review to Tentatively Ready: <iref ref="556"/>, <iref ref="676"/>, <iref ref="727"/>, <iref ref="780"/>, <iref ref="929"/>, <iref ref="1130"/>, <iref ref="1247"/>.</li>
+<li>Changed the following issues from Pending WP to WP: <iref ref="970"/>.</li>
+</ul></li>
+</ul>
+</revision>
+
+
+<revision tag="R68">
+2009-11-06 post-Santa Cruz mailing.
+<ul>
+<li><b>Summary:</b><ul>
+<li>205 open issues, down by 77.</li>
+<li>1055 closed issues, up by 120.</li>
+<li>1260 issues total, up by 43.</li>
+</ul></li>
+<li><b>Details:</b><ul>
+<li>Added the following Dup issues: <iref ref="1230"/>.</li>
+<li>Added the following NAD issues: <iref ref="1229"/>, <iref ref="1236"/>, <iref ref="1243"/>.</li>
+<li>Added the following NAD Editorial issues: <iref ref="1232"/>.</li>
+<li>Added the following NAD Future issues: <iref ref="1235"/>, <iref ref="1242"/>, <iref ref="1248"/>.</li>
+<li>Added the following New issues: <iref ref="1218"/>, <iref ref="1219"/>, <iref ref="1221"/>, <iref ref="1222"/>, <iref ref="1223"/>, <iref ref="1224"/>, <iref ref="1225"/>, <iref ref="1234"/>, <iref ref="1240"/>, <iref ref="1244"/>, <iref ref="1245"/>, <iref ref="1246"/>, <iref ref="1249"/>, <iref ref="1250"/>, <iref ref="1251"/>, <iref ref="1252"/>, <iref ref="1253"/>, <iref ref="1254"/>, <iref ref="1255"/>, <iref ref="1256"/>, <iref ref="1257"/>, <iref ref="1258"/>, <iref ref="1259"/>, <iref ref="1260"/>.</li>
+<li>Added the following Open issues: <iref ref="1228"/>.</li>
+<li>Added the following Ready issues: <iref ref="1227"/>, <iref ref="1237"/>.</li>
+<li>Added the following Review issues: <iref ref="1247"/>.</li>
+<li>Added the following Tentatively NAD Editorial issues: <iref ref="1233"/>, <iref ref="1239"/>.</li>
+<li>Added the following Tentatively NAD Future issues: <iref ref="1238"/>.</li>
+<li>Added the following Tentatively Ready issues: <iref ref="1220"/>, <iref ref="1226"/>, <iref ref="1231"/>, <iref ref="1241"/>.</li>
+<li>Changed the following issues from New to NAD: <iref ref="1132"/>, <iref ref="1148"/>.</li>
+<li>Changed the following issues from Open to NAD: <iref ref="96"/>, <iref ref="458"/>, <iref ref="463"/>, <iref ref="916"/>, <iref ref="917"/>, <iref ref="919"/>, <iref ref="955"/>, <iref ref="977"/>, <iref ref="1009"/>, <iref ref="1020"/>, <iref ref="1035"/>, <iref ref="1042"/>, <iref ref="1051"/>, <iref ref="1064"/>.</li>
+<li>Changed the following issues from Review to NAD: <iref ref="668"/>, <iref ref="930"/>, <iref ref="1091"/>, <iref ref="1102"/>.</li>
+<li>Changed the following issues from Tentatively NAD to NAD: <iref ref="588"/>, <iref ref="617"/>, <iref ref="971"/>.</li>
+<li>Changed the following issues from Tentatively NAD Future to NAD: <iref ref="1062"/>.</li>
+<li>Changed the following issues from NAD Concepts to NAD Editorial: <iref ref="1143"/>.</li>
+<li>Changed the following issues from New to NAD Editorial: <iref ref="1116"/>, <iref ref="1117"/>, <iref ref="1122"/>, <iref ref="1129"/>, <iref ref="1145"/>, <iref ref="1146"/>, <iref ref="1147"/>, <iref ref="1155"/>, <iref ref="1166"/>, <iref ref="1172"/>, <iref ref="1174"/>, <iref ref="1179"/>, <iref ref="1195"/>, <iref ref="1196"/>.</li>
+<li>Changed the following issues from Open to NAD Editorial: <iref ref="431"/>, <iref ref="580"/>, <iref ref="635"/>, <iref ref="719"/>, <iref ref="823"/>, <iref ref="827"/>, <iref ref="879"/>, <iref ref="880"/>, <iref ref="908"/>, <iref ref="923"/>, <iref ref="924"/>, <iref ref="926"/>, <iref ref="944"/>, <iref ref="947"/>, <iref ref="958"/>, <iref ref="1046"/>, <iref ref="1048"/>, <iref ref="1054"/>, <iref ref="1055"/>, <iref ref="1075"/>, <iref ref="1088"/>, <iref ref="1160"/>, <iref ref="1161"/>, <iref ref="1162"/>, <iref ref="1163"/>, <iref ref="1165"/>.</li>
+<li>Changed the following issues from Review to NAD Editorial: <iref ref="828"/>, <iref ref="897"/>, <iref ref="976"/>, <iref ref="1043"/>, <iref ref="1047"/>, <iref ref="1049"/>, <iref ref="1050"/>.</li>
+<li>Changed the following issues from New to NAD Future: <iref ref="1120"/>, <iref ref="1150"/>, <iref ref="1184"/>, <iref ref="1203"/>, <iref ref="1217"/>.</li>
+<li>Changed the following issues from Open to NAD Future: <iref ref="484"/>, <iref ref="532"/>, <iref ref="851"/>, <iref ref="933"/>, <iref ref="935"/>, <iref ref="936"/>, <iref ref="961"/>, <iref ref="1041"/>, <iref ref="1053"/>.</li>
+<li>Changed the following issues from Tentatively NAD Future to NAD Future: <iref ref="1031"/>.</li>
+<li>Changed the following issues from New to Open: <iref ref="1118"/>, <iref ref="1119"/>, <iref ref="1151"/>, <iref ref="1153"/>, <iref ref="1156"/>, <iref ref="1171"/>, <iref ref="1173"/>, <iref ref="1183"/>, <iref ref="1191"/>, <iref ref="1211"/>.</li>
+<li>Changed the following issues from Ready to Open: <iref ref="430"/>, <iref ref="834"/>.</li>
+<li>Changed the following issues from Review to Open: <iref ref="397"/>, <iref ref="408"/>, <iref ref="835"/>.</li>
+<li>Changed the following issues from Tentatively NAD to Open: <iref ref="625"/>.</li>
+<li>Changed the following issues from New to Ready: <iref ref="1123"/>, <iref ref="1134"/>, <iref ref="1135"/>, <iref ref="1136"/>, <iref ref="1144"/>, <iref ref="1177"/>, <iref ref="1194"/>, <iref ref="1204"/>, <iref ref="1216"/>.</li>
+<li>Changed the following issues from Open to Ready: <iref ref="296"/>, <iref ref="471"/>, <iref ref="485"/>, <iref ref="539"/>, <iref ref="816"/>, <iref ref="860"/>, <iref ref="865"/>, <iref ref="872"/>, <iref ref="920"/>, <iref ref="932"/>, <iref ref="939"/>, <iref ref="940"/>, <iref ref="960"/>, <iref ref="963"/>, <iref ref="974"/>, <iref ref="978"/>, <iref ref="1011"/>, <iref ref="1030"/>, <iref ref="1079"/>, <iref ref="1098"/>.</li>
+<li>Changed the following issues from Review to Ready: <iref ref="473"/>, <iref ref="671"/>, <iref ref="836"/>, <iref ref="854"/>, <iref ref="868"/>, <iref ref="871"/>, <iref ref="889"/>, <iref ref="893"/>, <iref ref="921"/>, <iref ref="950"/>, <iref ref="954"/>, <iref ref="957"/>, <iref ref="962"/>, <iref ref="967"/>, <iref ref="968"/>, <iref ref="983"/>, <iref ref="1052"/>, <iref ref="1094"/>, <iref ref="1095"/>, <iref ref="1097"/>, <iref ref="1100"/>, <iref ref="1104"/>, <iref ref="1157"/>.</li>
+<li>Changed the following issues from New to Review: <iref ref="1130"/>.</li>
+<li>Changed the following issues from Open to Review: <iref ref="556"/>, <iref ref="631"/>, <iref ref="676"/>, <iref ref="727"/>, <iref ref="929"/>.</li>
+<li>Changed the following issues from Open to Tentatively NAD: <iref ref="1056"/>, <iref ref="1099"/>.</li>
+<li>Changed the following issues from New to Tentatively NAD Concepts: <iref ref="1186"/>.</li>
+<li>Changed the following issues from New to Tentatively NAD Editorial: <iref ref="1115"/>.</li>
+<li>Changed the following issues from New to Tentatively NAD Future: <iref ref="1121"/>, <iref ref="1201"/>.</li>
+<li>Changed the following issues from Open to Tentatively NAD Future: <iref ref="1112"/>.</li>
+<li>Changed the following issues from New to Tentatively Ready: <iref ref="1126"/>, <iref ref="1138"/>, <iref ref="1152"/>, <iref ref="1158"/>, <iref ref="1189"/>, <iref ref="1192"/>, <iref ref="1208"/>.</li>
+<li>Changed the following issues from Open to Tentatively Ready: <iref ref="987"/>, <iref ref="999"/>, <iref ref="1071"/>, <iref ref="1090"/>, <iref ref="1108"/>, <iref ref="1113"/>, <iref ref="1114"/>.</li>
+<li>Changed the following issues from Ready to WP: <iref ref="149"/>, <iref ref="419"/>, <iref ref="498"/>, <iref ref="564"/>, <iref ref="565"/>, <iref ref="630"/>, <iref ref="659"/>, <iref ref="696"/>, <iref ref="711"/>, <iref ref="716"/>, <iref ref="723"/>, <iref ref="788"/>, <iref ref="822"/>, <iref ref="838"/>, <iref ref="847"/>, <iref ref="857"/>, <iref ref="859"/>, <iref ref="876"/>, <iref ref="881"/>, <iref ref="883"/>, <iref ref="886"/>, <iref ref="934"/>, <iref ref="1004"/>, <iref ref="1178"/>.</li>
+<li>Changed the following issues from Tentatively Ready to WP: <iref ref="1012"/>, <iref ref="1019"/>.</li>
+</ul></li>
+</ul>
+</revision>
+
+<revision tag="R67">
+2009-09-25 pre-Santa Cruz mailing.
+<ul>
+<li><b>Summary:</b><ul>
+<li>282 open issues, up by 32.</li>
+<li>935 closed issues, down by 1.</li>
+<li>1217 issues total, up by 31.</li>
+</ul></li>
+<li><b>Details:</b><ul>
+<li>Added the following New issues: <iref ref="1187"/>, <iref ref="1188"/>, <iref ref="1189"/>, <iref ref="1190"/>, <iref ref="1191"/>, <iref ref="1192"/>, <iref ref="1193"/>, <iref ref="1194"/>, <iref ref="1195"/>, <iref ref="1196"/>, <iref ref="1197"/>, <iref ref="1198"/>, <iref ref="1199"/>, <iref ref="1200"/>, <iref ref="1201"/>, <iref ref="1202"/>, <iref ref="1203"/>, <iref ref="1204"/>, <iref ref="1205"/>, <iref ref="1206"/>, <iref ref="1207"/>, <iref ref="1208"/>, <iref ref="1209"/>, <iref ref="1210"/>, <iref ref="1211"/>, <iref ref="1212"/>, <iref ref="1213"/>, <iref ref="1214"/>, <iref ref="1215"/>, <iref ref="1216"/>, <iref ref="1217"/>.</li>
+<li>Changed the following issues from NAD to Open: <iref ref="296"/>.</li>
+<li>Changed the following issues from WP to Pending WP: <iref ref="970"/>.</li>
+<li>Changed the following issues from Open to Review: <iref ref="976"/>, <iref ref="1052"/>.</li>
+<li>Changed the following issues from Ready to Review: <iref ref="780"/>.</li>
+</ul></li>
+</ul>
+</revision>
+
+<revision tag="R66">
+2009-07-31 post-Frankfurt mailing.
+<ul>
+<li><b>Summary:</b><ul>
+<li>250 open issues, down by 128.</li>
+<li>936 closed issues, up by 171.</li>
+<li>1186 issues total, up by 43.</li>
+</ul></li>
+<li><b>Details:</b><ul>
+<li>Added the following NAD issues: <iref ref="1164"/>.</li>
+<li>Added the following NAD Concepts issues: <iref ref="1149"/>, <iref ref="1167"/>.</li>
+<li>Added the following NAD Editorial issues: <iref ref="1168"/>.</li>
+<li>Added the following New issues: <iref ref="1144"/>, <iref ref="1145"/>, <iref ref="1146"/>, <iref ref="1147"/>, <iref ref="1148"/>, <iref ref="1150"/>, <iref ref="1151"/>, <iref ref="1152"/>, <iref ref="1153"/>, <iref ref="1154"/>, <iref ref="1155"/>, <iref ref="1156"/>, <iref ref="1158"/>, <iref ref="1159"/>, <iref ref="1166"/>, <iref ref="1169"/>, <iref ref="1170"/>, <iref ref="1171"/>, <iref ref="1172"/>, <iref ref="1173"/>, <iref ref="1174"/>, <iref ref="1175"/>, <iref ref="1176"/>, <iref ref="1177"/>, <iref ref="1179"/>, <iref ref="1180"/>, <iref ref="1181"/>, <iref ref="1182"/>, <iref ref="1183"/>, <iref ref="1184"/>, <iref ref="1185"/>, <iref ref="1186"/>.</li>
+<li>Added the following Open issues: <iref ref="1160"/>, <iref ref="1161"/>, <iref ref="1162"/>, <iref ref="1163"/>, <iref ref="1165"/>.</li>
+<li>Added the following Ready issues: <iref ref="1178"/>.</li>
+<li>Added the following Review issues: <iref ref="1157"/>.</li>
+<li>Changed the following issues from Open to Dup: <iref ref="750"/>, <iref ref="895"/>.</li>
+<li>Changed the following issues from Open to NAD: <iref ref="111"/>, <iref ref="128"/>, <iref ref="138"/>, <iref ref="190"/>, <iref ref="219"/>, <iref ref="290"/>, <iref ref="309"/>, <iref ref="342"/>, <iref ref="343"/>, <iref ref="382"/>, <iref ref="394"/>, <iref ref="398"/>, <iref ref="417"/>, <iref ref="418"/>, <iref ref="421"/>, <iref ref="459"/>, <iref ref="466"/>, <iref ref="492"/>, <iref ref="502"/>, <iref ref="503"/>, <iref ref="546"/>, <iref ref="573"/>, <iref ref="582"/>, <iref ref="585"/>, <iref ref="597"/>, <iref ref="606"/>, <iref ref="614"/>, <iref ref="632"/>, <iref ref="721"/>, <iref ref="747"/>, <iref ref="751"/>, <iref ref="833"/>, <iref ref="941"/>, <iref ref="992"/>.</li>
+<li>Changed the following issues from Review to NAD: <iref ref="1003"/>.</li>
+<li>Changed the following issues from Tentatively NAD to NAD: <iref ref="568"/>, <iref ref="644"/>, <iref ref="667"/>, <iref ref="669"/>, <iref ref="701"/>, <iref ref="702"/>, <iref ref="785"/>, <iref ref="863"/>, <iref ref="901"/>, <iref ref="903"/>, <iref ref="946"/>, <iref ref="988"/>, <iref ref="995"/>.</li>
+<li>Changed the following issues from Tentatively Ready to NAD: <iref ref="1002"/>.</li>
+<li>Changed the following issues from New to NAD Concepts: <iref ref="1124"/>, <iref ref="1127"/>, <iref ref="1128"/>, <iref ref="1139"/>, <iref ref="1140"/>, <iref ref="1141"/>, <iref ref="1142"/>, <iref ref="1143"/>.</li>
+<li>Changed the following issues from Open to NAD Concepts: <iref ref="902"/>, <iref ref="989"/>, <iref ref="1000"/>, <iref ref="1007"/>, <iref ref="1010"/>, <iref ref="1015"/>, <iref ref="1016"/>, <iref ref="1017"/>, <iref ref="1018"/>, <iref ref="1026"/>, <iref ref="1027"/>, <iref ref="1028"/>, <iref ref="1029"/>, <iref ref="1032"/>, <iref ref="1036"/>, <iref ref="1057"/>, <iref ref="1059"/>, <iref ref="1072"/>, <iref ref="1078"/>, <iref ref="1081"/>, <iref ref="1082"/>, <iref ref="1083"/>, <iref ref="1084"/>, <iref ref="1085"/>, <iref ref="1086"/>, <iref ref="1092"/>, <iref ref="1096"/>, <iref ref="1105"/>.</li>
+<li>Changed the following issues from Review to NAD Concepts: <iref ref="1001"/>, <iref ref="1005"/>, <iref ref="1080"/>, <iref ref="1087"/>, <iref ref="1111"/>.</li>
+<li>Changed the following issues from Tentatively NAD to NAD Concepts: <iref ref="912"/>, <iref ref="918"/>, <iref ref="1074"/>.</li>
+<li>Changed the following issues from Tentatively NAD Editorial to NAD Concepts: <iref ref="927"/>, <iref ref="1109"/>.</li>
+<li>Changed the following issues from Tentatively Ready to NAD Concepts: <iref ref="906"/>, <iref ref="913"/>, <iref ref="914"/>, <iref ref="928"/>, <iref ref="1024"/>, <iref ref="1063"/>, <iref ref="1067"/>.</li>
+<li>Changed the following issues from Open to NAD Editorial: <iref ref="718"/>, <iref ref="873"/>.</li>
+<li>Changed the following issues from Tentatively NAD Editorial to NAD Editorial: <iref ref="424"/>, <iref ref="825"/>, <iref ref="830"/>, <iref ref="837"/>, <iref ref="862"/>, <iref ref="867"/>, <iref ref="884"/>, <iref ref="945"/>, <iref ref="952"/>, <iref ref="969"/>, <iref ref="972"/>, <iref ref="973"/>, <iref ref="979"/>, <iref ref="1023"/>, <iref ref="1058"/>, <iref ref="1060"/>, <iref ref="1061"/>, <iref ref="1077"/>, <iref ref="1101"/>.</li>
+<li>Changed the following issues from Tentatively Ready to NAD Editorial: <iref ref="1013"/>, <iref ref="1107"/>.</li>
+<li>Changed the following issues from Open to NAD Future: <iref ref="255"/>, <iref ref="423"/>, <iref ref="523"/>, <iref ref="708"/>, <iref ref="760"/>, <iref ref="839"/>, <iref ref="877"/>.</li>
+<li>Changed the following issues from CD1 to Open: <iref ref="823"/>.</li>
+<li>Changed the following issues from NAD Editorial to Open: <iref ref="299"/>, <iref ref="484"/>, <iref ref="532"/>, <iref ref="556"/>, <iref ref="594"/>, <iref ref="631"/>, <iref ref="676"/>, <iref ref="704"/>, <iref ref="724"/>, <iref ref="742"/>, <iref ref="811"/>, <iref ref="870"/>, <iref ref="872"/>.</li>
+<li>Changed the following issues from Review to Open: <iref ref="879"/>, <iref ref="919"/>, <iref ref="929"/>, <iref ref="939"/>, <iref ref="987"/>, <iref ref="1009"/>, <iref ref="1093"/>.</li>
+<li>Changed the following issues from Tentatively NAD to Open: <iref ref="458"/>.</li>
+<li>Changed the following issues from Tentatively NAD Future to Open: <iref ref="96"/>.</li>
+<li>Changed the following issues from Tentatively Ready to Open: <iref ref="910"/>, <iref ref="915"/>, <iref ref="932"/>, <iref ref="940"/>, <iref ref="974"/>, <iref ref="976"/>, <iref ref="999"/>, <iref ref="1011"/>.</li>
+<li>Changed the following issues from Open to Ready: <iref ref="149"/>, <iref ref="419"/>, <iref ref="430"/>, <iref ref="498"/>, <iref ref="564"/>, <iref ref="565"/>, <iref ref="630"/>, <iref ref="659"/>, <iref ref="696"/>, <iref ref="711"/>, <iref ref="716"/>, <iref ref="723"/>, <iref ref="788"/>, <iref ref="834"/>, <iref ref="838"/>, <iref ref="847"/>, <iref ref="857"/>, <iref ref="859"/>, <iref ref="876"/>, <iref ref="881"/>, <iref ref="883"/>, <iref ref="886"/>, <iref ref="1004"/>.</li>
+<li>Changed the following issues from Review to Ready: <iref ref="780"/>.</li>
+<li>Changed the following issues from Tentatively NAD to Ready: <iref ref="822"/>.</li>
+<li>Changed the following issues from Tentatively Ready to Ready: <iref ref="934"/>.</li>
+<li>Changed the following issues from NAD to Review: <iref ref="871"/>.</li>
+<li>Changed the following issues from Open to Review: <iref ref="397"/>, <iref ref="408"/>, <iref ref="473"/>, <iref ref="671"/>, <iref ref="836"/>, <iref ref="868"/>, <iref ref="889"/>, <iref ref="893"/>, <iref ref="930"/>, <iref ref="954"/>, <iref ref="962"/>, <iref ref="967"/>, <iref ref="968"/>.</li>
+<li>Changed the following issues from Tentatively NAD to Review: <iref ref="668"/>.</li>
+<li>Changed the following issues from Tentatively Ready to Review: <iref ref="950"/>, <iref ref="1100"/>.</li>
+<li>Changed the following issues from Open to Tentatively NAD: <iref ref="588"/>, <iref ref="617"/>, <iref ref="625"/>, <iref ref="971"/>.</li>
+<li>Changed the following issues from Open to Tentatively NAD Future: <iref ref="1031"/>, <iref ref="1062"/>.</li>
+<li>Changed the following issues from Open to Tentatively Ready: <iref ref="1012"/>, <iref ref="1019"/>.</li>
+<li>Changed the following issues from Tentatively Ready to WP: <iref ref="688"/>, <iref ref="765"/>, <iref ref="810"/>, <iref ref="814"/>, <iref ref="853"/>, <iref ref="869"/>, <iref ref="878"/>, <iref ref="888"/>, <iref ref="890"/>, <iref ref="898"/>, <iref ref="899"/>, <iref ref="904"/>, <iref ref="907"/>, <iref ref="909"/>, <iref ref="922"/>, <iref ref="925"/>, <iref ref="931"/>, <iref ref="938"/>, <iref ref="943"/>, <iref ref="948"/>, <iref ref="949"/>, <iref ref="965"/>, <iref ref="970"/>, <iref ref="975"/>, <iref ref="981"/>, <iref ref="982"/>, <iref ref="984"/>, <iref ref="986"/>, <iref ref="990"/>, <iref ref="991"/>, <iref ref="993"/>, <iref ref="994"/>, <iref ref="997"/>, <iref ref="998"/>, <iref ref="1006"/>, <iref ref="1014"/>, <iref ref="1021"/>, <iref ref="1037"/>, <iref ref="1038"/>, <iref ref="1039"/>, <iref ref="1040"/>, <iref ref="1044"/>, <iref ref="1045"/>, <iref ref="1065"/>, <iref ref="1066"/>, <iref ref="1070"/>, <iref ref="1073"/>, <iref ref="1103"/>.</li>
+</ul></li>
+</ul>
+</revision>
+
+<revision tag="R65">
+2009-06-19 pre-Frankfurt mailing.
+<ul>
+<li><b>Summary:</b><ul>
+<li>378 open issues, up by 32.</li>
+<li>765 closed issues, up by 0.</li>
+<li>1143 issues total, up by 32.</li>
+</ul></li>
+<li><b>Details:</b><ul>
+<li>Added the following New issues: <iref ref="1115"/>, <iref ref="1116"/>, <iref ref="1117"/>, <iref ref="1118"/>, <iref ref="1119"/>, <iref ref="1120"/>, <iref ref="1121"/>, <iref ref="1122"/>, <iref ref="1123"/>, <iref ref="1124"/>, <iref ref="1125"/>, <iref ref="1126"/>, <iref ref="1127"/>, <iref ref="1128"/>, <iref ref="1129"/>, <iref ref="1130"/>, <iref ref="1131"/>, <iref ref="1132"/>, <iref ref="1133"/>, <iref ref="1134"/>, <iref ref="1135"/>, <iref ref="1136"/>, <iref ref="1137"/>, <iref ref="1138"/>, <iref ref="1139"/>, <iref ref="1140"/>, <iref ref="1141"/>, <iref ref="1142"/>, <iref ref="1143"/>.</li>
+<li>Added the following Open issues: <iref ref="1112"/>, <iref ref="1113"/>, <iref ref="1114"/>.</li>
+<li>Changed the following issues from Pending NAD Editorial to NAD Editorial: <iref ref="937"/>.</li>
+<li>Changed the following issues from New to Open: <iref ref="696"/>, <iref ref="716"/>, <iref ref="727"/>, <iref ref="865"/>, <iref ref="900"/>, <iref ref="911"/>, <iref ref="916"/>, <iref ref="917"/>, <iref ref="920"/>, <iref ref="933"/>, <iref ref="935"/>, <iref ref="941"/>, <iref ref="947"/>, <iref ref="951"/>, <iref ref="953"/>, <iref ref="954"/>, <iref ref="955"/>, <iref ref="956"/>, <iref ref="977"/>, <iref ref="978"/>, <iref ref="985"/>, <iref ref="989"/>, <iref ref="996"/>, <iref ref="1033"/>, <iref ref="1054"/>, <iref ref="1056"/>, <iref ref="1057"/>, <iref ref="1059"/>, <iref ref="1062"/>, <iref ref="1068"/>, <iref ref="1069"/>, <iref ref="1071"/>, <iref ref="1072"/>, <iref ref="1076"/>, <iref ref="1090"/>, <iref ref="1092"/>, <iref ref="1096"/>, <iref ref="1098"/>, <iref ref="1099"/>, <iref ref="1105"/>, <iref ref="1106"/>, <iref ref="1108"/>, <iref ref="1110"/>.</li>
+<li>Changed the following issues from Review to Open: <iref ref="817"/>, <iref ref="971"/>, <iref ref="992"/>, <iref ref="1004"/>, <iref ref="1010"/>, <iref ref="1012"/>, <iref ref="1015"/>, <iref ref="1019"/>.</li>
+<li>Changed the following issues from New to Review: <iref ref="780"/>, <iref ref="835"/>, <iref ref="897"/>, <iref ref="919"/>, <iref ref="939"/>, <iref ref="957"/>, <iref ref="983"/>, <iref ref="1001"/>, <iref ref="1080"/>, <iref ref="1091"/>, <iref ref="1093"/>, <iref ref="1094"/>, <iref ref="1095"/>, <iref ref="1097"/>, <iref ref="1102"/>, <iref ref="1104"/>, <iref ref="1111"/>.</li>
+<li>Changed the following issues from Open to Review: <iref ref="921"/>, <iref ref="987"/>, <iref ref="1087"/>.</li>
+<li>Changed the following issues from New to Tentatively NAD: <iref ref="568"/>, <iref ref="701"/>, <iref ref="702"/>, <iref ref="785"/>, <iref ref="863"/>, <iref ref="903"/>, <iref ref="912"/>, <iref ref="918"/>, <iref ref="946"/>, <iref ref="995"/>, <iref ref="1074"/>.</li>
+<li>Changed the following issues from Open to Tentatively NAD: <iref ref="458"/>, <iref ref="644"/>, <iref ref="667"/>, <iref ref="668"/>, <iref ref="669"/>.</li>
+<li>Changed the following issues from Review to Tentatively NAD: <iref ref="901"/>.</li>
+<li>Changed the following issues from Tentatively Ready to Tentatively NAD: <iref ref="822"/>, <iref ref="988"/>.</li>
+<li>Changed the following issues from New to Tentatively NAD Editorial: <iref ref="837"/>, <iref ref="862"/>, <iref ref="867"/>, <iref ref="927"/>, <iref ref="945"/>, <iref ref="952"/>, <iref ref="969"/>, <iref ref="972"/>, <iref ref="973"/>, <iref ref="979"/>, <iref ref="1058"/>, <iref ref="1060"/>, <iref ref="1061"/>, <iref ref="1077"/>, <iref ref="1101"/>, <iref ref="1109"/>.</li>
+<li>Changed the following issues from Open to Tentatively NAD Editorial: <iref ref="424"/>, <iref ref="825"/>, <iref ref="830"/>, <iref ref="884"/>.</li>
+<li>Changed the following issues from Review to Tentatively NAD Editorial: <iref ref="1023"/>.</li>
+<li>Changed the following issues from Open to Tentatively NAD Future: <iref ref="96"/>.</li>
+<li>Changed the following issues from New to Tentatively Ready: <iref ref="810"/>, <iref ref="898"/>, <iref ref="906"/>, <iref ref="910"/>, <iref ref="913"/>, <iref ref="914"/>, <iref ref="915"/>, <iref ref="925"/>, <iref ref="974"/>, <iref ref="976"/>, <iref ref="981"/>, <iref ref="982"/>, <iref ref="984"/>, <iref ref="990"/>, <iref ref="998"/>, <iref ref="999"/>, <iref ref="1063"/>, <iref ref="1067"/>, <iref ref="1070"/>, <iref ref="1073"/>, <iref ref="1100"/>, <iref ref="1103"/>, <iref ref="1107"/>.</li>
+<li>Changed the following issues from Open to Tentatively Ready: <iref ref="688"/>, <iref ref="814"/>.</li>
+<li>Changed the following issues from Review to Tentatively Ready: <iref ref="899"/>, <iref ref="907"/>, <iref ref="909"/>, <iref ref="934"/>, <iref ref="938"/>, <iref ref="940"/>, <iref ref="943"/>, <iref ref="950"/>, <iref ref="965"/>, <iref ref="970"/>, <iref ref="975"/>, <iref ref="986"/>, <iref ref="991"/>, <iref ref="993"/>, <iref ref="994"/>, <iref ref="997"/>, <iref ref="1002"/>, <iref ref="1006"/>, <iref ref="1011"/>, <iref ref="1013"/>, <iref ref="1014"/>, <iref ref="1021"/>, <iref ref="1024"/>, <iref ref="1037"/>, <iref ref="1038"/>, <iref ref="1039"/>, <iref ref="1040"/>, <iref ref="1044"/>, <iref ref="1045"/>, <iref ref="1065"/>, <iref ref="1066"/>.</li>
+</ul></li>
+</ul>
+</revision>
+
+<revision tag="R64">
+2009-05-01 mid-term mailing.
+<ul>
+<li><b>Summary:</b><ul>
+<li>346 open issues, up by 19.</li>
+<li>765 closed issues, up by 0.</li>
+<li>1111 issues total, up by 19.</li>
+</ul></li>
+<li><b>Details:</b><ul>
+<li>Added the following New issues: <iref ref="1093"/>, <iref ref="1094"/>, <iref ref="1095"/>, <iref ref="1096"/>, <iref ref="1097"/>, <iref ref="1098"/>, <iref ref="1099"/>, <iref ref="1100"/>, <iref ref="1101"/>, <iref ref="1102"/>, <iref ref="1103"/>, <iref ref="1104"/>, <iref ref="1105"/>, <iref ref="1106"/>, <iref ref="1107"/>, <iref ref="1108"/>, <iref ref="1109"/>, <iref ref="1110"/>, <iref ref="1111"/>.</li>
+<li>Changed the following issues from DR to CD1: <iref ref="130"/>, <iref ref="386"/>, <iref ref="406"/>, <iref ref="409"/>, <iref ref="413"/>, <iref ref="434"/>, <iref ref="438"/>, <iref ref="444"/>, <iref ref="445"/>, <iref ref="455"/>, <iref ref="457"/>, <iref ref="460"/>, <iref ref="469"/>, <iref ref="533"/>.</li>
+<li>Changed the following issues from Review to New: <iref ref="1070"/>.</li>
+</ul></li>
+</ul>
+</revision>
+
+<revision tag="R63">
+2009-03-20 post-Summit mailing.
+<ul>
+<li><b>Summary:</b><ul>
+<li>327 open issues, up by 96.</li>
+<li>765 closed issues, up by 14.</li>
+<li>1092 issues total, up by 110.</li>
+</ul></li>
+<li><b>Details:</b><ul>
+<li>Added the following NAD Editorial issues: <iref ref="1022"/>.</li>
+<li>Added the following NAD Future issues: <iref ref="1025"/>.</li>
+<li>Added the following New issues: <iref ref="983"/>, <iref ref="984"/>, <iref ref="985"/>, <iref ref="989"/>, <iref ref="990"/>, <iref ref="995"/>, <iref ref="996"/>, <iref ref="998"/>, <iref ref="999"/>, <iref ref="1001"/>, <iref ref="1033"/>, <iref ref="1054"/>, <iref ref="1056"/>, <iref ref="1057"/>, <iref ref="1058"/>, <iref ref="1059"/>, <iref ref="1060"/>, <iref ref="1061"/>, <iref ref="1062"/>, <iref ref="1063"/>, <iref ref="1067"/>, <iref ref="1068"/>, <iref ref="1069"/>, <iref ref="1071"/>, <iref ref="1072"/>, <iref ref="1073"/>, <iref ref="1074"/>, <iref ref="1076"/>, <iref ref="1077"/>, <iref ref="1080"/>, <iref ref="1090"/>, <iref ref="1091"/>, <iref ref="1092"/>.</li>
+<li>Added the following Open issues: <iref ref="987"/>, <iref ref="1000"/>, <iref ref="1007"/>, <iref ref="1008"/>, <iref ref="1016"/>, <iref ref="1017"/>, <iref ref="1018"/>, <iref ref="1020"/>, <iref ref="1026"/>, <iref ref="1027"/>, <iref ref="1028"/>, <iref ref="1029"/>, <iref ref="1030"/>, <iref ref="1031"/>, <iref ref="1032"/>, <iref ref="1034"/>, <iref ref="1035"/>, <iref ref="1036"/>, <iref ref="1041"/>, <iref ref="1042"/>, <iref ref="1046"/>, <iref ref="1048"/>, <iref ref="1051"/>, <iref ref="1052"/>, <iref ref="1053"/>, <iref ref="1055"/>, <iref ref="1064"/>, <iref ref="1075"/>, <iref ref="1078"/>, <iref ref="1079"/>, <iref ref="1081"/>, <iref ref="1082"/>, <iref ref="1083"/>, <iref ref="1084"/>, <iref ref="1085"/>, <iref ref="1086"/>, <iref ref="1087"/>, <iref ref="1088"/>, <iref ref="1089"/>.</li>
+<li>Added the following Review issues: <iref ref="986"/>, <iref ref="991"/>, <iref ref="992"/>, <iref ref="993"/>, <iref ref="994"/>, <iref ref="997"/>, <iref ref="1002"/>, <iref ref="1003"/>, <iref ref="1004"/>, <iref ref="1005"/>, <iref ref="1006"/>, <iref ref="1009"/>, <iref ref="1010"/>, <iref ref="1011"/>, <iref ref="1012"/>, <iref ref="1013"/>, <iref ref="1014"/>, <iref ref="1015"/>, <iref ref="1019"/>, <iref ref="1021"/>, <iref ref="1023"/>, <iref ref="1024"/>, <iref ref="1037"/>, <iref ref="1038"/>, <iref ref="1039"/>, <iref ref="1040"/>, <iref ref="1043"/>, <iref ref="1044"/>, <iref ref="1045"/>, <iref ref="1047"/>, <iref ref="1049"/>, <iref ref="1050"/>, <iref ref="1065"/>, <iref ref="1066"/>, <iref ref="1070"/>.</li>
+<li>Added the following Tentatively Ready issues: <iref ref="988"/>.</li>
+<li>Changed the following issues from New to Dup: <iref ref="905"/>, <iref ref="942"/>.</li>
+<li>Changed the following issues from New to NAD: <iref ref="980"/>.</li>
+<li>Changed the following issues from New to NAD Editorial: <iref ref="874"/>, <iref ref="875"/>.</li>
+<li>Changed the following issues from Open to NAD Editorial: <iref ref="732"/>, <iref ref="793"/>, <iref ref="794"/>, <iref ref="800"/>.</li>
+<li>Changed the following issues from Pending NAD Editorial to NAD Editorial: <iref ref="683"/>, <iref ref="892"/>.</li>
+<li>Changed the following issues from Ready to NAD Editorial: <iref ref="803"/>.</li>
+<li>Changed the following issues from NAD to Open: <iref ref="466"/>.</li>
+<li>Changed the following issues from NAD Future to Open: <iref ref="111"/>, <iref ref="138"/>, <iref ref="149"/>, <iref ref="219"/>.</li>
+<li>Changed the following issues from New to Open: <iref ref="880"/>, <iref ref="891"/>, <iref ref="893"/>, <iref ref="902"/>, <iref ref="908"/>, <iref ref="921"/>, <iref ref="923"/>, <iref ref="924"/>, <iref ref="926"/>, <iref ref="930"/>, <iref ref="936"/>, <iref ref="944"/>, <iref ref="958"/>, <iref ref="959"/>, <iref ref="960"/>, <iref ref="961"/>, <iref ref="962"/>, <iref ref="963"/>, <iref ref="964"/>, <iref ref="966"/>, <iref ref="967"/>, <iref ref="968"/>.</li>
+<li>Changed the following issues from Ready to Open: <iref ref="788"/>.</li>
+<li>Changed the following issues from New to Pending NAD Editorial: <iref ref="937"/>.</li>
+<li>Changed the following issues from New to Review: <iref ref="879"/>, <iref ref="899"/>, <iref ref="901"/>, <iref ref="907"/>, <iref ref="909"/>, <iref ref="929"/>, <iref ref="934"/>, <iref ref="938"/>, <iref ref="940"/>, <iref ref="943"/>, <iref ref="950"/>, <iref ref="965"/>, <iref ref="970"/>, <iref ref="971"/>, <iref ref="975"/>.</li>
+<li>Changed the following issues from Open to Review: <iref ref="817"/>.</li>
+<li>Changed the following issues from New to Tentatively Ready: <iref ref="904"/>, <iref ref="922"/>, <iref ref="928"/>, <iref ref="931"/>, <iref ref="932"/>, <iref ref="948"/>, <iref ref="949"/>.</li>
+<li>Changed the following issues from Open to Tentatively Ready: <iref ref="890"/>.</li>
+<li>Changed the following issues from Review to Tentatively Ready: <iref ref="765"/>, <iref ref="822"/>, <iref ref="853"/>, <iref ref="869"/>, <iref ref="878"/>, <iref ref="888"/>.</li>
+<li>Changed the following issues from Ready to WP: <iref ref="752"/>, <iref ref="753"/>, <iref ref="758"/>, <iref ref="821"/>, <iref ref="866"/>, <iref ref="894"/>.</li>
+</ul></li>
+</ul>
+</revision>
+
+<revision tag="R62">
+2009-02-06 pre-Summit mailing.
+<ul>
+<li><b>Summary:</b><ul>
+<li>231 open issues, up by 44.</li>
+<li>751 closed issues, up by 0.</li>
+<li>982 issues total, up by 44.</li>
+</ul></li>
+<li><b>Details:</b><ul>
+<li>Added the following New issues: <iref ref="939"/>, <iref ref="940"/>, <iref ref="941"/>, <iref ref="942"/>, <iref ref="943"/>, <iref ref="944"/>, <iref ref="945"/>, <iref ref="946"/>, <iref ref="947"/>, <iref ref="948"/>, <iref ref="949"/>, <iref ref="950"/>, <iref ref="951"/>, <iref ref="952"/>, <iref ref="953"/>, <iref ref="954"/>, <iref ref="955"/>, <iref ref="956"/>, <iref ref="957"/>, <iref ref="958"/>, <iref ref="959"/>, <iref ref="960"/>, <iref ref="961"/>, <iref ref="962"/>, <iref ref="963"/>, <iref ref="964"/>, <iref ref="965"/>, <iref ref="966"/>, <iref ref="967"/>, <iref ref="968"/>, <iref ref="969"/>, <iref ref="970"/>, <iref ref="971"/>, <iref ref="972"/>, <iref ref="973"/>, <iref ref="974"/>, <iref ref="975"/>, <iref ref="976"/>, <iref ref="977"/>, <iref ref="978"/>, <iref ref="979"/>, <iref ref="980"/>, <iref ref="981"/>, <iref ref="982"/>.</li>
+</ul></li>
+</ul>
+</revision>
+
+<revision tag="R61">
+2008-12-05 mid-term mailing.
+<ul>
+<li><b>Summary:</b><ul>
+<li>187 open issues, up by 20.</li>
+<li>751 closed issues, up by 0.</li>
+<li>938 issues total, up by 20.</li>
+</ul></li>
+<li><b>Details:</b><ul>
+<li>Added the following New issues: <iref ref="919"/>, <iref ref="920"/>, <iref ref="921"/>, <iref ref="922"/>, <iref ref="923"/>, <iref ref="924"/>, <iref ref="925"/>, <iref ref="926"/>, <iref ref="927"/>, <iref ref="928"/>, <iref ref="929"/>, <iref ref="930"/>, <iref ref="931"/>, <iref ref="932"/>, <iref ref="933"/>, <iref ref="934"/>, <iref ref="935"/>, <iref ref="936"/>, <iref ref="937"/>, <iref ref="938"/>.</li>
+</ul></li>
+</ul>
+</revision>
+
+<revision tag="R60">
+2008-10-03 post-San Francisco mailing.
+<ul>
+<li><b>Summary:</b><ul>
+<li>167 open issues, down by 25.</li>
+<li>751 closed issues, up by 65.</li>
+<li>918 issues total, up by 40.</li>
+</ul></li>
+<li><b>Details:</b><ul>
+<li>Added the following CD1 issues: <iref ref="882"/>.</li>
+<li>Added the following New issues: <iref ref="879"/>, <iref ref="880"/>, <iref ref="891"/>, <iref ref="893"/>, <iref ref="897"/>, <iref ref="898"/>, <iref ref="899"/>, <iref ref="900"/>, <iref ref="901"/>, <iref ref="902"/>, <iref ref="903"/>, <iref ref="904"/>, <iref ref="905"/>, <iref ref="906"/>, <iref ref="907"/>, <iref ref="908"/>, <iref ref="909"/>, <iref ref="910"/>, <iref ref="911"/>, <iref ref="912"/>, <iref ref="913"/>, <iref ref="914"/>, <iref ref="915"/>, <iref ref="916"/>, <iref ref="917"/>, <iref ref="918"/>.</li>
+<li>Added the following Open issues: <iref ref="881"/>, <iref ref="883"/>, <iref ref="884"/>, <iref ref="885"/>, <iref ref="886"/>, <iref ref="887"/>, <iref ref="889"/>, <iref ref="890"/>, <iref ref="895"/>, <iref ref="896"/>.</li>
+<li>Added the following Pending NAD Editorial issues: <iref ref="892"/>.</li>
+<li>Added the following Ready issues: <iref ref="894"/>.</li>
+<li>Added the following Review issues: <iref ref="888"/>.</li>
+<li>Changed the following issues from New to CD1: <iref ref="818"/>, <iref ref="820"/>, <iref ref="843"/>, <iref ref="845"/>, <iref ref="846"/>, <iref ref="856"/>, <iref ref="858"/>.</li>
+<li>Changed the following issues from Ready to CD1: <iref ref="180"/>, <iref ref="387"/>, <iref ref="396"/>, <iref ref="522"/>, <iref ref="629"/>, <iref ref="691"/>, <iref ref="713"/>, <iref ref="714"/>, <iref ref="720"/>, <iref ref="728"/>, <iref ref="762"/>, <iref ref="769"/>, <iref ref="771"/>, <iref ref="772"/>, <iref ref="776"/>, <iref ref="779"/>, <iref ref="787"/>, <iref ref="805"/>, <iref ref="806"/>, <iref ref="807"/>, <iref ref="808"/>, <iref ref="809"/>, <iref ref="813"/>, <iref ref="824"/>, <iref ref="829"/>, <iref ref="842"/>, <iref ref="844"/>, <iref ref="848"/>, <iref ref="850"/>, <iref ref="852"/>.</li>
+<li>Changed the following issues from Review to CD1: <iref ref="23"/>, <iref ref="675"/>, <iref ref="692"/>, <iref ref="698"/>, <iref ref="709"/>, <iref ref="734"/>, <iref ref="804"/>, <iref ref="823"/>.</li>
+<li>Changed the following issues from WP to CD1: <iref ref="44"/>, <iref ref="49"/>, <iref ref="76"/>, <iref ref="91"/>, <iref ref="92"/>, <iref ref="98"/>, <iref ref="103"/>, <iref ref="109"/>, <iref ref="117"/>, <iref ref="118"/>, <iref ref="120"/>, <iref ref="123"/>, <iref ref="136"/>, <iref ref="153"/>, <iref ref="165"/>, <iref ref="167"/>, <iref ref="171"/>, <iref ref="179"/>, <iref ref="182"/>, <iref ref="183"/>, <iref ref="184"/>, <iref ref="185"/>, <iref ref="186"/>, <iref ref="187"/>, <iref ref="198"/>, <iref ref="200"/>, <iref ref="201"/>, <iref ref="202"/>, <iref ref="206"/>, <iref ref="214"/>, <iref ref="221"/>, <iref ref="225"/>, <iref ref="226"/>, <iref ref="228"/>, <iref ref="229"/>, <iref ref="230"/>, <iref ref="231"/>, <iref ref="232"/>, <iref ref="233"/>, <iref ref="234"/>, <iref ref="235"/>, <iref ref="237"/>, <iref ref="238"/>, <iref ref="239"/>, <iref ref="240"/>, <iref ref="241"/>, <iref ref="242"/>, <iref ref="243"/>, <iref ref="247"/>, <iref ref="248"/>, <iref ref="250"/>, <iref ref="251"/>, <iref ref="252"/>, <iref ref="253"/>, <iref ref="254"/>, <iref ref="256"/>, <iref ref="258"/>, <iref ref="259"/>, <iref ref="260"/>, <iref ref="261"/>, <iref ref="262"/>, <iref ref="263"/>, <iref ref="264"/>, <iref ref="265"/>, <iref ref="266"/>, <iref ref="268"/>, <iref ref="270"/>, <iref ref="271"/>, <iref ref="272"/>, <iref ref="273"/>, <iref ref="274"/>, <iref ref="275"/>, <iref ref="276"/>, <iref ref="278"/>, <iref ref="280"/>, <iref ref="281"/>, <iref ref="282"/>, <iref ref="283"/>, <iref ref="284"/>, <iref ref="285"/>, <iref ref="286"/>, <iref ref="288"/>, <iref ref="291"/>, <iref ref="292"/>, <iref ref="294"/>, <iref ref="295"/>, <iref ref="297"/>, <iref ref="298"/>, <iref ref="300"/>, <iref ref="301"/>, <iref ref="303"/>, <iref ref="305"/>, <iref ref="306"/>, <iref ref="307"/>, <iref ref="308"/>, <iref ref="310"/>, <iref ref="311"/>, <iref ref="312"/>, <iref ref="315"/>, <iref ref="316"/>, <iref ref="317"/>, <iref ref="318"/>, <iref ref="319"/>, <iref ref="320"/>, <iref ref="321"/>, <iref ref="322"/>, <iref ref="324"/>, <iref ref="325"/>, <iref ref="327"/>, <iref ref="328"/>, <iref ref="329"/>, <iref ref="331"/>, <iref ref="333"/>, <iref ref="334"/>, <iref ref="335"/>, <iref ref="336"/>, <iref ref="337"/>, <iref ref="338"/>, <iref ref="339"/>, <iref ref="340"/>, <iref ref="341"/>, <iref ref="345"/>, <iref ref="346"/>, <iref ref="347"/>, <iref ref="349"/>, <iref ref="352"/>, <iref ref="354"/>, <iref ref="355"/>, <iref ref="358"/>, <iref ref="359"/>, <iref ref="360"/>, <iref ref="362"/>, <iref ref="363"/>, <iref ref="364"/>, <iref ref="365"/>, <iref ref="369"/>, <iref ref="370"/>, <iref ref="371"/>, <iref ref="373"/>, <iref ref="375"/>, <iref ref="376"/>, <iref ref="379"/>, <iref ref="380"/>, <iref ref="381"/>, <iref ref="383"/>, <iref ref="384"/>, <iref ref="389"/>, <iref ref="391"/>, <iref ref="395"/>, <iref ref="400"/>, <iref ref="401"/>, <iref ref="402"/>, <iref ref="403"/>, <iref ref="404"/>, <iref ref="405"/>, <iref ref="407"/>, <iref ref="410"/>, <iref ref="411"/>, <iref ref="412"/>, <iref ref="414"/>, <iref ref="415"/>, <iref ref="416"/>, <iref ref="420"/>, <iref ref="422"/>, <iref ref="425"/>, <iref ref="426"/>, <iref ref="428"/>, <iref ref="432"/>, <iref ref="435"/>, <iref ref="436"/>, <iref ref="441"/>, <iref ref="442"/>, <iref ref="443"/>, <iref ref="448"/>, <iref ref="449"/>, <iref ref="453"/>, <iref ref="456"/>, <iref ref="461"/>, <iref ref="464"/>, <iref ref="465"/>, <iref ref="467"/>, <iref ref="468"/>, <iref ref="474"/>, <iref ref="475"/>, <iref ref="478"/>, <iref ref="488"/>, <iref ref="495"/>, <iref ref="496"/>, <iref ref="497"/>, <iref ref="505"/>, <iref ref="507"/>, <iref ref="508"/>, <iref ref="518"/>, <iref ref="519"/>, <iref ref="520"/>, <iref ref="521"/>, <iref ref="524"/>, <iref ref="527"/>, <iref ref="530"/>, <iref ref="531"/>, <iref ref="534"/>, <iref ref="535"/>, <iref ref="537"/>, <iref ref="538"/>, <iref ref="540"/>, <iref ref="541"/>, <iref ref="542"/>, <iref ref="543"/>, <iref ref="545"/>, <iref ref="550"/>, <iref ref="551"/>, <iref ref="552"/>, <iref ref="559"/>, <iref ref="561"/>, <iref ref="562"/>, <iref ref="563"/>, <iref ref="566"/>, <iref ref="567"/>, <iref ref="574"/>, <iref ref="575"/>, <iref ref="576"/>, <iref ref="577"/>, <iref ref="578"/>, <iref ref="581"/>, <iref ref="586"/>, <iref ref="589"/>, <iref ref="593"/>, <iref ref="595"/>, <iref ref="596"/>, <iref ref="607"/>, <iref ref="608"/>, <iref ref="609"/>, <iref ref="610"/>, <iref ref="611"/>, <iref ref="612"/>, <iref ref="613"/>, <iref ref="616"/>, <iref ref="618"/>, <iref ref="619"/>, <iref ref="620"/>, <iref ref="621"/>, <iref ref="622"/>, <iref ref="623"/>, <iref ref="624"/>, <iref ref="628"/>, <iref ref="634"/>, <iref ref="638"/>, <iref ref="640"/>, <iref ref="643"/>, <iref ref="646"/>, <iref ref="650"/>, <iref ref="651"/>, <iref ref="652"/>, <iref ref="654"/>, <iref ref="655"/>, <iref ref="660"/>, <iref ref="661"/>, <iref ref="664"/>, <iref ref="665"/>, <iref ref="666"/>, <iref ref="672"/>, <iref ref="673"/>, <iref ref="674"/>, <iref ref="677"/>, <iref ref="678"/>, <iref ref="679"/>, <iref ref="680"/>, <iref ref="681"/>, <iref ref="682"/>, <iref ref="685"/>, <iref ref="687"/>, <iref ref="689"/>, <iref ref="693"/>, <iref ref="694"/>, <iref ref="695"/>, <iref ref="699"/>, <iref ref="700"/>, <iref ref="703"/>, <iref ref="705"/>, <iref ref="706"/>, <iref ref="710"/>, <iref ref="712"/>, <iref ref="715"/>, <iref ref="722"/>, <iref ref="740"/>, <iref ref="743"/>, <iref ref="744"/>, <iref ref="746"/>, <iref ref="749"/>, <iref ref="755"/>, <iref ref="759"/>, <iref ref="761"/>, <iref ref="766"/>, <iref ref="768"/>, <iref ref="770"/>, <iref ref="775"/>, <iref ref="777"/>, <iref ref="778"/>, <iref ref="781"/>, <iref ref="782"/>, <iref ref="783"/>, <iref ref="789"/>, <iref ref="792"/>, <iref ref="798"/>.</li>
+<li>Changed the following issues from Open to Dup: <iref ref="670"/>.</li>
+<li>Changed the following issues from New to NAD: <iref ref="849"/>, <iref ref="855"/>, <iref ref="871"/>.</li>
+<li>Changed the following issues from Open to NAD: <iref ref="454"/>, <iref ref="832"/>.</li>
+<li>Changed the following issues from New to NAD Editorial: <iref ref="811"/>, <iref ref="812"/>, <iref ref="841"/>, <iref ref="864"/>, <iref ref="870"/>, <iref ref="872"/>.</li>
+<li>Changed the following issues from Open to NAD Editorial: <iref ref="299"/>, <iref ref="484"/>, <iref ref="556"/>, <iref ref="631"/>, <iref ref="676"/>, <iref ref="704"/>, <iref ref="724"/>, <iref ref="742"/>.</li>
+<li>Changed the following issues from Pending NAD Editorial to NAD Editorial: <iref ref="532"/>, <iref ref="594"/>, <iref ref="717"/>, <iref ref="725"/>, <iref ref="738"/>.</li>
+<li>Changed the following issues from New to Open: <iref ref="721"/>, <iref ref="751"/>, <iref ref="814"/>, <iref ref="816"/>, <iref ref="817"/>, <iref ref="819"/>, <iref ref="827"/>, <iref ref="836"/>, <iref ref="838"/>, <iref ref="847"/>, <iref ref="857"/>, <iref ref="859"/>, <iref ref="860"/>, <iref ref="861"/>, <iref ref="868"/>, <iref ref="873"/>, <iref ref="876"/>, <iref ref="877"/>.</li>
+<li>Changed the following issues from Pending NAD Editorial to Open: <iref ref="424"/>, <iref ref="625"/>.</li>
+<li>Changed the following issues from Review to Open: <iref ref="851"/>.</li>
+<li>Changed the following issues from New to Ready: <iref ref="788"/>, <iref ref="821"/>, <iref ref="866"/>.</li>
+<li>Changed the following issues from Open to Ready: <iref ref="753"/>.</li>
+<li>Changed the following issues from Review to Ready: <iref ref="752"/>, <iref ref="758"/>, <iref ref="803"/>.</li>
+<li>Changed the following issues from New to Review: <iref ref="765"/>, <iref ref="822"/>, <iref ref="853"/>, <iref ref="854"/>, <iref ref="869"/>, <iref ref="878"/>.</li>
+<li>Changed the following issues from TC to TC1: <iref ref="1"/>, <iref ref="3"/>, <iref ref="5"/>, <iref ref="7"/>, <iref ref="8"/>, <iref ref="9"/>, <iref ref="11"/>, <iref ref="13"/>, <iref ref="14"/>, <iref ref="15"/>, <iref ref="16"/>, <iref ref="17"/>, <iref ref="18"/>, <iref ref="19"/>, <iref ref="20"/>, <iref ref="21"/>, <iref ref="22"/>, <iref ref="24"/>, <iref ref="25"/>, <iref ref="26"/>, <iref ref="27"/>, <iref ref="28"/>, <iref ref="29"/>, <iref ref="30"/>, <iref ref="31"/>, <iref ref="32"/>, <iref ref="33"/>, <iref ref="34"/>, <iref ref="35"/>, <iref ref="36"/>, <iref ref="37"/>, <iref ref="38"/>, <iref ref="39"/>, <iref ref="40"/>, <iref ref="41"/>, <iref ref="42"/>, <iref ref="46"/>, <iref ref="47"/>, <iref ref="48"/>, <iref ref="50"/>, <iref ref="51"/>, <iref ref="52"/>, <iref ref="53"/>, <iref ref="54"/>, <iref ref="55"/>, <iref ref="56"/>, <iref ref="57"/>, <iref ref="59"/>, <iref ref="60"/>, <iref ref="61"/>, <iref ref="62"/>, <iref ref="63"/>, <iref ref="64"/>, <iref ref="66"/>, <iref ref="68"/>, <iref ref="69"/>, <iref ref="70"/>, <iref ref="71"/>, <iref ref="74"/>, <iref ref="75"/>, <iref ref="78"/>, <iref ref="79"/>, <iref ref="80"/>, <iref ref="83"/>, <iref ref="86"/>, <iref ref="90"/>, <iref ref="106"/>, <iref ref="108"/>, <iref ref="110"/>, <iref ref="112"/>, <iref ref="114"/>, <iref ref="115"/>, <iref ref="119"/>, <iref ref="122"/>, <iref ref="124"/>, <iref ref="125"/>, <iref ref="126"/>, <iref ref="127"/>, <iref ref="129"/>, <iref ref="132"/>, <iref ref="133"/>, <iref ref="134"/>, <iref ref="137"/>, <iref ref="139"/>, <iref ref="141"/>, <iref ref="142"/>, <iref ref="144"/>, <iref ref="146"/>, <iref ref="147"/>, <iref ref="148"/>, <iref ref="150"/>, <iref ref="151"/>, <iref ref="152"/>, <iref ref="154"/>, <iref ref="155"/>, <iref ref="156"/>, <iref ref="158"/>, <iref ref="159"/>, <iref ref="160"/>, <iref ref="161"/>, <iref ref="164"/>, <iref ref="168"/>, <iref ref="169"/>, <iref ref="170"/>, <iref ref="172"/>, <iref ref="173"/>, <iref ref="174"/>, <iref ref="175"/>, <iref ref="176"/>, <iref ref="181"/>, <iref ref="189"/>, <iref ref="193"/>, <iref ref="195"/>, <iref ref="199"/>, <iref ref="208"/>, <iref ref="209"/>, <iref ref="210"/>, <iref ref="211"/>, <iref ref="212"/>, <iref ref="217"/>, <iref ref="220"/>, <iref ref="222"/>, <iref ref="223"/>, <iref ref="224"/>, <iref ref="227"/>.</li>
+</ul></li>
+</ul>
+</revision>
+
+<revision tag="R59">
+2008-08-22 pre-San Francisco mailing.
+<ul>
+<li><b>Summary:</b><ul>
+<li>192 open issues, up by 9.</li>
+<li>686 closed issues, up by 0.</li>
+<li>878 issues total, up by 9.</li>
+</ul></li>
+<li><b>Details:</b><ul>
+<li>Added the following New issues: <iref ref="870"/>, <iref ref="871"/>, <iref ref="872"/>, <iref ref="873"/>, <iref ref="874"/>, <iref ref="875"/>, <iref ref="876"/>, <iref ref="877"/>, <iref ref="878"/>.</li>
+</ul></li>
+</ul>
+</revision>
+
+<revision tag="R58">
+2008-07-28 mid-term mailing.
+<ul>
+<li><b>Summary:</b><ul>
+<li>183 open issues, up by 12.</li>
+<li>686 closed issues, down by 4.</li>
+<li>869 issues total, up by 8.</li>
+</ul></li>
+<li><b>Details:</b><ul>
+<li>Added the following New issues: <iref ref="862"/>, <iref ref="863"/>, <iref ref="864"/>, <iref ref="865"/>, <iref ref="866"/>, <iref ref="867"/>, <iref ref="868"/>, <iref ref="869"/>.</li>
+<li>Changed the following issues from Pending NAD Editorial to NAD Editorial: <iref ref="393"/>, <iref ref="557"/>, <iref ref="592"/>, <iref ref="754"/>, <iref ref="757"/>.</li>
+<li>Changed the following issues from Pending WP to Open: <iref ref="644"/>.</li>
+<li>Changed the following issues from WP to Ready: <iref ref="387"/>, <iref ref="629"/>.</li>
+<li>Changed the following issues from Pending NAD Editorial to Review: <iref ref="709"/>.</li>
+</ul></li>
+</ul>
+</revision>
+
+<revision tag="R57">
+2008-06-27 post-Sophia Antipolis mailing.
+<ul>
+<li><b>Summary:</b><ul>
+<li>171 open issues, down by 20.</li>
+<li>690 closed issues, up by 43.</li>
+<li>861 issues total, up by 23.</li>
+</ul></li>
+<li><b>Details:</b><ul>
+<li>Added the following NAD issues: <iref ref="840"/>.</li>
+<li>Added the following New issues: <iref ref="841"/>, <iref ref="843"/>, <iref ref="845"/>, <iref ref="846"/>, <iref ref="847"/>, <iref ref="849"/>, <iref ref="853"/>, <iref ref="854"/>, <iref ref="855"/>, <iref ref="856"/>, <iref ref="857"/>, <iref ref="858"/>, <iref ref="859"/>, <iref ref="860"/>, <iref ref="861"/>.</li>
+<li>Added the following Open issues: <iref ref="839"/>.</li>
+<li>Added the following Ready issues: <iref ref="842"/>, <iref ref="844"/>, <iref ref="848"/>, <iref ref="850"/>, <iref ref="852"/>.</li>
+<li>Added the following Review issues: <iref ref="851"/>.</li>
+<li>Changed the following issues from New to NAD: <iref ref="826"/>.</li>
+<li>Changed the following issues from Open to NAD: <iref ref="570"/>.</li>
+<li>Changed the following issues from New to NAD Editorial: <iref ref="786"/>, <iref ref="831"/>.</li>
+<li>Changed the following issues from Open to NAD Editorial: <iref ref="756"/>, <iref ref="767"/>.</li>
+<li>Changed the following issues from New to Open: <iref ref="723"/>, <iref ref="726"/>, <iref ref="794"/>, <iref ref="815"/>, <iref ref="825"/>, <iref ref="830"/>, <iref ref="833"/>, <iref ref="834"/>.</li>
+<li>Changed the following issues from Ready to Open: <iref ref="471"/>.</li>
+<li>Changed the following issues from Review to Open: <iref ref="539"/>, <iref ref="711"/>.</li>
+<li>Changed the following issues from New to Ready: <iref ref="713"/>, <iref ref="714"/>, <iref ref="769"/>, <iref ref="772"/>, <iref ref="779"/>, <iref ref="787"/>, <iref ref="805"/>, <iref ref="806"/>, <iref ref="807"/>, <iref ref="808"/>, <iref ref="809"/>, <iref ref="813"/>, <iref ref="824"/>, <iref ref="829"/>.</li>
+<li>Changed the following issues from Open to Ready: <iref ref="180"/>, <iref ref="396"/>, <iref ref="522"/>, <iref ref="720"/>, <iref ref="762"/>.</li>
+<li>Changed the following issues from Review to Ready: <iref ref="691"/>, <iref ref="728"/>, <iref ref="771"/>, <iref ref="776"/>.</li>
+<li>Changed the following issues from New to Review: <iref ref="692"/>, <iref ref="698"/>, <iref ref="752"/>, <iref ref="804"/>, <iref ref="823"/>, <iref ref="828"/>, <iref ref="832"/>.</li>
+<li>Changed the following issues from Open to Review: <iref ref="23"/>, <iref ref="675"/>, <iref ref="734"/>, <iref ref="803"/>.</li>
+<li>Changed the following issues from Ready to Review: <iref ref="758"/>.</li>
+<li>Changed the following issues from Ready to WP: <iref ref="387"/>, <iref ref="518"/>, <iref ref="550"/>, <iref ref="574"/>, <iref ref="595"/>, <iref ref="596"/>, <iref ref="612"/>, <iref ref="618"/>, <iref ref="629"/>, <iref ref="638"/>, <iref ref="672"/>, <iref ref="673"/>, <iref ref="685"/>, <iref ref="710"/>, <iref ref="715"/>, <iref ref="722"/>, <iref ref="740"/>, <iref ref="743"/>, <iref ref="744"/>, <iref ref="746"/>, <iref ref="749"/>, <iref ref="755"/>, <iref ref="759"/>, <iref ref="761"/>, <iref ref="766"/>, <iref ref="768"/>, <iref ref="770"/>, <iref ref="775"/>, <iref ref="777"/>, <iref ref="778"/>, <iref ref="781"/>, <iref ref="782"/>, <iref ref="783"/>, <iref ref="789"/>, <iref ref="792"/>, <iref ref="798"/>.</li>
+</ul></li>
+</ul>
+</revision>
+
+<revision tag="R56">
+2008-05-16 pre-Sophia Antipolis mailing.
+<ul>
+<li><b>Summary:</b><ul>
+<li>191 open issues, up by 24.</li>
+<li>647 closed issues, up by 1.</li>
+<li>838 issues total, up by 25.</li>
+</ul></li>
+<li><b>Details:</b><ul>
+<li>Added the following New issues: <iref ref="814"/>, <iref ref="815"/>, <iref ref="816"/>, <iref ref="817"/>, <iref ref="818"/>, <iref ref="819"/>, <iref ref="820"/>, <iref ref="821"/>, <iref ref="822"/>, <iref ref="823"/>, <iref ref="824"/>, <iref ref="825"/>, <iref ref="826"/>, <iref ref="827"/>, <iref ref="828"/>, <iref ref="829"/>, <iref ref="830"/>, <iref ref="831"/>, <iref ref="832"/>, <iref ref="833"/>, <iref ref="834"/>, <iref ref="835"/>, <iref ref="836"/>, <iref ref="837"/>, <iref ref="838"/>.</li>
+<li>Changed the following issues from New to NAD: <iref ref="802"/>.</li>
+</ul></li>
+</ul>
+</revision>
+
+<revision tag="R55">
+2008-03-14 post-Bellevue mailing.
+<ul>
+<li><b>Summary:</b><ul>
+<li>167 open issues, down by 39.</li>
+<li>646 closed issues, up by 65.</li>
+<li>813 issues total, up by 26.</li>
+</ul></li>
+<li><b>Details:</b><ul>
+<li>Added the following Dup issues: <iref ref="795"/>.</li>
+<li>Added the following NAD issues: <iref ref="790"/>, <iref ref="791"/>, <iref ref="796"/>, <iref ref="797"/>, <iref ref="799"/>.</li>
+<li>Added the following New issues: <iref ref="788"/>, <iref ref="794"/>, <iref ref="802"/>, <iref ref="804"/>, <iref ref="805"/>, <iref ref="806"/>, <iref ref="807"/>, <iref ref="808"/>, <iref ref="809"/>, <iref ref="810"/>, <iref ref="811"/>, <iref ref="812"/>, <iref ref="813"/>.</li>
+<li>Added the following Open issues: <iref ref="793"/>, <iref ref="800"/>, <iref ref="801"/>, <iref ref="803"/>.</li>
+<li>Added the following Ready issues: <iref ref="789"/>, <iref ref="792"/>, <iref ref="798"/>.</li>
+<li>Changed the following issues from NAD Future to Dup: <iref ref="116"/>.</li>
+<li>Changed the following issues from NAD Future to NAD: <iref ref="188"/>, <iref ref="323"/>.</li>
+<li>Changed the following issues from New to NAD: <iref ref="729"/>, <iref ref="730"/>, <iref ref="731"/>, <iref ref="733"/>, <iref ref="735"/>, <iref ref="736"/>, <iref ref="737"/>, <iref ref="739"/>, <iref ref="741"/>, <iref ref="745"/>, <iref ref="748"/>, <iref ref="763"/>, <iref ref="764"/>, <iref ref="773"/>, <iref ref="784"/>.</li>
+<li>Changed the following issues from Open to NAD: <iref ref="388"/>, <iref ref="462"/>, <iref ref="579"/>, <iref ref="627"/>, <iref ref="653"/>, <iref ref="686"/>, <iref ref="707"/>.</li>
+<li>Changed the following issues from NAD Future to NAD Editorial: <iref ref="140"/>, <iref ref="390"/>.</li>
+<li>Changed the following issues from Open to NAD Editorial: <iref ref="529"/>, <iref ref="626"/>.</li>
+<li>Changed the following issues from Review to NAD Editorial: <iref ref="645"/>, <iref ref="684"/>.</li>
+<li>Changed the following issues from NAD Future to Open: <iref ref="128"/>, <iref ref="180"/>, <iref ref="190"/>.</li>
+<li>Changed the following issues from New to Open: <iref ref="617"/>, <iref ref="718"/>, <iref ref="719"/>, <iref ref="720"/>, <iref ref="724"/>, <iref ref="732"/>, <iref ref="734"/>, <iref ref="742"/>, <iref ref="747"/>, <iref ref="750"/>, <iref ref="753"/>, <iref ref="756"/>, <iref ref="760"/>, <iref ref="762"/>, <iref ref="767"/>, <iref ref="774"/>.</li>
+<li>Changed the following issues from Ready to Open: <iref ref="675"/>, <iref ref="676"/>, <iref ref="688"/>.</li>
+<li>Changed the following issues from New to Pending NAD Editorial: <iref ref="709"/>, <iref ref="717"/>, <iref ref="725"/>, <iref ref="738"/>, <iref ref="754"/>, <iref ref="757"/>.</li>
+<li>Changed the following issues from Open to Pending NAD Editorial: <iref ref="424"/>, <iref ref="557"/>, <iref ref="625"/>.</li>
+<li>Changed the following issues from New to Ready: <iref ref="710"/>, <iref ref="715"/>, <iref ref="722"/>, <iref ref="740"/>, <iref ref="743"/>, <iref ref="744"/>, <iref ref="746"/>, <iref ref="749"/>, <iref ref="755"/>, <iref ref="758"/>, <iref ref="759"/>, <iref ref="761"/>, <iref ref="766"/>, <iref ref="768"/>, <iref ref="770"/>, <iref ref="775"/>, <iref ref="777"/>, <iref ref="778"/>, <iref ref="781"/>, <iref ref="782"/>, <iref ref="783"/>.</li>
+<li>Changed the following issues from Open to Ready: <iref ref="387"/>, <iref ref="471"/>, <iref ref="550"/>, <iref ref="612"/>, <iref ref="629"/>, <iref ref="673"/>.</li>
+<li>Changed the following issues from Review to Ready: <iref ref="518"/>, <iref ref="574"/>, <iref ref="596"/>, <iref ref="618"/>, <iref ref="638"/>, <iref ref="672"/>, <iref ref="685"/>.</li>
+<li>Changed the following issues from New to Review: <iref ref="711"/>, <iref ref="728"/>, <iref ref="771"/>, <iref ref="776"/>.</li>
+<li>Changed the following issues from Open to Review: <iref ref="539"/>.</li>
+<li>Changed the following issues from Ready to WP: <iref ref="561"/>, <iref ref="562"/>, <iref ref="563"/>, <iref ref="567"/>, <iref ref="581"/>, <iref ref="620"/>, <iref ref="621"/>, <iref ref="622"/>, <iref ref="623"/>, <iref ref="624"/>, <iref ref="661"/>, <iref ref="664"/>, <iref ref="665"/>, <iref ref="666"/>, <iref ref="674"/>, <iref ref="679"/>, <iref ref="680"/>, <iref ref="687"/>, <iref ref="689"/>, <iref ref="693"/>, <iref ref="694"/>, <iref ref="695"/>, <iref ref="700"/>, <iref ref="703"/>, <iref ref="705"/>, <iref ref="706"/>.</li>
+<li>Changed the following issues from Tentatively Ready to WP: <iref ref="527"/>.</li>
+</ul></li>
+</ul>
+</revision>
+
+<revision tag="R54">
+2008-02-01 pre-Bellevue mailing.
+<ul>
+<li><b>Summary:</b><ul>
+<li>206 open issues, up by 23.</li>
+<li>581 closed issues, up by 0.</li>
+<li>787 issues total, up by 23.</li>
+</ul></li>
+<li><b>Details:</b><ul>
+<li>Added the following New issues: <iref ref="765"/>, <iref ref="766"/>, <iref ref="767"/>, <iref ref="768"/>, <iref ref="769"/>, <iref ref="770"/>, <iref ref="771"/>, <iref ref="772"/>, <iref ref="773"/>, <iref ref="774"/>, <iref ref="775"/>, <iref ref="776"/>, <iref ref="777"/>, <iref ref="778"/>, <iref ref="779"/>, <iref ref="780"/>, <iref ref="781"/>, <iref ref="782"/>, <iref ref="783"/>, <iref ref="784"/>, <iref ref="785"/>, <iref ref="786"/>, <iref ref="787"/>.</li>
+<li>Changed the following issues from NAD Future to Dup: <iref ref="105"/>, <iref ref="348"/>.</li>
+<li>Changed the following issues from NAD Future to NAD Editorial: <iref ref="353"/>.</li>
+<li>Changed the following issues from New to NAD Editorial: <iref ref="697"/>.</li>
+<li>Changed the following issues from NAD Future to Open: <iref ref="388"/>.</li>
+<li>Changed the following issues from Open to Tentatively Ready: <iref ref="527"/>.</li>
+</ul></li>
+</ul>
+</revision>
+
+<revision tag="R53">
+2007-12-09 mid-term mailing.
+<ul>
+<li><b>Summary:</b><ul>
+<li>183 open issues, up by 11.</li>
+<li>581 closed issues, down by 1.</li>
+<li>764 issues total, up by 10.</li>
+</ul></li>
+<li><b>Details:</b><ul>
+<li>Added the following New issues: <iref ref="755"/>, <iref ref="756"/>, <iref ref="757"/>, <iref ref="758"/>, <iref ref="759"/>, <iref ref="760"/>, <iref ref="761"/>, <iref ref="762"/>, <iref ref="763"/>, <iref ref="764"/>.</li>
+<li>Changed the following issues from NAD to Open: <iref ref="463"/>.</li>
+<li>Changed the following issues from Pending WP to WP: <iref ref="607"/>, <iref ref="608"/>, <iref ref="654"/>, <iref ref="655"/>, <iref ref="677"/>, <iref ref="682"/>.</li>
+</ul></li>
+</ul>
+</revision>
+
+<revision tag="R52">
+2007-10-19 post-Kona mailing.
+<ul>
+<li><b>Summary:</b><ul>
+<li>172 open issues, up by 4.</li>
+<li>582 closed issues, up by 27.</li>
+<li>754 issues total, up by 31.</li>
+</ul></li>
+<li><b>Details:</b><ul>
+<li>Added the following New issues: <iref ref="724"/>, <iref ref="725"/>, <iref ref="726"/>, <iref ref="727"/>, <iref ref="728"/>, <iref ref="729"/>, <iref ref="730"/>, <iref ref="731"/>, <iref ref="732"/>, <iref ref="733"/>, <iref ref="734"/>, <iref ref="735"/>, <iref ref="736"/>, <iref ref="737"/>, <iref ref="738"/>, <iref ref="739"/>, <iref ref="740"/>, <iref ref="741"/>, <iref ref="742"/>, <iref ref="743"/>, <iref ref="744"/>, <iref ref="745"/>, <iref ref="746"/>, <iref ref="747"/>, <iref ref="748"/>, <iref ref="749"/>, <iref ref="750"/>, <iref ref="751"/>, <iref ref="752"/>, <iref ref="753"/>, <iref ref="754"/>.</li>
+<li>Changed the following issues from NAD Future to Dup: <iref ref="77"/>, <iref ref="350"/>.</li>
+<li>Changed the following issues from New to NAD: <iref ref="639"/>, <iref ref="657"/>, <iref ref="663"/>.</li>
+<li>Changed the following issues from Open to NAD: <iref ref="548"/>.</li>
+<li>Changed the following issues from New to Open: <iref ref="546"/>, <iref ref="550"/>, <iref ref="564"/>, <iref ref="565"/>, <iref ref="573"/>, <iref ref="585"/>, <iref ref="588"/>, <iref ref="627"/>, <iref ref="629"/>, <iref ref="630"/>, <iref ref="632"/>, <iref ref="635"/>, <iref ref="653"/>, <iref ref="659"/>, <iref ref="667"/>, <iref ref="668"/>, <iref ref="669"/>, <iref ref="670"/>, <iref ref="671"/>, <iref ref="673"/>, <iref ref="686"/>, <iref ref="704"/>, <iref ref="707"/>, <iref ref="708"/>.</li>
+<li>Changed the following issues from New to Pending NAD Editorial: <iref ref="393"/>, <iref ref="592"/>.</li>
+<li>Changed the following issues from New to Pending WP: <iref ref="607"/>, <iref ref="608"/>, <iref ref="654"/>, <iref ref="655"/>, <iref ref="677"/>, <iref ref="682"/>.</li>
+<li>Changed the following issues from New to Ready: <iref ref="561"/>, <iref ref="562"/>, <iref ref="563"/>, <iref ref="567"/>, <iref ref="581"/>, <iref ref="595"/>, <iref ref="620"/>, <iref ref="621"/>, <iref ref="622"/>, <iref ref="623"/>, <iref ref="624"/>, <iref ref="661"/>, <iref ref="664"/>, <iref ref="665"/>, <iref ref="666"/>, <iref ref="674"/>, <iref ref="675"/>, <iref ref="676"/>, <iref ref="679"/>, <iref ref="687"/>, <iref ref="688"/>, <iref ref="689"/>, <iref ref="693"/>, <iref ref="694"/>, <iref ref="695"/>, <iref ref="700"/>, <iref ref="703"/>, <iref ref="705"/>, <iref ref="706"/>.</li>
+<li>Changed the following issues from Open to Ready: <iref ref="680"/>.</li>
+<li>Changed the following issues from New to Review: <iref ref="574"/>, <iref ref="596"/>, <iref ref="618"/>, <iref ref="638"/>, <iref ref="645"/>, <iref ref="672"/>, <iref ref="684"/>, <iref ref="685"/>, <iref ref="691"/>.</li>
+<li>Changed the following issues from New to WP: <iref ref="552"/>, <iref ref="634"/>, <iref ref="650"/>, <iref ref="651"/>, <iref ref="652"/>, <iref ref="678"/>, <iref ref="681"/>, <iref ref="699"/>, <iref ref="712"/>.</li>
+<li>Changed the following issues from Open to WP: <iref ref="258"/>, <iref ref="401"/>, <iref ref="524"/>.</li>
+<li>Changed the following issues from Ready to WP: <iref ref="488"/>, <iref ref="577"/>, <iref ref="660"/>.</li>
+</ul></li>
+</ul>
+</revision>
+
+<revision tag="R51">
+2007-09-09 pre-Kona mailing.
+<ul>
+<li><b>Summary:</b><ul>
+<li>168 open issues, up by 15.</li>
+<li>555 closed issues, up by 0.</li>
+<li>723 issues total, up by 15.</li>
+</ul></li>
+<li><b>Details:</b><ul>
+<li>Added the following New issues: <iref ref="709"/>, <iref ref="710"/>, <iref ref="711"/>, <iref ref="712"/>, <iref ref="713"/>, <iref ref="714"/>, <iref ref="715"/>, <iref ref="716"/>, <iref ref="717"/>, <iref ref="718"/>, <iref ref="719"/>, <iref ref="720"/>, <iref ref="721"/>, <iref ref="722"/>, <iref ref="723"/>.</li>
+</ul></li>
+</ul>
+</revision>
+
+<revision tag="R50">
+2007-08-05 post-Toronto mailing.
+<ul>
+<li><b>Summary:</b><ul>
+<li>153 open issues, down by 5.</li>
+<li>555 closed issues, up by 17.</li>
+<li>708 issues total, up by 12.</li>
+</ul></li>
+<li><b>Details:</b><ul>
+<li>Added the following New issues: <iref ref="697"/>, <iref ref="698"/>, <iref ref="699"/>, <iref ref="700"/>, <iref ref="701"/>, <iref ref="702"/>, <iref ref="703"/>, <iref ref="704"/>, <iref ref="705"/>, <iref ref="706"/>, <iref ref="707"/>, <iref ref="708"/>.</li>
+<li>Changed the following issues from New to NAD: <iref ref="583"/>, <iref ref="584"/>, <iref ref="662"/>.</li>
+<li>Changed the following issues from Open to NAD: <iref ref="528"/>.</li>
+<li>Changed the following issues from New to NAD Editorial: <iref ref="637"/>, <iref ref="647"/>, <iref ref="658"/>, <iref ref="690"/>.</li>
+<li>Changed the following issues from Open to NAD Editorial: <iref ref="525"/>.</li>
+<li>Changed the following issues from Pending NAD Editorial to NAD Editorial: <iref ref="553"/>, <iref ref="571"/>, <iref ref="591"/>, <iref ref="633"/>, <iref ref="636"/>, <iref ref="641"/>, <iref ref="642"/>, <iref ref="648"/>, <iref ref="649"/>, <iref ref="656"/>.</li>
+<li>Changed the following issues from New to Open: <iref ref="579"/>, <iref ref="631"/>, <iref ref="680"/>.</li>
+<li>Changed the following issues from Pending WP to Open: <iref ref="258"/>.</li>
+<li>Changed the following issues from Ready to Pending WP: <iref ref="644"/>.</li>
+<li>Changed the following issues from New to Ready: <iref ref="577"/>, <iref ref="660"/>.</li>
+<li>Changed the following issues from Open to Ready: <iref ref="488"/>.</li>
+<li>Changed the following issues from Open to Review: <iref ref="518"/>.</li>
+<li>Changed the following issues from Ready to TRDec: <iref ref="604"/>.</li>
+<li>Changed the following issues from DR to WP: <iref ref="453"/>.</li>
+<li>Changed the following issues from Ready to WP: <iref ref="531"/>, <iref ref="551"/>, <iref ref="566"/>, <iref ref="628"/>, <iref ref="640"/>, <iref ref="643"/>, <iref ref="646"/>.</li>
+</ul></li>
+</ul>
+</revision>
+
+<revision tag="R49">
+2007-06-23 pre-Toronto mailing.
+<ul>
+<li><b>Summary:</b><ul>
+<li>158 open issues, up by 13.</li>
+<li>538 closed issues, up by 7.</li>
+<li>696 issues total, up by 20.</li>
+</ul></li>
+<li><b>Details:</b><ul>
+<li>Added the following New issues: <iref ref="677"/>, <iref ref="678"/>, <iref ref="679"/>, <iref ref="680"/>, <iref ref="681"/>, <iref ref="682"/>, <iref ref="684"/>, <iref ref="685"/>, <iref ref="686"/>, <iref ref="687"/>, <iref ref="688"/>, <iref ref="689"/>, <iref ref="690"/>, <iref ref="691"/>, <iref ref="692"/>, <iref ref="693"/>, <iref ref="694"/>, <iref ref="695"/>, <iref ref="696"/>.</li>
+<li>Added the following Pending NAD Editorial issues: <iref ref="683"/>.</li>
+<li>Changed the following issues from New to NAD Editorial: <iref ref="587"/>.</li>
+<li>Changed the following issues from Open to NAD Editorial: <iref ref="590"/>.</li>
+<li>Changed the following issues from New to Pending NAD Editorial: <iref ref="636"/>, <iref ref="642"/>, <iref ref="648"/>, <iref ref="649"/>.</li>
+</ul></li>
+</ul>
+</revision>
+
+<revision tag="R48">
+2007-05-06 post-Oxford mailing.
+<ul>
+<li><b>Summary:</b><ul>
+<li>145 open issues, down by 33.</li>
+<li>531 closed issues, up by 53.</li>
+<li>676 issues total, up by 20.</li>
+</ul></li>
+<li><b>Details:</b><ul>
+<li>Added the following New issues: <iref ref="657"/>, <iref ref="658"/>, <iref ref="659"/>, <iref ref="660"/>, <iref ref="661"/>, <iref ref="662"/>, <iref ref="663"/>, <iref ref="664"/>, <iref ref="665"/>, <iref ref="666"/>, <iref ref="667"/>, <iref ref="668"/>, <iref ref="669"/>, <iref ref="670"/>, <iref ref="671"/>, <iref ref="672"/>, <iref ref="673"/>, <iref ref="674"/>, <iref ref="675"/>, <iref ref="676"/>.</li>
+<li>Changed the following issues from Tentatively Ready to Dup: <iref ref="479"/>, <iref ref="536"/>.</li>
+<li>Changed the following issues from Tentatively Ready to NAD: <iref ref="385"/>, <iref ref="463"/>, <iref ref="466"/>, <iref ref="470"/>, <iref ref="515"/>, <iref ref="526"/>, <iref ref="547"/>, <iref ref="560"/>, <iref ref="572"/>.</li>
+<li>Changed the following issues from NAD to NAD Editorial: <iref ref="351"/>, <iref ref="357"/>, <iref ref="368"/>, <iref ref="499"/>, <iref ref="504"/>, <iref ref="512"/>, <iref ref="513"/>, <iref ref="514"/>, <iref ref="516"/>, <iref ref="544"/>, <iref ref="549"/>, <iref ref="555"/>, <iref ref="558"/>.</li>
+<li>Changed the following issues from Tentatively Ready to NAD Editorial: <iref ref="482"/>, <iref ref="615"/>.</li>
+<li>Changed the following issues from NAD_Future to NAD Future: <iref ref="77"/>, <iref ref="105"/>, <iref ref="111"/>, <iref ref="116"/>, <iref ref="128"/>, <iref ref="138"/>, <iref ref="140"/>, <iref ref="149"/>, <iref ref="180"/>, <iref ref="188"/>, <iref ref="190"/>, <iref ref="219"/>, <iref ref="323"/>, <iref ref="348"/>, <iref ref="350"/>, <iref ref="353"/>, <iref ref="388"/>, <iref ref="390"/>.</li>
+<li>Changed the following issues from Tentatively Ready to Open: <iref ref="471"/>.</li>
+<li>Changed the following issues from New to Pending NAD Editorial: <iref ref="633"/>, <iref ref="641"/>, <iref ref="656"/>.</li>
+<li>Changed the following issues from Tentatively Ready to Pending NAD Editorial: <iref ref="532"/>, <iref ref="553"/>, <iref ref="571"/>, <iref ref="591"/>, <iref ref="594"/>.</li>
+<li>Changed the following issues from Tentatively Ready to Pending WP: <iref ref="258"/>.</li>
+<li>Changed the following issues from New to Ready: <iref ref="566"/>, <iref ref="628"/>, <iref ref="640"/>, <iref ref="643"/>, <iref ref="644"/>, <iref ref="646"/>.</li>
+<li>Changed the following issues from Review to Ready: <iref ref="531"/>, <iref ref="551"/>, <iref ref="604"/>.</li>
+<li>Changed the following issues from Ready to TRDec: <iref ref="598"/>, <iref ref="599"/>, <iref ref="600"/>, <iref ref="601"/>, <iref ref="602"/>, <iref ref="603"/>, <iref ref="605"/>.</li>
+<li>Changed the following issues from Ready to WP: <iref ref="543"/>, <iref ref="545"/>.</li>
+<li>Changed the following issues from Tentatively Ready to WP: <iref ref="201"/>, <iref ref="206"/>, <iref ref="233"/>, <iref ref="254"/>, <iref ref="416"/>, <iref ref="422"/>, <iref ref="456"/>, <iref ref="534"/>, <iref ref="542"/>, <iref ref="559"/>, <iref ref="575"/>, <iref ref="576"/>, <iref ref="578"/>, <iref ref="586"/>, <iref ref="589"/>, <iref ref="593"/>, <iref ref="609"/>, <iref ref="610"/>, <iref ref="611"/>, <iref ref="613"/>, <iref ref="616"/>, <iref ref="619"/>.</li>
+</ul></li>
+</ul>
+</revision>
+
+<revision tag="R47">
+2007-03-09 pre-Oxford mailing.
+<ul>
+<li><b>Summary:</b><ul>
+<li>178 open issues, up by 37.</li>
+<li>478 closed issues, up by 0.</li>
+<li>656 issues total, up by 37.</li>
+</ul></li>
+<li><b>Details:</b><ul>
+<li>Added the following New issues: <iref ref="620"/>, <iref ref="621"/>, <iref ref="622"/>, <iref ref="623"/>, <iref ref="624"/>, <iref ref="627"/>, <iref ref="628"/>, <iref ref="629"/>, <iref ref="630"/>, <iref ref="631"/>, <iref ref="632"/>, <iref ref="633"/>, <iref ref="634"/>, <iref ref="635"/>, <iref ref="636"/>, <iref ref="637"/>, <iref ref="638"/>, <iref ref="639"/>, <iref ref="640"/>, <iref ref="641"/>, <iref ref="642"/>, <iref ref="643"/>, <iref ref="644"/>, <iref ref="645"/>, <iref ref="646"/>, <iref ref="647"/>, <iref ref="648"/>, <iref ref="649"/>, <iref ref="650"/>, <iref ref="651"/>, <iref ref="652"/>, <iref ref="653"/>, <iref ref="654"/>, <iref ref="655"/>, <iref ref="656"/>.</li>
+<li>Added the following Open issues: <iref ref="625"/>, <iref ref="626"/>.</li>
+<li>Changed the following issues from New to Open: <iref ref="570"/>, <iref ref="580"/>, <iref ref="582"/>, <iref ref="590"/>, <iref ref="612"/>, <iref ref="614"/>.</li>
+<li>Changed the following issues from New to Tentatively Ready: <iref ref="547"/>, <iref ref="553"/>, <iref ref="560"/>, <iref ref="571"/>, <iref ref="572"/>, <iref ref="575"/>, <iref ref="576"/>, <iref ref="578"/>, <iref ref="586"/>, <iref ref="589"/>, <iref ref="591"/>, <iref ref="593"/>, <iref ref="594"/>, <iref ref="609"/>, <iref ref="610"/>, <iref ref="611"/>, <iref ref="613"/>, <iref ref="615"/>, <iref ref="616"/>, <iref ref="619"/>.</li>
+<li>Changed the following issues from Open to Tentatively Ready: <iref ref="201"/>, <iref ref="206"/>, <iref ref="233"/>, <iref ref="254"/>, <iref ref="258"/>, <iref ref="385"/>, <iref ref="416"/>, <iref ref="422"/>, <iref ref="456"/>, <iref ref="463"/>, <iref ref="466"/>, <iref ref="470"/>, <iref ref="471"/>, <iref ref="479"/>, <iref ref="482"/>, <iref ref="515"/>, <iref ref="526"/>, <iref ref="532"/>, <iref ref="536"/>, <iref ref="542"/>, <iref ref="559"/>.</li>
+<li>Changed the following issues from Review to Tentatively Ready: <iref ref="534"/>.</li>
+</ul></li>
+</ul>
+</revision>
+
+<revision tag="R46">
+2007-01-12 mid-term mailing.
+<ul>
+<li><b>Summary:</b><ul>
+<li>141 open issues, up by 11.</li>
+<li>478 closed issues, down by 1.</li>
+<li>619 issues total, up by 10.</li>
+</ul></li>
+<li><b>Details:</b><ul>
+<li>Added new issues <iref ref="610"/>, <iref ref="611"/>, <iref ref="612"/>, <iref ref="613"/>, <iref ref="614"/>, <iref ref="615"/>, <iref ref="616"/>, <iref ref="617"/>, <iref ref="618"/>, <iref ref="619"/>.</li>
+</ul></li>
+</ul>
+</revision>
+
+<revision tag="R45">
+2006-11-03 post-Portland mailing.
+<ul>
+<li><b>Summary:</b><ul>
+<li>130 open issues, up by 0.</li>
+<li>479 closed issues, up by 17.</li>
+<li>609 issues total, up by 17.</li>
+</ul></li>
+<li><b>Details:</b><ul>
+<li>Moved issues <iref ref="520"/>, <iref ref="521"/>, <iref ref="530"/>, <iref ref="535"/>, <iref ref="537"/>, <iref ref="538"/>, <iref ref="540"/>, <iref ref="541"/> to WP.</li>
+<li>Moved issues <iref ref="504"/>, <iref ref="512"/>, <iref ref="516"/>, <iref ref="544"/>, <iref ref="549"/>, <iref ref="554"/>, <iref ref="555"/>, <iref ref="558"/> to NAD.</li>
+<li>Moved issue <iref ref="569"/> to Dup.</li>
+<li>Moved issues <iref ref="518"/>, <iref ref="523"/>, <iref ref="524"/>, <iref ref="542"/>, <iref ref="556"/>, <iref ref="557"/>, <iref ref="559"/>, <iref ref="597"/>, <iref ref="606"/> to Open.</li>
+<li>Moved issues <iref ref="543"/>, <iref ref="545"/>, <iref ref="549"/>, <iref ref="549"/>, <iref ref="598"/> - <iref ref="603"/>, <iref ref="605"/> to Ready.</li>
+<li>Moved issues <iref ref="531"/>, <iref ref="551"/>, <iref ref="604"/> to Review.</li>
+<li>Added new issues <iref ref="593"/>, <iref ref="594"/>, <iref ref="595"/>, <iref ref="596"/>, <iref ref="597"/>, <iref ref="598"/>, <iref ref="599"/>, <iref ref="600"/>, <iref ref="601"/>, <iref ref="602"/>, <iref ref="603"/>, <iref ref="604"/>, <iref ref="605"/>, <iref ref="606"/>, <iref ref="607"/>, <iref ref="608"/>, <iref ref="609"/>.</li>
+</ul></li>
+</ul>
+</revision>
+
+<revision tag="R44">
+2006-09-08 pre-Portland mailing.
+<ul>
+<li><b>Summary:</b><ul>
+<li>130 open issues, up by 6.</li>
+<li>462 closed issues, down by 1.</li>
+<li>592 issues total, up by 5.</li>
+</ul></li>
+<li><b>Details:</b><ul>
+<li>Added new issues <iref ref="583"/>, <iref ref="584"/>, <iref ref="585"/>, <iref ref="586"/>, <iref ref="587"/>, <iref ref="588"/>, <iref ref="589"/>, <iref ref="590"/>, <iref ref="591"/>, <iref ref="592"/>.</li>
+</ul></li>
+</ul>
+</revision>
+
+<revision tag="R43">
+2006-06-23 mid-term mailing.
+<ul>
+<li><b>Summary:</b><ul>
+<li>124 open issues, up by 14.</li>
+<li>463 closed issues, down by 1.</li>
+<li>587 issues total, up by 13.</li>
+</ul></li>
+<li><b>Details:</b><ul>
+<li>Added new issues <iref ref="575"/>, <iref ref="576"/>, <iref ref="577"/>, <iref ref="578"/>, <iref ref="579"/>, <iref ref="580"/>, <iref ref="581"/>, <iref ref="582"/>.</li>
+<li>Reopened <iref ref="255"/>.</li>
+<li>Moved issues <iref ref="520"/>, <iref ref="541"/>, <iref ref="544"/>, <iref ref="569"/> to Tentatively Ready.</li>
+</ul></li>
+</ul>
+</revision>
+
+<revision tag="R42">
+2006-04-21 post-Berlin mailing.
+<ul>
+<li><b>Summary:</b><ul>
+<li>110 open issues, down by 16.</li>
+<li>464 closed issues, up by 24.</li>
+<li>574 issues total, up by 8.</li>
+</ul></li>
+<li><b>Details:</b><ul>
+<li>Added new issues <iref ref="567"/>, <iref ref="568"/>, <iref ref="569"/>, <iref ref="570"/>, <iref ref="571"/>, <iref ref="572"/>.</li>
+<li>Moved issues <iref ref="499"/>, <iref ref="501"/>, <iref ref="506"/>, <iref ref="509"/>, <iref ref="510"/>, <iref ref="511"/>, <iref ref="513"/>, <iref ref="514"/>, <iref ref="517"/> to NAD.</li>
+<li>Moved issues <iref ref="502"/>, <iref ref="503"/>, <iref ref="515"/>, <iref ref="516"/>, <iref ref="522"/>, <iref ref="525"/>, <iref ref="526"/>, <iref ref="527"/>, <iref ref="528"/>, <iref ref="529"/>, <iref ref="532"/>, <iref ref="536"/>, <iref ref="539"/>, <iref ref="548"/> to Open.</li>
+<li>Moved issue <iref ref="504"/>, <iref ref="512"/>, <iref ref="521"/>, <iref ref="530"/>, <iref ref="531"/>, <iref ref="535"/>, <iref ref="537"/>, <iref ref="538"/>, <iref ref="540"/>, <iref ref="549"/> to Ready.</li>
+<li>Moved issues <iref ref="247"/>, <iref ref="294"/>, <iref ref="362"/>, <iref ref="369"/>, <iref ref="371"/>, <iref ref="376"/>, <iref ref="384"/>, <iref ref="475"/>, <iref ref="478"/>, <iref ref="495"/>, <iref ref="497"/>, <iref ref="505"/>, <iref ref="507"/>, <iref ref="508"/>, <iref ref="519"/> to WP.</li>
+<li>Moved issue <iref ref="534"/> to Review.</li>
+</ul></li>
+</ul>
+</revision>
+
+<revision tag="R41">
+2006-02-24 pre-Berlin mailing.
+<ul>
+<li><b>Summary:</b><ul>
+<li>126 open issues, up by 31.</li>
+<li>440 closed issues, up by 0.</li>
+<li>566 issues total, up by 31.</li>
+</ul></li>
+<li><b>Details:</b><ul>
+<li>Added new issues <iref ref="536"/>, <iref ref="537"/>, <iref ref="538"/>, <iref ref="539"/>, <iref ref="540"/>, <iref ref="541"/>, <iref ref="542"/>, <iref ref="543"/>, <iref ref="544"/>, <iref ref="545"/>, <iref ref="546"/>, <iref ref="547"/>, <iref ref="548"/>, <iref ref="549"/>, <iref ref="550"/> ,<iref ref="551"/>, <iref ref="552"/>, <iref ref="553"/>, <iref ref="554"/>, <iref ref="555"/>, <iref ref="556"/>, <iref ref="557"/>, <iref ref="558"/>, <iref ref="559"/>, <iref ref="560"/>, <iref ref="561"/>, <iref ref="562"/>, <iref ref="563"/>, <iref ref="564"/>, <iref ref="565"/>, <iref ref="566"/>.</li>
+<li>Moved <iref ref="342"/> from Ready to Open.</li>
+<li>Reopened <iref ref="309"/>.</li>
+</ul></li>
+</ul>
+</revision>
+
+<revision tag="R40">
+2005-12-16 mid-term mailing.
+<ul>
+<li><b>Summary:</b><ul>
+<li>95 open issues.</li>
+<li>440 closed issues.</li>
+<li>535 issues total.</li>
+</ul></li>
+<li><b>Details:</b><ul>
+<li>Added new issues <iref ref="529"/>, <iref ref="530"/>, <iref ref="531"/>, <iref ref="532"/>, <iref ref="533"/>, <iref ref="534"/>, <iref ref="535"/>.</li>
+</ul></li>
+</ul>
+</revision>
+
+<revision tag="R39">
+2005-10-14 post-Mont Tremblant mailing.
+Added new issues <iref ref="526"/>-<iref ref="528"/>.
+Moved issues <iref ref="280"/>, <iref ref="461"/>, <iref ref="464"/>, <iref ref="465"/>, <iref ref="467"/>, <iref ref="468"/>, <iref ref="474"/>, <iref ref="496"/> from Ready to WP as per the vote from Mont Tremblant.
+Moved issues <iref ref="247"/>, <iref ref="294"/>, <iref ref="342"/>, <iref ref="362"/>, <iref ref="369"/>, <iref ref="371"/>, <iref ref="376"/>, <iref ref="384"/>, <iref ref="475"/>, <iref ref="478"/>, <iref ref="495"/>, <iref ref="497"/> from Review to Ready.
+Moved issues <iref ref="498"/>, <iref ref="504"/>, <iref ref="506"/>, <iref ref="509"/>, <iref ref="510"/>, <iref ref="511"/>, <iref ref="512"/>, <iref ref="513"/>, <iref ref="514"/> from New to Open.
+Moved issues <iref ref="505"/>, <iref ref="507"/>, <iref ref="508"/>, <iref ref="519"/> from New to Ready.
+Moved issue <iref ref="500"/> from New to NAD.
+Moved issue <iref ref="518"/> from New to Review.
+</revision>
+
+<revision tag="R38">
+2005-07-03 pre-Mont Tremblant mailing.
+Merged open TR1 issues in <iref ref="504"/>-<iref ref="522"/>.
+Added new issues <iref ref="523"/>-<iref ref="523"/>
+</revision>
+
+<revision tag="R37">
+2005-06 mid-term mailing.
+Added new issues <iref ref="498"/>-<iref ref="503"/>.
+</revision>
+
+<revision tag="R36">
+2005-04 post-Lillehammer mailing. All issues in "ready" status except
+for <iref ref="454"/> were moved to "DR" status, and all issues
+previously in "DR" status were moved to "WP".
+</revision>
+
+<revision tag="R35">
+2005-03 pre-Lillehammer mailing.
+</revision>
+
+<revision tag="R34">
+2005-01 mid-term mailing.  Added new issues <iref ref="488"/>-<iref ref="494"/>.
+</revision>
+
+<revision tag="R33">
+2004-11 post-Redmond mailing. Reflects actions taken in Redmond.
+</revision>
+
+<revision tag="R32">
+2004-09 pre-Redmond mailing: reflects new proposed resolutions and
+new issues received after the 2004-07 mailing.  Added
+new issues <iref ref="479"/>-<iref ref="481"/>.
+</revision>
+
+<revision tag="R31">
+2004-07 mid-term mailing: reflects new proposed resolutions and
+new issues received after the post-Sydney mailing.  Added
+new issues <iref ref="463"/>-<iref ref="478"/>.
+</revision>
+
+<revision tag="R30">
+Post-Sydney mailing: reflects decisions made at the Sydney meeting.
+Voted all "Ready" issues from R29 into the working paper.
+Added new issues <iref ref="460"/>-<iref ref="462"/>.
+</revision>
+
+<revision tag="R29">
+Pre-Sydney mailing.  Added new issues <iref ref="441"/>-<iref ref="457"/>.
+</revision>
+
+<revision tag="R28">
+Post-Kona mailing: reflects decisions made at the Kona meeting.
+Added new issues <iref ref="432"/>-<iref ref="440"/>.
+</revision>
+
+<revision tag="R27">
+Pre-Kona mailing.  Added new issues <iref ref="404"/>-<iref ref="431"/>.
+</revision>
+
+<revision tag="R26">
+Post-Oxford mailing: reflects decisions made at the Oxford meeting.
+All issues in Ready status were voted into DR status.  All issues in
+DR status were voted into WP status.
+</revision>
+
+<revision tag="R25">
+Pre-Oxford mailing.  Added new issues <iref ref="390"/>-<iref ref="402"/>.
+</revision>
+
+<revision tag="R24">
+Post-Santa Cruz mailing: reflects decisions made at the Santa Cruz
+meeting.  All Ready issues from R23 with the exception of <iref
+ref="253"/>, which has been given a new proposed resolution, were
+moved to DR status.  Added new issues <iref ref="383"/>-<iref
+ref="389"/>.  (Issues <iref ref="387"/>-<iref ref="389"/> were discussed
+at the meeting.)  Made progress on issues <iref ref="225"/>, <iref
+ref="226"/>, <iref ref="229"/>: <iref ref="225"/> and <iref
+ref="229"/> have been moved to Ready status, and the only remaining
+concerns with <iref ref="226"/> involve wording.
+</revision>
+
+<revision tag="R23">
+Pre-Santa Cruz mailing.  Added new issues <iref ref="367"/>-<iref ref="382"/>.
+Moved issues in the TC to TC status.
+</revision>
+
+<revision tag="R22">
+Post-Cura&ccedil;ao mailing.  Added new issues <iref ref="362"/>-<iref
+ref="366"/>.
+</revision>
+
+<revision tag="R21">
+Pre-Cura&ccedil;ao mailing.  Added new issues <iref ref="351"/>-<iref
+ref="361"/>.
+</revision>
+
+<revision tag="R20">
+Post-Redmond mailing; reflects actions taken in Redmond.  Added
+new issues <iref ref="336"/>-<iref ref="350"/>, of which issues 
+<iref ref="347"/>-<iref ref="350"/> were added since Redmond, hence
+not discussed at the meeting.  
+
+All Ready issues were moved to DR status, with the exception of issues
+<iref ref="284"/>, <iref ref="241"/>, and <iref ref="267"/>.
+
+Noteworthy issues discussed at Redmond include 
+<iref ref="120"/> <iref ref="202"/>, <iref ref="226"/>, <iref ref="233"/>, 
+<iref ref="270"/>, <iref ref="253"/>, <iref ref="254"/>, <iref ref="323"/>.
+</revision>
+
+<revision tag="R19">
+Pre-Redmond mailing.  Added new issues 
+<iref ref="323"/>-<iref ref="335"/>.
+</revision>
+
+<revision tag="R18">
+Post-Copenhagen mailing; reflects actions taken in Copenhagen.
+Added new issues <iref ref="312"/>-<iref ref="317"/>, and discussed
+new issues <iref ref="271"/>-<iref ref="314"/>.
+
+Changed status of issues
+<iref ref="103"/> <iref ref="118"/> <iref ref="136"/> <iref ref="153"/>
+<iref ref="165"/> <iref ref="171"/> <iref ref="183"/> <iref ref="184"/>
+<iref ref="185"/> <iref ref="186"/> <iref ref="214"/> <iref ref="221"/>
+<iref ref="234"/> <iref ref="237"/> <iref ref="243"/> <iref ref="248"/>
+<iref ref="251"/> <iref ref="252"/> <iref ref="256"/> <iref ref="260"/>
+<iref ref="261"/> <iref ref="262"/> <iref ref="263"/> <iref ref="265"/>
+<iref ref="268"/>
+to DR.
+
+Changed status of issues
+<iref ref="49"/>  <iref ref="109"/> <iref ref="117"/> <iref ref="182"/>
+<iref ref="228"/> <iref ref="230"/> <iref ref="232"/> <iref ref="235"/>
+<iref ref="238"/> <iref ref="241"/> <iref ref="242"/> <iref ref="250"/>
+<iref ref="259"/> <iref ref="264"/> <iref ref="266"/> <iref ref="267"/>
+<iref ref="271"/> <iref ref="272"/> <iref ref="273"/> <iref ref="275"/>
+<iref ref="281"/> <iref ref="284"/> <iref ref="285"/> <iref ref="286"/>
+<iref ref="288"/> <iref ref="292"/> <iref ref="295"/> <iref ref="297"/>
+<iref ref="298"/> <iref ref="301"/> <iref ref="303"/> <iref ref="306"/>
+<iref ref="307"/> <iref ref="308"/> <iref ref="312"/>
+to Ready.
+
+Closed issues 
+<iref ref="111"/> <iref ref="277"/> <iref ref="279"/> <iref ref="287"/>
+<iref ref="289"/> <iref ref="293"/> <iref ref="302"/> <iref ref="313"/>
+<iref ref="314"/>
+as NAD.
+
+</revision>
+
+<revision tag="R17">
+Pre-Copenhagen mailing.  Converted issues list to XML.  Added proposed
+resolutions for issues <iref ref="49"/>, <iref ref="76"/>, <iref
+ref="91"/>, <iref ref="235"/>, <iref ref="250"/>, <iref ref="267"/>.
+Added new issues <iref ref="278"/>-<iref ref="311"/>.
+</revision>
+
+<revision tag="R16"> 
+post-Toronto mailing; reflects actions taken in Toronto. Added new
+issues <iref ref="265"/>-<iref ref="277"/>.  Changed status of issues
+<iref ref="3"/>, <iref ref="8"/>, <iref ref="9"/>, <iref ref="19"/>,
+<iref ref="26"/>, <iref ref="31"/>, <iref ref="61"/>,
+<iref ref="63"/>, <iref ref="86"/>, <iref ref="108"/>,
+<iref ref="112"/>, <iref ref="114"/>, <iref ref="115"/>,
+<iref ref="122"/>, <iref ref="127"/>, <iref ref="129"/>,
+<iref ref="134"/>, <iref ref="137"/>, <iref ref="142"/>,
+<iref ref="144"/>, <iref ref="146"/>, <iref ref="147"/>,
+<iref ref="159"/>, <iref ref="164"/>, <iref ref="170"/>,
+<iref ref="181"/>, <iref ref="199"/>, <iref ref="208"/>,
+<iref ref="209"/>, <iref ref="210"/>, <iref ref="211"/>,
+<iref ref="212"/>, <iref ref="217"/>, <iref ref="220"/>,
+<iref ref="222"/>, <iref ref="223"/>, <iref ref="224"/>,
+<iref ref="227"/> to "DR".  Reopened issue <iref ref="23"/>. Reopened
+issue <iref ref="187"/>. Changed issues <iref ref="2"/> and
+<iref ref="4"/> to NAD. Fixed a typo in issue <iref ref="17"/>. Fixed
+issue <iref ref="70"/>: signature should be changed both places it
+appears. Fixed issue <iref ref="160"/>: previous version didn't fix
+the bug in enough places.
+</revision>
+
+<revision tag="R15">
+pre-Toronto mailing. Added issues
+<iref ref="233"/>-<iref ref="264"/>. Some small HTML formatting
+changes so that we pass Weblint tests.
+</revision>
+
+<revision tag="R14">
+post-Tokyo II mailing; reflects committee actions taken in
+Tokyo. Added issues <iref ref="228"/> to <iref ref="232"/>. (00-0019R1/N1242)
+</revision>
+
+<revision tag="R13">
+pre-Tokyo II updated: Added issues <iref ref="212"/> to <iref ref="227"/>.
+</revision>
+
+<revision tag="R12">
+pre-Tokyo II mailing: Added issues <iref ref="199"/> to
+<iref ref="211"/>. Added "and paragraph 5" to the proposed resolution
+of issue <iref ref="29"/>.  Add further rationale to issue
+<iref ref="178"/>.
+</revision>
+
+<revision tag="R11">
+post-Kona mailing: Updated to reflect LWG and full committee actions
+in Kona (99-0048/N1224). Note changed resolution of issues
+<iref ref="4"/> and <iref ref="38"/>. Added issues <iref ref="196"/>
+to <iref ref="198"/>. Closed issues list split into "defects" and
+"closed" documents.  Changed the proposed resolution of issue
+<iref ref="4"/> to NAD, and changed the wording of proposed resolution
+of issue <iref ref="38"/>.
+</revision>
+
+<revision tag="R10">
+pre-Kona updated.  Added proposed resolutions <iref ref="83"/>,
+<iref ref="86"/>, <iref ref="91"/>, <iref ref="92"/>,
+<iref ref="109"/>. Added issues <iref ref="190"/> to
+<iref ref="195"/>. (99-0033/D1209, 14 Oct 99)
+</revision>
+
+<revision tag="R9">
+pre-Kona mailing.  Added issues <iref ref="140"/> to
+<iref ref="189"/>. Issues list split into separate "active" and
+"closed" documents. (99-0030/N1206, 25 Aug 99)
+</revision>
+
+<revision tag="R8">
+post-Dublin mailing. Updated to reflect LWG and full committee actions
+in Dublin. (99-0016/N1193, 21 Apr 99)
+</revision>
+
+<revision tag="R7">
+pre-Dublin updated: Added issues <iref ref="130"/>, <iref ref="131"/>,
+<iref ref="132"/>, <iref ref="133"/>, <iref ref="134"/>,
+<iref ref="135"/>, <iref ref="136"/>, <iref ref="137"/>,
+<iref ref="138"/>, <iref ref="139"/> (31 Mar 99)
+</revision>
+
+<revision tag="R6">
+pre-Dublin mailing. Added issues <iref ref="127"/>, <iref ref="128"/>,
+and <iref ref="129"/>.  (99-0007/N1194, 22 Feb 99)
+</revision>
+
+<revision tag="R5">
+update issues <iref ref="103"/>, <iref ref="112"/>; added issues
+<iref ref="114"/> to <iref ref="126"/>. Format revisions to prepare
+for making list public. (30 Dec 98)
+</revision>
+
+<revision tag="R4">
+post-Santa Cruz II updated: Issues <iref ref="110"/>,
+<iref ref="111"/>, <iref ref="112"/>, <iref ref="113"/> added, several
+issues corrected. (22 Oct 98)
+</revision>
+
+<revision tag="R3">
+post-Santa Cruz II: Issues <iref ref="94"/> to <iref ref="109"/>
+added, many issues updated to reflect LWG consensus (12 Oct 98)
+</revision>
+
+<revision tag="R2">
+pre-Santa Cruz II: Issues <iref ref="73"/> to <iref ref="93"/> added,
+issue <iref ref="17"/> updated. (29 Sep 98)
+</revision>
+
+<revision tag="R1">
+Correction to issue <iref ref="55"/> resolution, <iref ref="60"/> code
+format, <iref ref="64"/> title. (17 Sep 98)
+</revision>
+
+</revision_history>
+
+<statuses>
+  <p><b><a name="New">New</a></b> - The issue has not yet been
+  reviewed by the LWG. Any <b>Proposed Resolution</b> is purely a
+  suggestion from the issue submitter, and should not be construed as
+  the view of LWG.</p>
+
+  <p><b><a name="Open">Open</a></b> - The LWG has discussed the issue
+  but is not yet ready to move the issue forward. There are several
+  possible reasons for open status:</p>
+     <ul>
+        <li>Consensus may have not yet have been reached as to how to deal
+            with the issue.</li>
+        <li>Informal consensus may have been reached, but the LWG awaits
+            exact <b>Proposed Resolution</b> wording for review.</li>
+        <li>The LWG wishes to consult additional technical experts before
+            proceeding.</li>
+        <li>The issue may require further study.</li>
+     </ul>
+
+  <p>A <b>Proposed Resolution</b> for an open issue is still not be
+  construed as the view of LWG. Comments on the current state of
+  discussions are often given at the end of open issues in an italic
+  font. Such comments are for information only and should not be given
+  undue importance.</p>
+
+  <p><b><a name="Dup">Dup</a></b> - The LWG has reached consensus that
+  the issue is a duplicate of another issue, and will not be further
+  dealt with. A <b>Rationale</b> identifies the duplicated issue's
+  issue number.  </p>
+
+  <p><b><a name="NAD">NAD</a></b> - The LWG has reached consensus that
+  the issue is not a defect in the Standard.</p>
+
+  <p><b><a name="NAD Editorial">NAD Editorial</a></b> - The LWG has reached consensus that
+  the issue can either be handled editorially, or is handled by a paper (usually
+  linked to in the rationale).</p>
+
+  <p><b><a name="NAD Concepts">NAD Concepts</a></b> - The LWG has reached consensus that
+  the issue is NAD for now, but represents a real issue when the library is
+  done with language-supported concepts.</p>
+
+  <p><b><a name="NAD Future">NAD Future</a></b> - In addition to the regular
+  status, the LWG believes that this issue should be revisited at the
+  next revision of the standard.</p>
+
+  <p><b><a name="Review">Review</a></b> - Exact wording of a
+  <b>Proposed Resolution</b> is now available for review on an issue
+  for which the LWG previously reached informal consensus.</p>
+
+  <p><b><a name="Ready">Ready</a></b> - The LWG has reached consensus
+  that the issue is a defect in the Standard, the <b>Proposed
+  Resolution</b> is correct, and the issue is ready to forward to the
+  full committee for further action as a Defect Report (DR).</p>
+
+  <p><b><a name="DR">DR</a></b> - (Defect Report) - The full J16
+  committee has voted to forward the issue to the Project Editor to be
+  processed as a Potential Defect Report. The Project Editor reviews
+  the issue, and then forwards it to the WG21 Convenor, who returns it
+  to the full committee for final disposition. This issues list
+  accords the status of DR to all these Defect Reports regardless of
+  where they are in that process.</p>
+
+  <p><b><a name="TC1">TC1</a></b> - (Technical Corrigenda 1) - The full
+  WG21 committee has voted to accept the Defect Report's Proposed
+  Resolution as a Technical Corrigenda.  Action on this issue is thus
+  complete and no further action is possible under ISO rules.</p>
+
+  <p><b><a name="CD1">CD1</a></b> - (Committee Draft 2008) - The full
+  WG21 committee has voted to accept the Defect Report's Proposed
+  Resolution into the Fall 2008 Committee Draft.</p>
+
+  <p><b><a name="TRDec">TRDec</a></b> - (Decimal TR defect) - The 
+  LWG has voted to accept the Defect Report's Proposed
+  Resolution into the Decimal TR.  Action on this issue is thus
+  complete and no further action is expected.</p>
+
+  <p><b><a name="WP">WP</a></b> - (Working Paper) - The proposed
+  resolution has not been accepted as a Technical Corrigendum, but
+  the full WG21 committee has voted to apply the Defect Report's Proposed
+  Resolution to the working paper.</p>
+
+  <p><b>Tentatively</b> - This is a <i>status qualifier</i>.  The issue has
+  been reviewed online, or at an unofficial meeting, but not in an official meeting, and some support has been formed
+  for the qualified status.  Tentatively qualified issues may be moved to the unqualified status
+  and forwarded to full committee (if Ready) within the same meeting.  Unlike Ready issues, Tentatively Ready issues
+  will be reviewed in subcommittee prior to forwarding to full committee.  When a status is
+  qualified with Tentatively, the issue is still considered active.</p>
+
+  <p><b>Pending</b> - This is a <i>status qualifier</i>.  When prepended to
+  a status this indicates the issue has been
+  processed by the committee, and a decision has been made to move the issue to
+  the associated unqualified status.  However for logistical reasons the indicated
+  outcome of the issue has not yet appeared in the latest working paper.
+
+  <p>Issues are always given the status of <a href="lwg-active.html#New">New</a> when
+  they first appear on the issues list. They may progress to
+  <a href="lwg-active.html#Open">Open</a> or <a href="lwg-active.html#Review">Review</a> while the LWG
+  is actively working on them. When the LWG has reached consensus on
+  the disposition of an issue, the status will then change to
+  <a href="lwg-active.html#Dup">Dup</a>, <a href="lwg-active.html#NAD">NAD</a>, or
+  <a href="lwg-active.html#Ready">Ready</a> as appropriate.  Once the full J16 committee votes to
+  forward Ready issues to the Project Editor, they are given the
+  status of Defect Report ( <a href="lwg-active.html#DR">DR</a>). These in turn may
+  become the basis for Technical Corrigenda (<a href="lwg-active.html#TC">TC</a>),
+  or are closed without action other than a Record of Response
+  (<a href="lwg-active.html#RR">RR</a> ). The intent of this LWG process is that
+  only issues which are truly defects in the Standard move to the
+  formal ISO DR status.
+  </p>
+
+</statuses>
+
+</issueslist>

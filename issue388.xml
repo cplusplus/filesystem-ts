@@ -1,0 +1,73 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="388" status="NAD">
+<title>Use of complex as a key in associative containers</title>
+<section><sref ref="[complex.numbers]"/></section>
+<submitter>Gabriel Dos Reis</submitter>
+<date>8 Nov 2002</date>
+
+<discussion>
+<p>
+Practice with std::complex&lt;&gt; and the associative containers
+occasionally reveals artificial and distracting issues with constructs
+resembling: std::set&lt;std::complex&lt;double&gt; &gt; s;
+</p>
+
+<p>
+The main reason for the above to fail is the absence of an approriate
+definition for std::less&lt;std::complex&lt;T&gt; &gt;. That in turn comes from
+the definition of the primary template std::less&lt;&gt; in terms of
+operator&lt;.
+</p>
+
+<p>
+The usual argument goes as follows: Since there is no ordering over
+the complex field compatible with field operations it makes little
+sense to define a function operator&lt; operating on the datatype
+std::complex&lt;T&gt;.  That is fine. However, that reasoning does not carry
+over to std::less&lt;T&gt; which is used, among other things, by associative
+containers as an ordering useful to meet complexity requirements.
+</p>
+
+<p>Related issue: <iref ref="348"/>.</p>
+
+<note>
+Pre Bellevue: Reopened at the request of Alisdair.
+</note>
+
+<note>
+Bellevue:
+</note>
+
+<blockquote>
+This is a request for a design change, and not a defect in the standard.
+It is in scope to consider, but the group feels that it is not a change
+that we need to do. Is there a total ordering for floating point values,
+including NaN? There is not a clear enough solution or big enough
+problem for us to solve. Solving this problem would require solving the
+problem for floating point, which is equally unclear. The LWG noted that
+users who want to put objects into an associative container for which
+operator&lt; isn't defined can simply provide their own comparison function
+object. NAD
+</blockquote>
+</discussion>
+
+<resolution>
+<p>Informally: Add a specialization of std::less for std::complex.</p>
+</resolution>
+
+<rationale>
+<p>Discussed in Santa Cruz.  An overwhelming majority of the LWG
+believes this should not be treated a DR: it's a request for a design
+change, not a defect in the existing standard.  Most people (10-3)
+believed that we probably don't want this change, period: as with
+issue <iref ref="348"/>, it's hard to know where to draw the line.
+The LWG noted that users who want to put objects into an associative
+container for which <tt>operator&lt;</tt> isn't defined can simply
+provide their own comparison function object.</p>
+</rationale>
+
+</issue>

@@ -1,0 +1,47 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="249" status="NAD">
+<title>Return Type of <tt>auto_ptr::operator=</tt></title>
+<section><sref ref="[auto.ptr]"/></section>
+<submitter>Joseph Gottman</submitter>
+<date>30 Jun 2000</date>
+
+<discussion>
+<p>According to section 20.4.5, the function
+<tt>auto_ptr::operator=()</tt> returns a reference to an auto_ptr.
+The reason that <tt>operator=()</tt> usually returns a reference is to
+facilitate code like</p>
+
+<pre>
+    int x,y,z;
+    x = y = z = 1;
+</pre>
+
+<p>However, given analogous code for <tt>auto_ptr</tt>s,</p>
+<pre>
+    auto_ptr&lt;int&gt; x, y, z;
+    z.reset(new int(1));
+    x = y = z;
+</pre>
+
+<p>the result would be that <tt>z</tt> and <tt>y</tt> would both be set to 
+NULL, instead of all the <tt>auto_ptr</tt>s being set to the same value. 
+This makes such cascading assignments useless and counterintuitive for 
+<tt>auto_ptr</tt>s.</p>
+</discussion>
+
+<resolution>
+<p>Change <tt>auto_ptr::operator=()</tt> to return <tt>void</tt> instead
+of an <tt>auto_ptr</tt> reference.</p>
+</resolution>
+
+<rationale>
+<p>The return value has uses other than cascaded assignments: a user can
+call an auto_ptr member function, pass the auto_ptr to a
+function, etc.  Removing the return value could break working user
+code.</p>
+</rationale>
+</issue>

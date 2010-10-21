@@ -1,0 +1,124 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="858" status="CD1">
+<title>Wording for Minimal Support for Garbage Collection</title>
+<section><sref ref="[util.dynamic.safety]"/></section>
+<submitter>Pete Becker </submitter>
+<date>21 Jun 2008</date>
+
+<discussion>
+<p>
+The first sentence of the Effects clause for <tt>undeclare_reachable</tt> seems
+to be missing some words. I can't parse
+</p>
+<blockquote>
+... for all non-null <tt>p</tt> referencing the argument is no longer declared reachable...
+</blockquote>
+<p>
+I take it the intent is that <tt>undeclare_reachable</tt> should be called only
+when there has been a corresponding call to <tt>declare_reachable</tt>. In
+particular, although the wording seems to allow it, I assume that code
+shouldn't call <tt>declare_reachable</tt> once then call <tt>undeclare_reachable</tt>
+twice.
+</p>
+<p>
+I don't know what "shall be live" in the Requires clause means.
+</p>
+<p>
+In the final Note for <tt>undeclare_reachable</tt>, what does "cannot be
+deallocated" mean? Is this different from "will not be able to collect"?
+</p>
+
+<p>
+For the wording on nesting of <tt>declare_reachable</tt> and
+<tt>undeclare_reachable</tt>, the words for locking and unlocking recursive
+mutexes probably are a good model.
+</p>
+
+<note>
+San Francisco:
+</note>
+
+<blockquote>
+<p>
+Nick: what does "shall be live" mean?
+</p>
+<p>
+Hans: I can provide an appropriate cross-reference to the Project Editor
+to clarify the intent.
+</p>
+</blockquote>
+</discussion>
+
+<resolution>
+<p>
+In <sref ref="[util.dynamic.safety]"/>
+(<a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2008/n2670.htm">N2670</a>,
+Minimal Support for Garbage Collection)
+</p>
+<p>
+Add at the beginning, before paragraph 39
+</p>
+
+<blockquote>
+A complete object is <i>declared reachable</i> while the number of calls
+to <tt>declare_reachable</tt> with an argument referencing the object exceeds the
+number of <tt>undeclare_reachable</tt> calls with pointers to the same complete
+object.
+</blockquote>
+
+<p>
+Change paragraph 42 (Requires clause for <tt>undeclare_reachable</tt>)
+</p>
+
+<blockquote>
+If <tt>p</tt> is not null, <del><tt>declare_reachable(p)</tt> was previously called</del>
+<ins>the complete object referenced by <tt>p</tt> shall have
+been previously declared reachable</ins>, and shall
+be live <ins>(<sref ref="[basic.life]"/>)</ins> from the time of the call until the last <tt>undeclare_reachable(p)</tt>
+call on the object.
+</blockquote>
+
+<p>
+Change the first sentence in paragraph 44 (Effects clause for
+<tt>undeclare_reachable</tt>):
+</p>
+
+<blockquote>
+<i>Effects:</i> 
+<del>Once the number of calls to
+<tt>undeclare_reachable(p)</tt> equals the number of calls to
+<tt>declare_reachable(p)</tt>
+for all non-null <tt>p</tt> referencing
+the argument is no longer declared reachable.  When this happens,
+pointers to the object referenced by p may not be subsequently
+dereferenced.</del>
+<ins>
+After a call to <tt>undeclare_reachable(p)</tt>, if <tt>p</tt> is not null and the object <tt>q</tt>
+referenced by <tt>p</tt> is no longer declared reachable, then
+dereferencing any pointer to <tt>q</tt> that is not safely derived
+results in undefined behavior.
+</ins> ...
+</blockquote>
+
+<p>
+Change the final note:
+</p>
+<p>
+[<i>Note:</i> It is expected that calls to <tt>declare_reachable(p)</tt>
+will consume a small amount of memory<ins>, in addition to that occupied
+by the referenced object, </ins> until the matching call to
+<tt>undeclare_reachable(p)</tt> is encountered. <del>In addition, the
+referenced object cannot be deallocated during this period, and garbage
+collecting implementations will not be able to collect the object while
+it is declared reachable.</del> Long running programs should arrange
+that calls <ins>for short-lived objects</ins> are matched. <i>--end
+note</i>]
+</p>
+
+</resolution>
+
+</issue>

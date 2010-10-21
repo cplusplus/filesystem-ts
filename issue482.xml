@@ -1,0 +1,43 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="482" status="NAD Editorial">
+<title>Swapping pairs</title>
+<section><sref ref="[pairs]"/> <sref ref="[tuple]"/></section>
+<submitter>Andrew Koenig</submitter>
+<date>14 Sep 2004</date>
+
+<discussion>
+<p>(Based on recent comp.std.c++ discussion)</p>
+
+<p>Pair (and tuple) should specialize std::swap to work in terms of
+std::swap on their components.  For example, there's no obvious reason
+why swapping two objects of type pair&lt;vector&lt;int>,
+list&lt;double> > should not take O(1).</p>
+
+<note>Lillehammer: We agree it should be swappable.  Howard will
+  provide wording.</note>
+
+<note>
+Post Oxford:  We got <tt>swap</tt> for <tt>pair</tt> but accidently
+missed <tt>tuple</tt>.  <tt>tuple::swap</tt> is being tracked by <iref ref="522"/>.
+</note>
+
+</discussion>
+
+<resolution>
+<p>
+Wording provided in
+<a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2005/n1856.html#20.2.3%20-%20Pairs">N1856</a>.
+</p>
+</resolution>
+<rationale>
+<p>
+Recommend NAD, fixed by 
+<a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2005/n1856.html#20.2.3%20-%20Pairs">N1856</a>.
+</p>
+</rationale>
+
+</issue>

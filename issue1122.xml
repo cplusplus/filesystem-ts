@@ -1,0 +1,46 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="1122" status="NAD Editorial">
+<title>Ratio values should be constexpr</title>
+<section><sref ref="[ratio.ratio]"/></section>
+<submitter>Alisdair Meredith</submitter>
+<date>25 May 2009</date>
+
+<discussion>
+<p>
+The values <tt>num</tt> and <tt>den</tt> in the <tt>ratio</tt> template
+should be declared <tt>constexpr</tt>.
+</p>
+
+<note>
+2009-10 Santa Cruz:
+</note>
+
+<blockquote>
+NAD Editorial.  Solved by
+<a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2009/n2994.html">N2994</a>.
+</blockquote>
+</discussion>
+
+<resolution>
+<p>
+<sref ref="[ratio.ratio]"/>
+</p>
+
+<blockquote><pre>
+namespace std {
+  template &lt;intmax_t N, intmax_t D = 1&gt;
+  class ratio {
+  public:
+    static const<ins>expr</ins> intmax_t num;
+    static const<ins>expr</ins> intmax_t den;
+  };
+}
+</pre></blockquote>
+
+</resolution>
+
+</issue>

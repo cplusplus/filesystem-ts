@@ -1,0 +1,34 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="271" status="CD1">
+<title>basic_iostream missing typedefs</title>
+<section><sref ref="[iostreamclass]"/></section>
+<submitter>Martin Sebor</submitter>
+<date>02 Nov 2000</date>
+
+<discussion>
+<p>
+Class template basic_iostream has no typedefs.  The typedefs it
+inherits from its base classes can't be used, since (for example)
+basic_iostream&lt;T&gt;::traits_type is ambiguous.
+</p>
+</discussion>
+
+<resolution>
+
+<p>Add the following to basic_iostream's class synopsis in 
+<sref ref="[iostreamclass]"/>, immediately after <tt>public</tt>:</p>
+
+<pre>
+  // types:
+  typedef charT                     char_type;
+  typedef typename traits::int_type int_type;
+  typedef typename traits::pos_type pos_type;
+  typedef typename traits::off_type off_type;
+  typedef traits                    traits_type;
+</pre>
+</resolution>
+</issue>

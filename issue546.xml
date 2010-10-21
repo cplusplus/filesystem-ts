@@ -1,0 +1,49 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="546" status="NAD">
+<title>_Longlong and _ULonglong are integer types</title>
+<section><sref ref="[tr.rand.req]"/></section>
+<submitter>Matt Austern</submitter>
+<date>10 Jan 2006</date>
+
+<discussion>
+<p>
+The TR sneaks in two new integer types, _Longlong and _Ulonglong, in [tr.c99].
+The rest of the TR should use that type.  I believe this affects two places.
+First, the random number requirements, 5.1.1/10-11, lists all of the types with
+which template parameters named IntType and UIntType may be instantiated.
+_Longlong (or "long long", assuming it is added to C++0x) should be added to the
+IntType list, and UIntType (again, or "unsigned long long") should be added to
+the UIntType list.  Second, 6.3.2 lists the types for which hash&lt;&gt; is
+required to be instantiable. _Longlong and _Ulonglong should be added to that
+list, so that people may use long long as a hash key.
+</p>
+
+<note>
+2009-07 Frankfurt
+</note>
+
+<blockquote>
+<p>
+We are not going to fix TR1.
+</p>
+<p>
+The paper "long long goes to the library" addresses the integration of
+long long into the C++0x library.
+</p>
+<p>
+Move to NAD.
+</p>
+</blockquote>
+
+</discussion>
+
+<resolution>
+<p>
+</p>
+</resolution>
+
+</issue>

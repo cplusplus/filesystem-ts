@@ -1,0 +1,36 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="173" status="TC1">
+<title>Inconsistent types for <tt>basic_filebuf::setbuf()</tt></title>
+<section><sref ref="[filebuf.virtuals]"/></section>
+<submitter>Greg Comeau, Dietmar K&uuml;hl</submitter>
+<date>23 Jul 1999</date>
+
+<discussion>
+
+<p>
+In <sref ref="[filebuf]"/> the function <tt>setbuf()</tt> gets an
+object of type <tt>streamsize</tt> as second argument. However, in
+<sref ref="[filebuf.virtuals]"/> paragraph 9 the second argument is of type
+<tt>int</tt>.
+</p>
+
+<p>
+As far as I can see this is not really a contradiction because
+everything is consistent if <tt>streamsize</tt> is typedef to be
+<tt>int</tt>. However, this is almost certainly not what was
+intended. The same thing happened to <tt>basic_istream::ignore()</tt>,
+as described in issue <iref ref="172"/>.
+</p>
+
+</discussion>
+
+<resolution>
+<p>In <sref ref="[filebuf.virtuals]"/> paragraph 9, change all uses of
+<tt>int</tt> in the description of <tt>setbuf()</tt> to
+<tt>streamsize</tt>.</p>
+</resolution>
+</issue>

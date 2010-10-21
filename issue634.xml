@@ -1,0 +1,93 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="634" status="CD1">
+<title><tt>allocator.address()</tt> doesn't work for types overloading <tt>operator&amp;</tt></title>
+<section><sref ref="[allocator.members]"/></section>
+<submitter>Howard Hinnant</submitter>
+<date>7 Feb 2007</date>
+
+<discussion>
+<duplicate><iref ref="350"/></duplicate>
+<p>
+<sref ref="[allocator.members]"/> says:
+</p>
+<blockquote>
+<pre>pointer address(reference <i>x</i>) const;</pre>
+<blockquote>
+<p>
+-1- <i>Returns:</i> <tt>&amp;<i>x</i></tt>.
+</p>
+</blockquote>
+</blockquote>
+
+<p>
+<sref ref="[allocator.members]"/> defines <tt>CopyConstructible</tt> which currently not
+only defines the semantics of copy construction, but also restricts what an overloaded
+<tt>operator&amp;</tt> may do.  I believe proposals are in the works (such as concepts
+and rvalue reference) to decouple these two requirements.  Indeed it is not evident
+that we should disallow overloading <tt>operator&amp;</tt> to return something other
+than the address of <tt>*this</tt>.
+</p>
+
+<p>
+An example of when you want to overload <tt>operator&amp;</tt> to return something
+other than the object's address is proxy references such as <tt>vector&lt;bool&gt;</tt>
+(or its replacement, currently code-named <tt>bit_vector</tt>).  Taking the address of
+such a proxy reference should logically yield a proxy pointer, which when dereferenced,
+yields a copy of the original proxy reference again.
+</p>
+
+<p>
+On the other hand, some code truly needs the address of an object, and not a proxy
+(typically for determining the identity of an object compared to a reference object).
+<a href="http://www.boost.org">boost</a> has long recognized this dilemma and solved it with 
+<a href="http://www.boost.org/libs/utility/utility.htm#addressof"><tt>boost::addressof</tt></a>.
+It appears to me that this would be useful functionality for the default allocator.  Adopting
+this definition for <tt>allocator::address</tt> would free the standard of requiring
+anything special from types which overload <tt>operator&amp;</tt>.  Issue <iref ref="580"/>
+is expected to make use of <tt>allocator::address</tt> mandatory for containers.
+</p>
+
+</discussion>
+
+<resolution>
+<p>
+Change <sref ref="[allocator.members]"/>:
+</p>
+
+<blockquote>
+<pre>pointer address(reference <i>x</i>) const;</pre>
+<blockquote>
+<p>
+-1- <i>Returns:</i> <del><tt>&amp;<i>x</i></tt>.</del> <ins>The actual address of object referenced by <i>x</i>,
+even in the presence of an overloaded <tt>operator&amp;</tt>.</ins>
+</p>
+</blockquote>
+
+<pre>const_pointer address(address(const_reference <i>x</i>) const;</pre>
+<blockquote>
+<p>
+-2- <i>Returns:</i> <del><tt>&amp;<i>x</i></tt>.</del> <ins>The actual address of object referenced by <i>x</i>,
+even in the presence of an overloaded <tt>operator&amp;</tt>.</ins>
+</p>
+</blockquote>
+</blockquote>
+
+<note>
+post Oxford:  This would be rendered NAD Editorial by acceptance of
+<a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2007/n2257.html">N2257</a>.
+</note>
+
+<note>
+Kona (2007): The LWG adopted the proposed resolution of N2387 for this issue which
+was subsequently split out into a separate paper N2436 for the purposes of voting.
+The resolution in N2436 addresses this issue.  The LWG voted to accelerate this
+issue to Ready status to be voted into the WP at Kona.
+</note>
+
+</resolution>
+
+</issue>

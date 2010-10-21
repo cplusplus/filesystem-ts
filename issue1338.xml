@@ -1,0 +1,90 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="1338" status="New">
+<title>LWG 1205 incorrectly applied</title>
+<section><sref ref="[alg.search]"/></section>
+<submitter>Howard Hinnant</submitter>
+<date>25 Jun 2010</date>
+
+<discussion>
+<p>
+LWG <iref ref="1205"/> (currently in WP) clarified the return value of several
+algorithms when dealing with empty ranges.  In particular it recommended for
+<sref ref="[alg.search]"/>:
+</p>
+
+<blockquote><pre>
+template&lt;class ForwardIterator1, class ForwardIterator2&gt;
+  ForwardIterator1
+    search(ForwardIterator1 first1, ForwardIterator1 last1,
+           ForwardIterator2 first2, ForwardIterator2 last2);
+
+template&lt;class ForwardIterator1, class ForwardIterator2,
+         class BinaryPredicate&gt;
+  ForwardIterator1
+    search(ForwardIterator1 first1, ForwardIterator1 last1,
+           ForwardIterator2 first2, ForwardIterator2 last2,
+           BinaryPredicate pred);
+</pre>
+<blockquote>
+<p>
+1 <i>Effects:</i> ...
+</p>
+<p>
+2 <i>Returns:</i> ... Returns <tt>last1</tt> if no such iterator is found.
+</p>
+<p><ins>
+3 <i>Remarks:</i> Returns <tt>first1</tt> if <tt>[first2,last2)</tt> is empty.
+</ins></p>
+</blockquote>
+</blockquote>
+
+<p>
+Unfortunately this got translated to an incorrect specification for what gets
+returned when no such iterator is found (N3092):
+</p>
+
+<blockquote><pre>
+template&lt;class ForwardIterator1, class ForwardIterator2&gt;
+  ForwardIterator1
+    search(ForwardIterator1 first1, ForwardIterator1 last1,
+           ForwardIterator2 first2, ForwardIterator2 last2);
+
+template&lt;class ForwardIterator1, class ForwardIterator2,
+         class BinaryPredicate&gt;
+  ForwardIterator1
+    search(ForwardIterator1 first1, ForwardIterator1 last1,
+           ForwardIterator2 first2, ForwardIterator2 last2,
+           BinaryPredicate pred);
+</pre>
+<blockquote>
+<p>
+1 <i>Effects:</i> ...
+</p>
+<p>
+2 <i>Returns:</i> ... Returns <tt>first1</tt> if <tt>[first2,last2)</tt> is
+empty or if no such iterator is found.
+</p>
+</blockquote>
+</blockquote>
+
+<p>
+LWG <iref ref="1205"/> is correct and N3092 is not equivalent nor correct.
+</p>
+
+<p>
+I have not reviewed the other 10 recommendations of <iref ref="1205"/>.
+</p>
+
+</discussion>
+
+<resolution>
+<p>
+Reapply LWG <iref ref="1205"/>.
+</p>
+</resolution>
+
+</issue>

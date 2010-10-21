@@ -1,0 +1,56 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="530" status="CD1">
+<title>Must elements of a string be contiguous?</title>
+<section><sref ref="[basic.string]"/></section>
+<submitter>Matt Austern</submitter>
+<date>15 Nov 2005</date>
+
+<discussion>
+<p>Issue <iref ref="69"/>, which was incorporated into C++03, mandated
+   that the elements of a vector must be stored in contiguous memory.
+   Should the same also apply to <tt>basic_string</tt>?</p>
+
+<p>We almost require contiguity already. Clause <sref ref="[multiset]"/>
+  defines <tt>operator[]</tt> as <tt>data()[pos]</tt>. What's missing
+  is a similar guarantee if we access the string's elements via the
+  iterator interface.</p>
+
+<p>Given the existence of <tt>data()</tt>, and the definition of
+  <tt>operator[]</tt> and <tt>at</tt> in terms of <tt>data</tt>,
+  I don't believe it's possible to write a useful and standard-
+  conforming <tt>basic_string</tt> that isn't contiguous. I'm not
+  aware of any non-contiguous implementation. We should just require
+  it.
+</p>
+</discussion>
+
+<resolution>
+<p>Add the following text to the end of <sref ref="[basic.string]"/>,
+paragraph 2. </p>
+
+<blockquote>
+  <p>The characters in a string are stored contiguously, meaning that if
+  <tt>s</tt> is a <tt>basic_string&lt;charT, Allocator&gt;</tt>, then
+  it obeys the identity
+  <tt>&amp;*(s.begin() + n) == &amp;*s.begin() + n</tt>
+  for all <tt>0 &lt;= n &lt; s.size()</tt>.
+  </p>
+</blockquote>
+</resolution>
+
+<rationale>
+<p>
+Not standardizing this existing practice does not give implementors more
+freedom.  We thought it might a decade ago.  But the vendors have spoken
+both with their implementations, and with their voice at the LWG
+meetings.  The implementations are going to be contiguous no matter what
+the standard says.  So the standard might as well give string clients
+more design choices.
+</p>
+</rationale>
+
+</issue>

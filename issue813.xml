@@ -1,0 +1,148 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="813" status="CD1">
+<title>"empty" undefined for <tt>shared_ptr</tt></title>
+<section><sref ref="[util.smartptr.shared]"/></section>
+<submitter>Matt Austern</submitter>
+<date>26 Feb 2008</date>
+
+<discussion>
+<p>
+Several places in <sref ref="[util.smartptr.shared]"/> refer to an "empty" <tt>shared_ptr</tt>.
+However, that term is nowhere defined. The closest thing we have to a
+definition is that the default constructor creates an empty <tt>shared_ptr</tt>
+and that a copy of a default-constructed <tt>shared_ptr</tt> is empty. Are any
+other <tt>shared_ptr</tt>s empty? For example, is <tt>shared_ptr((T*) 0)</tt> empty? What
+are the properties of an empty <tt>shared_ptr</tt>? We should either clarify this
+term or stop using it.
+<p>
+</p>
+One reason it's not good enough to leave this term up to the reader's
+intuition is that, in light of
+<a href="http://www.open-std.org/JTC1/sc22/WG21/docs/papers/2007/n2351.htm">N2351</a>
+and issue <iref ref="711"/>, most readers'
+intuitive understanding is likely to be wrong. Intuitively one might
+expect that an empty <tt>shared_ptr</tt> is one that doesn't store a pointer,
+but, whatever the definition is, that isn't it.
+</p>
+
+<note>
+Peter adds:
+</note>
+
+<blockquote>
+<p>
+Or, what is an "empty" <tt>shared_ptr</tt>?
+</p>
+
+<ul>
+<li>
+<p>
+Are any other <tt>shared_ptrs</tt> empty?
+</p>
+<p>
+Yes. Whether a given <tt>shared_ptr</tt> instance is empty or not is (*)
+completely specified by the last mutating operation on that instance.
+Give me an example and I'll tell you whether the <tt>shared_ptr</tt> is empty or
+not.
+</p>
+<blockquote>
+(*) If it isn't, this is a legitimate defect.
+</blockquote>
+</li>
+
+<li>
+<p>
+For example, is <tt>shared_ptr((T*) 0)</tt> empty?
+</p>
+<p>
+No. If it were empty, it would have a <tt>use_count()</tt> of 0, whereas it is
+specified to have an <tt>use_count()</tt> of 1.
+</p>
+</li>
+
+<li>
+<p>
+What are the properties of an empty <tt>shared_ptr</tt>?
+</p>
+<p>
+The properties of an empty <tt>shared_ptr</tt> can be derived from the
+specification. One example is that its destructor is a no-op. Another is
+that its <tt>use_count()</tt> returns 0. I can enumerate the full list if you
+really like.
+</p>
+</li>
+
+<li>
+<p>
+We should either clarify this term or stop using it.
+</p>
+<p>
+I don't agree with the imperative tone
+</p>
+<p>
+A clarification would be either a no-op - if it doesn't contradict the
+existing wording - or a big mistake if it does.
+</p>
+<p>
+I agree that a clarification that is formally a no-op may add value.
+</p>
+</li>
+
+<li>
+<p>
+However, that term is nowhere defined.
+</p>
+<p>
+Terms can be useful without a definition. Consider the following
+simplistic example. We have a type <tt>X</tt> with the following operations
+defined:
+</p>
+<blockquote><pre>
+X x;
+X x2(x);
+X f(X x);
+X g(X x1, X x2);
+</pre></blockquote>
+<p>
+A default-constructed value is green.<br/>
+A copy has the same color as the original.<br/>
+<tt>f(x)</tt> returns a red value if the argument is green, a green value otherwise.<br/>
+<tt>g(x1,x2)</tt> returns a green value if the arguments are of the same color, a red value otherwise.
+</p>
+
+<p>
+Given these definitions, you can determine the color of every instance
+of type <tt>X</tt>, even if you have absolutely no idea what green and red mean.
+</p>
+
+<p>
+Green and red are "nowhere defined" and completely defined at the same time.
+</p>
+</li>
+</ul>
+
+<p>
+Alisdair's wording is fine.
+</p>
+</blockquote>
+</discussion>
+
+<resolution>
+<p>
+Append the following sentance to <sref ref="[util.smartptr.shared]"/>
+</p>
+<blockquote>
+The <code>shared_ptr</code> class template stores a pointer, usually obtained
+via <code>new</code>. <code>shared_ptr</code> implements semantics of
+shared ownership; the last remaining owner of the pointer is responsible for
+destroying the object, or otherwise releasing  the resources associated with
+the stored pointer. <ins>A <code>shared_ptr</code> object that does not own
+a pointer is said to be <i>empty</i>.</ins>
+</blockquote>
+</resolution>
+
+</issue>

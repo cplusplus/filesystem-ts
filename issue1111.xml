@@ -1,0 +1,380 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="1111" status="NAD Concepts">
+<title>associative containers underconstrained</title>
+<section><sref ref="[associative]"/></section>
+<submitter>Alisdair Meredith</submitter>
+<date>29 Apr 2009</date>
+
+<discussion>
+<p>
+According to table 87 (n2857) the expression <tt>X::key_equal</tt> for an unordered
+container shall return a value of type <tt>Pred</tt>, where <tt>Pred</tt> is an equivalence
+relation.
+</p>
+
+<p>
+However, all 4 containers constrain <tt>Pred</tt> to be merely a <tt>Predicate</tt>,
+and not <tt>EquivalenceRelation</tt>.
+</p>
+
+<note>
+Batavia (2009-05):
+</note>
+<blockquote>
+<p>
+We agree with the proposed resolution.
+</p>
+<p>
+Move to Review.
+</p>
+</blockquote>
+</discussion>
+
+<resolution>
+<p>
+For ordered containers, replace 
+</p>
+<blockquote><pre>
+Predicate&lt;auto, Key, Key&gt; Compare = less&lt;Key&gt;
+</pre></blockquote>
+<p>
+with 
+</p>
+<blockquote><pre>
+StrictWeakOrder&lt;auto, Key, Key&gt; Compare = less&lt;Key&gt;
+</pre></blockquote>
+
+<p>
+For unordered containers, replace 
+</p>
+<blockquote><pre>
+Predicate&lt;auto, Key, Key&gt; Compare = less&lt;Key&gt;
+</pre></blockquote>
+<p>
+with 
+</p>
+<blockquote><pre>
+EquivalenceRelation&lt;auto, Key, Key&gt; Compare = less&lt;Key&gt;
+</pre></blockquote>
+<p>
+As in the following declarations:
+</p>
+
+<blockquote>
+<p>
+Associative containers <sref ref="[associative]"/>
+</p>
+<p>
+ 1 Headers &lt;map&gt; and &lt;set&gt;:
+</p>
+<p>
+   Header &lt;map&gt; synopsis
+</p>
+<blockquote><pre>
+   namespace std {
+     template &lt;ValueType Key, ValueType T,
+               <del>Predicate</del><ins>StrictWeakOrder</ins>&lt;auto, Key<del>, Key</del>&gt; Compare = less&lt;Key&gt;,
+               Allocator Alloc = allocator&lt;pair&amp;lt;&lt;b&gt;const Key, T&gt; &gt; &gt;
+       requires NothrowDestructible&lt;Key&gt; &amp;&amp; NothrowDestructible&lt;T&gt;
+             &amp;&amp; CopyConstructible&lt;Compare&gt;
+             &amp;&amp; AllocatableElement&lt;Alloc, Compare, const Compare&amp;&gt;
+             &amp;&amp; AllocatableElement&lt;Alloc, Compare, Compare&amp;&amp;&gt;
+     class map;
+
+     ...
+
+     template &lt;ValueType Key, ValueType T,
+               <del>Predicate</del><ins>StrictWeakOrder</ins>&lt;auto, Key<del>, Key</del>&gt; Compare = less&lt;Key&gt;,
+               Allocator Alloc = allocator&lt;pair&amp;lt;&lt;b&gt;const Key, T&gt; &gt; &gt;
+       requires NothrowDestructible&lt;Key&gt; &amp;&amp; NothrowDestructible&lt;T&gt;
+             &amp;&amp; CopyConstructible&lt;Compare&gt;
+             &amp;&amp; AllocatableElement&lt;Alloc, Compare, const Compare&amp;&gt;
+             &amp;&amp; AllocatableElement&lt;Alloc, Compare, Compare&amp;&amp;&gt;
+     class multimap;
+
+     ...
+
+   }
+</pre></blockquote>
+
+<p>
+   Header &lt;set&gt; synopsis
+</p>
+<blockquote><pre>
+   namespace std {
+     template &lt;ValueType Key, <del>Predicate</del><ins>StrictWeakOrder</ins>&lt;auto, Key<del>, Key</del>&gt; Compare = less&lt;Key&gt;,
+               Allocator Alloc = allocator&lt;Key&gt; &gt;
+       requires NothrowDestructible&lt;Key&gt; &amp;&amp; CopyConstructible&lt;Compare&gt;
+             &amp;&amp; AllocatableElement&lt;Alloc, Compare, const Compare&amp;&gt;
+             &amp;&amp; AllocatableElement&lt;Alloc, Compare, Compare&amp;&amp;&gt;
+     class set;
+
+     ...
+
+     template &lt;ValueType Key, <del>Predicate</del><ins>StrictWeakOrder</ins>&lt;auto, Key<del>, Key</del>&gt; Compare = less&lt;Key&gt;,
+               Allocator Alloc = allocator&lt;Key&gt; &gt;
+       requires NothrowDestructible&lt;Key&gt; &amp;&amp; CopyConstructible&lt;Compare&gt;
+             &amp;&amp; AllocatableElement&lt;Alloc, Compare, const Compare&amp;&gt;
+             &amp;&amp; AllocatableElement&lt;Alloc, Compare, Compare&amp;&amp;&gt;
+     class multiset;
+
+     ...
+
+   }
+</pre></blockquote>
+
+<p>
+ 23.4.1p2 Class template map [map]
+</p>
+<blockquote><pre>
+ namespace std {
+   template &lt;ValueType Key, ValueType T,
+             <del>Predicate</del><ins>StrictWeakOrder</ins>&lt;auto, Key<del>, Key</del>&gt; Compare = less&lt;Key&gt;,
+             Allocator Alloc = allocator&lt;pair&amp;lt;&lt;b&gt;const Key, T&gt; &gt; &gt;
+     requires NothrowDestructible&lt;Key&gt; &amp;&amp; NothrowDestructible&lt;T&gt;
+           &amp;&amp; CopyConstructible&lt;Compare&gt;
+           &amp;&amp; AllocatableElement&lt;Alloc, Compare, const Compare&amp;&gt;
+           &amp;&amp; AllocatableElement&lt;Alloc, Compare, Compare&amp;&amp;&gt;
+   class map {
+     ...
+   };
+ }
+</pre></blockquote>
+
+
+<p>
+ 23.4.2p2 Class template multimap [multimap]
+</p>
+<blockquote><pre>
+ namespace std {
+   template &lt;ValueType Key, ValueType T,
+             <del>Predicate</del><ins>StrictWeakOrder</ins>&lt;auto, Key<del>, Key</del>&gt; Compare = less&lt;Key&gt;,
+             Allocator Alloc = allocator&lt;pair&amp;lt;&lt;b&gt;const Key, T&gt; &gt; &gt;
+     requires NothrowDestructible&lt;Key&gt; &amp;&amp; NothrowDestructible&lt;T&gt;
+           &amp;&amp; CopyConstructible&lt;Compare&gt;
+           &amp;&amp; AllocatableElement&lt;Alloc, Compare, const Compare&amp;&gt;
+           &amp;&amp; AllocatableElement&lt;Alloc, Compare, Compare&amp;&amp;&gt;
+   class multimap {
+     ...
+   };
+ }
+</pre></blockquote>
+
+
+<p>
+ 23.4.3p2 Class template set [set]
+</p>
+<blockquote><pre>
+ namespace std {
+   template &lt;ValueType Key, <del>Predicate</del><ins>StrictWeakOrder</ins>&lt;auto, Key<del>, Key</del>&gt; Compare = less&lt;Key&gt;,
+             Allocator Alloc = allocator&lt;Key&gt; &gt;
+     requires NothrowDestructible&lt;Key&gt; &amp;&amp; CopyConstructible&lt;Compare&gt;
+           &amp;&amp; AllocatableElement&lt;Alloc, Compare, const Compare&amp;&gt;
+           &amp;&amp; AllocatableElement&lt;Alloc, Compare, Compare&amp;&amp;&gt;
+   class set {
+     ...
+   };
+ }
+</pre></blockquote>
+
+
+<p>
+ 23.4.4p2 Class template multiset [multiset]
+</p>
+<blockquote><pre>
+ namespace std {
+   template &lt;ValueType Key, <del>Predicate</del><ins>StrictWeakOrder</ins>&lt;auto, Key<del>, Key</del>&gt; Compare = less&lt;Key&gt;,
+             Allocator Alloc = allocator&lt;Key&gt; &gt;
+     requires NothrowDestructible&lt;Key&gt; &amp;&amp; CopyConstructible&lt;Compare&gt;
+           &amp;&amp; AllocatableElement&lt;Alloc, Compare, const Compare&amp;&gt;
+           &amp;&amp; AllocatableElement&lt;Alloc, Compare, Compare&amp;&amp;&gt;
+   class multiset {
+     ...
+   };
+ }
+</pre></blockquote>
+
+<p>
+ 23.5 Unordered associative containers [unord]
+</p>
+<p>
+ 1 Headers &lt;unordered_map&gt; and &lt;unordered_set&gt;:
+</p>
+<p>
+ Header &lt;unordered_map&gt; synopsis
+</p>
+<blockquote><pre>
+ namespace std {
+   // 23.5.1, class template unordered_map:
+   template &lt;ValueType Key,
+             ValueType T,
+             Callable&lt;auto, const Key&amp;&gt; Hash = hash&lt;Key&gt;,
+             <del>Predicate</del><ins>EquivalenceRelation</ins>&lt;auto, Key<del>, Key</del>&gt; Pred = equal_to&lt;Key&gt;,
+             Allocator Alloc = allocator&lt;pair&amp;lt;&lt;b&gt;const Key, T&gt; &gt; &gt;
+     requires NothrowDestructible&lt;Key&gt; &amp;&amp; NothrowDestructible&lt;T&gt;
+           &amp;&amp; SameType&lt;Hash::result_type, size_t&gt;
+           &amp;&amp; CopyConstructible&lt;Hash&gt; &amp;&amp; CopyConstructible&lt;Pred&gt;
+           &amp;&amp; AllocatableElement&lt;Alloc, Pred, const Pred&amp;&gt;
+           &amp;&amp; AllocatableElement&lt;Alloc, Pred, Pred&amp;&amp;&gt;
+           &amp;&amp; AllocatableElement&lt;Alloc, Hash, const Hash&amp;&gt;
+           &amp;&amp; AllocatableElement&lt;Alloc, Hash, Hash&amp;&amp;&gt;
+     class unordered_map;
+
+   // 23.5.2, class template unordered_multimap:
+   template &lt;ValueType Key,
+             ValueType T,
+             Callable&lt;auto, const Key&amp;&gt; Hash = hash&lt;Key&gt;,
+             <del>Predicate</del><ins>EquivalenceRelation</ins>&lt;auto, Key<del>, Key</del>&gt; Pred = equal_to&lt;Key&gt;,
+             Allocator Alloc = allocator&lt;pair&amp;lt;&lt;b&gt;const Key, T&gt; &gt; &gt;
+     requires NothrowDestructible&lt;Key&gt; &amp;&amp; NothrowDestructible&lt;T&gt;
+           &amp;&amp; SameType&lt;Hash::result_type, size_t&gt;
+           &amp;&amp; CopyConstructible&lt;Hash&gt; &amp;&amp; CopyConstructible&lt;Pred&gt;
+           &amp;&amp; AllocatableElement&lt;Alloc, Pred, const Pred&amp;&gt;
+           &amp;&amp; AllocatableElement&lt;Alloc, Pred, Pred&amp;&amp;&gt;
+           &amp;&amp; AllocatableElement&lt;Alloc, Hash, const Hash&amp;&gt;
+           &amp;&amp; AllocatableElement&lt;Alloc, Hash, Hash&amp;&amp;&gt;
+     class unordered_multimap;
+
+   ...
+ }
+</pre></blockquote>
+
+<p>
+ Header &lt;unordered_set&gt; synopsis
+</p>
+<blockquote><pre>
+ namespace std {
+   // 23.5.3, class template unordered_set:
+   template &lt;ValueType Value,
+             Callable&lt;auto, const Value&amp;&gt; Hash = hash&lt;Value&gt;,
+             <del>Predicate</del><ins>EquivalenceRelation</ins>&lt;auto, Value<del>, Value</del>&gt; class Pred = equal_to&lt;Value&gt;,
+             Allocator Alloc = allocator&lt;Value&gt; &gt;
+     requires NothrowDestructible&lt;Value&gt;
+           &amp;&amp; SameType&lt;Hash::result_type, size_t&gt;
+           &amp;&amp; CopyConstructible&lt;Hash&gt; &amp;&amp; CopyConstructible&lt;Pred&gt;
+           &amp;&amp; AllocatableElement&lt;Alloc, Pred, const Pred&amp;&gt;
+           &amp;&amp; AllocatableElement&lt;Alloc, Pred, Pred&amp;&amp;&gt;
+           &amp;&amp; AllocatableElement&lt;Alloc, Hash, const Hash&amp;&gt;
+           &amp;&amp; AllocatableElement&lt;Alloc, Hash, Hash&amp;&amp;&gt;
+     class unordered_set;
+
+   // 23.5.4, class template unordered_multiset:
+   template &lt;ValueType Value,
+             Callable&lt;auto, const Value&amp;&gt; Hash = hash&lt;Value&gt;,
+             <del>Predicate</del><ins>EquivalenceRelation</ins>&lt;auto, Value<del>, Value</del>&gt; class Pred = equal_to&lt;Value&gt;,
+             Allocator Alloc = allocator&lt;Value&gt; &gt;
+     requires NothrowDestructible&lt;Value&gt;
+           &amp;&amp; SameType&lt;Hash::result_type, size_t&gt;
+           &amp;&amp; CopyConstructible&lt;Hash&gt; &amp;&amp; CopyConstructible&lt;Pred&gt;
+           &amp;&amp; AllocatableElement&lt;Alloc, Pred, const Pred&amp;&gt;
+           &amp;&amp; AllocatableElement&lt;Alloc, Pred, Pred&amp;&amp;&gt;
+           &amp;&amp; AllocatableElement&lt;Alloc, Hash, const Hash&amp;&gt;
+           &amp;&amp; AllocatableElement&lt;Alloc, Hash, Hash&amp;&amp;&gt;
+     class unordered_multiset;
+
+   ...
+ }
+</pre></blockquote>
+
+<p>
+ 23.5.1p3 Class template unordered_map [unord.map]
+</p>
+<blockquote><pre>
+ namespace std {
+   template &lt;ValueType Key,
+             ValueType T,
+             Callable&lt;auto, const Key&amp;&gt; Hash = hash&lt;Key&gt;,
+             <del>Predicate</del><ins>EquivalenceRelation</ins>&lt;auto, Key<del>, Key</del>&gt; Pred = equal_to&lt;Key&gt;,
+             Allocator Alloc = allocator&lt;pair&amp;lt;&lt;b&gt;const Key, T&gt; &gt; &gt;
+     requires NothrowDestructible&lt;Key&gt; &amp;&amp; NothrowDestructible&lt;T&gt;
+           &amp;&amp; SameType&lt;Hash::result_type, size_t&gt;
+           &amp;&amp; CopyConstructible&lt;Hash&gt; &amp;&amp; CopyConstructible&lt;Pred&gt;
+           &amp;&amp; AllocatableElement&lt;Alloc, Pred, const Pred&amp;&gt;
+           &amp;&amp; AllocatableElement&lt;Alloc, Pred, Pred&amp;&amp;&gt;
+           &amp;&amp; AllocatableElement&lt;Alloc, Hash, const Hash&amp;&gt;
+           &amp;&amp; AllocatableElement&lt;Alloc, Hash, Hash&amp;&amp;&gt;
+   class unordered_map
+   {
+     ...
+   };
+ }
+</pre></blockquote>
+
+<p>
+ 23.5.2p3 Class template unordered_multimap [unord.multimap]
+</p>
+<blockquote><pre>
+ namespace std {
+   template &lt;ValueType Key,
+             ValueType T,
+             Callable&lt;auto, const Key&amp;&gt; Hash = hash&lt;Key&gt;,
+             <del>Predicate</del><ins>EquivalenceRelation</ins>&lt;auto, Key<del>, Key</del>&gt; Pred = equal_to&lt;Key&gt;,
+             Allocator Alloc = allocator&lt;pair&amp;lt;&lt;b&gt;const Key, T&gt; &gt; &gt;
+     requires NothrowDestructible&lt;Key&gt; &amp;&amp; NothrowDestructible&lt;T&gt;
+           &amp;&amp; SameType&lt;Hash::result_type, size_t&gt;
+           &amp;&amp; CopyConstructible&lt;Hash&gt; &amp;&amp; CopyConstructible&lt;Pred&gt;
+           &amp;&amp; AllocatableElement&lt;Alloc, Pred, const Pred&amp;&gt;
+           &amp;&amp; AllocatableElement&lt;Alloc, Pred, Pred&amp;&amp;&gt;
+           &amp;&amp; AllocatableElement&lt;Alloc, Hash, const Hash&amp;&gt;
+           &amp;&amp; AllocatableElement&lt;Alloc, Hash, Hash&amp;&amp;&gt;
+   class unordered_multimap
+   {
+     ...
+   };
+ }
+</pre></blockquote>
+
+<p>
+ 23.5.3p3 Class template unordered_set [unord.set]
+</p>
+<blockquote><pre>
+ namespace std {
+   template &lt;ValueType Value,
+             Callable&lt;auto, const Value&amp;&gt; Hash = hash&lt;Value&gt;,
+             <del>Predicate</del><ins>EquivalenceRelation</ins>&lt;auto, Value<del>, Value</del>&gt; class Pred = equal_to&lt;Value&gt;,
+             Allocator Alloc = allocator&lt;Value&gt; &gt;
+     requires NothrowDestructible&lt;Value&gt;
+           &amp;&amp; SameType&lt;Hash::result_type, size_t&gt;
+           &amp;&amp; CopyConstructible&lt;Hash&gt; &amp;&amp; CopyConstructible&lt;Pred&gt;
+           &amp;&amp; AllocatableElement&lt;Alloc, Pred, const Pred&amp;&gt;
+           &amp;&amp; AllocatableElement&lt;Alloc, Pred, Pred&amp;&amp;&gt;
+           &amp;&amp; AllocatableElement&lt;Alloc, Hash, const Hash&amp;&gt;
+           &amp;&amp; AllocatableElement&lt;Alloc, Hash, Hash&amp;&amp;&gt;
+   class unordered_set
+   {
+     ...
+   };
+ }
+</pre></blockquote>
+<p>
+ 23.5.4p3 Class template unordered_multiset [unord.multiset]
+</p>
+<blockquote><pre>
+ namespace std {
+   template &lt;ValueType Value,
+             Callable&lt;auto, const Value&amp;&gt; Hash = hash&lt;Value&gt;,
+             <del>Predicate</del><ins>EquivalenceRelation</ins>&lt;auto, Value<del>, Value</del>&gt; class Pred = equal_to&lt;Value&gt;,
+             Allocator Alloc = allocator&lt;Value&gt; &gt;
+     requires NothrowDestructible&lt;Value&gt;
+           &amp;&amp; SameType&lt;Hash::result_type, size_t&gt;
+           &amp;&amp; CopyConstructible&lt;Hash&gt; &amp;&amp; CopyConstructible&lt;Pred&gt;
+           &amp;&amp; AllocatableElement&lt;Alloc, Pred, const Pred&amp;&gt;
+           &amp;&amp; AllocatableElement&lt;Alloc, Pred, Pred&amp;&amp;&gt;
+           &amp;&amp; AllocatableElement&lt;Alloc, Hash, const Hash&amp;&gt;
+           &amp;&amp; AllocatableElement&lt;Alloc, Hash, Hash&amp;&amp;&gt;
+   class unordered_multiset
+   {
+     ...
+   };
+ }
+</pre></blockquote>
+
+</blockquote>
+
+</resolution>
+
+</issue>

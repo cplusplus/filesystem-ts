@@ -1,0 +1,59 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="197" status="NAD">
+<title>max_size() underspecified</title>
+<section><sref ref="[allocator.requirements]"/> <sref ref="[container.requirements]"/></section>
+<submitter>Andy Sawyer</submitter>
+<date>21 Oct 1999</date>
+
+<discussion>
+<p>Must the value returned by max_size() be unchanged from call to call? </p>
+
+<p>Must the value returned from max_size() be meaningful? </p>
+
+<p>Possible meanings identified in lib-6827: </p>
+
+<p>1) The largest container the implementation can support given "best
+case" conditions - i.e. assume the run-time platform is "configured to
+the max", and no overhead from the program itself. This may possibly
+be determined at the point the library is written, but certainly no
+later than compile time.<br/>
+<br/>
+2) The largest container the program could create, given "best case"
+conditions - i.e. same platform assumptions as (1), but take into
+account any overhead for executing the program itself. (or, roughly
+"storage=storage-sizeof(program)"). This does NOT include any resource
+allocated by the program. This may (or may not) be determinable at
+compile time.<br/>
+<br/>
+3) The largest container the current execution of the program could
+create, given knowledge of the actual run-time platform, but again,
+not taking into account any currently allocated resource. This is
+probably best determined at program start-up.<br/>
+<br/>
+4) The largest container the current execution program could create at
+the point max_size() is called (or more correctly at the point
+max_size() returns :-), given it's current environment (i.e. taking
+into account the actual currently available resources). This,
+obviously, has to be determined dynamically each time max_size() is
+called. </p>
+</discussion>
+
+<resolution>
+</resolution>
+
+<rationale>
+<p>max_size() isn't useful for very many things, and the existing
+  wording is sufficiently clear for the few cases that max_size() can
+  be used for.  None of the attempts to change the existing wording
+  were an improvement.</p>
+
+<p>It is clear to the LWG that the value returned by max_size() can't
+  change from call to call.</p>
+
+</rationale>
+
+</issue>

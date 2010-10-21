@@ -1,0 +1,67 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="993" status="WP">
+<title>Response to UK 188</title>
+<section><sref ref="[support.start.term]"/></section>
+<submitter>P.J. Plauger</submitter>
+<date>3 Mar 2009</date>
+
+<discussion>
+<p>
+The function <tt>_Exit</tt> does not appear to be defined in this standard.
+Should it be added to the table of functions included-by-reference to
+the C standard?
+</p>
+
+<note>
+2009-05-09 Alisdair fixed some minor issues in the wording.
+</note>
+
+<note>
+Batavia (2009-05):
+</note>
+<blockquote>
+We agree with the proposed resolution.
+Move to Tentatively Ready.
+</blockquote>
+</discussion>
+
+<resolution>
+<p>
+Add to <sref ref="[support.start.term]"/> Table 20 (Header
+<tt>&lt;cstdlib&gt;</tt> synopsis) Functions:
+</p>
+
+<blockquote><pre>
+_Exit
+</pre></blockquote>
+
+<p>
+Add before the description of <tt>abort(void)</tt>:
+</p>
+
+<blockquote><pre>
+void _Exit [[noreturn]] (int status)
+</pre>
+
+<blockquote>
+<p>
+The function <tt>_Exit(int status)</tt> has additional behavior in this
+International Standard:
+</p>
+<ul>
+<li>
+The program is terminated without executing destructors for objects of
+automatic, thread, or static storage duration and without calling the
+functions passed to <tt>atexit()</tt> (<sref ref="[basic.start.term]"/>).
+</li>
+</ul>
+</blockquote>
+</blockquote>
+
+</resolution>
+
+</issue>

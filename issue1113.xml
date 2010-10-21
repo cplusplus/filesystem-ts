@@ -1,0 +1,84 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="1113" status="WP">
+<title><tt>bitset::to_string</tt> could be simplified</title>
+<section><sref ref="[template.bitset]"/></section>
+<submitter>Alisdair Meredith</submitter>
+<date>9 May 2009</date>
+
+<discussion>
+<p>
+In <iref ref="853"/> our resolution is changing the signature by adding two
+defaulting arguments to 3 calls.  In principle, this means that ABI breakage
+is not an issue, while API is preserved.
+</p>
+<p>
+With that observation, it would be very nice to use the new ability to
+supply default template parameters to function templates to collapse all 3
+signatures into 1.  In that spirit, this issue offers an alternative resolution
+than that of <iref ref="853"/>.
+</p>
+
+<note>
+Batavia (2009-05):
+</note>
+<blockquote>
+Move to Open,
+and look at the issue again after <iref ref="853"/> has been accepted.
+We further recommend this be deferred until after the next Committee Draft.
+</blockquote>
+
+<note>
+2009-10 post-Santa Cruz:
+</note>
+
+<blockquote>
+Move to Tentatively Ready.
+</blockquote>
+
+</discussion>
+
+<resolution>
+
+<ol type="A">
+<li>
+<p>
+In <sref ref="[template.bitset]"/>/1 (class bitset) ammend:
+</p>
+<blockquote><pre>
+template &lt;class charT <ins>= char</ins>,
+            class traits <ins>= char_traits&lt;charT&gt;</ins>,
+            class Allocator <ins>= allocator&lt;charT&gt;</ins>&gt; 
+  basic_string&lt;charT, traits, Allocator&gt;
+  to_string(charT zero = charT('0'), charT one = charT('1')) const;
+<del>template &lt;class charT, class traits&gt; 
+  basic_string&lt;charT, traits, allocator&lt;charT&gt; &gt; to_string() const; 
+template &lt;class charT&gt; 
+  basic_string&lt;charT, char_traits&lt;charT&gt;, allocator&lt;charT&gt; &gt; to_string() const; 
+basic_string&lt;char, char_traits&lt;char&gt;, allocator&lt;char&gt; &gt; to_string() const;</del>
+</pre></blockquote>
+</li>
+<li>
+<p>
+In <sref ref="[bitset.members]"/> prior to p35 ammend:
+</p>
+<blockquote><pre>
+template &lt;class charT <ins>= char</ins>,
+            class traits <ins>= char_traits&lt;charT&gt;</ins>,
+            class Allocator <ins>= allocator&lt;charT&gt;</ins>&gt; 
+  basic_string&lt;charT, traits, Allocator&gt;
+  to_string(charT zero = charT('0'), charT one = charT('1')) const;
+</pre></blockquote>
+</li>
+<li>
+Strike <sref ref="[bitset.members]"/> paragraphs 37 -> 39 (including signature
+above 37)
+</li>
+</ol>
+
+</resolution>
+
+</issue>

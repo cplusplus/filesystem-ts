@@ -1,0 +1,181 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="891" status="WP">
+<title>std::thread, std::call_once issue</title>
+<section><sref ref="[thread.thread.constr]"/>, <sref ref="[thread.once.callonce]"/></section>
+<submitter>Peter Dimov</submitter>
+<date>15 Sep 2008</date>
+
+<discussion>
+<p>
+I notice that the vararg overloads of <tt>std::thread</tt> and <tt>std::call_once</tt>
+(N2723 <sref ref="[thread.thread.constr]"/> and <sref ref="[thread.once.callonce]"/>) are no longer specified in terms of
+<tt>std::bind</tt>; instead, some of the <tt>std::bind</tt> wording has been inlined into
+the specification.
+</p>
+<p>
+There are two problems with this.
+</p>
+<p>
+First, the specification (and implementation) in terms of <tt>std::bind</tt> allows, for example:
+</p>
+
+<blockquote><pre>
+std::thread th( f, 1, std::bind( g ) );
+</pre></blockquote>
+
+<p>
+which executes <tt>f( 1, g() )</tt> in a thread. This can be useful. The
+"inlined" formulation changes it to execute <tt>f( 1, bind(g) )</tt> in a thread.
+</p>
+<p>
+Second, assuming that we don't want the above, the specification has copied the wording
+</p>
+
+<blockquote>
+<tt>INVOKE(func, w1, w2, ..., wN)</tt> (20.6.2) shall be a valid
+expression for some values <tt>w1, w2, ..., wN</tt>
+</blockquote>
+
+<p>
+but this is not needed since we know that our argument list is args; it should simply be
+</p>
+
+<blockquote>
+<tt>INVOKE(func, args...)</tt> (20.6.2) shall be a valid expression
+</blockquote>
+
+<note>
+Summit:
+</note>
+
+<blockquote>
+Move to open.
+</blockquote>
+
+<note>
+Post Summit Anthony provided proposed wording.
+</note>
+
+<note>
+2009-07 Frankfurt
+</note>
+
+<blockquote>
+Leave Open. Await decision for thread variadic constructor.
+</blockquote>
+
+<note>
+2009-10 Santa Cruz:
+</note>
+
+<blockquote>
+See proposed wording for <iref ref="929"/> for this, for the formulation
+on how to solve this.  <iref ref="929"/> modifies the thread constructor to
+have "pass by value" behavior with pass by reference efficiency through the use
+of the <tt>decay</tt> trait.  This same formula would be useful for <tt>call_once</tt>.
+</blockquote>
+
+<note>
+2010-02-11 Anthony updates wording.
+</note>
+
+<note>
+2010-02-12 Moved to Tentatively Ready after 5 postive votes on c++std-lib.
+</note>
+</discussion>
+
+<resolution>
+<p>
+Modify <sref ref="[thread.once.callonce]"/> p1-p2 with the following:
+</p>
+
+<blockquote>
+<pre>template&lt;class Callable, class ...Args&gt;
+  void call_once(once_flag&amp; flag, Callable<ins>&amp;&amp;</ins> func, Args&amp;&amp;... args);</pre>
+<blockquote>
+
+<p><ins>
+Given a function as follows:
+</ins></p>
+
+<blockquote><pre><ins>
+template&lt;typename T&gt; typename decay&lt;T&gt;::type decay_copy(T&amp;&amp; v)
+   { return std::forward&lt;T&gt;(v); }
+</ins></pre></blockquote>
+
+<p>
+1 <i>Requires:</i> <del>The template parameters</del> <tt>Callable</tt> and each
+<tt>Ti</tt> in <tt>Args</tt> shall <del>be <tt>CopyConstructible</tt> if an
+lvalue and otherwise</del> <ins>satisfy the</ins>
+<tt>MoveConstructible</tt> <ins>requirements</ins>.
+<tt><i>INVOKE</i>(<ins>decay_copy(std::forward&lt;Callable&gt;(</ins>func<ins>)</ins>,
+<del>w1, w2, ..., wN</del>
+<ins>decay_copy(std::forward&lt;Args&gt;(args))...</ins>)</tt> (<sref
+ref="[func.require]"/>) shall be a valid expression<del> for some values <tt>w1,
+w2, ..., wN</tt>, where <tt>N == sizeof...(Args)</tt></del>.
+</p>
+
+<p>
+2 <i>Effects:</i> Calls to <tt>call_once</tt> on the same <tt>once_flag</tt>
+object are serialized. If there has been a prior effective call to
+<tt>call_once</tt> on the same <tt>once_flag</tt> object, the call to
+<tt>call_once</tt> returns without invoking <tt>func</tt>. If there has been no
+prior effective call to <tt>call_once</tt> on the same <tt>once_flag</tt>
+object, <del>the argument <tt>func</tt> (or a copy thereof) is called as if by
+invoking <tt>func(args)</tt></del>
+<ins><tt><i>INVOKE</i>(decay_copy(std::forward&lt;Callable&gt;(func)),
+decay_copy(std::forward&lt;Args&gt;(args))...)</tt> is executed</ins>. The call
+to <tt>call_once</tt> is effective if and only if <del><tt>func(args)</tt></del>
+<ins><tt><i>INVOKE</i>(decay_copy(std::forward&lt;Callable&gt;(func)),
+decay_copy(std::forward&lt;Args&gt;(args))...)</tt></ins> returns without
+throwing an exception. If an exception is thrown it is propagated to the caller.
+</p>
+
+</blockquote>
+
+</blockquote>
+
+<!-- 
+<p>
+Change paragraph 4 of <sref ref="[thread.thread.constr]"/> to:
+</p>
+
+<blockquote>
+<pre>
+template &lt;class F&gt; explicit thread(F f);
+template &lt;class F, class ...Args&gt; thread(F&amp;&amp; f, Args&amp;&amp;... args);
+</pre>
+<blockquote>
+-4- <i>Requires:</i> <tt>F</tt> and each <tt>Ti</tt> in <tt>Args</tt>
+shall be <tt>CopyConstructible</tt> if an lvalue and otherwise
+<tt>MoveConstructible</tt>. <tt><i>INVOKE</i>(f, <del>w1, w2, ..., wN</del> <ins>args...</ins>)</tt>
+(20.6.2) shall be a valid expression<del> for some values <i>w1, w2, ...,
+wN</i>, where <tt>N == sizeof...(Args)</tt></del>.
+</blockquote>
+</blockquote>
+
+<p>
+Change paragraph 1 of <sref ref="[thread.once.callonce]"/> to:
+</p>
+
+<blockquote><pre>
+template&lt;class Callable, class ...Args&gt; 
+  void call_once(once_flag&amp; flag, Callable func, Args&amp;&amp;... args);
+</pre>
+<blockquote>
+-1- <i>Requires:</i> The template parameters <tt>Callable></tt> and each
+<tt>Ti</tt> in <tt>Args</tt> shall be <tt>CopyConstructible</tt> if an
+lvalue and otherwise <tt>MoveConstructible</tt>. <tt><i>INVOKE</i>(func,
+<del>w1, w2, ..., wN</del> <ins>args...</ins>)</tt> (20.6.2) shall be a
+valid expression<del> for some values <i>w1, w2, ..., wN</i>, where
+<tt>N == sizeof...(Args)</tt></del>.
+</blockquote>
+</blockquote>
+ -->
+</resolution>
+
+</issue>

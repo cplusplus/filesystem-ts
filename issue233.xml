@@ -1,0 +1,146 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="233" status="CD1">
+<title>Insertion hints in associative containers</title>
+<section><sref ref="[associative.reqmts]"/></section>
+<submitter>Andrew Koenig</submitter>
+<date>30 Apr 2000</date>
+
+<discussion>
+<p>
+If <tt>mm</tt> is a multimap and <tt>p</tt> is an iterator
+into the multimap, then <tt>mm.insert(p, x)</tt> inserts
+<tt>x</tt> into <tt>mm</tt> with <tt>p</tt> as a hint as
+to where it should go.  Table 69 claims that the execution time is
+amortized constant if the insert winds up taking place adjacent to
+<tt>p</tt>, but does not say when, if ever, this is guaranteed to
+happen.  All it says it that <tt>p</tt> is a hint as to where to
+insert.
+</p>
+<p>
+The question is whether there is any guarantee about the relationship
+between <tt>p</tt> and the insertion point, and, if so, what it
+is.
+</p>
+<p>
+I believe the present state is that there is no guarantee: The user
+can supply <tt>p</tt>, and the implementation is allowed to
+disregard it entirely.
+</p>
+
+<p><b>Additional comments from Nathan:</b><br/>
+
+The vote [in Redmond] was on whether to elaborately specify the use of
+the hint, or to require behavior only if the value could be inserted
+adjacent to the hint.  I would like to ensure that we have a chance to
+vote for a deterministic treatment: "before, if possible, otherwise
+after, otherwise anywhere appropriate", as an alternative to the
+proposed "before or after, if possible, otherwise [...]".
+</p>
+
+<note>Toronto: there was general agreement that this is a real defect:
+when inserting an element x into a multiset that already contains
+several copies of x, there is no way to know whether the hint will be
+used.  The proposed resolution was that the new element should always
+be inserted as close to the hint as possible.  So, for example, if
+there is a subsequence of equivalent values, then providing a.begin()
+as the hint means that the new element should be inserted before the
+subsequence even if a.begin() is far away.  JC van Winkel supplied
+precise wording for this proposed resolution, and also for an
+alternative resolution in which hints are only used when they are
+adjacent to the insertion point.</note>
+
+<note>Copenhagen: the LWG agreed to the original proposed resolution,
+in which an insertion hint would be used even when it is far from the
+insertion point.  This was contingent on seeing a example
+implementation showing that it is possible to implement this
+requirement without loss of efficiency.  John Potter provided such a
+example implementation.</note>
+
+<note>Redmond: The LWG was reluctant to adopt the proposal that
+emerged from Copenhagen: it seemed excessively complicated, and went
+beyond fixing the defect that we identified in Toronto.  PJP provided
+the new wording described in this issue.  Nathan agrees that we
+shouldn't adopt the more detailed semantics, and notes: "we know that
+you can do it efficiently enough with a red-black tree, but there are
+other (perhaps better) balanced tree techniques that might differ
+enough to make the detailed semantics hard to satisfy."</note>
+
+<note>Cura&ccedil;ao: Nathan should give us the alternative wording he
+suggests so the LWG can decide between the two options.</note>
+
+<note>Lillehammer: The LWG previously rejected the more detailed
+  semantics, because it seemed more loike a new feature than like
+  defect fixing.  We're now more sympathetic to it, but we (especially
+  Bill) are still worried about performance.  N1780 describes a naive
+  algorithm, but it's not clear whether there is a non-naive
+  implementation. Is it possible to implement this as efficently as
+  the current version of insert?</note>
+
+<note>Post Lillehammer:
+<a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2005/n1780.html">N1780</a>
+updated in post meeting mailing with
+feedback from Lillehammer with more information regarding performance.
+</note>
+
+<note>
+Batavia:
+<a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2005/n1780.html">1780</a>
+accepted with minor wording changes in the proposed wording (reflected in the
+proposed resolution below).  Concerns about the performance of the algorithm
+were satisfactorily met by
+<a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2005/n1780.html">1780</a>.
+<iref ref="371"/> already handles the stability of equal ranges
+and so that part of the resolution from
+<a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2005/n1780.html">1780</a>
+is no longer needed (or reflected in the proposed wording below).
+</note>
+
+</discussion>
+
+<resolution>
+
+<p>
+Change the indicated rows of the "Associative container requirements" Table in
+<sref ref="[associative.reqmts]"/> to:
+</p>
+
+<p><center>
+<table border="1">
+<caption>Associative container requirements</caption>
+<tr><th>expression</th> <th>return type</th>
+<th>assertion/note<br/>pre/post-condition</th>
+<th>complexity</th></tr>
+<tr><td><tt>a_eq.insert(t)</tt></td>
+<td><tt>iterator</tt></td>
+<td>
+inserts <tt>t</tt> and returns the iterator pointing to the newly inserted
+element. <ins>If a range containing elements equivalent to <tt>t</tt> exists in
+<tt>a_eq</tt>, <tt>t</tt> is inserted at the end of that range.</ins>
+</td>
+<td>
+logarithmic
+</td></tr>
+<tr><td><tt>a.insert(p,t)</tt></td>
+<td><tt>iterator</tt></td>
+<td>
+inserts <tt>t</tt> if and only if there is no element with key equivalent to the
+key of <tt>t</tt> in containers with unique keys; always inserts <tt>t</tt> in containers
+with equivalent keys. always returns the iterator pointing to the element with key
+equivalent to the key of <tt>t</tt>. <del>iterator <tt>p</tt> is a hint pointing to where
+the insert should start to search.</del> <ins><tt>t</tt> is inserted as close as possible
+to the position just prior to <tt>p</tt>.</ins>
+</td>
+<td>
+logarithmic in general, but amortized constant if <tt>t</tt> is inserted right <del>after</del>
+ <ins>before</ins> <tt>p</tt>.
+</td></tr>
+</table>
+</center></p>
+
+</resolution>
+
+</issue>

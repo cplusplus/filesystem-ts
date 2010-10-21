@@ -1,0 +1,86 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="586" status="CD1">
+    <title>string inserter not a formatted function</title>
+    <section><sref ref="[string.io]"/></section>
+    <submitter>Martin Sebor</submitter>
+    <date>22 Jun 2006</date>
+
+    <discussion>
+        <p>
+
+Section  and paragraph  numbers  in  this paper  are  relative to  the
+working draft document number N2009 from 4/21/2006.
+
+        </p>
+
+        <p>
+
+The  <code>basic_string</code> extractor  in 21.3.7.9,  p1  is clearly
+required  to  behave  as  a   formatted  input  function,  as  is  the
+<code>std::getline()</code> overload for string described in p7.
+
+        </p>
+        <p>
+
+However, the <code>basic_string</code> inserter described in p5 of the
+same section has no such requirement. This has implications on how the
+operator  responds  to  exceptions thrown  from  <code>xsputn()</code>
+(formatted  output functions are  required to  set <code>badbit</code>
+and swallow  the exception unless  <code>badbit</code> is also  set in
+<code>exceptions()</code>; the  string inserter doesn't  have any such
+requirement).
+
+        </p>
+        <p>
+
+I don't  see anything in the  spec for the string  inserter that would
+justify requiring  it to treat  exceptions differently from  all other
+similar operators. (If it did, I think it should be made this explicit
+by saying  that the  operator "does not  behave as a  formatted output
+function" as has been made customary by the adoption of the resolution
+of issue 60).
+
+        </p>
+    </discussion>
+
+    <resolution>
+        <p>
+
+I propose to change the Effects clause in 21.3.7.9, p5, as follows:
+
+        </p>
+            <blockquote>
+        <p>
+
+<i>Effects</i>: <del>Begins by constructing a  sentry object k as if k
+were    constructed    by    typename    <code>basic_ostream&lt;charT,
+traits&gt;::sentry   k   (os)</code>.    If  <code>bool(k)</code>   is
+<code>true</code>, </del><ins>Behaves  as a formatted  output function
+(27.6.2.5.1).   After constructing  a  <code>sentry</code> object,  if
+this  object returns <code>true</code>  when converted  to a  value of
+type   <code>bool</code>,   determines   padding   as   described   in
+22.2.2.2.2</ins>,  then inserts the  resulting sequence  of characters
+<code><i>seq</i></code> as if by calling <code>os.rdbuf()->sputn(seq ,
+n)</code>,    where   <code><i>n</i></code>    is   the    larger   of
+<code>os.width()</code>   and   <code>str.size()</code>;  then   calls
+<code>os.width(0)</code>.  <del>If  the  call  to sputn  fails,  calls
+<code>os.setstate(ios_base::failbit)</code>.</del>
+
+        </p>
+            </blockquote>
+        <p>
+
+This proposed  resilution assumes the  resolution of issue  394 (i.e.,
+that   all   formatted   output   functions  are   required   to   set
+<code>ios_base::badbit</code>  in response  to any  kind  of streambuf
+failure),   and   implicitly   assumes   that  a   return   value   of
+<code>sputn(seq,  <i>n</i>)</code>  other  than  <code><i>n</i></code>
+indicates a failure.
+
+        </p>
+    </resolution>
+</issue>

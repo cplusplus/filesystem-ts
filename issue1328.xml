@@ -1,0 +1,47 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="1328" status="New">
+<title>istream extractors not setting failbit if eofbit is already set</title>
+<section><sref ref="[istream::sentry]"/></section>
+<submitter>Paolo Carlini</submitter>
+<date>17 Feb 2010</date>
+
+<discussion>
+<p>
+basing on the recent discussion on the library reflector, see c++std-lib-27728
+and follow ups, I hereby formally ask for LWG 419 to be re-opened, the rationale
+being that according to the current specifications, per
+<a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2009/n3000.pdf">n3000</a>,
+it seems actually impossible to seek away from end of file, contrary to the
+rationale which led <iref ref="342"/> to its closure as NAD. My request is also
+supported by Martin Sebor, and I'd like also to add, as tentative proposed
+resolution for the re-opened issue, the wording suggested by Sebor, thus, change
+the beginning of <sref ref="[istream::sentry]"/>/2, to:
+</p>
+
+<blockquote>
+2 <i>Effects:</i> If <tt><ins>(!noskipws &amp;&amp; !</ins>is.good())</tt> is
+<tt><del>false</del> <ins>true</ins></tt>, calls <tt>is.setstate(failbit)</tt>.
+Otherwise prepares for formatted or unformatted input. ...
+</blockquote>
+
+
+</discussion>
+
+<resolution>
+<p>
+Change <sref ref="[istream::sentry]"/>/2:
+</p>
+
+<blockquote>
+2 <i>Effects:</i> If <tt><ins>(!noskipws &amp;&amp; !</ins>is.good())</tt> is
+<tt><del>false</del> <ins>true</ins></tt>, calls <tt>is.setstate(failbit)</tt>.
+Otherwise prepares for formatted or unformatted input. ...
+</blockquote>
+
+</resolution>
+
+</issue>

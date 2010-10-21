@@ -1,0 +1,203 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="1321" status="NAD Editorial">
+<title><tt>scoped_allocator_adaptor construct</tt> and <tt>destroy</tt> don't
+use <tt>allocator_traits</tt></title>
+<section><sref ref="[allocator.adaptor.members]"/></section>
+<submitter>Howard Hinnant</submitter>
+<date>16 Feb 2010</date>
+
+<discussion>
+<p>
+<sref ref="[allocator.adaptor.members]"/> p8-9 says:
+</p>
+
+<blockquote>
+
+<pre>
+template &lt;class T, class... Args&gt;
+  void construct(T* p, Args&amp;&amp;... args);
+</pre>
+<blockquote>
+<p>
+8 <i>Effects:</i> let <tt><i>OUTERMOST</i>(x)</tt> be <tt>x</tt> if <tt>x</tt>
+does not have an <tt>outer_allocator()</tt> function and
+<tt><i>OUTERMOST</i>(x.outer_allocator())</tt> otherwise.
+</p>
+
+<ul>
+<li>
+If <tt>uses_allocator&lt;T, inner_allocator_type&gt;::value</tt> is
+<tt>false</tt> and <tt>is_constructible&lt;T, Args...&gt;::value</tt> is
+<tt>true</tt>, calls <tt><i>OUTERMOST</i>(*this).construct(p,
+std::forward&lt;Args&gt;(args)...)</tt>.
+</li>
+
+<li>
+Otherwise, if <tt>uses_allocator&lt;T, inner_allocator_type&gt;::value</tt> is
+<tt>true</tt> and <tt>is_constructible&lt;T, allocator_arg_t,
+inner_allocator_type, Args...&gt;::value</tt> is <tt>true</tt>, calls
+<tt><i>OUTERMOST</i>(*this).construct(p, allocator_arg,
+inner_allocator(),std::forward&lt;Args&gt;(args)...)</tt>.
+</li>
+
+<li>
+Otherwise, if <tt>uses_allocator&lt;T, inner_allocator_type&gt;::value</tt> is
+<tt>true</tt> and <tt>is_constructible&lt;T, Args...,
+inner_allocator_type&gt;::value</tt> is <tt>true</tt>, calls
+<tt><i>OUTERMOST</i>(*this).construct(p, std::forward&lt;Args&gt;(args)...,
+inner_allocator())</tt>.
+</li>
+
+<li>
+Otherwise, the program is ill-formed. [<i>Note:</i> an error will result if
+<tt>uses_allocator</tt> evaluates to <tt>true</tt> but the specific constructor
+does not take an allocator. This definition prevents a silent failure to pass an
+inner allocator to a contained element. &mdash; <i>end note</i>]
+</li>
+</ul>
+
+</blockquote>
+
+<pre>
+template &lt;class T&gt;
+  void destroy(T* p);
+</pre>
+<blockquote>
+9 <i>Effects:</i> calls <tt>outer_allocator().destroy(p)</tt>.
+</blockquote>
+
+</blockquote>
+
+<p>
+In all other calls where applicable <tt>scoped_allocator_adaptor</tt> does not
+call members of an allocator directly, but rather does so indirectly via
+<tt>allocator_traits</tt>.  For example:
+</p>
+
+<blockquote>
+<pre>
+size_type max_size() const;
+</pre>
+<blockquote>
+7 <i>Returns:</i>
+<tt><b>allocator_traits&lt;OuterAlloc&gt;::</b>max_size(outer_allocator())</tt>.
+</blockquote>
+</blockquote>
+
+<p>
+Indeed, without the indirection through <tt>allocator_traits</tt> the
+definitions for <tt>construct</tt> and <tt>destroy</tt> are likely to fail at
+compile time since the <tt>outer_allocator()</tt> may not have the members
+<tt>construct</tt> and <tt>destroy</tt>.
+</p>
+
+<note>
+The proposed wording is a product of Pablo, Daniel and Howard.
+</note>
+
+<note>
+2010 Pittsburgh:  Moved to NAD Editorial.  Rationale added below.
+</note>
+
+</discussion>
+
+<rationale>
+<p>
+Solved by
+<a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2010/n3059.html">N3059</a>.
+</p>
+</rationale>
+
+<resolution>
+<p>
+In <sref ref="[allocator.adaptor.members]"/> move and change p8
+as indicated, and change p9 as indicated:
+</p>
+
+<blockquote>
+
+<p>
+<ins>Let <tt><i>OUTERMOST(x)</i></tt> be <tt><i>x</i></tt> if <tt><i>x</i></tt>
+does not have an <tt>outer_allocator()</tt> <ins>member</ins> function and
+<tt><i>OUTERMOST(x.outer_allocator())</i></tt> otherwise. Let
+<tt><i>OUTERMOST_ALLOC_TRAITS(x)</i></tt> be
+<tt>allocator_traits&lt;decltype(<i>OUTERMOST(x)</i>)&gt;</tt>.
+[<i>Note:</i> <tt><i>OUTERMOST(x)</i></tt> and
+<tt><i>OUTERMOST_ALLOC_TRAITS(x)</i></tt> are recursive operations.  It is
+incumbent upon the definition of <tt>outer_allocator()</tt> to ensure that the
+recursion terminates.  It <em>will</em> terminate for all instantiations
+of <tt>scoped_allocator_adaptor</tt>. &mdash; <i>end note</i>]
+</ins>
+</p>
+
+<pre>
+template &lt;class T, class... Args&gt;
+  void construct(T* p, Args&amp;&amp;... args);
+</pre>
+<blockquote>
+
+<p>
+8 <i>Effects:</i> <del>let <tt><i>OUTERMOST(x)</i></tt> be <tt><i>x</i></tt> if
+<tt><i>x</i></tt> does not have an <tt>outer_allocator()</tt> function and
+<tt><i>OUTERMOST(x.outer_allocator())</i></tt> otherwise.</del>
+</p>
+
+<ul>
+<li>
+If <tt>uses_allocator&lt;T, inner_allocator_type&gt;::value</tt> is
+<tt>false</tt> and <tt>is_constructible&lt;T, Args...&gt;::value</tt> is
+<tt>true</tt>, calls <tt><del><i>OUTERMOST(*this)</i>.</del>
+<ins><i>OUTERMOST_ALLOC_TRAITS(outer_allocator())</i>::</ins>construct(
+<ins><i>OUTERMOST(outer_allocator())</i>,</ins> p,
+std::forward&lt;Args&gt;(args)... )</tt>.
+</li>
+
+<li>
+Otherwise, if <tt>uses_allocator&lt;T, inner_allocator_type&gt;::value</tt> is
+<tt>true</tt> and <tt>is_constructible&lt;T, allocator_arg_t,
+inner_allocator_type, Args...&gt;::value</tt> is <tt>true</tt>, calls
+<tt><del><i>OUTERMOST(*this)</i>.</del>
+<ins><i>OUTERMOST_ALLOC_TRAITS(outer_allocator())</i>::</ins>construct(
+<ins><i>OUTERMOST(outer_allocator())</i>,</ins> p, allocator_arg,
+inner_allocator(), std::forward&lt;Args&gt;(args)... )</tt>.
+</li>
+
+<li>
+Otherwise, if <tt>uses_allocator&lt;T, inner_allocator_type&gt;::value</tt> is
+<tt>true</tt> and <tt>is_constructible&lt;T, Args...,
+inner_allocator_type&gt;::value</tt> is <tt>true</tt>, calls
+<tt><del><i>OUTERMOST(*this)</i>.</del>
+<ins><i>OUTERMOST_ALLOC_TRAITS(outer_allocator())</i>::</ins>construct(
+<ins><i>OUTERMOST(outer_allocator())</i>,</ins> p,
+std::forward&lt;Args&gt;(args)..., inner_allocator() )</tt>.
+</li>
+
+<li>
+Otherwise, the program is ill-formed. [<i>Note:</i> an error will result if
+<tt>uses_allocator</tt> evaluates to <tt>true</tt> but the specific constructor
+does not take an allocator. This definition prevents a silent failure to pass an
+inner allocator to a contained element. &mdash; <i>end note</i>]
+</li>
+</ul>
+
+</blockquote>
+
+<pre>
+template &lt;class T&gt;
+  void destroy(T* p);
+</pre>
+<blockquote>
+9 <i>Effects:</i> calls <tt><del>outer_allocator().</del>
+<ins><i>OUTERMOST_ALLOC_TRAITS(outer_allocator())</i>::</ins>destroy(
+<ins><i>OUTERMOST(outer_allocator())</i>,</ins> p)</tt>.
+</blockquote>
+
+</blockquote>
+
+</resolution>
+
+</issue>

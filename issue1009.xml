@@ -1,0 +1,165 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="1009" status="NAD">
+<title><tt>InputIterator</tt> post-increment dangerous</title>
+<section><sref ref="[iterator.iterators]"/></section>
+<submitter>Alisdair Meredith</submitter>
+<date>11 Mar 2009</date>
+
+<discussion>
+
+<p><b>Addresses UK 251</b></p>
+
+<p>
+The post-increment operator is dangerous for a general InputIterator.
+The multi-pass guarantees that make it meaningful are defined as part of
+the ForwardIterator refinement. Any change will affect only constrained
+templates that have not yet been written, so should not break existing
+user iterators which remain free to add these operations. This change
+will also affect the generalised OutputIterator, although there is no
+percieved need for the post-increment operator in this case either.
+</p>
+
+<note>
+2009-07-28 Alisdair adds:
+</note>
+
+<blockquote>
+We still think the issue is relevant, but needs totally rewording in
+non-concept language.  We would like to see the issue retained as Open,
+rather than deferred as NAD Concepts.  Review status is no longer
+appropriate.
+</blockquote>
+
+<note>
+2009-10 Santa Cruz:
+</note>
+
+<blockquote>
+NAD.  Without concepts we do not feel that input iterator post increment
+is broken.
+</blockquote>
+
+</discussion>
+
+<resolution>
+<p>
+Change <sref ref="[iterator.iterators]"/>:
+</p>
+
+<blockquote><pre>
+concept Iterator&lt;typename X&gt; : Semiregular&lt;X&gt; { 
+  MoveConstructible reference = typename X::reference; 
+  <del>MoveConstructible postincrement_result;</del>
+
+  <del>requires HasDereference&lt;postincrement_result&gt;;</del>
+
+  reference operator*(X&amp;&amp;); 
+  X&amp; operator++(X&amp;); 
+  <del>postincrement_result operator++(X&amp;, int);</del>
+}
+</pre>
+
+<p>...</p>
+<pre>
+<del>postincrement_result operator++(X& r, int);</del>
+</pre>
+
+<blockquote>
+<del>-3- <i>Effects:</i> equivalent to <tt>{ X tmp = r; ++r; return tmp; }</tt>.</del>
+</blockquote>
+
+</blockquote>
+
+<p>
+Change <sref ref="[input.iterators]"/>:
+</p>
+
+<blockquote>
+<pre>
+concept InputIterator&lt;typename X&gt; : Iterator&lt;X&gt;, EqualityComparable&lt;X&gt; { 
+  ObjectType value_type = typename X::value_type; 
+  MoveConstructible pointer = typename X::pointer; 
+
+  SignedIntegralLike difference_type = typename X::difference_type; 
+
+  requires IntegralType&lt;difference_type&gt; 
+        &amp;&amp; Convertible&lt;reference, const value_type &amp;&gt;; 
+        &amp;&amp; Convertible&lt;pointer, const value_type*&gt;; 
+
+  <del>requires Convertible&lt;HasDereference&lt;postincrement_result&gt;::result_type, const value_type&amp;&gt;;</del>
+
+  pointer operator-&gt;(const X&amp;); 
+}
+</pre>
+</blockquote>
+
+<p>
+Change <sref ref="[output.iterators]"/>:
+</p>
+
+<blockquote>
+<pre>
+auto concept OutputIterator&lt;typename X, typename Value&gt; { 
+  requires Iterator&lt;X&gt;; 
+
+  typename reference = Iterator&lt;X&gt;::reference; 
+  <del>typename postincrement_result = Iterator&lt;X&gt;::postincrement_result;</del>
+  requires SameType&lt;reference, Iterator&lt;X&gt;::reference&gt; 
+        <del>&amp;&amp; SameType&lt;postincrement_result, Iterator&lt;X&gt;::postincrement_result&gt;</del>
+        <del>&amp;&amp; Convertible&lt;postincrement_result, const X&amp;&gt;</del>
+        &amp;&amp; HasAssign&lt;reference, Value&gt; 
+        <del>&amp;&amp; HasAssign&lt;HasDereference&lt;postincrement_result&gt;::result_type, Value&gt;</del>;
+}
+</pre>
+</blockquote>
+
+<p>
+Change <sref ref="[forward.iterators]"/>:
+</p>
+
+<note>
+See <iref ref="1084"/> which is attempting to change this same area in a compatible
+way.
+</note>
+
+<blockquote>
+<pre>
+concept ForwardIterator&lt;typename X&gt; : InputIterator&lt;X&gt;, Regular&lt;X&gt; { 
+  <del>requires Convertible&lt;postincrement_result, const X&amp;&gt;;</del>
+
+  <ins>MoveConstructible postincrement_result;</ins>
+  <ins>requires HasDereference&lt;postincrement_result&gt;
+        &amp;&amp; Convertible&lt;HasDereference&lt;postincrement_result&gt;::result_type, const value_type&amp;&gt;;</ins>
+
+  <ins>postincrement_result operator++(X&amp;, int);</ins>
+
+  axiom MultiPass(X a, X b) { 
+    if (a == b) *a == *b; 
+    if (a == b) ++a == ++b; 
+  } 
+}
+</pre>
+
+<blockquote>
+<p>-4- ...</p>
+</blockquote>
+
+<pre>
+<ins>postincrement_result operator++(X&amp; r, int);</ins>
+</pre>
+
+<blockquote>
+<p>
+<ins>-5- <i>Effects:</i> equivalent to <tt>{ X tmp = r; ++r; return tmp; }</tt>.</ins>
+</p>
+</blockquote>
+
+</blockquote>
+
+</resolution>
+
+</issue>

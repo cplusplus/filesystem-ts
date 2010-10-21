@@ -1,0 +1,222 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="1099" status="NAD">
+<title>Various issues</title>
+<section><sref ref="[library]"/></section>
+<submitter>David Abrahams</submitter>
+<date>21 Mar 2009</date>
+
+<discussion>
+<p>
+Notes
+</p>
+<blockquote>
+<p>
+[2009-03-21 Sat] p. 535 at the top we need MoveConstructible V1,
+MoveConstructible V2 (where V1,V2 are defined on 539).  Also make_tuple
+on 550
+</p>
+
+<blockquote>
+<p>
+CD-1 reads:
+</p>
+
+<blockquote><pre>
+template &lt;MoveConstructible T1, MoveConstructible T2&gt; 
+pair&lt;V1, V2&gt; make_pair(T1&amp;&amp;, T2&amp;&amp;); 
+</pre></blockquote>
+
+<p>
+Actually I'm guessing we need something like <tt>MoveConstructible&lt;V1,T1&gt;</tt>,
+i.e. "<tt>V1</tt> can be constructed from an rvalue of type <tt>T1</tt>."
+</p>
+
+<p>
+Ditto for <tt>make_tuple</tt>
+</p>
+</blockquote>
+
+<p>
+[2009-03-21 Sat] p1183 thread ctor, and in general, we need a way to
+talk about "copiable from generalized rvalue ref argument" for cases
+where we're going to forward and copy.  
+</p>
+<blockquote>
+<p>
+   This issue may well be quite large.  Language in para 4 about "if
+   an lvalue" is wrong because types aren't expressions.
+</p>
+
+<blockquote>
+<p>
+Maybe we should define the term "move" so we can just say in the
+effects, "<tt>f</tt> is moved into the newly-created thread" or something, and
+agree (and ideally document) that saying "<tt>f</tt> is moved" implies 
+</p>
+
+<blockquote><pre>
+F x(move(f))
+</pre></blockquote>
+
+<p>
+is required to work.  That would cover both ctors at once.
+</p>
+</blockquote>
+
+<p>
+   p1199, call_once has all the same issues.
+</p>
+</blockquote>
+<p>
+[2009-03-21 Sat] p869 InputIterator pointer type should not be required
+to be convertible to const value_type*, rather it needs to have a
+operator-> of its own that can be used for the value type.
+</p>
+
+<blockquote>
+This one is serious and unrelated to the move issue.
+</blockquote>
+
+<p>
+[2009-03-21 Sat] p818 stack has the same problem with default ctor.
+</p>
+<p>
+[2009-03-21 Sat] p816 priority_queue has the same sorts of problems as queue, only more so
+</p>
+<blockquote><pre>
+   requires MoveConstructible&lt;Cont&gt; 
+     explicit priority_queue(const Compare&amp; x = Compare(), Cont&amp;&amp; = Cont()); 
+</pre>
+<p>
+   Don't require MoveConstructible when default constructing Cont.
+   Also missing semantics for move ctor.
+</p>
+</blockquote>
+<p>
+ [2009-03-21 Sat] Why are Allocators required to be CopyConstructible as
+ opposed to MoveConstructible?
+</p>
+<p>
+ [2009-03-21 Sat] p813 queue needs a separate default ctor (Cont needn't
+ be MoveConstructible).  No documented semantics for move c'tor.  Or
+ *any* of its 7 ctors!
+</p>
+<p>
+ [2009-03-21 Sat] std::array should have constructors for C++0x,
+ consequently must consider move construction.
+</p>
+
+<note>
+2009-05-01 Daniel adds:
+</note>
+
+<blockquote>
+This could be done as part of <iref ref="1035"/>, which already handles
+deviation of <tt>std::array</tt> from container tables.
+</blockquote>
+
+<p>
+ [2009-03-21 Sat] p622 all messed up.
+</p>
+<blockquote>
+<p>
+   para 8 "implementation-defined" is the wrong term; should be "see
+   below" or something.  
+</p>
+<p>
+   para 12 "will be selected" doesn't make any sense because we're not
+   talking about actual arg types.
+</p>
+<p>
+   paras 9-13 need to be totally rewritten for concepts.
+</p>
+</blockquote>
+
+<p>
+ [2009-03-21 Sat] Null pointer comparisons (p587) have all become
+ unconstrained.  Need to fix that
+</p>
+<p>
+ [2009-03-21 Sat] mem_fun_t etc. definition doesn't match declaration.
+  We think CopyConstructible is the right reqt.
+</p>
+<p>
+ make_pair needs Constructible&lt;V1, T1&amp;&amp;&gt; requirements!
+</p>
+<p>
+ make_tuple needs something similar
+</p>
+<p>
+ tuple bug in synopsis:
+</p>
+<blockquote><pre>
+   template &lt;class... UTypes&gt;
+   requires Constructible&lt;Types, const UTypes&amp;&gt;...
+   template &lt;class... UTypes&gt;
+   requires Constructible&lt;Types, RvalueOf&lt;UTypes&gt;::type&gt;...
+</pre>
+<p>
+   Note: removal of MoveConstructible requirements in std::function makes
+   these routines unconstrained!
+</p>
+</blockquote>
+
+<note>
+2009-05-02 Daniel adds:
+</note>
+
+<blockquote>
+This part of the issue is already covered by <iref ref="1077"/>.
+</blockquote>
+
+<p>
+ these unique_ptr constructors are broken [ I think this is covered in "p622 all messed up" ]
+</p>
+<blockquote><pre>
+ unique_ptr(pointer p, implementation-defined d);
+ unique_ptr(pointer p, implementation-defined d);
+</pre></blockquote>
+<p>
+ multimap range constructor should not have MoveConstructible&lt;value_type&gt; requirement.
+</p>
+<blockquote>
+   same with insert(..., P&amp;&amp;); multiset has the same issue, as do
+   unordered_multiset and unordered_multimap. Review these!
+</blockquote>
+
+</blockquote>
+
+<note>
+Batavia (2009-05):
+</note>
+<blockquote>
+Move to Open, pending proposed wording from Dave for further review.
+</blockquote>
+
+<note>
+2009-10 post-Santa Cruz:
+</note>
+
+<blockquote>
+Tentatively NAD.  We are not sure what has been addressed and what hasn't.
+Recommend closing unless someone sorts this out into something more readable.
+</blockquote>
+
+</discussion>
+
+<rationale>
+<p>
+The issue(s) at hand not adequately communicated.
+</p>
+</rationale>
+
+<resolution>
+<p>
+</p>
+</resolution>
+
+</issue>

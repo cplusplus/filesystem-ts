@@ -1,0 +1,54 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="574" status="CD1">
+<title>DR 369 Contradicts Text</title>
+<section><sref ref="[iostream.objects]"/></section>
+<submitter>Pete Becker</submitter>
+<date>18 Apr 2006</date>
+
+<discussion>
+<p>
+lib.iostream.objects requires that the standard stream objects are never
+destroyed, and it requires that they be destroyed.
+</p>
+<p>
+DR 369 adds words to say that we really mean for ios_base::Init objects to force
+construction of standard stream objects. It ends, though, with the phrase "these
+stream objects shall be destroyed after the destruction of dynamically ...".
+However, the rule for destruction is stated in the standard: "The objects are
+not destroyed during program execution."
+</p>
+</discussion>
+
+<resolution>
+<p>
+Change <sref ref="[iostream.objects]"/>/1:
+</p>
+
+<blockquote>
+<p>
+-2- The objects are constructed and the associations are established at
+some time prior to or during the first time an object of class
+<tt>ios_base::Init</tt> is constructed, and in any case before the body of main
+begins execution.<sup>290)</sup> The objects are not destroyed during program
+execution.<sup>291)</sup> If a translation unit includes <tt>&lt;iostream&t;</tt> or explicitly
+constructs an <tt>ios_base::Init</tt> object, these stream objects shall be
+constructed before dynamic initialization of non-local objects defined
+later in that translation unit<del>, and these stream objects shall be
+destroyed after the destruction of dynamically initialized non-local
+objects defined later in that translation unit</del>.
+</p>
+</blockquote>
+</resolution>
+
+<note>
+Kona (2007): From <sref ref="[iostream.objects]"/>/2, strike the words "...and these stream objects
+shall be destroyed after the destruction of dynamically initialized
+non-local objects defined later in that translation unit." Proposed
+Disposition: Review
+</note>
+
+</issue>

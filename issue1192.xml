@@ -1,0 +1,110 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="1192" status="WP">
+<title><tt>basic_string</tt> missing definitions for <tt>cbegin</tt> / <tt>cend</tt> / <tt>crbegin</tt> / <tt>crend</tt></title>
+<section><sref ref="[string.iterators]"/></section>
+<submitter>Jonathan Wakely</submitter>
+<date>14 Aug 2009</date>
+
+<discussion>
+<p>
+Unlike the containers in clause 23, <tt>basic_string</tt> has definitions for
+<tt>begin()</tt> and <tt>end()</tt>, but these have not been updated to include <tt>cbegin</tt>,
+<tt>cend</tt>, <tt>crbegin</tt> and <tt>crend</tt>.
+</p>
+
+<note>
+2009-10-28 Howard:
+</note>
+
+<blockquote>
+Moved to Tentatively NAD after 5 positive votes on c++std-lib.  Added
+rationale.
+</blockquote>
+
+<note>
+2009-10-28 Alisdair disagrees:
+</note>
+
+<blockquote>
+<p>
+I'm going to have to speak up as the dissenting voice.
+</p>
+
+<p>
+I agree the issue could be handled editorially, and that would be my
+preference if Pete feels this is appropriate. Failing that, I really
+think this issue should be accepted and moved to ready.  The other
+begin/end functions all have a semantic definition for this template,
+and it is confusing if a small few are missing.
+</p>
+
+<p>
+I agree that an alternative would be to strike <em>all</em> the definitions for
+<tt>begin/end/rbegin/rend</tt> and defer completely to the requirements tables in
+clause 23.  I think that might be confusing without a forward reference
+though, as those tables are defined in a *later* clause than the
+basic_string template itself.  If someone wants to pursue this I would
+support it, but recommend it as a separate issue.
+</p>
+
+<p>
+So my preference is strongly to move Ready over NAD, and a stronger
+preference for NAD Editorial if Pete is happy to make these changes.
+</p>
+
+</blockquote>
+
+<note>
+2009-10-29 Howard:
+</note>
+
+<blockquote>
+Moved to Tentatively Ready after 5 positive votes on c++std-lib.  Removed
+rationale to mark it NAD.  :-)
+</blockquote>
+
+</discussion>
+
+<resolution>
+<p>
+Add to <sref ref="[string.iterators]"/>
+</p>
+
+<blockquote><pre>
+iterator       begin();
+const_iterator begin() const;
+<ins>const_iterator cbegin() const;</ins>
+</pre>
+
+<p>...</p>
+
+<pre>
+iterator       end();
+const_iterator end() const;
+<ins>const_iterator cend() const;</ins>
+</pre>
+
+<p>...</p>
+
+<pre>
+reverse_iterator       rbegin();
+const_reverse_iterator rbegin() const;
+<ins>const_reverse_iterator crbegin() const;</ins>
+</pre>
+
+<p>...</p>
+
+<pre>
+reverse_iterator       rend();
+const_reverse_iterator rend() const;
+<ins>const_reverse_iterator crend() const;</ins>
+</pre>
+
+</blockquote>
+</resolution>
+
+</issue>

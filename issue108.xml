@@ -1,0 +1,36 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="108" status="TC1">
+<title>Lifetime of exception::what() return unspecified</title>
+<section><sref ref="[type.info]"/></section>
+<submitter>AFNOR</submitter>
+<date>7 Oct 1998</date>
+
+<discussion>
+<p>In 18.6.1, paragraphs 8-9, the lifetime of the return value of
+exception::what() is left unspecified. This issue has implications
+with exception safety of exception handling: some exceptions should
+not throw bad_alloc.</p>
+</discussion>
+
+<resolution>
+<p>Add to <sref ref="[type.info]"/> paragraph 9 (exception::what notes
+clause) the sentence:</p>
+
+<blockquote>
+  <p>The return value remains valid until the exception object from which it is obtained is
+  destroyed or a non-const member function of the exception object is called.</p>
+</blockquote>
+</resolution>
+
+<rationale>
+<p>If an exception object has non-const members, they may be used
+to set internal state that should affect the contents of the string
+returned by <tt>what()</tt>.
+</p>
+</rationale>
+
+</issue>

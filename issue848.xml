@@ -1,0 +1,44 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="848" status="CD1">
+<title>missing <tt>std::hash</tt> specializations for <tt>std::bitset/std::vector&lt;bool&gt;</tt></title>
+<section><sref ref="[unord.hash]"/></section>
+<submitter>Thorsten Ottosen</submitter>
+<date>5 Jun 2008</date>
+
+<discussion>
+<p>
+In the current working draft, <tt>std::hash&lt;T&gt;</tt> is specialized for builtin
+types and a few other types. Bitsets seems like one that is missing from
+the list, not because it cannot not be done by the user, but because it
+is hard or impossible to write an efficient implementation that works on
+32bit/64bit chunks at a time. For example, <tt>std::bitset</tt> is too much
+encapsulated in this respect.
+</p>
+</discussion>
+
+<resolution>
+<p>
+Add the following to the synopsis in <sref ref="[function.objects]"/>/2:
+</p>
+
+<blockquote><pre>
+template&lt;class Allocator&gt; struct hash&lt;std::vector&lt;bool,Allocator&gt;&gt;;
+template&lt;size_t N&gt; struct hash&lt;std::bitset&lt;N&gt;&gt;;
+</pre></blockquote>
+
+<p>
+Modify the last sentence of <sref ref="[unord.hash]"/>/1 to end with:
+</p>
+
+<blockquote>
+... and <tt>std::string</tt>, <tt>std::u16string</tt>, <tt>std::u32string</tt>, <tt>std::wstring</tt>,
+<tt>std::error_code</tt>, <tt>std::thread::id</tt>, <tt>std::bitset</tt>, <tt>and std::vector&lt;bool&gt;</tt>.
+</blockquote>
+
+</resolution>
+
+</issue>

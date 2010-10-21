@@ -1,0 +1,132 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="768" status="CD1">
+<title>Typos in [atomics]?</title>
+<section><sref ref="[atomics.types.generic]"/></section>
+<submitter>Alberto Ganesh Barbati</submitter>
+<date>28 Dec 2007</date>
+
+<discussion>
+<p>
+in the latest publicly available draft, paper
+<a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2007/n2461.pdf">N2641</a>,
+in section <sref ref="[atomics.types.generic]"/>, the following specialization of the template
+<tt>atomic&lt;&gt;</tt> is provided for pointers:
+</p>
+
+<blockquote><pre>
+template &lt;class T&gt; struct atomic&lt;T*&gt; : atomic_address { 
+  T* fetch_add(ptrdiff_t, memory_order = memory_order_seq_cst) volatile; 
+  T* fetch_sub(ptrdiff_t, memory_order = memory_order_seq_cst) volatile; 
+
+  atomic() = default; 
+  constexpr explicit atomic(T); 
+  atomic(const atomic&amp;) = delete; 
+  atomic&amp; operator=(const atomic&amp;) = delete; 
+
+  T* operator=(T*) volatile; 
+  T* operator++(int) volatile; 
+  T* operator--(int) volatile; 
+  T* operator++() volatile; 
+  T* operator--() volatile; 
+  T* operator+=(ptrdiff_t) volatile;
+  T* operator-=(ptrdiff_t) volatile; 
+};
+</pre></blockquote>
+
+<p>
+First of all, there is a typo in the non-default constructor which
+should take a <tt>T*</tt> rather than a <tt>T</tt>.
+</p>
+
+<p>
+As you can see, the specialization redefine and therefore hide a few
+methods from the base class <tt>atomic_address</tt>, namely <tt>fetch_add</tt>, <tt>fetch_sub</tt>,
+<tt>operator=</tt>, <tt>operator+=</tt> and <tt>operator-=</tt>. That's good, but... what happened
+to the other methods, in particular these ones:
+</p>
+
+<blockquote><pre>
+void store(T*, memory_order = memory_order_seq_cst) volatile;
+T* load( memory_order = memory_order_seq_cst ) volatile;
+T* swap( T*, memory_order = memory_order_seq_cst ) volatile;
+bool compare_swap( T*&amp;, T*, memory_order, memory_order ) volatile;
+bool compare_swap( T*&amp;, T*, memory_order = memory_order_seq_cst ) volatile;
+</pre></blockquote>
+
+<p>
+By reading paper
+<a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2007/n2427.html">N2427 "C++ Atomic Types and Operations"</a>,
+I see that the
+definition of the specialization <tt>atomic&lt;T*&gt;</tt> matches the one in the
+draft, but in the example implementation the methods <tt>load()</tt>, <tt>swap()</tt>
+and <tt>compare_swap()</tt> are indeed present.
+</p>
+
+<p>
+Strangely, the example implementation does not redefine the method
+<tt>store()</tt>. It's true that a <tt>T*</tt> is always convertible to <tt>void*</tt>, but not
+hiding the <tt>void*</tt> signature from the base class makes the class
+error-prone to say the least: it lets you assign pointers of any type to
+a <tt>T*</tt>, without any hint from the compiler.
+</p>
+
+<p>
+Is there a true intent to remove them from the specialization or are
+they just missing from the definition because of a mistake?
+</p>
+
+<note>
+Bellevue:
+</note>
+
+<blockquote>
+<p>
+The proposed revisions are accepted.
+</p>
+<p>
+Further discussion: why is the ctor labeled "constexpr"? Lawrence said
+this permits the object to be statically initialized, and that's
+important because otherwise there would be a race condition on
+initialization.
+</p>
+</blockquote>
+</discussion>
+
+<resolution>
+<p>
+Change the synopsis in <sref ref="[atomics.types.generic]"/>:
+</p>
+
+<blockquote><pre>
+template &lt;class T&gt; struct atomic&lt;T*&gt; : atomic_address { 
+  <ins>void store(T*, memory_order = memory_order_seq_cst) volatile;</ins>
+  <ins>T* load( memory_order = memory_order_seq_cst ) volatile;</ins>
+  <ins>T* swap( T*, memory_order = memory_order_seq_cst ) volatile;</ins>
+  <ins>bool compare_swap( T*&amp;, T*, memory_order, memory_order ) volatile;</ins>
+  <ins>bool compare_swap( T*&amp;, T*, memory_order = memory_order_seq_cst ) volatile;</ins>
+
+  T* fetch_add(ptrdiff_t, memory_order = memory_order_seq_cst) volatile; 
+  T* fetch_sub(ptrdiff_t, memory_order = memory_order_seq_cst) volatile; 
+
+  atomic() = default; 
+  constexpr explicit atomic(T<ins>*</ins>); 
+  atomic(const atomic&amp;) = delete; 
+  atomic&amp; operator=(const atomic&amp;) = delete; 
+
+  T* operator=(T*) volatile; 
+  T* operator++(int) volatile; 
+  T* operator--(int) volatile; 
+  T* operator++() volatile; 
+  T* operator--() volatile; 
+  T* operator+=(ptrdiff_t) volatile;
+  T* operator-=(ptrdiff_t) volatile; 
+};
+</pre></blockquote>
+
+</resolution>
+
+</issue>

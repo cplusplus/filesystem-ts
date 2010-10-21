@@ -1,0 +1,46 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="244" status="NAD">
+<title>Must <tt>find</tt>'s third argument be CopyConstructible?</title>
+<section><sref ref="[alg.find]"/></section>
+<submitter>Andrew Koenig</submitter>
+<date>02 May 2000</date>
+
+<discussion>
+<p>Is the following implementation of <tt>find</tt> acceptable?</p>
+
+<pre>
+        template&lt;class Iter, class X&gt;
+        Iter find(Iter begin, Iter end, const X&amp; x)
+        {
+            X x1 = x;           // this is the crucial statement
+            while (begin != end &amp;&amp; *begin != x1)
+                ++begin;
+            return begin;
+        }
+</pre>
+
+<p>If the answer is yes, then it is implementation-dependent as to
+whether the following fragment is well formed:</p>
+
+<pre>
+        vector&lt;string&gt; v;
+
+        find(v.begin(), v.end(), &quot;foo&quot;);
+</pre>
+
+<p>At issue is whether there is a requirement that the third argument
+of find be CopyConstructible.  There may be no problem here, but
+analysis is necessary.</p>
+</discussion>
+
+<rationale>
+<p>There is no indication in the standard that find's third argument
+is required to be Copy Constructible.  The LWG believes that no such
+requirement was intended.  As noted above, there are times when a user
+might reasonably pass an argument that is not Copy Constructible.</p>
+</rationale>
+</issue>

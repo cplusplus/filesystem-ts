@@ -1,0 +1,76 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="964" status="Open">
+<title>Various threading bugs #14</title>
+<section><sref ref="[thread.condition.condvarany]"/></section>
+<submitter>Pete Becker</submitter>
+<date>7 Jan 2009</date>
+
+<discussion>
+<p>
+The requirements for the constructor for <tt>condition_variable</tt> has several
+error conditions, but the requirements for the constructor for
+<tt>condition_variable_any</tt> has none. Is this difference intentional?
+</p>
+
+<note>
+Summit:
+</note>
+
+<blockquote>
+Move to open, pass to Howard. If this is intentional, a note may be
+helpful. If the error conditions are to be copied from
+<tt>condition_variable</tt>, this depends on LWG <iref ref="965"/>.
+</blockquote>
+
+<note>
+Post Summit Howard adds:
+</note>
+
+<blockquote>
+The original intention 
+(<a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2007/n2447.htm#ConditionVariablesWording">N2447</a>)
+was to let the OS return whatever errors it was going to return, and for
+those to be translated into exceptions, for both
+<tt>condition_variable</tt> and <tt>condition_variable_any</tt>.  I have not
+received any complaints about specific error conditions from vendors on
+non-POSIX platforms, but such complaints would not surprise me if they surfaced.
+</blockquote>
+
+<note>
+2009-10 Santa Cruz:
+</note>
+
+<blockquote>
+Leave open. Benjamin to provide wording.
+</blockquote>
+
+<note>
+2010 Pittsburgh:
+</note>
+
+<blockquote>
+<p>
+We don't have throw clauses for condition variables.
+</p>
+<p>
+This issue may be dependent on LWG <iref ref="1268"/>.
+</p>
+<p>
+Leave open. Detlef will coordinate with Benjamin.
+</p>
+<p>
+Consider mberging LWG 964, <iref ref="966"/>, and <iref ref="1268"/> into a
+single paper.
+</p>
+</blockquote>
+
+</discussion>
+
+<resolution>
+</resolution>
+
+</issue>

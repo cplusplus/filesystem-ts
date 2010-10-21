@@ -1,0 +1,32 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="126" status="TC1">
+<title>typos in Effects clause of ctype::do_narrow()</title>
+<section><sref ref="[locale.ctype.virtuals]"/></section>
+<submitter>Judy Ward</submitter>
+<date>15 Dec 1998</date>
+
+<discussion><p>Typos in 22.2.1.1.2 need to be fixed.</p></discussion>
+
+<resolution>
+<p>In Section <sref ref="[locale.ctype.virtuals]"/> change: </p>
+
+<pre>   do_widen(do_narrow(c),0) == c</pre>
+
+<p>to:</p>
+
+<pre>   do_widen(do_narrow(c,0)) == c</pre>
+
+<p>and change:</p>
+
+<pre>   (is(M,c) || !ctc.is(M, do_narrow(c),dfault) )</pre>
+
+<p>to:</p>
+
+<pre>   (is(M,c) || !ctc.is(M, do_narrow(c,dfault)) )</pre>
+</resolution>
+
+</issue>

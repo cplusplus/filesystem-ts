@@ -1,0 +1,362 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="832" status="NAD">
+<title>Applying constexpr to System error support</title>
+<section><sref ref="[syserr]"/></section>
+<submitter>Beman Dawes</submitter>
+<date>14 May 2008</date>
+
+<discussion>
+<p>
+Initialization of objects of class <tt>error_code</tt>
+(<sref ref="[syserr.errcode]"/>) and class
+<tt>error_condition</tt> (<sref ref="[syserr.errcondition]"/>) can be made simpler and more reliable by use of
+the new <tt>constexpr</tt> feature 
+[<a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2007/n2349.pdf">N2349</a>]
+of C++0x. Less code will need to be
+generated for both library implementations and user programs when
+manipulating constant objects of these types. 
+</p>
+
+<p>
+This was not proposed originally because the constant expressions
+proposal was moving into the standard at about the same time as the
+Diagnostics Enhancements proposal 
+[<a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2007/n2241.html">N2241</a>],
+and it wasn't desirable to
+make the later depend on the former. There were also technical concerns
+as to how <tt>constexpr</tt> would apply to references. Those concerns are now
+resolved; <tt>constexpr</tt> can't be used for references, and that fact is
+reflected in the proposed resolution.
+</p>
+
+<p>
+Thanks to Jens Maurer, Gabriel Dos Reis, and Bjarne Stroustrup for clarification of <tt>constexpr</tt> requirements.
+</p>
+
+<p>
+LWG issue <iref ref="804"/> is related in that it raises the question of whether the
+exposition only member <tt>cat_</tt> of class <tt>error_code</tt> (<sref ref="[syserr.errcode]"/>) and class
+<tt>error_condition</tt> (<sref ref="[syserr.errcondition]"/>) should be presented as a reference or pointer.
+While in the context of <iref ref="804"/> that is arguably an editorial question,
+presenting it as a pointer becomes more or less required with this
+proposal, given <tt>constexpr</tt> does not play well with references. The
+proposed resolution thus changes the private member to a pointer, which
+also brings it in sync with real implementations.
+</p>
+
+<note>
+Sophia Antipolis:
+</note>
+
+<blockquote>
+On going question of extern pointer vs. inline functions for interface.
+</blockquote>
+
+<note>
+Pre-San Francisco:
+</note>
+
+<blockquote>
+<p>
+Beman Dawes reports that this proposal is unimplementable, and thus NAD.
+</p>
+<p>
+Implementation would require <tt>constexpr</tt> objects of classes derived
+from class <tt>error_category</tt>, which has virtual functions, and that is
+not allowed by the core language. This was determined when trying to
+implement the proposal using a constexpr enabled compiler provided
+by Gabriel Dos Reis, and subsequently verified in discussions with
+Gabriel and Jens Maurer.
+</p>
+
+</blockquote>
+</discussion>
+
+<resolution>
+<p>
+The proposed wording assumes the LWG <iref ref="805"/> proposed wording has been
+applied to the WP, resulting in the former <tt>posix_category</tt> being renamed
+<tt>generic_category</tt>. If <iref ref="805"/> has not been applied, the names in this
+proposal must be adjusted accordingly.
+</p>
+
+<p>
+Change <sref ref="[syserr.errcat.overview]"/> Class
+<tt>error_category</tt> overview <tt>error_category</tt> synopsis  as
+indicated:
+</p>
+
+<blockquote><pre>
+<del>const error_category&amp; get_generic_category();</del>
+<del>const error_category&amp; get_system_category();</del>
+
+<del>static</del> <ins>extern</ins> const error_category<del>&amp;</del><ins>* const</ins> generic_category<del> = get_generic_category()</del>;
+<del>static</del> <ins>extern</ins> const error_category<del>&amp;</del><ins>* const</ins> <del>native_category</del> system_category<del> = get_system_category()</del>;
+</pre></blockquote>
+
+<p>
+Change <sref ref="[syserr.errcat.objects]"/> Error category objects as indicated:
+</p>
+
+<blockquote>
+<pre>
+<ins>extern</ins> const error_category<del>&amp;</del><ins>* const</ins> <del>get_</del>generic_category<del>()</del>;
+</pre>
+<p>
+<del><i>Returns:</i> A reference</del> <ins><tt>generic_category</tt> shall point</ins>
+to <del>an</del> <ins>a statically initialized</ins> object of a type derived from
+class <tt>error_category</tt>.
+</p>
+
+<p>
+<del><i>Remarks:</i></del> The object's <tt>default_error_condition</tt> and <tt>equivalent</tt> virtual
+functions shall behave as specified for the class <tt>error_category</tt>. The
+object's <tt>name</tt> virtual function shall return a pointer to the string
+<tt>"GENERIC"</tt>.
+</p>
+
+<pre>
+<ins>extern</ins> const error_category<del>&amp;</del><ins>* const</ins> <del>get_</del>system_category<del>()</del>;
+</pre>
+
+<p>
+<del><i>Returns:</i> A reference</del> <ins><tt>system_category</tt> shall point</ins>
+to <del>an</del> <ins>a statically
+initialized</ins> object of a type derived from class <tt>error_category</tt>.
+</p>
+
+<p>
+<del><i>Remarks:</i></del>  The object's <tt>equivalent</tt> virtual functions shall behave as
+specified for class <tt>error_category</tt>. The object's <tt>name</tt> virtual function
+shall return a pointer to the string <tt>"system"</tt>. The object's
+<tt>default_error_condition</tt> virtual function shall behave as follows:
+</p>
+
+<p>
+If the argument <tt>ev</tt> corresponds to a POSIX <tt>errno</tt> value <tt>posv</tt>, the function
+shall return <tt>error_condition(posv, generic_category)</tt>. Otherwise, the
+function shall return <tt>error_condition(ev, system_category)</tt>. What
+constitutes correspondence for any given operating system is
+unspecified. [<i>Note:</i> The number of potential system error codes is large
+and unbounded, and some may not correspond to any POSIX <tt>errno</tt> value.
+Thus implementations are given latitude in determining correspondence.
+<i>-- end note</i>]
+</p>
+</blockquote>
+
+<p>
+Change <sref ref="[syserr.errcode.overview]"/> Class <tt>error_code</tt> overview as indicated:
+</p>
+
+<blockquote><pre>
+class error_code {
+public:
+  ...;
+  <ins>constexpr</ins> error_code(int val, const error_category<del>&amp;</del><ins>*</ins> cat);
+  ...
+  void assign(int val, const error_category<del>&amp;</del><ins>*</ins> cat);
+  ...
+  const error_category<del>&amp;</del><ins>*</ins> category() const;
+  ...
+private:
+  int val_;                    // exposition only
+  const error_category<del>&amp;</del><ins>*</ins> cat_; // exposition only
+</pre></blockquote>
+
+<p>
+Change <sref ref="[syserr.errcode.constructors]"/> Class <tt>error_code</tt> constructors as indicated:
+</p>
+
+<blockquote>
+<pre>
+<ins>constexpr</ins> error_code(int val, const error_category<del>&amp;</del><ins>*</ins> cat);
+</pre>
+<p>
+<i>Effects:</i> Constructs an object of type <tt>error_code</tt>.
+</p>
+<p>
+<i>Postconditions:</i> <tt>val_ == val</tt> and <tt>cat_ == cat</tt>.
+</p>
+<p>
+<i>Throws:</i> Nothing.
+</p>
+</blockquote>
+
+<p>
+Change <sref ref="[syserr.errcode.modifiers]"/> Class <tt>error_code</tt> modifiers  as indicated:
+</p>
+
+<blockquote>
+<pre>
+void assign(int val, const error_category<del>&amp;</del><ins>*</ins> cat);
+</pre>
+<p>
+<i>Postconditions:</i> <tt>val_ == val</tt> and <tt>cat_ == cat</tt>.
+</p>
+<p>
+<i>Throws:</i> Nothing.
+</p>
+</blockquote>
+
+<p>
+Change <sref ref="[syserr.errcode.observers]"/> Class <tt>error_code</tt> observers  as indicated:
+</p>
+
+<blockquote>
+<pre>
+const error_category<del>&amp;</del><ins>*</ins> category() const;
+</pre>
+
+<p>
+<i>Returns:</i> <tt>cat_</tt>.
+</p>
+<p>
+<i>Throws:</i> Nothing.
+</p>
+</blockquote>
+
+<p>
+Change <sref ref="[syserr.errcondition.overview]"/> Class <tt>error_condition</tt> overview   as indicated:
+</p>
+
+<blockquote>
+<pre>
+class error_condition {
+public:
+  ...;
+  <ins>constexpr</ins> error_condition(int val, const error_category<del>&amp;</del><ins>*</ins> cat);
+  ...
+  void assign(int val, const error_category<del>&amp;</del><ins>*</ins> cat);
+  ...
+  const error_category<del>&amp;</del><ins>*</ins> category() const;
+  ...
+private:
+  int val_;                    // exposition only
+  const error_category<del>&amp;</del><ins>*</ins> cat_; // exposition only
+</pre>
+</blockquote>
+
+<p>
+Change <sref ref="[syserr.errcondition.constructors]"/> Class <tt>error_condition</tt> constructors as indicated:
+</p>
+
+<blockquote>
+<pre>
+<ins>constexpr</ins> error_condition(int val, const error_category<del>&amp;</del><ins>*</ins> cat);
+</pre>
+<p>
+<i>Effects:</i> Constructs an object of type <tt>error_condition</tt>.
+</p>
+<p>
+<i>Postconditions:</i> <tt>val_ == val</tt> and <tt>cat_ == cat</tt>.
+</p>
+<p>
+<i>Throws:</i> Nothing.
+</p>
+</blockquote>
+
+<p>
+Change <sref ref="[syserr.errcondition.modifiers]"/> Class <tt>error_condition</tt> modifiers as indicated:
+</p>
+
+<blockquote>
+<pre>
+void assign(int val, const error_category<del>&amp;</del><ins>*</ins> cat);
+</pre>
+<p>
+<i>Postconditions:</i> <tt>val_ == val</tt> and <tt>cat_ == cat</tt>.
+</p>
+<p>
+<i>Throws:</i> Nothing.
+</p>
+</blockquote>
+
+<p>
+Change <sref ref="[syserr.errcondition.observers]"/> Class <tt>error_condition</tt> observers as indicated:
+</p>
+
+<blockquote>
+<pre>
+const error_category<del>&amp;</del><ins>*</ins> category() const;
+</pre>
+<p>
+<i>Returns:</i> <tt>cat_</tt>.
+</p>
+<p>
+<i>Throws:</i> Nothing.
+</p>
+</blockquote>
+
+<p>
+Throughout <sref ref="[syserr]"/> System error support, change "<tt>category().</tt>"  to "<tt>category()-&gt;</tt>".
+Appears approximately six times.
+</p>
+
+<p>
+<i>[Partially Editorial]</i> In <sref ref="[syserr.compare]"/> Comparison operators,
+paragraphs 2 and 4, change "<tt>category.equivalent(</tt>"  to
+"<tt>category()-&gt;equivalent(</tt>".
+</p>
+
+<p>
+Change <sref ref="[syserr.syserr.overview]"/> Class system_error overview as indicated:
+</p>
+
+<blockquote><pre>
+public:
+  system_error(error_code ec, const string&amp; what_arg);
+  system_error(error_code ec);
+  system_error(int ev, const error_category<del>&amp;</del><ins>*</ins> ecat,
+      const string&amp; what_arg);
+  system_error(int ev, const error_category<del>&amp;</del><ins>*</ins> ecat);
+</pre></blockquote>
+
+<p>
+Change <sref ref="[syserr.syserr.members]"/> Class system_error members as indicated:
+</p>
+
+<blockquote>
+<pre>
+system_error(int ev, const error_category<del>&amp;</del><ins>*</ins> ecat, const string&amp; what_arg);
+</pre>
+<blockquote>
+<p>
+<i>Effects:</i> Constructs an object of class <tt>system_error</tt>.
+</p>
+<p>
+<i>Postconditions:</i> <tt>code() == error_code(ev, ecat)</tt> and
+<tt>strcmp(runtime_error::what(), what_arg.c_str()) == 0</tt>.
+</p>
+</blockquote>
+
+<pre>
+system_error(int ev, const error_category<del>&amp;</del><ins>*</ins> ecat);
+</pre>
+<blockquote>
+<p>
+<i>Effects:</i> Constructs an object of class <tt>system_error</tt>.
+</p>
+<p>
+<i>Postconditions:</i> <tt>code() == error_code(ev, ecat)</tt> and
+<tt>strcmp(runtime_error::what(), "") == 0</tt>.
+</p>
+</blockquote>
+</blockquote>
+
+</resolution>
+
+<rationale>
+<note>
+San Francisco:
+</note>
+
+<blockquote>
+NAD because Beman said so.
+</blockquote>
+</rationale>
+
+</issue>

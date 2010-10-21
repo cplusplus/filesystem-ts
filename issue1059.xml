@@ -1,0 +1,124 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="1059" status="NAD Concepts">
+<title>Usage of no longer existing FunctionType concept</title>
+<section><sref ref="[func.wrap.func]"/></section>
+<submitter>Daniel Kr&uuml;gler</submitter>
+<date>13 Mar 2009</date>
+
+<discussion>
+<p>
+Due to a deliberate core language decision, the earlier called
+"foundation" concept <tt>std::FunctionType</tt> had been removed in
+<a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2008/n2773.pdf">N2773</a>
+shortly
+before the first "conceptualized" version of the WP
+(<a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2008/n2798.pdf">N2798</a>)
+had been
+prepared. This caused a break of the library, which already used this
+concept in the adapted definition of <tt>std::function</tt>
+(<sref ref="[function.objects]"/>/2, header <tt>&lt;functional&gt;</tt> synopsis and
+<sref ref="[func.wrap.func]"/>).
+</p>
+<p>
+A simple fix would be to either (a) make <tt>std::function</tt>'s primary template
+unconstrained or to (b) add constraints based on existing (support) concepts.
+A more advanced fix would (c) introduce a new library concept.
+</p>
+<p>
+The big disadvantage of (a) is, that users can define templates which
+cause compiler errors during instantiation time because of under-constrainedness
+and would thus violate the basic advantage of constrained
+code.
+</p>
+<p>
+For (b), the ideal constraints for <tt>std::function</tt>'s template parameter would
+be one which excludes everything else but the single provided partial
+specialization that matches every "free function" type (i.e. any function
+type w/o cv-qualifier-seq and w/o ref-qualifier).
+Expressing such a type as as single requirement would be written as
+</p>
+<blockquote><pre>
+template&lt;typename T&gt;
+requires ReferentType&lt;T&gt; // Eliminate cv void and function types with cv-qual-seq
+                         //   or ref-qual (depending on core issue #749)
+      &amp;&amp; PointeeType&lt;T&gt;  // Eliminate reference types
+      &amp;&amp; !ObjectType&lt;T&gt;  // Eliminate object types
+</pre></blockquote>
+<p>
+Just for completeness approach (c), which would make sense, if the
+library has more reasons to constrain for free function types:
+</p>
+<blockquote><pre>
+auto concept FreeFunctionType&lt;typename T&gt;
+  : ReferentType&lt;T&gt;, PointeeType&lt;T&gt;, MemberPointeeType&lt;T&gt;
+{
+  requires !ObjectType&lt;T&gt;;
+}
+</pre></blockquote>
+<p>
+I mention that approach because I expect that free function types belong
+to the most natural type categories for every days coders. Potential
+candidates in the library are <tt>addressof</tt> and class template <tt>packaged_task</tt>.
+</p>
+
+<note>
+Batavia (2009-05):
+</note>
+<blockquote>
+<p>
+Alisdair would prefer to have a core-supported <tt>FunctionType</tt> concept
+in order that any future changes be automatically correct
+without need for a library solution to catch up;
+he points to type traits as a precedent.
+Further, he believes that a published concept can't in the future
+be changed.
+</p>
+<p>
+Bill feels this category of entity would change sufficiently slowly
+that he would be willing to take the risk.
+</p>
+<p>
+Of the discussed solutions, we tend toward option (c).
+We like the idea of having a complete taxonomy of native types,
+and perhaps erred in trimming the set.
+</p>
+<p>
+We would like to have this issue reviewed by Core and would like
+their feedback.  Move to Open.
+</p>
+</blockquote>
+</discussion>
+
+<resolution>
+<ol>
+<li>
+<p>
+Change in <sref ref="[function.objects]"/>/2, Header <tt>&lt;functional&gt;</tt> synopsis:
+</p>
+<blockquote><pre>
+// 20.6.16 polymorphic function wrappers:
+class bad_function_call;
+template&lt;<del>FunctionType</del><ins>ReferentType F</ins>&gt;
+<ins>requires PointeeType&lt;F&gt; &amp;&amp; !ObjectType&lt;F&gt;</ins>
+class function; // undefined
+</pre></blockquote>
+</li>
+<li>
+<p>
+Change in <sref ref="[func.wrap.func]"/>:
+</p>
+<blockquote><pre>
+namespace std {
+template&lt;<del>FunctionType</del><ins>ReferentType F</ins>&gt;
+<ins>requires PointeeType&lt;F&gt; &amp;&amp; !ObjectType&lt;F&gt;</ins>
+class function; // undefined
+</pre></blockquote>
+</li>
+</ol>
+</resolution>
+
+</issue>

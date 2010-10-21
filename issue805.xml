@@ -1,0 +1,258 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="805" status="CD1">
+<title><tt>posix_error::posix_errno</tt> concerns</title>
+<section><sref ref="[syserr]"/></section>
+<submitter>Jens Maurer</submitter>
+<date>24 Feb 2008</date>
+
+<discussion>
+<p>
+<sref ref="[syserr]"/>
+</p>
+
+<blockquote><pre>
+namespace posix_error {
+  enum posix_errno {
+    address_family_not_supported, // EAFNOSUPPORT
+    ...
+</pre></blockquote>
+
+<p>
+should rather use the new scoped-enum  facility (<sref ref="[dcl.enum]"/>),
+which would avoid the necessity for a new <tt>posix_error</tt>
+namespace, if I understand correctly.
+</p>
+
+<note>
+Further discussion:
+</note>
+
+<blockquote>
+<p>
+See <a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2007/n2347.pdf">N2347</a>,
+Strongly Typed Enums, since renamed Scoped Enums.
+</p>
+<p>
+Alberto Ganesh Barbati also raised this issue in private email, and also proposed the scoped-enum solution.
+</p>
+<p>
+Nick Stoughton asked in Bellevue that <tt>posix_error</tt> and <tt>posix_errno</tt> not be used as names. The LWG agreed.
+</p>
+<p>
+The wording for the Proposed resolution was provided by Beman Dawes.
+</p>
+</blockquote>
+</discussion>
+
+<resolution>
+<p>
+Change System error support <sref ref="[syserr]"/> as indicated:
+</p>
+
+<blockquote><pre>
+<del>namespace posix_error {</del>
+  enum <del>posix_errno</del> <ins>class errc</ins> {
+    address_family_not_supported, // EAFNOSUPPORT
+    ...
+    wrong_protocol_type, // EPROTOTYPE
+  };
+<del>} // namespace posix_error</del>
+
+template &lt;&gt; struct is_error_condition_enum&lt;<del>posix_error::posix_errno</del> <ins>errc</ins>&gt;
+  : public true_type {}
+
+<del>namespace posix_error {</del>
+  error_code make_error_code(<del>posix_errno</del> <ins>errc</ins> e);
+  error_condition make_error_condition(<del>posix_errno</del> <ins>errc</ins> e);
+<del>} // namespace posix_error</del>
+</pre></blockquote>
+
+<p>
+Change System error support <sref ref="[syserr]"/> :
+</p>
+
+<blockquote>
+<del>The <tt>is_error_code_enum</tt> and <tt>is_error_condition_enum</tt> templates may be
+specialized for user-defined types to indicate that such a type is
+eligible for class <tt>error_code</tt> and class <tt>error_condition</tt> automatic
+conversions, respectively.</del>
+</blockquote>
+
+<p>
+Change System error support <sref ref="[syserr]"/> and its subsections:
+</p>
+
+<blockquote>
+<ul>
+<li>
+remove all occurrences of <tt>posix_error::</tt>
+</li>
+<li>
+change all instances of <tt>posix_errno</tt> to <tt>errc</tt>
+</li>
+<li>
+change all instances of <tt>posix_category</tt> to <tt>generic_category</tt>
+</li>
+<li>
+change all instances of <tt>get_posix_category</tt> to <tt>get_generic_category</tt>
+</li>
+</ul>
+</blockquote>
+
+<p>
+Change Error category objects <sref ref="[syserr.errcat.objects]"/>, paragraph 2:
+</p>
+
+<blockquote>
+<i>Remarks:</i> The object's <tt>default_error_condition</tt> and equivalent virtual
+functions shall behave as specified for the class <tt>error_category</tt>. The
+object's name virtual function shall return a pointer to the string
+<del>"POSIX"</del> <ins>"generic"</ins>.
+</blockquote>
+
+<p>
+Change <sref ref="[syserr.errcode.nonmembers]"/> Class <tt>error_code</tt> non-member functions as indicated:
+</p>
+
+<blockquote>
+<pre>
+error_code make_error_code(<del>posix_errno</del> <ins>errc</ins> e);
+</pre>
+
+<blockquote>
+<i>Returns:</i> <tt>error_code(<ins>static_cast&lt;int&gt;(</ins>e<ins>)</ins>, <del>posix</del><ins>generic</ins>_category)</tt>.
+</blockquote>
+</blockquote>
+
+<p>
+Change <sref ref="[syserr.errcondition.nonmembers]"/> Class <tt>error_condition</tt> non-member functions as indicated:
+</p>
+
+<blockquote>
+<pre>
+error_condition make_error_condition(<del>posix_errno</del> <ins>errc</ins> e);
+</pre>
+
+<blockquote>
+<i>Returns:</i> <tt>error_condition(<ins>static_cast&lt;int&gt;(</ins>e<ins>)</ins>, <del>posix</del><ins>generic</ins>_category)</tt>.
+</blockquote>
+</blockquote>
+
+</resolution>
+
+<rationale>
+<table border="1">
+<tr>
+<th colspan="2">Names Considered</th>
+</tr>
+
+<tr>
+<td><tt>portable</tt></td>
+<td>
+Too non-specific. Did not wish to reserve such a common word in
+namespace std. Not quite the right meaning, either.
+</td>
+</tr>
+
+<tr>
+<td><tt>portable_error</tt></td>
+<td>
+Too long. Explicit qualification is always required for scoped enums, so
+a short name is desirable. Not quite the right meaning, either. May be
+misleading because <tt>*_error</tt> in the std lib is usually an exception class
+name.
+</td>
+</tr>
+
+<tr>
+<td><tt>std_error</tt></td>
+<td>
+Fairly short, yet explicit. But in fully qualified names like
+<tt>std::std_error::not_enough_memory</tt>, the std_ would be unfortunate. Not
+quite the right meaning, either. May be misleading because <tt>*_error</tt> in
+the std lib is usually an exception class name.
+</td>
+</tr>
+
+<tr>
+<td><tt>generic</tt></td>
+<td>
+Short enough. The category could be <tt>generic_category</tt>. Fully qualified
+names like <tt>std::generic::not_enough_memory</tt> read well. Reserving in
+namespace std seems dicey.
+</td>
+</tr>
+
+<tr>
+<td><tt>generic_error</tt></td>
+<td>
+Longish. The category could be <tt>generic_category</tt>. Fully qualified names
+like <tt>std::generic_error::not_enough_memory</tt> read well. Misleading because
+<tt>*_error</tt> in the std lib is usually an exception class name.
+</td>
+</tr>
+
+<tr>
+<td><tt>generic_err</tt></td>
+<td>
+A bit less longish. The category could be <tt>generic_category</tt>. Fully
+qualified names like <tt>std::generic_err::not_enough_memory</tt> read well.
+</td>
+</tr>
+
+<tr>
+<td><tt>gen_err</tt></td>
+<td>
+Shorter still. The category could be <tt>generic_category</tt>. Fully qualified
+names like <tt>std::gen_err::not_enough_memory</tt> read well.
+</td>
+</tr>
+
+<tr>
+<td><tt>generr</tt></td>
+<td>
+Shorter still. The category could be <tt>generic_category</tt>. Fully qualified
+names like <tt>std::generr::not_enough_memory</tt> read well.
+</td>
+</tr>
+
+<tr>
+<td><tt>error</tt></td>
+<td>
+Shorter still. The category could be <tt>generic_category</tt>. Fully qualified
+names like <tt>std::error::not_enough_memory</tt> read well. Do we want to use
+this general a name?
+</td>
+</tr>
+
+<tr>
+<td><tt>err</tt></td>
+<td>
+Shorter still. The category could be <tt>generic_category</tt>. Fully qualified
+names like <tt>std::err::not_enough_memory</tt> read well. Although alone it
+looks odd as a name, given the existing <tt>errno</tt> and <tt>namespace std</tt> names,
+it seems fairly intuitive.
+Problem: <tt>err</tt> is used throughout the standard library as an argument name
+and in examples as a variable name; it seems too confusing to add yet
+another use of the name.
+</td>
+</tr>
+
+<tr>
+<td><tt>errc</tt></td>
+<td>
+Short enough. The "c" stands for "constant". The category could be
+<tt>generic_category</tt>. Fully qualified names like
+<tt>std::errc::not_enough_memory</tt> read well. Although alone it looks odd as a
+name, given the existing <tt>errno</tt> and <tt>namespace std</tt> names, it seems fairly
+intuitive. There are no uses of <tt>errc</tt> in the current C++ standard.
+</td>
+</tr>
+</table>
+</rationale>
+
+</issue>

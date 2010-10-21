@@ -1,0 +1,52 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="640" status="CD1">
+<title>27.6.2.5.2 does not handle (unsigned) long long</title>
+<section><sref ref="[ostream.inserters.arithmetic]"/></section>
+<submitter>Daniel Kr&uuml;gler</submitter>
+<date>17 Feb 2007</date>
+
+<discussion>
+<p>
+The arithmetic inserters are described in <sref ref="[ostream.inserters.arithmetic]"/>.
+Although the section starts with a listing of the inserters including
+the new ones:
+</p>
+
+<blockquote><pre>
+operator&lt;&lt;(long long val );
+operator&lt;&lt;(unsigned long long val );
+</pre></blockquote>
+
+<p>
+the text in paragraph 1, which describes the corresponding effects
+of the inserters, depending on the actual type of val, does not
+handle the types <tt>long long</tt> and <tt>unsigned long long</tt>.
+</p>
+
+<note>
+Alisdair: In addition to the (unsigned) long long problem, that whole paragraph
+misses any reference to extended integral types supplied by the
+implementation - one of the additions by core a couple of working papers
+back.
+</note>
+
+</discussion>
+
+<resolution>
+<p>
+In <sref ref="[ostream.inserters.arithmetic]"/>/1 change the third sentence
+</p>
+
+<blockquote>
+When val is of type <tt>bool</tt>, <tt>long</tt>, <tt>unsigned
+long</tt>, <ins>long long, unsigned long long,</ins> <tt>double</tt>,
+<tt>long double</tt>, or <tt>const void*</tt>, the formatting conversion
+occurs as if it performed the following code fragment:
+</blockquote>
+</resolution>
+
+</issue>

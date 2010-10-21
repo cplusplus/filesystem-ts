@@ -1,0 +1,40 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="114" status="TC1">
+<title>Placement forms example in error twice</title>
+<section><sref ref="[new.delete.placement]"/></section>
+<submitter>Steve Clamage</submitter>
+<date>28 Oct 1998</date>
+
+<discussion>
+<p>Section 18.5.1.3 contains the following example: </p>
+
+<pre>[Example: This can be useful for constructing an object at a known address:
+        char place[sizeof(Something)];
+        Something* p = new (place) Something();
+ -end example]</pre>
+
+<p>First code line: &quot;place&quot; need not have any special alignment, and the
+following constructor could fail due to misaligned data.</p>
+
+<p>Second code line: Aren't the parens on Something() incorrect?&nbsp; [Dublin: the LWG
+believes the () are correct.]</p>
+
+<p>Examples are not normative, but nevertheless should not show code that is invalid or
+likely to fail.</p>
+</discussion>
+
+<resolution>
+<p>Replace the first line of code in the example in 
+<sref ref="[new.delete.placement]"/> with:
+</p>
+
+<blockquote>
+  <pre>void* place = operator new(sizeof(Something));</pre>
+</blockquote>
+</resolution>
+
+</issue>

@@ -1,0 +1,37 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="1224" status="NAD">
+<title>condition_variable_any support for recursive mutexes?</title>
+<section><sref ref="[thread.condition.condvarany]"/></section>
+<submitter>Jeffrey Yasskin</submitter>
+<date>30 Sep 2009</date>
+
+<discussion>
+<p>
+For <tt>condition_variable_any</tt>, are recursive mutexes allowed? (I think "no")
+</p>
+
+<note>
+2009-11-17 Moved to Tentatively NAD after 5 positive votes on c++std-lib. 
+Rationale added below.
+</note>
+</discussion>
+
+<resolution>
+</resolution>
+
+<rationale>
+<p>
+<tt>condition_variable_any::wait</tt> accepts any type of mutex. It calls
+<tt>unlock</tt> precisely once on entry and <tt>lock</tt> precisely once on
+exit. It is up to the user to ensure that this provides the required
+synchronization. Use of a recursive mutex is safe if either its lock count is 1,
+so after the single unlock it can be acquired by another thread, or another
+mechanism is used to synchronize the data.
+</p>
+</rationale>
+
+</issue>

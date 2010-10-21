@@ -1,0 +1,54 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="298" status="CD1">
+<title>::operator delete[] requirement incorrect/insufficient</title>
+<section><sref ref="[new.delete.array]"/></section>
+<submitter>John A. Pedretti</submitter>
+<date>10 Jan 2001</date>
+
+<discussion>
+<p>
+The default behavior of <tt>operator delete[]</tt> described in 18.5.1.2, p12 -
+namely that for non-null value of <i>ptr</i>, the operator reclaims storage
+allocated by the earlier call to the default <tt>operator new[]</tt> - is not
+correct in all cases. Since the specified <tt>operator new[]</tt> default
+behavior is to call <tt>operator new</tt> (18.5.1.2, p4, p8), which can be
+replaced, along with <tt>operator delete</tt>, by the user, to implement their
+own memory management, the specified default behavior of<tt> operator
+delete[]</tt> must be to call <tt>operator delete</tt>.
+</p>
+</discussion>
+
+<resolution>
+<p>Change 18.5.1.2, p12 from</p>
+<blockquote><p>
+<b>-12-</b> <b>Default behavior:</b></p>
+<ul>
+<li>
+For a null value of <i><tt>ptr</tt></i> , does nothing.
+</li>
+<li>
+Any other value of <i><tt>ptr</tt></i> shall be a value returned
+earlier by a call to the default <tt>operator new[](std::size_t)</tt>.
+[Footnote: The value must not have been invalidated by an intervening
+call to <tt>operator delete[](void*)</tt> (<sref ref="[res.on.arguments]"/>).
+--- end footnote]
+For such a non-null value of <i><tt>ptr</tt></i> , reclaims storage
+allocated by the earlier call to the default <tt>operator new[]</tt>.
+</li>
+</ul>
+</blockquote>
+
+<p>to</p>
+
+<blockquote><p>
+<b>-12-</b> <b>Default behavior: </b>Calls <tt>operator
+delete(</tt><i>ptr</i>)
+or <tt>operator delete(<i>ptr</i>, std::nothrow)</tt> respectively.
+</p></blockquote>
+<p>and expunge paragraph 13.</p>
+</resolution>
+</issue>

@@ -1,0 +1,57 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="1044" status="WP">
+<title>Response to UK 325</title>
+<section><sref ref="[thread.mutex]"/></section>
+<submitter>Alisdair Meredith</submitter>
+<date>12 Mar 2009</date>
+
+<discussion>
+
+<p><b>Addresses UK 325</b></p>
+
+<p>
+We believe constexpr literal values should be a more natural expression
+of empty tag types than extern objects as it should improve the
+compiler's ability to optimize the empty object away completely.
+</p>
+
+<note>
+Summit:
+</note>
+
+<blockquote>
+Move to review. The current specification is a "hack", and the proposed
+specification is a better "hack".
+</blockquote>
+
+<note>
+Batavia (2009-05):
+</note>
+<blockquote>
+We agree with the proposed resolution.
+Move to Tentatively Ready.
+</blockquote>
+</discussion>
+
+<resolution>
+<p>
+Change the synopsis in <sref ref="[thread.mutex]"/>:
+</p>
+
+<blockquote><pre>
+struct defer_lock_t <ins>{}</ins>;
+struct try_to_lock_t <ins>{}</ins>;
+struct adopt_lock_t <ins>{}</ins>;
+
+<del>extern</del> const<ins>expr</ins> defer_lock_t defer_lock <ins>{}</ins>;
+<del>extern</del> const<ins>expr</ins> try_to_lock_t try_to_lock <ins>{}</ins>;
+<del>extern</del> const<ins>expr</ins> adopt_lock_t adopt_lock <ins>{}</ins>;
+</pre></blockquote>
+
+</resolution>
+
+</issue>

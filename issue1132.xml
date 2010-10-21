@@ -1,0 +1,220 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="1132" status="NAD">
+<title>JP-30: nested exceptions</title>
+<section><sref ref="[except.nested]"/></section>
+<submitter>Seiji Hayashida</submitter>
+<date>1 Jun 2009</date>
+
+<discussion>
+<p><b>Addresses JP 30</b></p>
+
+<p>
+C++0x <tt>nested_exception</tt> cannot handle a structured exception well. The
+following codes show two types of tree structured exception handling.
+</p>
+<p>
+The first one is based on <tt>nested_exception</tt> in C++0x,
+while the second one is based on my library <tt>trickerr.h</tt> (in Japanese).
+<a href="http://tricklib.com/cxx/dagger/trickerr.h">http://tricklib.com/cxx/dagger/trickerr.h</a>
+</p>
+<p>
+Assume that Function <tt>A()</tt> calls two sub functions <tt>A_a()</tt> and <tt>A_b()</tt>, both might
+throw tree structured exceptions, and <tt>A_b()</tt> must be called even if <tt>A_a()</tt>
+throws an exception.
+</p>
+<p>
+List A (code of tree structured exception handling based on nested_exception
+in C++0x)
+</p>
+
+<blockquote><pre>
+void A()
+{
+    try
+    {
+        std::vector&lt;exception_ptr&gt; exception_list;
+        try
+        {
+            // A_a() does a similar processing as A().
+            A_a();
+        }
+        catch(...)
+        {
+            exception_list.push_back(current_exception());
+        }
+
+        // ***The processing A() has to do even when A_a() fails. ***
+        try
+        {
+            // A_b() does a similar processing as A().
+            A_b();
+        }
+        catch(...)
+        {
+            exception_list.push_back(current_exception());
+        }
+        if (!exception_list.empty())
+        {
+            throw exception_list;
+        }
+    }
+    catch(...)
+    {
+        throw_with_nested(A_exception("someone error"));
+    }
+}
+void print_tree_exception(exception_ptr e, const std::string &amp; indent ="")
+{
+    const char * indent_unit = " ";
+    const char * mark = "- ";
+    try
+    {
+        rethow_exception(e);
+    }
+    catch(const std::vector&lt;exception_ptr&gt; e)
+    {
+        for(std::vector&lt;exception_ptr&gt;::const_iterator i = e.begin(); i!=e.end(); ++i)
+        {
+            print_tree_exception(i, indent);
+        }
+    }
+    catch(const std::nested_exception  e)
+    {
+        print_tree_exception(evil_i(e), indent +indent_unit);
+    }
+    catch(const std::exception e)
+    {
+        std::cout &lt;&lt; indent &lt;&lt; mark &lt;&lt; e.what() &lt;&lt; std::endl;
+    }
+    catch(...)
+    {
+        std::cout &lt;&lt; indent &lt;&lt; mark &lt;&lt; "unknown exception" &lt;&lt; std::endl;
+    }
+}
+int main(int, char * [])
+{
+    try
+    {
+        A();
+    }
+    catch()
+    {
+        print_tree_exception(current_exception());
+    }
+    return EXIT_SUCCESS;
+}
+</pre></blockquote>
+
+<p>
+List B ( code of tree structured exception handling based on <tt>trickerr.h</tt>. )
+"trickerr.h" (in Japanese), refer to:
+<a href="http://tricklib.com/cxx/dagger/trickerr.h">http://tricklib.com/cxx/dagger/trickerr.h</a>.
+</p>
+
+<blockquote><pre>
+void A()
+{
+    tricklib::error_listener_type error_listener;
+    // A_a() is like A(). A_a() can throw tree structured exception.
+    A_a();
+
+    // *** It must do process so that A_a() throws exception in A(). ***
+    // A_b() is like A(). A_b() can throw tree structured exception.
+    A_b();
+
+    if (error_listener.has_error()) // You can write this "if block" in destructor
+                                    //  of class derived from error_listener_type.
+    {
+        throw_error(new A_error("someone error",error_listener.listener_off().extract_pending_error()));
+    }
+}
+void print_tree_error(const tricklib::error_type &amp;a_error, const std::string &amp; indent = "")
+{
+    const char * indent_unit = " ";
+    const char * mark = "- ";
+
+    tricklib::error_type error = a_error;
+    while(error)
+    {
+        std::cout &lt;&lt; indent &lt;&lt; mark &lt;&lt; error-&gt;message &lt;&lt; std::endl;
+        if (error-&gt;children)
+        {
+            print_tree_error(error-&gt;children, indent +indent_unit);
+        }
+        error = error-&gt;next;
+    }
+}
+int main(int, char * [])
+{
+    tricklib::error_thread_power error_thread_power_on; // This object is necessary per thread.
+
+    try
+    {
+        A();
+    }
+    catch(error_type error)
+    {
+        print_tree_error(error);
+    }
+    catch(...)
+    {
+        std::cout &lt;&lt; "- unknown exception" &lt;&lt; std::endl;
+    }
+    return EXIT_SUCCESS;
+}
+</pre></blockquote>
+
+<p>
+Prospect
+</p>
+<p>
+We will focus on the method A() since the other methods, also main(), occur
+only once respectively.
+</p>
+
+<ul>
+<li>
+ In the List A above (of the nested exception handling), it is hard to
+ find out an active reason to use the nested exception handling at this
+ scene. Rather, we can take a simpler description by throwing the entire
+ exception_list directly to the top level.
+</li>
+<li>
+ The code in the same example gives us a kind of redundant impression,
+ which might have come from the fact that the try-throw-catch framework does
+ not assume a tree structured exception handling.
+</li>
+</ul>
+
+<p>
+According to the above observation, we cannot help concluding that it is not
+so easy to use the nested_exception handling as a tree structured exception
+handling mechanism in a practical sense.
+</p>
+<p>
+This text is based on the web page below (in Japanese).
+<a href="http://d.hatena.ne.jp/wraith13/20081231/1230715424">http://d.hatena.ne.jp/wraith13/20081231/1230715424</a>
+</p>
+
+<note>
+2009-10 Santa Cruz:
+</note>
+
+<blockquote>
+Mark as NAD. The committee agrees that nested_exception is not a good
+match for this usage model. The committee did not see a way of improving
+this within the timeframe allowed.
+</blockquote>
+
+</discussion>
+
+<resolution>
+<p>
+</p>
+</resolution>
+
+</issue>

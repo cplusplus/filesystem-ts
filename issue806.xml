@@ -1,0 +1,93 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="806" status="CD1">
+<title><tt>unique_ptr::reset</tt> effects incorrect, too permissive</title>
+<section><sref ref="[unique.ptr.single.modifiers]"/></section>
+<submitter>Peter Dimov</submitter>
+<date>13 Mar 2008</date>
+
+<discussion>
+<p>
+<tt>void unique_ptr::reset(T* p = 0)</tt> is currently specified as:
+</p>
+
+<blockquote>
+<i>Effects:</i> If <tt>p == get()</tt> there are no effects. Otherwise <tt>get_deleter()(get())</tt>.
+</blockquote>
+
+<p>
+There are two problems with this. One, if <tt>get() == 0</tt> and <tt>p != 0</tt>, the
+deleter is called with a NULL pointer, and this is probably not what's
+intended (the destructor avoids calling the deleter with 0.)
+</p>
+
+<p>
+Two, the special check for <tt>get() == p</tt> is generally not needed and such a
+situation usually indicates an error in the client code, which is being
+masked. As a data point, <tt>boost::shared_ptr</tt> was changed to assert on such
+self-resets in 2001 and there were no complaints.
+</p>
+
+<p>
+One might think that self-resets are necessary for operator= to work; it's specified to perform
+</p>
+
+<blockquote><pre>
+reset( u.release() );
+</pre></blockquote>
+
+<p>
+and the self-assignment
+</p>
+
+<blockquote><pre>
+p = move(p);
+</pre></blockquote>
+
+<p>
+might appear to result in a self-reset. But it doesn't; the <tt>release()</tt> is
+performed first, zeroing the stored pointer. In other words, <tt>p.reset(
+q.release() )</tt> works even when <tt>p</tt> and <tt>q</tt> are the same <tt>unique_ptr</tt>, and there
+is no need to special-case <tt>p.reset( q.get() )</tt> to work in a similar
+scenario, as it definitely doesn't when <tt>p</tt> and <tt>q</tt> are separate.
+</p>
+
+</discussion>
+
+<resolution>
+
+<p>
+Change <sref ref="[unique.ptr.single.modifiers]"/>:
+</p>
+
+<blockquote>
+<pre>
+void reset(T* p = 0);
+</pre>
+<blockquote>
+-4- <i>Effects:</i> If <tt><del>p ==</del> get()<ins> == 0</ins></tt> there are no effects. Otherwise <tt>get_deleter()(get())</tt>.
+</blockquote>
+</blockquote>
+
+<p>
+Change <sref ref="[unique.ptr.runtime.modifiers]"/>:
+</p>
+
+<blockquote>
+<pre>
+void reset(T* p = 0);
+</pre>
+<blockquote>
+<p>...</p>
+<p>
+-2- <i>Effects:</i> If <tt><del>p ==</del> get()<ins> == 0</ins></tt> there are no effects. Otherwise <tt>get_deleter()(get())</tt>.
+</p>
+</blockquote>
+</blockquote>
+
+</resolution>
+
+</issue>

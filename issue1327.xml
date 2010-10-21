@@ -1,0 +1,83 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="1327" status="Open">
+<title>templates defined in <tt>&lt;cmath&gt;</tt> replacing C macros with the same name</title>
+<section><sref ref="[c.math]"/></section>
+<submitter>Michael Wong</submitter>
+<date>7 Mar 2010</date>
+
+<discussion>
+<p>
+In <sref ref="[c.math]"/>p12
+The templates defined in <tt>&lt;cmath&gt;</tt> replace the C99 macros
+with the same names. The templates have the following declarations:
+</p>
+
+<blockquote><pre>
+namespace std {
+template &lt;class T&gt; bool signbit(T x);
+template &lt;class T&gt; int fpclassify(T x);
+template &lt;class T&gt; bool isfinite(T x);
+template &lt;class T&gt; bool isinf(T x);
+template &lt;class T&gt; bool isnan(T x);
+template &lt;class T&gt; bool isnormal(T x);
+template &lt;class T&gt; bool isgreater(T x, T y);
+template &lt;class T&gt; bool isgreaterequal(T x, T y);
+template &lt;class T&gt; bool isless(T x, T y);
+template &lt;class T&gt; bool islessequal(T x, T y);
+template &lt;class T&gt; bool islessgreater(T x, T y);
+template &lt;class T&gt; bool isunordered(T x, T y);
+}
+</pre></blockquote>
+
+<p>
+and p13:
+</p>
+
+<blockquote>
+13 The templates behave the same as the C99 macros with corresponding
+names defined in C99 7.12.3, Classification macros, and C99 7.12.14,
+Comparison macros in the C standard.
+</blockquote>
+
+<p>
+The C Std versions look like this:
+</p>
+
+<blockquote>
+<p>
+7.12.14.1/p1:
+</p>
+<blockquote>
+<p>
+Synopsis
+</p>
+<p>
+1 <tt>#include &lt;math.h&gt;</tt>
+</p>
+<pre>
+int isgreaterequal(real-floating x, real-floating y);
+</pre>
+</blockquote>
+</blockquote>
+
+<p>
+which is not necessarily the same types as is required by C++ since the
+two parameters may be different. Would it not be better if it were truly
+aligned with C?
+</p>
+
+<note>
+2010 Pittsburgh:  Bill to ask WG-14 if heterogeneous support for the
+two-parameter macros is intended.
+</note>
+
+</discussion>
+
+<resolution>
+</resolution>
+
+</issue>

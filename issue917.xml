@@ -1,0 +1,109 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="917" status="NAD">
+<title>Redundant move-assignment operator of <tt>tuple</tt> should be removed</title>
+<section><sref ref="[tuple.cnstr]"/></section>
+<submitter>Daniel Kr&uuml;gler</submitter>
+<date>4 Oct 2008</date>
+
+<discussion>
+<p><b>see also <iref ref="916"/>.</b></p>
+<p>
+N2770 (and thus now the WP) removed the
+non-template move-assignment operator from tuple's class definition,
+but the latter individual member description does still provide this
+operator. Is this (a) an oversight and can it (b) be solved as part of an
+editorial process?
+</p>
+
+<note>
+Post Summit Daniel provided wording.
+</note>
+
+<note>
+Batavia (2009-05):
+</note>
+<blockquote>
+<p>
+We believe that the proposed resolution's part 1 is editorial.
+</p>
+<p>
+Regarding part 2, we either remove the specification as proposed,
+or else add back the declaration to which the specification refers.
+Alisdair and Bill prefer the latter.
+It is not immediately obvious whether the function is intended to be present.
+</p>
+<p>
+We recommend that the Project Editor restore the missing declaration
+and that we keep part 2 of the issue alive.
+</p>
+<p>
+Move to Open.
+</p>
+</blockquote>
+
+<note>
+2009-07 Frankfurt:
+</note>
+
+<blockquote>
+Leave this open pending the removal of concepts from the WD.
+</blockquote>
+
+<note>
+2009-10 Santa Cruz:
+</note>
+
+<blockquote>
+Mark as NAD, see issue <iref ref="801"/>.
+</blockquote>
+
+</discussion>
+
+<resolution>
+<ol>
+<li>
+<p>
+In <sref ref="[tuple.tuple]"/>, class <tt>tuple</tt> just before member <tt>swap</tt> please
+change as indicated:
+</p>
+<note>
+This fixes an editorial loss between N2798 to N2800
+</note>
+<blockquote><pre>
+template &lt;class... UTypes&gt;
+requires HasAssign&lt;Types, const UTypes&amp;&gt;...
+<ins>tuple&amp; operator=(const pair&lt;UTypes...&gt;&amp;);</ins>
+
+template &lt;class... UTypes&gt;
+requires HasAssign&lt;Types, RvalueOf&lt;UTypes&gt;::type&gt;...
+<ins>tuple&amp; operator=(pair&lt;UTypes...&gt;&amp;&amp;);</ins>
+</pre></blockquote>
+</li>
+<li>
+<p>
+In <sref ref="[tuple.cnstr]"/>, starting just before p. 11 please remove
+as indicated:
+</p>
+
+<blockquote><pre>
+<del>requires MoveAssignable&lt;Types&gt;... tuple&amp; operator=(tuple&amp;&amp; u);</del>
+</pre>
+<blockquote>
+<p>
+<del>-11- <i>Effects:</i> Move-assigns each element of <tt>u</tt> to the corresponding
+element of <tt>*this</tt>.</del>
+</p>
+<p>
+<del>-12- <i>Returns:</i> <tt>*this</tt>.</del>
+</p>
+</blockquote>
+</blockquote>
+</li>
+</ol>
+</resolution>
+
+</issue>

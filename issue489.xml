@@ -1,0 +1,202 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="489" status="NAD">
+<title>std::remove / std::remove_if wrongly specified</title>
+<section><sref ref="[alg.remove]"/></section>
+<submitter>Thomas Mang</submitter>
+<date>12 Dec 2004</date>
+
+<discussion>
+<p>In Section 25.2.7 [lib.alg.remove], paragraphs 1 to 5 describe the
+behavior of the mutating sequence operations std::remove and
+std::remove_if. However, the wording does not reflect the intended
+behavior [Note: See definition of intended behavior below] of these
+algorithms, as it is known to the C++ community [1].
+</p>
+
+
+
+<p>1) Analysis of current wording:</p>
+
+
+<p>25.2.7 [lib.alg.remove], paragraph 2:</p>
+
+<p>Current wording says:
+"Effects: Eliminates all the elements referred to by iterator i in the
+range [first, last) for which the following corresponding conditions
+hold: *i == value, pred(*i) != false."</p>
+
+<p>
+This sentences expresses specifically that all elements denoted by the
+(original) range [first, last) for which the corresponding condition
+hold will be eliminated. Since there is no formal definition of the term
+"eliminate" provided, the meaning of "eliminate" in everyday language
+implies that as postcondition, no element in the range denoted by
+[first, last) will hold the corresponding condition on reiteration over
+the range [first, last).
+</p>
+
+<p>
+However, this is neither the intent [Note: See definition of intended
+behavior below] nor a general possible approach. It can be easily proven
+that if all elements of the original range[first, last) will hold the
+condition, it is not possible to substitute them by an element for which
+the condition will not hold.
+</p>
+
+
+<p>25.2.7 [lib.alg.remove], paragraph 3:</p>
+
+<p>
+Current wording says:
+"Returns: The end of the resulting range."
+</p>
+
+<p>
+The resulting range is not specified. In combination with 25.2.7
+[lib.alg.remove], paragraph 2, the only reasonable interpretation of
+this so-called resulting range is the range [first,last) - thus
+returning always the ForwardIterator 'last' parameter.
+</p>
+
+
+<p>
+25.2.7 [lib.alg.remove], paragraph 4:
+</p>
+
+<p>
+Current wording says:
+"Notes: Stable: the relative order of the elements that are not removed
+is the same as their relative order in the original range"
+</p>
+
+<p>
+This sentences makes use of the term "removed", which is neither
+specified, nor used in a previous paragraph (which uses the term
+"eliminate"), nor unamgiuously separated from the name of the algorithm.
+</p>
+
+
+<p>2) Description of intended behavior:</p>
+
+<p>
+For the rest of this Defect Report, it is assumed that the intended
+behavior was that all elements of the range [first, last) which do not
+hold the condition *i == value (std::remove) or  pred(*i) != false
+(std::remove_if)], call them s-elements [Note: s...stay], will be placed
+into a contiguous subrange of [first, last), denoted by the iterators
+[first, return value). The number of elements in the resulting range
+[first, return value) shall be equal to the number of s-elements in the
+original range [first, last). The relative order of the elements in the
+resulting subrange[first, return value) shall be the same as the
+relative order of the corresponding elements in the original range. It
+is undefined whether any elements in the resulting subrange [return
+value, last) will hold the corresponding condition, or not.
+</p>
+
+<p>
+All implementations known to the author of this Defect Report comply
+with this intent. Since the intent  of the behavior (contrary to the
+current wording) is also described in various utility references serving
+the C++ community [1], it is not expected that fixing the paragraphs
+will influence current code - unless the code relies on the behavior as
+it is described by current wording and the implementation indeed
+reflects the current wording, and not the intent.
+</p>
+
+
+
+<p>3) Proposed fixes:</p>
+
+
+<p>Change 25.2.7 [lib.alg.remove], paragraph 2 to:</p>
+
+<p>
+"Effect: Places all the elements referred to by iterator i in the range
+[first, last) for which the following corresponding conditions hold :
+!(*i == value), pred(*i) == false into the subrange [first, k) of the
+original range, where k shall denote a value of type ForwardIterator. It
+is undefined whether any elements in the resulting subrange [k, last)
+will hold the corresponding condition, or not."
+</p>
+
+<p>Comments to the new wording:</p>
+
+<p>
+a) "Places" has no special meaning, and the everyday language meaning
+should fit.
+b) The corresponding conditions were negated compared to the current
+wording, becaue the new wording requires it.
+c) The wording "of the original range" might be redundant, since any
+subrange starting at 'first' and containing no more elements than the
+original range is implicitly a subrange of the original range [first,
+last).
+d) The iterator k was introduced instead of "return value" in order to
+avoid a cyclic dependency on 25.2.7/3. The wording ", where k shall
+denote a value of type ForwardIterator" might be redundant, because it
+follows implicitly by 25.2.7/3.
+e) "Places" does, in the author's opinion, explicitly forbid duplicating
+any element holding the corresponding condition in the original range
+[first, last) within the resulting range [first, k). If there is doubt
+this term might be not unambiguous regarding this, it is suggested that
+k is specified more closely by the following wording: "k shall denote a
+value of type ForwardIterator [Note: see d)] so that k - first is equal
+to the number of elements in the original range [first, last) for which
+the corresponding condition did hold". This could also be expressed as a
+separate paragraph "Postcondition:"
+f) The senctence "It is undefined whether any elements in the resulting
+subrange [k, last) will hold the corresponding condition, or not." was
+added consciously so the term "Places" does not imply if the original
+range [first, last) contains n elements holding the corresponding
+condition, the identical range[first, last) will also contain exactly n
+elements holding the corresponding condition after application of the
+algorithm.
+</p>
+
+<p>
+Change 25.2.7 [lib.alg.remove], paragraph 3 to:
+
+"Returns: The iterator k."
+</p>
+
+<p>
+Change 25.2.7 [lib.alg.remove], paragraph 4 to:
+
+"Notes: Stable: the relative order of the elements that are placed into
+the subrange [first, return value) shall be the same as their relative
+order was in the original range [first, last) prior to application of
+the algorithm."
+</p>
+
+<p>
+Comments to the new wording:
+</p>
+
+<p>
+a) the wording "was ...  prior to application of the algorithm" is used
+to explicitly distinguish the original range not only by means of
+iterators, but also by a 'chronological' factor from the resulting range
+[first, return value). It might be redundant.
+</p>
+
+<p>
+[1]:
+The wording of these references is not always unambiguous, and provided
+examples partially contradict verbal description of the algorithms,
+because the verbal description resembles the problematic wording of
+ISO/IEC 14882:2003.
+</p>
+</discussion>
+
+<resolution>
+</resolution>
+
+<rationale>
+<p>The LWG believes that the standard is sufficiently clear, and that
+  there is no evidence of any real-world confusion about this point.</p>
+</rationale>
+
+</issue>

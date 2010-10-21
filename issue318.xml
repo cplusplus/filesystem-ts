@@ -1,0 +1,33 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="318" status="CD1">
+<title>Misleading comment in definition of numpunct_byname</title>
+<section><sref ref="[locale.numpunct.byname]"/></section>
+<submitter>Martin Sebor</submitter>
+<date>12 May 2001</date>
+
+<discussion>
+<p>The definition of the numpunct_byname template contains the following
+comment:</p>
+
+<pre>
+    namespace std {
+        template &lt;class charT&gt;
+        class numpunct_byname : public numpunct&lt;charT&gt; {
+    // this class is specialized for char and wchar_t.
+        ...
+</pre>
+
+<p>There is no documentation of the specializations and it seems
+conceivable that an implementation will not explicitly specialize the
+template at all, but simply provide the primary template.</p>
+</discussion>
+
+<resolution>
+<p>Remove the comment from the text in 22.2.3.2 and from the proposed
+resolution of library issue <iref ref="228"/>.</p>
+</resolution>
+</issue>

@@ -1,0 +1,290 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="975" status="WP">
+<title><tt>is_convertible</tt> cannot be instantiated for  non-convertible types</title>
+<section><sref ref="[meta.rel]"/></section>
+<submitter>Daniel Kr&uuml;gler</submitter>
+<date>25 Jan 2009</date>
+
+<discussion>
+
+<b>Addresses UK 206</b>
+
+<p>
+Related to <iref ref="1114"/>.
+</p>
+
+<p>
+The current specification of <tt>std::is_convertible</tt> (reference is draft
+<a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2008/n2798.pdf">N2798</a>)
+is basically defined by <sref ref="[meta.rel]"/>/4:
+</p>
+
+<blockquote>
+<p>
+In order to instantiate the template <tt>is_convertible&lt;From,
+To&gt;</tt>, the following code shall be well formed:
+</p>
+
+<blockquote><pre>
+template &lt;class T&gt;
+  typename add_rvalue_reference&lt;T&gt;::type create();
+
+To test() {
+  return create&lt;From&gt;();
+}
+</pre></blockquote>
+
+<p>
+[<i>Note:</i> This requirement gives well defined results for reference
+types, void types, array types, and function types. --<i>end note</i>]
+</p>
+</blockquote>
+
+<p>
+The first sentence can be interpreted, that e.g. the expression
+</p>
+
+<blockquote><pre>
+std::is_convertible&lt;double, int*&gt;::value
+</pre></blockquote>
+
+<p>
+is ill-formed because <tt>std::is_convertible&lt;double, int*&gt;</tt> could not be
+instantiated, or in more general terms: The wording requires that
+<tt>std::is_convertible&lt;X, Y&gt;</tt> cannot be instantiated for otherwise valid
+argument types <tt>X</tt> and <tt>Y</tt> if <tt>X</tt> is not convertible to <tt>Y</tt>.
+</p>
+
+<p>
+This semantic is both unpractical and in contradiction to what the last type
+traits paper
+<a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2007/n2255.html">N2255</a>
+proposed:
+</p>
+
+<blockquote>
+<p>
+If the following <tt>test</tt> function is well formed code <tt>b</tt>
+is <tt>true</tt>, else it is <tt>false</tt>.
+</p>
+
+<blockquote><pre>
+template &lt;class T&gt;
+  typename add_rvalue_reference&lt;T&gt;::type create();
+
+To test() {
+  return create&lt;From&gt;();
+}
+</pre></blockquote>
+
+<p>
+[<i>Note:</i> This definition gives well defined results for <tt>reference</tt>
+types, <tt>void</tt> types, array types, and function types. --<i>end note</i>]
+</p>
+</blockquote>
+
+<note>
+Post Summit:
+</note>
+
+<blockquote>
+<p>
+Jens: Checking that code is well-formed and then returning true/false
+sounds like speculative compilation. John Spicer would really dislike
+this. Please find another wording suggesting speculative compilation.
+</p>
+<p>
+Recommend Open.
+</p>
+</blockquote>
+
+<note>
+Post Summit, Howard adds:
+</note>
+
+<blockquote>
+<p>
+John finds the following wording clearer:
+</p>
+<blockquote>
+
+<table border="1">
+<tr>
+<th>Template</th><th>Condition</th><th>Comments</th>
+</tr>
+<tr>
+<td><tt>template &lt;class From, class To&gt;<br/>struct is_convertible;</tt></td>
+<td><i>see below</i></td>
+<td><tt>From</tt> and <tt>To</tt> shall be complete types, arrays of unknown bound,
+or (possibly cv-qualified) <tt>void</tt> types.</td>
+</tr>
+</table>
+
+<p>
+Given the following function prototype:
+</p>
+
+<blockquote><pre>
+template &lt;class T&gt;
+  typename add_rvalue_reference&lt;T&gt;::type create();
+</pre></blockquote>
+
+<p>
+<tt>is_convertible&lt;From, To&gt;::value</tt> shall be <tt>true</tt> if the
+return expression in the following code would be well-formed, including
+any implicit conversions to the return type of the function, else
+<tt>is_convertible&lt;From, To&gt;::value</tt> shall be <tt>false</tt>.
+</p>
+
+<blockquote><pre>
+To test() {
+  return create&lt;From&gt;();
+}
+</pre></blockquote>
+
+</blockquote>
+
+</blockquote>
+
+<b>Original proposed wording:</b>
+
+<p>
+In <sref ref="[meta.rel]"/>/4 change:
+</p>
+
+<blockquote>
+<del>In order to instantiate the template <tt>is_convertible&lt;From, To&gt;</tt>, the
+following code shall be well formed</del> <ins>If the following code
+is well formed <tt>is_convertible&lt;From, To&gt;::value</tt> is <tt>true</tt>, otherwise
+<tt>false</tt></ins>:[..]
+</blockquote>
+
+<p><b>Revision 2</b></p>
+
+<blockquote>
+
+<p>
+In <sref ref="[meta.rel]"/> change:
+</p>
+
+<blockquote>
+
+<table border="1">
+<tr>
+<th>Template</th><th>Condition</th><th>Comments</th>
+</tr>
+<tr>
+<tr><td>...</td><td>...</td><td>...</td></tr>
+<td><tt>template &lt;class From, class To&gt;<br/>struct is_convertible;</tt></td>
+<td>
+<del>The code set out below shall be well formed.</del>
+<ins><i>see below</i></ins></td>
+<td><tt>From</tt> and <tt>To</tt> shall be complete types, arrays of unknown bound,
+or (possibly cv-qualified) <tt>void</tt> types.</td>
+</tr>
+</table>
+
+<p>
+-4- <del>In order to instantiate the template <tt>is_convertible&lt;From, To&gt;</tt>, the
+following code shall be well formed:</del>
+<ins>Given the following function prototype:</ins>
+</p>
+
+<blockquote><pre>
+template &lt;class T&gt; 
+  typename add_rvalue_reference&lt;T&gt;::type create();
+</pre></blockquote>
+
+<p>
+<ins><tt>is_convertible&lt;From, To&gt;::value</tt> inherits either directly or
+indirectly from <tt>true_type</tt> if the
+return expression in the following code would be well-formed, including
+any implicit conversions to the return type of the function, else
+<tt>is_convertible&lt;From, To&gt;::value</tt> inherits either directly or
+indirectly from <tt>false_type</tt>.</ins>
+</p>
+
+<blockquote><pre>
+To test() { 
+  return create&lt;From&gt;(); 
+}
+</pre></blockquote>
+
+<p>
+[<i>Note:</i> This requirement gives well defined results for reference types,
+void types, array types, and function types. <i>-- end note</i>]
+</p>
+
+</blockquote>
+</blockquote>
+
+<note>
+Batavia (2009-05):
+</note>
+<blockquote>
+We agree with the proposed resolution.
+Move to Tentatively Ready.
+</blockquote>
+</discussion>
+
+<resolution>
+
+<p>
+In <sref ref="[meta.rel]"/> change:
+</p>
+
+<blockquote>
+
+<table border="1">
+<tr>
+<th>Template</th><th>Condition</th><th>Comments</th>
+</tr>
+<tr>
+<tr><td>...</td><td>...</td><td>...</td></tr>
+<td><tt>template &lt;class From, class To&gt;<br/>struct is_convertible;</tt></td>
+<td>
+<del>The code set out below shall be well formed.</del>
+<ins><i>see below</i></ins></td>
+<td><tt>From</tt> and <tt>To</tt> shall be complete types, arrays of unknown bound,
+or (possibly cv-qualified) <tt>void</tt> types.</td>
+</tr>
+</table>
+
+<p>
+-4- <del>In order to instantiate the template <tt>is_convertible&lt;From, To&gt;</tt>, the
+following code shall be well formed:</del>
+<ins>Given the following function prototype:</ins>
+</p>
+
+<blockquote><pre>
+template &lt;class T&gt; 
+  typename add_rvalue_reference&lt;T&gt;::type create();
+</pre></blockquote>
+
+<p>
+<ins>the predicate condition for a template specialization
+<tt>is_convertible&lt;From, To&gt;</tt> shall be satisfied, if and only
+if the return expression in the following code would be well-formed,
+including any implicit conversions to the return type of the
+function.</ins>
+</p>
+
+<blockquote><pre>
+To test() { 
+  return create&lt;From&gt;(); 
+}
+</pre></blockquote>
+
+<p>
+[<i>Note:</i> This requirement gives well defined results for reference types,
+void types, array types, and function types. <i>&mdash; end note</i>]
+</p>
+
+</blockquote>
+</resolution>
+
+</issue>

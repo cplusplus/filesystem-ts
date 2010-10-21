@@ -1,0 +1,161 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="920" status="WP">
+<title>Ref-qualification support in the library</title>
+<section><sref ref="[func.memfn]"/></section>
+<submitter>Bronek Kozicki</submitter>
+<date>6 Oct 2008</date>
+
+<discussion>
+<p>
+Daniel Kr&uuml;gler wrote:
+</p>
+
+<blockquote>
+<p>
+Shouldn't above list be completed for &amp;- and &amp;&amp;-qualified
+member functions This would cause to add:
+</p>
+<blockquote><pre>
+template&lt;Returnable R, class T, CopyConstructible... Args&gt;
+unspecified mem_fn(R (T::* pm)(Args...) &amp;);
+template&lt;Returnable R, class T, CopyConstructible... Args&gt;
+unspecified mem_fn(R (T::* pm)(Args...) const &amp;);
+template&lt;Returnable R, class T, CopyConstructible... Args&gt;
+unspecified mem_fn(R (T::* pm)(Args...) volatile &amp;);
+template&lt;Returnable R, class T, CopyConstructible... Args&gt;
+unspecified mem_fn(R (T::* pm)(Args...) const volatile &amp;);
+template&lt;Returnable R, class T, CopyConstructible... Args&gt;
+unspecified mem_fn(R (T::* pm)(Args...) &amp;&amp;);
+template&lt;Returnable R, class T, CopyConstructible... Args&gt;
+unspecified mem_fn(R (T::* pm)(Args...) const &amp;&amp;);
+template&lt;Returnable R, class T, CopyConstructible... Args&gt;
+unspecified mem_fn(R (T::* pm)(Args...) volatile &amp;&amp;);
+template&lt;Returnable R, class T, CopyConstructible... Args&gt;
+unspecified mem_fn(R (T::* pm)(Args...) const volatile &amp;&amp;);
+</pre></blockquote>
+
+</blockquote>
+
+<p>
+yes, absolutely. Thanks for spotting this. Without this change <tt>mem_fn</tt>
+cannot be initialized from pointer to ref-qualified member function. I
+believe semantics of such function pointer is well defined.
+</p>
+
+<note>
+Post Summit Daniel provided wording.
+</note>
+
+<note>
+Batavia (2009-05):
+</note>
+<blockquote>
+<p>
+We need to think about whether we really want to go down the proposed path
+of combinatorial explosion.
+Perhaps a Note would suffice.
+</p>
+<p>
+We would really like to have an implementation before proceeding.
+</p>
+<p>
+Move to Open, and recommend this be deferred until after the next
+Committee Draft has been issued.
+</p>
+</blockquote>
+
+<note>
+2009-10-10 Daniel updated wording to post-concepts.
+</note>
+
+<blockquote>
+<iref ref="1230"/> has a similar proposed resolution
+</blockquote>
+
+<note>
+2009-10 Santa Cruz:
+</note>
+
+<blockquote>
+Move to Ready.
+</blockquote>
+
+</discussion>
+
+<resolution>
+<ol>
+<li>
+<p>
+Change <sref ref="[function.objects]"/>/2, header
+<tt>&lt;functional&gt;</tt> synopsis as follows:
+</p>
+
+<blockquote><pre>
+// 20.7.14, member function adaptors:
+template&lt;class R, class T&gt; <i>unspecified</i> mem_fn(R T::*);
+
+<ins>template&lt;class R, class T, class ...Args&gt; <i>unspecified</i> mem_fn(R (T::*)(Args...));</ins>
+<ins>template&lt;class R, class T, class ...Args&gt; <i>unspecified</i> mem_fn(R (T::*)(Args...) const);</ins>
+<ins>template&lt;class R, class T, class ...Args&gt; <i>unspecified</i> mem_fn(R (T::*)(Args...) volatile);</ins>
+<ins>template&lt;class R, class T, class ...Args&gt; <i>unspecified</i> mem_fn(R (T::*)(Args...) const volatile);</ins>
+
+<ins>template&lt;class R, class T, class ...Args&gt; <i>unspecified</i> mem_fn(R (T::*)(Args...) &amp;);</ins>
+<ins>template&lt;class R, class T, class ...Args&gt; <i>unspecified</i> mem_fn(R (T::*)(Args...) const &amp;);</ins>
+<ins>template&lt;class R, class T, class ...Args&gt; <i>unspecified</i> mem_fn(R (T::*)(Args...) volatile &amp;);</ins>
+<ins>template&lt;class R, class T, class ...Args&gt; <i>unspecified</i> mem_fn(R (T::*)(Args...) const volatile &amp;);</ins>
+
+<ins>template&lt;class R, class T, class ...Args&gt; <i>unspecified</i> mem_fn(R (T::*)(Args...) &amp;&amp;);</ins>
+<ins>template&lt;class R, class T, class ...Args&gt; <i>unspecified</i> mem_fn(R (T::*)(Args...) const &amp;&amp;);</ins>
+<ins>template&lt;class R, class T, class ...Args&gt; <i>unspecified</i> mem_fn(R (T::*)(Args...) volatile &amp;&amp;);</ins>
+<ins>template&lt;class R, class T, class ...Args&gt; <i>unspecified</i> mem_fn(R (T::*)(Args...) const volatile &amp;&amp;);</ins>
+</pre></blockquote>
+</li>
+
+<li>
+<p>
+Change the prototype list of <sref ref="[func.memfn]"/> as follows [NB: The
+following text, most notably p.2 and p.3 which
+discuss influence of the cv-qualification on the definition of the
+base class's first template parameter remains
+unchanged. ]:
+</p>
+
+<blockquote><pre>
+template&lt;class R, class T&gt; <i>unspecified</i> mem_fn(R T::* pm);
+
+<ins>template&lt;class R, class T, class ...Args&gt; <i>unspecified</i> mem_fn(R (T::* pm)(Args...));</ins>
+<ins>template&lt;class R, class T, class ...Args&gt; <i>unspecified</i> mem_fn(R (T::* pm)(Args...) const);</ins>
+<ins>template&lt;class R, class T, class ...Args&gt; <i>unspecified</i> mem_fn(R (T::* pm)(Args...) volatile);</ins>
+<ins>template&lt;class R, class T, class ...Args&gt; <i>unspecified</i> mem_fn(R (T::* pm)(Args...) const volatile);</ins>
+
+<ins>template&lt;class R, class T, class ...Args&gt; <i>unspecified</i> mem_fn(R (T::* pm)(Args...) &amp;);</ins>
+<ins>template&lt;class R, class T, class ...Args&gt; <i>unspecified</i> mem_fn(R (T::* pm)(Args...) const &amp;);</ins>
+<ins>template&lt;class R, class T, class ...Args&gt; <i>unspecified</i> mem_fn(R (T::* pm)(Args...) volatile &amp;);</ins>
+<ins>template&lt;class R, class T, class ...Args&gt; <i>unspecified</i> mem_fn(R (T::* pm)(Args...) const volatile &amp;);</ins>
+
+<ins>template&lt;class R, class T, class ...Args&gt; <i>unspecified</i> mem_fn(R (T::* pm)(Args...) &amp;&amp;);</ins>
+<ins>template&lt;class R, class T, class ...Args&gt; <i>unspecified</i> mem_fn(R (T::* pm)(Args...) const &amp;&amp;);</ins>
+<ins>template&lt;class R, class T, class ...Args&gt; <i>unspecified</i> mem_fn(R (T::* pm)(Args...) volatile &amp;&amp;);</ins>
+<ins>template&lt;class R, class T, class ...Args&gt; <i>unspecified</i> mem_fn(R (T::* pm)(Args...) const volatile &amp;&amp;);</ins>
+</pre></blockquote>
+</li>
+
+<li>
+<p>
+Remove <sref ref="[func.memfn]"/>/5:
+</p>
+
+<blockquote>
+<del><i>Remarks:</i> Implementations may implement <tt>mem_fn</tt> as a set of
+overloaded function templates.</del>
+</blockquote>
+</li>
+</ol>
+
+</resolution>
+
+</issue>

@@ -1,0 +1,72 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="611" status="CD1">
+<title>Standard library templates and incomplete types</title>
+<section><sref ref="[res.on.functions]"/></section>
+<submitter>Nicola Musatti</submitter>
+<date>13 Nov 2006</date>
+
+<discussion>
+<p>
+In the latest available draft standard 
+(<a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2006/n2134.pdf">N2134</a>)
+&sect; 17.4.3.6 [res.on.functions] states:
+</p>
+
+<blockquote>
+<p>
+-1- In certain cases (replacement functions, handler functions, operations on
+types used to instantiate standard library template components), the C++
+Standard Library depends on components supplied by a C++ program. If these
+components do not meet their requirements, the Standard places no requirements
+on the implementation.
+</p>
+
+<p>
+-2- In particular, the effects are undefined in the following cases:
+</p>
+<p>
+[...]
+</p>
+<ul>
+<li>if an incomplete type (3.9) is used as a template argument when
+instantiating a template component. </li>
+</ul>
+</blockquote>
+
+<p>
+This is contradicted by &sect; 20.6.6.2/2 [util.smartptr.shared] which
+states:
+</p>
+
+<blockquote>
+<p>
+[...]
+</p>
+
+<p>
+The template parameter <tt>T</tt> of <tt>shared_ptr</tt> may be an incomplete type.
+</p>
+</blockquote>
+</discussion>
+
+<resolution>
+<p>
+Modify the last bullet of &sect; 17.4.3.6/2 [res.on.functions] to allow for
+exceptions:
+</p>
+
+<blockquote>
+<ul>
+<li>if an incomplete type (3.9) is used as a template argument when
+instantiating a template component<ins>, unless specifically allowed for the
+component</ins>. </li>
+</ul>
+</blockquote>
+
+</resolution>
+
+</issue>

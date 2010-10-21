@@ -1,0 +1,60 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="973" status="NAD Editorial">
+<title>auto_ptr characteristics</title>
+<section><sref ref="[auto.ptr]"/></section>
+<submitter>Maarten Hilferink</submitter>
+<date>21 Jan 2009</date>
+
+<discussion>
+<p>
+I think that the Note of <sref ref="[auto.ptr]"/>, paragraph 3 needs a rewrite 
+since "Assignable" is no longer defined as a concept. 
+The relationship of <tt>auto_ptr</tt> with the new <tt>CopyAssignable</tt>, <tt>MoveAssignable</tt>,
+ and <tt>MoveConstructible</tt> concepts should be clarified.
+Furthermore, since the use of <tt>auto_ptr</tt> is depreciated anyway,
+ we can also omit a description of its intended use.
+</p>
+
+<note>
+Batavia (2009-05):
+</note>
+<blockquote>
+We agree with the intent of the proposed resolution.
+Move to NAD Editorial.
+</blockquote>
+</discussion>
+
+<resolution>
+<p>
+Change <sref ref="[auto.ptr]"/>, paragraph 3:
+</p>
+
+<blockquote>
+The <tt>auto_ptr</tt> provides a semantics of strict ownership. An
+<tt>auto_ptr</tt> owns the ob ject it holds a pointer to. Copying an
+<tt>auto_ptr</tt> copies the pointer and transfers ownership to the
+destination. If more than one <tt>auto_ptr</tt> owns the same ob ject at
+the same time the behavior of the program is undefined. [<i>Note:</i>
+The uses of <tt>auto_ptr</tt> include providing temporary
+exception-safety for dynamically allocated memory, passing ownership of
+dynamically allocated memory to a function, and returning dynamically
+allocated memory from a function.
+<del><tt>auto_ptr</tt> does not meet the
+<tt>CopyConstructible</tt> and <tt>Assignable</tt> requirements for
+standard library container elements and thus instantiating a standard
+library container with an <tt>auto_ptr</tt> results in undefined
+behavior.</del>
+
+<ins>Instances of <tt>auto_ptr</tt> shall
+meet the <tt>MoveConstructible</tt> and <tt>MoveAssignable</tt>
+requirements, but do not meet the <tt>CopyConstructible</tt> and
+<tt>CopyAssignable</tt> requirements.</ins>
+-- <i>end note</i>]
+</blockquote>
+</resolution>
+
+</issue>

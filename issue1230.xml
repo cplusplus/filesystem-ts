@@ -1,0 +1,78 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="1230" status="Dup">
+<title><tt>mem_fn</tt> and variadic templates</title>
+<section><sref ref="[func.memfn]"/></section>
+<submitter>Alisdair Meredith</submitter>
+<date>9 Oct 2009</date>
+
+<discussion>
+
+<duplicate><iref ref="920"/></duplicate>
+
+<p>
+Since we have removed the entry in <sref ref="[implimits]"/> for the
+library-specific limit for number of arguments passed to
+<tt>function</tt>/<tt>tuple</tt>/etc. I believe we need to update the
+spec for <tt>mem_fn</tt> to reflect this.
+</p>
+
+<p>
+The "<i>Remarks:</i> Implementations may implement <tt>mem_fn</tt> as a set of
+overloaded function templates." no longer holds, as we cannot create an
+arbitrary number of such overloads.  I believe we should strike the
+remark and add a second signature:
+</p>
+
+<blockquote><pre>
+template&lt;class R, class T, typename ... ArgTypes&gt;
+  unspecified mem_fn(R (T::*pm)(ArgTypes...));
+</pre></blockquote>
+
+<p>
+I believe we need two signatures as pointer-to-data-member and
+pointer-to-member-function-taking-no-args appear to use subtly different
+syntax.
+</p>
+
+<note>
+<iref ref="920"/> as a similar proposed resolution.
+</note>
+</discussion>
+
+<resolution>
+Add to <sref ref="[function.objects]"/> and <sref ref="[func.memfn]"/>:
+</resolution>
+
+<blockquote><pre>
+template&lt;class R, class T&gt; <i>unspecified</i> mem_fn(R T::* pm)
+
+<ins>template&lt;class R, class T, class ...Args&gt; <i>unspecified</i> mem_fn(R (T::* pm)(Args...));</ins>
+<ins>template&lt;class R, class T, class ...Args&gt; <i>unspecified</i> mem_fn(R (T::* pm)(Args...) const);</ins>
+<ins>template&lt;class R, class T, class ...Args&gt; <i>unspecified</i> mem_fn(R (T::* pm)(Args...) volatile);</ins>
+<ins>template&lt;class R, class T, class ...Args&gt; <i>unspecified</i> mem_fn(R (T::* pm)(Args...) const volatile);</ins>
+
+<ins>template&lt;class R, class T, class ...Args&gt; <i>unspecified</i> mem_fn(R (T::* pm)(Args...)&amp;);</ins>
+<ins>template&lt;class R, class T, class ...Args&gt; <i>unspecified</i> mem_fn(R (T::* pm)(Args...) const&amp;);</ins>
+<ins>template&lt;class R, class T, class ...Args&gt; <i>unspecified</i> mem_fn(R (T::* pm)(Args...) volatile&amp;);</ins>
+<ins>template&lt;class R, class T, class ...Args&gt; <i>unspecified</i> mem_fn(R (T::* pm)(Args...) const volatile&amp;);</ins>
+
+<ins>template&lt;class R, class T, class ...Args&gt; <i>unspecified</i> mem_fn(R (T::* pm)(Args...)&amp;&amp;);</ins>
+<ins>template&lt;class R, class T, class ...Args&gt; <i>unspecified</i> mem_fn(R (T::* pm)(Args...) const&amp;&amp;);</ins>
+<ins>template&lt;class R, class T, class ...Args&gt; <i>unspecified</i> mem_fn(R (T::* pm)(Args...) volatile&amp;&amp;);</ins>
+<ins>template&lt;class R, class T, class ...Args&gt; <i>unspecified</i> mem_fn(R (T::* pm)(Args...) const volatile&amp;&amp;);</ins>
+</pre></blockquote>
+
+<p>
+Strike <sref ref="[func.memfn]"/>, p5:
+</p>
+
+<blockquote>
+<del><i>Remarks:</i> Implementations may implement <tt>mem_fn</tt> as a set
+of overloaded function templates.</del>
+</blockquote>
+
+</issue>

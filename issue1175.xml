@@ -1,0 +1,42 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="1175" status="New">
+<title><tt>unordered</tt> complexity</title>
+<section><sref ref="[unord.req]"/></section>
+<submitter>Pablo Halpern</submitter>
+<date>17 Jul 2009</date>
+
+<discussion>
+<p>
+When I look at the <tt>unordered_*</tt> constructors, I think the complexity is poorly
+described and does not follow the style of the rest of the standard.
+</p>
+
+<p>
+The complexity for the default constructor is specified as constant.
+ Actually, it is proportional to <tt>n</tt>, but there are no invocations of
+<tt>value_type</tt> constructors or other <tt>value_type</tt> operations.
+</p>
+
+<p>
+For the iterator-based constructor the complexity should be:
+</p>
+
+<blockquote>
+<i>Complexity:</i> exactly <tt>n</tt> calls to construct <tt>value_type</tt>
+from <tt>InputIterator::value_type</tt> (where <tt>n = distance(f,l)</tt>).
+The number of calls to <tt>key_equal::operator()</tt> is proportional to
+<tt>n</tt> in the average case and <tt>n*n</tt> in the worst case.
+</blockquote>
+
+</discussion>
+
+<resolution>
+<p>
+</p>
+</resolution>
+
+</issue>

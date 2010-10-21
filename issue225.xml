@@ -1,0 +1,132 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="225" status="CD1">
+<title>std:: algorithms use of other unqualified algorithms</title>
+<section><sref ref="[global.functions]"/></section>
+<submitter>Dave Abrahams</submitter>
+<date>01 Apr 2000</date>
+
+<discussion>
+<p>Are algorithms in std:: allowed to use other algorithms without qualification, so functions in
+user namespaces might be found through Koenig lookup?</p>
+<p>For example, a popular standard library implementation includes this
+implementation of std::unique:</p>
+<blockquote>
+<pre>namespace std {
+    template &lt;class _ForwardIter&gt;
+    _ForwardIter unique(_ForwardIter __first, _ForwardIter __last) {
+      __first = adjacent_find(__first, __last);
+      return unique_copy(__first, __last, __first);
+    }
+    }</pre>
+</blockquote>
+<p>Imagine two users on opposite sides of town, each using unique on his own
+sequences bounded by my_iterators . User1 looks at his standard library
+implementation and says, &quot;I know how to implement a more efficient
+unique_copy for my_iterators&quot;, and writes:</p>
+<blockquote>
+<pre>namespace user1 {
+    class my_iterator;
+    // faster version for my_iterator
+    my_iterator unique_copy(my_iterator, my_iterator, my_iterator);
+    }</pre>
+</blockquote>
+<p>user1::unique_copy() is selected by Koenig lookup, as he intended.</p>
+<p>User2 has other needs, and writes:</p>
+<blockquote>
+<pre>namespace user2 {
+    class my_iterator;
+    // Returns true iff *c is a unique copy of *a and *b.
+    bool unique_copy(my_iterator a, my_iterator b, my_iterator c);
+    }</pre>
+</blockquote>
+<p>User2 is shocked to find later that his fully-qualified use of
+std::unique(user2::my_iterator, user2::my_iterator, user2::my_iterator) fails to
+compile (if he's lucky). Looking in the standard, he sees the following Effects
+clause for unique():</p>
+<blockquote>
+  <p>Effects: Eliminates all but the first element from every consecutive group
+  of equal elements referred to by the iterator i in the range [first, last) for
+  which the following corresponding conditions hold: *i == *(i - 1) or pred(*i,
+  *(i - 1)) != false</p>
+</blockquote>
+<p>The standard gives user2 absolutely no reason to think he can interfere with
+std::unique by defining names in namespace user2. His standard library has been
+built with the template export feature, so he is unable to inspect the
+implementation. User1 eventually compiles his code with another compiler, and
+his version of unique_copy silently stops being called. Eventually, he realizes
+that he was depending on an implementation detail of his library and had no
+right to expect his unique_copy() to be called portably.</p>
+<p>On the face of it, and given above scenario, it may seem obvious that the
+implementation of unique() shown is non-conforming because it uses unique_copy()
+rather than ::std::unique_copy(). Most standard library implementations,
+however, seem to disagree with this notion.</p>
+<p> <i>[Tokyo:&nbsp; Steve Adamczyk from
+the core working group indicates that &quot;std::&quot; is sufficient;&nbsp;
+leading &quot;::&quot; qualification is not required because any namespace
+qualification is sufficient to suppress Koenig lookup.]</i></p>
+</discussion>
+
+<resolution>
+<p>Add a paragraph and a note at the end of 
+<sref ref="[global.functions]"/>:</p>
+<blockquote>
+
+<p>Unless otherwise specified, no global or non-member function in the
+standard library shall use a function from another namespace which is
+found through <i>argument-dependent name lookup</i> (<sref ref="[basic.lookup.argdep]"/>).</p>
+
+<p>[Note: the phrase "unless otherwise specified" is intended to
+allow Koenig lookup in cases like that of ostream_iterators:<br/>
+
+<br/>
+  Effects:</p>
+  <blockquote>
+<p>*out_stream &lt;&lt; value;<br/>
+      if(delim != 0) *out_stream &lt;&lt; delim;<br/>
+      return (*this);</p>
+    <p>--end note]</p>
+  </blockquote>
+</blockquote>
+
+<note>Tokyo: The LWG agrees that this is a defect in the standard, but
+is as yet unsure if the proposed resolution is the best
+solution. Furthermore, the LWG believes that the same problem of
+unqualified library names applies to wording in the standard itself,
+and has opened issue <iref ref="229"/> accordingly. Any resolution of
+issue <iref ref="225"/> should be coordinated with the resolution of
+issue <iref ref="229"/>.</note>
+
+<note>Toronto: The LWG is not sure if this is a defect in the
+standard.  Most LWG members believe that an implementation of
+<tt>std::unique</tt> like the one quoted in this issue is already
+illegal, since, under certain circumstances, its semantics are not
+those specified in the standard.  The standard's description of
+<tt>unique</tt> does not say that overloading <tt>adjacent_find</tt>
+should have any effect.</note>
+
+<note>Cura&ccedil;ao: An LWG-subgroup spent an afternoon working on issues
+225, 226, and 229.  Their conclusion was that the issues should be
+separated into an LWG portion (Howard's paper, N1387=02-0045), and a
+EWG portion (Dave will write a proposal). The LWG and EWG had
+(separate) discussions of this plan the next day.  The proposed
+resolution for this issue is in accordance with Howard's paper.</note>
+
+</resolution>
+
+<rationale>
+<p>It could be argued that this proposed isn't strictly necessary,
+  that the Standard doesn't grant implementors license to write a
+  standard function that behaves differently than specified in the
+  Standard just because of an unrelated user-defined name in some
+  other namespace.  However, this is at worst a clarification.  It is
+  surely right that algorithsm shouldn't pick up random names, that
+  user-defined names should have no effect unless otherwise specified.
+  Issue <iref ref="226"/> deals with the question of when it is
+  appropriate for the standard to explicitly specify otherwise.</p>
+</rationale>
+
+</issue>

@@ -1,0 +1,131 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="737" status="NAD">
+<title>Comment on [rand.dist.samp.pconst]</title>
+<section><sref ref="[rand.dist.samp.pconst]"/></section>
+<submitter>Stephan Tolksdorf</submitter>
+<date>21 Sep 2007</date>
+
+<discussion>
+<ol type="a">
+<li>
+The discussion in point T11 above regarding <tt>probabilities()</tt> similarly applies 
+to the method <tt>densities()</tt> of <tt>piecewise_constant_distribution</tt>.
+</li>
+<li>
+<p>
+The design of the constructor
+</p>
+<blockquote><pre>
+template &lt;class InputIteratorB, class InputIteratorW&gt; 
+piecewise_constant_distribution( InputIteratorB firstB, InputIteratorB lastB, 
+                                 InputIteratorW firstW);
+</pre></blockquote>
+<p>
+is unnecessarily unsafe, as there is no separate end-iterator given for the weights. I can't see 
+any performance or convenience reasons that would justify the risks inherent in such a function 
+interface, in particular the risk that input error might go unnoticed.
+</p>
+</li>
+</ol>
+
+<p>
+<b>Possible resolution:</b> I propose to add an <tt>InputIteratorW lastW</tt> argument to the interface.
+</p>
+
+<note>
+Stephan Tolksdorf adds pre-Bellevue:
+</note>
+<blockquote>
+In reply to the discussion in
+<a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2007/n2424.pdf">N2424</a>
+I'd like to make the same comments as for <iref ref="736"/>.
+</blockquote>
+
+<note>
+Bellevue:
+</note>
+
+<blockquote>
+In N2424. There is already precedent elsewhere in the library. Follows existing convention. NAD.
+</blockquote>
+</discussion>
+
+<resolution>
+<p>
+See <a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2007/n2424.pdf">N2424</a>
+for the proposed resolution.
+</p>
+
+<note>
+Stephan Tolksdorf adds pre-Bellevue:
+</note>
+
+<blockquote>
+<p>
+In <sref ref="[rand.dist.samp.pconst]"/>:
+</p>
+
+<p>
+Proposed wording a)
+</p>
+
+<blockquote>
+<p>
+Change in para. 2
+</p>
+<blockquote>
+Constructs a <tt>piecewise_constant_distribution</tt> object with <tt>n = 1</tt>, <tt>p<sub>0</sub> <ins>= w<sub>0</sub></ins> = 1</tt>,
+<tt>b<sub>0</sub> = 0</tt>, and <tt>b<sub>1</sub> = 1</tt>
+</blockquote>
+
+<p>
+and change in para. 5
+</p>
+
+<blockquote>
+A <tt>vector&lt;result_type&gt;</tt> whose <tt>size</tt> member returns <tt>n</tt> and whose <tt>operator[]</tt>
+member returns <del><tt>p<sub>k</sub></tt></del>
+<ins>the weight <tt>w<sub>k</sub></tt> as a double value</ins>
+when invoked with argument <tt>k</tt> for <tt>k = 0, ..., n-1</tt>
+</blockquote>
+
+</blockquote>
+
+<p>
+Proposed wording b)
+</p>
+
+<blockquote>
+<p>
+Change both occurrences of
+</p>
+
+<blockquote>
+"piecewise_constant_distribution(InputIteratorB firstB, InputIteratorB lastB,
+                                 InputIteratorW firstW<ins>, InputIteratorW lastW</ins>)
+</blockquote>
+
+<p>
+and change in para. 3
+</p>
+
+<blockquote>
+<del>the length of the sequence <tt>w</tt> starting from <tt>firstW</tt> shall be at least <tt>n</tt>,
+<tt>*firstW</tt> shall return a value <tt>w<sub>0</sub></tt> that is convertible to <tt>double</tt>, and any
+<tt>w<sub>k</sub></tt> for <tt>k &gt;= n</tt> shall be ignored by the distribution</del>
+<ins><tt>[firstW, lastW)</tt> shall form a sequence <tt>w</tt> of length <tt>n</tt> whose leading element
+<tt>w<sub>0</sub></tt> shall be convertible to <tt>double</tt></ins>
+</blockquote>
+
+</blockquote>
+
+
+</blockquote>
+
+</resolution>
+
+</issue>

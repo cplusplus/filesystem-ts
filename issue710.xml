@@ -1,0 +1,145 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="710" status="CD1">
+<title>Missing postconditions</title>
+<section><sref ref="[util.smartptr.shared]"/></section>
+<submitter>Peter Dimov</submitter>
+<date>24 Aug 2007</date>
+
+<discussion>
+<p>
+A discussion on
+<a href="http://groups.google.com/group/comp.std.c++/browse_frm/thread/8e89dceb35cd7971">comp.std.c++</a>
+has identified a contradiction in the <tt>shared_ptr</tt> specification.
+The <tt>shared_ptr</tt> move constructor and the cast functions are
+missing postconditions for the <tt>get()</tt> accessor.
+</p>
+
+<note>
+Bellevue:
+</note>
+
+<blockquote>
+<p>
+Move to "ready", adopting the first (Peter's) proposed resolution.
+</p>
+<p>
+Note to the project editor: there is an editorial issue here. The
+wording for the postconditions of the casts is slightly awkward, and the
+editor should consider rewording "If w is the return value...", e. g. as
+"For a return value w...".
+</p>
+</blockquote>
+</discussion>
+
+<resolution>
+<p>
+Add to <sref ref="[util.smartptr.shared.const]"/>:
+</p>
+
+<blockquote>
+<pre>
+shared_ptr(shared_ptr&amp;&amp; r);
+template&lt;class Y&gt; shared_ptr(shared_ptr&lt;Y&gt;&amp;&amp; r);
+</pre>
+<blockquote>
+<p>
+<i>Postconditions:</i>  <tt>*this</tt> shall contain the old value of <tt>r</tt>. <tt>r</tt>
+shall be empty. <ins><tt>r.get() == 0</tt>.</ins>
+</p>
+</blockquote>
+</blockquote>
+
+<p>
+Add to <sref ref="[util.smartptr.shared.cast]"/>:
+</p>
+
+<blockquote>
+<pre>
+template&lt;class T, class U&gt; shared_ptr&lt;T&gt; static_pointer_cast(shared_ptr&lt;U&gt; const&amp; r);
+</pre>
+<blockquote>
+<p>
+<ins><i>Postconditions:</i> If <tt>w</tt> is the return value,
+<tt>w.get() == static_cast&lt;T*&gt;(r.get()) &amp;&amp; w.use_count() == r.use_count()</tt>.</ins>
+</p>
+</blockquote>
+</blockquote>
+
+<blockquote>
+<pre>
+template&lt;class T, class U&gt; shared_ptr&lt;T&gt; dynamic_pointer_cast(shared_ptr&lt;U&gt; const&amp; r);
+</pre>
+<blockquote>
+<p>
+<ins><i>Postconditions:</i> If <tt>w</tt> is the return value, <tt>w.get() == dynamic_cast&lt;T*&gt;(r.get())</tt>.</ins>
+</p>
+</blockquote>
+</blockquote>
+
+<blockquote>
+<pre>
+template&lt;class T, class U&gt; shared_ptr&lt;T&gt; const_pointer_cast(shared_ptr&lt;U&gt; const&amp; r);
+</pre>
+<blockquote>
+<p>
+<ins><i>Postconditions:</i> If <tt>w</tt> is the return value,
+<tt>w.get() == const_cast&lt;T*&gt;(r.get()) &amp;&amp; w.use_count() == r.use_count()</tt>.</ins>
+</p>
+</blockquote>
+</blockquote>
+
+<p>
+Alberto Ganesh Barbati has written an
+<a href="http://barbati.net/c++/shared_ptr.pdf">alternative proposal</a>
+where he suggests (among other things) that the casts be respecified in terms of
+the aliasing constructor as follows:
+</p>
+
+<p>
+Change <sref ref="[util.smartptr.shared.cast]"/>:
+</p>
+
+<blockquote>
+<p>
+-2- <i>Returns:</i> <del>If <tt>r</tt> is empty, an <tt>empty
+shared_ptr&lt;T&gt;;</tt> otherwise, a <tt>shared_ptr&lt;T&gt;</tt>
+object that stores <tt>static_cast&lt;T*&gt;(r.get())</tt> and shares ownership with
+<tt>r</tt>.</del> <ins><tt>shared_ptr&lt;T&gt;(r, static_cast&lt;T*&gt;(r.get())</tt>.</ins>
+</p>
+</blockquote>
+
+<blockquote>
+<p>
+-6- <i>Returns:</i>
+</p>
+<ul>
+<li><del>When <tt>dynamic_cast&lt;T*&gt;(r.get())</tt> returns a nonzero value,
+a <tt>shared_ptr&lt;T&gt;</tt> object that stores a copy 
+of it and <i>shares ownership</i> with <tt>r</tt>;</del></li>
+<li><del>Otherwise, an <i>empty</i> <tt>shared_ptr&lt;T&gt;</tt> object.</del></li>
+<li><ins>If <tt>p = dynamic_cast&lt;T*&gt;(r.get())</tt> is a non-null pointer, <tt>shared_ptr&lt;T&gt;(r, p);</tt></ins></li>
+<li><ins>Otherwise, <tt>shared_ptr&lt;T&gt;()</tt>.</ins></li>
+</ul>
+</blockquote>
+
+<blockquote>
+<p>
+-10- <i>Returns:</i> <del>If <tt>r</tt> is empty, an <tt>empty
+shared_ptr&lt;T&gt;;</tt> otherwise, a <tt>shared_ptr&lt;T&gt;</tt>
+object that stores <tt>const_cast&lt;T*&gt;(r.get())</tt> and shares ownership with
+<tt>r</tt>.</del> <ins><tt>shared_ptr&lt;T&gt;(r, const_cast&lt;T*&gt;(r.get())</tt>.</ins>
+</p>
+</blockquote>
+
+<p>
+This takes care of the missing postconditions for the casts by bringing
+in the aliasing constructor postcondition "by reference".
+</p>
+
+</resolution>
+
+</issue>

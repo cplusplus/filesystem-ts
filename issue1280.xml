@@ -1,0 +1,73 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="1280" status="WP">
+<title>initialization of stream iterators</title>
+<section><sref ref="[istream.iterator.cons]"/>, <sref ref="[ostream.iterator.cons.des]"/></section>
+<submitter>Jonathan Wakely</submitter>
+<date>4 Dec 2009</date>
+
+<discussion>
+<p>
+<sref ref="[istream.iterator.cons]"/> describes the effects in terms of:
+</p>
+
+<blockquote><pre>
+basic_istream&lt;charT,traits&gt;* in_stream; // exposition only
+</pre>
+
+<p>
+3 <i>Effects:</i> Initializes <i>in_stream</i> with <tt>s</tt>.
+</p>
+</blockquote>
+
+<p>
+That should be <tt>&amp;s</tt> and similarly for <sref
+ref="[ostream.iterator.cons.des]"/>.
+</p>
+
+<note>
+2009-12-23 Moved to Tentatively Ready after 6 positive votes on c++std-lib.
+</note>
+</discussion>
+
+<resolution>
+<p>
+Change <sref ref="[istream.iterator.cons]"/> like so:
+</p>
+
+<blockquote><pre>
+istream_iterator(istream_type&amp; s);
+</pre>
+<blockquote>
+3 <i>Effects:</i> Initializes <i>in_stream</i> with <tt><ins>&amp;</ins>s</tt>.
+<i>value</i> ...
+</blockquote>
+</blockquote>
+
+<p>
+And <sref ref="[ostream.iterator.cons.des]"/> like so:
+</p>
+
+<blockquote><pre>
+ostream_iterator(ostream_type&amp; s);
+</pre>
+<blockquote>
+1 <i>Effects:</i> Initializes <i>out_stream</i> with <tt><ins>&amp;</ins>s</tt>
+and <i>delim</i> with null.
+</blockquote>
+
+<pre>
+ostream_iterator(ostream_type&amp; s, const charT* delimiter);
+</pre>
+<blockquote>
+2 <i>Effects:</i> Initializes <i>out_stream</i> with <tt><ins>&amp;</ins>s</tt>
+and <i>delim</i> with <tt>delimiter</tt>.
+</blockquote>
+</blockquote>
+
+</resolution>
+
+</issue>

@@ -1,0 +1,119 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="1048" status="NAD Editorial">
+<title>Response to UK 335</title>
+<section><sref ref="[futures.unique_future]"/></section>
+<submitter>Alisdair Meredith</submitter>
+<date>12 Mar 2009</date>
+
+<discussion>
+
+<p><b>Addresses UK 335</b></p>
+
+<p>
+<tt>std::unique_future</tt> is <tt>MoveConstructible</tt>, so you can transfer the
+association with an asynchronous result from one instance to another.
+However, there is no way to determine whether or not an instance has
+been moved from, and therefore whether or not it is safe to wait for it.
+</p>
+
+<blockquote><pre>
+std::promise&lt;int&gt; p;
+std::unique_future&lt;int&gt; uf(p.get_future());
+std::unique_future&lt;int&gt; uf2(std::move(uf));
+uf.wait(); <font color="#C80000">// oops, uf has no result to wait for. </font>
+</pre></blockquote>
+
+<p>
+Suggest we add a <tt>waitable()</tt> function to <tt>unique_future</tt>
+(and <tt>shared_future</tt>) akin to <tt>std::thread::joinable()</tt>,
+which returns <tt>true</tt> if there is an associated result to wait for
+(whether or not it is ready).
+</p>
+
+<p>
+Then we can say:
+</p>
+
+<blockquote><pre>
+if(uf.waitable()) uf.wait();
+</pre></blockquote>
+
+<note>
+Summit:
+</note>
+
+<blockquote>
+<p>
+Create an issue. Requires input from Howard. Probably NAD.
+</p>
+</blockquote>
+
+<note>
+Post Summit, Howard thows in his two cents:
+</note>
+
+<blockquote>
+<p>
+Here is a copy/paste of my last prototype of <tt>unique_future</tt> which was
+several years ago.  At that time I was calling <tt>unique_future</tt> <tt>future</tt>:
+</p>
+
+<blockquote><pre>
+template &lt;class R&gt;
+class future
+{
+public:
+    typedef R result_type;
+private:
+    future(const future&amp;);// = delete;
+    future&amp; operator=(const future&amp;);// = delete;
+
+    template &lt;class R1, class F1&gt; friend class prommise;
+public:
+    future();
+    ~future();
+
+    future(future&amp;&amp; f);
+    future&amp; operator=(future&amp;&amp; f);
+
+    void swap(future&amp;&amp; f);
+
+    <b>bool joinable() const;</b>
+    bool is_normal() const;
+    bool is_exceptional() const;
+    bool is_ready() const;
+
+    R get();
+
+    void join();
+    template &lt;class ElapsedTime&gt;
+        bool timed_join(const ElapsedTime&amp;);
+};
+</pre></blockquote>
+
+<p>
+<tt>shared_future</tt> had a similar interface.  I intentionally reused
+the <tt>thread</tt> interface where possible to lessen the learning
+curve std::lib clients will be faced with.
+</p>
+</blockquote>
+
+<note>
+2009-10 Santa Cruz:
+</note>
+
+<blockquote>
+NAD Editorial.  Solved by
+<a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2009/n2997.html">N2997</a>.
+</blockquote>
+
+</discussion>
+
+<resolution>
+</resolution>
+
+</issue>

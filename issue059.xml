@@ -1,0 +1,43 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="59" status="TC1">
+<title>Ambiguity in specification of gbump</title>
+<section><sref ref="[streambuf.get.area]"/></section>
+<submitter>Matt Austern</submitter>
+<date>28 Jul 1998</date>
+
+<discussion>
+<p>27.5.2.3.1 says that basic_streambuf::gbump() &quot;Advances the
+next pointer for the input sequence by n.&quot; </p>
+
+<p>The straightforward interpretation is that it is just gptr() +=
+n. An alternative interpretation, though, is that it behaves as if it
+calls sbumpc n times. (The issue, of course, is whether it might ever
+call underflow.) There is a similar ambiguity in the case of
+pbump. </p>
+
+<p>(The &quot;classic&quot; AT&amp;T implementation used the
+former interpretation.)</p>
+</discussion>
+
+<resolution>
+<p>Change <sref ref="[streambuf.get.area]"/> paragraph 4 gbump effects from:</p>
+
+<blockquote>
+  <p>Effects: Advances the next pointer for the input sequence by n.</p>
+</blockquote>
+
+<p>to:</p>
+
+<blockquote>
+  <p>Effects: Adds <tt>n</tt> to the next pointer for the input sequence.</p>
+</blockquote>
+
+<p>Make the same change to <sref ref="[streambuf.put.area]"/> paragraph 4 pbump
+effects.</p>
+</resolution>
+
+</issue>

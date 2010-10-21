@@ -1,0 +1,36 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="236" status="Dup">
+<title>ctype&lt;char&gt;::is() member modifies facet</title>
+<section><sref ref="[facet.ctype.char.members]"/></section>
+<submitter>Dietmar K&uuml;hl</submitter>
+<date>24 Apr 2000</date>
+
+<discussion>
+<p>The description of the <tt>is()</tt> member in paragraph 4 of <sref ref="[facet.ctype.char.members]"/> is broken: According to this description, the
+second form of the <tt>is()</tt> method modifies the masks in the
+<tt>ctype</tt> object. The correct semantics if, of course, to obtain
+an array of masks. The corresponding method in the general case,
+ie. the <tt>do_is()</tt> method as described in <sref ref="[locale.ctype.virtuals]"/> paragraph 1 does the right thing.</p>
+</discussion>
+
+<resolution>
+  <p>Change paragraph 4 from</p>
+    <blockquote><p>
+    The second form, for all *p in the range [low, high), assigns
+    vec[p-low] to table()[(unsigned char)*p].
+    </p></blockquote>
+  <p>to become</p>
+    <blockquote><p>
+    The second form, for all *p in the range [low, high), assigns
+    table()[(unsigned char)*p] to vec[p-low].
+  </p></blockquote>
+</resolution>
+
+<rationale>
+<duplicate><iref ref="28"/></duplicate>
+</rationale>
+</issue>

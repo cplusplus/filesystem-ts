@@ -1,0 +1,116 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="976" status="NAD Editorial">
+<title>Class template std::stack should be movable</title>
+<section><sref ref="[stack.defn]"/></section>
+<submitter>Daniel Kr&uuml;gler</submitter>
+<date>1 Feb 2009</date>
+
+<discussion>
+<p>
+The synopsis given in <sref ref="[stack.defn]"/> does not show up
+</p>
+
+<blockquote><pre>
+requires MoveConstructible&lt;Cont&gt; stack(stack&amp;&amp;);
+requires MoveAssignable&lt;Cont&gt; stack&amp; operator=(stack&amp;&amp;);
+</pre></blockquote>
+
+<p>
+although the other container adaptors do provide corresponding
+members.
+</p>
+
+<note>
+Batavia (2009-05):
+</note>
+<blockquote>
+<p>
+We agree with the proposed resolution.
+</p>
+<p>
+Move to Tentatively Ready.
+</p>
+</blockquote>
+
+<note>
+2009-07 Frankfurt
+</note>
+
+<blockquote>
+Moved from Tentatively Ready to Open only because the wording needs to be
+tweaked for concepts removal.
+</blockquote>
+
+<note>
+2009-08-18 Daniel updates the wording and Howard sets to Review.
+</note>
+
+<note>
+2009-08-23 Howard adds:
+</note>
+
+<blockquote>
+<iref ref="1194"/> also adds these move members using an editorially different
+style.
+</blockquote>
+
+<note>
+2009-10 Santa Cruz:
+</note>
+
+<blockquote>
+Mark NAD Editorial, solved by issue <iref ref="1194"/>.
+</blockquote>
+
+</discussion>
+
+<resolution>
+<p>
+In the class stack synopsis of <sref ref="[stack.defn]"/> insert:
+</p>
+
+<blockquote><pre>
+template &lt;class T, class Container = deque&lt;T&gt; &gt;
+class stack {
+  [..]
+  explicit stack(const Container&amp;);
+  explicit stack(Container&amp;&amp; = Container());
+  <ins>stack(stack&amp;&amp; s) : c(std::move(s.c)) {}</ins>
+  <ins>stack&amp; operator=(stack&amp;&amp; s) { c = std::move(s.c); return *this; }</ins>
+  [..]
+};
+</pre></blockquote>
+
+<!-- 
+<blockquote><pre>
+template &lt;ObjectType T, StackLikeContainer Cont = deque&lt;T&gt; &gt; 
+  requires SameType&lt;Cont::value_type, T&gt; 
+        &amp;&amp; NothrowDestructible&lt;Cont&gt; 
+class stack { 
+public: 
+   ...
+   requires CopyConstructible&lt;Cont&gt; explicit stack(const Cont&amp;); 
+   requires MoveConstructible&lt;Cont&gt; explicit stack(Cont&amp;&amp; = Cont()); 
+   <ins>requires MoveConstructible&lt;Cont&gt; stack(stack&amp;&amp;);</ins>
+   <ins>requires MoveAssignable&lt;Cont&gt; stack&amp; operator=(stack&amp;&amp;);</ins>
+   template &lt;class Alloc&gt; 
+     requires Constructible&lt;Cont, const Alloc&amp;&gt; 
+     explicit stack(const Alloc&amp;);
+   ...
+};
+</pre></blockquote>
+
+<p>
+[Remark: This change should be done in sync with the resolution of
+paper
+<a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2009/n2819.html">N2819</a>]
+</p>
+ -->
+
+</resolution>
+
+</issue>

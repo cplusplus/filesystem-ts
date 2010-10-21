@@ -1,0 +1,105 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="828" status="NAD Editorial">
+<title>Static initialization for <tt>std::mutex</tt>?</title>
+<section><sref ref="[thread.mutex.class]"/></section>
+<submitter>Peter Dimov</submitter>
+<date>18 Apr 2008</date>
+
+<discussion>
+<p>
+[Note: I'm assuming here that <sref ref="[basic.start.init]"/>/1 will be fixed.]
+</p>
+<p>
+Currently <tt>std::mutex</tt> doesn't support static initialization. This is a
+regression with respect to <tt>pthread_mutex_t</tt>, which does. I believe that
+we should strive to eliminate such regressions in expressive power where
+possible, both to ease migration and to not provide incentives to (or
+force) people to forego the C++ primitives in favor of pthreads.
+</p>
+
+<note>
+Sophia Antipolis:
+</note>
+
+<blockquote>
+<p>
+We believe this is implementable on POSIX, because the initializer-list
+feature and the constexpr feature make this work. Double-check core
+language about static initialization for this case. Ask core for a core
+issue about order of destruction of statically-initialized objects wrt.
+dynamically-initialized objects (should come afterwards). Check
+non-POSIX systems for implementability.
+</p>
+<p>
+If ubiquitous implementability cannot be assured, plan B is to introduce
+another constructor, make this constexpr, which is
+conditionally-supported. To avoid ambiguities, this new constructor needs
+to have an additional parameter.
+</p>
+</blockquote>
+
+<note>
+Post Summit:
+</note>
+
+<blockquote>
+<p>
+Jens: constant initialization seems to be ok core-language wise
+</p>
+<p>
+Consensus: Defer to threading experts, in particular a Microsoft platform expert.
+</p>
+<p>
+Lawrence to send e-mail to Herb Sutter, Jonathan Caves, Anthony Wiliams,
+Paul McKenney, Martin Tasker, Hans Boehm, Bill Plauger, Pete Becker,
+Peter Dimov to alert them of this issue.
+</p>
+<p>
+Lawrence: What about header file shared with C? The initialization
+syntax is different in C and C++.
+</p>
+<p>
+Recommend Keep in Review
+</p>
+</blockquote>
+
+<note>
+Batavia (2009-05):
+</note>
+<blockquote>
+Keep in Review status pending feedback from members of the Concurrency subgroup.
+</blockquote>
+
+<note>
+See related comments from Alisdiar and Daniel in <iref ref="827"/>.
+</note>
+
+<note>
+2009-10 Santa Cruz:
+</note>
+
+<blockquote>
+NAD Editorial.  Solved by
+<a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2009/n2994.html">N2994</a>.
+</blockquote>
+
+</discussion>
+
+<resolution>
+<p>
+Change <sref ref="[thread.mutex.class]"/>:
+</p>
+
+<blockquote><pre>
+class mutex {
+public:
+  <ins>constexpr</ins> mutex();
+  ...
+</pre></blockquote>
+</resolution>
+
+</issue>

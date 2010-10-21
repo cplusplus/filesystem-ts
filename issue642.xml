@@ -1,0 +1,73 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="642" status="NAD Editorial">
+<title>Invalidated fstream footnotes in N2134</title>
+<section><sref ref="[ifstream.members]"/> <sref ref="[ofstream.members]"/></section>
+<submitter>Daniel Kr&uuml;gler</submitter>
+<date>20 Feb 2007</date>
+
+<discussion>
+<p>
+The standard wording of N2134 has extended the 14882:2003(E)
+wording for the ifstream/ofstream/fstream open function to fix
+a long standing problem, see <iref ref="409"/>.
+</p>
+
+<p>
+Now it's properly written as
+</p>
+
+<blockquote><p>
+"If that function does not return a null pointer calls clear(),
+otherwise
+calls setstate(failbit)[..]"
+</p></blockquote>
+
+<p>
+instead of the previous
+</p>
+
+<blockquote><p>
+"If that function returns a null pointer, calls setstate(failbit)[..]
+</p></blockquote>
+
+<p>
+While the old footnotes saying
+</p>
+
+<blockquote><p>
+"A successful open does not change the error state."
+</p></blockquote>
+
+<p>
+where correct and important, they are invalid now for ifstream and
+ofstream (because clear *does* indeed modify the error state) and
+should be removed (Interestingly fstream itself never had these,
+although
+they where needed for that time).
+</p>
+</discussion>
+
+<resolution>
+<p>
+In <sref ref="[ifstream.members]"/>, remove footnote:
+</p>
+
+<blockquote><p>
+<del><sup>334)</sup> A successful open does not change the error state.</del>
+</p></blockquote>
+
+<p>
+In <sref ref="[ofstream.members]"/>, remove footnote:
+</p>
+
+<blockquote><p>
+<del><sup>335)</sup> A successful open does not change the error state.</del>
+</p></blockquote>
+
+</resolution>
+
+</issue>

@@ -1,0 +1,69 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="1024" status="NAD Concepts">
+<title>Response to JP 39</title>
+<section><sref ref="[func.wrap.func]"/></section>
+<submitter>Alisdair Meredith</submitter>
+<date>11 Mar 2009</date>
+
+<discussion>
+
+<p><b>Addresses JP 39</b></p>
+
+<p>
+There are no requires corresponding to <tt>F</tt> of <tt>std::function</tt>.
+</p>
+
+<note>
+2009-05-01 Daniel adds:
+</note>
+
+<blockquote>
+<iref ref="1070"/> removes the second constructor.
+</blockquote>
+
+<note>
+Batavia (2009-05):
+</note>
+<blockquote>
+We agree with the proposed resolution.
+Move to Tentatively Ready.
+If issue <iref ref="1070"/> is accepted,
+the changes to the second constructor
+in this issue are moot.
+</blockquote>
+
+<note>
+2009-07 Frankfurt:
+</note>
+
+<blockquote>
+Constructors have no definition.
+</blockquote>
+
+</discussion>
+
+<resolution>
+<p>
+Correct as follows in <sref ref="[func.wrap.func]"/> (class definition)
+</p>
+
+<blockquote><pre>
+ template&lt;class F, Allocator Alloc&gt;
+   <ins>requires ConstructibleWithAllocator&lt;F, Alloc&gt;
+     &amp;&amp; call=Callable&lt;F, ArgTypes...&gt;
+     &amp;&amp; Convertible&lt;call::result_type, R&gt;</ins>
+   function(allocator_arg_t, const Alloc&amp;, F);
+ template&lt;class F, Allocator Alloc&gt;
+   <ins>requires ConstructibleWithAllocator&lt;F,Alloc&gt;
+     &amp;&amp; call=Callable&lt;F, ArgTypes...&gt;
+     &amp;&amp; Convertible&lt;call::result_type, R&gt;</ins>
+   function(allocator_arg_t, const Alloc&amp;, F&amp;&amp;);
+</pre></blockquote>
+
+</resolution>
+
+</issue>

@@ -1,0 +1,170 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="1006" status="WP">
+<title><tt>operator delete</tt> in garbage collected implementation</title>
+<section><sref ref="[new.delete]"/></section>
+<submitter>Alisdair Meredith</submitter>
+<date>11 Mar 2009</date>
+
+<discussion>
+
+<p><b>Addresses UK 190</b></p>
+
+<p>
+It is not entirely clear how the current specification acts in the
+presence of a garbage collected implementation.
+</p>
+
+<note>
+Summit:
+</note>
+ 
+<blockquote>
+Agreed.
+</blockquote>
+
+<note>
+2009-05-09 Alisdair adds:
+</note>
+
+<blockquote>
+Proposed wording is too strict for implementations that do not support
+garbage collection.  Updated wording supplied.
+</blockquote>
+
+<note>
+Batavia (2009-05):
+</note>
+<blockquote>
+We recommend advancing this to Tentatively Ready
+with the understanding that it will not be moved for adoption
+unless and until the proposed resolution to Core issue #853 is adopted.
+</blockquote>
+</discussion>
+
+<resolution>
+
+<p>
+(Editorial note: This wording ties into the proposed
+resolution for Core #853)
+</p>
+
+<p>
+Add paragraphs to <sref ref="[new.delete.single]"/>:
+</p>
+
+<blockquote><pre>
+void operator delete(void* ptr) throw();
+<del>void operator delete(void* ptr, const std::nothrow_t&amp;) throw();</del>
+</pre>
+
+<note>
+The second signature deletion above is editorial.
+</note>
+
+<blockquote>
+<p><ins>
+<i>Requires:</i> If an implementation has strict pointer safety
+(<sref ref="[basic.stc.dynamic.safety]"/>) then <tt>ptr</tt> shall
+be a safely-derived pointer.
+</ins></p>
+
+<p>-10- ...</p>
+</blockquote>
+
+<pre>
+void operator delete(void* ptr, const std::nothrow_t&amp;) throw();
+</pre>
+
+<blockquote>
+<p><ins>
+<i>Requires:</i> If an implementation has strict pointer safety
+(<sref ref="[basic.stc.dynamic.safety]"/>) then <tt>ptr</tt> shall
+be a safely-derived pointer.
+</ins></p>
+
+<p>-15- ...</p>
+</blockquote>
+
+</blockquote>
+
+<p>
+Add paragraphs to <sref ref="[new.delete.array]"/>:
+</p>
+
+<blockquote><pre>
+void operator delete[](void* ptr) throw();
+<del>void operator delete[](void* ptr, const std::nothrow_t&amp;) throw();</del>
+</pre>
+
+<note>
+The second signature deletion above is editorial.
+</note>
+
+<blockquote>
+<p><ins>
+<i>Requires:</i> If an implementation has strict pointer safety
+(<sref ref="[basic.stc.dynamic.safety]"/>) then <tt>ptr</tt> shall
+be a safely-derived pointer.
+</ins></p>
+
+<p>-9- ...</p>
+</blockquote>
+
+<pre>
+void operator delete[](void* ptr, const std::nothrow_t&amp;) throw();
+</pre>
+
+<blockquote>
+<p><ins>
+<i>Requires:</i> If an implementation has strict pointer safety
+(<sref ref="[basic.stc.dynamic.safety]"/>) then <tt>ptr</tt> shall
+be a safely-derived pointer.
+</ins></p>
+
+<p>-13- ...</p>
+</blockquote>
+
+</blockquote>
+
+
+<p>
+Add paragraphs to <sref ref="[new.delete.placement]"/>:
+</p>
+
+<blockquote><pre>
+void operator delete(void* ptr, void*) throw();
+</pre>
+
+<blockquote>
+<p><ins>
+<i>Requires:</i> If an implementation has strict pointer safety
+(<sref ref="[basic.stc.dynamic.safety]"/>) then <tt>ptr</tt> shall
+be a safely-derived pointer.
+</ins></p>
+
+<p>-7- ...</p>
+</blockquote>
+
+<pre>
+void operator delete[](void* ptr, void*) throw();
+</pre>
+
+<blockquote>
+<p><ins>
+<i>Requires:</i> If an implementation has strict pointer safety
+(<sref ref="[basic.stc.dynamic.safety]"/>) then <tt>ptr</tt> shall
+be a safely-derived pointer.
+</ins></p>
+
+<p>-9- ...</p>
+</blockquote>
+
+</blockquote>
+
+</resolution>
+
+</issue>

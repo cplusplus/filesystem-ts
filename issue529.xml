@@ -1,0 +1,95 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="529" status="NAD Editorial">
+<title>The standard encourages redundant and confusing preconditions</title>
+<section><sref ref="[res.on.required]"/></section>
+<submitter>David Abrahams</submitter>
+<date>25 Oct 2005</date>
+
+<discussion>
+<p>
+17.4.3.8/1 says:
+</p>
+
+<blockquote><p>
+Violation of the preconditions specified in a function's 
+Required behavior: paragraph results in undefined behavior unless the 
+function's Throws: paragraph specifies throwing an exception when the 
+precondition is violated.
+</p></blockquote>
+
+<p>
+This implies that a precondition violation can lead to defined
+behavior.  That conflicts with the only reasonable definition of
+precondition: that a violation leads to undefined behavior.  Any other
+definition muddies the waters when it comes to analyzing program
+correctness, because precondition violations may be routinely done in
+correct code (e.g. you can use std::vector::at with the full
+expectation that you'll get an exception when your index is out of
+range, catch the exception, and continue).  Not only is it a bad
+example to set, but it encourages needless complication and redundancy
+in the standard.  For example:
+</p>
+
+<blockquote><pre>
+  21 Strings library 
+  21.3.3 basic_string capacity
+
+  void resize(size_type n, charT c);
+
+  5 Requires: n &lt;= max_size()
+  6 Throws: length_error if n &gt; max_size().
+  7 Effects: Alters the length of the string designated by *this as follows:
+</pre></blockquote>
+
+<p>
+The Requires clause is entirely redundant and can be dropped.  We
+could make that simplifying change (and many others like it) even
+without changing 17.4.3.8/1; the wording there just seems to encourage
+the redundant and error-prone Requires: clause.
+</p>
+
+<note>
+Batavia:  Alan and Pete to work.
+</note>
+
+<note>
+Bellevue:  NAD Editorial, this group likes 
+<a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2006/n2121.html">N2121</a>,
+Pete agrees, accepting it is Pete's business.
+General agreement that precondition violations are synonymous with UB.
+</note>
+</discussion>
+
+<resolution>
+<p>
+1. Change 17.4.3.8/1 to read:
+</p>
+
+<blockquote><p>
+Violation of the preconditions specified in a function's
+<i>Required behavior:</i> paragraph results in undefined behavior
+<del>unless the function's <i>Throws:</i> paragraph specifies throwing
+an exception when the precondition is violated</del>.
+</p></blockquote>
+
+<p>
+2. Go through and remove redundant Requires: clauses.  Specifics to be
+   provided by Dave A.
+</p>
+
+<note>
+Berlin: The LWG requests a detailed survey of part 2 of the proposed resolution.
+</note>
+
+<note>
+Alan provided the survey
+<a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2006/n2121.html">N2121</a>.
+</note>
+
+</resolution>
+
+</issue>

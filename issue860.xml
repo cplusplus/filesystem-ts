@@ -1,0 +1,128 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="860" status="WP">
+<title>Floating-Point State</title>
+<section><sref ref="[numerics]"/></section>
+<submitter>Lawrence Crowl</submitter>
+<date>23 Jun 2008</date>
+
+<discussion>
+<p>
+There are a number of functions that affect the floating point state.
+These function need to be thread-safe, but I'm unsure of the right
+approach in the standard, as we inherit them from C.
+</p>
+
+<note>
+San Francisco:
+</note>
+
+<blockquote>
+<p>
+Nick: I think we already say that these functions do not introduce data
+races; see 17.6.5.6/20
+</p>
+<p>
+Pete: there's more to it than not introducing data races; are these
+states maintained per thread?
+</p>
+<p>
+Howard: 21.5/14 says that strtok and strerror are not required to avoid
+data races, and 20.9/2 says the same about asctime, gmtime, ctime, and
+gmtime.
+</p>
+<p>
+Nick: POSIX has a list of not-safe functions. All other functions are
+implicitly thread safe.
+</p>
+<p>
+Lawrence is to form a group between meetings to attack this issue. Nick
+and Tom volunteered to work with Lawrence.
+</p>
+<p>
+Move to Open.
+</p>
+</blockquote>
+
+<note>
+Post Summit:
+</note>
+
+<blockquote>
+<p>
+Hans: Sane oses seem ok. Sensible thing is implementable and makes sense.
+</p>
+<p>
+Nick: Default wording seems to cover this? Hole in POSIX, these
+functions need to be added to list of thread-unsafe functions.
+</p>
+<p>
+Lawrence: Not sufficient, not "thread-safe" per our definition, but
+think of state as a thread-local variable. Need something like "these
+functions only affect state in the current thread."
+</p>
+<p>
+Hans: Suggest the following wording: "The floating point environment is
+maintained per-thread."
+</p>
+<p>
+Walter: Any other examples of state being thread safe that are not
+already covered elsewhere?
+</p>
+<p>
+Have thread unsafe functions paper which needs to be updated. Should
+just fold in <sref ref="[cfenv]"/> functions.
+</p>
+<p>
+Recommend Open. Lawrence instead suggests leaving it open until we have
+suitable wording that may or may not include the thread local
+commentary.
+</p>
+</blockquote>
+
+<note>
+2009-09-23 Hans provided wording.
+</note>
+
+<blockquote>
+If I understand the history correctly, Nick, as the Posix liaison,
+should probably get a veto on this, since I think it came from Posix (?)
+via WG14 and should probably really be addressed there (?).  But I think
+we are basically in agreement that there is no other sane way to do
+this, and hence we don't have to worry too much about stepping on toes. 
+As far as I can tell, this same issue also exists in the latest Posix
+standard (?).
+</blockquote>
+
+<note>
+2009-10 Santa Cruz:
+</note>
+
+<blockquote>
+Moved to Ready.
+</blockquote>
+
+</discussion>
+
+<resolution>
+<p>
+Add at the end of <sref ref="[cfenv.syn]"/>:
+</p>
+
+<blockquote>
+<p>
+2 The header defines all functions, types, and macros the same as C99 7.6.
+</p>
+
+<p><ins>
+A separate floating point environment shall be maintained for each
+thread.  Each function accesses the environment corresponding to its
+calling thread.
+</ins></p>
+</blockquote>
+</resolution>
+
+</issue>

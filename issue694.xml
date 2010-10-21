@@ -1,0 +1,105 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="694" status="CD1">
+<title><code>std::bitset</code> and <code>long long</code></title>
+<section><sref ref="[template.bitset]"/></section>
+<submitter>Martin Sebor</submitter>
+<date>22 Jun 2007</date>
+
+<discussion>
+<p>
+Objects of the  <code>bitset</code> class template specializations can
+be constructed from  and explicitly converted to values  of the widest
+C++ integer  type, <code>unsigned long</code>.   With the introduction
+of  <code>long long</code> into  the language  the template  should be
+enhanced to make it possible  to interoperate with values of this type
+as well, or  perhaps <code>uintmax_t</code>.  See c++std-lib-18274 for
+a brief discussion in support of this change.
+</p>
+</discussion>
+
+<resolution>
+<p>
+For simplicity,  instead of  adding overloads for  <code>unsigned long
+long</code> and dealing with possible ambiguities in the spec, replace
+the <code>bitset</code> ctor  that takes an <code>unsigned long</code>
+argument  with  one  taking  <code>unsigned long  long</code>  in  the
+definition  of the  template as  shown below.   (The  standard permits
+implementations  to add  overloads on  other integer  types  or employ
+template tricks to  achieve the same effect provided  they don't cause
+ambiguities or changes in behavior.)
+</p>
+<blockquote>
+<pre>
+// [bitset.cons] constructors:
+bitset();
+bitset(unsigned <ins>long</ins> long val);
+template&lt;class charT, class traits, class Allocator&gt;
+explicit bitset(
+                const basic_string&lt;charT,traits,Allocator&gt;&amp; str,
+                typename basic_string&lt;charT,traits,Allocator&gt;::size_type pos = 0,
+                typename basic_string&lt;charT,traits,Allocator&gt;::size_type n =
+                    basic_string&lt;charT,traits,Allocator&gt;::npos);
+</pre>
+</blockquote>
+<p>
+Make a corresponding change in <sref ref="[bitset.cons]"/>, p2:
+</p>
+<blockquote>
+<p>
+<code>bitset(unsigned <ins>long</ins> long val);</code>
+</p>
+<blockquote>
+<i>Effects</i>:  Constructs   an  object  of   class  bitset&lt;N&gt;,
+initializing  the  first <code><i>M</i></code>  bit  positions to  the
+corresponding      bit     values      in     <code><i>val</i></code>.
+<code><i>M</i></code> is the  smaller of <code><i>N</i></code> and the
+number of bits in  the value representation (section [basic.types]) of
+<code>unsigned  <ins> long</ins> long</code>.   If  <code><i>M</i> &lt;
+<i>N</i></code>  <ins>is  <code>true</code></ins>,  the remaining  bit
+positions are initialized to zero.
+</blockquote>
+</blockquote>
+
+<p>
+Additionally, introduce a new member function <code>to_ullong()</code>
+to make  it possible to  convert <code>bitset</code> to values  of the
+new  type. Add  the following  declaration  to the  definition of  the
+template, immediate  after the declaration  of <code>to_ulong()</code>
+in <sref ref="[template.bitset]"/>, p1, as shown below:
+</p>
+<blockquote>
+<pre>
+// element access:
+bool operator[](size_t pos) const; // for b[i];
+reference operator[](size_t pos); // for b[i];
+unsigned long to_ulong() const;
+<ins>unsigned long long to_ullong() const;</ins>
+template &lt;class charT, class traits, class Allocator&gt;
+basic_string&lt;charT, traits, Allocator&gt; to_string() const;
+</pre>
+</blockquote>
+<p>
+And add a description of  the new member function to <sref ref="[bitset.members]"/>,
+below  the  description of  the  existing <code>to_ulong()</code>  (if
+possible), with the following text:
+</p>
+<blockquote>
+<p>
+<code>unsigned long long to_ullong() const;</code>
+</p>
+<blockquote>
+<i>Throws</i>:  <code>overflow_error</code>   if  the  integral  value
+<code><i>x</i></code> corresponding to  the bits in <code>*this</code>
+cannot be represented as type <code>unsigned long long</code>.
+</blockquote>
+<blockquote>
+<i>Returns:</i> <code><i>x</i></code>.
+</blockquote>
+</blockquote>
+</resolution>
+
+</issue>

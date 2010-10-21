@@ -1,0 +1,345 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="815" status="NAD Editorial">
+<title><tt>std::function</tt> and <tt>reference_closure</tt> do not use perfect forwarding</title>
+<section><sref ref="[func.wrap.func.inv]"/></section>
+<submitter>Alisdair Meredith</submitter>
+<date>16 Mar 2008</date>
+
+<discussion>
+<p>
+<tt>std::function</tt> and <tt>reference_closure</tt> should use "perfect forwarding" as
+described in the rvalue core proposal.
+</p>
+
+<note>
+Sophia Antipolis:
+</note>
+
+<blockquote>
+According to Doug Gregor, as far as <tt>std::function</tt> is concerned, perfect
+forwarding can not be obtained because of type erasure. Not everyone
+agreed with this diagnosis of forwarding.
+</blockquote>
+
+<note>
+2009-05-01 Howard adds:
+</note>
+
+<blockquote>
+<p>
+Sebastian Gesemann brought to my attention that the <tt>CopyConstructible</tt>
+requirement on <tt>function</tt>'s <tt>ArgTypes...</tt> is an unnecessary
+restriction.
+</p>
+
+<blockquote><pre>
+template&lt;Returnable R, <b>CopyConstructible</b>... ArgTypes&gt;
+class function&lt;R(ArgTypes...)&gt;
+...
+</pre></blockquote>
+
+<p>
+On further investigation, this complaint seemed to be the same
+issue as this one.  I believe the reason <tt>CopyConstructible</tt> was put
+on <tt>ArgTypes</tt> in the first place was because of the nature of the
+<i>invoke</i> member:
+</p>
+
+<blockquote><pre>
+template&lt;class R, class ...ArgTypes&gt;
+R
+function&lt;R(ArgTypes...)&gt;::operator()(ArgTypes... arg) const
+{
+    if (f_ == 0)
+        throw bad_function_call();
+    return (*f_)(arg...);
+}
+</pre></blockquote>
+
+<p>
+However now with rvalue-refs, "by value" no longer implies <tt>CopyConstructible</tt>
+(as Sebastian correctly points out).  If rvalue arguments are supplied, <tt>MoveConstructible</tt>
+is sufficient.  Furthermore, the constraint need not be applied in <tt>function</tt>
+if I understand correctly.  Rather the client must apply the proper constraints
+at the call site.  Therefore, at the very least, I recommend that <tt>CopyConstructible</tt>
+be removed from the template class <tt>function</tt>.
+</p>
+
+<p>
+Furthermore we need to mandate that the <i>invoker</i> is coded as:
+</p>
+
+<blockquote><pre>
+template&lt;class R, class ...ArgTypes&gt;
+R
+function&lt;R(ArgTypes...)&gt;::operator()(ArgTypes... arg) const
+{
+    if (f_ == 0)
+        throw bad_function_call();
+    return (*f_)(<b>std::forward&lt;ArgTypes&gt;(</b>arg<b>)</b>...);
+}
+</pre></blockquote>
+
+<p>
+Note that <tt>ArgTypes&amp;&amp;</tt> (the "perfect forwarding signature") is not 
+appropriate here as this is not a deduced context for <tt>ArgTypes</tt>.  Instead
+the client's arguments must implicitly convert to the non-deduced <tt>ArgType</tt>
+type.  Catching these arguments by value makes sense to enable decay.
+</p>
+
+<p>
+Next <tt>forward</tt> is used to move the <tt>ArgTypes</tt> as efficiently as
+possible, and also with minimum requirements (not <tt>CopyConstructible</tt>)
+to the type-erased functor.  For object types, this will be a <tt>move</tt>.  For
+reference type <tt>ArgTypes</tt>, this will be a copy.  The end result <em>must</em> be
+that the following is a valid program:
+</p>
+
+<blockquote><pre>
+#include &lt;functional&gt;
+#include &lt;memory&gt;
+#include &lt;cassert&gt;
+
+std::unique_ptr&lt;int&gt;
+f(std::unique_ptr&lt;int&gt; p, int&amp; i)
+{
+    ++i;
+    return std::move(p);
+}
+
+int main()
+{
+    int i = 2;
+    std::function&lt;std::unique_ptr&lt;int&gt;(std::unique_ptr&lt;int&gt;,
+                                       int&amp;&gt; g(f);
+    std::unique_ptr&lt;int&gt; p = g(std::unique_ptr&lt;int&gt;(new int(1)), i);
+    assert(*p == 1);
+    assert(i == 3);
+}
+</pre></blockquote>
+
+<note>
+Tested in pre-concepts rvalue-ref-enabled compiler.
+</note>
+
+<p>
+In the example above, the first <tt>ArgType</tt> is <tt>unique_ptr&lt;int&gt;</tt>
+and the second <tt>ArgType</tt> is <tt>int&amp;</tt>.  Both <em>must</em> work!
+</p>
+
+</blockquote>
+
+<note>
+2009-05-27 Daniel adds:
+</note>
+
+<blockquote>
+<p>
+in the 2009-05-01 comment of above mentioned issue Howard
+</p>
+
+<ol type="a">
+<li>
+Recommends to replace the <tt>CopyConstructible</tt> requirement by a
+<tt>MoveConstructible</tt> requirement
+</li>
+<li>
+Says: "Furthermore, the constraint need not be applied in <tt>function</tt> if I
+understand correctly. Rather the client must apply the proper constraints
+at the call site"
+</li>
+</ol>
+<p>
+I'm fine with (a), but I think comment (b) is incorrect, at least in the
+sense I read these sentences. Let's look at Howard's example code:
+</p>
+
+<blockquote><pre>
+function&lt;R(ArgTypes...)&gt;::operator()(ArgTypes... arg) const
+{
+   if (f_ == 0)
+       throw bad_function_call();
+   return (*f_)(std::forward&lt;ArgTypes&gt;(arg)...);
+}
+</pre></blockquote>
+
+<p>
+In the constrained scope of this <tt>operator()</tt> overload the expression
+"<tt>(*f_)(std::forward&lt;ArgTypes&gt;(arg)...)</tt>" must be valid. How can it
+do so, if <tt>ArgTypes</tt> aren't at least <tt>MoveConstructible</tt>?
+</p>
+</blockquote>
+
+<note>
+2009-07 Frankfurt:
+</note>
+
+<blockquote>
+Leave this open and wait until concepts are removed from the Working
+Draft so that we know how to write the proposed resolution in terms of
+diffs to otherwise stable text.
+</blockquote>
+
+<note>
+2009-10 Santa Cruz:
+</note>
+
+<blockquote>
+Leave as open. Howard to provide wording. Howard welcomes any help.
+</blockquote>
+
+<note>
+2009-12-12 Jonathan Wakely adds:
+</note>
+
+<blockquote>
+<p>
+<sref ref="[func.wrap.func]"/> says
+</p>
+
+<blockquote>
+2  A function object <tt>f</tt> of type <tt>F</tt> is Callable for argument
+types <tt>T1, T2, ..., TN</tt> in <tt>ArgTypes</tt> and a return type
+<tt>R</tt>, if, given lvalues <tt>t1, t2, ..., tN</tt> of types <tt>T1, T2, ...,
+TN</tt>, respectively, <tt>INVOKE (f, t1, t2, ..., tN)</tt> is well formed
+(20.7.2) and, if <tt>R</tt> is not <tt>void</tt>, convertible to <tt>R</tt>.
+</blockquote>
+
+<p>
+N.B. lvalues, which means you can't use <tt>function&lt;R(T&amp;&amp;)&gt;</tt>
+or <tt>function&lt;R(unique_ptr&lt;T&gt;)&gt;</tt>
+</p>
+
+<p>
+I recently implemented rvalue arguments in GCC's <tt>std::function</tt>, all
+that was needed was to use <tt>std::forward&lt;ArgTypes&gt;</tt> in a few
+places. The example in issue 815 works.
+</p>
+
+<p>
+I think 815 could be resolved by removing the requirement that the target
+function be callable with lvalues.  Saying <tt>ArgTypes</tt> need to be
+<tt>CopyConstructible</tt> is wrong, and IMHO saying <tt>MoveConstructible</tt>
+is unnecessary, since the by-value signature implies that already, but if it is
+needed it should only be on <tt>operator()</tt>, not the whole class (you could
+in theory instantiate <tt>std::function&lt;R(noncopyable)&gt;</tt> as long as
+you don't invoke the call operator.)
+</p>
+
+<p>
+I think defining invocation in terms of <tt>INVOKE</tt> already implies perfect
+forwarding, so we don't need to say explicitly that <tt>std::forward</tt> should
+be used (N.B. the types that are forwarded are those in <tt>ArgTypes</tt>, which
+can differ from the actual parameter types of the target function.  The actual
+parameter types have gone via type erasure, but that's not a problem - IMHO
+forwarding the arguments as <tt>ArgTypes</tt> is the right thing to do anyway.)
+</p>
+
+<p>
+Is it sufficient to simply replace "lvalues" with "values"? or do we need to say
+something like "lvalues when <tt>Ti</tt> is an lvalue-reference and rvalues
+otherwise"?  I prefer the former, so I propose the following resolution for 815:
+</p>
+
+<p>
+Edit <sref ref="[func.wrap.func]"/> paragraph 2:
+</p>
+
+<blockquote>
+2  A function object <tt>f</tt> of type <tt>F</tt> is Callable for argument
+types <tt>T1, T2, ..., TN</tt> in <tt>ArgTypes</tt> and a return type
+<tt>R</tt>, if, given <del>l</del>values <tt>t1, t2, ..., tN</tt> of types
+<tt>T1, T2, ..., TN</tt>, respectively, <tt>INVOKE (f, t1, t2, ..., tN)</tt> is
+well formed (20.7.2) and, if <tt>R</tt> is not <tt>void</tt>, convertible to
+<tt>R</tt>.
+</blockquote>
+</blockquote>
+
+<note>
+2009-12-12 Daniel adds:
+</note>
+
+<blockquote>
+I don't like the reduction to "values" and prefer the alternative solution
+suggested using "lvalues when Ti is an lvalue-reference and rvalues otherwise".
+The reason why I dislike the shorter version is based on different usages of
+"values" as part of defining the semantics of requirement tables via
+expressions. E.g. <sref ref="[utility.arg.requirements]"/>/1 says "<tt>a</tt>,
+<tt>b</tt>, and <tt>c</tt> are values of type <tt>const T;</tt>" or similar in
+<sref ref="[container.requirements.general]"/>/4 or /14 etc. My current reading
+of all these parts is that <em>both</em> rvalues and lvalues are required to be
+supported, but this interpretation would violate the intention of the suggested
+fix of #815, if I correctly understand Jonathan's rationale.
+</blockquote>
+
+<note>
+2009-12-12 Howard adds:
+</note>
+
+<blockquote>
+<blockquote>
+"lvalues when Ti is an lvalue-reference and rvalues otherwise"
+</blockquote>
+<p>
+doesn't quite work here because the <tt>Ti</tt> aren't deduced.  They are
+specified by the <tt>function</tt> type.  <tt>Ti</tt> might be <tt>const
+int&amp;</tt> (an lvalue reference) and a valid <tt>ti</tt> might be <tt>2</tt>
+(a non-const rvalue).  I've taken another stab at the wording using
+"expressions" and "bindable to".
+</p>
+</blockquote>
+
+<note>
+2010-02-09 Wording updated by Jonathan, Ganesh and Daniel.
+</note>
+
+<note>
+2010-02-09 Moved to Tentatively Ready after 5 positive votes on c++std-lib.
+</note>
+
+<note>
+2010-02-10 Daniel opens to improve wording.
+</note>
+
+<note>
+2010-02-11 This issue is now addressed by <iref ref="870"/>.
+</note>
+
+<note>
+2010-02-12 Moved to Tentatively NAD Editorial after 5 positive votes on
+c++std-lib.  Rationale added below.
+</note>
+
+</discussion>
+
+<rationale>
+<p>
+Addressed by <iref ref="870"/>.
+</p>
+</rationale>
+
+<resolution>
+<p>
+Edit <sref ref="[func.wrap.func]"/> paragraph 2:
+</p>
+
+<blockquote>
+<p>
+2  A function object <tt>f</tt> of type <tt>F</tt> is Callable for argument
+types <del><tt>T1, T2, ..., TN</tt> in</del> <tt>ArgTypes</tt> and <del>a</del>
+return type <tt>R</tt><del>,</del> if<del>, given lvalues <tt>t1, t2, ...,
+tN</tt> of types <tt>T1, T2, ..., TN</tt>, respectively,</del> <ins>the
+expression</ins> <tt><i>INVOKE</i>(f, <ins>declval&lt;ArgTypes&gt;()...,
+R</ins><del>t1, t2, ..., tN</del>)</tt><ins>, considered as an unevaluated
+operand (<sref ref="[expr]"/>),</ins> is well formed (20.7.2)<del> and, if
+<tt>R</tt> is not <tt>void</tt>, convertible to <tt>R</tt></del>.
+</p>
+
+</blockquote>
+</resolution>
+
+</issue>

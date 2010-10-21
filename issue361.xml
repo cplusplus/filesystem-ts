@@ -1,0 +1,57 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [
+  <!ENTITY nbsp " ">
+]>
+
+<issue num="361" status="NAD">
+<title>num_get&lt;&gt;::do_get (..., void*&amp;) checks grouping</title>
+<section><sref ref="[facet.num.put.virtuals]"/></section>
+<submitter>Martin Sebor</submitter>
+<date>12 Mar 2002</date>
+
+<discussion>
+<p>
+22.2.2.2.2, p12 specifies that <tt>thousands_sep</tt> is to be inserted only
+for integral types (issue 282 suggests that this should be done for
+all arithmetic types).
+</p>
+
+<p>
+22.2.2.1.2, p12 requires that grouping be checked for all extractors
+including that for <tt>void*</tt>.
+</p>
+
+<p>
+I don't think that's right. <tt>void*</tt> values should not be checked for
+grouping, should they? (Although if they should, then <tt>num_put</tt> needs
+to write them out, otherwise their extraction will fail.)
+</p>
+</discussion>
+
+<resolution>
+<p>
+Change the first sentence of 22.2.2.2.2, p12 from
+</p>
+<blockquote><p>
+    Digit grouping is checked. That is, the positions of discarded
+    separators is examined for consistency with
+    use_facet&lt;numpunct&lt;charT&gt; &gt;(loc).grouping().
+    If they are not consistent then ios_base::failbit is assigned
+    to err.
+</p></blockquote>
+
+<p>to</p>
+<blockquote><p>
+    Except for conversions to void*, digit grouping is checked...
+</p></blockquote>
+
+</resolution>
+
+<rationale>
+<p>This would be a change: as it stands, the standard clearly
+  specifies that grouping applies to void*.  A survey of existing
+  practice shows that most existing implementations do that, as they
+  should.</p>
+</rationale>
+
+</issue>

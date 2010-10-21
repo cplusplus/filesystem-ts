@@ -1,0 +1,459 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="676" status="WP">
+<title>Moving the unordered containers</title>
+<section><sref ref="[unord]"/></section>
+<submitter>Howard Hinnant</submitter>
+<date>5 May 2007</date>
+
+<discussion>
+<p>
+Move semantics are missing from the <tt>unordered</tt> containers.  The proposed
+resolution below adds move-support consistent with
+<a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2005/n1858.html">N1858</a>
+and the current working draft.
+</p>
+
+<p>
+The current proposed resolution simply lists the requirements for each function.
+These might better be hoisted into the requirements table for unordered associative containers.
+Futhermore a mild reorganization of the container requirements could well be in order.
+This defect report is purposefully ignoring these larger issues and just focusing
+on getting the unordered containers "moved".
+</p>
+
+<note>
+2009-07-28 Reopened by Alisdair.  No longer solved by concepts.
+</note>
+
+<note>
+2009-10-17 Removed rvalue-swaps from wording.
+</note>
+
+<note>
+2009-10 Santa Cruz:
+</note>
+
+<blockquote>
+Move to Review. Alisdair will review proposed wording.
+</blockquote>
+
+<note>
+2009-10-29 Daniel updates wording.
+</note>
+
+<note>
+2010-01-26 Alisdair updates wording.
+</note>
+
+<note>
+2010-02-10 Howard updates wording to reference the unordered container
+requirements table (modified by <iref ref="704"/>) as much as possible.
+</note>
+
+<note>
+Voted to WP in Bellevue.
+</note>
+
+<note>
+post Bellevue, Pete notes:
+</note>
+
+<blockquote>
+<p>
+Please remind people who are reviewing issues to check that the text
+modifications match the current draft. Issue 676, for example, adds two
+overloads for unordered_map::insert taking a hint. One takes a
+const_iterator and returns a const_iterator, and the other takes an
+iterator and returns an iterator. This was correct at the time the issue
+was written, but was changed in Toronto so there is only one hint
+overload, taking a const_iterator and returning an iterator.
+</p>
+<p>
+This issue is not ready. In addition to the relatively minor signature
+problem I mentioned earlier, it puts requirements in the wrong places.
+Instead of duplicating requirements throughout the template
+specifications, it should put them in the front matter that talks about
+requirements for unordered containers in general. This presentation
+problem is editorial, but I'm not willing to do the extensive rewrite
+that it requires. Please put it back into Open status.
+</p>
+</blockquote>
+
+<note>
+2010-02-11 Moved to Tentatively Ready after 5 positive votes on c++std-lib.
+</note>
+
+<note>
+2010-02-24 Pete moved to Open:
+</note>
+
+<blockquote>
+The descriptions of the semantics of the added <tt>insert</tt> functions belong
+in the requirements table. That's where the rest of the <tt>insert</tt>
+functions are.
+</blockquote>
+
+<note>
+2010 Pittsburgh:
+</note>
+
+<blockquote>
+Move issue 676 to Ready for Pittsburgh. Nico to send Howard an issue for
+the broader problem.
+</blockquote>
+
+</discussion>
+
+<rationale>
+<note>
+San Francisco:
+</note>
+
+<blockquote>
+Solved by
+<a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2008/n2776.pdf">N2776</a>.
+</blockquote>
+
+<note>
+Rationale is obsolete.
+</note>
+
+</rationale>
+
+
+<resolution>
+
+<p><b><tt>unordered_map</tt></b></p>
+
+<p>
+Change <sref ref="[unord.map]"/>:
+</p>
+
+<blockquote><pre>
+class unordered_map
+{
+    ...
+    unordered_map(const unordered_map&amp;);
+    <ins>unordered_map(unordered_map&amp;&amp;);</ins>
+    unordered_map(const Allocator&amp;);
+    unordered_map(const unordered_map&amp;, const Allocator&amp;);
+    unordered_map(unordered_map&amp;&amp;, const Allocator&amp;);
+    ...
+    unordered_map&amp; operator=(const unordered_map&amp;);
+    <ins>unordered_map&amp; operator=(unordered_map&amp;&amp;);</ins>
+    ...
+    // modifiers
+    ...
+    <del>std::</del>pair&lt;iterator, bool&gt; insert(const value_type&amp; obj); 
+    <ins>template &lt;class P&gt; pair&lt;iterator, bool&gt; insert(P&amp;&amp; obj);</ins>
+    iterator       insert(const_iterator hint, const value_type&amp; obj);
+    <ins>template &lt;class P&gt; iterator       insert(const_iterator hint, P&amp;&amp; obj);</ins>
+    ...
+    mapped_type&amp; operator[](const key_type&amp; k);
+    <ins>mapped_type&amp; operator[](key_type&amp;&amp; k);</ins>
+    ...
+};
+
+</pre></blockquote>
+
+<p>
+Add to <sref ref="[unord.map.elem]"/>:
+</p>
+
+<blockquote>
+
+<pre>mapped_type&amp; operator[](const key_type&amp; k);</pre>
+
+<blockquote>
+<p>...</p>
+<p><ins>
+<i>Requires:</i> <tt>key_type</tt> shall be <tt>CopyConstructible</tt>
+and <tt>mapped_type</tt> shall be <tt>DefaultConstructible</tt>.
+</ins></p>
+
+<p><ins>
+<i>Complexity:</i> Average case <tt>O(1)</tt>, worst case <tt>O(size())</tt>.
+</ins></p>
+
+</blockquote>
+
+<pre><ins>mapped_type&amp; operator[](key_type&amp;&amp; k);</ins></pre>
+
+<blockquote>
+<p><ins>
+<i>Requires:</i> <tt>key_type</tt> shall be <tt>MoveConstructible</tt> and
+<tt>mapped_type</tt> shall be <tt>DefaultConstructible</tt>.
+</ins></p>
+
+<p><ins>
+<i>Effects:</i> If the <tt>unordered_map</tt> does not already contain an
+element whose key is equivalent to <tt>k</tt> , inserts the value
+<tt>value_type(std::move(k), mapped_type())</tt>.
+</ins></p>
+
+<p><ins>
+<i>Returns:</i> A reference to <tt>x.second</tt>, where <tt>x</tt> is the
+(unique) element whose key is equivalent to <tt>k</tt>.
+</ins></p>
+
+<p><ins>
+<i>Complexity:</i> Average case <tt>O(1)</tt>, worst case <tt>O(size())</tt>.
+</ins></p>
+
+</blockquote>
+
+</blockquote>
+
+<p>
+Add new section [unord.map.modifiers]:
+</p>
+
+<blockquote>
+<pre>
+<ins>template &lt;class P&gt;
+  pair&lt;iterator, bool&gt; insert(P&amp;&amp; x);</ins>
+</pre>
+
+<blockquote>
+
+<p><ins>
+<i>Requires:</i> <tt>value_type</tt> is constructible from
+<tt>std::forward&lt;P&gt;(x)</tt>.
+</ins></p>
+
+<p><ins>
+<i>Effects:</i>  Inserts <tt>x</tt> converted to <tt>value_type</tt> if and only
+if there is no element in the container with key equivalent to the key of
+<tt>value_type(x)</tt>.
+</ins></p>
+
+<p><ins>
+<i>Returns:</i> The <tt>bool</tt> component of the returned
+<tt>pair</tt> indicates whether the insertion takes place, and the iterator
+component points to the element with key equivalent to the key of
+<tt>value_type(x)</tt>.
+</ins></p>
+
+<p><ins>
+<i>Complexity:</i> Average case <tt>O(1)</tt>, worst case <tt>O(size())</tt>.
+</ins></p>
+
+<p><ins>
+<i>Remarks:</i> <tt>P</tt> shall be implicitly convertible to
+<tt>value_type</tt>, else this signature shall not participate in overload
+resolution.
+</ins></p>
+
+</blockquote>
+
+
+<pre>
+<ins>template &lt;class P&gt;
+  iterator insert(const_iterator hint, P&amp;&amp; x);</ins>
+</pre>
+
+<blockquote>
+
+<p><ins>
+<i>Requires:</i> <tt>value_type</tt> is constructible from
+<tt>std::forward&lt;P&gt;(x)</tt>.
+</ins></p>
+
+<p><ins>
+<i>Effects:</i>  Inserts <tt>x</tt> converted to <tt>value_type</tt> if and only
+if there is no element in the container with key equivalent to the key of
+<tt>value_type(x)</tt>.  The iterator <tt>hint</tt> is a hint pointing to where
+the search should start. Implementations are permitted to ignore the hint.
+</ins></p>
+
+<p><ins>
+<i>Returns:</i> An iterator pointing to the element with key equivalent to the
+key of <tt>value_type(x)</tt>.
+</ins></p>
+
+<p><ins>
+<i>Complexity:</i> Average case <tt>O(1)</tt>, worst case <tt>O(size())</tt>.
+</ins></p>
+
+<p><ins>
+<i>Remarks:</i> <tt>P</tt> shall be implicitly convertible to
+<tt>value_type</tt>, else this signature shall not participate in overload
+resolution.
+</ins></p>
+
+</blockquote>
+
+</blockquote>
+
+<p><b><tt>unordered_multimap</tt></b></p>
+
+<p>
+Change <sref ref="[unord.multimap]"/>:
+</p>
+
+<blockquote><pre>
+class unordered_multimap
+{
+    ...
+    unordered_multimap(const unordered_multimap&amp;);
+    <ins>unordered_multimap(unordered_multimap&amp;&amp;);</ins>
+    unordered_multimap(const Allocator&amp;);
+    unordered_multimap(const unordered_multimap&amp;, const Allocator&amp;);
+    unordered_multimap(unordered_multimap&amp;&amp;, const Allocator&amp;);
+    ...
+    unordered_multimap&amp; operator=(const unordered_multimap&amp;);
+    <ins>unordered_multimap&amp; operator=(unordered_multimap&amp;&amp;);</ins>
+    ...
+    // modifiers
+    ...
+    iterator insert(const value_type&amp; obj); 
+    <ins>template &lt;class P&gt; iterator insert(P&amp;&amp; obj);</ins>
+    iterator       insert(const_iterator hint, const value_type&amp; obj);
+    <ins>template &lt;class P&gt; iterator       insert(const_iterator hint, P&amp;&amp; obj);</ins>
+    ...
+};
+
+</pre></blockquote>
+
+<p>
+Add new section [unord.multimap.modifiers]:
+</p>
+
+<blockquote>
+<pre>
+<ins>template &lt;class P&gt;
+  iterator insert(P&amp;&amp; x);</ins>
+</pre>
+
+<blockquote>
+
+<p><ins>
+<i>Requires:</i> <tt>value_type</tt> is constructible from
+<tt>std::forward&lt;P&gt;(x)</tt>.
+</ins></p>
+
+<p><ins>
+<i>Effects:</i>  Inserts <tt>x</tt> converted to <tt>value_type</tt>.
+</ins></p>
+
+<p><ins>
+<i>Returns:</i> An iterator pointing to the element with key equivalent to the
+key of <tt>value_type(x)</tt>.
+</ins></p>
+
+<p><ins>
+<i>Complexity:</i> Average case <tt>O(1)</tt>, worst case <tt>O(size())</tt>.
+</ins></p>
+
+<p><ins>
+<i>Remarks:</i> <tt>P</tt> shall be implicitly convertible to
+<tt>value_type</tt>, else this signature shall not participate in overload
+resolution.
+</ins></p>
+
+</blockquote>
+
+<pre>
+<ins>template &lt;class P&gt;
+  iterator insert(const_iterator hint, P&amp;&amp; x);</ins>
+</pre>
+
+<blockquote>
+
+<p><ins>
+<i>Requires:</i> <tt>value_type</tt> is constructible from
+<tt>std::forward&lt;P&gt;(x)</tt>.
+</ins></p>
+
+<p><ins>
+<i>Effects:</i>  Inserts <tt>x</tt> converted to <tt>value_type</tt> if and only
+if there is no element in the container with key equivalent to the key of
+<tt>value_type(x)</tt>.  The iterator <tt>hint</tt> is a hint pointing to where
+the search should start. Implementations are permitted to ignore the hint.
+</ins></p>
+
+<p><ins>
+<i>Returns:</i> An iterator pointing to the element with key equivalent to the
+key of <tt>value_type(x)</tt>.
+</ins></p>
+
+<p><ins>
+<i>Complexity:</i> Average case <tt>O(1)</tt>, worst case <tt>O(size())</tt>.
+</ins></p>
+
+<p><ins>
+<i>Remarks:</i> <tt>P</tt> shall be implicitly convertible to
+<tt>value_type</tt>, else this signature shall not participate in overload
+resolution.
+</ins></p>
+
+</blockquote>
+
+</blockquote>
+
+<p><b><tt>unordered_set</tt></b></p>
+
+<p>
+Change <sref ref="[unord.set]"/>:
+</p>
+
+<blockquote><pre>
+class unordered_set
+{
+    ...
+    unordered_set(const unordered_set&amp;);
+    <ins>unordered_set(unordered_set&amp;&amp;);</ins>
+    unordered_set(const Allocator&amp;);
+    unordered_set(const unordered_set&amp;, const Allocator&amp;);
+    unordered_set(unordered_set&amp;&amp;, const Allocator&amp;);
+    ...
+    unordered_set&amp; operator=(const unordered_set&amp;);
+    <ins>unordered_set&amp; operator=(unordered_set&amp;&amp;);</ins>
+    ...
+    // modifiers 
+    ...
+    <del>std::</del>pair&lt;iterator, bool&gt; insert(const value_type&amp; obj); 
+    <ins>pair&lt;iterator, bool&gt; insert(value_type&amp;&amp; obj);</ins>
+    iterator       insert(const_iterator hint, const value_type&amp; obj);
+    <ins>iterator       insert(const_iterator hint, value_type&amp;&amp; obj);</ins>
+    ...
+};
+</pre></blockquote>
+
+<p><b><tt>unordered_multiset</tt></b></p>
+
+<p>
+Change <sref ref="[unord.multiset]"/>:
+</p>
+
+<blockquote><pre>
+class unordered_multiset
+{
+    ...
+    unordered_multiset(const unordered_multiset&amp;);
+    <ins>unordered_multiset(unordered_multiset&amp;&amp;);</ins>
+    unordered_multiset(const Allocator&amp;);
+    unordered_multiset(const unordered_multiset&amp;, const Allocator&amp;);
+    unordered_multiset(unordered_multiset&amp;&amp;, const Allocator&amp;);
+    ...
+    unordered_multiset&amp; operator=(const unordered_multiset&amp;);
+    <ins>unordered_multiset&amp; operator=(unordered_multiset&amp;&amp;);</ins>
+    ...
+    // modifiers
+    ...
+    iterator insert(const value_type&amp; obj); 
+    <ins>iterator insert(value_type&amp;&amp; obj);</ins>
+    iterator       insert(const_iterator hint, const value_type&amp; obj);
+    <ins>iterator       insert(const_iterator hint, value_type&amp;&amp; obj);</ins>
+    ...
+};
+
+</pre></blockquote>
+
+</resolution>
+
+</issue>

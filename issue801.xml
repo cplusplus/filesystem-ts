@@ -1,0 +1,176 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="801" status="Open">
+<title><tt>tuple</tt> and <tt>pair</tt> trivial members</title>
+<section><sref ref="[tuple]"/></section>
+<submitter>Lawrence Crowl</submitter>
+<date>18 Feb 2008</date>
+
+<discussion>
+<p>
+Classes with trivial special member functions are inherently more
+efficient than classes without such functions.  This efficiency is
+particularly pronounced on modern ABIs that can pass small classes
+in registers.  Examples include value classes such as complex numbers
+and floating-point intervals.  Perhaps more important, though, are
+classes that are simple collections, like <tt>pair</tt> and <tt>tuple</tt>.  When the
+parameter types of these classes are trivial, the <tt>pair</tt>s and <tt>tuple</tt>s
+themselves can be trivial, leading to substantial performance wins.
+</p>
+<p>
+The current working draft make specification of trivial functions
+(where possible) much easer through <tt>default</tt>ed and <tt>delete</tt>d functions.
+As long as the semantics of defaulted and deleted functions match
+the intended semantics, specification of defaulted and deleted
+functions will yield more efficient programs.
+</p>
+<p>
+There are at least two cases where specification of an explicitly
+defaulted function may be desirable.
+</p>
+<p>
+First, the <tt>std::pair</tt> template has a non-trivial default constructor,
+which prevents static initialization of the pair even when the
+types are statically initializable.  Changing the definition to
+</p>
+
+<blockquote><pre>
+pair() = default;
+</pre></blockquote>
+
+<p>
+would enable such initialization.  Unfortunately, the change is
+not semantically neutral in that the current definition effectively
+forces value initialization whereas the change would not value
+initialize in some contexts.
+</p>
+
+<p>
+** Does the committee confirm that forced value initialization
+was the intent?  If not, does the committee wish to change the
+behavior of <tt>std::pair</tt> in C++0x?
+</p>
+<p>
+Second, the same default constructor issue applies to <tt>std::tuple</tt>.
+Furthermore, the <tt>tuple</tt> copy constructor is current non-trivial,
+which effectively prevents passing it in registers.  To enable
+passing <tt>tuples</tt> in registers, the copy constructor should be
+make explicitly <tt>default</tt>ed.  The new declarations are:
+</p>
+
+<blockquote><pre>
+tuple() = default;
+tuple(const tuple&amp;) = default;
+</pre></blockquote>
+
+<p>
+This changes is not implementation neutral.  In particular, it
+prevents implementations based on pointers to the parameter
+types.  It does however, permit implementations using the
+parameter types as bases.
+</p>
+<p>
+** How does the committee wish to trade implementation
+efficiency versus implementation flexibility?
+</p>
+
+<note>
+Bellevue:
+</note>
+
+<blockquote>
+<p>
+General agreement; the first half of the issue is NAD.
+</p>
+<p>
+Before voting on the second half, it was agreed that a "Strongly Favor"
+vote meant support for trivial tuples (assuming usual requirements met),
+even at the expense of other desired qualities. A "Weakly Favor" vote
+meant support only if not at the expense of other desired qualities.
+</p>
+<p>
+Concensus: Go forward, but not at expense of other desired qualities.
+</p>
+<p>
+It was agreed to Alisdair should fold this work in with his other
+pair/tuple action items, above, and that issue 801 should be "open", but
+tabled until Alisdair's proposals are disposed of.
+</p>
+</blockquote>
+
+<note>
+2009-05-27 Daniel adds:
+</note>
+
+<blockquote>
+This is partly solved by <iref ref="1117"/>.
+</blockquote>
+
+<note>
+2009-07 Frankfurt:
+</note>
+
+<blockquote>
+Wait for dust to settle from fixing exception safety problem
+with rvalue refs.
+</blockquote>
+
+<note>
+2009-07-20 Alisdair adds:
+</note>
+
+<blockquote>
+<p>
+Basically, this issue is what should we do with the default constructor
+for pairs and tuples of trivial types.  The motivation of the issue was
+to force static initialization rather than dynamic initialization, and
+was rejected in the case of pair as it would change the meaning of
+existing programs.  The advice was "do the best we can" for tuple
+without changing existing meaning.
+</p>
+
+<p>
+Frankfurt seems to simply wait and see the resolution on no-throw move
+constructors, which (I believe) is only tangentially related to this
+issue, but as good as any to defer until Santa Cruz.
+</p>
+
+<p>
+Looking again now, I think constant (static) initialization for pair can
+be salvaged by making the default construct constexpr.  I have a
+clarification from Core that this is intended to work, even if the
+constructor is not trivial/constexpr, so long as no temporaries are
+implied in the process (even if elided).
+</p>
+</blockquote>
+
+<note>
+2009-10 Santa Cruz:
+</note>
+
+<blockquote>
+Leave as open. Alisdair to provide wording.
+</blockquote>
+
+<note>
+2010 Pittsburgh:
+</note>
+
+<blockquote>
+<p>
+We believe this may be NAD Editorial since both pair and tuple now have
+constexpr default constructors, but we're not sure.
+</p>
+</blockquote>
+
+</discussion>
+
+<resolution>
+<p>
+</p>
+</resolution>
+
+</issue>

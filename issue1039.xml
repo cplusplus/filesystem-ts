@@ -1,0 +1,64 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="1039" status="WP">
+<title>Response to UK 234</title>
+<section><sref ref="[sequence.reqmts]"/></section>
+<submitter>Alisdair Meredith</submitter>
+<date>12 Mar 2009</date>
+
+<discussion>
+
+<p><b>Addresses UK 234</b></p>
+
+<p>
+The reference to <tt>iterator</tt> in semantics for <tt>back</tt> should
+also allow for <tt>const_iterator</tt> when called on a const-qualified
+container. This would be ugly to specify in the 03 standard, but is
+quite easy with the addition of <tt>auto</tt> in this new standard.
+</p>
+
+<note>
+Summit:
+</note>
+
+<blockquote>
+Agree.
+</blockquote>
+
+<note>
+Batavia (2009-05):
+</note>
+<blockquote>
+We agree with the proposed resolution.
+Move to Tentatively Ready.
+</blockquote>
+</discussion>
+
+<resolution>
+<p>
+In <sref ref="[sequence.reqmts]"/> Table 84, replace iterator with auto in semantics for back:
+</p>
+
+<blockquote>
+<table border="1">
+<caption>Table 84 -- Optional sequence container operations</caption>
+<tr>
+<th>Expression</th>
+<th>Return type</th>
+<th>Operational semantics</th>
+<th>Container</th>
+</tr>
+<tr>
+<td><tt>a.back()</tt></td>
+<td><tt>reference; const_reference</tt> for constant <tt>a</tt></td>
+<td><tt>{ <del>iterator</del> <ins>auto</ins> tmp = a.end();<br/>--tmp;<br/>return *tmp; }</tt></td>
+<td><tt>vector, list, deque, basic_string</tt></td>
+</tr>
+</table>
+</blockquote>
+</resolution>
+
+</issue>

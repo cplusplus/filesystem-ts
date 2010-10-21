@@ -1,0 +1,131 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="662" status="NAD">
+<title>Inconsistent handling of incorrectly-placed thousands separators</title>
+<section><sref ref="[facet.num.get.virtuals]"/></section>
+<submitter>Cosmin Truta</submitter>
+<date>5 Apr 2007</date>
+
+<discussion>
+<p>
+From Section <sref ref="[facet.num.get.virtuals]"/>, paragraphs 11 and 12, it is implied
+that the value read from a stream must be stored
+even if the placement of thousands separators does not conform to the
+<code>grouping()</code> specification from the <code>numpunct</code> facet.
+Since incorrectly-placed thousands separators are flagged as an extraction
+failure (by the means of <code>failbit</code>), we believe it is better not
+to store the value. A consistent strategy, in which any kind of extraction
+failure leaves the input item intact, is conceptually cleaner, is able to avoid
+corner-case traps, and is also more understandable from the programmer's point
+of view.
+</p>
+<p>
+Here is a quote from <i>"The C++ Programming Language (Special Edition)"</i>
+by B.&nbsp;Stroustrup (Section&nbsp;D.4.2.3, pg.&nbsp;897):
+</p>
+<blockquote><p>
+<i>"If a value of the desired type could not be read, failbit is set in r.
+[...] An input operator will use r to determine how to set the state of its
+stream. If no error was encountered, the value read is assigned through v;
+otherwise, v is left unchanged."</i>
+</p></blockquote>
+<p>
+This statement implies that <code>rdstate()</code> alone is sufficient to
+determine whether an extracted value is to be assigned to the input item
+<i>val</i> passed to <code>do_get</code>. However, this is in disagreement
+with the current C++ Standard. The above-mentioned assumption is true in all
+cases, except when there are mismatches in digit grouping. In the latter case,
+the parsed value is assigned to <i>val</i>, and, at the same time, <i>err</i>
+is assigned to <code>ios_base::failbit</code> (essentially "lying" about the
+success of the operation). Is this intentional? The current behavior raises
+both consistency and usability concerns.
+</p>
+<p>
+Although digit grouping is outside the scope of <code>scanf</code> (on which
+the virtual methods of <code>num_get</code> are based), handling of grouping
+should be consistent with the overall behavior of scanf. The specification of
+<code>scanf</code> makes a distinction between input failures and matching
+failures, and yet both kinds of failures have no effect on the input items
+passed to <code>scanf</code>. A mismatch in digit grouping logically falls in
+the category of matching failures, and it would be more consistent, and less
+surprising to the user, to leave the input item intact whenever a failure is
+being signaled.
+</p>
+<p>
+The extraction of <code>bool</code> is another example outside the scope of
+<code>scanf</code>, and yet consistent, even in the event of a successful
+extraction of a <code>long</code> but a failed conversion from
+<code>long</code> to <code>bool</code>.
+</p>
+<p>
+Inconsistency is further aggravated by the fact that, when failbit is set,
+subsequent extraction operations are no-ops until <code>failbit</code> is
+explicitly cleared. Assuming that there is no explicit handling of
+<code>rdstate()</code> (as in <code>cin&gt;&gt;i&gt;&gt;j</code>) it is
+counter-intuitive to be able to extract an integer with mismatched digit
+grouping, but to be unable to extract another, properly-formatted integer
+that immediately follows.
+</p>
+<p>
+Moreover, setting <code>failbit</code>, and selectively assigning a value to
+the input item, raises usability problems. Either the strategy of
+<code>scanf</code> (when there is no extracted value in case of failure), or
+the strategy of the <code>strtol</code> family (when there is always an
+extracted value, and there are well-defined defaults in case of a failure) are
+easy to understand and easy to use. On the other hand, if <code>failbit</code>
+alone cannot consistently make a difference between a failed extraction, and a
+successful but not-quite-correct extraction whose output happens to be the same
+as the previous value, the programmer must resort to implementation tricks.
+Consider the following example:
+</p>
+<pre>
+    int i = old_i;
+    cin &gt;&gt; i;
+    if (cin.fail())
+        // can the value of i be trusted?
+        // what does it mean if i == old_i?
+        // ...
+</pre>
+<p>
+Last but not least, the current behvaior is not only confusing to the casual
+reader, but it has also been confusing to some book authors. Besides
+Stroustrup's book, other books (e.g. "Standard C++ IOStreams and Locales" by
+Langer and Kreft) are describing the same mistaken assumption. Although books
+are not to be used instead of the standard reference, the readers of these
+books, as well as the people who are generally familiar to <code>scanf</code>,
+are even more likely to misinterpret the standard, and expect the input items
+to remain intact when a failure occurs.
+</p>
+</discussion>
+
+<resolution>
+
+<p>
+Change <sref ref="[facet.num.get.virtuals]"/>:
+</p>
+
+<blockquote>
+<p>
+<b>Stage 3:</b> The result of stage 2 processing can be one of
+</p>
+<ul>
+<li>A sequence of <code>chars</code> has been accumulated in stage 2 that is converted (according to the rules of <code>scanf</code>) to a value of the type of <code><i>val</i></code>.  <del>This value is stored in <code><i>val</i></code> and <code>ios_base::goodbit</code> is stored in <code><i>err</i></code>.</del></li>
+
+<li>The sequence of <code>chars</code> accumulated in stage 2 would have caused <code>scanf</code> to report an input failure. <code>ios_base::failbit</code> is assigned to <code><i>err</i></code>.</li>
+</ul>
+<p>
+<ins>In the first case,</ins> <del>D</del><ins>d</ins>igit grouping is checked.  That is, the positions of discarded separators is examined for consistency with <code>use_facet&lt;numpunct&lt;charT&gt; &gt;(<i>loc</i>).grouping()</code>.  If they are not consistent then <code>ios_base::failbit</code> is assigned to <code><i>err</i></code>.  <ins>Otherwise, the value that was converted in stage 2 is stored in <code><i>val</i></code> and <code>ios_base::goodbit</code> is stored in <code><i>err</i></code>.</ins>
+</p>
+</blockquote>
+</resolution>
+
+<rationale>
+post-Toronto: Changed from New to NAD at the request of the author.  The preferred solution of
+<a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2007/n2327.pdf">N2327</a>
+makes this resolution obsolete.
+</rationale>
+
+</issue>

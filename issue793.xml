@@ -1,0 +1,258 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="793" status="NAD Editorial">
+<title><tt>discrete_distribution</tt> missing constructor</title>
+<section><sref ref="[rand.dist.samp.discrete]"/></section>
+<submitter>P.J. Plauger</submitter>
+<date>9 Feb 2008</date>
+
+<discussion>
+<p>
+<tt>discrete_distribution</tt> should have a constructor like:
+</p>
+
+<blockquote><pre>
+template&lt;class _Fn&gt;
+  discrete_distribution(result_type _Count, double _Low, double _High,
+                        _Fn&amp; _Func);
+</pre></blockquote>
+
+<p>
+(Makes it easier to fill a histogram with function values over a range.)
+</p>
+
+<note>
+Bellevue:
+</note>
+
+<blockquote>
+How do you specify the function so that it does not return negative
+values? If you do it is a bad construction. This requirement is already
+there. Where in each bin does one evaluate the function? In the middle.
+Need to revisit tomorrow.
+</blockquote>
+
+<note>
+Sophia Antipolis:
+</note>
+
+<blockquote>
+<p>
+Bill is not requesting this.
+</p>
+<p>
+Marc Paterno: <tt>_Fn</tt> cannot return negative values at the points where the
+function is sampled. It is sampled in the middle of each bin. <tt>_Fn</tt> cannot
+return 0 everywhere it is sampled.
+</p>
+<p>
+Jens: lambda expressions are rvalues
+</p>
+<p>
+Add a library issue to provide an
+<tt>initializer_list&lt;double&gt;</tt> constructor for
+<tt>discrete_distribution</tt>.
+</p>
+<p>
+Marc Paterno: dislikes reference for <tt>_Fn</tt> parameter. Make it pass-by-value (to use lambda),
+use <tt>std::ref</tt> to wrap giant-state function objects.
+</p>
+<p>
+Daniel: See <tt>random_shuffle</tt>, pass-by-rvalue-reference.
+</p>
+<p>
+Daniel to draft wording.
+</p>
+</blockquote>
+
+<note>
+Pre San Francisco, Daniel provided wording:
+</note>
+
+<blockquote>
+The here proposed changes of the WP refer to the current state of
+<a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2008/n2691.pdf">N2691</a>.
+During the Sophia Antipolis meeting two different proposals came up
+regarding the functor argument type, either by value or by rvalue-reference.
+For consistence with existing conventions (state-free algorithms and the
+<tt>general_pdf_distribution</tt> c'tor signature) the author decided to propose a
+function argument that is provided by value. If severe concerns exists that
+stateful functions would be of dominant relevance, it should be possible to
+replace the two occurrences of <tt>Func</tt> by <tt>Func&amp;&amp;</tt> in this proposal as part
+of an editorial process.
+</blockquote>
+
+</discussion>
+
+<resolution>
+
+<p><b>Non-concept version of the proposed resolution</b></p>
+
+<ol>
+<li>
+<p>
+In <sref ref="[rand.dist.samp.discrete]"/>/1, class <tt>discrete_distribution</tt>, just
+<em>before</em> the member declaration
+</p>
+
+<blockquote><pre>
+explicit discrete_distribution(const param_type&amp; parm);
+</pre></blockquote>
+
+<p>
+insert:
+</p>
+
+
+<blockquote><pre>
+template&lt;typename Func&gt;
+discrete_distribution(result_type nf, double xmin, double xmax, Func fw);
+</pre></blockquote>
+</li>
+
+<li>
+<p>
+Between p.4 and p.5 insert a series of new paragraphs as part of the
+new member description::
+</p>
+<blockquote><pre>
+template&lt;typename Func&gt;
+discrete_distribution(result_type nf, double xmin, double xmax, Func fw);
+</pre>
+
+<p>
+<i>Complexity:</i> Exactly nf invocations of fw.
+</p>
+<p>
+<i>Requires:</i>
+</p>
+<ol type="a">
+<li>
+fw shall be callable with one argument of type double, and shall
+return values of a type convertible to double;</li>
+
+<li>If nf &gt; 0, the relation <tt><i>x</i><sub><i>min</i></sub></tt> &lt; <tt><i>x</i><sub><i>max</i></sub></tt> shall hold, and for all sample values
+<tt><i>x</i><sub><i>k</i></sub></tt>, fw(<tt><i>x</i><sub><i>k</i></sub></tt>) shall return a weight value <tt><i>w</i><sub><i>k</i></sub></tt> that is non-negative, non-NaN,
+and non-infinity;</li>
+
+<li>The following relations shall hold: nf &ge; 0, and 0 &lt; S = <tt><i>w</i><sub><i>0</i></sub></tt>+. . .+<tt><i>w<sub>n-1</sub></i></tt>.</li>
+
+</ol>
+
+<p>
+<i>Effects:</i>
+</p>
+<ol type="a">
+<li>If nf == 0, sets n = 1 and lets the sequence w have length n = 1 and
+   consist of the single value <tt><i>w</i><sub><i>0</i></sub></tt> = 1.</li>
+
+<li>
+<p>Otherwise, sets n = nf, deltax = (<tt><i>x</i><sub><i>max</i></sub></tt> - <tt><i>x</i><sub><i>min</i></sub></tt>)/n and <tt><i>x</i><sub><i>cent</i></sub></tt> = <tt><i>x</i><sub><i>min</i></sub></tt> +
+0.5 * deltax.</p>
+<blockquote><pre>
+For each k = 0, . . . ,n-1, calculates:
+  <tt><i>x</i><sub><i>k</i></sub></tt> = <tt><i>x</i><sub><i>cent</i></sub></tt> + k * deltax
+  <tt><i>w</i><sub><i>k</i></sub></tt> = fw(<tt><i>x</i><sub><i>k</i></sub></tt>)
+</pre></blockquote>
+</li>
+<li>
+<p>Constructs a discrete_distribution object with probabilities:</p>
+<blockquote><pre>
+<tt><i>p</i><sub><i>k</i></sub></tt> = <tt><i>w</i><sub><i>k</i></sub></tt>/S  for k = 0, . . . , n-1.
+</pre></blockquote>
+</li>
+</ol>
+</blockquote>
+</li>
+</ol>
+
+<p><b>Concept version of the proposed resolution</b></p>
+
+
+<ol>
+<li>
+<p>
+In <sref ref="[rand.dist.samp.discrete]"/>/1, class <tt>discrete_distribution</tt>, just
+<em>before</em> the member declaration
+</p>
+
+<blockquote><pre>
+explicit discrete_distribution(const param_type&amp; parm);
+</pre></blockquote>
+
+<p>
+insert:
+</p>
+
+
+<blockquote><pre>
+template&lt;Callable&lt;auto, double&gt; Func&gt;
+ requires Convertible&lt;Func::result_type, double&gt;
+discrete_distribution(result_type nf, double xmin, double xmax, Func fw);
+</pre></blockquote>
+</li>
+
+<li>
+<p>
+Between p.4 and p.5 insert a series of new paragraphs as part of the
+new member description::
+</p>
+<blockquote><pre>
+template&lt;Callable&lt;auto, double&gt; Func&gt;
+ requires Convertible&lt;Func::result_type, double&gt;
+discrete_distribution(result_type nf, double xmin, double xmax, Func fw);
+</pre>
+
+<p>
+<i>Complexity:</i> Exactly nf invocations of fw.
+</p>
+<p>
+<i>Requires:</i>
+</p>
+<ol type="a">
+<li>If nf &gt; 0, the relation <tt><i>x</i><sub><i>min</i></sub></tt> &lt; <tt><i>x</i><sub><i>max</i></sub></tt> shall hold, and for all sample values
+<tt><i>x</i><sub><i>k</i></sub></tt>, fw(<tt><i>x</i><sub><i>k</i></sub></tt>) shall return a weight value <tt><i>w</i><sub><i>k</i></sub></tt> that is non-negative, non-NaN,
+and non-infinity;</li>
+
+<li>The following relations shall hold: nf &ge; 0, and 0 &lt; S = <tt><i>w</i><sub><i>0</i></sub></tt>+. . .+<tt><i>w<sub>n-1</sub></i></tt>.</li>
+
+</ol>
+
+<p>
+<i>Effects:</i>
+</p>
+<ol type="a">
+<li>If nf == 0, sets n = 1 and lets the sequence w have length n = 1 and
+   consist of the single value <tt><i>w</i><sub><i>0</i></sub></tt> = 1.</li>
+
+<li>
+<p>Otherwise, sets n = nf, deltax = (<tt><i>x</i><sub><i>max</i></sub></tt> - <tt><i>x</i><sub><i>min</i></sub></tt>)/n and <tt><i>x</i><sub><i>cent</i></sub></tt> = <tt><i>x</i><sub><i>min</i></sub></tt> +
+0.5 * deltax.</p>
+<blockquote><pre>
+For each k = 0, . . . ,n-1, calculates:
+  <tt><i>x</i><sub><i>k</i></sub></tt> = <tt><i>x</i><sub><i>cent</i></sub></tt> + k * deltax
+  <tt><i>w</i><sub><i>k</i></sub></tt> = fw(<tt><i>x</i><sub><i>k</i></sub></tt>)
+</pre></blockquote>
+</li>
+<li>
+<p>Constructs a discrete_distribution object with probabilities:</p>
+<blockquote><pre>
+<tt><i>p</i><sub><i>k</i></sub></tt> = <tt><i>w</i><sub><i>k</i></sub></tt>/S  for k = 0, . . . , n-1.
+</pre></blockquote>
+</li>
+</ol>
+</blockquote>
+</li>
+</ol>
+
+</resolution>
+
+<rationale>
+Addressed by
+<a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2009/n2836.pdf">N2836</a> "Wording Tweaks for Concept-enabled Random Number Generation in C++0X".
+</rationale>
+
+</issue>

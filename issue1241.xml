@@ -1,0 +1,88 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="1241" status="WP">
+<title>unique_copy needs to require EquivalenceRelation</title>
+<section><sref ref="[alg.unique]"/></section>
+<submitter>Daniel Kr&uuml;gler</submitter>
+<date>17 Oct 2009</date>
+
+<discussion>
+<p>
+A lot of fixes were silently applied during concept-time and we should
+not lose them again. The Requires clause of <sref ref="[alg.unique]"/>/5
+doesn't mention that <tt>==</tt> and the predicate need to satisfy an
+<tt>EquivalenceRelation</tt>, as it is correctly said for
+<tt>unique</tt>. This was intentionally fixed during conceptification,
+were we had:
+</p>
+
+<blockquote><pre>
+template&lt;InputIterator InIter, class OutIter&gt;
+  requires OutputIterator&lt;OutIter, RvalueOf&lt;InIter::value_type&gt;::type&gt;
+        &amp;&amp; EqualityComparable&lt;InIter::value_type&gt;
+        &amp;&amp; HasAssign&lt;InIter::value_type, InIter::reference&gt;
+        &amp;&amp; Constructible&lt;InIter::value_type, InIter::reference&gt;
+  OutIter unique_copy(InIter first, InIter last, OutIter result);
+
+template&lt;InputIterator InIter, class OutIter,
+         EquivalenceRelation&lt;auto, InIter::value_type&gt; Pred&gt;
+  requires OutputIterator&lt;OutIter, RvalueOf&lt;InIter::value_type&gt;::type&gt;
+        &amp;&amp; HasAssign&lt;InIter::value_type, InIter::reference&gt;
+        &amp;&amp; Constructible&lt;InIter::value_type, InIter::reference&gt;
+        &amp;&amp; CopyConstructible&lt;Pred&gt;
+  OutIter unique_copy(InIter first, InIter last, OutIter result, Pred pred);
+</pre></blockquote>
+
+<p>
+Note that EqualityComparable implied an equivalence relation.
+</p>
+
+<note>
+N.B. <tt>adjacent_find</tt> was also specified to require
+<tt>EquivalenceRelation</tt>, but that was considered as a defect in
+concepts, see <iref ref"1000"/>
+</note>
+
+<note>
+2009-10-31 Howard adds:
+</note>
+
+<blockquote>
+Moved to Tentatively Ready after 5 positive votes on c++std-lib.
+</blockquote>
+
+</discussion>
+
+<resolution>
+<p>
+Change <sref ref="[alg.unique]"/>/5 as indicated:
+</p>
+
+<blockquote><pre>
+template&lt;class InputIterator, class OutputIterator&gt;
+  OutputIterator
+    unique_copy(InputIterator first, InputIterator last, OutputIterator result);
+
+template&lt;class InputIterator, class OutputIterator, class BinaryPredicate&gt;
+  OutputIterator
+    unique_copy(InputIterator first, InputIterator last,
+                OutputIterator result, BinaryPredicate pred);
+</pre>
+<blockquote>
+<i>Requires:</i> <ins>The comparison function shall be an equivalence
+relation.</ins> The ranges <tt>[first,last)</tt> and
+<tt>[result,result+(last-first))</tt> shall not overlap. The expression
+<tt>*result = *first</tt> shall be valid. If neither
+<tt>InputIterator</tt> nor <tt>OutputIterator</tt> meets the
+requirements of forward iterator then the value type of
+<tt>InputIterator</tt> shall be <tt>CopyConstructible</tt> (34) and
+<tt>CopyAssignable</tt> (table 36). Otherwise <tt>CopyConstructible</tt>
+is not required.
+</blockquote>
+</blockquote>
+</resolution>
+
+</issue>

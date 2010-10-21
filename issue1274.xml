@@ -1,0 +1,76 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="1274" status="NAD Editorial">
+<title><tt>atomic_future</tt> constructor</title>
+<section><sref ref="[futures.atomic_future]"/></section>
+<submitter>Jonathan Wakely</submitter>
+<date>22 Nov 2009</date>
+
+<discussion>
+<p>
+In <sref ref="[futures.atomic_future]"/> this constructor:
+</p>
+
+<blockquote><pre>
+atomic_future(future&lt;R&gt;&amp;&amp;);
+</pre></blockquote>
+
+<p>
+is declared in the synopsis, but not defined. Instead
+<a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2009/n2997.htm">n2997</a>
+defines:
+</p>
+
+<blockquote><pre>
+atomic_future(const future&lt;R&gt;&amp;&amp; rhs);
+</pre></blockquote>
+
+<p>
+and
+<a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2009/n3000.pdf">n3000</a>
+defines
+</p>
+
+<blockquote><pre>
+atomic_future(atomic_future&lt;R&gt;&amp;&amp; rhs);
+</pre></blockquote>
+
+<p>
+both of which are wrong. The constructor definition should be changed
+to match the synopsis.
+</p>
+
+<note>
+2009-12-12 Moved to Tentatively Ready after 5 positive votes on c++std-lib.
+</note>
+
+<note>
+2010 Pittsburgh:
+</note>
+
+<blockquote>
+Moved to NAD Editorial.  Rationale added below.
+</blockquote>
+
+</discussion>
+
+<rationale>
+<p>
+Solved by N3058.
+</p>
+</rationale>
+
+<resolution>
+<p>
+Adjust the signature above <sref ref="[futures.atomic_future]"/>/6 like so:
+</p>
+
+<blockquote><pre>
+atomic_future(<del>atomic_</del>future<ins>&lt;R&gt;</ins>&amp;&amp; rhs);
+</pre></blockquote>
+</resolution>
+
+</issue>
