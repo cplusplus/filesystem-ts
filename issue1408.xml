@@ -1,0 +1,25 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="1408" status="Open">
+<title>FCD Ballot Comment GB-103</title>
+<section><sref ref="[util.dynamic.safety]"/></section>
+<submitter>BSI</submitter>
+<date>25 Aug 2010</date>
+
+<discussion>
+The precondition to calling declare_no_pointers is that no
+bytes in the range "have been previously registered" with
+this call. As written, this precondition includes bytes in
+ranges, even after they have been explicitly unregistered
+with a later call to 'undeclare_no_pointers'.
+</discussion>
+
+<resolution>
+Replace "have been previously registered" with
+"are currently registered"
+</resolution>
+
+</issue>

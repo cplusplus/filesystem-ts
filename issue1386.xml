@@ -1,0 +1,36 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="1386" status="NAD Editorial">
+<title>FCD Ballot Comment US-99</title>
+<section><sref ref="[tuple.creation]"/></section>
+<submitter>ANSI</submitter>
+<date>25 Aug 2010</date>
+
+<discussion>
+pack_arguments is overly complex.
+
+<note>
+Resolved in Rapperswil by a motion to directly apply the words from the ballot comment in N3102.
+</note>
+
+</discussion>
+
+<resolution>
+This issue resulted from a lack of understanding of
+how references are forwarded. The definition of
+pack_arguments should be simply:<BR/>
+template &lt;class... Types&gt;
+tuple&lt;<del>A</del>Types<ins>&amp;&amp;</ins>&gt;
+pack_arguments(Types&amp;&amp;...t);<BR/>
+<del>Types:Let Ti be each type in Types....</del><BR/>
+Effects: ...<BR/>
+Returns:<BR/>
+tuple&lt;<del>A</del>Types<ins>&amp;&amp;</ins>...&gt;(std::forward&lt;Types&gt;(t)...)<BR/>
+The synopsis should also change to reflect this
+simpler signature.
+</resolution>
+
+</issue>

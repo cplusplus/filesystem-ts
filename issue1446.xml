@@ -1,0 +1,34 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="1446" status="Open">
+<title>FCD Ballot Comment US-138</title>
+<section><sref ref="[iostream.format]"/></section>
+<submitter>ANSI</submitter>
+<date>25 Aug 2010</date>
+
+<discussion>
+For istreams and ostreams, the move-constructor does
+not move-construct, the move-assignment operator does
+not move-assign, and the swap function does not swap
+because these operations do not manage the rdbuf()
+pointer. Useful applications of these operations are
+prevented both by their incorrect semantics and because
+they are protected.
+</discussion>
+
+<resolution>
+In short: reverse the resolution of issue 900, then
+change the semantics to move and swap the
+rdbuf() pointer. Add a new protected constructor
+that takes an rvalue reference to a stream and a
+pointer to a streambuf, a new protected assign()
+operator that takes the same arguments, and a
+new protected partial_swap() function that doesn't
+swap rdbuf().
+See Appendix 1 - Additional Details
+</resolution>
+
+</issue>

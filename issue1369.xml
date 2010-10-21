@@ -1,0 +1,31 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="1369" status="Open">
+<title>FCD Ballot Comment GB-74</title>
+<section><sref ref="[propagation]"/></section>
+<submitter>BSI</submitter>
+<date>25 Aug 2010</date>
+
+<discussion>
+One idea for the exception_ptr type was that a referencecounted
+implementation could simply 'reactivate' the same
+exception object in the context of a call to
+'rethrow_exception'. Such an implementation would allow
+the same exception object to be active in multiple threads
+(such as when multiple threads join on a shared_future)
+and introduce potential data races in any exception
+handler that catches exceptions by reference - notably
+existing library code written before this capability was
+added. 'rethrow_exception' should *always* make a copy
+of the target exception object.
+</discussion>
+
+<resolution>
+Throws: a copy of the exception object to which p
+refers.
+</resolution>
+
+</issue>

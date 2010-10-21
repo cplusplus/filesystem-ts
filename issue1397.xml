@@ -1,0 +1,38 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="1397" status="Open">
+<title>FCD Ballot Comment GB-95</title>
+<section><sref ref="[function.objects]"/></section>
+<submitter>BSI</submitter>
+<date>25 Aug 2010</date>
+
+<discussion>
+The adaptable function protocol supported by
+unary_function/binary_function has been superceded by
+lambda expressions and std::bind. Despite the name, the
+protocol is not very adaptable as it requires intrusive
+support in the adaptable types, rather than offering an
+external traits-like adaption mechanism. This protocol and
+related support functions should be deprecated, and we
+should not make onerous requirements for the
+specification to support this protocol for callable types
+introduced in this standard revision, including those
+adopted from TR1. It is expected that high-quality
+implementations will provide such support, but we should
+not have to write robust standard specifications mixing this
+restricted support with more general components such as
+function, bind and reference_wrapper.
+</discussion>
+
+<resolution>
+Move clauses 20.8.3, 20.8.9, 20.8.11 and 20.8.12
+to Annex D. Remove the requirements to
+conditionally derive from unary/binary_function
+from function, reference_wrapper, and the results
+of calling mem_fn and bind.
+</resolution>
+
+</issue>

@@ -1,0 +1,32 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="1398" status="Open">
+<title>FCD Ballot Comment GB-96</title>
+<section><sref ref="[function.objects]"/></section>
+<submitter>BSI</submitter>
+<date>25 Aug 2010</date>
+
+<discussion>
+The function templates 'hash', 'less' and 'equal_to' are
+important customization points for user-defined types to
+be supported by several standard containers. These are
+accessed through the &lt;functional&gt; header which has
+grown significantly larger in C++0x, exposing many more
+facilities than a user is likely to need through there own
+header, simply to declare the necessary specialization.
+There should be a smaller header available for users to
+make the necessary customization.
+</discussion>
+
+<resolution>
+Provide a tiny forwarding header for important
+functor types in the &lt;functional&gt; header that a
+user may want to specialize. This should contain
+the template declaration for 'equal_to', 'hash' and
+'less'.
+</resolution>
+
+</issue>

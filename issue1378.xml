@@ -1,0 +1,29 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="1378" status="Open">
+<title>FCD Ballot Comment DE-15</title>
+<section><sref ref="[pairs]"/></section>
+<submitter>DIN</submitter>
+<date>25 Aug 2010</date>
+
+<discussion>
+Several function templates of pair and tuple allow for too
+many implicit conversions, for example:
+<PRE>
+#include &lt;tuple&gt;
+std::tuple&lt;char*&gt; p(0); // Error?
+struct A { explicit A(int){} };
+A a = 1; // Error
+std::tuple&lt;A&gt; ta = std::make_tuple(1); // OK?
+</PRE>
+</discussion>
+
+<resolution>
+Consider to add wording to constrain these
+function templates.
+</resolution>
+
+</issue>

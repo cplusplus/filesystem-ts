@@ -1,0 +1,31 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="1493" status="Open">
+<title>FCD Ballot Comment US-189</title>
+<section><sref ref="[thread.mutex.requirements]"/></section>
+<submitter>ANSI</submitter>
+<date>25 Aug 2010</date>
+
+<discussion>
+mutex and recursive_mutex should have an is_locked()
+member function. is_locked allows a user to test a lock
+without acquiring it and can be used to implement a lightweight
+try_try_lock.
+</discussion>
+
+<resolution>
+Add a member function:
+<PRE>
+bool is_locked() const;
+</PRE>
+to std::mutex and std::recursive_mutex. These
+functions return true if the current thread would
+not be able to obtain a mutex. These functions do
+not synchronize with anything (and, thus, can
+avoid a memory fence).
+</resolution>
+
+</issue>

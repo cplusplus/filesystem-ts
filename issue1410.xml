@@ -1,0 +1,36 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="1410" status="Open">
+<title>FCD Ballot Comment GB-107</title>
+<section><sref ref="[time.clock.monotonic]"/></section>
+<submitter>BSI</submitter>
+<date>25 Aug 2010</date>
+
+<discussion>
+1.4p9 states that which conditionally supported constructs
+are available should be provided in the documentation for
+the implementation. This doesn't help programmers trying
+to write portable code, as they must then rely on
+implementation-specific means to determine the
+availability of such constructs. In particular, the presence
+or absence of std::chrono::monotonic_clock may require
+different code paths to be selected. This is the only
+conditionally-supported library facility, and differs from the
+conditionally-supported language facilities in that it has
+standard-defined semantics rather than implementationdefined
+semantics.
+</discussion>
+
+<resolution>
+Provide feature test macro for determining the
+presence of std::chrono::monotonic_clock. Add
+_STDCPP_HAS_MONOTONIC_CLOCK to the
+&lt;chrono&gt; header, which is defined if
+monotonic_clock is present, and not defined if it is
+not present.
+</resolution>
+
+</issue>

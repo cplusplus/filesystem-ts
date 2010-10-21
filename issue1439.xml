@@ -1,0 +1,34 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="1439" status="Open">
+<title>FCD Ballot Comment US-134</title>
+<section><sref ref="[rand.dist.samp.pconst]"/></section>
+<submitter>ANSI</submitter>
+<date>25 Aug 2010</date>
+
+<discussion>
+These two distributions have a member function called
+densities() which returns a vector&lt;double&gt;. The
+distribution is templated on RealType. The distribution
+also has another member called intervals() which returns
+a vector&lt;RealType&gt;. Why doesn't densities return
+vector&lt;RealType&gt; as well? If RealType is long double,
+the computed densities property isn't being computed to
+the precision the client desires. If RealType is float, the
+densities vector is taking up twice as much space as the
+client desires.
+</discussion>
+
+<resolution>
+Change the piecewise constant and linear
+distributions to hold / return the densities in a
+vector&lt;result_type&gt;.<BR/>
+If this is not done, at least
+correct[rand.dist.samp.pconst]/13 which describes
+the return of densities as a vector&lt;result_type&gt;.
+</resolution>
+
+</issue>

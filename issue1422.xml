@@ -1,0 +1,30 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="1422" status="Open">
+<title>FCD Ballot Comment GB-118</title>
+<section><sref ref="[vector.bool]"/></section>
+<submitter>BSI</submitter>
+<date>25 Aug 2010</date>
+
+<discussion>
+vector&lt;bool&gt; iterators are not random access iterators
+because their reference type is a special class, and not
+'bool &amp;'. All standard libary operations taking iterators
+should treat this iterator as if it was a random access
+iterator, rather than a simple input iterator.
+</discussion>
+
+<resolution>
+Either revise the iterator requirements to support
+proxy iterators (restoring functionality that was lost
+when the Concept facility was removed) or add an
+extra paragraph to the vector&lt;bool&gt; specification
+requiring the library to treat vector&lt;bool&gt; iterators
+as-if they were random access iterators, despite
+having the wrong reference type.
+</resolution>
+
+</issue>

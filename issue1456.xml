@@ -1,0 +1,35 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="1456" status="Open">
+<title>FCD Ballot Comment GB-129</title>
+<section><sref ref="[atomics]"/></section>
+<submitter>BSI</submitter>
+<date>25 Aug 2010</date>
+
+<discussion>
+Table 143 lists the typedefs for various atomic types
+corresponding to the various standard integer typedefs,
+such as atomic_int_least8_t for int_least8_t, and
+atomic_uint_fast64_t for uint_fast64_t. However, there are
+no atomic typedefs corresponding to the fixed-size
+standard typedefs int8_t, int16_t, and so forth.
+</discussion>
+
+<resolution>
+Add the following entries to table 143:<BR/>
+atomic_int8_t =&gt; int8_t (optional),<BR/>
+atomic_int16_t =&gt; int16_t (optional),<BR/>
+atomic_int32_t =&gt; int32_t (optional),<BR/>
+atomic_int64_t =&gt; int64_t (optional),<BR/>
+atomic_uint8_t =&gt; uint8_t (optional),<BR/>
+atomic_uint16_t =&gt; uint16_t (optional),<BR/>
+atomic_uint32_t =&gt; uint32_t (optional),<BR/>
+atomic_uint64_t =&gt; uint64_t (optional)<BR/>
+These typedefs should be available if the
+corresponding typedefs from are available.
+</resolution>
+
+</issue>

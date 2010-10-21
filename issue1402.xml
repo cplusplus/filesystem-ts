@@ -1,0 +1,32 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="1402" status="NAD Editorial">
+<title>FCD Ballot Comment GB-100</title>
+<section><sref ref="[memory]"/></section>
+<submitter>BSI</submitter>
+<date>25 Aug 2010</date>
+
+<discussion>
+The unique_ptr and shared_ptr constructors taking
+nullptr_t delegate to a constexpr constructor, and could be
+constexpr themselves.
+
+<note>
+Resolved in Rapperswil by a motion to directly apply the words from the ballot comment in N3102.
+</note>
+
+</discussion>
+
+<resolution>
+In the 20.9.10.2 [unique.ptr.single] synopsis add
+"constexpr" to unique_ptr(nullptr_t).<BR/>
+In the 20.9.10.3 [unique.ptr.runtime] synopsis add
+"constexpr" to unique_ptr(nullptr_t).<BR/>
+In the 20.9.11.2 [util.smartptr.shared] synopsis
+add "constexpr" to shared_ptr(nullptr_t).
+</resolution>
+
+</issue>

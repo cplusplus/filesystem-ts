@@ -1,0 +1,32 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="1394" status="NAD Editorial">
+<title>FCD Ballot Comment DE-19</title>
+<section><sref ref="[meta.unary.prop]"/></section>
+<submitter>DIN</submitter>
+<date>25 Aug 2010</date>
+
+<discussion>
+The fundamental trait is_constructible reports false
+positives, e.g.
+<PRE>
+is_constructible&lt;char*, void*&gt;::value
+</PRE>
+evaluates to true, even though a corresponding variable
+initialization would be ill-formed.
+
+<note>
+Resolved in Rapperswil by paper N3047.
+</note>
+
+</discussion>
+
+<resolution>
+Remove all false positives from the domain of
+is_constructible.
+</resolution>
+
+</issue>

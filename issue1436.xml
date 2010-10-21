@@ -1,0 +1,32 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="1436" status="Open">
+<title>FCD Ballot Comment GB-121</title>
+<section><sref ref="[rand.eng]"/></section>
+<submitter>BSI</submitter>
+<date>25 Aug 2010</date>
+
+<discussion>
+All the random number engine types in this clause have a
+constructor taking an unsigned integer type, and a
+constructor template for seed sequences. This means that
+an attempt to create a random number engine seeded by
+an integer literal must remember to add the appropriate
+unsigned suffix to the literal, as a signed integer will
+attempt to use the seed sequence template, yielding
+undefined behaviour, as per 26.5.1.1p1a. It would be
+helpful if at least these anticipated cases produced a
+defined behaviour, either an erroneous program with
+diagnostic, or a conversion to unsigned int forwarding to
+the appropriate constructor.
+</discussion>
+
+<resolution>
+[WORDING TO FOLLOW ONCE A PREFERRED
+DIRECTION IS INDICATED]
+</resolution>
+
+</issue>

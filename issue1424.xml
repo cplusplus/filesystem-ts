@@ -1,0 +1,36 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="1424" status="NAD Editorial">
+<title>FCD Ballot Comment JP-7</title>
+<section><sref ref="[multimap]"/></section>
+<submitter>Japan</submitter>
+<date>25 Aug 2010</date>
+
+<discussion>
+Constructor accepting an allocator as a single parameter
+should be qualified as explicit.
+
+<note>
+Resolved in Rapperswil by a motion to directly apply the words from the ballot comment in N3102.
+</note>
+
+</discussion>
+
+<resolution>
+Add explicit.
+<PRE>
+namespace std {
+template &lt;class Key, class T, class Compare =
+less&lt;Key&gt;,
+class Allocator = allocator&lt;pair&lt;const Key, T&gt; &gt; &gt;
+class multimap {
+public:
+...
+explicit multimap(const Allocator&amp;);
+</PRE>
+</resolution>
+
+</issue>

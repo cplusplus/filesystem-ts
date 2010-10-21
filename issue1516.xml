@@ -1,0 +1,48 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="1516" status="Tentatively Ready">
+<title>FCD Ballot Comment GB-142</title>
+<section><sref ref="[depr.auto.ptr]"/></section>
+<submitter>BSI</submitter>
+<date>25 Aug 2010</date>
+
+<discussion>
+<p>
+auto_ptr does not appear in the &lt;memory&gt; synopsis and
+[depr.auto.ptr] doesn't say which header declares it.
+Conversely, the deprecated binders bind1st etc. are in the
+&lt;functional&gt; synopsis, this is inconsistent
+</p>
+<p>
+Either auto_ptr should be declared in the
+&lt;memory&gt; synopsis, or the deprecated binders
+should be removed from the &lt;functional&gt; synopsis
+and appendix D should say which header declares
+the binders and auto_ptr
+</p>
+
+<note>
+Post-Rapperswil
+</note>
+
+<blockquote>
+Moved to Tentatively Ready after 5 positive votes on c++std-lib.
+</blockquote>
+
+</discussion>
+
+<resolution>
+
+<p>Add the following lines to the synopsis of header &lt;memory&gt;
+in [memory]/1:<br/></p>
+<blockquote>
+<pre>
+<ins>// [depr.auto.ptr], Class auto_ptr (deprecated):
+template &lt;class X&gt; class auto_ptr;<br/></ins>
+</pre></blockquote>
+</resolution>
+
+</issue>

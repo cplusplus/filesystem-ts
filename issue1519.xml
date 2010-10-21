@@ -1,0 +1,94 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="1519" status="Tentatively Ready">
+<title>bucketsize() const only for unordered set</title>
+<section><sref ref="[unord.map]"/><sref ref="[unord.multimap]"/><sref ref="[unord.multiset]"/>
+</section>
+<submitter>Nicolai Josuttis</submitter>
+<date>9 Oct 2010</date>
+
+<discussion>
+<p>
+While <tt>bucket_size()</tt> is const for <tt>unordered_set</tt>, for all other unordered containers it is not defined as
+constant member function.
+</p>
+
+<note>
+Post-Rapperswil
+</note>
+
+<blockquote>
+Moved to Tentatively Ready after 5 positive votes on c++std-lib.
+</blockquote>
+
+</discussion>
+
+<resolution>
+
+<p><i>The wording refers to N3126.</i></p>
+
+<ol>
+<li>Change 23.7.1 Class template unordered_map [unord.map]/3, as indicated:
+<blockquote><pre>
+  namespace std {
+    template &lt;class Key,
+      class T,
+      class Hash = hash&lt;Key&gt;,
+      class Pred = std::equal_to&lt;Key&gt;,
+      class Alloc = std::allocator&lt;std::pair&lt;const Key, T&gt; &gt; &gt;
+    class unordered_map
+    {
+    public:
+      [..]
+      // bucket interface
+      size_type bucket_count() const;
+      size_type max_bucket_count() const;
+      size_type bucket_size(size_type n) <ins>const</ins>;
+      [..]
+</pre></blockquote>
+</li>
+<li>Change 23.7.2 Class template unordered_multimap [unord.multimap]/3, as indicated:
+<blockquote><pre>
+  namespace std {
+    template &lt;class Key,
+      class T,
+      class Hash = hash&lt;Key&gt;,
+      class Pred = std::equal_to&lt;Key&gt;,
+      class Alloc = std::allocator&lt;std::pair&lt;const Key, T&gt; &gt; &gt;
+    class unordered_multimap
+    {
+    public:
+      [..]
+      // bucket interface
+      size_type bucket_count() const;
+      size_type max_bucket_count() const;
+      size_type bucket_size(size_type n) <ins>const</ins>;
+      [..]
+</pre></blockquote>
+</li>
+<li>Change 23.7.4 Class template unordered_multiset [unord.multiset]/3, as indicated:
+<blockquote><pre>
+  namespace std {
+    template &lt;class Key,
+      class Hash = hash&lt;Key&gt;,
+      class Pred = std::equal_to&lt;Key&gt;,
+      class Alloc = std::allocator&lt;Key&gt; &gt;
+    class unordered_multiset
+    {
+    public:
+      [..]
+      // bucket interface
+      size_type bucket_count() const;
+      size_type max_bucket_count() const;
+      size_type bucket_size(size_type n) <ins>const</ins>;
+      [..]
+</pre></blockquote>
+</li>
+</ol>
+
+</resolution>
+
+</issue>

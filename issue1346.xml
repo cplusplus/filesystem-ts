@@ -1,0 +1,32 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="1346" status="Open">
+<title>FCD Ballot Comment GB-62</title>
+<section><sref ref="[library]"/></section>
+<submitter>BSI</submitter>
+<date>25 Aug 2010</date>
+
+<discussion>
+Issues with efficiency and unsatisfactory semantics mean
+many library functions document they do not throw
+exceptions with a Throws: Nothing clause, but do not
+advertise it with an exception specification. The semantic
+issues are largely resolved with the new 'noexcept'
+specifications, and the noexcept operator means we will
+want to detect these guarantees programatically in order
+to construct programs taking advantage of the guarantee.
+</discussion>
+
+<resolution>
+Add a 'noexcept' exception specification on each
+libary API that offers an unconditional Throws:
+Nothing guarantee. Where the guarantee is
+conditional, add the appropriate
+noexcept(constant-expression) if an appropriate
+constant expression exists.
+</resolution>
+
+</issue>

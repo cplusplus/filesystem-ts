@@ -1,0 +1,33 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="1489" status="Open">
+<title>FCD Ballot Comment CH-26</title>
+<section><sref ref="[thread.mutex]"/></section>
+<submitter>Switzerland</submitter>
+<date>25 Aug 2010</date>
+
+<discussion>
+Specifications of unlock member functions and unlock
+mutex requirements are inconsistent wrt to exceptions and
+pre- and postconditions.
+</discussion>
+
+<resolution>
+unlock should specifiy the precondition that the
+current thread "owns the lock", this will make calls
+without holding the locks "undefined behavior".
+unlock in [mutex.requirements] should either be
+noexcept(true) or be allowed to throw
+system_error like unique_lock::unlock, or the latter
+should be nothrow(true) and have the precondition
+owns==true.
+Furthermore unique_lock's postcondition is wrong
+in the case of a recursive mutex where owns
+might stay true, when it is not the last unlock
+needed to be called.
+</resolution>
+
+</issue>

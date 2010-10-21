@@ -1,0 +1,42 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="1401" status="Open">
+<title>FCD Ballot Comment GB-99</title>
+<section><sref ref="[memory]"/></section>
+<submitter>BSI</submitter>
+<date>25 Aug 2010</date>
+
+<discussion>
+One reason that the unique_ptr constructor taking a
+nullptr_t argument is not explicit is to allow conversion of
+nullptr to unique_ptr in contexts like equality comparison.
+Unfortunately operator== for unique_ptr is a little more
+clever than that, deducing template parameters for both
+arguments. This means that nullptr does not get deduced
+as unique_ptr type, and there are no other comparison
+functions to match.
+</discussion>
+
+<resolution>
+Add the following signatures to 20.9p1, &lt;memory&gt;
+header synopsis:
+<PRE>
+template&lt;typename T, typename D&gt; bool
+operator==(const unique_ptr&lt;T, D&gt; &amp; lhs,
+nullptr_t);
+template&lt;typename T, typename D&gt; bool
+operator==(nullptr_t, const unique_ptr&lt;T, D&gt; &amp;
+rhs);
+template&lt;typename T, typename D&gt; bool
+operator!=(const unique_ptr&lt;T, D&gt; &amp; lhs,
+nullptr_t);
+template&lt;typename T, typename D&gt; bool
+operator!=(nullptr_t, const unique_ptr&lt;T, D&gt; &amp;
+rhs);
+</PRE>
+</resolution>
+
+</issue>

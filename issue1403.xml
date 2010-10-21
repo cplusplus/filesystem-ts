@@ -1,0 +1,39 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="1403" status="NAD Editorial">
+<title>FCD Ballot Comment JP-85</title>
+<section><sref ref="[allocator.tag]"/></section>
+<submitter>Japan</submitter>
+<date>25 Aug 2010</date>
+
+<discussion>
+There are inconsistent definitions for allocator_arg.
+In 20.9 [memory] paragraph 1,
+<PRE>
+constexpr allocator_arg_t allocator_arg =
+allocator_arg_t();
+</PRE>
+and in 20.9.1,
+<PRE>
+const allocator_arg_t allocator_arg = allocator_arg_t();
+</PRE>
+
+<note>
+Resolved in Rapperswil by a motion to directly apply the words from the ballot comment in N3102.
+</note>
+
+</discussion>
+
+<resolution>
+Change "const" to "constexpr" in 20.9.1 as
+follows.
+<PRE>
+constexpr allocator_arg_t allocator_arg =
+allocator_arg_t();
+</PRE>
+</resolution>
+
+</issue>

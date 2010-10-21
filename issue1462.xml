@@ -1,0 +1,36 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="1462" status="Open">
+<title>FCD Ballot Comment GB-132</title>
+<section><sref ref="[atomics.types.integral]"/></section>
+<submitter>BSI</submitter>
+<date>25 Aug 2010</date>
+
+<discussion>
+The atomic_itype types and atomic_address have two
+overloads of operator= --- one is volatile qualified, and the
+other is not. atomic_bool only has the volatile qualified
+version:<BR/>
+bool operator=(bool) volatile;<BR/>
+On a non-volatile-qualified object this is ambiguous with
+the deleted copy-assignment operator<BR/>
+atomic_bool&amp; operator=(atomic_bool const&amp;) = delete;<BR/>
+due to the need for a single standard conversion in each
+case when assigning a bool to an atomic_bool as in:
+<PRE>
+atomic_bool b;
+b=true;
+</PRE>
+The conversions are atomic_bool&amp; -&gt; atomic_bool
+volatile&amp; vs bool -&gt; atomic_bool
+</discussion>
+
+<resolution>
+Add the "bool operator=(bool);" overload to
+atomic_bool in 29.5.1
+</resolution>
+
+</issue>

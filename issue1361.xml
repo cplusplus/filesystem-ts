@@ -1,0 +1,36 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="1361" status="Open">
+<title>FCD Ballot Comment GB-58</title>
+<section><sref ref="[using]"/></section>
+<submitter>BSI</submitter>
+<date>25 Aug 2010</date>
+
+<discussion>
+It is not clear whether a library header specified in terms
+of a typedef name makes that same typedef name
+available for use, or if it simply requires that the specified
+type is an alias of the same type, and so the typedef name
+cannot be used without including the specific header that
+defines it. For example, is the following code required to
+be accepted:
+<PRE>
+#include &lt;vector&gt;
+std::size_t x = 0;
+</PRE>
+Most often, this question concerns the typedefs defined in
+header &lt;cstddef&gt;
+</discussion>
+
+<resolution>
+Add a paragraph under 17.6.2 clarifying whether
+or not headers specified in terms of std::size_t can
+be used to access the typedef size_t, or whether
+the header &lt;cstddef&gt; must be included to reliably
+use this name.
+</resolution>
+
+</issue>

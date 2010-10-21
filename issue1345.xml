@@ -1,0 +1,35 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="1345" status="Open">
+<title>FCD Ballot Comment GB-61</title>
+<section><sref ref="[library]"/></section>
+<submitter>BSI</submitter>
+<date>25 Aug 2010</date>
+
+<discussion>
+All library types should have non-throwing move
+constructors and move-assignment operators unless
+wrapping a type with a potentially throwing moveoperation.
+When such a type is a class-template, these
+operations should have a conditional noexcept
+specification.<BR/>
+There are many other places where a noexcept
+specification may be considered, but the move operations
+are a special case that must be called out, to effectively
+support the move_if_noexcept function template.
+</discussion>
+
+<resolution>
+Review every class and class template in the
+library. If noexcept move constructor/assignment
+operators can be implicitly declared, then they
+should be implicitly declared, or explicitly
+defaulted. Otherwise, a move constructor/moveassingment
+operator with a 'noexcept' exception
+specification should be provided.
+</resolution>
+
+</issue>

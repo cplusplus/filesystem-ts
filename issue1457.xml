@@ -1,0 +1,45 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="1457" status="Open">
+<title>FCD Ballot Comment GB-130</title>
+<section><sref ref="[atomics.syn]"/></section>
+<submitter>BSI</submitter>
+<date>25 Aug 2010</date>
+
+<discussion>
+The synopsis for the &lt;atomic&gt; header lists the macros
+ATOMIC_INTEGRAL_LOCK_FREE and
+ATOMIC_ADDRESS_LOCK_FREE. The
+ATOMIC_INTEGRAL_LOCK_FREE macro has been
+replaced with a set of macros for each integral type, as
+listed in 29.4
+</discussion>
+
+<resolution>
+Replace "#define
+ATOMIC_INTEGRAL_LOCK_FREE unspecified"
+with
+<PRE>
+#define ATOMIC_CHAR_LOCK_FREE
+implementation-defined
+#define ATOMIC_CHAR16_T_LOCK_FREE
+implementation-defined
+#define ATOMIC_CHAR32_T_LOCK_FREE
+implementation-defined
+#define ATOMIC_WCHAR_T_LOCK_FREE
+implementation-defined
+#define ATOMIC_SHORT_LOCK_FREE
+implementation-defined
+#define ATOMIC_INT_LOCK_FREE
+implementation-defined
+#define ATOMIC_LONG_LOCK_FREE
+implementation-defined
+#define ATOMIC_LLONG_LOCK_FREE
+implementation-defined
+</PRE>
+</resolution>
+
+</issue>

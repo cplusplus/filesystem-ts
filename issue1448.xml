@@ -1,0 +1,66 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="1448" status="Open">
+<title>FCD Ballot Comment GB-124</title>
+<section><sref ref="[stringbuf.members]"/></section>
+<submitter>BSI</submitter>
+<date>25 Aug 2010</date>
+
+<discussion>
+N3092 27.8.1.3 Member functions contains this text
+specifying the postconditions of
+basic_stringbuf::str(basic_string):<BR/>
+"Postconditions: If mode &amp; ios_base::out is true, pbase()
+points to the first underlying character and epptr() &gt;=
+pbase() + s.size() holds; in addition, if mode &amp;
+ios_base::in is true, pptr() == pbase() + s.data() holds,
+otherwise pptr() == pbase() is true. [...]"<BR/>
+Firstly, there's a simple mistake: It should be pbase() +
+s.length(), not pbase() + s.data().<BR/>
+Secondly, it doesn't match existing implementations. As
+far as I can tell, GCC 4.5 does not test for mode &amp;
+ios_base::in in the second part of that sentence, but for
+mode &amp; (ios_base::app | ios_base_ate), and Visual C++ 9
+for mode &amp; ios_base::app. Besides, the wording of the
+C++0x draft doesn't make any sense to me. I suggest
+changing the second part of the sentence to one of the
+following:<BR/>
+Replace ios_base::in with (ios_base::ate | ios_base::app),
+but this would require Visual C++ to change (replacing
+only with ios_base::ate would require GCC to change, and
+would make ios_base::app completely useless with
+stringstreams):<BR/>
+in addition, if mode &amp; (ios_base::ate | ios_base::app) is
+true, pptr() == pbase() + s.length() holds, otherwise pptr()
+== pbase() is true.<BR/>
+Leave pptr() unspecified if mode &amp; ios_base::app, but not
+mode &amp; ios_base::ate (implementations already differ in
+this case, and it's always possible to use ios_base::ate to
+get the effect of appending, so it's not necessary to
+require any implementation to change):
+in addition, if mode &amp; ios_base::ate is true, pptr() ==
+pbase() + s.length() holds, if neither mode &amp; ios_base::ate
+nor mode &amp; ios_base::app is true, pptr() == pbase() holds,
+otherwise pptr() &gt;= pbase() &amp;&amp; pptr() &lt;= pbase() +
+s.length() (which of the values in this range is
+unspecified).<BR/>
+Slightly stricter:<BR/>
+in addition, if mode &amp; ios_base::ate is true, pptr() ==
+pbase() + s.length() holds, if neither mode &amp; ios_base::ate
+nor mode &amp; ios_base::app is true, pptr() == pbase() holds,
+otherwise pptr() == pbase() || pptr() == pbase() +
+s.length() (which of these two values is unspecified).
+A small table might help to better explain the three cases.
+BTW, at the end of the postconditions is this text: "egptr()
+== eback() + s.size() hold". Is there a perference for
+basic_string::length or basic_string::size? It doesn't really
+matter, but it looks a bit inconsistent.
+</discussion>
+
+<resolution>
+</resolution>
+
+</issue>

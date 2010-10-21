@@ -1,0 +1,29 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="1468" status="Open">
+<title>FCD Ballot Comment US-164</title>
+<section><sref ref="[atomics.types.address]"/></section>
+<submitter>ANSI</submitter>
+<date>25 Aug 2010</date>
+
+<discussion>
+atomic_address has member functions
+compare_exchange_weak and
+compare_exchange_strong that take arguments of type
+const void*, in addition to the void* versions. If these
+member functions survive, there should be corresponding
+free functions.
+</discussion>
+
+<resolution>
+Add atomic_compare_exchange_weak and
+atomic_compare_exchange_strong free functions
+taking pointers to volatile and non-volatile
+atomic_address objects and const void*
+arguments.
+</resolution>
+
+</issue>

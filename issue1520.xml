@@ -1,0 +1,140 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="1520" status="Tentatively Ready">
+<title><tt>INVOKE</tt> on member data pointer with too many arguments</title>
+<section><sref ref="[func.require]"/></section>
+<submitter>Howard Hinnant</submitter>
+<date>10 Oct 2010</date>
+
+<discussion>
+
+<p>
+20.8.2 [func.require] p1 says:
+</p>
+
+<blockquote>
+<p>
+1 Define <tt><i>INVOKE</i>(f, t1, t2, ..., tN)</tt> as follows:
+</p>
+
+<ul>
+<li>
+<tt>(t1.*f)(t2, ..., tN)</tt> when <tt>f</tt> is a pointer to a member function
+of a class <tt>T</tt> and <tt>t1</tt> is an object of type <tt>T</tt> or a
+reference to an object of type <tt>T</tt> or a reference to an object of a type
+derived from <tt>T</tt>;
+</li>
+<li>
+<tt>((*t1).*f)(t2, ..., tN)</tt> when <tt>f</tt> is a pointer to a member
+function of a class <tt>T</tt> and <tt>t1</tt> is not one of the types described
+in the previous item;
+</li>
+<li>
+<tt>t1.*f</tt> when <tt>f</tt> is a pointer to member data of a class <tt>T</tt>
+and <tt>t1</tt> is an object of type <tt>T</tt> or a reference to an object of
+type <tt>T</tt> or a reference to an object of a type derived from <tt>T</tt>;
+</li>
+<li>
+<tt>(*t1).*f</tt> when <tt>f</tt> is a pointer to member data of a class
+<tt>T</tt> and <tt>t1</tt> is not one of the types described in the previous
+item;
+</li>
+<li>
+<tt>f(t1, t2, ..., tN)</tt> in all other cases.
+</li>
+</ul>
+</blockquote>
+
+<p>
+The question is:  What happens in the 3<sup><i>rd</i></sup> and
+4<sup><i>th</i></sup> bullets when <tt>N &gt; 1</tt>?
+</p>
+
+<p>
+Does the presence of <tt>t2, ..., tN</tt> get ignored, or does it make the
+<tt><i>INVOKE</i></tt> ill formed?
+</p>
+
+<p>
+Here is sample code which presents the problem in a concrete example:
+</p>
+
+<blockquote><pre>
+#include &lt;functional&gt;
+#include &lt;cassert&gt;
+
+struct S {
+   char data;
+};
+
+typedef char S::*PMD;
+
+int main()
+{
+   S s;
+   PMD pmd = &amp;S::data;
+   std::reference_wrapper&lt;PMD&gt; r(pmd);
+   r(s, 3.0) = 'a';  // well formed?
+   assert(s.data == 'a');
+}
+</pre></blockquote>
+
+<p>
+Without the "<tt>3.0</tt>" the example is well formed.
+</p>
+<p>
+[Note: Daniel provided wording to make it explicit that the above example is ill-formed. &mdash; end note ]
+</p>
+
+<note>
+Post-Rapperswil
+</note>
+
+<blockquote>
+Moved to Tentatively Ready after 5 positive votes on c++std-lib.
+</blockquote>
+
+</discussion>
+
+<resolution>
+
+<p><i>The wording refers to N3126.</i></p>
+
+<p>
+Change 20.8.2 [func.require]/1 as indicated:
+</p>
+<blockquote>
+<p>
+1 Define <tt><i>INVOKE</i>(f, t1, t2, ..., tN)</tt> as follows:
+</p>
+
+<ul>
+<li>
+...
+</li>
+<li>
+...
+</li>
+<li>
+<tt>t1.*f</tt> when <ins><tt>N == 1</tt> and</ins> <tt>f</tt> is a pointer to
+member data of a class <tt>T</tt> and <tt>t1</tt> is an object of type
+<tt>T</tt> or a reference to an object of type <tt>T</tt> or a reference to an
+object of a type derived from <tt>T</tt>;
+</li>
+<li>
+<tt>(*t1).*f</tt> when <ins><tt>N == 1</tt> and</ins> <tt>f</tt> is a pointer to
+member data of a class <tt>T</tt> and <tt>t1</tt> is not one of the types
+described in the previous item;
+</li>
+<li>
+...
+</li>
+</ul>
+</blockquote>
+
+</resolution>
+
+</issue>

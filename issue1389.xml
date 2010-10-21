@@ -1,0 +1,97 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="1389" status="Open">
+<title>FCD Ballot Comment GB-89</title>
+<section><sref ref="[ratio.arithmetic]"/></section>
+<submitter>BSI</submitter>
+<date>25 Aug 2010</date>
+
+<discussion>
+The alias representations of the ratio arithmetic templates
+do not allow implementations to avoid overflow, since they
+explicitly specify the form of the aliased template
+instantiation. For example
+ratio_multiply,ratio&lt;2,LLONG_MAX&gt;&gt; is *required* to
+alias ratio&lt;2*LLONG_MAX,LLONG_MAX*2&gt;, which
+overflows, so is ill-formed. However, this is trivially equal
+to ratio&lt;1,1&gt;. It also contradicts the opening statement of
+20.6.2p1 "implementations may use other algorithms to
+compute these values".
+</discussion>
+
+<resolution>
+Change the wording in 20.6.2p2-5 as follows:<BR/>
+template &lt;class R1, class R2&gt; using ratio_add =
+see below;<BR/>
+The type ratio_add&lt;R1, R2&gt; shall be a synonym
+for
+<del>ratio&lt;T1,T2&gt;</del> <ins>ratio&lt;U, V&gt; such
+that ratio&lt;U,V&gt;::num and
+ratio&lt;U,V&gt;::den are the same as the
+corresponding members of
+ratio&lt;T1,T2&gt; would be in the absence of
+arithmetic overflow</ins>
+where T1 has the value R1::num * R2::den +
+R2::num * R1::den and T2
+has the value R1::den * R2::den. <ins>If the
+required values of
+ratio&lt;U,V&gt;::num and ratio&lt;U,V&gt;::den cannot be
+represented in intmax_t
+then the program is illformed.</ins><BR/>
+template &lt;class R1, class R2&gt; using
+ratio_subtract = see below;<BR/>
+The type ratio_subtract&lt;R1, R2&gt; shall be a
+synonym for
+<del>ratio&lt;T1,T2&gt;</del> <ins>ratio&lt;U, V&gt; such
+that ratio&lt;U,V&gt;::num and
+ratio&lt;U,V&gt;::den are the same as the
+corresponding members of
+ratio&lt;T1,T2&gt; would be in the absence of
+arithmetic overflow</ins>
+where T1 has the value R1::num * R2::den -
+R2::num * R1::den and T2
+has the value R1::den * R2::den. <ins>If the
+required values of
+ratio&lt;U,V&gt;::num and ratio&lt;U,V&gt;::den cannot be
+represented in intmax_t
+then the program is illformed.</ins><BR/>
+template &lt;class R1, class R2&gt; using ratio_multiply
+= see below;<BR/>
+The type ratio_multiply&lt;R1, R2&gt; shall be a
+synonym for
+<del>ratio&lt;T1,T2&gt;</del> <ins>ratio&lt;U, V&gt; such
+that ratio&lt;U,V&gt;::num and
+ratio&lt;U,V&gt;::den are the same as the
+corresponding members of
+ratio&lt;T1,T2&gt; would be in the absence of
+arithmetic overflow</ins>
+where T1 has the value R1::num * R2::num and
+T2 has the value R1::den
+* R2::den. <ins>If the required values of
+ratio&lt;U,V&gt;::num and
+ratio&lt;U,V&gt;::den cannot be represented in
+intmax_t then the program is
+illformed.</ins><BR/>
+template &lt;class R1, class R2&gt; using ratio_divide
+= see below;<BR/>
+The type ratio_divide&lt;R1, R2&gt; shall be a
+synonym for
+<del>ratio&lt;T1,T2&gt;</del> <ins>ratio&lt;U, V&gt; such
+that ratio&lt;U,V&gt;::num and
+ratio&lt;U,V&gt;::den are the same as the
+corresponding members of
+ratio&lt;T1,T2&gt; would be in the absence of
+arithmetic overflow</ins>
+where T1 has the value R1::num * R2::den and T2
+has the value R1::den
+* R2::num. <ins>If the required values of
+ratio&lt;U,V&gt;::num and
+ratio&lt;U,V&gt;::den cannot be represented in
+intmax_t then the program is
+illformed.</ins>
+</resolution>
+
+</issue>

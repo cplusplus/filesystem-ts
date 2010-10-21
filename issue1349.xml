@@ -1,0 +1,29 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="1349" status="Open">
+<title>FCD Ballot Comment GB-65</title>
+<section><sref ref="[library]"/></section>
+<submitter>BSI</submitter>
+<date>25 Aug 2010</date>
+
+<discussion>
+Nothrowing swap operations are key to many C++ idioms,
+notably the common copy/swap idiom to provide the
+strong exception safety guarantee.
+</discussion>
+
+<resolution>
+Where possible, all library types should provide a
+swap operation with an exception specification
+guaranteeing no exception shall propagate.
+Where noexcept(true) cannot be guaranteed to
+not terminate the program, and the swap in
+questions is a template, an exception specification
+with the appropriate conditional expression could
+be specified.
+</resolution>
+
+</issue>

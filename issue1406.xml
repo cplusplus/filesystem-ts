@@ -1,0 +1,91 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="1406" status="Open">
+<title>FCD Ballot Comment JP-5</title>
+<section><sref ref="[util.smartptr.shared]"/></section>
+<submitter>Japan</submitter>
+<date>25 Aug 2010</date>
+
+<discussion>
+Hash support based on ownership sharing should be
+supplied for shared_ptr and weak_ptr.
+For two shared_ptr objects p and q, two distinct
+equivalence relations can be defined. One is based on
+equivalence of pointer values, which is derived from the
+expression p.get() == q.get() (hereafter called addressbased
+equivalence relation), the other is based on
+equivalence of ownership sharing, which is derived from
+the expression !p.owner_before(q) &amp;&amp; !q.owner_before(p)
+(hereafter called ownership-based equivalence relation).
+These two equivalence relations are independent in
+general. For example, a shared_ptr object created by the
+constructor of the signature shared_ptr(shared_ptr&lt;U&gt;
+const &amp;, T *) could reveal a difference between these two
+relations. Therefore, hash support based on each
+equivalence relation should be supplied for shared_ptr.
+However, while the standard library provides the hash
+support for address-based one (20.9.11.6 paragraph 2), it
+lacks the hash support for ownership-based one. In
+addition, associative containers work well in combination
+with the shared_ptr's ownership-based comparison but
+unordered associative containers don't. This is
+inconsistent.&gt;BR/&gt;
+For the case of weak_ptr, hash support for the ownershipbased
+equivalence relation can be safely defined on
+weak_ptrs, and even on expired ones. The absence of
+hash support for the ownership-based equivalence
+relation is fatal, especially for expired weak_ptrs. And the
+absence of such hash support precludes some quite
+effective use-cases, e.g. erasing the unordered_map entry
+of an expired weak_ptr key from a customized deleter
+supplied to shared_ptrs.<BR/>
+Hash support for the ownership-based equivalence
+relation cannot be provided by any user-defined manner
+because information about ownership sharing is not
+available to users at all. Therefore, the only way to provide
+ownership-based hash support is to offer it intrusively by
+the standard library.<BR/>
+As far as we know, such hash support is implementable.
+Typical implementation of such hash function could return
+the hash value of the pointer of the counter object that is
+internally managed by shared_ptr and weak_ptr.
+</discussion>
+
+<resolution>
+Add the following non-static member functions to
+shared_ptr and weak_ptr class template;
+<PRE>
+// 20.9.11.2 paragraph 1
+namespace std{
+template&lt;class T&gt; class shared_ptr {
+public:
+...
+size_t owner_hash() const;
+...
+};
+}
+// 20.9.11.3 paragraph 1
+namespace std{
+template&lt;class T&gt; class weak_ptr {
+public:
+...
+size_t owner_hash() const;
+...
+};
+}
+</PRE>
+These functions satisfy the following
+requirements. Let p and q be objects of either
+shared_ptr or weak_ptr, H be a hypothetical
+function object type that satisfies the hash
+requirements (20.2.4) and h be an object of the
+type H. The expression p.owner_hash() behaves
+as if it were equivalent to the expression h(p). In
+addition, h(p) == h(q) must become true if p and q
+share ownership.
+</resolution>
+
+</issue>

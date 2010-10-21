@@ -1,0 +1,104 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="1404" status="Tentatively Ready">
+<title>FCD Ballot Comment US-106</title>
+<section><sref ref="[pointer.traits]"/></section>
+<submitter>ANSI</submitter>
+<date>25 Aug 2010</date>
+
+<discussion>
+<p>
+pointer_traits should have a size_type member for completeness.
+</p>
+<p>
+Add &#8220;typedef see below size_type;&#8221; to the generic
+pointer_traits template and &#8220;typedef size_t
+size_type;&#8221; to pointer_traits&lt;T*&gt;. Use
+pointer_traits::size_type and
+pointer_traits::difference_type as the defaults for
+allocator_traits::size_type and
+allocator_traits::difference_type.<BR/>
+See Appendix 1 - Additional Details
+</p>
+
+<note>
+Post-Rapperswil
+</note>
+
+<p>
+The original ballot comment reads simply: "pointer_traits should have a size_type for
+completeness."  The additional details reveal, however, that the desire for a
+<tt>size_type</tt> is actually driven by the needs
+of <tt>allocator_traits</tt>.  The allocator_traits template should get its
+default <tt>difference_type</tt> from <tt>pointer_traits</tt> but if it did,
+it should get its <tt>size_type</tt> from the same source.  Unfortunately,
+there is no obvious meaning for <tt>size_type</tt> in <tt>pointer_traits</tt>.
+</p>
+<p>
+Alisdair suggested, however, that the natural relationship between
+<tt>difference_type</tt> and <tt>size_type</tt> can be expressed simply by the
+<tt>std::make_unsigned&lt;T&gt;</tt> metafunction.  Using this metafunction,
+we can easily define <tt>size_type</tt> for <tt>allocator_traits</tt> without
+artificially adding <tt>size_type</tt> to <tt>pointer_traits</tt>.
+</p>
+
+<blockquote>
+Moved to Tentatively Ready after 6 positive votes on c++std-lib.
+</blockquote>
+
+</discussion>
+
+
+<resolution>
+<p>
+In [allocator.requirements], Table 42, change two rows as follows:
+</p>
+<blockquote>
+<table border="1">
+  <tr>
+    <td><tt>X::size_type</tt></td>
+    <td>unsigned integral type</td>
+    <td>a type that can represent the size of the largest object in the
+    allocation model</td>
+    <td><tt>
+      <del>size_t</del>
+      <ins>make_unsigned&lt;X::difference_type&gt;::type</ins>
+    </tt></td>
+  </tr>
+  <tr>
+    <td><tt>X::difference_type</tt></td>
+    <td>signed integral type</td>
+    <td>a type that can represent the difference between any two pointers in
+    the allocation model</td>
+    <td><tt>
+      <del>ptrdiff_t</del>
+      <ins>pointer_traits&lt;X::pointer&gt;::difference_type</ins>
+    </tt></td>
+  </tr>
+</table>
+</blockquote>
+<p>
+In [allocator.traits.types], Change the definition of difference_type and
+size_type as follows:
+</p>
+<blockquote>
+  <tt>typedef</tt> <i>see below</i> <tt>difference_type;</tt>
+  <blockquote>
+    <i>Type:</i> <tt>Alloc::difference_type</tt> if such a type exists,
+    else <tt><del>ptrdiff_t</del>
+    <ins>pointer_traits&lt;pointer&gt;::difference_type</ins></tt>.
+  </blockquote>
+
+  <tt>typedef</tt> <i>see below</i> <tt>size_type;</tt>
+  <blockquote>
+    <i>Type:</i> <tt>Alloc::size_type</tt> if such a type exists,
+    else <tt><del>size_t</del>
+    <ins>make_unsigned&lt;difference_type&gt;::type</ins></tt>.
+  </blockquote>
+</blockquote>
+</resolution>
+
+</issue>

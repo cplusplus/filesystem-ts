@@ -1,0 +1,81 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="1383" status="Open">
+<title>FCD Ballot Comment US-97</title>
+<section><sref ref="[pairs]"/></section>
+<submitter>ANSI</submitter>
+<date>25 Aug 2010</date>
+
+<discussion>
+pair's class definition in N3092 20.3.5.2 [pairs.pair]
+contains "pair(const pair&amp;) = default;" and "pair&amp;
+operator=(pair&amp;&amp; p);". The latter is described by
+20.3.5.2/12-13.<BR/>
+"pair(const pair&amp;) = default;" is a user-declared explicitlydefaulted
+copy constructor. According to 12.8
+[class.copy]/10, this inhibits the implicitly-declared move
+constructor. pair should be move constructible. (12.8/7
+explains that "pair(pair&lt;U, V&gt;&amp;&amp; p)" will never be
+instantiated to move pair&lt;T1, T2&gt; to pair&lt;T1, T2&gt;.)<BR/>
+"pair&amp; operator=(pair&amp;&amp; p);" is a user-provided move
+assignment operator (according to 8.4.2
+[dcl.fct.def.default]/4: "A special member function is userprovided
+if it is user-declared and not explicitly defaulted
+on its first declaration."). According to 12.8/20, this inhibits
+the implicitly-declared copy assignment operator. pair
+should be copy assignable, and was in C++98/03. (Again,
+12.8/7 explains that "operator=(const pair&lt;U, V&gt;&amp; p)" will
+never be instantiated to copy pair&lt;T1, T2&gt; to pair&lt;T1,
+T2&gt;.)<BR/>
+Additionally, "pair&amp; operator=(pair&amp;&amp; p);" is
+unconditionally defined, whereas according to 12.8/25,
+defaulted copy/move assignment operators are defined as
+deleted in several situations, such as when non-static data
+members of reference type are present.<BR/>
+If "pair(const pair&amp;) = default;" and "pair&amp;
+operator=(pair&amp;&amp; p);" were removed from pair's class
+definition in 20.3.5.2 and from 20.3.5.2/12-13, pair would
+receive implicitly-declared copy/move constructors and
+copy/move assignment operators, and 12.8/25 would
+apply. The implicitly-declared copy/move constructors
+would be trivial when T1 and T2 have trivial copy/move
+constructors, according to 12.8/13, and similarly for the
+assignment operators, according to 12.8/27. Notes could
+be added as a reminder that these functions would be
+implicitly-declared, but such notes would not be necessary
+(the Standard Library specification already assumes a
+high level of familiarity with the Core Language, and
+casual readers will simply assume that pair is copyable
+and movable).<BR/>
+Alternatively, pair could be given explicitly-defaulted
+copy/move constructors and copy/move assignment
+operators. This is a matter of style.<BR/>
+tuple is also affected. tuple's class definition in 20.4.2
+[tuple.tuple] contains:
+<PRE>
+tuple(const tuple&amp;) = default;
+tuple(tuple&amp;&amp;);
+tuple&amp; operator=(const tuple&amp;);
+tuple&amp; operator=(tuple&amp;&amp;);
+</PRE>
+They should all be removed or all be explicitly-defaulted,
+to be consistent with pair. Additionally, 20.4.2.1
+[tuple.cnstr]/8-9 specifies the behavior of an explicitlydefaulted
+function, which is currently inconsistent with
+pair.
+</discussion>
+
+<resolution>
+Either remove "pair(const pair&amp;) = default;" and
+"pair&amp; operator=(pair&amp;&amp; p);" from pair's class
+definition in 20.3.5.2 and from 20.3.5.2/12-13, or
+give pair explicitly-defaulted copy/move
+constructors and copy/move assignment
+operators.<BR/>
+Change tuple to match.
+</resolution>
+
+</issue>

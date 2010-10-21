@@ -1,0 +1,36 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="1348" status="Open">
+<title>FCD Ballot Comment GB-64</title>
+<section><sref ref="[library]"/></section>
+<submitter>BSI</submitter>
+<date>25 Aug 2010</date>
+
+<discussion>
+There are a number of unspecified types used throughout
+the library, such as the container iterators. Many of these
+unspecified types have restrictions or expectations on
+their behaviour in terms of exceptions. Are they permitted
+or required to use exception specifications, more
+specifically the new noexcept specification? For example,
+if vector&lt;T&gt;::iterator is implemented as a native pointer,
+all its operations will have an (effective) nothrow
+specification. If the implementation uses a class type to
+implement this iterator, is it permitted or required to
+support that same guarantee?
+</discussion>
+
+<resolution>
+Clearly state the requirements for exception
+specifications on all unspecified library types. For
+example, all container iterator operations should
+be conditionally noexcept, with the condition
+matching the same operation applied to the
+allocator pointer_type, a certain subset of which
+are already required not to throw.
+</resolution>
+
+</issue>

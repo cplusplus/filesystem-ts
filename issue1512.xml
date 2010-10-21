@@ -1,0 +1,28 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="1512" status="Open">
+<title>FCD Ballot Comment US-205</title>
+<section><sref ref="[futures.async]"/></section>
+<submitter>ANSI</submitter>
+<date>25 Aug 2010</date>
+
+<discussion>
+The third sentence says "If the invocation is not deferred,
+a call to a waiting function on an asynchronous return
+object that shares the associated asynchronous state
+created by this async call shall block until the associated
+thread has completed." The next sentence says "If the
+invocation is not deferred, the join() on the created
+thread..." Blocking until a thread completes is not
+necessarily a join.
+</discussion>
+
+<resolution>
+Decide whether the requirement is to block until
+finished or to call join, and rewrite to match.
+</resolution>
+
+</issue>
