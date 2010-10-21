@@ -3,7 +3,7 @@
   <!ENTITY nbsp "&#160;">
 ] >
 
-<issue num="1169" status="New">
+<issue num="1169" status="Open">
 <title><tt>num_get</tt> not fully compatible with <tt>strto*</tt></title>
 <section><sref ref="[facet.num.get.virtuals]"/></section>
 <submitter>Cosmin Truta</submitter>
@@ -58,6 +58,43 @@ issue (it would be hard for the programmer to check the result of
 As such, we propose to adjust the specification of <code>num_get</code> to
 closely follow the behavior of all of its underlying C functions.
 </p>
+
+
+
+<note>
+2010 Rapperswil:
+</note>
+
+<blockquote>
+Some concern that this is changing the specification for an existing C++03 function, but it was pointed out that this was underspecified as resolved by issue 23.  This is clean-up for that issue in turn.
+
+Some concern that we are trying to solve the same problem in both clause 22 and 27.
+
+Bill: There's a change here as to whether val is stored to in an error case.
+
+Pablo: Don't think this changes whether val is stored to or not, but changes the value that is stored.
+
+Bill: Remembers having skirmishes with customers and testers as to whether val is stored to, and the resolution was not to store in error cases.
+
+Howard: Believes since C++03 we made a change to always store in overflow.
+
+Everyone took some time to review the issue.
+
+Pablo: C++98 definitely did not store any value during an error condition.
+
+Dietmar: Depends on the question of what is considered an error, and whether overflow is an error or not, which was the crux of LWG 23.
+
+Pablo: Yes, but given the "zero, if the conversion function fails to convert the entire field", we are requiring every error condition to store.
+
+Bill: When did this happen?
+
+Alisdair: One of the last two or three meetings.
+
+Dietmar: To store a value in case of failure is a very bad idea.
+
+Move to Open, needs more study.
+</blockquote>
+
 </discussion>
 
 <resolution>

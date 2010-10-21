@@ -3,7 +3,7 @@
   <!ENTITY nbsp "&#160;">
 ] >
 
-<issue num="1175" status="New">
+<issue num="1175" status="Open">
 <title><tt>unordered</tt> complexity</title>
 <section><sref ref="[unord.req]"/></section>
 <submitter>Pablo Halpern</submitter>
@@ -30,6 +30,22 @@ For the iterator-based constructor the complexity should be:
 from <tt>InputIterator::value_type</tt> (where <tt>n = distance(f,l)</tt>).
 The number of calls to <tt>key_equal::operator()</tt> is proportional to
 <tt>n</tt> in the average case and <tt>n*n</tt> in the worst case.
+</blockquote>
+
+
+
+<note>
+2010 Rapperswil:
+</note>
+
+<blockquote>
+Concern that the current wording may require O(1) where that cannot be delivered.  We need to look at both the clause 23 requirements tables and the constructor description of each unodered container to be sure.
+
+Howard suggests NAD Editorial as we updated the container requirement tables since this issue was written.
+
+Daniel offers to look deeper, and hopefully produce wording addressing any outstanding concerns at the next meeting.
+
+Move to Open.
 </blockquote>
 
 </discussion>
