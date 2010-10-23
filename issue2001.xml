@@ -1,0 +1,62 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="2001" status="New">
+<title>Class template <tt>basic_regex</tt> uses non existent <tt>string_type</tt></title>
+<section><sref ref="[re.regex.assign]"/></section>
+<submitter>Volker Lukas</submitter>
+<date>21 Oct 2010</date>
+
+<discussion>
+<p>
+In working draft N3126, subclause 28.8.3 
+[re.regex.assign], paragraphs 12, 13 and 19, the name <tt>string_type</tt> is 
+used. This is presumably a typedef for <tt>basic_string&lt;value_type></tt>, where 
+value_type is the character type used by <tt>basic_regex</tt>. The <tt>basic_regex</tt> 
+template however defines no such typedef, and neither does the <tt>&lt;regex></tt> 
+header or the <tt>&lt;initializer_list></tt> header included by <tt>&lt;regex></tt>.
+</p>
+
+</discussion>
+
+<resolution>
+<p>
+Make the following changes to [re.regex.assign]</p>
+
+<blockquote>
+<pre>
+<tt>basic_regex&amp; assign(const charT* ptr, flag_type f = regex_constants::ECMAScript);</tt>
+</pre>
+<blockquote>
+12 <i>Returns</i>: <tt>assign(<del>string_type</del><ins>basic_string&lt;char></ins>(ptr), f)</tt>. 
+</blockquote>
+
+<pre><tt>
+basic_regex&amp; assign(const charT* ptr, size_t len,
+  flag_type f = regex_constants::ECMAScript);
+</tt></pre>
+<blockquote>
+13 <i>Returns</i>: <tt>assign(<del>string_type</del><ins>basic_string&lt;char></ins>(ptr, len), f)</tt>.
+</blockquote>
+
+<pre><tt>
+template &lt;class InputIterator> 
+  basic_regex&amp; assign(InputIterator first, InputIterator last, 
+                          flag_type f = regex_constants::ECMAScript);
+</tt></pre>
+
+<blockquote>
+18 <i>Requires</i>: The type <tt>InputIterator</tt> shall satisfy the requirements for an Input Iterator (24.2.3).
+</blockquote>
+
+<blockquote>
+19 <i>Returns</i>: <tt>assign(<del>string_type</del><ins>basic_string&lt;char></ins>(first, last), f)</tt>.
+</blockquote>
+
+</blockquote>
+
+</resolution>
+
+</issue>
