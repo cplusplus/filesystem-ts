@@ -4,22 +4,50 @@
 ] >
 
 <issue num="1514" status="Open">
-<title>FCD Ballot Comment US-207</title>
+<title>[FCD] <tt>packaged_task</tt> constructors need review</title>
 <section><sref ref="[futures.task.members]"/></section>
 <submitter>ANSI</submitter>
 <date>25 Aug 2010</date>
 
 <discussion>
+<p><b>Addresses US-207</b></p>
+
 The constructor that takes R(*)(ArgTypes...) is not
 needed; the constructor that takes a callable type works
 for this argument type. More generally, the constructors
 for packaged_task should parallel those for function.
-</discussion>
 
-<resolution>
+<note>
+US-207 Suggested Resolution:
+</note>
+
+<blockquote>
 Review the constructors for packaged_task and
 provide the same ones as function, except where
 inappropriate.
+</blockquote>
+
+<note>
+2010-10-22 Howard provides wording, as requested by the LWG in Rapperswil.
+</note>
+
+</discussion>
+
+<resolution>
+Alter the list of constructors in both [futures.task] and in [futures.task.members] as indicated:
+
+<blockquote>
+<pre><del>template &lt;class F&gt;
+explicit packaged_task(F f);
+template &lt;class F, class Allocator&gt;
+explicit packaged_task(allocator_arg_t, const Allocator&amp; a, F f);
+explicit packaged_task(R(*f)(ArgTypes...));</del>
+template &lt;class F&gt;
+explicit packaged_task(F&amp;&amp; f);
+template &lt;class F, class Allocator&gt;
+explicit packaged_task(allocator_arg_t, const Allocator&amp; a, F&amp;&amp; f);
+</pre>
+</blockquote>
 </resolution>
 
 </issue>
