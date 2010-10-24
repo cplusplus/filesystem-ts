@@ -3,7 +3,7 @@
   <!ENTITY nbsp "&#160;">
 ] >
 
-<issue num="579" status="Open">
+<issue num="579" status="NAD">
 <title>erase(iterator) for unordered containers should not return an iterator</title>
 <section><sref ref="[unord.req]"/></section>
 <submitter>Joaqu&iacute;n M L&oacute;pez Mu&ntilde;oz</submitter>
@@ -92,51 +92,6 @@ code.
 </blockquote>
 
 <note>
-2010-02-09 Moved to Tentatively Ready after 6 positive votes on c++std-lib.
-</note>
-
-<note>
-2010 Pittsburgh:
-</note>
-
-<blockquote>
-<p>
-There was no concensus for moving this to Ready.  However there was concensus
-for moving this to NAD.
-</p>
-
-<p>
-Rationale updated below.
-</p>
-</blockquote>
-
-<note>
-2010 Pittsburgh:
-</note>
-
-<blockquote>
-Reopened and proposed wording updated by Beman.
-</blockquote>
-
-<note>
-2010 Pittsburgh:
-</note>
-
-<blockquote>
-Moved to Ready for Pittsburgh.
-</blockquote>
-
-<note>
-2010 Pittsburgh:
-</note>
-
-<blockquote>
-Reopened.  There is some discussion as to whether there is an acceptable
-implementation of <tt>erase</tt> which returns <tt>iterator</tt>.  Need more
-time to study it.
-</blockquote>
-
-<note>
 2010-03-27 Joaqu&iacute;n adds:
 </note>
 
@@ -188,162 +143,33 @@ providing bidirectional iterators (just forward iterators are required).
 </p>
 </blockquote>
 
-</discussion>
-
-<rationale>
-<p>
-<a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2006/n2023.pdf">N2023</a>
-was discussed in Portland and the consensus was that there appears to be
-no need for either change proposed in the paper.  The consensus opinion
-was that since the iterator could serve as its own proxy, there appears
-to be no need for the change. In general, "converts to" is undesirable
-because it interferes with template matching.
-</p>
-
-<p>
-Post Toronto:  There does not at this time appear to be consensus with the Portland consensus. 
-</p>
-
 <note>
-Bellevue:
+2010 Rapperswil:
 </note>
 
 <blockquote>
-The Bellevue review of this issue reached consensus with the Portland
-consensus, in contravention of the Toronto non-consensus. Common
-implementations have the iterator readily available, and most common
-uses depend on the iterator being returned.
+<p>
+The issue was lengthy discussed and implementation experience was demonstrated that a non-void return
+type is implementable for both single-linked and double-linked lists without loss of efficiency.
+</p>
+
+<p>
+By a 12-1-1-0 poll voted to keep the return type of erase as <tt>iterator</tt> instead of 
+<tt>void</tt> and a second 0-0-3-10 poll rejected the additional proposal to add a 
+<tt>quick_erase</tt> returning <tt>void</tt>, thus LWG decided for NAD.
+</p>
 </blockquote>
+</discussion>
 
-<p>****</p>
-
-<p>
-The rationale for the change in direction here is best summarized by Paolo's
-2010-02-07 comment.
-</p>
+<rationale>
 
 <p>
-Pittsburgh:  Issue is wrong because we believe the standard is
-consistent as written and the complexity is achievable.
-</p>
-
-<p>
-Pittsburgh:  We want to enable both existing unordred container implementations.
+No consensus for a change.
 </p>
 
 </rationale>
 
 <resolution>
-
-<p><i>In <sref ref="[unord.req]"/>, Table 98, change the following as indicated: </i>
-</p>
-<blockquote>
-  <table border="1">
-    <caption>Table 98 &mdash; Unordered associative container requirements (in 
-    addition to container)</caption>
-    <tr>
-      <th>Expression</th>
-      <th>Return type</th>
-      <th>Assertion/note pre-/post-condition</th>
-      <th>Complexity</th>
-    </tr>
-    <tr>
-      <td><tt>a.erase(q)</tt></td>
-      <td><tt>iterator</tt></td>
-      <td>Erases the element pointed to by <tt>q</tt>. Return value is the 
-      iterator immediately following <tt>q</tt> prior to the erasure.</td>
-      <td>
-      Average case <del><tt>O(1)</tt></del>
-      <ins><tt>O(max(1, 1/a.load_factor())</tt></ins>,
-      worst case <del><tt>O(a.size())</tt></del> <ins><tt>O(max(a.size(), a.bucket_count())</tt></ins>.</td>
-    </tr>
-    <tr>
-      <td><tt>a.erase(q1, q2)</tt></td>
-      <td><tt>iterator</tt></td>
-      <td>Erases all elements in the range <tt>[q1, q2)</tt>. Return value is 
-      the iterator immediately following the erased elements prior to the 
-      erasure.</td>
-      <td>Average case <del>linear in <tt>distance(q1, q2)</tt></del>
-      <ins><tt>O(max(distance(q1,q2), 1/a.load_factor()))</tt></ins>,
-      worst case <del><tt>O(a.size())</tt></del>
-      <ins><tt>O(max(a.size(), a.bucket_count())</tt></ins>.</td>
-    </tr>
-    <tr>
-      <td><ins><tt>a.quick_erase(q)</tt></ins></td>
-      <td><ins><tt>void</tt></ins></td>
-      <td><ins>Erases the element pointed to by <tt>q</tt>.</ins></td>
-      <td><ins>Average case <tt>O(1)</tt>, worst case <tt>O(a.size())</tt>.</ins></td>
-    </tr>
-    <tr>
-      <td><ins><tt>a.quick_erase(q1, q2)</tt></ins></td>
-      <td><ins><tt>void</tt></ins></td>
-      <td><ins>Erases all elements in the range <tt>[q1, q2)</tt>.</ins></td>
-      <td><ins>Average case linear in <tt>distance(q1, q2)</tt>, worst case <tt>O(a.size())</tt>.</ins></td>
-    </tr>
-  </table>
-</blockquote>
-<p>Adjust the declarations accordingly in <sref ref="[unord.map]"/>,  <sref ref="[unord.multimap]"/>, 
-<sref ref="[unord.set]"/>, and <sref ref="[unord.multiset]"/>. </p>
-<blockquote>
-  <pre>iterator erase(const_iterator position);
-<ins>void quick_erase(const_iterator position);</ins>  
-...
-iterator erase(const_iterator first, const_iterator last);
-<ins>void quick_erase(const_iterator first, const_iterator last);</ins>
-</pre>
-</blockquote>
-
-<!-- 
-<p>
-In <sref ref="[unord.req]"/>, Table 98, change return type from
-<tt>iterator</tt> to <tt>void</tt> for the following rows:
-</p>
-
-<blockquote>
-<table border="1">
-<caption>Table 98 &mdash; Unordered associative container requirements (in
-addition to container)</caption>
-
-<tr>
-<th>Expression</th>
-<th>Return type</th>
-<th>Assertion/note pre-/post-condition</th>
-<th>Complexity</th>
-</tr>
-
-<tr>
-<td><tt>a.erase(q)</tt></td>
-<td><tt><del>iterator</del> <ins>void</ins></tt></td>
-<td>Erases the element pointed to by <tt>q</tt>. <del>Return value is the
-iterator immediately following <tt>q</tt> prior to the erasure.</del></td>
-<td>Average case <tt>O(1)</tt>, worst case <tt>O(a.size())</tt>.</td>
-</tr>
-
-<tr>
-<td><tt>a.erase(q1, q2)</tt></td>
-<td><tt><del>iterator</del> <ins>void</ins></tt></td> <td>Erases all elements in
-the range <tt>[q1, q2)</tt>. <del>Return value is the iterator immediately
-following the erased elements prior to the erasure.</del></td>
-<td>Average case linear in <tt>distance(q1, q2)</tt>, worst case
-<tt>O(a.size())</tt>.</td>
-</tr>
-
-</table>
-</blockquote>
-
-<p>
-Adjust the declarations accordingly in <sref ref="[unord.map]"/>, <sref
-ref="[unord.multimap]"/>, <sref ref="[unord.set]"/>, and <sref
-ref="[unord.multiset]"/>.
-</p>
-
-<blockquote><pre>
-<del>iterator</del> <ins>void</ins> erase(const_iterator position);
-...
-<del>iterator</del> <ins>void</ins> erase(const_iterator first, const_iterator last);
-</pre></blockquote>
- -->
-
 </resolution>
 
 </issue>
