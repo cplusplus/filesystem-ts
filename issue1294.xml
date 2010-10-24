@@ -76,12 +76,10 @@ R operator()(T1&amp; t1, T2&amp; t2, ..., TN&amp; tN) <i>cv-qual</i>;
 combined with the fact that the word "forward" has two different meanings in
 this context. This issue attempts to clarify the difference better.
 </p>
-</discussion>
 
-<resolution>
-<p>
-Change <sref ref="[func.require]"/>/4 as indicated:
-</p>
+<note>
+2010-09-14 Daniel provides improved wording and verified that it is correct against N3126. Previous resolution is shown here:
+</note>
 
 <blockquote>
 <p>
@@ -99,6 +97,29 @@ R operator()(ArgTypes&amp;&amp;... args) <i>cv-qual</i>;
 
 <p>
 &mdash; <i>end note</i>]
+</p>
+</blockquote>
+</discussion>
+
+<resolution>
+<p>
+Change <sref ref="[func.require]"/>/4 as indicated:
+</p>
+
+<blockquote><p>
+[..] A <em>forwarding call wrapper</em> is a call wrapper that can be called with an <ins>arbitrary</ins> argument 
+list <ins>and delivers the arguments as references to the wrapped callable object. This forwarding step shall ensure
+that rvalue arguments are delivered as rvalue-references and lvalue arguments are delivered as lvalue-references</ins>. 
+[<em>Note</em>: in a typical implementation forwarding call wrappers have an overloaded function call operator of the 
+form
+</p>
+
+<blockquote><pre>
+template&lt;class... UnBoundArgs&gt;
+R operator()(UnBoundArgs&amp;&amp;... unbound_args) <em>cv-qual</em>;
+</pre></blockquote>
+<p>
+&mdash; <em>end note</em> ]
 </p>
 </blockquote>
 
