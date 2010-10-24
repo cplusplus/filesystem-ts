@@ -4,20 +4,23 @@
 ] >
 
 <issue num="1511" status="Open">
-<title>FCD Ballot Comment US-204</title>
+<title>[FCD] Synchronize the move-constructor for <tt>atomic_future</tt></title>
 <section><sref ref="[futures.atomic_future]"/></section>
 <submitter>ANSI</submitter>
 <date>25 Aug 2010</date>
 
 <discussion>
-According to the definition of atomic_future, all members
-of atomic_future are synchronizing except constructors.
+<p><b>Addresses US-204</b></p>
+<p>
+According to the definition of <tt>atomic_future</tt>, all members
+of <tt>atomic_future</tt> are synchronizing except constructors.
 However, it would probably be appropriate for a move
 constructor to be synchronizing on the source object. If
 not, the postconditions on paragraphs 7-8, might not be
 satisfied. This may be applicable if a collection of futures
 are being doled out to a set of threads that process their
 value.
+</p>
 </discussion>
 
 <resolution>
