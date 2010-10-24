@@ -4,30 +4,36 @@
 ] >
 
 <issue num="1369" status="Open">
-<title>[FCD] Ballot Comment GB-74</title>
+<title>[FCD] <tt>rethrow_exception</tt> may introduce data races</title>
 <section><sref ref="[propagation]"/></section>
 <submitter>BSI</submitter>
 <date>25 Aug 2010</date>
 
 <discussion>
 <p><b>Addresses GB-74</b></p>
-
-One idea for the exception_ptr type was that a referencecounted
+<p>
+One idea for the <tt>exception_ptr</tt> type was that a reference-counted
 implementation could simply 'reactivate' the same
 exception object in the context of a call to
-'rethrow_exception'. Such an implementation would allow
+<tt>rethrow_exception</tt>. Such an implementation would allow
 the same exception object to be active in multiple threads
-(such as when multiple threads join on a shared_future)
+(such as when multiple threads join on a <tt>shared_future</tt>)
 and introduce potential data races in any exception
 handler that catches exceptions by reference - notably
 existing library code written before this capability was
-added. 'rethrow_exception' should *always* make a copy
+added. <tt>rethrow_exception</tt> should <em>always</em> make a copy
 of the target exception object.
+</p>
 </discussion>
 
 <resolution>
-Throws: a copy of the exception object to which p
-refers.
+<p>
+Add the following to 18.8.5, [propogation]
+</p>
+<blockquote><ins>
+<i>Throws</i>: a copy of the exception object to which <tt>p</tt> refers.
+</ins></blockquote>
+
 </resolution>
 
 </issue>

@@ -4,33 +4,40 @@
 ] >
 
 <issue num="1371" status="Open">
-<title>[FCD] Ballot Comment GB-75</title>
+<title>[FCD] standard exceptions require stronger no-throw guarantees</title>
 <section><sref ref="[diagnostics]"/></section>
 <submitter>BSI</submitter>
 <date>25 Aug 2010</date>
 
 <discussion>
 <p><b>Addresses GB-75</b></p>
-
+<p>
 None of the exception types defined in clause 19 are
 allowed to throw an exception on copy or move
 operations, but there is no clear specification that the
 operations have an exception specification to prove it.
 Note that the implicitly declared constructors, taking the
 exception specification from their base class (ultimately
-std::exception) will implicitly generate a noexcept
+<tt>std::exception</tt>) will implicitly generate a <tt>noexcept</tt>
 exception specification if all of their data members
-similarly declare noexcept operations. As the
+similarly declare <tt>noexcept</tt> operations. As the
 representation is unspecified, we cannot assume nonthrowing
 operations unless we explicitly state this as a
 constraint on the implementation.
-</discussion>
+</p>
 
-<resolution>
+<note>
+Resolution proposed by ballot comment
+</note>
+<p>
 Add a global guarantee that all exception types
 defined in clause 19 that rely on implicitly declared
 operations have a non-throwing exception
 specification on those operations.
+</p>
+</discussion>
+
+<resolution>
 </resolution>
 
 </issue>

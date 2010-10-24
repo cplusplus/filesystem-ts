@@ -4,7 +4,7 @@
 ] >
 
 <issue num="1380" status="Open">
-<title>[FCD] Ballot Comment DE-16</title>
+<title>[FCD] <tt>pair</tt> and <tt>tuple</tt> of references need to better specify move-semantics</title>
 <section><sref ref="[pairs]"/></section>
 <submitter>DIN</submitter>
 <date>25 Aug 2010</date>
@@ -12,22 +12,26 @@
 <discussion>
 <p><b>Addresses DE-16</b></p>
 <p>
-Several pair and tuple functions in regard to move
+Several <tt>pair</tt> and <tt>tuple</tt> functions in regard to move
 operations are incorrectly specified if the member types
-are references, because the result of a std::move cannot
+are references, because the result of a <tt>std::move</tt> cannot
 be assigned to lvalue-references. In this context the usage
-of the requirement sets MoveConstructible and
-CopyConstructible also doesn't make sense, because
-non-const lvalue-references cannot satisfy these
-requirements.
+of the requirement sets <tt>MoveConstructible</tt> and
+<tt>CopyConstructible</tt> also doesn't make sense, because
+non-const lvalue-references cannot satisfy these requirements.
+</p>
+
+<note>
+Resolution proposed by ballot comment
+</note>
+<p>
+Replace the usage of <tt>std::move</tt> by that of
+<tt>std::forward</tt> and replace <tt>MoveConstructible</tt> and
+<tt>CopyConstructible</tt> requirements by other requirements.
 </p>
 </discussion>
 
 <resolution>
-Replace the usage of std::move by that of
-std::forward and replace MoveConstructible and
-CopyConstructible requirements by other
-requirements.
 </resolution>
 
 </issue>

@@ -4,35 +4,39 @@
 ] >
 
 <issue num="1377" status="Open">
-<title>[FCD] Ballot Comment US-90</title>
+<title>[FCD] The revised <tt>forward</tt> is not compatible with access-control</title>
 <section><sref ref="[utility]"/></section>
 <submitter>ANSI</submitter>
 <date>25 Aug 2010</date>
 
 <discussion>
 <p><b>Addresses US-90</b></p>
-
+<p>
 In n3090, at variance with previous iterations of the idea
 discussed in papers and incorporated in WDs,
-std::forward is constrained via std::is_convertible, thus is
-not robust wrt access control. This causes problems in
+<tt>std::forward</tt> is constrained via <tt>std::is_convertible</tt>,
+thus is not robust wrt access control. This causes problems in
 normal uses as implementation detail of member
 functions. For example, the following snippet leads to a
 compile time failure, whereas that was not the case for an
-implementation along the lines of n2835 (using enable_ifs
+implementation along the lines of n2835 (using <tt>enable_if</tt>s
 instead of concepts for the constraining, of course)
-<PRE>
-#include &lt;utility&gt;
+</p>
+<pre>
+#include &lt;utility>
 struct Base { Base(Base&amp;&amp;); };
+
 struct Derived
-: private Base
+  : private Base
 {
-Derived(Derived&amp;&amp; d)
-: Base(std::forward&lt;Base&gt;(d)) { }
+  Derived(Derived&amp;&amp; d)
+    : Base(std::forward&lt;Base>(d)) { }
 };
-</PRE>
+</pre>
+<p>
 In other terms, LWG 1054 can be resolved in a better
 way, the present status is not acceptable.
+</p>
 </discussion>
 
 <resolution>

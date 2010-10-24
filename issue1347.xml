@@ -4,7 +4,7 @@
 ] >
 
 <issue num="1347" status="Open">
-<title>[FCD] Ballot Comment GB-63</title>
+<title>[FCD] Apply <tt>noexcept</tt> judiciously throughout the library</title>
 <section><sref ref="[library]"/></section>
 <submitter>BSI</submitter>
 <date>25 Aug 2010</date>
@@ -12,20 +12,26 @@
 <discussion>
 <p><b>Addresses GB-63</b></p>
 <p>
-Since the newly introduced operator noexcept makes it
+Since the newly introduced operator <tt>noexcept</tt> makes it
 easy (easier than previously) to detect whether or not a
 function has been declared with the empty exception
-specification (including noexcept) library functions that
+specification (including <tt>noexcept</tt>) library functions that
 cannot throw should be decorated with the empty
 exception specification. Failing to do so and leaving it as a
 matter of QoI would be detrimental to portability and
 efficiency.
 </p>
+
+<note>
+Resolution proposed by ballot comment
+</note>
+<p>
+Review the whole library, and apply the <tt>noexcept</tt>
+specification where it is appropriate.
+</p>
 </discussion>
 
 <resolution>
-Review the whole library, and apply the noexcept
-specification where it is appropriate.
 </resolution>
 
 </issue>

@@ -4,7 +4,7 @@
 ] >
 
 <issue num="1404" status="Tentatively Ready">
-<title>[FCD] Ballot Comment US-106</title>
+<title>[FCD] <tt>pointer_traits</tt> should have a <tt>size_type</tt> member</title>
 <section><sref ref="[pointer.traits]"/></section>
 <submitter>ANSI</submitter>
 <date>25 Aug 2010</date>
@@ -15,13 +15,15 @@
 <tt>pointer_traits</tt> should have a <tt>size_type</tt> member for completeness.
 </p>
 <p>
-Add &#8220;typedef see below size_type;&#8221; to the generic
-pointer_traits template and &#8220;typedef size_t
-size_type;&#8221; to pointer_traits&lt;T*&gt;. Use
-pointer_traits::size_type and
-pointer_traits::difference_type as the defaults for
-allocator_traits::size_type and
-allocator_traits::difference_type.<BR/>
+Add <tt>typedef <i>see below</i> size_type;</tt> to the generic
+<tt>pointer_traits</tt> template and <tt>typedef size_t
+size_type;</tt> to <tt>pointer_traits&lt;T*></tt>. Use
+<tt>pointer_traits::size_type</tt> and
+<tt>pointer_traits::difference_type</tt> as the defaults for
+<tt>allocator_traits::size_type</tt> and
+<tt>allocator_traits::difference_type</tt>.
+</p>
+<p>
 See Appendix 1 - Additional Details
 </p>
 
@@ -30,10 +32,10 @@ Post-Rapperswil
 </note>
 
 <p>
-The original ballot comment reads simply: "pointer_traits should have a size_type for
-completeness."  The additional details reveal, however, that the desire for a
-<tt>size_type</tt> is actually driven by the needs
-of <tt>allocator_traits</tt>.  The allocator_traits template should get its
+The original ballot comment reads simply: "<tt>pointer_traits</tt> should have a 
+<tt>size_type</tt> for completeness."  The additional details reveal, however,
+that the desire for a <tt>size_type</tt> is actually driven by the needs
+of <tt>allocator_traits</tt>.  The <tt>allocator_traits</tt> template should get its
 default <tt>difference_type</tt> from <tt>pointer_traits</tt> but if it did,
 it should get its <tt>size_type</tt> from the same source.  Unfortunately,
 there is no obvious meaning for <tt>size_type</tt> in <tt>pointer_traits</tt>.
@@ -41,7 +43,7 @@ there is no obvious meaning for <tt>size_type</tt> in <tt>pointer_traits</tt>.
 <p>
 Alisdair suggested, however, that the natural relationship between
 <tt>difference_type</tt> and <tt>size_type</tt> can be expressed simply by the
-<tt>std::make_unsigned&lt;T&gt;</tt> metafunction.  Using this metafunction,
+<tt>std::make_unsigned&lt;T></tt> metafunction.  Using this metafunction,
 we can easily define <tt>size_type</tt> for <tt>allocator_traits</tt> without
 artificially adding <tt>size_type</tt> to <tt>pointer_traits</tt>.
 </p>

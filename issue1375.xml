@@ -4,27 +4,51 @@
 ] >
 
 <issue num="1375" status="Open">
-<title>[FCD] Ballot Comment US-87</title>
+<title>[FCD] <tt>reference_type</tt> should not have been removed from the
+allocator requirements</title>
 <section><sref ref="[allocator.requirements]"/></section>
 <submitter>ANSI</submitter>
 <date>25 Aug 2010</date>
 
 <discussion>
 <p><b>Addresses US-87</b></p>
-
-reference_type should not have been removed from the
+<p>
+<tt>reference_type</tt> should not have been removed from the
 allocator requirements. Even if it is always the same as
-value_type&amp;, it is an important customization point for
+<tt>value_type&amp;</tt>, it is an important customization point for
 extensions and future features.
+</p>
 </discussion>
 
 <resolution>
-Add a row (after value_type) with columns:<BR/>
-Expression: X::reference_type<BR/>
-Return type: T&amp;<BR/>
+<p>
+In [allocator.requirements] Table 42 - Allocotor Requirements, 
+Add a row (after <tt>value_type</tt>) with columns:
+</p>
+<blockquote>
+Expression: <ins><tt>X::reference_type</tt></ins><BR/>
+Return type: <ins><tt>T&amp;</tt></ins><BR/>
 Assertion/note...: (empty)<BR/>
-Default: T&amp;<BR/>
-[allocator.traits]: Add reference_type to
+Default: <ins><tt>T&amp;</tt></ins><BR/>
+</blockquote>
+<p>
+[allocator.traits]:
+</p> 
+<blockquote><pre>
+namespace std {
+  template &lt;class Alloc> struct allocator_traits {
+    typedef Alloc allocator_type;
+    
+    typedef typename Alloc::value_type value_type;
+
+    typedef <i>see below</i>   pointer;
+    typedef <i>see below</i>   const_pointer;
+    typedef <i>see below</i>   void_pointer;
+    typedef <i>see below</i>   const_void_pointer;
+    <ins>typedef value_type&amp; reference_type;</ins>
+</pre></blockquote>
+
+Add <tt>reference_type</tt> to
 allocator_traits template, defaulted to
 value_type&amp;.
 </resolution>

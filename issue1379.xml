@@ -4,7 +4,7 @@
 ] >
 
 <issue num="1379" status="Open">
-<title>[FCD] Ballot Comment US-95</title>
+<title>[FCD] <tt>pair</tt> copy-assignment not consistent for references</title>
 <section><sref ref="[pairs.pair]"/></section>
 <submitter>ANSI</submitter>
 <date>25 Aug 2010</date>
@@ -12,26 +12,38 @@
 <discussion>
 <p><b>Addresses US-95</b></p>
 <p>
-Copy-assignment for pair is defaulted and does not work
+Copy-assignment for <tt>pair</tt> is defaulted and does not work
 for pairs with reference members. This is inconsistent with
 conversion-assignment, which deliberately succeeds even
 if one or both elements are reference types, just as for
-tuple. The copy-assignment operator should be
+<tt>tuple</tt>. The copy-assignment operator should be
 consistent with the conversion-assignment operator and
-with tuple's assignment operators.
+with <tt>tuple</tt>'s assignment operators.
 </p>
 </discussion>
 
 <resolution>
-Add to pair synopsis:<BR/>
-pair&amp; operator=(const pair&amp; p);<BR/>
-Add before paragraph 9:<BR/>
-pair&amp; operator=(const pair&amp; p);<BR/>
-Requires: T1 and T2 shall satisfy the
-requirements of CopyAssignable.<BR/>
-Effects: Assigns p.first to first and p.second to
-second.<BR/>
-Returns: *this.
+Add to <tt>pair</tt> synopsis:
+<blockquote>
+<tt>pair&amp; operator=(const pair&amp; p);</tt>
+</blockquote>
+<p>
+Add before paragraph 9:
+</p>
+<blockquote>
+<tt>pair&amp; operator=(const pair&amp; p);</tt>
+<blockquote>
+<p>
+<i>Requires</i>: <tt>T1</tt> and <tt>T2</tt> shall satisfy the
+requirements of <tt>CopyAssignable</tt>.
+</p>
+<p>
+<i>Effects</i>: Assigns <tt>p.first</tt> to <tt>first</tt> and <tt>p.second</tt> to
+<tt>second</tt>.
+<i>Returns</i>: <tt>*this</tt>.
+</p>
+</blockquote>
+</blockquote>
 </resolution>
 
 </issue>

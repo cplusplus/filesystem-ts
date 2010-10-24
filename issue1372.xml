@@ -4,28 +4,22 @@
 ] >
 
 <issue num="1372" status="NAD Editorial">
-<title>[FCD] Ballot Comment GB-76</title>
+<title>[FCD] Adopt recommended practice for standard error categories</title>
 <section><sref ref="[syserr.errcat.objects]"/></section>
 <submitter>BSI</submitter>
 <date>25 Aug 2010</date>
 
 <discussion>
 <p><b>Addresses GB-76</b></p>
-
-The C++0x FCD recommends, in a note (see 19.5.1.1/1),
-that users
-create a single error category object for each user defined
-error
-category and specifies error_category equality
-comparsions based on
-equality of addresses (19.5.1.3). The Draft apparently
-ignores this
-when specifying standard error category objects in section
-19.5.1.5,
-by allowing the generic_category() and system_category()
-functions to
-return distinct objects for each invocation.
-
+<p>
+The C++0x FCD recommends, in a note (see 19.5.1.1/1), that users
+create a single <tt>error_category</tt> object for each user defined error
+category and specifies <tt>error_category</tt> equality comparsions based on
+equality of addresses (19.5.1.3). The Draft apparently ignores this
+when specifying standard error category objects in section 19.5.1.5,
+by allowing the <tt>generic_category()</tt> and <tt>system_category()</tt>
+functions to return distinct objects for each invocation.
+</p>
 <note>
 Resolved in Rapperswil by a motion to directly apply the words from the ballot comment in N3102.
 </note>
@@ -33,12 +27,13 @@ Resolved in Rapperswil by a motion to directly apply the words from the ballot c
 </discussion>
 
 <resolution>
-Append a new sentence to 19.5.1.5
-[syserr.errcat.objects]/1, which
-reads "All calls of this function return references to
-the same
-object.", and append the same sentence to
-19.5.1.5/3.
+<p>
+Append a new sentence to 19.5.1.5 [syserr.errcat.objects]/1, and append
+the same sentence to 19.5.1.5/3.
+</p>
+<blockquote><ins>
+All calls of this function return references to the same object.
+</ins></blockquote>
 </resolution>
 
 </issue>

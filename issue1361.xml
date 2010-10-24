@@ -4,7 +4,7 @@
 ] >
 
 <issue num="1361" status="Open">
-<title>[FCD] Ballot Comment GB-58</title>
+<title>[FCD] Does use of <tt>std::size_t</tt> in a header imply that typedef name is availabe to users</title>
 <section><sref ref="[using]"/></section>
 <submitter>BSI</submitter>
 <date>25 Aug 2010</date>
@@ -21,21 +21,27 @@ defines it. For example, is the following code required to
 be accepted:
 </p>
 <blockquote><pre>
-#include &lt;vector&gt;
+#include &lt;vector>
 std::size_t x = 0;
 </pre></blockquote>
 <p>
 Most often, this question concerns the typedefs defined in
-header &lt;cstddef&gt;
+header <tt>&lt;cstddef></tt>
+</p>
+
+<note>
+Resolution propsed by ballot comment
+</note>
+<p>
+Add a paragraph under 17.6.2 clarifying whether
+or not headers specified in terms of <tt>std::size_t</tt> can
+be used to access the typedef <tt>size_t</tt>, or whether
+the header <tt>&lt;cstddef></tt> must be included to reliably
+use this name.
 </p>
 </discussion>
 
 <resolution>
-Add a paragraph under 17.6.2 clarifying whether
-or not headers specified in terms of std::size_t can
-be used to access the typedef size_t, or whether
-the header &lt;cstddef&gt; must be included to reliably
-use this name.
 </resolution>
 
 </issue>
