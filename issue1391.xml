@@ -4,17 +4,20 @@
 ] >
 
 <issue num="1391" status="Open">
-<title>FCD Ballot Comment DE-18</title>
+<title>[FCD] Ballot Comment DE-18</title>
 <section><sref ref="[meta]"/></section>
 <submitter>DIN</submitter>
 <date>25 Aug 2010</date>
 
 <discussion>
+<p><b>Addresses DE-18</b></p>
+<p>
 Several type traits require compiler support, e.g.
 std::is_constructible or std::is_convertible. Their current
 specification seems to imply, that the corresponding test
 expressions should be well-formed, even in absense of
 access:
+</p>
 <PRE>
 class X { X(int){} };
 constexpr bool test = std::is_constructible&lt;X, int&gt;::value;
