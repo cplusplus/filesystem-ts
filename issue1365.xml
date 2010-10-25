@@ -4,25 +4,33 @@
 ] >
 
 <issue num="1365" status="Open">
-<title>[FCD] Ballot Comment GB-71</title>
+<title>[FCD] Thread-safety of handler functions</title>
 <section><sref ref="[alloc.errors]"/></section>
 <submitter>BSI</submitter>
 <date>25 Aug 2010</date>
 
 <discussion>
 <p><b>Addresses GB-71</b></p>
-
+<p>
 The thread safety of <tt>std::set_new_handler()</tt>,
-<tt>std::set_unexpected()</tt>, <tt>std::set_terminate()</tt>, is unspecified
-making the the functions impossible to use in a thread
+<tt>std::set_unexpected()</tt>, <tt>std::set_terminate()</tt>, is
+unspecified making the the functions impossible to use in a thread
 safe manner.
-</discussion>
+</p>
 
-<resolution>
+<note>
+Resolution proposed by ballot comment
+</note>
+<p>
 The thread safety guarantees for the functions
 must be specified and new interfaces should be
 provided to make it possible to query and install
 handlers in a thread safe way.
+</p>
+
+</discussion>
+
+<resolution>
 </resolution>
 
 </issue>

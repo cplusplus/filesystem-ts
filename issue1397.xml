@@ -4,7 +4,7 @@
 ] >
 
 <issue num="1397" status="Open">
-<title>[FCD] Ballot Comment GB-95</title>
+<title>[FCD] Deprecate '98 binders</title>
 <section><sref ref="[function.objects]"/></section>
 <submitter>BSI</submitter>
 <date>25 Aug 2010</date>
@@ -13,8 +13,8 @@
 <p><b>Addresses GB-95</b></p>
 <p>
 The adaptable function protocol supported by
-unary_function/binary_function has been superceded by
-lambda expressions and std::bind. Despite the name, the
+<tt>unary_function</tt>/<tt>binary_function</tt> has been superceded by
+lambda expressions and <tt>std::bind</tt>. Despite the name, the
 protocol is not very adaptable as it requires intrusive
 support in the adaptable types, rather than offering an
 external traits-like adaption mechanism. This protocol and
@@ -26,7 +26,21 @@ adopted from TR1. It is expected that high-quality
 implementations will provide such support, but we should
 not have to write robust standard specifications mixing this
 restricted support with more general components such as
-function, bind and reference_wrapper.
+<tt>function</tt>, <tt>bind</tt> and <tt>reference_wrapper</tt>.
+</p>
+
+<note>
+Resolution proposed by ballot comment
+</note>
+<p>
+Move clauses 20.8.3, 20.8.9, 20.8.11 and 20.8.12
+to Annex D.
+</p>
+<p>
+Remove the requirements to conditionally derive from
+<tt>unary</tt>/<tt>binary_function</tt> from <tt>function</tt>,
+<tt>reference_wrapper</tt>, and the results of calling <tt>mem_fn</tt>
+and <tt>bind</tt>.
 </p>
 
 <note>
@@ -40,11 +54,7 @@ Accepting <a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2010/n3145
 </discussion>
 
 <resolution>
-Move clauses 20.8.3, 20.8.9, 20.8.11 and 20.8.12
-to Annex D. Remove the requirements to
-conditionally derive from unary/binary_function
-from function, reference_wrapper, and the results
-of calling mem_fn and bind.
+See <a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2010/n3145.html">n3145</a>.
 </resolution>
 
 </issue>

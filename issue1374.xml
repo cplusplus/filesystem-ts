@@ -4,45 +4,58 @@
 ] >
 
 <issue num="1374" status="Open">
-<title>[FCD] Ballot Comment US-85</title>
+<title>[FCD] Clarify moved-from objects are &quot;toxic&quot;</title>
 <section><sref ref="[utility.arg.requirements]"/></section>
 <submitter>ANSI</submitter>
 <date>25 Aug 2010</date>
 
 <discussion>
 <p><b>Addresses US-85</b></p>
-
+<p>
 20.2.1 Table 34 "MoveConstructible requirements" says
 "Note: rv remains a valid object. Its state is unspecified".
 Some components give stronger guarantees. For
-example, moved-from shared_ptrs are guaranteed empty
+example, moved-from <tt>shared_ptr</tt>s are guaranteed <tt>empty</tt>
 (20.9.11.2.1/25).
 In general, what the standard really should say (preferably
 as a global blanket statement) is that moved-from objects
 can be destroyed and can be the destination of an
 assignment. Anything else is radioactive. For example,
 containers can be "emptier than empty". This needs to be
-explicit and required generally.<BR/>
+explicit and required generally.
+</p>
+<p>
 Note: The last time that one of us mentioned "emptier
 than empty" (i.e. containers missing sentinel nodes, etc.)
 the objection was that containers can store sentinel nodes
 inside themselves in order to avoid dynamically allocating
-them. This is unacceptable because (a) it forces existing
-implementations (i.e. Dinkumware's, Microsoft's, IBM's,
-etc.) to change for no good reason (i.e. permitting more
-operations on moved-from objects), and (b) it invalidates
-end iterators when swapping containers. (The Working
-Paper currently permits end iterator invalidation, which we
+them. This is unacceptable because
+</p>
+<p>
+(a) it forces existing implementations (i.e. Dinkumware's, Microsoft's,
+IBM's,  etc.) to change for no good reason (i.e. permitting more
+operations on moved-from objects), and 
+</p>
+<p>
+(b) it invalidates end-iterators when swapping containers. (The Working
+Paper currently permits end-iterator invalidation, which we
 consider to be wrong, but that's a separate argument. In
-any event, *mandating* end iterator invalidation is very
+any event, <em>mandating</em> end-iterator invalidation is very
 different from permitting it.)
-</discussion>
+</p>
 
-<resolution>
+<note>
+Resolution proposed in ballot comment
+</note>
+<p>
 State as a general requirement that moved-from
 objects can be destroyed and can be the
 destination of an assignment. Any other use is
 undefined behavior.
+</p>
+</discussion>
+
+<resolution>
 </resolution>
 
 </issue>

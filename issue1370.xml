@@ -4,19 +4,29 @@
 ] >
 
 <issue num="1370" status="Open">
-<title>[FCD] Ballot Comment US-84</title>
+<title>[FCD] <tt>throw_with_nested</tt> should not use perfect forwarding</title>
 <section><sref ref="[except.nested]"/></section>
 <submitter>ANSI</submitter>
 <date>25 Aug 2010</date>
 
 <discussion>
 <p><b>Addresses US-84</b></p>
+<p>
+The <tt>throw_with_nested</tt> specification passes in its argument as
+<tt>T&amp;&amp;</tt> (perfect forwarding pattern), but then discusses
+requirements on <tt>T</tt> without taking into account that <tt>T</tt>
+may be an lvalue-reference type. It is also not clear in the spec that
+<tt>t</tt> is intended to be perfectly forwarded.
+</p>
 
-The throw_with_nested spec passes in its argument as
-T&amp;&amp; (perfect forwarding pattern), but then discusses
-requirements on T without taking into account that T may
-be an lvalue-reference type. It is also not clear in the
-spec that t is intended to be perfectly forwarded.
+<note>
+Resolution proposed by ballot comment
+</note>
+<p>
+Patch [except.nested] p6-7 to match the intent with regards to
+requirements on <tt>T</tt> and the use of
+<tt>std::forward&lt;T&gt;(t)</tt>.
+</p>
 
 <note>
 2010-10-24 Daniel adds:
@@ -28,10 +38,8 @@ Accepting <a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2010/n3144
 
 </discussion>
 
-<resolution>
-Patch 6-7 to match the intent with regards to
-requirements on T and the use of
-std::forward&lt;T&gt;(t).
+<resolution> 
+See <a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2010/n3144.html">n3144</a>.
 </resolution>
 
 </issue>

@@ -4,7 +4,11 @@
 ] >
 
 <issue num="1349" status="Open">
+<<<<<<< HEAD
+<title>[FCD] <tt>swap</tt> should not throw</title>
+=======
 <title>[FCD] Exceptions and swap operations</title>
+>>>>>>> 70e25bb8b9e83ceca69e183d3bc224494439fc96
 <section><sref ref="[library]"/></section>
 <submitter>BSI</submitter>
 <date>25 Aug 2010</date>
@@ -12,21 +16,27 @@
 <discussion>
 <p><b>Addresses GB-65</b></p>
 <p>
-Nothrowing swap operations are key to many C++ idioms,
+Nothrowing <tt>swap</tt> operations are key to many C++ idioms,
 notably the common copy/swap idiom to provide the
 strong exception safety guarantee.
+</p>
+
+<note>
+Resolution proposed by ballot comment
+</note>
+<p>
+Where possible, all library types should provide a
+<tt>swap</tt> operation with an exception specification
+guaranteeing no exception shall propagate.
+Where <tt>noexcept(true)</tt> cannot be guaranteed to
+not terminate the program, and the <tt>swap</tt> in
+questions is a template, an exception specification
+with the appropriate conditional expression could
+be specified.
 </p>
 </discussion>
 
 <resolution>
-Where possible, all library types should provide a
-swap operation with an exception specification
-guaranteeing no exception shall propagate.
-Where noexcept(true) cannot be guaranteed to
-not terminate the program, and the swap in
-questions is a template, an exception specification
-with the appropriate conditional expression could
-be specified.
 </resolution>
 
 </issue>

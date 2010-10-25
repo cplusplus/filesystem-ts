@@ -4,7 +4,7 @@
 ] >
 
 <issue num="1359" status="Open">
-<title>[FCD] Ballot Comment GB-56</title>
+<title>[FCD] Add <tt>&lt;tuple></tt> and <tt>&lt;utility></tt> to freestanding implementations</title>
 <section><sref ref="[compliance]"/></section>
 <submitter>BSI</submitter>
 <date>25 Aug 2010</date>
@@ -12,26 +12,42 @@
 <discussion>
 <p><b>Addresses GB-56</b></p>
 <p>
-The &lt;utility&gt; header provides support for several
-important C++ idioms with move, forward and swap.
-Likewise, declval will be frequently used like a type trait.
-In order to complete cycles introduced by std::pair, the
-&lt;tuple&gt; header should also be made available. This is a
+The <tt>&lt;utility></tt> header provides support for several
+important C++ idioms with <tt>move</tt>, <tt>forward</tt> and <tt>swap</tt>.
+Likewise, <tt>declval</tt> will be frequently used like a type trait.
+In order to complete cycles introduced by <tt>std::pair</tt>, the
+<tt>&lt;tuple></tt> header should also be made available. This is a
 similarly primitive set of functionality, with no dependency
 of a hosted environment, but does go beyond the minimal
 set of functionality otherwise suggested by the
 freestanding libraries.
-Alternatively, split the move/forward/swap/declval
-functions out of &lt;utility&gt; and into a new primitive header,
+</p>
+<p>
+Alternatively, split the <tt>move</tt>/<tt>forward</tt>/<tt>swap</tt>/<tt>declval</tt>
+functions out of <tt>&lt;utility></tt> and into a new primitive header,
 requiring only that of freestanding implementation.
 </p>
+
+<note>
+Rapperswil
+</note>
+<p>
+The preference of the meeting was to extract the rvalue-reference related utilities and swap into a freestanding header, but there was no clear preference for a name.  Howard suggested simply dropping them into <tt>&lt;type_traits></tt> as both these utilities and type traits are used pretty much everywhere in the library implementation, it is the most convenient place to keep them (from an implementer's perspective).
+</p>
+
+<note>
+Resolution proposed by ballot comment
+</note>
+<blockquote>
+<p>
+Add <tt>&lt;utility></tt> and <tt>&lt;tuple></tt> to table 15, headers
+required for a free-standing implementation.
+</p>
+</blockquote>
+
 </discussion>
 
 <resolution>
-<p>
-Add &lt;utility&gt; and &lt;tuple&gt; to table 15, headers
-required for a free-standing implementation.
-</p>
 </resolution>
 
 </issue>

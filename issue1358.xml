@@ -4,7 +4,8 @@
 ] >
 
 <issue num="1358" status="Open">
-<title>[FCD] Ballot Comment GB-55</title>
+<title>[FCD] Add <tt>&lt;chrono></tt> and <tt>&lt;ratio></tt> to
+freestanding implementations</title>
 <section><sref ref="[compliance]"/></section>
 <submitter>BSI</submitter>
 <date>25 Aug 2010</date>
@@ -12,18 +13,48 @@
 <discussion>
 <p><b>Addresses GB-55</b></p>
 <p>
-The thread header uses duration types, found in the
-&lt;chrono&gt; header, and which rely on the ratio types
-declared in the &lt;ratio&gt; header.
+The <tt>&lt;thread></tt> header uses <tt>duration</tt> types, found in the
+<tt>&lt;chrono></tt> header, and which rely on the <tt>ratio</tt> types
+declared in the <tt>&lt;ratio></tt> header.
 </p>
+
+<note>
+Rapperswil discussion
+</note>
+<p>
+There is a concern that this issue is a misunderstanding of the actual
+requirements of a free-standing implementation to support the <tt>&lt;thread></tt>
+header.  In general, a free-standanding implementation will provide an <em>empty</em>
+header, specifically so that a user can test for the absence of the 
+<tt>_ _ STDCPP_THREADS _ _</tt> macro.  This idiom as used as there is no portable way to test for the lack of a header.
+</p>
+<p>
+At this point, it was suggested the NB comment is trying to solve the wrong problem, and that <tt>_ _ STDCPP_THREADS _ _</tt> should be a pre-defined macro in clause 16 that can be tested before including <tt>&lt;thread></tt>.  That would remove the need to add additional headers to the free-standanding requirements.
+</p>
+<p>
+It is worth noting that Japan requested <tt>&lt;ratio></tt> as a free-standing header in their CD1 comments.  No-one seemed keen to require clocks of a free-standing implementation though.
+</p>
+
+
+<note>
+Original resolution proposed by NB comment:
+</note>
+
+<blockquote>
+<p>
+Add the <tt>&lt;chrono></tt> and <tt>&lt;ratio></tt> headers to the
+freestanding requirements.
+</p>
+<p>
+It might be necessary to address scaled-down
+expectations of clock support in a freestanding
+environment, much like <tt>&lt;thread></tt>.
+</p>
+</blockquote>
+
 </discussion>
 
 <resolution>
-Add the &lt;chrono&gt; and &lt;ratio&gt; headers to the
-freestanding requirements.
-It might be necessary to address scaled-down
-expectations of clock support in a freestanding
-environment, much like &lt;thread&gt;.
 </resolution>
 
 </issue>

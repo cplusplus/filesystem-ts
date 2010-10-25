@@ -4,14 +4,14 @@
 ] >
 
 <issue num="1373" status="Open">
-<title>[FCD] Ballot Comment GB-79</title>
+<title>[FCD] Customizable traits should have their own headers</title>
 <section><sref ref="[utility]"/></section>
 <submitter>BSI</submitter>
 <date>25 Aug 2010</date>
 
 <discussion>
 <p><b>Addresses GB-79</b></p>
-
+<p>
 The library provides several traits mechanisms intended a
 customization points for users. Typically, they are
 declared in headers that are growing quite large. This is
@@ -19,18 +19,36 @@ not a problem for standard library vendors, who can
 manage their internal file structure to avoid large
 dependencies, but can be a problem for end users who
 have no option but to include these large headers.
+</p>
+
+<note>
+Rapperswil
+</note>
+<p>
+There was no enthusiasm for touching <tt>char_traits</tt> or <tt>regex_traits</tt>.
+Consensus to move <tt>iterator_traits</tt>, <tt>allocator_traits</tt>
+and <tt>pointer_traits</tt> to their own respective headers once wording supplied.
+</p>
+
+<note>
+Resolution proposed in ballot comment
+</note>
+<p>
+Move the following traits classes into their own
+headers, and require the existing header to
+<tt>#include</tt> the traits header to support backwards
+compatibility:
+</p>
+<blockquote><pre>
+iterator_traits (plus the iterator tag-types)
+allocator_traits
+pointer_traits
+char_traits
+regex_traits
+</pre></blockquote>
 </discussion>
 
 <resolution>
-Move the following traits classes into their own
-headers, and require the existing header to
-#include the traits header to support backwards
-compatibility:<BR/>
-iterator_traits (plus the iterator tag-types)<BR/>
-allocator_traits<BR/>
-pointer_traits<BR/>
-char_traits<BR/>
-regex_traits
 </resolution>
 
 </issue>

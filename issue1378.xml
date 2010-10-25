@@ -4,7 +4,7 @@
 ] >
 
 <issue num="1378" status="Open">
-<title>[FCD] Ballot Comment DE-15</title>
+<title>[FCD] <tt>pair</tt> and <tt>tuple</tt> have too many conversions</title>
 <section><sref ref="[pairs]"/></section>
 <submitter>DIN</submitter>
 <date>25 Aug 2010</date>
@@ -12,16 +12,24 @@
 <discussion>
 <p><b>Addresses DE-15</b></p>
 <p>
-Several function templates of pair and tuple allow for too
+Several function templates of <tt>pair</tt> and <tt>tuple</tt> allow for too
 many implicit conversions, for example:
 </p>
-<PRE>
-#include &lt;tuple&gt;
-std::tuple&lt;char*&gt; p(0); // Error?
+<pre>
+#include &lt;tuple>
+std::tuple&lt;char*> p(0); // Error?
+
 struct A { explicit A(int){} };
 A a = 1; // Error
-std::tuple&lt;A&gt; ta = std::make_tuple(1); // OK?
-</PRE>
+std::tuple&lt;A> ta = std::make_tuple(1); // OK?
+</pre>
+
+<note>
+Resolution proposed by ballot comment
+</note>
+<p>
+Consider to add wording to constrain these function templates.
+</p>
 
 <note>
 2010-10-24 Daniel adds:
@@ -33,9 +41,9 @@ Accepting <a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2010/n3140
 
 </discussion>
 
+
 <resolution>
-Consider to add wording to constrain these
-function templates.
+See <a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2010/n3140.html">n3140</a>.
 </resolution>
 
 </issue>

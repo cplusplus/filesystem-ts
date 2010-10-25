@@ -4,7 +4,11 @@
 ] >
 
 <issue num="1345" status="Open">
+<<<<<<< HEAD
+<title>[FCD] Library classes should have <tt>noexcept</tt> move operations</title>
+=======
 <title>[FCD] Need non-throwing move constructors and move-assignment</title>
+>>>>>>> 70e25bb8b9e83ceca69e183d3bc224494439fc96
 <section><sref ref="[library]"/></section>
 <submitter>BSI</submitter>
 <date>25 Aug 2010</date>
@@ -14,25 +18,34 @@
 <p>
 All library types should have non-throwing move
 constructors and move-assignment operators unless
-wrapping a type with a potentially throwing moveoperation.
+wrapping a type with a potentially throwing move operation.
 When such a type is a class-template, these
-operations should have a conditional noexcept
-specification.<BR/>
-There are many other places where a noexcept
+operations should have a conditional <tt>noexcept</tt>
+specification.
+</p>
+<p>
+There are many other places where a <tt>noexcept</tt>
 specification may be considered, but the move operations
 are a special case that must be called out, to effectively
-support the move_if_noexcept function template.
+support the <tt>move_if_noexcept</tt> function template.
 </p>
-</discussion>
 
-<resolution>
+<note>
+Resolution proposed by ballot comment
+</note>
+<p>
 Review every class and class template in the
 library. If noexcept move constructor/assignment
 operators can be implicitly declared, then they
 should be implicitly declared, or explicitly
 defaulted. Otherwise, a move constructor/moveassingment
-operator with a 'noexcept' exception
+operator with a <tt>noexcept</tt> exception
 specification should be provided.
+</p>
+
+</discussion>
+
+<resolution>
 </resolution>
 
 </issue>

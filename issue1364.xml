@@ -4,7 +4,7 @@
 ] >
 
 <issue num="1364" status="Open">
-<title>[FCD] Ballot Comment CH-19</title>
+<title>[FCD] It is not clear how <tt>exception_ptr</tt> is synchronized</title>
 <section><sref ref="[propagation]"/></section>
 <submitter>Switzerland</submitter>
 <date>25 Aug 2010</date>
@@ -12,14 +12,21 @@
 <discussion>
 <p><b>Addresses CH-19</b></p>
 <p>
-It is not clear how <p>exception_ptr</p> is synchronized.
+It is not clear how <tt>exception_ptr</tt> is synchronized.
 </p>
+
+<note>
+Resolution proposed by ballot comment
+</note>
+<p>
+Make clear that accessing in different threads
+multiple <tt>exception_ptr</tt> objects that all refer to the
+same exception introduce a race.
+</p>
+
 </discussion>
 
 <resolution>
-Make clear that accessing in different threads
-multiple exception_ptr objects that all refer to the
-same exception introduce a race.
 </resolution>
 
 </issue>
