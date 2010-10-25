@@ -4,7 +4,7 @@
 ] >
 
 <issue num="1458" status="Open">
-<title>[FCD] Ballot Comment GB-131</title>
+<title>[FCD] Overlapping evaluations are allowed</title>
 <section><sref ref="[atomics.order]"/></section>
 <submitter>BSI</submitter>
 <date>25 Aug 2010</date>
@@ -12,7 +12,20 @@
 <discussion>
 <p><b>Addresses GB-131</b></p>
 
-See (H) in attachment Appendix 1 - Additional Details
+29.3:8 states:
+"An atomic store shall only store a value that has been computed
+from constants and program input values by a finite sequence of
+program evaluations, such that each evaluation observes the values
+of variables as computed by the last prior assignment in the
+sequence."
+... but 1.9.13 states:
+"If A is not sequenced before B and B is not sequenced before A,
+then A and B are unsequenced. [ Note: The execution of unsequenced
+evaluations can overlap. -end note ]"
+Overlapping executions can make it impossible to construct the sequence
+described in 29.3:8. We are not sure of the intention here and do not
+offer a suggestion for change, but note that 29.3:8 is the condition
+that prevents out-of-thin-air reads.
 </discussion>
 
 <resolution>
