@@ -4,7 +4,7 @@
 ] >
 
 <issue num="1391" status="Open">
-<title>[FCD] Ballot Comment DE-18</title>
+<title>[FCD] constructible/convertible traits and access control</title>
 <section><sref ref="[meta]"/></section>
 <submitter>DIN</submitter>
 <date>25 Aug 2010</date>
@@ -13,19 +13,29 @@
 <p><b>Addresses DE-18</b></p>
 <p>
 Several type traits require compiler support, e.g.
-std::is_constructible or std::is_convertible. Their current
-specification seems to imply, that the corresponding test
-expressions should be well-formed, even in absense of
-access:
+<tt>std::is_constructible</tt> or <tt>std::is_convertible</tt>.
+Their current specification seems to imply, that the corresponding
+test expressions should be well-formed, even in absense of access:
 </p>
-<PRE>
+<pre>
 class X { X(int){} };
-constexpr bool test = std::is_constructible&lt;X, int&gt;::value;
-</PRE>
+constexpr bool test = std::is_constructible&lt;X, int>::value;
+</pre>
+<p>
 The specification does not clarify the context of this test
 and because it already goes beyond normal language
 rules, it's hard to argue by means of normal language
 rules what the context and outcome of the test should be.
+</p>
+
+<note>
+Resolution proposed by ballot comment
+</note>
+<p>
+Specify that <tt>std::is_constructible</tt> and
+<tt>std::is_convertible</tt> will return <tt>true</tt> only for
+public constructors/conversion functions.
+</p>
 
 <note>
 2010-10-24 Daniel adds:
@@ -38,9 +48,7 @@ Accepting <a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2010/n3142
 </discussion>
 
 <resolution>
-Specify that std::is_constructible and
-std::is_convertible will return true only for public
-constructors/conversion functions.
+See <a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2010/n3142.html">n3142</a>.
 </resolution>
 
 </issue>

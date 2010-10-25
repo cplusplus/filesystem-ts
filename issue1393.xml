@@ -4,7 +4,7 @@
 ] >
 
 <issue num="1393" status="Open">
-<title>[FCD] Ballot Comment GB-92</title>
+<title>[FCD] Trivial traits imply noexcept</title>
 <section><sref ref="[meta.unary.prop]"/></section>
 <submitter>BSI</submitter>
 <date>25 Aug 2010</date>
@@ -13,9 +13,17 @@
 <p><b>Addresses GB-92</b></p>
 <p>
 Trivial functions implicitly declare a noexcept exception
-specification, so the references to has_trivial_* traits in the
-has_nothrow_* traits are redundant, and should be struck
-for clarity.
+specification, so the references to <tt>has_trivial_*</tt> traits in the
+<tt>has_nothrow_*</tt> traits are redundant, and should be struck for clarity.
+</p>
+
+<note>
+Resolution proposed by ballot comment
+</note>
+<p>
+For each of the <tt>has_nothrow_<i>something</i></tt> traits,
+remove all references to the matching
+<tt>has_trivial_<i>something</i></tt> traits.
 </p>
 
 <note>
@@ -29,9 +37,7 @@ Accepting <a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2010/n3142
 </discussion>
 
 <resolution>
-For each of the has_nothrow_something traits,
-remove all references to the matching
-has_trivial_something traits.
+See <a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2010/n3142.html">n3142</a>.
 </resolution>
 
 </issue>
