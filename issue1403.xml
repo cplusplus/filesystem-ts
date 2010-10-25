@@ -3,23 +3,25 @@
   <!ENTITY nbsp "&#160;">
 ] >
 
-<issue num="1403" status="NAD Editorial">
-<title>FCD Ballot Comment JP-85</title>
+<issue num="1403" status="WP">
+<title>[FCD] Inconsistent definitions for <tt>allocator_arg</tt></title>
 <section><sref ref="[allocator.tag]"/></section>
 <submitter>Japan</submitter>
 <date>25 Aug 2010</date>
 
 <discussion>
-There are inconsistent definitions for allocator_arg.
+<p><b>Addresses JP-85</b></p>
+<p>
+There are inconsistent definitions for <tt>allocator_arg</tt>.
 In 20.9 [memory] paragraph 1,
-<PRE>
-constexpr allocator_arg_t allocator_arg =
-allocator_arg_t();
-</PRE>
+</p>
+<pre>
+constexpr allocator_arg_t allocator_arg = allocator_arg_t();
+</pre>
 and in 20.9.1,
-<PRE>
+<pre>
 const allocator_arg_t allocator_arg = allocator_arg_t();
-</PRE>
+</pre>
 
 <note>
 Resolved in Rapperswil by a motion to directly apply the words from the ballot comment in N3102.
@@ -30,10 +32,9 @@ Resolved in Rapperswil by a motion to directly apply the words from the ballot c
 <resolution>
 Change "const" to "constexpr" in 20.9.1 as
 follows.
-<PRE>
-constexpr allocator_arg_t allocator_arg =
-allocator_arg_t();
-</PRE>
+<pre>
+constexpr allocator_arg_t allocator_arg = allocator_arg_t();
+</pre>
 </resolution>
 
 </issue>
