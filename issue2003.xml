@@ -1,0 +1,39 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="2003" status="New">
+<title>String exception inconsistency in erase.</title>
+<section><sref ref="[string.require]"/></section>
+<submitter>José Daniel García Sánchez</submitter>
+<date>21 Oct 2010</date>
+
+<discussion>
+<p>
+Clause 21.4.1 [string.require]p3 states:
+</p>
+<blockquote>
+No <tt>erase()</tt> or <tt>pop_back()</tt> member function shall throw
+any exceptions.
+</blockquote>
+<p>
+However in 21.4.6.5 [string::erase] p2 the first version of <tt>erase</tt> has
+</p>
+<blockquote>
+<i>Throws</i>: <tt>out_of_range</tt> if <tt>pos > size()</tt>.
+</blockquote>
+
+</discussion>
+
+<resolution>
+<p>
+Update [string.require]p/3:
+</p>
+<blockquote>
+3 No <del><tt>erase()</tt> or</del> <tt>pop_back()</tt> member function
+shall throw any exceptions.
+</blockquote>
+</resolution>
+
+</issue>
