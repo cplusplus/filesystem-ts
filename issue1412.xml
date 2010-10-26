@@ -4,22 +4,36 @@
 ] >
 
 <issue num="1412" status="Open">
-<title>[FCD] Ballot Comment CH-21</title>
+<title>[FCD] Make monotonic clocks mandatory</title>
 <section><sref ref="[time.clock.monotonic]"/></section>
 <submitter>Switzerland</submitter>
 <date>25 Aug 2010</date>
 
 <discussion>
 <p><b>Addresses CH-21</b></p>
-
+<p>
 Monotonic clocks are generally easy to provide on all
 systems and are implicitely required by some of the library
 facilities anyway.
+</p>
 </discussion>
 
 <resolution>
-Make monotonic clocks mandatory, i.e. remove
-p2. Also change 30.2.4p2 accordingly.
+<p>Make monotonic clocks mandatory.</p>
+<p>Strike [time.clock.monotonic] 20.11.5.2/p2</p>
+<blockquote>
+<tt>2</tt> <del>The class <tt>monotonic_clock</tt> is conditionally supported.</del>
+</blockquote>
+
+<p>Change [thread.req.timing]30.2.4p2 accordingly</p>
+<blockquote>
+The member functions whose names end in <tt>_for</tt> take an argument that
+specifies a relative time. Implementations should use a monotonic clock to
+measure time for these functions. <del>[ Note: Implementations are not
+required to use a monotonic clock because such a clock may not be available.
+— end note ]</del>
+</blockquote>
+
 </resolution>
 
 </issue>
