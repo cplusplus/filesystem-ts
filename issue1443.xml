@@ -4,7 +4,7 @@
 ] >
 
 <issue num="1443" status="Open">
-<title>[FCD] Ballot Comment GB-122</title>
+<title>[FCD] Imposed happens-before edges are not made transitive</title>
 <section><sref ref="[thread]"/></section>
 <submitter>BSI</submitter>
 <date>25 Aug 2010</date>
@@ -12,7 +12,32 @@
 <discussion>
 <p><b>Addresses GB-122</b></p>
 
-See (D) in attachment Appendix 1 - Additional Details
+<p>At various points in the standard new edges are added to
+happens-before, for example 27.2.3:2 adds happens-before edges between
+writes and reads from a stream:</p>
+
+<p>If one thread makes a library call a that writes a value to a
+stream and, as a result, another thread reads this value from the
+stream through a library call b such that this does not result in a
+data race, then a happens before b.</p>
+
+<p>Happens-before is defined in 1.10:11 in a deliberate way that makes it
+not explicitly transitively closed. Adding edges to happens-before
+directly, as in 27.2.3:2, does not provide transitivity with
+sequenced-before or any other existing happens-before edge. This lack
+of transitivity seems to be unintentional. In order to achieve
+transitivity we suggest each edge be added to
+inter-thread-happens-before as a synchronises-with edge (as per
+conversation with Hans Boehm). In the standard, each use of the words
+"happens-before" should be replaced with the words "synchronizes-with"
+in the following sentences:</p>
+
+<p>27.2.3:2,
+30.3.1.2:6,
+30.3.1.5:7,
+30.6.4:7,
+30.6.9:5,
+30.6.10.1:23</p>
 </discussion>
 
 <resolution>
