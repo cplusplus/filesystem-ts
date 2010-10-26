@@ -3,35 +3,44 @@
   <!ENTITY nbsp "&#160;">
 ] >
 
-<issue num="1458" status="Open">
+<issue num="1458" status="Dup">
 <title>[FCD] Overlapping evaluations are allowed</title>
 <section><sref ref="[atomics.order]"/></section>
 <submitter>BSI</submitter>
 <date>25 Aug 2010</date>
 
 <discussion>
+<duplicate><iref ref="1459"/></duplicate>
 <p><b>Addresses GB-131</b></p>
 
-29.3:8 states:
-"An atomic store shall only store a value that has been computed
+<sref ref="[atomics.lockfree]"/> p.8 states:
+<p><blockquote>
+An atomic store shall only store a value that has been computed
 from constants and program input values by a finite sequence of
 program evaluations, such that each evaluation observes the values
 of variables as computed by the last prior assignment in the
-sequence."
-... but 1.9.13 states:
-"If A is not sequenced before B and B is not sequenced before A,
-then A and B are unsequenced. [ Note: The execution of unsequenced
-evaluations can overlap. -end note ]"
+sequence.
+</blockquote></p>
+<p>
+... but <sref ref="[intro.execution]"/> p.13 states:
+</p>
+<p><blockquote>
+If A is not sequenced before B and B is not sequenced before A,
+then A and B are unsequenced. [ <em>Note</em>: The execution of unsequenced
+evaluations can overlap. &mdash; <em>end note</em> ]
+</blockquote></p>
+<p>
 Overlapping executions can make it impossible to construct the sequence
-described in 29.3:8. We are not sure of the intention here and do not
-offer a suggestion for change, but note that 29.3:8 is the condition
+described in <sref ref="[atomics.lockfree]"/> p.8. We are not sure of the intention here and do not
+offer a suggestion for change, but note that <sref ref="[atomics.lockfree]"/> p.8 is the condition
 that prevents out-of-thin-air reads.
+</p>
 </discussion>
 
 <resolution>
 Request the concurrency working group to
 determine if changes are needed. Consider
-changing the use of "sequence" in 29.3
+changing the use of "sequence" in <sref ref="[atomics.lockfree]"/>
 </resolution>
 
 </issue>

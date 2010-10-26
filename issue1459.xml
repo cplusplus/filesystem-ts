@@ -12,24 +12,32 @@
 <discussion>
 <p><b>Addresses CA-21</b></p>
 
-Overlapping evaluations are allowed<BR/>
-29.3p8 states:<BR/>
-"An atomic store shall only store a value that has
+<sref ref="[atomics.lockfree]"/> p.8 states:
+<p><blockquote>
+An atomic store shall only store a value that has
 been computed from constants and program input values
 by a finite sequence of program evaluations, such
 that each evaluation observes the values of variables
 as computed by the last prior assignment in the
-sequence."<BR/>
-... but 1.9p13 states:
-"If A is not sequenced before B and B is not
+sequence.
+</blockquote></p>
+<p>
+... but <sref ref="[intro.execution]"/> p.13 states:
+</p>
+<p><blockquote>
+If A is not sequenced before B and B is not
 sequenced before A, then A and B are unsequenced.
-[ Note: The execution of unsequenced evaluations can
-overlap. -end note ]"<BR/>
+[ <em>Note</em>: The execution of unsequenced
+evaluations can overlap. &mdash; <em>end note</em> ]
+</blockquote></p>
+<p>
 Overlapping executions can make it impossible to
-construct the sequence described in 29.3p8. We are not
+construct the sequence described in <sref ref="[atomics.lockfree]"/> p.8. We are not
 sure of the intention here and do not offer a suggestion for
-change, but note that 29.3p8 is the condition that prevents
-out-of-thin-air reads.<BR/>
+change, but note that <sref ref="[atomics.lockfree]"/> p.8 is the condition that prevents
+out-of-thin-air reads.
+</p>
+<p>
 For an example, suppose we have a function invocation
 f(e1,e2). The evaluations of e1 and e2 can overlap.
 Suppose that the evaluation of e1 writes y and reads x
@@ -46,14 +54,15 @@ Rrlx x&lt;-   -&gt;Rrlx y
 </PRE>
 This seems like it should be allowed, but there seems to
 be no way to produce a sequence of evaluations with the
-property above.<BR/>
+property above.
+</p>
 In more detail, here the two evaluations, e1 and e2, are
 being executed as the arguments of a function and are
 consequently not sequenced-before each other. In
 practice we'd expect that they could overlap (as allowed
-by 1.9p13), with the two writes taking effect before the two
+by <sref ref="[intro.execution]"/> p.13), with the two writes taking effect before the two
 reads. However, if we have to construct a linear order of
-evaluations, as in 29.3p8, then the execution above is not
+evaluations, as in <sref ref="[atomics.lockfree]"/> p.8, then the execution above is not
 permited. Is that really intended?
 </discussion>
 
