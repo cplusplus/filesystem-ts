@@ -1,0 +1,56 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="1521" status="New">
+<title>Requirements on internal pointer representations in containers</title>
+<section><sref ref="[container.requirements.general]"/></section>
+<submitter>Mike Spertus</submitter>
+<date>16 Oct 2010</date>
+
+<discussion>
+<p>
+The standard doesn't say that containers should use abstract pointer 
+types internally. Both Howard and Pablo agree that this is the intent. 
+Further, it is necessary for containers to be stored, for example, in 
+shared memory with an interprocess allocator (the type of scenario that 
+allocators are intended to support).
+</p>
+<p>
+In spite of the (possible) agreement on intent, it is necessary to make 
+this explicit:
+</p>
+<p>
+An implementations may like to store the result of dereferencing the 
+pointer (which is a raw reference) as an optimization, but that prevents 
+the data structure from being put in shared memory, etc. In fact, a 
+container could store raw references to the allocator, which would be a 
+little weird but conforming as long as it has one by-value copy. 
+Furthermore, pointers to locales, ctypes, etc. may be there, which also 
+prevents the data structure from being put in shared memory, so we 
+should make explicit that a container does not store raw pointers or 
+references at all.
+</p>
+
+<note>
+Pre-batavia
+</note>
+<p>
+This issue is being opened as part of the response to NB comments US-104/141. See paper <a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2010/n3171.pdf">N3171</a>
+in the pre-Batavia mailing. 
+</p>
+
+</discussion>
+
+<resolution>
+<p>
+Add to the end of 23.2.1 [container.requirements.general] p8:
+</p>
+<blockquote>
+The container may not store internal objects whose types are of the form 
+<tt>T *</tt> or <tt>T &amp;</tt> except insofar as they are part of the item type or members.
+</blockquote>
+</resolution>
+
+</issue>
