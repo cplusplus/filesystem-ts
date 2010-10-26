@@ -4,7 +4,7 @@
 ] >
 
 <issue num="1460" status="Open">
-<title>[FCD] Ballot Comment US-154</title>
+<title>[FCD] Missing lock-free property for type <tt>bool</tt> should be added</title>
 <section><sref ref="[atomics.lockfree]"/></section>
 <submitter>ANSI</submitter>
 <date>25 Aug 2010</date>
@@ -12,12 +12,21 @@
 <discussion>
 <p><b>Addresses US-154</b></p>
 
-There is no ATOMIC_BOOL_LOCK_FREE macro.
+There is no <tt>ATOMIC_BOOL_LOCK_FREE</tt> macro.
 </discussion>
 
 <resolution>
-Add ATOMIC_BOOL_LOCK_FREE to 29.4
-[atomics.lockfree] and to 29.2 [atomics.syn]
+Add <tt>ATOMIC_BOOL_LOCK_FREE</tt> to <sref ref="[atomics.lockfree]"/> and to <sref ref="[atomics.syn]"/>:
+<p>
+<blockquote><pre>
+[..]
+<ins>#define ATOMIC_BOOL_LOCK_FREE <em>unspecified</em></ins>
+#define ATOMIC_CHAR_LOCK_FREE <em>unspecified</em>
+#define ATOMIC_CHAR16_T_LOCK_FREE <em>unspecified</em>
+#define ATOMIC_CHAR32_T_LOCK_FREE <em>unspecified</em>
+[..]
+</pre></blockquote>
+</p>
 </resolution>
 
 </issue>

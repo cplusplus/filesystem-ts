@@ -4,7 +4,7 @@
 ] >
 
 <issue num="1457" status="Open">
-<title>[FCD] Ballot Comment GB-130</title>
+<title>[FCD] Splitting lock-free properties</title>
 <section><sref ref="[atomics.syn]"/></section>
 <submitter>BSI</submitter>
 <date>25 Aug 2010</date>
@@ -12,36 +12,81 @@
 <discussion>
 <p><b>Addresses GB-130</b></p>
 
-The synopsis for the &lt;atomic&gt; header lists the macros
-ATOMIC_INTEGRAL_LOCK_FREE and
-ATOMIC_ADDRESS_LOCK_FREE. The
-ATOMIC_INTEGRAL_LOCK_FREE macro has been
-replaced with a set of macros for each integral type, as
-listed in 29.4
+The synopsis for the <tt>&lt;atomic&gt;</tt> header lists the macros
+<tt>ATOMIC_INTEGRAL_LOCK_FREE</tt> and <tt>ATOMIC_ADDRESS_LOCK_FREE</tt>.
+<p>
+The <tt>ATOMIC_INTEGRAL_LOCK_FREE</tt> macro has been replaced with a set of macros 
+for each integral type, as listed in <sref ref="[atomics.lockfree]"/>.
+</p>
 </discussion>
 
+<note>
+2010-10-26: Daniel adds:
+</note>
+
+<p>
+The proposed resolution below is against the FCD working draft. After application
+of the editorial issues <a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2010/n3162.html#US144">US-144</a>
+and <a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2010/n3162.html#US146">US-146</a> the remaining difference
+against the working draft is the usage of <em>implementation-defined</em> instead of <em>unspecified</em>, effectively
+resulting in this delta:
+
+<blockquote><pre>
+// 29.4, lock-free property
+#define ATOMIC_CHAR_LOCK_FREE <del><em>unspecified</em></del><ins><em>implementation-defined</em></ins>
+#define ATOMIC_CHAR16_T_LOCK_FREE <del><em>unspecified</em></del><ins><em>implementation-defined</em></ins>
+#define ATOMIC_CHAR32_T_LOCK_FREE <del><em>unspecified</em></del><ins><em>implementation-defined</em></ins>
+#define ATOMIC_WCHAR_T_LOCK_FREE <del><em>unspecified</em></del><ins><em>implementation-defined</em></ins>
+#define ATOMIC_SHORT_LOCK_FREE <del><em>unspecified</em></del><ins><em>implementation-defined</em></ins>
+#define ATOMIC_INT_LOCK_FREE <del><em>unspecified</em></del><ins><em>implementation-defined</em></ins>
+#define ATOMIC_LONG_LOCK_FREE <del><em>unspecified</em></del><ins><em>implementation-defined</em></ins>
+#define ATOMIC_LLONG_LOCK_FREE <del><em>unspecified</em></del><ins><em>implementation-defined</em></ins>
+#define ATOMIC_ADDRESS_LOCK_FREE <em>unspecified</em>
+</pre></blockquote>
+</p>
+
+<p>
+It is my understanding that the intended wording should be <em>unspecified</em> as for <tt>ATOMIC_ADDRESS_LOCK_FREE</tt>
+but if this is right, we need to use the same wording in <sref ref="[atomics.lockfree]"/>, which consequently uses
+the term <em>implementation-defined</em>. I recommend to keep <sref ref="[atomics.syn]"/> as it currently is and to
+fix <sref ref="[atomics.lockfree]"/> instead as indicated (against N3126):
+</p>
+<p>
+New proposed resolution:
+</p>
+<p>
+Change <sref ref="[atomics.lockfree]"/> as indicated:
+<blockquote><pre>
+#define ATOMIC_CHAR_LOCK_FREE <del><em>implementation-defined</em></del><ins><em>unspecified</em></ins>
+#define ATOMIC_CHAR16_T_LOCK_FREE <del><em>implementation-defined</em></del><ins><em>unspecified</em></ins>
+#define ATOMIC_CHAR32_T_LOCK_FREE <del><em>implementation-defined</em></del><ins><em>unspecified</em></ins>
+#define ATOMIC_WCHAR_T_LOCK_FREE <del><em>implementation-defined</em></del><ins><em>unspecified</em></ins>
+#define ATOMIC_SHORT_LOCK_FREE <del><em>implementation-defined</em></del><ins><em>unspecified</em></ins>
+#define ATOMIC_INT_LOCK_FREE <del><em>implementation-defined</em></del><ins><em>unspecified</em></ins>
+#define ATOMIC_LONG_LOCK_FREE <del><em>implementation-defined</em></del><ins><em>unspecified</em></ins>
+#define ATOMIC_LLONG_LOCK_FREE <del><em>implementation-defined</em></del><ins><em>unspecified</em></ins>
+#define ATOMIC_ADDRESS_LOCK_FREE <del><em>implementation-defined</em></del><ins><em>unspecified</em></ins>
+</pre></blockquote>
+</p>
 <resolution>
-Replace "#define
-ATOMIC_INTEGRAL_LOCK_FREE unspecified"
-with
-<PRE>
-#define ATOMIC_CHAR_LOCK_FREE
-implementation-defined
-#define ATOMIC_CHAR16_T_LOCK_FREE
-implementation-defined
-#define ATOMIC_CHAR32_T_LOCK_FREE
-implementation-defined
-#define ATOMIC_WCHAR_T_LOCK_FREE
-implementation-defined
-#define ATOMIC_SHORT_LOCK_FREE
-implementation-defined
-#define ATOMIC_INT_LOCK_FREE
-implementation-defined
-#define ATOMIC_LONG_LOCK_FREE
-implementation-defined
-#define ATOMIC_LLONG_LOCK_FREE
-implementation-defined
-</PRE>
+Against FCD, N3092:
+<p>
+In [atomics.syn], header <tt>&lt;atomic&gt;</tt> synopsis replace as indicated:
+</p>
+<blockquote><pre>
+// 29.4, lock-free property
+<del>#define ATOMIC_INTEGRAL_LOCK_FREE <em>unspecified</em></del>
+<ins>#define ATOMIC_CHAR_LOCK_FREE <em>implementation-defined</em></ins>
+<ins>#define ATOMIC_CHAR16_T_LOCK_FREE <em>implementation-defined</em></ins>
+<ins>#define ATOMIC_CHAR32_T_LOCK_FREE <em>implementation-defined</em></ins>
+<ins>#define ATOMIC_WCHAR_T_LOCK_FREE <em>implementation-defined</em></ins>
+<ins>#define ATOMIC_SHORT_LOCK_FREE <em>implementation-defined</em></ins>
+<ins>#define ATOMIC_INT_LOCK_FREE <em>implementation-defined</em></ins>
+<ins>#define ATOMIC_LONG_LOCK_FREE <em>implementation-defined</em></ins>
+<ins>#define ATOMIC_LLONG_LOCK_FREE <em>implementation-defined</em></ins>
+#define ATOMIC_ADDRESS_LOCK_FREE <em>unspecified</em>
+</pre></blockquote>
+
 </resolution>
 
 </issue>
