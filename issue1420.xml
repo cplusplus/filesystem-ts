@@ -4,24 +4,46 @@
 ] >
 
 <issue num="1420" status="Open">
-<title>[FCD] Ballot Comment GB-115</title>
+<title>[FCD] Effects of <tt>resize(size())</tt> on a <tt>list</tt></title>
 <section><sref ref="[list.capacity]"/></section>
 <submitter>BSI</submitter>
 <date>25 Aug 2010</date>
 
 <discussion>
 <p><b>Addresses GB-115</b></p>
-
-There is no mention of what happens if sz==size(). While
+<p>
+There is no mention of what happens if <tt>sz==size()</tt>. While
 it obviously does nothing I feel a standard needs to say
-this explicitly.
-</discussion>
+this explicitely.
+</p>
 
-<resolution>
+<note>
+Resolution proposed in ballot comment
+</note>
+<p>
 Express the semantics as pseudo-code similarly
 to the way it is done for the copying overload that
 follows (in p3). Include an else clause that does
-nothing and covers the sz==size() case.
+nothing and covers the <tt>sz==size()</tt> case.
+</p>
+
+</discussion>
+
+<resolution>
+<p>
+Ammend [list.capacity] p1:
+</p>
+<blockquote>
+<p><tt>void resize(size_type sz);</tt></p>
+<blockquote>
+<i>Effects</i>: If <tt>sz &lt; size()</tt>, equivalent to <tt>list&lt;T>::iterator
+it = begin(); advance(it, sz); erase(it, end());</tt><del>.</del> <del>I</del><ins>i</ins>f
+<tt>size() &lt; sz</tt>, appends <tt>sz - size()</tt> <del>default constructed</del>
+<ins>value intialized</ins> elements to the sequence<del>.</del><ins>; otherwise, has no
+effect.</ins>
+</blockquote>
+</blockquote>
+
 </resolution>
 
 </issue>

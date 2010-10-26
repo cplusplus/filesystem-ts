@@ -4,22 +4,30 @@
 ] >
 
 <issue num="1418" status="Open">
-<title>[FCD] Ballot Comment GB-113</title>
+<title>[FCD] Effects of <tt>resize(size())</tt> on a <tt>deque</tt></title>
 <section><sref ref="[deque.capacity]"/></section>
 <submitter>BSI</submitter>
 <date>25 Aug 2010</date>
 
 <discussion>
 <p><b>Addresses GB-113</b></p>
-
-There is no mention of what happens if sz==size(). While
+<p>
+There is no mention of what happens if <tt>sz==size()</tt>. While
 it obviously does nothing I feel a standard needs to say
 this explicitely.
+</p>
 </discussion>
 
 <resolution>
-Append "If sz == size(), does nothing" to the
-effects.
+<p>Ammend [deque.capacity]</p>
+<blockquote>
+</blockquote>
+<p><tt>void resize(size_type sz);</tt></p>
+<p>
+<i>Effects</i>: If <tt>sz &lt; size()</tt>, equivalent to <tt>erase(begin() +
+sz, end());</tt>. If <tt>size() &lt; sz</tt>, appends <tt>sz - size()</tt> <del>default constructed</del><ins>value initialized</ins> elements to the sequence.<ins> If <tt>sz == size()</tt>,
+does nothing.</ins>
+</p>
 </resolution>
 
 </issue>

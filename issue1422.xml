@@ -4,29 +4,36 @@
 ] >
 
 <issue num="1422" status="Open">
-<title>[FCD] Ballot Comment GB-118</title>
+<title>[FCD] vector&lt;bool></tt> iterators are not random access</title>
 <section><sref ref="[vector.bool]"/></section>
 <submitter>BSI</submitter>
 <date>25 Aug 2010</date>
 
 <discussion>
 <p><b>Addresses GB-118</b></p>
-
-vector&lt;bool&gt; iterators are not random access iterators
+<p>
+<tt>vector&lt;bool></tt> iterators are not random access iterators
 because their reference type is a special class, and not
-'bool &amp;'. All standard libary operations taking iterators
-should treat this iterator as if it was a random access
-iterator, rather than a simple input iterator.
+<tt>bool &amp;</tt>. All standard libary operations taking iterators
+should treat this iterator as if it was a random access iterator, rather
+than a simple input iterator.
+</p>
+
+<note>
+Resolution proposed in ballot comment
+</note>
+<p>
+Either revise the iterator requirements to support proxy iterators
+(restoring functionality that was lost when the Concept facility was
+removed) or add an extra paragraph to the <tt>vector&lt;bool</tt>
+specification requiring the library to treat <tt>vector&lt;bool></tt>
+iterators as-if they were random access iterators, despite having the wrong
+reference type.
+</p>
+
 </discussion>
 
 <resolution>
-Either revise the iterator requirements to support
-proxy iterators (restoring functionality that was lost
-when the Concept facility was removed) or add an
-extra paragraph to the vector&lt;bool&gt; specification
-requiring the library to treat vector&lt;bool&gt; iterators
-as-if they were random access iterators, despite
-having the wrong reference type.
 </resolution>
 
 </issue>
