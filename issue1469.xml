@@ -4,7 +4,7 @@
 ] >
 
 <issue num="1469" status="Open">
-<title>[FCD] Ballot Comment GB-133</title>
+<title>[FCD] <tt>atomic&lt;T*&gt;</tt> inheritance from <tt>atomic_address</tt> breaks type safety</title>
 <section><sref ref="[atomics.types.generic]"/></section>
 <submitter>BSI</submitter>
 <date>25 Aug 2010</date>
@@ -12,80 +12,78 @@
 <discussion>
 <p><b>Addresses GB-133</b></p>
 
-The free functions that operate on atomic_address can be
-used to store a pointer to an unrelated type in an
-atomic&lt;T*&gt; without a cast. e.g.
-<PRE>
+The free functions that operate on <tt>atomic_address</tt> can be
+used to store a pointer to an unrelated type in an <tt>atomic&lt;T*&gt;</tt> 
+without a cast. e.g.
+<blockquote><pre>
 int i;
 atomic&lt;int*&gt; ai(&amp;i);
 string s;
 atomic_store(&amp;ai,&amp;s);
-</PRE>
+</pre></blockquote>
+Overload the <tt>atomic_store</tt>, <tt>atomic_exchange</tt> and
+<tt>atomic_compare_exchange_[weak/strong]</tt> operations for 
+<tt>atomic&lt;T*&gt;</tt> to allow storing only pointers to <tt>T</tt>.
+
+<note>
+2010-10-27 Daniel adds:
+</note>
+
+<blockquote>
+<p>
+Resolving this issue will also solve <iref ref="1467"/>
+</p>
+Accepting <a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2010/n3164.html">n3164</a> would solve this issue by
+removing <tt>atomic_address</tt>.
+</blockquote>
 </discussion>
 
 <resolution>
-Overload the atomic_store, atomic_exchange and
-atomic_compare_exchange_[weak/strong]
-operations for atomic&lt;T*&gt; to allow storing only
-pointers to T:
-<PRE>
-template&lt;typename T&gt;
-void atomic_store(atomic&lt;T*&gt;&amp;,T*);
-template&lt;typename T&gt;
-void atomic_store(atomic&lt;T*&gt;&amp;,void*) = delete;
-template&lt;typename T&gt;
-void
-atomic_store_explicit(atomic&lt;T*&gt;&amp;,T*,memory_or
-der);
-template&lt;typename T&gt;
-void
-atomic_store_explicit(atomic&lt;T*&gt;&amp;,void*,memory
-_order) = delete;
-template&lt;typename T&gt;
-T* atomic_exchange(atomic&lt;T*&gt;&amp;,T*);
-template&lt;typename T&gt;
-T* atomic_exchange(atomic&lt;T*&gt;&amp;,void*) = delete;
-template&lt;typename T&gt;
-T*
-atomic_exchange_explicit(atomic&lt;T*&gt;&amp;,T*,memor
-y_order);
-template&lt;typename T&gt;
-T*
-atomic_exchange_explicit(atomic&lt;T*&gt;&amp;,void*,me
-mory_order) = delete;
-template&lt;typename T&gt;
-T*
-atomic_compare_exchange_weak(atomic&lt;T*&gt;&amp;,T
-**,T*);
-template&lt;typename T&gt;
-T*
-atomic_compare_exchange_weak(atomic&lt;T*&gt;&amp;,v
-oid**,void*) = delete;
-template&lt;typename T&gt;
-T*
-atomic_compare_exchange_weak_explicit(atomic
-&lt;T*&gt;&amp;,T**,T*,memory_order);
-template&lt;typename T&gt;
-T*
-atomic_compare_exchange_weak_explicit(atomic
-&lt;T*&gt;&amp;,void**,void*,memory_order) = delete;
-template&lt;typename T&gt;
-T*
-atomic_compare_exchange_strong(atomic&lt;T*&gt;&amp;,
-T**,T*);
-template&lt;typename T&gt;
-T*
-atomic_compare_exchange_strong(atomic&lt;T*&gt;&amp;,
-void**,void*) = delete;
-template&lt;typename T&gt;
-T*
-atomic_compare_exchange_strong_explicit(atomi
-c&lt;T*&gt;&amp;,T**,T*,memory_order);
-template&lt;typename T&gt;
-T*
-atomic_compare_exchange_strong_explicit(atomi
-c&lt;T*&gt;&amp;,void**,void*,memory_order) = delete;
-</PRE>
+<p>Add the following overloads to <sref ref="[atomics.types.generic]"/>, the synopsis around the specialization
+<tt>atomic&lt;T*&gt;</tt>, as indicated:
+<blockquote><pre>
+namespace std {
+  [..]
+  template &lt;class T&gt; struct atomic&lt;T*&gt; : atomic_address {
+    [..]
+  };
+
+  <ins>template&lt;typename T&gt;</ins>
+  <ins>void atomic_store(atomic&lt;T*&gt;&amp;,T*);</ins>
+  <ins>template&lt;typename T&gt;</ins>
+  <ins>void atomic_store(atomic&lt;T*&gt;&amp;,void*) = delete;</ins>
+  <ins>template&lt;typename T&gt;</ins>
+  <ins>void atomic_store_explicit(atomic&lt;T*&gt;&amp;,T*,memory_order);</ins>
+  <ins>template&lt;typename T&gt;</ins>
+  <ins>void atomic_store_explicit(atomic&lt;T*&gt;&amp;,void*,memory_order) = delete;</ins>
+  <ins>template&lt;typename T&gt;</ins>
+  <ins>T* atomic_exchange(atomic&lt;T*&gt;&amp;,T*);</ins>
+  <ins>template&lt;typename T&gt;</ins>
+  <ins>T* atomic_exchange(atomic&lt;T*&gt;&amp;,void*) = delete;</ins>
+  <ins>template&lt;typename T&gt;</ins>
+  <ins>T* atomic_exchange_explicit(atomic&lt;T*&gt;&amp;,T*,memory_order);</ins>
+  <ins>template&lt;typename T&gt;</ins>
+  <ins>T* atomic_exchange_explicit(atomic&lt;T*&gt;&amp;,void*,memory_order) = delete;</ins>
+  <ins>template&lt;typename T&gt;</ins>
+  <ins>T* atomic_compare_exchange_weak(atomic&lt;T*&gt;&amp;,T**,T*);</ins>
+  <ins>template&lt;typename T&gt;</ins>
+  <ins>T* atomic_compare_exchange_weak(atomic&lt;T*&gt;&amp;,void**,void*) = delete;</ins>
+  <ins>template&lt;typename T&gt;</ins>
+  <ins>T* atomic_compare_exchange_weak_explicit(atomic&lt;T*&gt;&amp;,T**,T*,memory_order);</ins>
+  <ins>template&lt;typename T&gt;</ins>
+  <ins>T* atomic_compare_exchange_weak_explicit(atomic&lt;T*&gt;&amp;,void**,void*,memory_order) = delete;</ins>
+  <ins>template&lt;typename T&gt;</ins>
+  <ins>T* atomic_compare_exchange_strong(atomic&lt;T*&gt;&amp;,T**,T*);</ins>
+  <ins>template&lt;typename T&gt;</ins>
+  <ins>T* atomic_compare_exchange_strong(atomic&lt;T*&gt;&amp;,void**,void*) = delete;</ins>
+  <ins>template&lt;typename T&gt;</ins>
+  <ins>T* atomic_compare_exchange_strong_explicit(atomic&lt;T*&gt;&amp;,T**,T*,memory_order);</ins>
+  <ins>template&lt;typename T&gt;</ins>
+  <ins>T* atomic_compare_exchange_strong_explicit(atomic&lt;T*&gt;&amp;,void**,void*,memory_order) = delete;</ins>
+
+}
+</pre></blockquote>
+</p>
 </resolution>
 
 </issue>

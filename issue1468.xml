@@ -4,7 +4,7 @@
 ] >
 
 <issue num="1468" status="Open">
-<title>[FCD] Ballot Comment US-164</title>
+<title>[FCD] <tt>atomic_address::compare_exchange_*</tt> member functions should match <tt>atomic_compare_exchange_*</tt> free functions</title>
 <section><sref ref="[atomics.types.address]"/></section>
 <submitter>ANSI</submitter>
 <date>25 Aug 2010</date>
@@ -12,20 +12,57 @@
 <discussion>
 <p><b>Addresses US-164</b></p>
 
-atomic_address has member functions
-compare_exchange_weak and
-compare_exchange_strong that take arguments of type
-const void*, in addition to the void* versions. If these
-member functions survive, there should be corresponding
-free functions.
+<tt>atomic_address</tt> has member functions <tt>compare_exchange_weak</tt> and
+<tt>compare_exchange_strong</tt> that take arguments of type <tt>const void*</tt>, 
+in addition to the <tt>void*</tt> versions. If these member functions survive, 
+there should be corresponding free functions.
+
+<note>
+2010-10-27 Daniel adds:
+</note>
+
+<blockquote>
+Accepting <a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2010/n3164.html">n3164</a> would solve this issue 
+differently by removing the overloads with <tt>const void*</tt> arguments, because they break type-safety.
+</blockquote>
 </discussion>
 
 <resolution>
-Add atomic_compare_exchange_weak and
-atomic_compare_exchange_strong free functions
-taking pointers to volatile and non-volatile
-atomic_address objects and const void*
-arguments.
+Extend the synopsis around <tt>atomic_address</tt> in <sref ref="[atomics.types.address]"/>
+as indicated:
+<blockquote><pre>
+namespace std {
+  [..]
+  bool atomic_compare_exchange_weak(volatile atomic_address*, void**, void*);
+  bool atomic_compare_exchange_weak(atomic_address*, void**, void*);
+  bool atomic_compare_exchange_strong(volatile atomic_address*, void**, void*);
+  bool atomic_compare_exchange_strong(atomic_address*, void**, void*);
+  bool atomic_compare_exchange_weak_explicit(volatile atomic_address*, void**, void*,
+    memory_order, memory_order);
+  bool atomic_compare_exchange_weak_explicit(atomic_address*, void**, void*,
+    memory_order, memory_order);
+  bool atomic_compare_exchange_strong_explicit(volatile atomic_address*, void**, void*,
+    memory_order, memory_order);
+  bool atomic_compare_exchange_strong_explicit(atomic_address*, void**, void*,
+    memory_order, memory_order);
+  <ins>bool atomic_compare_exchange_weak(volatile atomic_address*, const void**, const void*);</ins>
+  <ins>bool atomic_compare_exchange_weak(atomic_address*, const void**, const void*);</ins>
+  <ins>bool atomic_compare_exchange_strong(volatile atomic_address*, const void**, const void*);</ins>
+  <ins>bool atomic_compare_exchange_strong(atomic_address*, const void**, const void*);</ins>
+  <ins>bool atomic_compare_exchange_weak_explicit(volatile atomic_address*, const void**, const void*,
+    memory_order, memory_order);</ins>
+  <ins>bool atomic_compare_exchange_weak_explicit(atomic_address*, const void**, const void*,
+    memory_order, memory_order);</ins>
+  <ins>bool atomic_compare_exchange_strong_explicit(volatile atomic_address*, const void**, const void*,
+    memory_order, memory_order);</ins>
+  <ins>bool atomic_compare_exchange_strong_explicit(volatile atomic_address*, const void**, const void*,
+    memory_order, memory_order);</ins>
+  <ins>bool atomic_compare_exchange_strong_explicit(atomic_address*, const void**, const void*,
+    memory_order, memory_order);</ins>
+  [..]
+}
+</pre></blockquote>
+
 </resolution>
 
 </issue>
