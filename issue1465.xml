@@ -4,7 +4,7 @@
 ] >
 
 <issue num="1465" status="Open">
-<title>[FCD] Ballot Comment US-161</title>
+<title>[FCD] Missing arithmetic operators for <tt>atomic_address</tt></title>
 <section><sref ref="[atomics.types.address]"/></section>
 <submitter>ANSI</submitter>
 <date>25 Aug 2010</date>
@@ -12,16 +12,46 @@
 <discussion>
 <p><b>Addresses US-161</b></p>
 
-atomic_address has operator+= and operator-=, but no
-operator++ or operator--. The template specialization
-atomic&lt;Ty*&gt; has all of them.
+<tt>atomic_address</tt> has <tt>operator+=</tt> and <tt>operator-=</tt>, but no
+<tt>operator++</tt> or <tt>operator--</tt>. The template specialization
+<tt>atomic&lt;Ty*&gt;</tt> has all of them.
+
+<note>
+2010-10-27 Daniel adds:
+</note>
+
+<blockquote>
+Accepting <a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2010/n3164.html">n3164</a> would solve this issue by
+replacing <tt>atomic_address</tt> by <tt>atomic&lt;void*&gt;</tt>.
+</blockquote>
 </discussion>
 
 <resolution>
-Add operator++(int) volatile, operator++(int),
-operator++() volatile, operator++(), operator--(int)
-volatile, operator--(int), operator--() volatile, and
-operator--() to atomic_address.
+<p>Change <sref ref="[atomics.types.address]"/>, class <tt>atomic_address</tt> synopsis, as indicated:
+<blockquote><pre>
+namespace std {
+  typedef struct atomic_address {
+    [..]
+    void* operator=(const void*) volatile;
+    void* operator=(const void*);
+    <ins>void* operator++(int) volatile;</ins>
+    <ins>void* operator++(int);</ins>
+    <ins>void* operator--(int) volatile;</ins>
+    <ins>void* operator--(int);</ins>
+    <ins>void* operator++() volatile;</ins>
+    <ins>void* operator++();</ins>
+    <ins>void* operator--() volatile;</ins>
+    <ins>void* operator--();</ins>
+    void* operator+=(ptrdiff_t) volatile;
+    void* operator+=(ptrdiff_t);
+    void* operator-=(ptrdiff_t) volatile;
+    void* operator-=(ptrdiff_t);
+} atomic_address;
+  [..]
+}
+</pre></blockquote>
+</p>
+
 </resolution>
 
 </issue>

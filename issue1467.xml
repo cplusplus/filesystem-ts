@@ -4,7 +4,7 @@
 ] >
 
 <issue num="1467" status="Open">
-<title>[FCD] Ballot Comment US-163</title>
+<title>[FCD] Deriving <tt>atomic&lt;T*&gt;</tt> from <tt>atomic_address</tt> breaks type safety</title>
 <section><sref ref="[atomics.types.address]"/></section>
 <submitter>ANSI</submitter>
 <date>25 Aug 2010</date>
@@ -12,20 +12,46 @@
 <discussion>
 <p><b>Addresses US-163</b></p>
 
-Requiring atomic&lt;Ty*&gt; to be derived from atomic_address
-breaks type safety:
-<PRE>
+Requiring <tt>atomic&lt;T*&gt;</tt> to be derived from <tt>atomic_address</tt> breaks type safety:
+<blockquote><pre>
 atomic&lt;double*&gt; ip;
 char ch;
 atomic_store(&amp;ip, &amp;ch);
 *ip.load() = 3.14159;
-</PRE>
-The last line overwrites ch with a value of type double
+</pre></blockquote>
+The last line overwrites <tt>ch</tt> with a value of type <tt>double</tt>.
+
+<note>
+2010-10-27 Daniel adds:
+</note>
+
+<blockquote>
+Accepting <a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2010/n3164.html">n3164</a> would solve this issue by
+removing <tt>atomic_address</tt>.
+</blockquote>
 </discussion>
 
 <resolution>
-Remove the requirement that atomic&lt;Ty*&gt; be
-derived from atomic_address.
+<ol>
+<li>Change <sref ref="[atomics.types.generic]"/>, class template specialization <tt>atomic&lt;T*&gt;</tt> synopsis, as indicated:
+<blockquote><pre>
+namespace std {
+  template &lt;class T&gt; struct atomic&lt;T*&gt; <del>: atomic_address</del> {
+    [..]
+  };
+  [..]
+}
+</pre></blockquote>
+</li>
+<li>Change <sref ref="[atomics.types.generic]"/> p. 4 as indicated:
+<p><blockquote>
+4 There are pointer partial specializations on the <tt>atomic</tt> class template. <del>These specializations shall be publicly
+derived from <tt>atomic_address</tt>.</del> The unit of addition/subtraction for these specializations shall be the size
+of the referenced type. These specializations shall have trivial default constructors and trivial destructors.
+</blockquote></p>
+</li>
+</ol>
+
 </resolution>
 
 </issue>
