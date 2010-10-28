@@ -4,24 +4,57 @@
 ] >
 
 <issue num="1474" status="Open">
-<title>[FCD] Ballot Comment US-175</title>
+<title>[FCD] weak compare-and-exchange unstrunk</title>
 <section><sref ref="[atomics.types.operations]"/></section>
 <submitter>ANSI</submitter>
 <date>25 Aug 2010</date>
 
 <discussion>
-<p><b>Addresses US-175</b></p>
+<duplicate><iref ref="1470"/></duplicate>
+<duplicate><iref ref="1475"/></duplicate>
+<duplicate><iref ref="1477"/></duplicate>
+<p><b>Addresses US-175, US-165, CH-23, GB-135</b></p>
 
-The first sentence is grammatically incorrect.
+<sref ref="[atomics.types.operations]"/> p. 23: The first sentence is grammatically incorrect.
+
+<note>
+2010-10-28 Daniel adds:
+</note>
+<p>
+Proposed resolution of <iref ref="1475"/>:
+</p>
+Change <sref ref="[atomics.types.operations]"/> p. 23 as indicated:
+<blockquote>
+23 <em>Remark</em>: <del>The weak compare-and-exchange operations may fail spuriously, that is, return false while
+leaving the contents of memory pointed to by <tt>expected</tt> before the operation is the same that same
+as that of the <tt>object</tt> and the same as that of <tt>expected</tt> after the operation</del><ins>The weak 
+compare-and-exchange operations may fail spuriously, that is, return false while leaving the contents of memory 
+pointed to by <tt>expected</tt> unchanged.</ins>. [ <em>Note</em>: This spurious failure enables implementation of 
+compare-and-exchange on a broader class of machines, e.g., loadlocked store-conditional machines. A consequence of 
+spurious failure is that nearly all uses of weak compare-and-exchange will be in a loop.
+<p/>
+When a compare-and-exchange is in a loop, the weak version will yield better performance on some
+platforms. When a weak compare-and-exchange would require a loop and a strong one would not, the
+strong one is preferable. &mdash; <em>end note</em> ]
+</blockquote>
 </discussion>
 
 <resolution>
-Replace the sentence with two: "The weak
-compare-and-exchange operations may fail
-spuriously. That is, it may return false while
-leaving the contents of memory pointed to by
-expected the same as it was before the
-operation."
+Change <sref ref="[atomics.types.operations]"/> p. 23 as indicated:
+<blockquote>
+23 <em>Remark</em>: <del>The weak compare-and-exchange operations may fail spuriously, that is, return false while
+leaving the contents of memory pointed to by <tt>expected</tt> before the operation is the same that same
+as that of the <tt>object</tt> and the same as that of <tt>expected</tt> after the operation</del><ins>The weak
+compare-and-exchange operations may fail spuriously. That is, it may return false while leaving the contents of 
+memory pointed to by <tt>expected</tt> the same as it was before the operation</ins>. [ <em>Note</em>: This spurious
+failure enables implementation of compare-and-exchange on a broader class of machines, e.g., loadlocked
+store-conditional machines. A consequence of spurious failure is that nearly all uses of weak
+compare-and-exchange will be in a loop.
+<p/>
+When a compare-and-exchange is in a loop, the weak version will yield better performance on some
+platforms. When a weak compare-and-exchange would require a loop and a strong one would not, the
+strong one is preferable. &mdash; <em>end note</em> ]
+</blockquote>
 </resolution>
 
 </issue>

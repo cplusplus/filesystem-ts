@@ -3,8 +3,8 @@
   <!ENTITY nbsp "&#160;">
 ] >
 
-<issue num="1477" status="Open">
-<title>[FCD] Ballot Comment GB-135</title>
+<issue num="1477" status="Dup">
+<title>[FCD] weak compare-and-exchange unstrunk III</title>
 <section><sref ref="[atomics.types.operations]"/></section>
 <submitter>BSI</submitter>
 <date>25 Aug 2010</date>
@@ -12,16 +12,16 @@
 <discussion>
 <p><b>Addresses GB-135</b></p>
 
-The first sentence of 29.6p23 was changed by n2992 but
+The first sentence of <sref ref="[atomics.types.operations]"/> p.23 was changed by n2992 but
 now makes no sense: "that is, return <tt>false</tt> while leaving
-the contents of memory pointed to by expected before the
-operation is the same that same as that of the object and
-the same as that of expected after the operation."
+the contents of memory pointed to by <tt>expected</tt> before the
+operation is the same that same as that of the <tt>object</tt> and
+the same as that of <tt>expected</tt> after the operation."
 There's a minor editorial difference between n2992 ("is
 that same as that" vs "is the same that same as that") but
 neither version makes sense.
-Also, the remark talks about "object" which should
-probably be "object or <tt>this</tt>" to cover the member functions
+Also, the remark talks about "<tt>object</tt>" which should
+probably be "<tt>object</tt> or <tt>this</tt>" to cover the member functions
 which have no object parameter.
 
 <note>
