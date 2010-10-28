@@ -4,7 +4,7 @@
 ] >
 
 <issue num="1478" status="Open">
-<title>[FCD] Ballot Comment GB-136</title>
+<title>[FCD] Clarify race conditions in atomics initialization</title>
 <section><sref ref="[atomics.types.operations]"/></section>
 <submitter>BSI</submitter>
 <date>25 Aug 2010</date>
@@ -12,13 +12,39 @@
 <discussion>
 <p><b>Addresses GB-136</b></p>
 
-See (K) in attachment Appendix 1 - Additional Details
+GB requests normative clarification in <sref ref="[atomics.types.operations]"/> p.4 that
+concurrent access constitutes a race, as already done on p.6 and p.7.
+
+<note>
+2010-10-28 Daniel adds:
+</note>
+
+<p>The following text from n3141 provides details of the NB comment:
+</p>
+
+<blockquote>
+Initialisation of atomics:
+<p/>
+We believe the intent is that for any atomics there is a distinguished
+initialisation write, but that this need not happens-before all the
+other operations on that atomic - specifically so that the
+initialisation write might be non-atomic and hence give rise to a data
+race, and hence undefined behaviour, in examples such as this (from
+Hans):
+<blockquote><pre>
+atomic&lt;atomic&lt;int&gt; *&gt; p
+f()                      |
+{ atomic&lt;int&gt;x;          | W_na x
+  p.store(&ampx,mo_rlx); | W_rlx p=&amp;x
+}                        |
+</pre></blockquote>
+(where na is nonatomic and rlx is relaxed). We suspect also that no
+other mixed atomic/nonatomic access to the same location is intended
+to be permitted. Either way, a note would probably help.
+</blockquote>
 </discussion>
 
 <resolution>
-GB requests normative clarification in 29.6p4 that
-concurrent access constitutes a race, as already
-done on p6 and p7.
 </resolution>
 
 </issue>

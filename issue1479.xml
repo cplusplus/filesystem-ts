@@ -4,7 +4,7 @@
 ] >
 
 <issue num="1479" status="Open">
-<title>[FCD] Ballot Comment US-179</title>
+<title>[FCD] Fence functions should be <tt>extern "C"</tt></title>
 <section><sref ref="[atomics.fences]"/></section>
 <submitter>ANSI</submitter>
 <date>25 Aug 2010</date>
@@ -12,13 +12,35 @@
 <discussion>
 <p><b>Addresses US-179</b></p>
 
-The fence functions should be extern "C", for C
-compatibility.
+The fence functions (<sref ref="[atomics.fences]"/> p.5 + p.6) should be <tt>extern "C"</tt>, for <tt>C</tt> compatibility.
 </discussion>
 
 <resolution>
-Add extern "C" to their declarations in 29.8 and in
-29.2.
+<ol>
+<li>Change <sref ref="[atomics.syn]"/>, header <tt>&lt;atomic&gt;</tt> synopsis as indicated:
+<blockquote><pre>
+namespace std {
+  [..]
+  // <em>29.8, fences</em>
+  <ins>extern "C"</ins> void atomic_thread_fence(memory_order);
+  <ins>extern "C"</ins> void atomic_signal_fence(memory_order);  
+}
+</pre></blockquote>
+</li>
+<li>Change <sref ref="[atomics.fences]"/>, p. 5 and p. 6 as indicated:
+<blockquote><pre>
+<ins>extern "C"</ins> void atomic_thread_fence(memory_order);
+</pre><blockquote>
+5 <em>Effects</em>: depending on the value of <tt>order</tt>, this operation: [..]
+</blockquote></blockquote>
+<blockquote><pre>
+<ins>extern "C"</ins> void atomic_signal_fence(memory_order);  
+</pre><blockquote>
+6 <em>Effects</em>: equivalent to <tt>atomic_thread_fence(order)</tt>, except that synchronizes with relationships are
+established only between a thread and a signal handler executed in the same thread.
+</blockquote></blockquote>
+</li>
+</ol>
 </resolution>
 
 </issue>

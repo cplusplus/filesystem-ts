@@ -4,7 +4,7 @@
 ] >
 
 <issue num="1480" status="Open">
-<title>[FCD] Ballot Comment GB-137</title>
+<title>[FCD] Atomic fences don't have <em>synchronizes with</em> relation</title>
 <section><sref ref="[atomics.fences]"/></section>
 <submitter>BSI</submitter>
 <date>25 Aug 2010</date>
@@ -12,21 +12,22 @@
 <discussion>
 <p><b>Addresses GB-137</b></p>
 
-Thread fence not only establish synchronizes with
-relationships,
+Thread fence not only establish synchronizes with relationships,
 there are semantics of fences that are expressed not in
-terms of
-synchronizes with relationships (for example see 29.3p5).
+terms of <em>synchronizes with</em> relationships (for example see <sref ref="[atomics.order]"/> p.5).
 These semantics also need to apply to the use of
-atomic_signal_fence in a restricted way.
+<tt>atomic_signal_fence</tt> in a restricted way.
 </discussion>
 
 <resolution>
-Change 29.8p6 to "Effects: equivalent to
-atomic_thread_fence(order), except that the
-resulting ordering constraints are
-established only between a thread and a signal
-handler executed in the same thread."
+Change <sref ref="[atomics.fences]"/> p. 6 as indicated:
+<blockquote><pre>
+void atomic_signal_fence(memory_order);  
+</pre><blockquote>
+6 <em>Effects</em>: equivalent to <tt>atomic_thread_fence(order)</tt>, except that <del>synchronizes 
+with relationships</del><ins>the resulting ordering constraints</ins> are established only between a 
+thread and a signal handler executed in the same thread.
+</blockquote></blockquote>
 </resolution>
 
 </issue>
