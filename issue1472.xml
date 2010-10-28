@@ -4,7 +4,7 @@
 ] >
 
 <issue num="1472" status="Open">
-<title>[FCD] Ballot Comment US-171</title>
+<title>[FCD] Incorrect semantics of <tt>atomic_init</tt></title>
 <section><sref ref="[atomics.types.operations]"/></section>
 <submitter>ANSI</submitter>
 <date>25 Aug 2010</date>
@@ -12,18 +12,24 @@
 <discussion>
 <p><b>Addresses US-171</b></p>
 
-The atomic_init definition "Non-atomically assigns the
-value" is not quite correct, as the atomic_init purpose is
+As of <sref ref="[atomics.types.operations]"/> p. 7:
+<p/>
+The <tt>atomic_init</tt> definition "Non-atomically assigns the
+value" is not quite correct, as the <tt>atomic_init</tt> purpose is
 initialization.
 </discussion>
 
 <resolution>
-Change "Non-atomically assigns the value desired
-to *object." with "Initializes *object with value
-desired". Add the note: "[Note: This function
-should only be applied to objects that have been
-default constructed. These semantics ensure
-compatibility with C. --end note]"
+Change  <sref ref="[atomics.types.operations]"/> p. 7 as indicated:
+<blockquote><pre>
+void atomic_init(volatile A *object, C desired);
+void atomic_init(A *object, C desired);
+</pre><blockquote>
+7 <em>Effects</em>: <del>Non-atomically assigns the value desired to <tt>*object</tt></del><ins>Initializes <tt>*object</tt> with value
+<tt>desired</tt></ins>. Concurrent access from another thread, even via an atomic operation, constitutes a data race.
+<ins>[<em>Note</em>: This function should only be applied to objects that have been default constructed. These semantics ensure
+compatibility with <tt>C</tt>. &mdash; <em>end note</em>]</ins>
+</blockquote></blockquote>
 </resolution>
 
 </issue>

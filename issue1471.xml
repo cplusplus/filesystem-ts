@@ -4,7 +4,7 @@
 ] >
 
 <issue num="1471" status="Open">
-<title>[FCD] Ballot Comment US-168</title>
+<title>[FCD] Default constructor of atomics needs specification</title>
 <section><sref ref="[atomics.types.operations]"/></section>
 <submitter>ANSI</submitter>
 <date>25 Aug 2010</date>
@@ -12,14 +12,29 @@
 <discussion>
 <p><b>Addresses US-168</b></p>
 
-The definition of the default constructor needs exposition.
+<sref ref="[atomics.types.operations]"/> around p. 4: The definition of the default constructor needs exposition.
 </discussion>
 
 <resolution>
-Add a new paragraph: A::A() = default; Effects:
-Leaves the atomic object in an uninitialized state.
-[Note: These semantics ensure compatiblity with
-C. --end note]
+Insert a new general prototype description following the current <sref ref="[atomics.types.operations]"/> p. 3 as indicated:
+<p>
+</p>
+<blockquote>
+3 [<em>Note</em>: Many operations are volatile-qualified. The “volatile as device register” semantics have not changed
+in the standard. This qualification means that volatility is preserved when applying these operations to
+volatile objects. It does not mean that operations on non-volatile objects become volatile. Thus, volatile
+qualified operations on non-volatile objects may be merged under some conditions. &mdash; <em>end note</em>]
+</blockquote>
+<blockquote><pre>
+<ins>A::A() = default;</ins>
+</pre><blockquote>
+<ins>? <em>Effects</em>: Leaves the atomic object in an uninitialized state.
+[<em>Note</em>: These semantics ensure compatiblity with <tt>C</tt>. &mdash; <em>end note</em>]</ins>
+</blockquote></blockquote>
+<blockquote><pre>
+constexpr A::A(C desired);
+[..]
+</pre></blockquote>
 </resolution>
 
 </issue>

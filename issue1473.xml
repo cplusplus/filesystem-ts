@@ -4,7 +4,7 @@
 ] >
 
 <issue num="1473" status="Open">
-<title>[FCD] Ballot Comment US-172</title>
+<title>[FCD] Incomplete memory order specifications</title>
 <section><sref ref="[atomics.types.operations]"/></section>
 <submitter>ANSI</submitter>
 <date>25 Aug 2010</date>
@@ -12,17 +12,120 @@
 <discussion>
 <p><b>Addresses US-172</b></p>
 
-The order specifications are incomplete because the non-_explicit
+As of <sref ref="[atomics.types.operations]"/> p. 9, 13, 17, 20:
+<p/>
+The order specifications are incomplete because the non-<tt>_explicit</tt>
 functions do not have such parameters.
+<p/>
+Add a new sentence: "If the program does not specify an order, it shall be
+<tt>memory_order_seq_cst</tt>." Or perhaps: "The non-_explicit
+non-member functions shall affect memory as though they were _explicit with
+<tt>memory_order_seq_cst</tt>."
+
 </discussion>
 
 <resolution>
-Add a new sentence: "If the program does not
-specify an order, it shall be
-memory_order_seq_cst." Or perhaps: "The non-_explicit
-non-member functions shall affect
-memory as though they were _explicit with
-memory_order_seq_cst."
+<ol>
+<li>Change <sref ref="[atomics.types.operations]"/> p. 9 as indicated:
+<blockquote><pre>
+void atomic_store(volatile A* object, C desired);
+void atomic_store(A* object, C desired);
+void atomic_store_explicit(volatile A *object, C desired, memory_order order);
+void atomic_store_explicit(A* object, C desired, memory_order order);
+void A::store(C desired, memory_order order = memory_order_seq_cst) volatile;
+void A::store(C desired, memory_order order = memory_order_seq_cst);
+</pre><blockquote>
+8 <em>Requires</em>: The order argument shall not be <tt>memory_order_consume</tt>, <tt>memory_order_acquire</tt>, nor
+<tt>memory_order_acq_rel</tt>.
+<p/>
+9 <em>Effects</em>: Atomically replaces the value pointed to by <tt>object</tt> or by this with the value of <tt>desired</tt>.
+Memory is affected according to the value of <tt>order</tt>. <ins>If the program does not specify an order, it shall be
+<tt>memory_order_seq_cst</tt>.</ins>
+</blockquote></blockquote>
+</li>
+<li>Change <sref ref="[atomics.types.operations]"/> p. 13 as indicated:
+<blockquote><pre>
+C atomic_load(const volatile A* object);
+C atomic_load(const A* object);
+C atomic_load_explicit(const volatile A* object, memory_order);
+C atomic_load_explicit(const A* object, memory_order);
+C A::load(memory_order order = memory_order_seq_cst) const volatile;
+C A::load(memory_order order = memory_order_seq_cst) const;
+</pre><blockquote>
+12 <em>Requires</em>: The order argument shall not be <tt>memory_order_release</tt> nor <tt>memory_order_acq_rel</tt>.
+<p/>
+13 <em>Effects</em>: Memory is affected according to the value of <tt>order</tt>. <ins>If the program does not specify an order, it shall be
+<tt>memory_order_seq_cst</tt>.</ins>
+<p/>
+14 <em>Returns</em>: Atomically returns the value pointed to by <tt>object</tt> or by <tt>this</tt>.
+</blockquote></blockquote>
+</li>
+<li>Change <sref ref="[atomics.types.operations]"/> p. 17 as indicated:
+<blockquote><pre>
+C atomic_exchange(volatile A* object, C desired);
+C atomic_exchange(A* object, C desired);
+C atomic_exchange_explicit(volatile A* object, C desired, memory_order);
+C atomic_exchange_explicit(A* object, C desired, memory_order);
+C A::exchange(C desired, memory_order order = memory_order_seq_cst) volatile;
+C A::exchange(C desired, memory_order order = memory_order_seq_cst);
+</pre><blockquote>
+17 <em>Effects</em>: Atomically replaces the value pointed to by <tt>object</tt> or by <tt>this</tt> with <tt>desired</tt>. Memory
+is affected according to the value of <tt>order</tt>. These operations are atomic read-modify-write operations
+(1.10). <ins>If the program does not specify an order, it shall be <tt>memory_order_seq_cst</tt>.</ins>
+<p/>
+18 <em>Returns</em>: Atomically returns the value pointed to by <tt>object</tt> or by <tt>this</tt> immediately before the effects.
+</blockquote></blockquote>
+</li>
+<li>Change <sref ref="[atomics.types.operations]"/> p. 20 as indicated:
+<blockquote><pre>
+bool atomic_compare_exchange_weak(volatile A* object, C * expected, C desired);
+bool atomic_compare_exchange_weak(A* object, C * expected, C desired);
+bool atomic_compare_exchange_strong(volatile A* object, C * expected, C desired);
+bool atomic_compare_exchange_strong(A* object, C * expected, C desired);
+bool atomic_compare_exchange_weak_explicit(volatile A* object, C * expected, C desired,
+  memory_order success, memory_order failure);
+bool atomic_compare_exchange_weak_explicit(A* object, C * expected, C desired,
+  memory_order success, memory_order failure);
+bool atomic_compare_exchange_strong_explicit(volatile A* object, C * expected, C desired,
+  memory_order success, memory_order failure);
+bool atomic_compare_exchange_strong_explicit(A* object, C * expected, C desired,
+  memory_order success, memory_order failure);
+bool A::compare_exchange_weak(C &amp; expected, C desired,
+  memory_order success, memory_order failure) volatile;
+bool A::compare_exchange_weak(C &amp; expected, C desired,
+  memory_order success, memory_order failure);
+bool A::compare_exchange_strong(C &amp; expected, C desired,
+  memory_order success, memory_order failure) volatile;
+bool A::compare_exchange_strong(C &amp; expected, C desired,
+  memory_order success, memory_order failure);
+bool A::compare_exchange_weak(C &amp; expected, C desired,
+  memory_order order = memory_order_seq_cst) volatile;
+bool A::compare_exchange_weak(C &amp; expected, C desired,
+  memory_order order = memory_order_seq_cst);
+bool A::compare_exchange_strong(C &amp; expected, C desired,
+  memory_order order = memory_order_seq_cst) volatile;
+bool A::compare_exchange_strong(C &amp; expected, C desired,
+  memory_order order = memory_order_seq_cst);
+</pre><blockquote>
+19 <em>Requires</em>: The <tt>failure</tt> argument shall not be <tt>memory_order_release</tt> nor <tt>memory_order_acq_rel</tt>.
+The <tt>failure</tt> argument shall be no stronger than the success argument.
+<p/>
+20 <em>Effects</em>: Atomically, compares the contents of the memory pointed to by <tt>object</tt> or by <tt>this</tt> for equality
+with that in <tt>expected</tt>, and if true, replaces the contents of the memory pointed to by <tt>object</tt> or by
+<tt>this</tt> with that in <tt>desired</tt>, and if false, updates the contents of the memory in expected with the
+contents of the memory pointed to by <tt>object</tt> or by <tt>this</tt>. Further, if the comparison is true, memory
+is affected according to the value of <tt>success</tt>, and if the comparison is false, memory is affected
+according to the value of <tt>failure</tt>. When only one <tt>memory_order</tt> argument is supplied, the value of
+<tt>success</tt> is <tt>order</tt>, and the value of <tt>failure</tt> is <tt>order</tt> except that a value of 
+<tt>memory_order_acq_rel</tt> shall be replaced by the value <tt>memory_order_acquire</tt> and a value of 
+<tt>memory_order_release</tt> shall be replaced by the value <tt>memory_order_relaxed</tt>. <ins>If 
+the program does not specify an order, it shall be <tt>memory_order_seq_cst</tt>.</ins> If the operation returns <tt>true</tt>, 
+these operations are atomic read-modify-write operations (1.10). Otherwise, these operations are atomic load operations.
+<p/>
+[..]
+</blockquote></blockquote>
+</li>
+</ol>
 </resolution>
 
 </issue>
