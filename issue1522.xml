@@ -1,0 +1,46 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="1522" status="New">
+<title><tt>conj</tt> specification is now nonsense</title>
+<section><sref ref="[cmplx.over]"/></section>
+<submitter>P.J. Plauger</submitter>
+<date>14 Oct 2010</date>
+
+<discussion>
+<p>
+In Pittsburgh, we accepted the resolution of library issue 1137, to add
+a sentence 3 to [cmplx.over]:
+</p>
+<blockquote>
+All the specified overloads shall have a return type which is the nested
+<tt>value_type</tt> of the effectively cast arguments."
+</blockquote>
+<p>
+This was already true for four of the six functions except <tt>conj</tt> and
+<tt>proj</tt>. It is not completely unreasonable to make <tt>proj</tt> return
+the real value only, but the IEC specification does call for an imaginary part
+of -0 in some circumstances. The people who care about these distinctions really
+care, and it <em>is</em> required by an international standard.
+</p>
+<p>
+Making <tt>conj</tt> return just the real part breaks it horribly, however. It is
+well understood in mathematics that <tt>conj(re + i*im)</tt> is <tt>(re - i*im)</tt>,
+and it is widely used. The accepted new definition makes <tt>conj</tt> useful only
+for pure real operations. This botch <em>absolutely must</em> be fixed.
+</p>
+</discussion>
+
+<resolution>
+<p>
+Remove the recently added sentence 3 from [cmplx.over].
+</p>
+<blockquote>
+All the specified overloads shall have a return type which is the nested
+<tt>value_type</tt> of the effectively cast arguments."
+</blockquote>
+</resolution>
+
+</issue>

@@ -1,0 +1,40 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="2005" status="New">
+<title><tt>unordered_map::insert(T&ampt;&amp;)</tt> protection should apply to <tt>map</tt> too</title>
+<section><sref ref="[map.modifiers]"/><sref ref="[multimap.modifiers]"/></section>
+<submitter>P.J. Plauger</submitter>
+<date>14 Oct 2010</date>
+
+<discussion>
+<p>
+In [unord.map.modifiers], the signature:
+<blockquote><pre>
+template &lt;class P>
+    pair&lt;iterator, bool> insert(P&amp;&amp; obj);
+</pre></blockquote>
+now has an added Remarks paragraph:
+</p>
+<blockquote>
+<i>Remarks</i>: This signature shall not participate in overload resolution unless <tt>P</tt>
+is implicitly convertible to <tt>value_type</tt>.
+</blockquote>
+<p>
+The same is true for <tt>unordered_multimap</tt>.
+</p>
+<p>
+But neither <tt>map</tt> nor <tt>multimap</tt> have this constraint, even though it is a
+Good Thing(TM) in those cases as well.
+</p>
+</discussion>
+
+<resolution>
+<p>
+Add the same Remarks clause to [map.modifiers] and [multimap.modifiers].
+</p>
+</resolution>
+
+</issue>
