@@ -1,0 +1,68 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="2006" status="New">
+<title>emplace broken for associative containers</title>
+<section><sref ref="[unord.req]"/></section>
+<submitter>Pablo Halpern</submitter>
+<date>18 Oct 2010</date>
+
+<discussion>
+<p>
+The current definition of emplace(args) for associative containers as
+described in Table 99 is:
+<blockquote>
+<p>
+<i>Requires</i>: <tt>T</tt> shall be constructible from <tt>args</tt>.
+</p>
+<p>
+<i>Effects</i>: Inserts a <tt>T</tt> object <tt>t</tt> constructed with
+<tt>std::forward&lt;Args>(args)...</tt> if and only if there is no element
+in the container with key equivalent to the key of <tt>t</tt>.  The <tt>bool</tt>
+component of the returned <tt>pair</tt> is <tt>true</tt> if and only if the
+insertion takes place, and the iterator component of the <tt>pair</tt>
+points to the element with key equivalent to the key of <tt>t</tt>.
+</p>
+</blockquote>
+</p>
+<p>
+There is similar language in Table 100 for unordered associative containers.
+</p>
+<p>
+The first issue is editorial: <tt>T</tt> should be <tt>value_type</tt> throughout
+both tables.
+</p>
+<p>
+The major issue is that, if the container is <tt>map</tt>, <tt>multimap</tt>,
+<tt>unordered_map</tt>, or <tt>unordered_multimap</tt>, then the only way to
+construct an object of <tt>value_type</tt> is to supply exactly two arguments
+for <tt>Key</tt> and <tt>Value</tt>, a <tt>pair&lt;Key,Value></tt>, or a
+<tt>piecewise_construct_t</tt> followed by two <tt>tuple</tt>s.  The original
+<tt>emplace()</tt> proposal would have allowed you to specify a <tt>Key</tt>
+value followed by any number of constructor arguments for <tt>Value</tt>.
+When we removed the variadic constructor to <tt>pair</tt>, this ability went
+away.  I don't think that was deliberate.
+</p>
+<p>
+Fixing this is non-trivial, I think. I think that <tt>emplace()</tt> for <tt>map</tt>
+and <tt>multimap</tt> need several overloads: one for each overloaded constructor in
+<tt>pair&lt;Key,Value></tt>, and one for the <tt>emplace(Key, valueargs...)</tt> case.
+And it probably needs some SFINAE meta-programming to ensure that the last case
+doesn't override any of the other ones.  Alternatively, one could say that
+there are exactly two cases: <tt>emplace(args)</tt> where <tt>pair&lt;Key,Value></tt>
+is constructible from <tt>args</tt>, and <tt>emplace(args)</tt> where <tt>Key</tt> is
+constructible form the first <tt>arg</tt> and <tt>Value</tt> is constructible from the
+rest.
+</p>
+<p>
+Alternatively, the status quo is to use <tt>piecewise_construct_t</tt> if you want to
+construct an object.
+</p>
+</discussion>
+
+<resolution>
+</resolution>
+
+</issue>

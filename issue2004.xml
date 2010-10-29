@@ -1,0 +1,41 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="2004" status="New">
+<title><tt>duration::operator*</tt> has template parameters in funny order</title>
+<section><sref ref="[time.duration.nonmember]"/></section>
+<submitter>P.J. Plauger</submitter>
+<date>14 Oct 2010</date>
+
+<discussion>
+<p>
+In [time] and [time.duration.nonmember] we have:
+</p>
+<blockquote><pre>
+template &lt;class Rep1, class Period, class Rep2>
+    duration&lt;typename common_type&lt;Rep1, Rep2>::type, Period>
+        operator*(const Rep1&amp; s, const duration&lt;Rep2, Period>&amp; d);
+</pre></blockquote>
+<p>
+Everywhere else, we always have <tt>&lt;rep, period></tt> in that order for a given
+type. But here, we have <tt>Period</tt> and <tt>Rep2</tt> in reverse order for
+<tt>&lt;Rep2, Period></tt>. This is probably of little importance, since the
+template parameters are seldom spelled out for a function like this. But changing it
+now will eliminate a potential source of future errors and confusion.
+</p>
+</discussion>
+
+<resolution>
+<p>
+Change the signature in [time] and [time.duration.nonmember] to:
+</p>
+<blockquote><pre>
+template &lt;class Rep1, class <del>Period</del><ins>Rep2</ins>, class <del>Rep2</del><ins>Period</ins>>
+    duration&lt;typename common_type&lt;Rep1, Rep2>::type, Period>
+        operator*(const Rep1&amp; s, const duration&lt;Rep2, Period>&amp; d);
+</pre></blockquote>
+</resolution>
+
+</issue>
