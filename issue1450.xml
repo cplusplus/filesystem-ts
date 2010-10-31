@@ -12,26 +12,46 @@
 <discussion>
 <p><b>Addresses GB-127</b></p>
 
-The Bitmask Type requirements in 17.5.2.1.3 p3 say that
+The Bitmask Type requirements in <sref ref="[bitmask.types]"/> p.3 say that
 all elements on a bitmask type have distinct values, but
-28.5.2 defines regex_constants::match_default and
-regex_constants::format_default as elements of the
-bitmask type regex_constants::match-flag_type, both with
+<sref ref="[re.matchflag]"/> defines <tt>regex_constants::match_default</tt> and
+<tt>regex_constants::format_default</tt> as elements of the
+bitmask type <tt>regex_constants::match_flag_type</tt>, both with
 value 0. This is a contradiction.
-</discussion>
 
-<resolution>
+<note>
+Resolution proposed by ballot comment:
+</note>
+<blockquote>
 One of the bitmask elements should be removed
 from the declaration and should be defined
 separately, in the same manner as
-ios_base::adjustfield, ios_base::basefield and
-ios_base::floatfield are defined by 27.5.2.1.2p2
+<tt>ios_base::adjustfield</tt>, <tt>ios_base::basefield</tt> and
+<tt>ios_base::floatfield</tt> are defined by <sref ref="[ios::fmtflags]"/> p.2
 and Table 120. These are constants of a bitmask
 type, but are not distinct elements, they have
 more than one value set in the bitmask.
-regex_constants::format_default should be
+<tt>regex_constants::format_default</tt> should be
 specified as a constant with the same value as
-regex_constants::match_default.
+<tt>regex_constants::match_default</tt>.
+</blockquote>
+
+<note>
+2010-10-31 Daniel comments:
+</note>
+<blockquote>
+Strictly speaking, a bitmask type cannot have any element of value 0 at all, because
+any such value would contradict the requirement expressed in <sref ref="[bitmask.types]"/> p. 3:
+<blockquote>
+for any pair <em>Ci</em> and <em>Cj</em>, <em>Ci</em> &amp; <em>Ci</em> is nonzero
+</blockquote>
+So, actually <em>both</em> <tt>regex_constants::match_default</tt> and
+<tt>regex_constants::format_default</tt> are only constants of the type
+<tt>regex_constants::match_flag_type</tt>, and no bitmask elements.
+</blockquote>
+</discussion>
+
+<resolution>
 </resolution>
 
 </issue>
