@@ -4,7 +4,7 @@
 ] >
 
 <issue num="1401" status="Open">
-<title>[FCD] <tt>unique_ptr&lt;T> == nullptr</tt></title>
+<title>[FCD] <tt>unique_ptr&lt;T&gt; == nullptr</tt></title>
 <section><sref ref="[memory]"/></section>
 <submitter>BSI</submitter>
 <date>25 Aug 2010</date>
@@ -21,10 +21,12 @@ arguments. This means that <tt>nullptr</tt> does not get deduced
 as <tt>unique_ptr</tt> type, and there are no other comparison
 functions to match.
 </p>
-</discussion>
 
-<resolution>
-Add the following signatures to 20.9p1, <tt>&lt;memory></tt>
+<note>
+Resolution proposed by ballot comment:
+</note>
+<blockquote>
+Add the following signatures to <sref ref="[memory]"/> p.1, <tt>&lt;memory&gt;</tt>
 header synopsis:
 <blockquote><pre>
 template&lt;typename T, typename D&gt;
@@ -36,6 +38,10 @@ bool operator!=(const unique_ptr&lt;T, D&gt; &amp; lhs, nullptr_t);
 template&lt;typename T, typename D&gt;
 bool operator!=(nullptr_t, const unique_ptr&lt;T, D&gt; &amp; rhs);
 </pre></blockquote>
+</blockquote>
+</discussion>
+
+<resolution>
 </resolution>
 
 </issue>
