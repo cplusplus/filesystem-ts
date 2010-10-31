@@ -15,11 +15,27 @@
 The Mersenne twister algorithm is meaningless for word
 sizes less than two, as there are then insufficient bits
 available to be &#8220;twisted&#8221;.
+
+<note>
+Resolution proposed by ballot comment:
+</note>
+<blockquote>
+Insert the following among the relations that are required to hold: <tt>2u &lt; w</tt>.
+</blockquote>
+
 </discussion>
 
 <resolution>
-Insert the following among the relations that are
-required to hold: 2u &lt; w.
+Change <sref ref="[rand.eng.mers]"/> p. 4 as indicated:
+<p/>
+<blockquote>
+4 The following relations shall hold: <tt>0 &lt; m</tt>, <tt>m &lt;= n</tt>, <ins><tt>2u &lt; w</tt>,</ins>
+<tt>r &lt;= w</tt>, <tt>u &lt;= w</tt>, <tt>s &lt;= w</tt>, <tt>t &lt;= w</tt>, 
+<tt>l &lt;= w</tt>, <tt>w &lt;= numeric_limits&lt;UIntType&gt;::digits</tt>, 
+<tt>a &lt;= (1u&lt;&lt;w) - 1u</tt>, <tt>b &lt;= (1u&lt;&lt;w) - 1u</tt>, 
+<tt>c &lt;= (1u&lt;&lt;w) - 1u</tt>, <tt>d &lt;= (1u&lt;&lt;w) - 1u</tt>, 
+and <tt>f &lt;= (1u&lt;&lt;w) - 1u</tt>.
+</blockquote>
 </resolution>
 
 </issue>
