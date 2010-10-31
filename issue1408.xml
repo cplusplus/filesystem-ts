@@ -22,14 +22,16 @@ with a later call to <tt>undeclare_no_pointers</tt>.
 
 <resolution>
 <p>
-Update [util.dynamic.safety], 20.9.12 p9:
+Update <sref ref="[util.dynamic.safety]"/> p.9:
 </p>
-<blockquote>
-<tt>void declare_no_pointers(char *p, size_t n);</tt>
-<tt>9</tt> <i>Requires</i>: No bytes in the specified range <del>have been
-previously registered</del><ins>are currently registered</ins> with
-<tt>declare_no_pointers()</tt>.
-</blockquote>
+<blockquote><pre>
+void declare_no_pointers(char *p, size_t n);
+</pre><blockquote>
+<tt>9</tt> <em>Requires</em>: No bytes in the specified range <del>have been
+previously registered</del><ins>are currently registered</ins> with <tt>declare_no_pointers()</tt>.
+If the specified range is in an allocated object, then it must be entirely within a single allocated object.
+The object must be live until the corresponding <tt>undeclare_no_pointers()</tt> call. [..]
+</blockquote></blockquote>
 </resolution>
 
 </issue>
