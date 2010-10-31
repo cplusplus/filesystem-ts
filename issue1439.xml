@@ -13,24 +13,30 @@
 <p><b>Addresses US-134</b></p>
 
 These two distributions have a member function called
-densities() which returns a vector&lt;double&gt;. The
-distribution is templated on RealType. The distribution
-also has another member called intervals() which returns
-a vector&lt;RealType&gt;. Why doesn't densities return
-vector&lt;RealType&gt; as well? If RealType is long double,
+<tt>densities()</tt> which returns a <tt>vector&lt;double&gt;</tt>. The
+distribution is templated on <tt>RealType</tt>. The distribution
+also has another member called <tt>intervals()</tt> which returns
+a <tt>vector&lt;RealType&gt;</tt>. Why doesn't densities return
+<tt>vector&lt;RealType&gt;</tt> as well? If <tt>RealType</tt> is <tt>long double</tt>,
 the computed densities property isn't being computed to
-the precision the client desires. If RealType is float, the
-densities vector is taking up twice as much space as the
-client desires.
+the precision the client desires. If <tt>RealType</tt> is <tt>float</tt>, the
+densities vector is taking up twice as much space as the client desires.
+
+<note>
+Resolution proposed by ballot comment:
+</note>
+<blockquote>
+Change the piecewise constant and linear
+distributions to hold / return the densities in a
+<tt>vector&lt;result_type&gt;</tt>.
+<p/>
+If this is not done, at least correct <sref ref="[rand.dist.samp.pconst]"/> p. 13 which describes
+the return of densities as a <tt>vector&lt;result_type&gt;</tt>.
+</blockquote>
+
 </discussion>
 
 <resolution>
-Change the piecewise constant and linear
-distributions to hold / return the densities in a
-vector&lt;result_type&gt;.<BR/>
-If this is not done, at least
-correct[rand.dist.samp.pconst]/13 which describes
-the return of densities as a vector&lt;result_type&gt;.
 </resolution>
 
 </issue>
