@@ -6,58 +6,58 @@
 <issue num="1383" status="Open">
 <title>[FCD] Inconsistent defaulted move/copy members in <tt>pair</tt> and <tt>tuple</tt></title>
 <section><sref ref="[pairs]"/></section>
+<section><sref ref="[tuple]"/></section>
 <submitter>ANSI</submitter>
 <date>25 Aug 2010</date>
 
 <discussion>
 <p><b>Addresses US-97</b></p>
 <p>
-pair's class definition in N3092 20.3.5.2 [pairs.pair]
-contains "pair(const pair&amp;) = default;" and "pair&amp;
-operator=(pair&amp;&amp; p);". The latter is described by
-20.3.5.2/12-13.</p>
-<BR/>
-"pair(const pair&amp;) = default;" is a user-declared explicitlydefaulted
-copy constructor. According to 12.8
-[class.copy]/10, this inhibits the implicitly-declared move
-constructor. pair should be move constructible. (12.8/7
-explains that "pair(pair&lt;U, V&gt;&amp;&amp; p)" will never be
-instantiated to move pair&lt;T1, T2&gt; to pair&lt;T1, T2&gt;.)<BR/>
-"pair&amp; operator=(pair&amp;&amp; p);" is a user-provided move
-assignment operator (according to 8.4.2
-[dcl.fct.def.default]/4: "A special member function is userprovided
-if it is user-declared and not explicitly defaulted
-on its first declaration."). According to 12.8/20, this inhibits
-the implicitly-declared copy assignment operator. pair
+<tt>pair</tt>'s class definition in N3092 <sref ref="[pairs.pair]"/>
+contains "<tt>pair(const pair&amp;) = default;</tt>" and 
+"<tt>pair&amp; operator=(pair&amp;&amp; p);</tt>". The latter is described by
+<sref ref="[pairs.pair]"/> p.12-13.
+</p>
+"<tt>pair(const pair&amp;) = default;</tt>" is a user-declared explicitly defaulted
+copy constructor. According to <sref ref="[class.copy]"/>/10, this inhibits 
+the implicitly-declared move constructor. <tt>pair</tt> should be move constructible. 
+(<sref ref="[class.copy]"/>/7 explains that "<tt>pair(pair&lt;U, V&gt;&amp;&amp; p)</tt>" 
+will never be instantiated to move <tt>pair&lt;T1, T2&gt;</tt> to <tt>pair&lt;T1, T2&gt;</tt>.)<BR/>
+"<tt>pair&amp; operator=(pair&amp;&amp; p);</tt>" is a user-provided move
+assignment operator (according to <sref ref="[dcl.fct.def.default]"/>/4: "A 
+special member function is user-provided if it is user-declared and not explicitly defaulted
+on its first declaration."). According to <sref ref="[class.copy]"/>/20, this inhibits
+the implicitly-declared copy assignment operator. <tt>pair</tt>
 should be copy assignable, and was in C++98/03. (Again,
-12.8/7 explains that "operator=(const pair&lt;U, V&gt;&amp; p)" will
-never be instantiated to copy pair&lt;T1, T2&gt; to pair&lt;T1,
-T2&gt;.)<BR/>
-Additionally, "pair&amp; operator=(pair&amp;&amp; p);" is
-unconditionally defined, whereas according to 12.8/25,
+<sref ref="[class.copy]"/>/7 explains that "<tt>operator=(const pair&lt;U, V&gt;&amp; p)</tt>" 
+will never be instantiated to copy <tt>pair&lt;T1, T2&gt;</tt> to <tt>pair&lt;T1, T2&gt;</tt>.)<BR/>
+Additionally, "<tt>pair&amp; operator=(pair&amp;&amp; p);</tt>" is
+unconditionally defined, whereas according to <sref ref="[class.copy]"/>/25,
 defaulted copy/move assignment operators are defined as
 deleted in several situations, such as when non-static data
-members of reference type are present.<BR/>
-If "pair(const pair&amp;) = default;" and "pair&amp;
-operator=(pair&amp;&amp; p);" were removed from pair's class
-definition in 20.3.5.2 and from 20.3.5.2/12-13, pair would
+members of reference type are present.
+<p/>
+If "<tt>pair(const pair&amp;) = default;</tt>" and "<tt>pair&amp; operator=(pair&amp;&amp; p);</tt>" 
+were removed from <tt>pair</tt>'s class definition in <sref ref="[pairs.pair]"/> and from 
+<sref ref="[pairs.pair]"/>/12-13, <tt>pair</tt> would
 receive implicitly-declared copy/move constructors and
-copy/move assignment operators, and 12.8/25 would
+copy/move assignment operators, and <sref ref="[class.copy]"/>/25 would
 apply. The implicitly-declared copy/move constructors
-would be trivial when T1 and T2 have trivial copy/move
-constructors, according to 12.8/13, and similarly for the
-assignment operators, according to 12.8/27. Notes could
+would be trivial when <tt>T1</tt> and <tt>T2</tt> have trivial copy/move
+constructors, according to <sref ref="[class.copy]"/>/13, and similarly for the
+assignment operators, according to<sref ref="[class.copy]"/>/27. Notes could
 be added as a reminder that these functions would be
 implicitly-declared, but such notes would not be necessary
 (the Standard Library specification already assumes a
 high level of familiarity with the Core Language, and
-casual readers will simply assume that pair is copyable
-and movable).<BR/>
-Alternatively, pair could be given explicitly-defaulted
+casual readers will simply assume that <tt>pair</tt> is copyable
+and movable).
+<p/>
+Alternatively, <tt>pair</tt> could be given explicitly-defaulted
 copy/move constructors and copy/move assignment
-operators. This is a matter of style.<BR/>
-tuple is also affected. tuple's class definition in 20.4.2
-[tuple.tuple] contains:
+operators. This is a matter of style.
+<p/>
+<tt>tuple</tt> is also affected. <tt>tuple</tt>'s class definition in <sref ref="[tuple]"/> contains:
 <PRE>
 tuple(const tuple&amp;) = default;
 tuple(tuple&amp;&amp;);
@@ -65,10 +65,20 @@ tuple&amp; operator=(const tuple&amp;);
 tuple&amp; operator=(tuple&amp;&amp;);
 </PRE>
 They should all be removed or all be explicitly-defaulted,
-to be consistent with pair. Additionally, 20.4.2.1
-[tuple.cnstr]/8-9 specifies the behavior of an explicitlydefaulted
-function, which is currently inconsistent with
-pair.
+to be consistent with <tt>pair</tt>. Additionally, <sref ref="[tuple.cnstr]"/>/8-9 specifies the 
+behavior of an explicitly defaulted function, which is currently inconsistent with
+<tt>pair</tt>.
+
+<note>
+Resolution proposed by ballot comment:
+</note>
+<blockquote>
+Either remove "<tt>pair(const pair&amp;) = default;</tt>" and
+"<tt>pair&amp; operator=(pair&amp;&amp; p);</tt>" from <tt>pair</tt>'s class
+definition in  <sref ref="[pairs.pair]"/> and from  <sref ref="[pairs.pair]"/> p.12-13, or
+give pair explicitly-defaulted copy/move constructors and copy/move assignment operators.<BR/>
+Change <tt>tuple</tt> to match.
+</blockquote>
 
 <note>
 2010-10-24 Daniel adds:
@@ -83,13 +93,7 @@ because they are supposed to work for references as well.
 </discussion>
 
 <resolution>
-Either remove "pair(const pair&amp;) = default;" and
-"pair&amp; operator=(pair&amp;&amp; p);" from pair's class
-definition in 20.3.5.2 and from 20.3.5.2/12-13, or
-give pair explicitly-defaulted copy/move
-constructors and copy/move assignment
-operators.<BR/>
-Change tuple to match.
+See <a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2010/n3140.html">n3140</a>.
 </resolution>
 
 </issue>
