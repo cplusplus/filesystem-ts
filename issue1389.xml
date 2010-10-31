@@ -12,15 +12,15 @@
 <discussion>
 <p><b>Addresses GB-89</b></p>
 <p>
-The alias representations of the ratio arithmetic templates
+The alias representations of the <tt>ratio</tt> arithmetic templates
 do not allow implementations to avoid overflow, since they
 explicitly specify the form of the aliased template
 instantiation. For example
-ratio_multiply,ratio&lt;2,LLONG_MAX&gt;&gt; is *required* to
-alias ratio&lt;2*LLONG_MAX,LLONG_MAX*2&gt;, which
+<tt>ratio_multiply</tt>, <tt>ratio&lt;2, LLONG_MAX&gt;</tt> is <em>required</em> to
+alias <tt>ratio&lt;2*LLONG_MAX, LLONG_MAX*2&gt;</tt>, which
 overflows, so is ill-formed. However, this is trivially equal
-to ratio&lt;1,1&gt;. It also contradicts the opening statement of
-20.6.2p1 "implementations may use other algorithms to
+to <tt>ratio&lt;1, 1&gt;</tt>. It also contradicts the opening statement of
+<sref ref="[ratio.arithmetic]"/> p. 1 "implementations may use other algorithms to
 compute these values".
 </p>
 
@@ -35,75 +35,48 @@ Accepting <a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2010/n3131
 </discussion>
 
 <resolution>
-Change the wording in 20.6.2p2-5 as follows:<BR/>
-template &lt;class R1, class R2&gt; using ratio_add =
-see below;<BR/>
-The type ratio_add&lt;R1, R2&gt; shall be a synonym
-for
-<del>ratio&lt;T1,T2&gt;</del> <ins>ratio&lt;U, V&gt; such
-that ratio&lt;U,V&gt;::num and
-ratio&lt;U,V&gt;::den are the same as the
-corresponding members of
-ratio&lt;T1,T2&gt; would be in the absence of
-arithmetic overflow</ins>
-where T1 has the value R1::num * R2::den +
-R2::num * R1::den and T2
-has the value R1::den * R2::den. <ins>If the
-required values of
-ratio&lt;U,V&gt;::num and ratio&lt;U,V&gt;::den cannot be
-represented in intmax_t
-then the program is illformed.</ins><BR/>
-template &lt;class R1, class R2&gt; using
-ratio_subtract = see below;<BR/>
-The type ratio_subtract&lt;R1, R2&gt; shall be a
-synonym for
-<del>ratio&lt;T1,T2&gt;</del> <ins>ratio&lt;U, V&gt; such
-that ratio&lt;U,V&gt;::num and
-ratio&lt;U,V&gt;::den are the same as the
-corresponding members of
-ratio&lt;T1,T2&gt; would be in the absence of
-arithmetic overflow</ins>
-where T1 has the value R1::num * R2::den -
-R2::num * R1::den and T2
-has the value R1::den * R2::den. <ins>If the
-required values of
-ratio&lt;U,V&gt;::num and ratio&lt;U,V&gt;::den cannot be
-represented in intmax_t
-then the program is illformed.</ins><BR/>
-template &lt;class R1, class R2&gt; using ratio_multiply
-= see below;<BR/>
-The type ratio_multiply&lt;R1, R2&gt; shall be a
-synonym for
-<del>ratio&lt;T1,T2&gt;</del> <ins>ratio&lt;U, V&gt; such
-that ratio&lt;U,V&gt;::num and
-ratio&lt;U,V&gt;::den are the same as the
-corresponding members of
-ratio&lt;T1,T2&gt; would be in the absence of
-arithmetic overflow</ins>
-where T1 has the value R1::num * R2::num and
-T2 has the value R1::den
-* R2::den. <ins>If the required values of
-ratio&lt;U,V&gt;::num and
-ratio&lt;U,V&gt;::den cannot be represented in
-intmax_t then the program is
-illformed.</ins><BR/>
-template &lt;class R1, class R2&gt; using ratio_divide
-= see below;<BR/>
-The type ratio_divide&lt;R1, R2&gt; shall be a
-synonym for
-<del>ratio&lt;T1,T2&gt;</del> <ins>ratio&lt;U, V&gt; such
-that ratio&lt;U,V&gt;::num and
-ratio&lt;U,V&gt;::den are the same as the
-corresponding members of
-ratio&lt;T1,T2&gt; would be in the absence of
-arithmetic overflow</ins>
-where T1 has the value R1::num * R2::den and T2
-has the value R1::den
-* R2::num. <ins>If the required values of
-ratio&lt;U,V&gt;::num and
-ratio&lt;U,V&gt;::den cannot be represented in
-intmax_t then the program is
-illformed.</ins>
+Change the wording in <sref ref="[ratio.arithmetic]"/> p. 2-5 as follows:
+<p/>
+<blockquote><pre>
+template &lt;class R1, class R2&gt; using ratio_add = <em>see below</em>;
+</pre><blockquote>
+2 The type <tt>ratio_add&lt;R1, R2&gt;</tt> shall be a synonym for <del><tt>ratio&lt;T1, T2&gt;</tt></del>
+<ins><tt>ratio&lt;U, V&gt;</tt> such that <tt>ratio&lt;U, V&gt;::num</tt> and <tt>ratio&lt;U, V&gt;::den</tt> 
+are the same as the corresponding members of <tt>ratio&lt;T1, T2&gt;</tt> would be in the absence of 
+arithmetic overflow</ins> where <tt>T1</tt> has the value <tt>R1::num * R2::den + R2::num * R1::den</tt> 
+and <tt>T2</tt> has the value <tt>R1::den * R2::den</tt>. <ins>If the required values of <tt>ratio&lt;U, V&gt;::num</tt> 
+and <tt>ratio&lt;U, V&gt;::den</tt> cannot be represented in <tt>intmax_t</tt> then the program is ill-formed.</ins>
+</blockquote></blockquote>
+<blockquote><pre>
+template &lt;class R1, class R2&gt; using ratio_subtract = <em>see below</em>;
+</pre><blockquote>
+3 The type <tt>ratio_subtract&lt;R1, R2&gt;</tt> shall be a synonym for <del><tt>ratio&lt;T1, T2&gt;</tt></del>
+<ins><tt>ratio&lt;U, V&gt;</tt> such that <tt>ratio&lt;U, V&gt;::num</tt> and <tt>ratio&lt;U, V&gt;::den</tt> 
+are the same as the corresponding members of <tt>ratio&lt;T1, T2&gt;</tt> would be in the absence of 
+arithmetic overflow</ins> where <tt>T1</tt> has the value <tt>R1::num * R2::den - R2::num * R1::den</tt> 
+and <tt>T2</tt> has the value <tt>R1::den * R2::den</tt>. <ins>If the required values of <tt>ratio&lt;U, V&gt;::num</tt> 
+and <tt>ratio&lt;U, V&gt;::den</tt> cannot be represented in <tt>intmax_t</tt> then the program is ill-formed.</ins>
+</blockquote></blockquote>
+<blockquote><pre>
+template &lt;class R1, class R2&gt; using ratio_multiply = <em>see below</em>;
+</pre><blockquote>
+4 The type <tt>ratio_multiply&lt;R1, R2&gt;</tt> shall be a synonym for <del><tt>ratio&lt;T1, T2&gt;</tt></del>
+<ins><tt>ratio&lt;U, V&gt;</tt> such that <tt>ratio&lt;U, V&gt;::num</tt> and <tt>ratio&lt;U, V&gt;::den</tt> 
+are the same as the corresponding members of <tt>ratio&lt;T1, T2&gt;</tt> would be in the absence of 
+arithmetic overflow</ins> where <tt>T1</tt> has the value <tt>R1::num * R2::num</tt> and <tt>T2</tt> 
+has the value <tt>R1::den * R2::den</tt>. <ins>If the required values of <tt>ratio&lt;U, V&gt;::num</tt> 
+and <tt>ratio&lt;U, V&gt;::den</tt> cannot be represented in <tt>intmax_t</tt> then the program is ill-formed.</ins>
+</blockquote></blockquote>
+<blockquote><pre>
+template &lt;class R1, class R2&gt; using ratio_divide = <em>see below</em>;
+</pre><blockquote>
+5 The type <tt>ratio_divide&lt;R1, R2&gt;</tt> shall be a synonym for <del><tt>ratio&lt;T1, T2&gt;</tt></del>
+<ins><tt>ratio&lt;U, V&gt;</tt> such that <tt>ratio&lt;U, V&gt;::num</tt> and <tt>ratio&lt;U, V&gt;::den</tt> 
+are the same as the corresponding members of <tt>ratio&lt;T1, T2&gt;</tt> would be in the absence of 
+arithmetic overflow</ins> where <tt>T1</tt> has the value <tt>R1::num * R2::den</tt> and <tt>T2</tt> 
+has the value <tt>R1::den * R2::num</tt>. <ins>If the required values of <tt>ratio&lt;U, V&gt;::num</tt> 
+and <tt>ratio&lt;U, V&gt;::den</tt> cannot be represented in <tt>intmax_t</tt> then the program is ill-formed.</ins>
+</blockquote></blockquote>
 </resolution>
 
 </issue>
