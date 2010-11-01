@@ -12,17 +12,32 @@
 <discussion>
 <p><b>Addresses CH-27</b></p>
 
-The mutex requirements force try_lock to be
-noexcept(true). However, where they are used by the
+The mutex requirements force <tt>try_lock</tt> to be
+<tt>noexcept(true)</tt>. However, where they are used by the
 generic algorithms, those relax this requirement and say
-that try_lock may throw. This means the requirement is
-too stringent, also a non-throwing try_lock does not allow
-for a diagnostic such as system_error that lock() will give
-us.
+that <tt>try_lock</tt> may throw. This means the requirement is
+too stringent, also a non-throwing <tt>try_lock</tt> does not allow
+for a diagnostic such as <tt>system_error</tt> that <tt>lock()</tt> 
+will give us.
+
+<note>
+Resolution proposed by ballot comment:
+</note>
+<blockquote>
+delete p18, adjust 30.4.4 p1 and p4 accordingly
+</blockquote>
+
+<note>
+2010-11-01 Daniel comments:
+</note>
+
+<blockquote>
+Accepting <a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2010/n3130.html">n3130</a> would solve this issue.
+</blockquote>
 </discussion>
 
 <resolution>
-delete p18, adjust 30.4.4 p1 and p4 accordingly
+See <a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2010/n3130.html">n3130</a>.
 </resolution>
 
 </issue>
