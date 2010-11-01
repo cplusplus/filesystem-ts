@@ -12,17 +12,24 @@
 <discussion>
 <p><b>Addresses US-184</b></p>
 
-It is unclear when a thread::id ceases to be meaningful.
+It is unclear when a <tt>thread::id</tt> ceases to be meaningful.
 The sentence "The library may reuse the value of a
-thread::id of a terminated thread that can no longer be
+<tt>thread::id</tt> of a terminated thread that can no longer be
 joined." implies that some terminated threads can be
 joined. It says nothing about detached threads.
+
+<note>
+Resolution proposed by ballot comment:
+</note>
+<blockquote>
+Require a unique <tt>thread::id</tt> for every thread that is
+(1) detached and not terminated or (2) has an associated <tt>std::thread</tt> 
+object.
+</blockquote>
+
 </discussion>
 
 <resolution>
-Require a unique thread::id for every thread that is
-(1) detached and not terminated or (2) has an
-associated std::thread object.
 </resolution>
 
 </issue>

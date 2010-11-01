@@ -12,12 +12,36 @@
 <discussion>
 <p><b>Addresses GB-125</b></p>
 
-The term "target sequence" is not defined.
+The term "target sequence" is not defined (<sref ref="[re.results.acc]"/> p. 2).
+
+<note>
+Resolution proposed by ballot comment:
+</note>
+<p>
+Replace "target sequence" with "string being searched/matched"
+</p>
+
+<note>
+2010-11-01 Daniel comments:
+</note>
+<p>
+The proposed resolution looks incomplete to me, there are more normative
+usages of the term <em>target sequence</em> in clause 28, e.g.
+<sref ref="[re.tokiter]"/> p. 7.
+</p>
+
 </discussion>
 
 <resolution>
-Replace "target sequence" with "string being
-searched/matched"
+Wording changes are against N3126. They are intended not to conflict with the wording changes
+suggested by <a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2010/n3158.html">n3158</a>.
+<p/>
+Change <sref ref="[re.results.acc]"/> p. 2 as indicated:
+<blockquote><pre>
+difference_type position(size_type sub = 0) const;
+</pre><blockquote>
+2 <em>Returns</em>: The distance from the start of the <del>target sequence</del><ins>string being matched</ins> to <tt>(*this)[sub].first</tt>.
+</blockquote></blockquote>
 </resolution>
 
 </issue>
