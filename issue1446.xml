@@ -15,10 +15,25 @@
 For istreams and ostreams, the move-constructor does
 not move-construct, the move-assignment operator does
 not move-assign, and the swap function does not swap
-because these operations do not manage the rdbuf()
+because these operations do not manage the <tt>rdbuf()</tt>
 pointer. Useful applications of these operations are
 prevented both by their incorrect semantics and because
 they are protected.
+
+<note>
+Resolution proposed by ballot comment:
+</note>
+<p>
+In short: reverse the resolution of issue 900, then
+change the semantics to move and swap the
+<tt>rdbuf()</tt> pointer. Add a new protected constructor
+that takes an rvalue reference to a stream and a
+pointer to a streambuf, a new protected <tt>assign()</tt>
+operator that takes the same arguments, and a
+new protected <tt>partial_swap()</tt> function that doesn't
+swap <tt>rdbuf()</tt>.
+See Appendix 1 - Additional Details
+</p>
 
 <note>
 2010-10-24 Daniel adds:
@@ -31,15 +46,7 @@ Accepting <a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2010/n3179
 </discussion>
 
 <resolution>
-In short: reverse the resolution of issue 900, then
-change the semantics to move and swap the
-rdbuf() pointer. Add a new protected constructor
-that takes an rvalue reference to a stream and a
-pointer to a streambuf, a new protected assign()
-operator that takes the same arguments, and a
-new protected partial_swap() function that doesn't
-swap rdbuf().
-See Appendix 1 - Additional Details
+See <a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2010/n3179.pdf">n3179</a>.
 </resolution>
 
 </issue>

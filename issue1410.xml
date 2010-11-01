@@ -12,9 +12,9 @@
 <discussion>
 <p><b>Addresses GB-107</b></p>
 <p>
-1.4p9 states that which conditionally supported constructs
-are available should be provided in the documentation for
-the implementation. This doesn't help programmers trying
+<sref ref="[intro.compliance]"/> p.9 states that which conditionally
+supported constructs are available should be provided in the 
+documentation for the implementation. This doesn't help programmers trying
 to write portable code, as they must then rely on
 implementation-specific means to determine the
 availability of such constructs. In particular, the presence
@@ -27,19 +27,30 @@ semantics.
 </p>
 
 <note>
-Resolution proposed in ballot comment
+Resolution proposed in ballot comment:
 </note>
 <p>
 Provide feature test macro for determining the
 presence of <tt>std::chrono::monotonic_clock</tt>. Add
 <tt>_STDCPP_HAS_MONOTONIC_CLOCK</tt> to the
-<tt>&lt;chrono></tt> header, which is defined if
+<tt>&lt;chrono&gt;</tt> header, which is defined if
 <tt>monotonic_clock</tt> is present, and not defined if it is
 not present.
 </p>
+
+<note>
+2010-11-01 Daniel comments:
+</note>
+<blockquote>
+Paper <a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2010/n3128.html">n3128</a> addresses
+this issue by replacing <tt>monotonic_clock</tt> with <tt>steady_clock</tt>, which is not conditionally supported,
+so there is no need to detect it.
+</blockquote>
+
 </discussion>
 
 <resolution>
+See <a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2010/n3128.html">n3128</a>.
 </resolution>
 
 </issue>
