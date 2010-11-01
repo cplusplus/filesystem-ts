@@ -13,24 +13,31 @@ mutex requirements are inconsistent</title>
 <discussion>
 <p><b>Addresses CH-26</b></p>
 
-Specifications of unlock member functions and unlock
+Specifications of <tt>unlock</tt> member functions and <tt>unlock</tt>
 mutex requirements are inconsistent wrt to exceptions and
 pre- and postconditions.
+
+<note>
+Resolution proposed by ballot comment:
+</note>
+<blockquote>
+<tt>unlock</tt> should specifiy the precondition that the
+current thread "owns the lock", this will make calls
+without holding the locks "undefined behavior".
+<tt>unlock</tt> in <sref ref="[mutex.requirements]"/> should either be
+<tt>noexcept(true)</tt> or be allowed to throw
+<tt>system_error</tt> like <tt>unique_lock::unlock</tt>, or the latter
+should be <tt>nothrow(true)</tt> and have the precondition
+<tt>owns == true</tt>.
+Furthermore <tt>unique_lock</tt>'s postcondition is wrong
+in the case of a recursive mutex where <tt>owns</tt>
+might stay true, when it is not the last <tt>unlock</tt>
+needed to be called.
+</blockquote>
+
 </discussion>
 
 <resolution>
-unlock should specifiy the precondition that the
-current thread "owns the lock", this will make calls
-without holding the locks "undefined behavior".
-unlock in [mutex.requirements] should either be
-noexcept(true) or be allowed to throw
-system_error like unique_lock::unlock, or the latter
-should be nothrow(true) and have the precondition
-owns==true.
-Furthermore unique_lock's postcondition is wrong
-in the case of a recursive mutex where owns
-might stay true, when it is not the last unlock
-needed to be called.
 </resolution>
 
 </issue>
