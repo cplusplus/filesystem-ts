@@ -11,14 +11,19 @@
 
 <discussion>
 <p>
-In working draft N3126, subclause 28.8.3 
-[re.regex.assign], paragraphs 12, 13 and 19, the name <tt>string_type</tt> is 
-used. This is presumably a typedef for <tt>basic_string&lt;value_type></tt>, where 
-value_type is the character type used by <tt>basic_regex</tt>. The <tt>basic_regex</tt> 
-template however defines no such typedef, and neither does the <tt>&lt;regex></tt> 
-header or the <tt>&lt;initializer_list></tt> header included by <tt>&lt;regex></tt>.
+In working draft N3126, subclause <sref ref="[re.regex.assign]"/>, paragraphs 12, 13 and 19, 
+the name <tt>string_type</tt> is used. This is presumably a typedef for <tt>basic_string&lt;value_type&gt;</tt>, where 
+<tt>value_type</tt> is the character type used by <tt>basic_regex</tt>. The <tt>basic_regex</tt> 
+template however defines no such typedef, and neither does the <tt>&lt;regex&gt;</tt> 
+header or the <tt>&lt;initializer_list&gt;</tt> header included by <tt>&lt;regex&gt;</tt>.
 </p>
 
+<note>
+2010-11-02 Daniel comments:
+</note>
+<blockquote>
+The proposed resolution needs to use <tt>basic_string&lt;<strong>charT</strong>&gt;</tt> instead of <tt>basic_string&lt;char&gt;</tt>
+</blockquote>
 </discussion>
 
 <resolution>
@@ -30,7 +35,7 @@ Make the following changes to [re.regex.assign]</p>
 <tt>basic_regex&amp; assign(const charT* ptr, flag_type f = regex_constants::ECMAScript);</tt>
 </pre>
 <blockquote>
-12 <i>Returns</i>: <tt>assign(<del>string_type</del><ins>basic_string&lt;char></ins>(ptr), f)</tt>. 
+12 <i>Returns</i>: <tt>assign(<del>string_type</del><ins>basic_string&lt;char&gt;</ins>(ptr), f)</tt>. 
 </blockquote>
 
 <pre><tt>
@@ -38,11 +43,11 @@ basic_regex&amp; assign(const charT* ptr, size_t len,
   flag_type f = regex_constants::ECMAScript);
 </tt></pre>
 <blockquote>
-13 <i>Returns</i>: <tt>assign(<del>string_type</del><ins>basic_string&lt;char></ins>(ptr, len), f)</tt>.
+13 <i>Returns</i>: <tt>assign(<del>string_type</del><ins>basic_string&lt;char&gt;</ins>(ptr, len), f)</tt>.
 </blockquote>
 
 <pre><tt>
-template &lt;class InputIterator> 
+template &lt;class InputIterator&gt; 
   basic_regex&amp; assign(InputIterator first, InputIterator last, 
                           flag_type f = regex_constants::ECMAScript);
 </tt></pre>
@@ -52,7 +57,7 @@ template &lt;class InputIterator>
 </blockquote>
 
 <blockquote>
-19 <i>Returns</i>: <tt>assign(<del>string_type</del><ins>basic_string&lt;char></ins>(first, last), f)</tt>.
+19 <i>Returns</i>: <tt>assign(<del>string_type</del><ins>basic_string&lt;char&gt;</ins>(first, last), f)</tt>.
 </blockquote>
 
 </blockquote>
