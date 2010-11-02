@@ -4,25 +4,29 @@
 ] >
 
 <issue num="2007" status="New">
-<title>incorrect specification of return value for <tt>map&lt;>::at()</tt></title>
+<title>Incorrect specification of return value for <tt>map&lt;&gt;::at()</tt></title>
 <section><sref ref="[map.access]"/></section>
 <submitter>Matt Austern</submitter>
 <date>01 Nov 2010</date>
 
 <discussion>
 <p>
-In [map.access]/9, the <i>returns</i> clause for <tt>map&lt;Key, T>::at(x)</tt> says that it returns "a reference to the element whose key is equivalent to <tt>x</tt>." That can't be right. The signature for <tt>at()</tt> says that its return type is <tt>T</tt>, but the elements of <tt>map&lt;Key, T></tt> have type <tt>pair&lt;const K, T></tt>.  (I checked [unord.map.elem] and found that its specification of <tt>at()</tt> is correct. This is a problem for <tt>map</tt> only.)
-
-Proposed resolution:
+In [map.access]/9, the <i>Returns</i> clause for <tt>map&lt;Key, T&gt;::at(x)</tt> says 
+that it returns "a reference to the element whose key is equivalent to <tt>x</tt>." That can't be right. 
+The signature for <tt>at()</tt> says that its return type is <tt>T</tt>, but the elements 
+of <tt>map&lt;Key, T&gt;</tt> have type <tt>pair&lt;const K, T&gt;</tt>.  (I checked [unord.map.elem] 
+and found that its specification of <tt>at()</tt> is correct. This is a problem for <tt>map</tt> only.)
 </p>
 </discussion>
 
 <resolution>
 <p>
-Change the wording in [map.access]/9 so it's identical to what we already say for <tt>operator[]</tt>, which is unambiguous and correct.
+Change the wording in [map.access]/9 so it's identical to what we already say for <tt>operator[]</tt>, 
+which is unambiguous and correct.
 </p>
 <blockquote>
-<i>Returns</i>: A reference to the <del>element whose key is equivalent</del><ins><tt>mapped_type</tt> corresponding</ins> to <tt>x</tt><ins> in <tt>*this</tt></ins>.
+<i>Returns</i>: A reference to the <del>element whose key is equivalent</del><ins><tt>mapped_type</tt> 
+corresponding</ins> to <tt>x</tt><ins> in <tt>*this</tt></ins>.
 </blockquote>
 </resolution>
 
