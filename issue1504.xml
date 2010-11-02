@@ -12,12 +12,39 @@
 <discussion>
 <p><b>Addresses US-196</b></p>
 
-The term "are serialized" is not defined.
+The term "are serialized" is not defined (<sref ref="[futures.promise]"/> p. 21, 25).
+
+<note>
+Resolution proposed by ballot comment:
+</note>
+<blockquote>
+Replace "are serialized" with "shall not introduce a data race (17.6.4.8)".
+</blockquote>
+
+<note>
+2010-11-02 Daniel translates proposal into proper wording changes
+</note>
 </discussion>
 
 <resolution>
-Replace "are serialized" with "shall not introduce a
-data race (17.6.4.8)".
+<ol>
+<li>Change <sref ref="[futures.promise]"/> p. 21 as indicated:
+<blockquote>
+21 <em>Synchronization</em>: calls to <tt>set_value</tt> and <tt>set_exception</tt> on a single 
+<tt>promise</tt> object <del>are serialized</del><ins>shall not introduce a data race ([res.on.data.races])</ins>.
+[ <em>Note</em>: and they synchronize and serialize with other functions through the referred associated asynchronous
+state. &mdash; <em>end note</em> ]
+</blockquote>
+</li>
+<li>Change <sref ref="[futures.promise]"/> p. 25 as indicated:
+<blockquote>
+25 <em>Synchronization</em>: calls to <tt>set_value</tt> and <tt>set_exception</tt> on a single 
+<tt>promise</tt> object <del>are serialized</del><ins>shall not introduce a data race ([res.on.data.races])</ins>.
+[ <em>Note</em>: and they synchronize and serialize with other functions through the referred associated asynchronous
+state. &mdash; <em>end note</em> ]
+</blockquote>
+</li>
+</ol>
 </resolution>
 
 </issue>
