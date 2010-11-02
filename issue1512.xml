@@ -12,20 +12,27 @@
 <discussion>
 <p><b>Addresses US-205</b></p>
 <p>
-The third sentence says "If the invocation is not deferred,
-a call to a waiting function on an asynchronous return
-object that shares the associated asynchronous state
-created by this async call shall block until the associated
+<sref ref="[futures.async]"/> p. 3: The third sentence says 
+"If the invocation is not deferred, a call to a waiting function 
+on an asynchronous return object that shares the associated asynchronous state
+created by this <tt>async</tt> call shall block until the associated
 thread has completed." The next sentence says "If the
 invocation is not deferred, the <tt>join()</tt> on the created
 thread..." Blocking until a thread completes is not
 necessarily a join.
 </p>
+
+<note>
+Resolution proposed by ballot comment:
+</note>
+<p>
+Decide whether the requirement is to block until
+finished or to call join, and rewrite to match.
+</p>
+
 </discussion>
 
 <resolution>
-Decide whether the requirement is to block until
-finished or to call join, and rewrite to match.
 </resolution>
 
 </issue>
