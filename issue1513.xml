@@ -13,46 +13,63 @@
 <p><b>Addresses CH-36</b></p>
 
 Providing only three different possible values for the enum
-launch and saying that launch::any means either
-launch::sync or launch::async is very restricting. This
+<tt>launch</tt> and saying that <tt>launch::any</tt> means either
+<tt>launch::sync</tt> or <tt>launch::async</tt> is very restricting. This
 hinders future implementors to provide clever
 infrastructures that can simply by used by a call to
-async(launch::any,...). Also there is no hook for an
-implementation to provide additional alternatives to launch
+<tt>async(launch::any,...)</tt>. Also there is no hook for an
+implementation to provide additional alternatives to <tt>launch</tt>
 enumeration and no useful means to combine those (i.e.
 interpret them like flags). We believe something like
-async(launch::sync | launch::async, ...) should be allowed
+<tt>async(launch::sync | launch::async, ...)</tt> should be allowed
 and can become especially useful if one could say also
-something like async(launch::any &amp; ~launch::sync, ....)
+something like <tt>async(launch::any &amp; ~launch::sync, ....)</tt>
 respectively. This flexibility might limit the features usable
-in the function called through async(), but it will allow a
+in the function called through <tt>async()</tt>, but it will allow a
 path to effortless profit from improved hardware/software
 without complicating the programming model when just
-using async(launch::any,...)
-</discussion>
+using <tt>async(launch::any,...)</tt>
 
-<resolution>
-Change in 30.6.1 'enum class launch' to allow
+<note>
+Resolution proposed by ballot comment:
+</note>
+<p>
+Change in <sref ref="[futures.overview]"/> 'enum class launch' to allow
 further implementation defined values and provide
 the following bit-operators on the launch values
-(operator|, operator&amp;, operator~ delivering a
-launch value).<BR/>
+(<tt>operator|</tt>, <tt>operator&amp;</tt>, <tt>operator~</tt> delivering a
+<tt>launch</tt> value).
+<p/>
 Note: a possible implementation might use an
-unsigned value to represent the launch enums,
+unsigned value to represent the <tt>launch</tt> enums,
 but we shouldn't limit the standard to just 32 or 64
 available bits in that case and also should keep
-the launch enums in their own enum namespace.<BR/>
+the launch enums in their own enum namespace.
+<p/>
 Change [future.async] p3 according to the
-changes to enum launch. change --launch::any to
+changes to <tt>enum launch</tt>. change --<tt>launch::any</tt> to
 "the implementation may choose any of the
 policies it provides." Note: this can mean that an
 implementation may restrict the called function to
 take all required information by copy in case it will
 be called in a different address space, or even, on
 a different processor type. To ensure that a call is
-either performed like launch::async or
-launch::sync describe one should call
-async(launch::sync|launch::async,...)
+either performed like <tt>launch::async</tt> or
+<tt>launch::sync</tt> describe one should call
+<tt>async(launch::sync|launch::async,...)</tt>
+</p>
+
+<note>
+2010-11-02 Daniel comments:
+</note>
+
+<blockquote>
+The new paper <a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2010/n3113.html">n3113</a> provides concrete wording.
+</blockquote>
+</discussion>
+
+<resolution>
+See <a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2010/n3113.html">n3113</a>.
 </resolution>
 
 </issue>
