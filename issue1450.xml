@@ -39,7 +39,7 @@ specified as a constant with the same value as
 <note>
 2010-10-31 Daniel comments:
 </note>
-<blockquote>
+<p>
 Strictly speaking, a bitmask type cannot have any element of value 0 at all, because
 any such value would contradict the requirement expressed in <sref ref="[bitmask.types]"/> p. 3:
 <blockquote>
@@ -48,10 +48,26 @@ for any pair <em>Ci</em> and <em>Cj</em>, <em>Ci</em> &amp; <em>Ci</em> is nonze
 So, actually <em>both</em> <tt>regex_constants::match_default</tt> and
 <tt>regex_constants::format_default</tt> are only constants of the type
 <tt>regex_constants::match_flag_type</tt>, and no bitmask elements.
-</blockquote>
+</p>
+
+<note>
+2010-11-03 Daniel comments and provides a proposed resolution:
+</note>
+
+<p>The proposed resolution is written against N3126 and considered as a further improvement
+of the fixes suggested by <a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2010/n3110.html">n3110</a>.
+</p>
 </discussion>
 
 <resolution>
+Add the following sentence to <sref ref="[re.matchflag]"/>  paragraph 1:
+<blockquote>
+1 The type <tt>regex_constants::match_flag_type</tt> is an implementation-defined bitmask type (17.5.2.1.3).
+Matching a regular expression against a sequence of characters [first,last) proceeds according to the
+rules of the grammar specified for the regular expression object, modified according to the effects listed in
+Table 136 for any bitmask elements set. <ins>Type <tt>regex_constants::match_flag_type</tt> also defines the 
+constants <tt>regex_constants::match_default</tt> and <tt>regex_constants::format_default</tt>.</ins>
+</blockquote>
 </resolution>
 
 </issue>
