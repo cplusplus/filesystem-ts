@@ -39,9 +39,369 @@ template&lt;typename T, typename D&gt;
 bool operator!=(nullptr_t, const unique_ptr&lt;T, D&gt; &amp; rhs);
 </pre></blockquote>
 </blockquote>
+
+<note>
+2010-11-02 Daniel comments and provides a proposed resolution:
+</note>
+
+<blockquote>
+The same problem applies to <tt>shared_ptr</tt> as well: In both cases there are no
+conversions considered because the comparison functions are templates. I agree with
+the direction of the proposed resolution, but I believe it would be very surprising
+and inconsistent, if given a smart pointer object <tt>p</tt>, the expression
+<tt>p == nullptr</tt> would be provided, but not <tt>p &lt; nullptr</tt> and the
+other relational operators. According to <sref ref="[expr.rel]"/> they are defined
+if null pointer values meet other pointer values, even though the result is unspecified
+for all except some trivial ones. But null pointer values are nothing special here: 
+The Library already defines the relational operators for both <tt>unique_ptr</tt> and 
+<tt>shared_ptr</tt> and the outcome of comparing non-null pointer values will be equally 
+unspecified. 
+<p/>
+The number of overloads triple the current number, but I think it is much clearer to 
+provide them explicitly instead of adding wording that attempts to say that "sufficient overloads" are
+provided. The following proposal makes the declarations explicit.
+<p/>
+Additionally, the proposal adds the missing declarations for some <tt>shared_ptr</tt>
+comparison functions for consistency.
+</blockquote>
 </discussion>
 
 <resolution>
+Wording changes are against N3126.
+<p/>
+<ol>
+<li>Change <sref ref="[memory]"/> p. 1, header <tt>&lt;memory&gt;</tt> synopsis as indicated.
+<tt>noexcept</tt> specifications are only added, where the guarantee exists, that the function
+shall no throw an exception (as replacement of &quot;<em>Throws</em>: Nothing&quot;. This needs 
+to be harmonized with the result of the <tt>noexcept</tt>
+proposals:
+<blockquote><pre>
+namespace std {
+  [..]
+  // <em>20.9.10 Class unique_ptr:</em>
+  template &lt;class T&gt; class default_delete;
+  template &lt;class T&gt; class default_delete&lt;T[]&gt;;
+  template &lt;class T, class D = default_delete&lt;T&gt;&gt; class unique_ptr;
+  template &lt;class T, class D&gt; class unique_ptr&lt;T[], D&gt;;
+
+  template &lt;class T1, class D1, class T2, class D2&gt;
+  bool operator==(const unique_ptr&lt;T1, D1&gt;&amp; x, const unique_ptr&lt;T2, D2&gt;&amp; y);
+  template &lt;class T1, class D1, class T2, class D2&gt;
+  bool operator!=(const unique_ptr&lt;T1, D1&gt;&amp; x, const unique_ptr&lt;T2, D2&gt;&amp; y);
+  template &lt;class T1, class D1, class T2, class D2&gt;
+  bool operator&lt;(const unique_ptr&lt;T1, D1&gt;&amp; x, const unique_ptr&lt;T2, D2&gt;&amp; y);
+  template &lt;class T1, class D1, class T2, class D2&gt;
+  bool operator&lt;=(const unique_ptr&lt;T1, D1&gt;&amp; x, const unique_ptr&lt;T2, D2&gt;&amp; y);
+  template &lt;class T1, class D1, class T2, class D2&gt;
+  bool operator&gt;(const unique_ptr&lt;T1, D1&gt;&amp; x, const unique_ptr&lt;T2, D2&gt;&amp; y);
+  template &lt;class T1, class D1, class T2, class D2&gt;
+  bool operator&gt;=(const unique_ptr&lt;T1, D1&gt;&amp; x, const unique_ptr&lt;T2, D2&gt;&amp; y);
+
+  <ins>template &lt;class T, class D&gt;</ins>
+  <ins>bool operator==(const unique_ptr&lt;T, D&gt;&amp; x, nullptr_t) noexcept;</ins>
+  <ins>template &lt;class T, class D&gt;</ins>
+  <ins>bool operator==(nullptr_t, const unique_ptr&lt;T, D&gt;&amp; x) noexcept;</ins>
+  <ins>template &lt;class T, class D&gt;</ins>
+  <ins>bool operator!=(const unique_ptr&lt;T, D&gt;&amp; x, nullptr_t) noexcept;</ins>
+  <ins>template &lt;class T, class D&gt;</ins>
+  <ins>bool operator!=(nullptr_t, const unique_ptr&lt;T, D&gt;&amp; x) noexcept;</ins>
+  <ins>template &lt;class T, class D&gt;</ins>
+  <ins>bool operator&lt;(const unique_ptr&lt;T, D&gt;&amp; x, nullptr_t);</ins>
+  <ins>template &lt;class T, class D&gt;</ins>
+  <ins>bool operator&lt;(nullptr_t, const unique_ptr&lt;T, D&gt;&amp; x);</ins>
+  <ins>template &lt;class T, class D&gt;</ins>
+  <ins>bool operator&lt;=(const unique_ptr&lt;T, D&gt;&amp; x, nullptr_t);</ins>
+  <ins>template &lt;class T, class D&gt;</ins>
+  <ins>bool operator&lt;=(nullptr_t, const unique_ptr&lt;T, D&gt;&amp; x);</ins>
+  <ins>template &lt;class T, class D&gt;</ins>
+  <ins>bool operator&gt;(const unique_ptr&lt;T, D&gt;&amp; x, nullptr_t);</ins>
+  <ins>template &lt;class T, class D&gt;</ins>
+  <ins>bool operator&gt;(nullptr_t, const unique_ptr&lt;T, D&gt;&amp; x);</ins>
+  <ins>template &lt;class T, class D&gt;</ins>
+  <ins>bool operator&gt;=(const unique_ptr&lt;T, D&gt;&amp; x, nullptr_t);</ins>
+  <ins>template &lt;class T, class D&gt;</ins>
+  <ins>bool operator&gt;=(nullptr_t, const unique_ptr&lt;T, D&gt;&amp; x);</ins>
+  
+  // <em>20.9.11.1, Class bad_weak_ptr:</em>
+  class bad_weak_ptr;
+
+  // <em>20.9.11.2, Class template shared_ptr:</em>
+  template&lt;class T&gt; class shared_ptr;
+
+  // <em>20.9.11.2.7, shared_ptr comparisons:</em>
+  template&lt;class T, class U&gt;
+  bool operator==(shared_ptr&lt;T&gt; const&amp; a, shared_ptr&lt;U&gt; const&amp; b);
+  template&lt;class T, class U&gt;
+  bool operator!=(shared_ptr&lt;T&gt; const&amp; a, shared_ptr&lt;U&gt; const&amp; b);
+  template&lt;class T, class U&gt;
+  bool operator&lt;(shared_ptr&lt;T&gt; const&amp; a, shared_ptr&lt;U&gt; const&amp; b);
+  template&lt;class T, class U&gt;
+  bool operator&gt;(shared_ptr&lt;T&gt; const&amp; a, shared_ptr&lt;U&gt; const&amp; b);
+  template&lt;class T, class U&gt;
+  bool operator&lt;=(shared_ptr&lt;T&gt; const&amp; a, shared_ptr&lt;U&gt; const&amp; b);
+  template&lt;class T, class U&gt;
+  bool operator&gt;=(shared_ptr&lt;T&gt; const&amp; a, shared_ptr&lt;U&gt; const&amp; b);
+
+  <ins>template&lt;class T&gt;</ins>
+  <ins>bool operator==(shared_ptr&lt;T&gt; const&amp; a, nullptr_t) noexcept;</ins>
+  <ins>template&lt;class T&gt;</ins>
+  <ins>bool operator==(nullptr_t, shared_ptr&lt;T&gt; const&amp; a) noexcept;</ins>
+  <ins>template&lt;class T&gt;</ins>
+  <ins>bool operator!=(shared_ptr&lt;T&gt; const&amp; a, nullptr_t) noexcept;</ins>
+  <ins>template&lt;class T&gt;</ins>
+  <ins>bool operator!=(nullptr_t, shared_ptr&lt;T&gt; const&amp; a) noexcept;</ins>
+  <ins>template&lt;class T&gt;</ins>
+  <ins>bool operator&lt;(shared_ptr&lt;T&gt; const&amp; a, nullptr_t) noexcept;</ins>
+  <ins>template&lt;class T&gt;</ins>
+  <ins>bool operator&lt;(nullptr_t, shared_ptr&lt;T&gt; const&amp; a) noexcept;</ins>
+  <ins>template&gt;class T&gt;</ins>
+  <ins>bool operator&gt;(shared_ptr&lt;T&gt; const&amp; a, nullptr_t) noexcept;</ins>
+  <ins>template&gt;class T&gt;</ins>
+  <ins>bool operator&gt;(nullptr_t, shared_ptr&lt;T&gt; const&amp; a) noexcept;</ins>
+  <ins>template&lt;class T&gt;</ins>
+  <ins>bool operator&lt;=(shared_ptr&lt;T&gt; const&amp; a, nullptr_t) noexcept;</ins>
+  <ins>template&lt;class T&gt;</ins>
+  <ins>bool operator&lt;=(nullptr_t, shared_ptr&lt;T&gt; const&amp; a) noexcept;</ins>
+  <ins>template&gt;class T&gt;</ins>
+  <ins>bool operator&gt;=(shared_ptr&lt;T&gt; const&amp; a, nullptr_t) noexcept;</ins>
+  <ins>template&gt;class T&gt;</ins>
+  <ins>bool operator&gt;=(nullptr_t, shared_ptr&lt;T&gt; const&amp; a) noexcept;</ins>
+
+  [..]
+}
+</pre></blockquote>
+</li>
+<li>Change the synopsis just after <sref ref="[unique.ptr]"/> p. 6 as indicated:
+<blockquote><pre>
+namespace std {
+  [..]
+  
+  template &lt;class T1, class D1, class T2, class D2&gt;
+  bool operator==(const unique_ptr&lt;T1, D1&gt;&amp; x, const unique_ptr&lt;T2, D2&gt;&amp; y);
+  template &lt;class T1, class D1, class T2, class D2&gt;
+  bool operator!=(const unique_ptr&lt;T1, D1&gt;&amp; x, const unique_ptr&lt;T2, D2&gt;&amp; y);
+  template &lt;class T1, class D1, class T2, class D2&gt;
+  bool operator&lt;(const unique_ptr&lt;T1, D1&gt;&amp; x, const unique_ptr&lt;T2, D2&gt;&amp; y);
+  template &lt;class T1, class D1, class T2, class D2&gt;
+  bool operator&lt;=(const unique_ptr&lt;T1, D1&gt;&amp; x, const unique_ptr&lt;T2, D2&gt;&amp; y);
+  template &lt;class T1, class D1, class T2, class D2&gt;
+  bool operator&gt;(const unique_ptr&lt;T1, D1&gt;&amp; x, const unique_ptr&lt;T2, D2&gt;&amp; y);
+  template &lt;class T1, class D1, class T2, class D2&gt;
+  bool operator&gt;=(const unique_ptr&lt;T1, D1&gt;&amp; x, const unique_ptr&lt;T2, D2&gt;&amp; y);
+
+  <ins>template &lt;class T, class D&gt;</ins>
+  <ins>bool operator==(const unique_ptr&lt;T, D&gt;&amp; x, nullptr_t) noexcept;</ins>
+  <ins>template &lt;class T, class D&gt;</ins>
+  <ins>bool operator==(nullptr_t, const unique_ptr&lt;T, D&gt;&amp; x) noexcept;</ins>
+  <ins>template &lt;class T, class D&gt;</ins>
+  <ins>bool operator!=(const unique_ptr&lt;T, D&gt;&amp; x, nullptr_t) noexcept;</ins>
+  <ins>template &lt;class T, class D&gt;</ins>
+  <ins>bool operator!=(nullptr_t, const unique_ptr&lt;T, D&gt;&amp; x) noexcept;</ins>
+  <ins>template &lt;class T, class D&gt;</ins>
+  <ins>bool operator&lt;(const unique_ptr&lt;T, D&gt;&amp; x, nullptr_t);</ins>
+  <ins>template &lt;class T, class D&gt;</ins>
+  <ins>bool operator&lt;(nullptr_t, const unique_ptr&lt;T, D&gt;&amp; x);</ins>
+  <ins>template &lt;class T, class D&gt;</ins>
+  <ins>bool operator&lt;=(const unique_ptr&lt;T, D&gt;&amp; x, nullptr_t);</ins>
+  <ins>template &lt;class T, class D&gt;</ins>
+  <ins>bool operator&lt;=(nullptr_t, const unique_ptr&lt;T, D&gt;&amp; x);</ins>
+  <ins>template &lt;class T, class D&gt;</ins>
+  <ins>bool operator&gt;(const unique_ptr&lt;T, D&gt;&amp; x, nullptr_t);</ins>
+  <ins>template &lt;class T, class D&gt;</ins>
+  <ins>bool operator&gt;(nullptr_t, const unique_ptr&lt;T, D&gt;&amp; x);</ins>
+  <ins>template &lt;class T, class D&gt;</ins>
+  <ins>bool operator&gt;=(const unique_ptr&lt;T, D&gt;&amp; x, nullptr_t);</ins>
+  <ins>template &lt;class T, class D&gt;</ins>
+  <ins>bool operator&gt;=(nullptr_t, const unique_ptr&lt;T, D&gt;&amp; x);</ins>
+
+}
+</pre></blockquote>
+</li>
+<li>Add the following series of prototype specifications at the very end of <sref ref="[unique.ptr.special]"/>.
+Intentionally, the relational operators are defined individually, because there is no guarantee that
+from <tt>x.get() &lt; nullptr</tt> follows the relation <tt>nullptr &gt; x.get()</tt>:
+<blockquote><pre>
+<ins>template &lt;class T, class D&gt;</ins>
+<ins>bool operator==(const unique_ptr&lt;T, D&gt;&amp; x, nullptr_t) noexcept;</ins>
+<ins>template &lt;class T, class D&gt;</ins>
+<ins>bool operator==(nullptr_t, const unique_ptr&lt;T, D&gt;&amp; x) noexcept;</ins>
+</pre><blockquote>
+<ins>? <em>Returns</em>: <tt>!x</tt>.</ins>
+</blockquote></blockquote>
+
+<blockquote><pre>
+<ins>template &lt;class T, class D&gt;</ins>
+<ins>bool operator!=(const unique_ptr&lt;T, D&gt;&amp; x, nullptr_t) noexcept;</ins>
+<ins>template &lt;class T, class D&gt;</ins>
+<ins>bool operator!=(nullptr_t, const unique_ptr&lt;T, D&gt;&amp; x) noexcept;</ins>
+</pre><blockquote>
+<ins>? <em>Returns</em>: <tt>(bool) x</tt>.</ins>
+</blockquote></blockquote>
+
+<blockquote><pre>
+<ins>template &lt;class T, class D&gt;</ins>
+<ins>bool operator&lt;(const unique_ptr&lt;T, D&gt;&amp; x, nullptr_t);</ins>
+</pre><blockquote>
+<ins>? <em>Returns</em>: <tt>x.get() &lt; nullptr</tt>.</ins>
+</blockquote></blockquote>
+
+<blockquote><pre>
+<ins>template &lt;class T, class D&gt;</ins>
+<ins>bool operator&lt;(nullptr_t, const unique_ptr&lt;T, D&gt;&amp; x);</ins>
+</pre><blockquote>
+<ins>? <em>Returns</em>: <tt>nullptr &lt; x.get()</tt>.</ins>
+</blockquote></blockquote>
+
+<blockquote><pre>
+<ins>template &lt;class T, class D&gt;</ins>
+<ins>bool operator&lt;=(const unique_ptr&lt;T, D&gt;&amp; x, nullptr_t);</ins>
+</pre><blockquote>
+<ins>? <em>Returns</em>: <tt>x.get() &lt;= nullptr</tt>.</ins>
+</blockquote></blockquote>
+
+<blockquote><pre>
+<ins>template &lt;class T, class D&gt;</ins>
+<ins>bool operator&lt;=(nullptr_t, const unique_ptr&lt;T, D&gt;&amp; x);</ins>
+</pre><blockquote>
+<ins>? <em>Returns</em>: <tt>nullptr &lt;= x.get()</tt>.</ins>
+</blockquote></blockquote>
+
+<blockquote><pre>
+<ins>template &lt;class T, class D&gt;</ins>
+<ins>bool operator&gt;(const unique_ptr&lt;T, D&gt;&amp; x, nullptr_t);</ins>
+</pre><blockquote>
+<ins>? <em>Returns</em>: <tt>x.get() &gt; nullptr</tt>.</ins>
+</blockquote></blockquote>
+
+<blockquote><pre>
+<ins>template &lt;class T, class D&gt;</ins>
+<ins>bool operator&gt;(nullptr_t, const unique_ptr&lt;T, D&gt;&amp; x);</ins>
+</pre><blockquote>
+<ins>? <em>Returns</em>: <tt>nullptr &gt; x.get()</tt>.</ins>
+</blockquote></blockquote>
+
+<blockquote><pre>
+<ins>template &lt;class T, class D&gt;</ins>
+<ins>bool operator&gt;=(const unique_ptr&lt;T, D&gt;&amp; x, nullptr_t);</ins>
+</pre><blockquote>
+<ins>? <em>Returns</em>: <tt>x.get() &gt;= nullptr</tt>.</ins>
+</blockquote></blockquote>
+
+<blockquote><pre>
+<ins>template &lt;class T, class D&gt;</ins>
+<ins>bool operator&gt;=(nullptr_t, const unique_ptr&lt;T, D&gt;&amp; x);</ins>
+</pre><blockquote>
+<ins>? <em>Returns</em>: <tt>nullptr &gt;= x.get()</tt>.</ins>
+</blockquote></blockquote>
+</li>
+<li>Change <sref ref="[util.smartptr.shared]"/> p. 1, class template shared_ptr 
+synopsis as indicated. For consistency reasons the remaining normal relation
+operators are added as well:
+<blockquote><pre>
+namespace std {
+  [..]
+  // <em>20.9.11.2.7, shared_ptr comparisons:</em>
+  template&lt;class T, class U&gt;
+  bool operator==(const shared_ptr&lt;T&gt;&amp; a, const shared_ptr&lt;U&gt;&amp; b);
+  template&lt;class T, class U&gt;
+  bool operator!=(const shared_ptr&lt;T&gt;&amp; a, const shared_ptr&lt;U&gt;&amp; b);
+  template&lt;class T, class U&gt;
+  bool operator&lt;(const shared_ptr&lt;T&gt;&amp; a, const shared_ptr&lt;U&gt;&amp; b);
+  <ins>template&lt;class T, class U&gt;</ins>
+  <ins>bool operator&gt;(const shared_ptr&lt;T&gt;&amp; a, const shared_ptr&lt;U&gt;&amp; b) noexcept;</ins>
+  <ins>template&lt;class T, class U&gt;</ins>
+  <ins>bool operator&lt;=(const shared_ptr&lt;T&gt;&amp; a, const shared_ptr&lt;U&gt;&amp; b) noexcept;</ins>
+  <ins>template&lt;class T, class U&gt;</ins>
+  <ins>bool operator&gt;=(const shared_ptr&lt;T&gt;&amp; a, const shared_ptr&lt;U&gt;&amp; b) noexcept;</ins>
+
+  <ins>template&lt;class T&gt;</ins>
+  <ins>bool operator==(const shared_ptr&lt;T&gt;&amp; a, nullptr_t) noexcept;</ins>
+  <ins>template&lt;class T&gt;</ins>
+  <ins>bool operator==(nullptr_t, const shared_ptr&lt;T&gt;&amp; a) noexcept;</ins>
+  <ins>template&lt;class T&gt;</ins>
+  <ins>bool operator!=(const shared_ptr&lt;T&gt;&amp; a, nullptr_t) noexcept;</ins>
+  <ins>template&lt;class T&gt;</ins>
+  <ins>bool operator!=(nullptr_t, const shared_ptr&lt;T&gt;&amp; a) noexcept;</ins>
+  <ins>template&lt;class T&gt;</ins>
+  <ins>bool operator&lt;(const shared_ptr&lt;T&gt;&amp; a, nullptr_t) noexcept;</ins>
+  <ins>template&lt;class T&gt;</ins>
+  <ins>bool operator&lt;(nullptr_t, const shared_ptr&lt;T&gt;&amp; a) noexcept;</ins>
+  <ins>template&gt;class T&gt;</ins>
+  <ins>bool operator&gt;(const shared_ptr&lt;T&gt;&amp; a, nullptr_t) noexcept;</ins>
+  <ins>template&gt;class T&gt;</ins>
+  <ins>bool operator&gt;(nullptr_t, const shared_ptr&lt;T&gt;&amp; a) noexcept;</ins>
+  <ins>template&lt;class T&gt;</ins>
+  <ins>bool operator&lt;=(const shared_ptr&lt;T&gt;&amp; a, nullptr_t) noexcept;</ins>
+  <ins>template&lt;class T&gt;</ins>
+  <ins>bool operator&lt;=(nullptr_t, const shared_ptr&lt;T&gt;&amp; a) noexcept;</ins>
+  <ins>template&gt;class T&gt;</ins>
+  <ins>bool operator&gt;=(const shared_ptr&lt;T&gt;&amp; a, nullptr_t) noexcept;</ins>
+  <ins>template&gt;class T&gt;</ins>
+  <ins>bool operator&gt;=(nullptr_t, const shared_ptr&lt;T&gt;&amp; a) noexcept;</ins>
+
+  [..]
+}
+</pre></blockquote>
+</li>
+<li>Add the following series of prototype specifications at the very end of <sref ref="[util.smartptr.shared.cmp]"/>.
+For mixed comparison the general &quot;generation&quot; rule of <sref ref="[operators]"/> p. 10 does not apply, 
+therefore all of them are defined:
+<blockquote><pre>
+<ins>template&lt;class T&gt;</ins>
+<ins>bool operator==(const shared_ptr&lt;T&gt;&amp; a, nullptr_t) noexcept;</ins>
+<ins>template&lt;class T&gt;</ins>
+<ins>bool operator==(nullptr_t, const shared_ptr&lt;T&gt;&amp; a) noexcept;</ins>
+</pre><blockquote>
+<ins>? <em>Returns</em>: <tt>!a</tt>.</ins>
+</blockquote></blockquote>
+
+<blockquote><pre>
+<ins>template&lt;class T&gt;</ins>
+<ins>bool operator!=(const shared_ptr&lt;T&gt;&amp; a, nullptr_t) noexcept;</ins>
+<ins>template&lt;class T&gt;</ins>
+<ins>bool operator!=(nullptr_t, const shared_ptr&lt;T&gt;&amp; a) noexcept;</ins>
+</pre><blockquote>
+<ins>? <em>Returns</em>: <tt>(bool) a</tt>.</ins>
+</blockquote></blockquote>
+
+<blockquote><pre>
+<ins>template&lt;class T&gt;</ins>
+<ins>bool operator&lt;(const shared_ptr&lt;T&gt;&amp; a, nullptr_t) noexcept;</ins>
+<ins>template&lt;class T&gt;</ins>
+<ins>bool operator&gt;(nullptr_t, const shared_ptr&lt;T&gt;&amp; a) noexcept;</ins>
+</pre><blockquote>
+<ins>? <em>Returns</em>: <tt>less&lt;T*&gt;()(a.get(), nullptr)</tt>.</ins>
+</blockquote></blockquote>
+
+<blockquote><pre>
+<ins>template&lt;class T&gt;</ins>
+<ins>bool operator&lt;(nullptr_t, const shared_ptr&lt;T&gt;&amp; a) noexcept;</ins>
+<ins>template&lt;class T&gt;</ins>
+<ins>bool operator&gt;(const shared_ptr&lt;T&gt;&amp; a, nullptr_t) noexcept;</ins>
+</pre><blockquote>
+<ins>? <em>Returns</em>: <tt>less&lt;T*&gt;()(nullptr, a.get())</tt>.</ins>
+</blockquote></blockquote>
+
+<blockquote><pre>
+<ins>template&lt;class T&gt;</ins>
+<ins>bool operator&lt;=(const shared_ptr&lt;T&gt;&amp; a, nullptr_t) noexcept;</ins>
+<ins>template&lt;class T&gt;</ins>
+<ins>bool operator&gt;=(nullptr_t, const shared_ptr&lt;T&gt;&amp; a) noexcept;</ins>
+</pre><blockquote>
+<ins>? <em>Returns</em>: <tt>!(nullptr &lt; a)</tt>.</ins>
+</blockquote></blockquote>
+
+<blockquote><pre>
+<ins>template&lt;class T&gt;</ins>
+<ins>bool operator&lt;=(nullptr_t, const shared_ptr&lt;T&gt;&amp; a) noexcept;</ins>
+<ins>template&lt;class T&gt;</ins>
+<ins>bool operator&gt;=(const shared_ptr&lt;T&gt;&amp; a, nullptr_t) noexcept;</ins>
+</pre><blockquote>
+<ins>? <em>Returns</em>: <tt>!(a &lt; nullptr)</tt>.</ins>
+</blockquote></blockquote>
+
+</li>
+</ol>
 </resolution>
 
 </issue>
