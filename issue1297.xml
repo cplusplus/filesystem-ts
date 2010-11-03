@@ -34,6 +34,19 @@ For consistency reasons I would have preferred the same normalization strategy
 for <tt>==</tt> and <tt>!=</tt>, but Howard convinced me not to do so (now).
 </p>
 
+<note>
+2010-11-03 Daniel comments and adjustes the currently proposed wording changes:
+</note>
+
+<p>
+Issue <iref ref="1401"/> is remotely related. <a href="#1401_extra_bullet">Bullet A</a> of its proposed resolution 
+provides an alternative solution for issue discussed here and addresses NB comment GB-99.
+Additionally I updated the below suggested wording in regard to the following:
+It is an unncessary requirement that the below defined effective composite pointer-like
+type <tt>CT</tt> satisfies the <tt>LessThanComparable</tt> requirements. All what is 
+needed is, that the function object type <tt>less&lt;CT&gt;</tt> induces a strict
+weak ordering.
+</p>
 </discussion>
 
 <resolution>
@@ -56,7 +69,8 @@ template &lt;class T1, class D1, class T2, class D2&gt;
 <p>
 <ins><i>Requires:</i> Let <tt>CT</tt> be <tt>common_type&lt;unique_ptr&lt;T1,
 D1&gt;::pointer, unique_ptr&lt;T2, D2&gt;::pointer&gt;::type</tt>. Then
-<tt>CT</tt> shall satisfy the <tt>LessThanComparable</tt> requirements.</ins>
+the specialization <tt>less&lt;CT&gt</tt> shall be a function object type ([function.objects]) 
+that induces a strict weak ordering as defined in [alg.sorting].</ins>
 </p>
 
 <p>
