@@ -24,9 +24,53 @@ helpful if at least these anticipated cases produced a
 defined behaviour, either an erroneous program with
 diagnostic, or a conversion to unsigned int forwarding to
 the appropriate constructor.
+
+<note>
+2010-11-03 Daniel comments and provides a proposed resolution:
+</note>
+
+<p>
+I suggest to apply a similar solution as recently suggested for <iref ref="1234"/>.
+It is basically a requirement for an implementation to constrain the template.
+</p>
+
 </discussion>
 
 <resolution>
+Add the following paragraph at the end of <sref ref="[rand.eng]"/>:
+<blockquote>
+<blockquote>
+5 Each template specified in this section [rand.eng] requires one or more relationships, involving the value(s) of
+its non-type template parameter(s), to hold. A program instantiating any of these templates is ill-formed if
+any such required relationship fails to hold.
+</blockquote>
+
+<blockquote>
+<ins>? For every random number engine and for every random number engine adaptor <tt>X</tt> defined in this sub-clause 
+[rand.eng] and in sub-clause [rand.adapt]:</ins>
+<ul>
+<li><ins>If the constructor</ins>
+<blockquote><pre>
+<ins>template&lt;class Sseq&gt; explicit X(Sseq&amp; q);</ins>
+</pre></blockquote>
+<ins>is called with a type <tt>Sseq</tt> that does not qualify as a seed sequence, then this constructor 
+shall not participate in overload resolution.
+</ins>
+</li>
+<li><ins>If the member function</ins>
+<blockquote><pre>
+<ins>template&lt;class Sseq&gt; void seed(Sseq&amp; q);</ins>
+</pre></blockquote>
+<ins>is called with a type <tt>Sseq</tt> that does not qualify as a seed sequence, then this function 
+shall not participate in overload resolution.
+</ins>
+</li>
+</ul>
+<ins>The extent to which an implementation determines that a type cannot be an seed sequence is unspecified,
+except that as a minimum scalar types ([basic.types]) shall not qualify as seed sequence.</ins>
+</blockquote>
+
+</blockquote>
 </resolution>
 
 </issue>

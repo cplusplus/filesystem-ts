@@ -10,6 +10,8 @@
 <date>16 Oct 2010</date>
 
 <discussion>
+<p><b>Addresses US-104, US-141</b></p>
+
 <p>
 The standard doesn't say that containers should use abstract pointer 
 types internally. Both Howard and Pablo agree that this is the intent. 
@@ -37,7 +39,8 @@ references at all.
 Pre-batavia
 </note>
 <p>
-This issue is being opened as part of the response to NB comments US-104/141. See paper <a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2010/n3171.pdf">N3171</a>
+This issue is being opened as part of the response to NB comments US-104/141. 
+See paper <a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2010/n3171.pdf">N3171</a>
 in the pre-Batavia mailing. 
 </p>
 
@@ -45,11 +48,14 @@ in the pre-Batavia mailing.
 
 <resolution>
 <p>
-Add to the end of 23.2.1 [container.requirements.general] p8:
+Add to the end of <sref ref="[container.requirements.general]"/> p. 8:
 </p>
 <blockquote>
-The container may not store internal objects whose types are of the form 
-<tt>T *</tt> or <tt>T &amp;</tt> except insofar as they are part of the item type or members.
+[..] In all container types defined in this Clause, the member <tt>get_allocator()</tt> returns 
+a copy of the allocator used to construct the container or, if that allocator has been replaced, 
+a copy of the most recent replacement. <ins>The container may not store internal objects whose 
+types are of the form  <tt>T *</tt> or <tt>T &amp;</tt> except insofar as they are part of the 
+item type or members.</ins>
 </blockquote>
 </resolution>
 

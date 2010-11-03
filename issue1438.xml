@@ -21,9 +21,64 @@ Resolution proposed by ballot comment:
 Give it the obvious definition.
 </blockquote>
 
+<note>
+2010-11-03 Daniel comments and provides a proposed resolution:
+</note>
+
+<p>The following proposal adds <tt>noexcept</tt> specifiers to the declarations of
+the <tt>base()</tt> functions as replacement for a &quot;<i>Throws</i>: Nothing&quot; element.
+</p>
+
 </discussion>
 
 <resolution>
+<ol>
+<li>Change in [rand.adapt.disc]/3, class template <tt>discard_block_engine</tt> synopsis, the following declaration:
+<blockquote><pre>
+// <em>property functions</em>
+const Engine&amp; base() const <ins>noexcept</ins>;
+</pre></blockquote>
+</li>
+<li>Add the following new prototype description at the end of sub-clause [rand.adapt.disc]:
+<blockquote>
+<pre><ins>const Engine&amp; base() const noexcept;</ins>
+</pre>
+<blockquote>
+<ins>? <i>Returns</i>: <tt>e</tt>.</ins>
+</blockquote>
+</blockquote>
+</li>
+<li>Change in [rand.adapt.ibits]/4, class template <tt>independent_bits_engine</tt> synopsis, the following declaration:
+<blockquote><pre>
+// <em>property functions</em>
+const Engine&amp; base() const <ins>noexcept</ins>;
+</pre></blockquote>
+</li>
+<li>Add the following new prototype description at the end of sub-clause [rand.adapt.ibits]:
+<blockquote>
+<pre><ins>const Engine&amp; base() const noexcept;</ins>
+</pre>
+<blockquote>
+<ins>? <i>Returns</i>: <tt>e</tt>.</ins>
+</blockquote>
+</blockquote>
+</li>
+<li>Change in [rand.adapt.shuf]/3, class template <tt>shuffle_order_engine</tt> synopsis, the following declaration:
+<blockquote><pre>
+// <em>property functions</em>
+const Engine&amp; base() const <ins>noexcept</ins>;
+</pre></blockquote>
+</li>
+<li>Add the following new prototype description at the end of sub-clause [rand.adapt.shuf]:
+<blockquote>
+<pre><ins>const Engine&amp; base() const noexcept;</ins>
+</pre>
+<blockquote>
+<ins>? <i>Returns</i>: <tt>e</tt>.</ins>
+</blockquote>
+</blockquote>
+</li>
+</ol>
 </resolution>
 
 </issue>
