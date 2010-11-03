@@ -55,7 +55,10 @@ if null pointer values meet other pointer values, even though the result is unsp
 for all except some trivial ones. But null pointer values are nothing special here: 
 The Library already defines the relational operators for both <tt>unique_ptr</tt> and 
 <tt>shared_ptr</tt> and the outcome of comparing non-null pointer values will be equally 
-unspecified. 
+unspecified. If the idea of supporting <tt>nullptr_t</tt> arguments for relational
+operators is not what the committee prefers, I suggest at least to consider to remove 
+the existing relational operators for both <tt>unique_ptr</tt> and <tt>shared_ptr</tt>
+for consistency. But that would not be my preferred resolution of this issue.
 <p/>
 The number of overloads triple the current number, but I think it is much clearer to 
 provide them explicitly instead of adding wording that attempts to say that "sufficient overloads" are
@@ -64,6 +67,17 @@ provided. The following proposal makes the declarations explicit.
 Additionally, the proposal adds the missing declarations for some <tt>shared_ptr</tt>
 comparison functions for consistency.
 </blockquote>
+
+<note>
+2010-11-03 Daniel adds:
+</note>
+
+<p>
+Issue <iref ref="1297"/> is remotely related. The following proposed resolution splits
+<a href="#1401_extra_bullet">this bullet</a> into sub-bullets A and B. Sub-bullet A would 
+also solve <iref ref="1297"/>, but sub-bullet B would not.
+</p>
+
 </discussion>
 
 <resolution>
@@ -73,8 +87,7 @@ Wording changes are against N3126.
 <li>Change <sref ref="[memory]"/> p. 1, header <tt>&lt;memory&gt;</tt> synopsis as indicated.
 <tt>noexcept</tt> specifications are only added, where the guarantee exists, that the function
 shall no throw an exception (as replacement of &quot;<em>Throws</em>: Nothing&quot;. This needs 
-to be harmonized with the result of the <tt>noexcept</tt>
-proposals:
+to be harmonized with the result of the <tt>noexcept</tt> proposals:
 <blockquote><pre>
 namespace std {
   [..]
@@ -217,7 +230,133 @@ namespace std {
 }
 </pre></blockquote>
 </li>
-<li>Add the following series of prototype specifications at the very end of <sref ref="[unique.ptr.special]"/>.
+<li><a name="1401_extra_bullet">This bullet splits into two sub-bullets A and B as mentioned in the discussion comment:</a>
+<ol style="list-style-type:upper-alpha">
+<li>Change <sref ref="[unique.ptr.special]"/>/4-7 as indicated and add a series of prototype
+descriptions:
+<blockquote><pre>
+template &lt;class T1, class D1, class T2, class D2&gt;
+  bool operator&lt;(const unique_ptr&lt;T1, D1&gt;&amp; x, const unique_ptr&lt;T2, D2&gt;&amp; y);
+</pre>
+
+<blockquote>
+<p>
+<ins><i>Requires:</i> Let <tt>CT</tt> be <tt>common_type&lt;unique_ptr&lt;T1,
+D1&gt;::pointer, unique_ptr&lt;T2, D2&gt;::pointer&gt;::type</tt>. Then
+the specialization <tt>less&lt;CT&gt</tt> shall be a function object type ([function.objects]) 
+that induces a strict weak ordering as defined in [alg.sorting].</ins>
+</p>
+
+<p>
+4 <i>Returns:</i> <tt><ins>less&lt;CT&gt;()(x.get(), y.get())</ins><del>x.get()
+&lt; y.get()</del></tt>.
+</p>
+
+<p>
+<ins><i>Remarks:</i> If <tt>unique_ptr&lt;T1, D1&gt;::pointer</tt> is not
+implicitly convertible to <tt>CT</tt> or <tt>unique_ptr&lt;T2,
+D2&gt;::pointer</tt> is not implicitly convertible to <tt>CT</tt>, the program
+is ill-formed.</ins>
+</p>
+</blockquote>
+
+<pre>
+template &lt;class T1, class D1, class T2, class D2&gt;
+  bool operator&lt;=(const unique_ptr&lt;T1, D1&gt;&amp; x, const unique_ptr&lt;T2, D2&gt;&amp; y);
+</pre>
+
+<blockquote>
+5 <i>Returns:</i> <tt><ins>!(y &lt; x)</ins><del>x.get() &lt;= y.get()</del></tt>.
+</blockquote>
+
+<pre>
+template &lt;class T1, class D1, class T2, class D2&gt;
+  bool operator&gt;(const unique_ptr&lt;T1, D1&gt;&amp; x, const unique_ptr&lt;T2, D2&gt;&amp; y);
+</pre>
+
+<blockquote>
+6 <i>Returns:</i> <tt><ins>(y &lt; x)</ins><del>x.get() &gt; y.get()</del></tt>.
+</blockquote>
+
+<pre>
+template &lt;class T1, class D1, class T2, class D2&gt;
+  bool operator&gt;=(const unique_ptr&lt;T1, D1&gt;&amp; x, const unique_ptr&lt;T2, D2&gt;&amp; y);
+</pre>
+
+<blockquote>
+7 <i>Returns:</i> <tt><ins>!(x &lt; y)</ins><del>x.get() &gt;= y.get()</del></tt>.
+</blockquote>
+</blockquote>
+
+<blockquote><pre>
+<ins>template &lt;class T, class D&gt;</ins>
+<ins>bool operator==(const unique_ptr&lt;T, D&gt;&amp; x, nullptr_t) noexcept;</ins>
+<ins>template &lt;class T, class D&gt;</ins>
+<ins>bool operator==(nullptr_t, const unique_ptr&lt;T, D&gt;&amp; x) noexcept;</ins>
+</pre><blockquote>
+<ins>? <em>Returns</em>: <tt>!x</tt>.</ins>
+</blockquote></blockquote>
+
+<blockquote><pre>
+<ins>template &lt;class T, class D&gt;</ins>
+<ins>bool operator!=(const unique_ptr&lt;T, D&gt;&amp; x, nullptr_t) noexcept;</ins>
+<ins>template &lt;class T, class D&gt;</ins>
+<ins>bool operator!=(nullptr_t, const unique_ptr&lt;T, D&gt;&amp; x) noexcept;</ins>
+</pre><blockquote>
+<ins>? <em>Returns</em>: <tt>(bool) x</tt>.</ins>
+</blockquote></blockquote>
+
+<blockquote><pre>
+<ins>template &lt;class T, class D&gt;</ins>
+<ins>bool operator&lt;(const unique_ptr&lt;T, D&gt;&amp; x, nullptr_t);</ins>
+<ins>template &lt;class T, class D&gt;</ins>
+<ins>bool operator&gt;(nullptr_t, const unique_ptr&lt;T, D&gt;&amp; x);</ins>
+</pre>
+<blockquote>
+<ins><i>Requires:</i> The specialization <tt>less&lt;unique_ptr&lt;T, D&gt;::pointer&gt</tt> 
+shall be a function object type ([function.objects]) that induces a strict weak ordering as 
+defined in [alg.sorting].</ins>
+</blockquote>
+<blockquote>
+<ins>? <em>Returns</em>: <tt>less&lt;unique_ptr&lt;T, D&gt;::pointer&gt;()(x.get(), nullptr)</tt>.</ins>
+</blockquote></blockquote>
+
+<blockquote><pre>
+<ins>template &lt;class T, class D&gt;</ins>
+<ins>bool operator&lt;(nullptr_t, const unique_ptr&lt;T, D&gt;&amp; x);</ins>
+<ins>template &lt;class T, class D&gt;</ins>
+<ins>bool operator&gt;(const unique_ptr&lt;T, D&gt;&amp; x, nullptr_t);</ins>
+</pre>
+<blockquote>
+<ins><i>Requires:</i> The specialization <tt>less&lt;unique_ptr&lt;T, D&gt;::pointer&gt</tt> 
+shall be a function object type ([function.objects]) that induces a strict weak ordering as 
+defined in [alg.sorting].</ins>
+</blockquote>
+<blockquote>
+<ins>? <em>Returns</em>: <tt>less&lt;unique_ptr&lt;T, D&gt;::pointer&gt;()(nullptr, x.get())</tt>.</ins>
+</blockquote></blockquote>
+
+<blockquote><pre>
+<ins>template &lt;class T, class D&gt;</ins>
+<ins>bool operator&lt;=(const unique_ptr&lt;T, D&gt;&amp; x, nullptr_t);</ins>
+<ins>template &lt;class T, class D&gt;</ins>
+<ins>bool operator&gt;=(nullptr_t, const unique_ptr&lt;T, D&gt;&amp; x);</ins>
+</pre><blockquote>
+<ins>? <em>Returns</em>: <tt>!(nullptr &lt; x)</tt>.</ins>
+</blockquote></blockquote>
+
+<blockquote><pre>
+<ins>template &lt;class T, class D&gt;</ins>
+<ins>bool operator&lt;=(nullptr_t, const unique_ptr&lt;T, D&gt;&amp; x);</ins>
+<ins>template &lt;class T, class D&gt;</ins>
+<ins>bool operator&gt;=(const unique_ptr&lt;T, D&gt;&amp; x, nullptr_t);</ins>
+</pre><blockquote>
+<ins>? <em>Returns</em>: <tt>!(x &lt; nullptr)</tt>.</ins>
+</blockquote></blockquote>
+
+</li>
+<li>
+Add the following series of prototype specifications at the very end of <sref ref="[unique.ptr.special]"/>.
 Intentionally, the relational operators are defined individually, because there is no guarantee that
 from <tt>x.get() &lt; nullptr</tt> follows the relation <tt>nullptr &gt; x.get()</tt>:
 <blockquote><pre>
@@ -294,6 +433,8 @@ from <tt>x.get() &lt; nullptr</tt> follows the relation <tt>nullptr &gt; x.get()
 <ins>? <em>Returns</em>: <tt>nullptr &gt;= x.get()</tt>.</ins>
 </blockquote></blockquote>
 </li>
+</ol>
+</li>
 <li>Change <sref ref="[util.smartptr.shared]"/> p. 1, class template shared_ptr 
 synopsis as indicated. For consistency reasons the remaining normal relation
 operators are added as well:
@@ -345,7 +486,8 @@ namespace std {
 </li>
 <li>Add the following series of prototype specifications at the very end of <sref ref="[util.smartptr.shared.cmp]"/>.
 For mixed comparison the general &quot;generation&quot; rule of <sref ref="[operators]"/> p. 10 does not apply, 
-therefore all of them are defined:
+therefore all of them are defined. Below wording takes advantage of the simplified definition of the
+<em>composite pointer type</em> if one partner is a null pointer constant:
 <blockquote><pre>
 <ins>template&lt;class T&gt;</ins>
 <ins>bool operator==(const shared_ptr&lt;T&gt;&amp; a, nullptr_t) noexcept;</ins>
