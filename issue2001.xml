@@ -19,38 +19,80 @@ header or the <tt>&lt;initializer_list&gt;</tt> header included by <tt>&lt;regex
 </p>
 
 <note>
-2010-11-02 Daniel comments:
+2010-11-03 Daniel comments and suggests alternative wording:
 </note>
 <blockquote>
 The proposed resolution needs to use <tt>basic_string&lt;<strong>charT</strong>&gt;</tt> instead of <tt>basic_string&lt;char&gt;</tt>
 </blockquote>
+
+<p>Proposed Resolution:</p>
+
+Make the following changes to [re.regex.assign]:<p/>
+
+<blockquote>
+<pre>
+basic_regex&amp; assign(const charT* ptr, flag_type f = regex_constants::ECMAScript);
+</pre>
+<blockquote>
+12 <i>Returns</i>: <tt>assign(<del>string_type</del><ins>basic_string&lt;charT&gt;</ins>(ptr), f)</tt>. 
+</blockquote>
+
+<pre>
+basic_regex&amp; assign(const charT* ptr, size_t len,
+  flag_type f = regex_constants::ECMAScript);
+</pre>
+<blockquote>
+13 <i>Returns</i>: <tt>assign(<del>string_type</del><ins>basic_string&lt;charT&gt;</ins>(ptr, len), f)</tt>.
+</blockquote>
+
+<pre>
+[..]
+
+template &lt;class InputIterator&gt; 
+  basic_regex&amp; assign(InputIterator first, InputIterator last, 
+                          flag_type f = regex_constants::ECMAScript);
+</pre>
+
+<blockquote>
+18 <i>Requires</i>: The type <tt>InputIterator</tt> shall satisfy the requirements for an Input Iterator (24.2.3).
+</blockquote>
+
+<blockquote>
+19 <i>Returns</i>: <tt>assign(<del>string_type</del><ins>basic_string&lt;charT&gt;</ins>(first, last), f)</tt>.
+</blockquote>
+
+</blockquote>
+
 </discussion>
 
 <resolution>
 <p>
-Make the following changes to [re.regex.assign]</p>
+Make the following changes to [re.regex.assign]:</p>
 
 <blockquote>
+
 <pre>
-<tt>basic_regex&amp; assign(const charT* ptr, flag_type f = regex_constants::ECMAScript);</tt>
+basic_regex&amp; assign(const charT* ptr, flag_type f = regex_constants::ECMAScript);
 </pre>
 <blockquote>
 12 <i>Returns</i>: <tt>assign(<del>string_type</del><ins>basic_string&lt;char&gt;</ins>(ptr), f)</tt>. 
 </blockquote>
 
-<pre><tt>
+<pre>
 basic_regex&amp; assign(const charT* ptr, size_t len,
   flag_type f = regex_constants::ECMAScript);
-</tt></pre>
+</pre>
 <blockquote>
 13 <i>Returns</i>: <tt>assign(<del>string_type</del><ins>basic_string&lt;char&gt;</ins>(ptr, len), f)</tt>.
 </blockquote>
 
-<pre><tt>
+<pre>
+[..]
+
 template &lt;class InputIterator&gt; 
   basic_regex&amp; assign(InputIterator first, InputIterator last, 
                           flag_type f = regex_constants::ECMAScript);
-</tt></pre>
+</pre>
 
 <blockquote>
 18 <i>Requires</i>: The type <tt>InputIterator</tt> shall satisfy the requirements for an Input Iterator (24.2.3).
