@@ -31,9 +31,43 @@ iterators as-if they were random access iterators, despite having the wrong
 reference type.
 </p>
 
+<note>
+Rapperswil Review
+</note>
+<p>
+The consensus at Rapperswil is that it is too late for full support for
+proxy iterators, but requiring the library to respect <tt>vector&;t;bool></tt>
+iterators as-if they were random access would be preferable to flagging
+this container as deliberately incompatible with standard library algorithms.
+</p>
+<p>
+Alisdair to write the note, which may become normative <i>Remark</i> depending
+on the preferences of the project editor.
+</p>
+
+<note>
+Post-Rapperswil Alisdair provides wording
+</note>
+<p>
+Initial wording is supplied, deliberately using <i>Note</i> in preference to
+<i>Remark</i> although the author notes his preference for <i>Remark</i>.  The
+issue of whether <tt>iterator_traits&lt;vector&lt;bool>>::iteratator_category</tt>
+is permitted to report <tt>random_access_iterator_tag</tt> or must report 
+<tt>input_iterator_tag</tt> is not addressed.
+</p>
+
 </discussion>
 
 <resolution>
+<p>
+Insert a new paragraph into [vector.bool] between p4 and p5:
+</p>
+<blockquote>
+[<i>Note</i> All functions in the library that take a pair of iterators to
+denote a range shall treat <tt>vector&lt;bool></tt> iterators as-if they were
+random access iterators, even though the <tt>reference</tt> type is not a
+true reference.<i>-- end note</i>]
+</blockquote>
 </resolution>
 
 </issue>
