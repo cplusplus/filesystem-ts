@@ -34,6 +34,14 @@ I suggest to apply a similar solution as recently suggested for <iref ref="1234"
 It is basically a requirement for an implementation to constrain the template.
 </p>
 
+<note>
+2010-11-04 Howard suggests to use <tt>!is_convertible&lt;Sseq, result_type&gt;::value</tt>
+as minimum requirement instead of the originally proposed <tt>!is_scalar&lt;Sseq&gt;::value</tt>.
+This would allow for a user-defined type <tt>BigNum</tt>, that is convertible to <tt>result_type</tt>,
+to be used as argument for a seed instead of a seed sequence. The wording has been updated to 
+reflect this suggestion.
+</note>
+
 </discussion>
 
 <resolution>
@@ -67,7 +75,8 @@ shall not participate in overload resolution.
 </li>
 </ul>
 <ins>The extent to which an implementation determines that a type cannot be an seed sequence is unspecified,
-except that as a minimum scalar types ([basic.types]) shall not qualify as seed sequence.</ins>
+except that as a minimum a type <tt>Sseq</tt> shall not qualify as seed sequence, if it is implicitly convertible
+to <tt>X::result_type</tt>.</ins>
 </blockquote>
 
 </blockquote>
