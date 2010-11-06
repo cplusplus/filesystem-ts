@@ -76,7 +76,32 @@ comparison functions for consistency.
 Issue <iref ref="1297"/> is remotely related. The following proposed resolution splits
 <a href="#1401_extra_bullet">this bullet</a> into sub-bullets A and B. Sub-bullet A would 
 also solve <iref ref="1297"/>, but sub-bullet B would not.
+<p/>
+A further remark in regard to the proposed semantics of the ordering of <tt>nullptr</tt>
+against other pointer(-like) values: One might think that the following definition might
+be superior because of simplicity:
+
+<blockquote><pre>
+template&lt;class T&gt;
+bool operator&lt;(const shared_ptr&lt;T&gt;&amp; a, nullptr_t);
+template&lt;class T&gt;
+bool operator&gt;(nullptr_t, const shared_ptr&lt;T&gt;&amp; a);
+</pre><blockquote>
+<i>Returns</i>: <tt>false</tt>.
+</blockquote></blockquote>
+
+The underlying idea behind this approach is the assumption that nullptr corresponds
+to the least ordinal pointer value. But this assertion does not hold for all supported
+architectures, therefore this approach was not followed because it would lead to
+the inconsistency, that the following assertion could fire: 
 </p>
+<blockquote><pre>
+shared_ptr&lt;int&gt; p(new int);
+shared_ptr&lt;int&gt; null;
+bool v1 = p &lt; nullptr;
+bool v2 = p &lt; null;
+assert(v1 == v2);
+</pre></blockquote>
 
 </discussion>
 
@@ -86,12 +111,12 @@ Wording changes are against N3126.
 <ol>
 <li>Change <sref ref="[memory]"/> p. 1, header <tt>&lt;memory&gt;</tt> synopsis as indicated.
 <tt>noexcept</tt> specifications are only added, where the guarantee exists, that the function
-shall no throw an exception (as replacement of &quot;<em>Throws</em>: Nothing&quot;. This needs 
+shall no throw an exception (as replacement of &quot;<i>Throws</i>: Nothing&quot;. This needs 
 to be harmonized with the result of the <tt>noexcept</tt> proposals:
 <blockquote><pre>
 namespace std {
   [..]
-  // <em>20.9.10 Class unique_ptr:</em>
+  // <i>20.9.10 Class unique_ptr:</i>
   template &lt;class T&gt; class default_delete;
   template &lt;class T&gt; class default_delete&lt;T[]&gt;;
   template &lt;class T, class D = default_delete&lt;T&gt;&gt; class unique_ptr;
@@ -135,13 +160,13 @@ namespace std {
   <ins>template &lt;class T, class D&gt;</ins>
   <ins>bool operator&gt;=(nullptr_t, const unique_ptr&lt;T, D&gt;&amp; x);</ins>
   
-  // <em>20.9.11.1, Class bad_weak_ptr:</em>
+  // <i>20.9.11.1, Class bad_weak_ptr:</i>
   class bad_weak_ptr;
 
-  // <em>20.9.11.2, Class template shared_ptr:</em>
+  // <i>20.9.11.2, Class template shared_ptr:</i>
   template&lt;class T&gt; class shared_ptr;
 
-  // <em>20.9.11.2.7, shared_ptr comparisons:</em>
+  // <i>20.9.11.2.7, shared_ptr comparisons:</i>
   template&lt;class T, class U&gt;
   bool operator==(shared_ptr&lt;T&gt; const&amp; a, shared_ptr&lt;U&gt; const&amp; b);
   template&lt;class T, class U&gt;
@@ -241,10 +266,10 @@ template &lt;class T1, class D1, class T2, class D2&gt;
 
 <blockquote>
 <p>
-<ins><i>Requires:</i> Let <tt>CT</tt> be <tt>common_type&lt;unique_ptr&lt;T1,
+<ins>? <i>Requires:</i> Let <tt>CT</tt> be <tt>common_type&lt;unique_ptr&lt;T1,
 D1&gt;::pointer, unique_ptr&lt;T2, D2&gt;::pointer&gt;::type</tt>. Then
 the specialization <tt>less&lt;CT&gt</tt> shall be a function object type ([function.objects]) 
-that induces a strict weak ordering as defined in [alg.sorting].</ins>
+that induces a strict weak ordering ([alg.sorting]) on the pointer values.</ins>
 </p>
 
 <p>
@@ -253,7 +278,7 @@ that induces a strict weak ordering as defined in [alg.sorting].</ins>
 </p>
 
 <p>
-<ins><i>Remarks:</i> If <tt>unique_ptr&lt;T1, D1&gt;::pointer</tt> is not
+<ins>? <i>Remarks:</i> If <tt>unique_ptr&lt;T1, D1&gt;::pointer</tt> is not
 implicitly convertible to <tt>CT</tt> or <tt>unique_ptr&lt;T2,
 D2&gt;::pointer</tt> is not implicitly convertible to <tt>CT</tt>, the program
 is ill-formed.</ins>
@@ -294,7 +319,7 @@ template &lt;class T1, class D1, class T2, class D2&gt;
 <ins>template &lt;class T, class D&gt;</ins>
 <ins>bool operator==(nullptr_t, const unique_ptr&lt;T, D&gt;&amp; x) noexcept;</ins>
 </pre><blockquote>
-<ins>? <em>Returns</em>: <tt>!x</tt>.</ins>
+<ins>? <i>Returns</i>: <tt>!x</tt>.</ins>
 </blockquote></blockquote>
 
 <blockquote><pre>
@@ -303,7 +328,7 @@ template &lt;class T1, class D1, class T2, class D2&gt;
 <ins>template &lt;class T, class D&gt;</ins>
 <ins>bool operator!=(nullptr_t, const unique_ptr&lt;T, D&gt;&amp; x) noexcept;</ins>
 </pre><blockquote>
-<ins>? <em>Returns</em>: <tt>(bool) x</tt>.</ins>
+<ins>? <i>Returns</i>: <tt>(bool) x</tt>.</ins>
 </blockquote></blockquote>
 
 <blockquote><pre>
@@ -313,12 +338,12 @@ template &lt;class T1, class D1, class T2, class D2&gt;
 <ins>bool operator&gt;(nullptr_t, const unique_ptr&lt;T, D&gt;&amp; x);</ins>
 </pre>
 <blockquote>
-<ins><i>Requires:</i> The specialization <tt>less&lt;unique_ptr&lt;T, D&gt;::pointer&gt</tt> 
-shall be a function object type ([function.objects]) that induces a strict weak ordering as 
-defined in [alg.sorting].</ins>
+<ins>? <i>Requires:</i> The specialization <tt>less&lt;unique_ptr&lt;T, D&gt;::pointer&gt</tt> 
+shall be a function object type ([function.objects]) that induces a strict weak ordering ([alg.sorting])
+on the pointer values.</ins>
 </blockquote>
 <blockquote>
-<ins>? <em>Returns</em>: <tt>less&lt;unique_ptr&lt;T, D&gt;::pointer&gt;()(x.get(), nullptr)</tt>.</ins>
+<ins>? <i>Returns</i>: <tt>less&lt;unique_ptr&lt;T, D&gt;::pointer&gt;()(x.get(), nullptr)</tt>.</ins>
 </blockquote></blockquote>
 
 <blockquote><pre>
@@ -328,12 +353,12 @@ defined in [alg.sorting].</ins>
 <ins>bool operator&gt;(const unique_ptr&lt;T, D&gt;&amp; x, nullptr_t);</ins>
 </pre>
 <blockquote>
-<ins><i>Requires:</i> The specialization <tt>less&lt;unique_ptr&lt;T, D&gt;::pointer&gt</tt> 
-shall be a function object type ([function.objects]) that induces a strict weak ordering as 
-defined in [alg.sorting].</ins>
+<ins>? <i>Requires:</i> The specialization <tt>less&lt;unique_ptr&lt;T, D&gt;::pointer&gt</tt> 
+shall be a function object type ([function.objects]) that induces a strict weak ordering ([alg.sorting])
+on the pointer values.</ins>
 </blockquote>
 <blockquote>
-<ins>? <em>Returns</em>: <tt>less&lt;unique_ptr&lt;T, D&gt;::pointer&gt;()(nullptr, x.get())</tt>.</ins>
+<ins>? <i>Returns</i>: <tt>less&lt;unique_ptr&lt;T, D&gt;::pointer&gt;()(nullptr, x.get())</tt>.</ins>
 </blockquote></blockquote>
 
 <blockquote><pre>
@@ -342,7 +367,7 @@ defined in [alg.sorting].</ins>
 <ins>template &lt;class T, class D&gt;</ins>
 <ins>bool operator&gt;=(nullptr_t, const unique_ptr&lt;T, D&gt;&amp; x);</ins>
 </pre><blockquote>
-<ins>? <em>Returns</em>: <tt>!(nullptr &lt; x)</tt>.</ins>
+<ins>? <i>Returns</i>: <tt>!(nullptr &lt; x)</tt>.</ins>
 </blockquote></blockquote>
 
 <blockquote><pre>
@@ -351,7 +376,7 @@ defined in [alg.sorting].</ins>
 <ins>template &lt;class T, class D&gt;</ins>
 <ins>bool operator&gt;=(const unique_ptr&lt;T, D&gt;&amp; x, nullptr_t);</ins>
 </pre><blockquote>
-<ins>? <em>Returns</em>: <tt>!(x &lt; nullptr)</tt>.</ins>
+<ins>? <i>Returns</i>: <tt>!(x &lt; nullptr)</tt>.</ins>
 </blockquote></blockquote>
 
 </li>
@@ -365,7 +390,7 @@ from <tt>x.get() &lt; nullptr</tt> follows the relation <tt>nullptr &gt; x.get()
 <ins>template &lt;class T, class D&gt;</ins>
 <ins>bool operator==(nullptr_t, const unique_ptr&lt;T, D&gt;&amp; x) noexcept;</ins>
 </pre><blockquote>
-<ins>? <em>Returns</em>: <tt>!x</tt>.</ins>
+<ins>? <i>Returns</i>: <tt>!x</tt>.</ins>
 </blockquote></blockquote>
 
 <blockquote><pre>
@@ -374,63 +399,63 @@ from <tt>x.get() &lt; nullptr</tt> follows the relation <tt>nullptr &gt; x.get()
 <ins>template &lt;class T, class D&gt;</ins>
 <ins>bool operator!=(nullptr_t, const unique_ptr&lt;T, D&gt;&amp; x) noexcept;</ins>
 </pre><blockquote>
-<ins>? <em>Returns</em>: <tt>(bool) x</tt>.</ins>
+<ins>? <i>Returns</i>: <tt>(bool) x</tt>.</ins>
 </blockquote></blockquote>
 
 <blockquote><pre>
 <ins>template &lt;class T, class D&gt;</ins>
 <ins>bool operator&lt;(const unique_ptr&lt;T, D&gt;&amp; x, nullptr_t);</ins>
 </pre><blockquote>
-<ins>? <em>Returns</em>: <tt>x.get() &lt; nullptr</tt>.</ins>
+<ins>? <i>Returns</i>: <tt>x.get() &lt; nullptr</tt>.</ins>
 </blockquote></blockquote>
 
 <blockquote><pre>
 <ins>template &lt;class T, class D&gt;</ins>
 <ins>bool operator&lt;(nullptr_t, const unique_ptr&lt;T, D&gt;&amp; x);</ins>
 </pre><blockquote>
-<ins>? <em>Returns</em>: <tt>nullptr &lt; x.get()</tt>.</ins>
+<ins>? <i>Returns</i>: <tt>nullptr &lt; x.get()</tt>.</ins>
 </blockquote></blockquote>
 
 <blockquote><pre>
 <ins>template &lt;class T, class D&gt;</ins>
 <ins>bool operator&lt;=(const unique_ptr&lt;T, D&gt;&amp; x, nullptr_t);</ins>
 </pre><blockquote>
-<ins>? <em>Returns</em>: <tt>x.get() &lt;= nullptr</tt>.</ins>
+<ins>? <i>Returns</i>: <tt>x.get() &lt;= nullptr</tt>.</ins>
 </blockquote></blockquote>
 
 <blockquote><pre>
 <ins>template &lt;class T, class D&gt;</ins>
 <ins>bool operator&lt;=(nullptr_t, const unique_ptr&lt;T, D&gt;&amp; x);</ins>
 </pre><blockquote>
-<ins>? <em>Returns</em>: <tt>nullptr &lt;= x.get()</tt>.</ins>
+<ins>? <i>Returns</i>: <tt>nullptr &lt;= x.get()</tt>.</ins>
 </blockquote></blockquote>
 
 <blockquote><pre>
 <ins>template &lt;class T, class D&gt;</ins>
 <ins>bool operator&gt;(const unique_ptr&lt;T, D&gt;&amp; x, nullptr_t);</ins>
 </pre><blockquote>
-<ins>? <em>Returns</em>: <tt>x.get() &gt; nullptr</tt>.</ins>
+<ins>? <i>Returns</i>: <tt>x.get() &gt; nullptr</tt>.</ins>
 </blockquote></blockquote>
 
 <blockquote><pre>
 <ins>template &lt;class T, class D&gt;</ins>
 <ins>bool operator&gt;(nullptr_t, const unique_ptr&lt;T, D&gt;&amp; x);</ins>
 </pre><blockquote>
-<ins>? <em>Returns</em>: <tt>nullptr &gt; x.get()</tt>.</ins>
+<ins>? <i>Returns</i>: <tt>nullptr &gt; x.get()</tt>.</ins>
 </blockquote></blockquote>
 
 <blockquote><pre>
 <ins>template &lt;class T, class D&gt;</ins>
 <ins>bool operator&gt;=(const unique_ptr&lt;T, D&gt;&amp; x, nullptr_t);</ins>
 </pre><blockquote>
-<ins>? <em>Returns</em>: <tt>x.get() &gt;= nullptr</tt>.</ins>
+<ins>? <i>Returns</i>: <tt>x.get() &gt;= nullptr</tt>.</ins>
 </blockquote></blockquote>
 
 <blockquote><pre>
 <ins>template &lt;class T, class D&gt;</ins>
 <ins>bool operator&gt;=(nullptr_t, const unique_ptr&lt;T, D&gt;&amp; x);</ins>
 </pre><blockquote>
-<ins>? <em>Returns</em>: <tt>nullptr &gt;= x.get()</tt>.</ins>
+<ins>? <i>Returns</i>: <tt>nullptr &gt;= x.get()</tt>.</ins>
 </blockquote></blockquote>
 </li>
 </ol>
@@ -441,7 +466,7 @@ operators are added as well:
 <blockquote><pre>
 namespace std {
   [..]
-  // <em>20.9.11.2.7, shared_ptr comparisons:</em>
+  // <i>20.9.11.2.7, shared_ptr comparisons:</i>
   template&lt;class T, class U&gt;
   bool operator==(const shared_ptr&lt;T&gt;&amp; a, const shared_ptr&lt;U&gt;&amp; b);
   template&lt;class T, class U&gt;
@@ -494,7 +519,7 @@ therefore all of them are defined. Below wording takes advantage of the simplifi
 <ins>template&lt;class T&gt;</ins>
 <ins>bool operator==(nullptr_t, const shared_ptr&lt;T&gt;&amp; a) noexcept;</ins>
 </pre><blockquote>
-<ins>? <em>Returns</em>: <tt>!a</tt>.</ins>
+<ins>? <i>Returns</i>: <tt>!a</tt>.</ins>
 </blockquote></blockquote>
 
 <blockquote><pre>
@@ -503,7 +528,7 @@ therefore all of them are defined. Below wording takes advantage of the simplifi
 <ins>template&lt;class T&gt;</ins>
 <ins>bool operator!=(nullptr_t, const shared_ptr&lt;T&gt;&amp; a) noexcept;</ins>
 </pre><blockquote>
-<ins>? <em>Returns</em>: <tt>(bool) a</tt>.</ins>
+<ins>? <i>Returns</i>: <tt>(bool) a</tt>.</ins>
 </blockquote></blockquote>
 
 <blockquote><pre>
@@ -512,7 +537,7 @@ therefore all of them are defined. Below wording takes advantage of the simplifi
 <ins>template&lt;class T&gt;</ins>
 <ins>bool operator&gt;(nullptr_t, const shared_ptr&lt;T&gt;&amp; a) noexcept;</ins>
 </pre><blockquote>
-<ins>? <em>Returns</em>: <tt>less&lt;T*&gt;()(a.get(), nullptr)</tt>.</ins>
+<ins>? <i>Returns</i>: <tt>less&lt;T*&gt;()(a.get(), nullptr)</tt>.</ins>
 </blockquote></blockquote>
 
 <blockquote><pre>
@@ -521,7 +546,7 @@ therefore all of them are defined. Below wording takes advantage of the simplifi
 <ins>template&lt;class T&gt;</ins>
 <ins>bool operator&gt;(const shared_ptr&lt;T&gt;&amp; a, nullptr_t) noexcept;</ins>
 </pre><blockquote>
-<ins>? <em>Returns</em>: <tt>less&lt;T*&gt;()(nullptr, a.get())</tt>.</ins>
+<ins>? <i>Returns</i>: <tt>less&lt;T*&gt;()(nullptr, a.get())</tt>.</ins>
 </blockquote></blockquote>
 
 <blockquote><pre>
@@ -530,7 +555,7 @@ therefore all of them are defined. Below wording takes advantage of the simplifi
 <ins>template&lt;class T&gt;</ins>
 <ins>bool operator&gt;=(nullptr_t, const shared_ptr&lt;T&gt;&amp; a) noexcept;</ins>
 </pre><blockquote>
-<ins>? <em>Returns</em>: <tt>!(nullptr &lt; a)</tt>.</ins>
+<ins>? <i>Returns</i>: <tt>!(nullptr &lt; a)</tt>.</ins>
 </blockquote></blockquote>
 
 <blockquote><pre>
@@ -539,7 +564,7 @@ therefore all of them are defined. Below wording takes advantage of the simplifi
 <ins>template&lt;class T&gt;</ins>
 <ins>bool operator&gt;=(const shared_ptr&lt;T&gt;&amp; a, nullptr_t) noexcept;</ins>
 </pre><blockquote>
-<ins>? <em>Returns</em>: <tt>!(a &lt; nullptr)</tt>.</ins>
+<ins>? <i>Returns</i>: <tt>!(a &lt; nullptr)</tt>.</ins>
 </blockquote></blockquote>
 
 </li>

@@ -45,7 +45,7 @@ Additionally I updated the below suggested wording in regard to the following:
 It is an unncessary requirement that the below defined effective composite pointer-like
 type <tt>CT</tt> satisfies the <tt>LessThanComparable</tt> requirements. All what is 
 needed is, that the function object type <tt>less&lt;CT&gt;</tt> induces a strict
-weak ordering.
+weak ordering on the pointer values.
 </p>
 </discussion>
 
@@ -67,10 +67,10 @@ template &lt;class T1, class D1, class T2, class D2&gt;
 
 <blockquote>
 <p>
-<ins><i>Requires:</i> Let <tt>CT</tt> be <tt>common_type&lt;unique_ptr&lt;T1,
+<ins>? <i>Requires:</i> Let <tt>CT</tt> be <tt>common_type&lt;unique_ptr&lt;T1,
 D1&gt;::pointer, unique_ptr&lt;T2, D2&gt;::pointer&gt;::type</tt>. Then
 the specialization <tt>less&lt;CT&gt</tt> shall be a function object type ([function.objects]) 
-that induces a strict weak ordering as defined in [alg.sorting].</ins>
+that induces a strict weak ordering ([alg.sorting]) on the pointer values.</ins>
 </p>
 
 <p>
@@ -79,7 +79,7 @@ that induces a strict weak ordering as defined in [alg.sorting].</ins>
 </p>
 
 <p>
-<ins><i>Remarks:</i> If <tt>unique_ptr&lt;T1, D1&gt;::pointer</tt> is not
+<ins>? <i>Remarks:</i> If <tt>unique_ptr&lt;T1, D1&gt;::pointer</tt> is not
 implicitly convertible to <tt>CT</tt> or <tt>unique_ptr&lt;T2,
 D2&gt;::pointer</tt> is not implicitly convertible to <tt>CT</tt>, the program
 is ill-formed.</ins>
