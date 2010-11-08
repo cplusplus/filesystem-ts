@@ -3,7 +3,7 @@
   <!ENTITY nbsp "&#160;">
 ] >
 
-<issue num="1498" status="Open">
+<issue num="1498" status="Tentatively Ready">
 <title>[FCD] Unclear specification for [thread.condition]</title>
 <section><sref ref="[thread.condition]"/></section>
 <submitter>Switzerland</submitter>
@@ -27,9 +27,166 @@ the loop the waiting time when blocked
 will be adjusted with respect to the elapsed time of
 the previous loop executions.
 </blockquote>
+
+<note>
+2010-08-13 Peter Sommerlad comments and provides wording:
+</note>
+
+<blockquote>
+Problem: It is unclear if a spurious wake-up during the loop and re-entering of the blocked state due 
+to a repeated execution of the loop will adjust the timer of the blocking with the respect to the 
+previously specified <tt>rel_time</tt> value.
+<p/>
+Proposed Resolution from CH29:
+<p/>
+Make it clear (e.g. by a note) that when re-executing the loop the waiting time when blocked will be 
+adjusted with respect to the elapsed time of the previous loop executions.
+<p/>
+Discussion in Rapperswil:
+<p/>
+Assuming the introduction of a mandatory <tt>steady_clock</tt> proposed by US-181 to the FCD the 
+specification of <tt>condition_variable::wait_for</tt> can be defined in terms of <tt>wait_until</tt> 
+using the <tt>steady_clock</tt>. This is also interleaving with US-181, because that touches the 
+same paragraph (30.5.1 p 25, p34 and 30.5.2 p 20, p 28 in n3092.pdf)
+<p/>
+(The "as if" in the proposed solutions should be confirmed by the standardization terminology experts)
+</blockquote>
 </discussion>
 
 <resolution>
+<ol>
+<li>Change <sref ref="[thread.condition.condvar]"/> paragraph 25, <tt>wait_for</tt> <i>Effects</i> as indicated:
+<blockquote><pre>
+template &lt;class Rep, class Period&gt;
+cv_status wait_for(unique_lock&lt;mutex&gt;&amp; lock,
+  const chrono::duration&lt;Rep, Period&gt;&amp; rel_time);
+</pre></blockquote>
+<blockquote>
+[..]
+<p/>
+25 <i>Effects</i>: <ins>as if</ins>
+<blockquote><pre>
+<ins>return wait_until(lock, chrono::steady_clock::now() + rel_time);</ins>
+</pre></blockquote>
+<ul>
+<li><del>Atomically calls <tt>lock.unlock()</tt> and blocks on <tt>*this</tt>.</del>
+</li>
+<li><del>When unblocked, calls <tt>lock.lock()</tt> (possibly blocking on the lock), then returns.</del>
+</li>
+<li><del>The function will unblock when signaled by a call to <tt>notify_one()</tt> or a call to <tt>notify_all()</tt>,
+by the elapsed time <tt>rel_time</tt> passing (30.2.4), or spuriously.</del>
+</li>
+<li><del>If the function exits via an exception, <tt>lock.lock()</tt> shall be called prior to exiting the function scope.</del>
+</li>
+</ul>
+</blockquote>
+</li>
+<li>Change <sref ref="[thread.condition.condvar]"/> paragraph 34, <tt>wait_for</tt> with predicate <i>Effects</i> as indicated:
+<blockquote><pre>
+template &lt;class Rep, class Period, class Predicate&gt;
+bool wait_for(unique_lock&lt;mutex&gt;&amp; lock,
+  const chrono::duration&lt;Rep, Period&gt;&amp; rel_time,
+  Predicate pred);
+</pre></blockquote>
+<blockquote>
+[..]
+<p/>
+34 <i>Effects</i>: <ins>as if</ins>
+<blockquote><pre>
+<ins>return wait_until(lock, chrono::steady_clock::now() + rel_time, std::move(pred));</ins>
+</pre></blockquote>
+<ul>
+<li><del>Executes a loop: Within the loop the function first evaluates <tt>pred()</tt> and exits the loop if the
+result is <tt>true</tt>.
+</del></li>
+
+<li><del>Atomically calls <tt>lock.unlock()</tt> and blocks on <tt>*this</tt>.
+</del></li>
+
+<li><del>When unblocked, calls <tt>lock.lock()</tt> (possibly blocking on the lock).
+</del></li>
+
+<li><del>The function will unblock when signaled by a call to <tt>notify_one()</tt> or a call to <tt>notify_all()</tt>,
+by the elapsed time <tt>rel_time</tt> passing (30.2.4), or spuriously.
+</del></li>
+
+<li><del>If the function exits via an exception, <tt>lock.lock()</tt> shall be called prior to exiting the function
+scope.
+</del></li>
+
+<li><del>The loop terminates when <tt>pred()</tt> returns <tt>true</tt> or when the time duration specified by <tt>rel_time</tt>
+has elapsed.
+</del></li>
+
+</ul>
+</blockquote>
+</li>
+
+<li>Change <sref ref="[thread.condition.condvarany]"/> paragraph 20, <tt>wait_for</tt> <i>Effects</i> as indicated:
+<blockquote><pre>
+template &lt;class Lock, class Rep, class Period&gt;
+cv_status wait_for(Lock&amp; lock, const chrono::duration&lt;Rep, Period&gt;&amp; rel_time);
+</pre></blockquote>
+<blockquote>
+20 <i>Effects</i>: <ins>as if</ins>
+<blockquote><pre>
+<ins>return wait_until(lock, chrono::steady_clock::now() + rel_time);</ins>
+</pre></blockquote>
+<ul>
+<li><del>Atomically calls <tt>lock.unlock()</tt> and blocks on <tt>*this</tt>.
+</del></li>
+
+<li><del>When unblocked, calls <tt>lock.lock()</tt> (possibly blocking on the lock), then returns.
+</del></li>
+
+<li><del>The function will unblock when signaled by a call to <tt>notify_one()</tt> or a call to <tt>notify_all()</tt>,
+by the elapsed time <tt>rel_time</tt> passing (30.2.4), or spuriously.
+</del></li>
+
+<li><del>If the function exits via an exception, <tt>lock.unlock()</tt> shall be called prior to exiting the function
+scope.
+</del></li>
+</ul>
+</blockquote>
+</li>
+
+<li>Change <sref ref="[thread.condition.condvarany]"/> paragraph 28, <tt>wait_for</tt> with predicate <i>Effects</i> as indicated:
+<blockquote><pre>
+template &lt;class Lock, class Rep, class Period, class Predicate&gt;
+bool wait_for(Lock&amp; lock, const chrono::duration&lt;Rep, Period&gt;&amp; rel_time, Predicate pred);
+</pre></blockquote>
+<blockquote>
+28 <i>Effects</i>: <ins>as if</ins>
+<blockquote><pre>
+<ins>return wait_until(lock, chrono::steady_clock::now() + rel_time, std::move(pred));</ins>
+</pre></blockquote>
+<ul>
+<li><del>Executes a loop: Within the loop the function first evaluates <tt>pred()</tt> and exits the loop if the
+result is <tt>true</tt>.
+</del></li>
+
+<li><del>Atomically calls <tt>lock.unlock()</tt> and blocks on <tt>*this</tt>.
+</del></li>
+
+<li><del>When unblocked, calls <tt>lock.lock()</tt> (possibly blocking on the lock).
+</del></li>
+
+<li><del>The function will unblock when signaled by a call to <tt>notify_one()</tt> or a call to <tt>notify_all()</tt>,
+by the elapsed time <tt>rel_time</tt> passing (30.2.4), or spuriously.
+</del></li>
+
+<li><del>If the function exits via an exception, <tt>lock.unlock()</tt> shall be called prior to exiting the function
+scope.
+</del></li>
+
+<li><del>The loop terminates when <tt>pred()</tt> returns <tt>true</tt> or when the time duration specified by <tt>rel_time</tt>
+has elapsed.
+</del></li>
+</ul>
+</blockquote>
+</li>
+
+</ol>
 </resolution>
 
 </issue>
