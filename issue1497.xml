@@ -3,7 +3,7 @@
   <!ENTITY nbsp "&#160;">
 ] >
 
-<issue num="1497" status="Open">
+<issue num="1497" status="Tentatively Ready">
 <title>[FCD] <tt>lock()</tt> postcondition can not be generally achieved</title>
 <section><sref ref="[thread.condition]"/></section>
 <submitter>Switzerland</submitter>
@@ -21,9 +21,270 @@ Resolution proposed by ballot comment:
 Either state that the postcondition might not be achieved, depending on the error condition, or
 state that <tt>terminate()</tt> is called in this case.
 </blockquote>
+
+<note>
+2010-08-13 Peter Sommerlad comments and provides wording
+</note>
+
+<blockquote>
+<sref ref="[thread.condition.condvar]"/>, <sref ref="[thread.condition.condvarany]"/>
+<p/>
+p. 13, last bullet, and corresponding paragraphs in all wait functions
+<p/>
+Problem:<br/>
+Condition variable wait might fail, because the lock cannot be acquired when notified.
+CH-30 says: "If lock.lock() throws an exception, the postcondition can not be generally achieved."
+CH-30 proposes: "Either state that the postcondition might not be achieved, depending on the error 
+condition, or state that terminate() is called in this case."
+<p/>
+The discussion in Rapperswil concluded that calling <tt>terminate()</tt> might be too drastic in 
+this case and a corresponding exception should be thrown/passed on and one should use a lock type 
+that allows querying its status, which <tt>unique_lock</tt> allows for <tt>std::condition_variable</tt>
+<p/>
+We also had some additional observations while discussing in Rapperswil:
+<ul>
+<li>in <sref ref="[thread.condition.condvar]"/> <tt>wait</tt> with predicate and <tt>wait_until</tt> with 
+predicate lack the precondition, postcondition and Error conditions sections. the lack of the precondition 
+would allow to call <tt>pred()</tt> without holding the lock.
+</li>
+<li>in <sref ref="[thread.condition.condvar]"/> <tt>wait_until</tt> and <tt>wait_for</tt> and 
+<sref ref="[thread.condition.condvarany]"/> <tt>wait_for</tt> still specify an 
+error condition for a violated precondition. This should be removed.
+</li>
+</ul>
+and add the following proposed solution:
+</blockquote>
 </discussion>
 
 <resolution>
+<ol>
+<li>Change <sref ref="[thread.condition.condvar]"/> as indicated:
+<blockquote><pre>
+void wait(unique_lock&lt;mutex&gt;&amp; lock);
+</pre></blockquote>
+<blockquote>
+12 <i>Requires</i>: <tt>lock</tt><ins><tt>.owns_lock()</tt> is <tt>true</tt> and <tt>lock.mutex()</tt></ins> is locked by the calling thread, and either
+<ul>
+<li>no other thread is waiting on this <tt>condition_variable</tt> object or
+</li>
+<li><tt>lock.mutex()</tt> returns the same value for each of the <tt>lock</tt> arguments supplied by all concurrently
+waiting (via <tt>wait</tt> or <tt>timed_wait</tt>) threads.
+</li>
+</ul>
+</blockquote>
+[..]
+<blockquote>
+14 <em>Postcondition</em>: <tt>lock</tt><ins><tt>.owns_lock()</tt> is <tt>true</tt> and <tt>lock.mutex()</tt></ins> is locked by the calling thread.
+</blockquote>
+[..]
+<blockquote><pre>
+template &lt;class Predicate&gt;
+void wait(unique_lock&lt;mutex&gt;&amp; lock, Predicate pred);
+</pre></blockquote>
+<blockquote>
+<ins>?? <i>Requires</i>: <tt>lock.owns_lock()</tt> is <tt>true</tt> and <tt>lock.mutex()</tt> is locked by the calling thread, and either</ins>
+<ul>
+<li><ins>no other thread is waiting on this <tt>condition_variable</tt> object or</ins>
+</li>
+<li><ins><tt>lock.mutex()</tt> returns the same value for each of the <tt>lock</tt> arguments supplied by all concurrently
+waiting (via <tt>wait</tt> or <tt>timed_wait</tt>) threads.</ins>
+</li>
+</ul>
+</blockquote>
+<blockquote>
+17 <i>Effects</i>:
+<blockquote><pre>
+while (!pred())
+  wait(lock);
+</pre></blockquote>
+</blockquote>
+
+<blockquote>
+<ins>?? <i>Postcondition</i>: <tt>lock.owns_lock()</tt> is <tt>true</tt> and <tt>lock.mutex()</tt> is locked by the calling thread.</ins>
+</blockquote>
+<blockquote>
+<ins>?? <i>Throws</i>: <tt>std::system_error</tt> when an exception is required (30.2.2).</ins>
+</blockquote>
+<blockquote>
+<ins>?? <em>Error conditions</em>:</ins>
+<ul>
+<li><ins>equivalent error condition from <tt>lock.lock()</tt> or <tt>lock.unlock()</tt>.</ins>
+</li>
+</ul>
+</blockquote>
+
+<blockquote><pre>
+template &lt;class Clock, class Duration&gt;
+cv_status wait_until(unique_lock&lt;mutex&gt;&amp; lock,
+  const chrono::time_point&lt;Clock, Duration&gt;&amp; abs_time);
+</pre></blockquote>
+<blockquote>
+18 <i>Requires</i>: <tt>lock</tt><ins><tt>.owns_lock()</tt> is <tt>true</tt> and <tt>lock.mutex()</tt></ins> is locked by the calling thread, and either
+<ul>
+<li>no other thread is waiting on this <tt>condition_variable</tt> object or
+</li>
+<li><tt>lock.mutex()</tt> returns the same value for each of the <tt>lock</tt> arguments supplied by all concurrently
+waiting (via <tt>wait</tt>, <tt>wait_for</tt>, or <tt>wait_until</tt>) threads.
+</li>
+</ul>
+</blockquote>
+[..]
+<blockquote>
+20 <em>Postcondition</em>: <tt>lock</tt><ins><tt>.owns_lock()</tt> is <tt>true</tt> and <tt>lock.mutex()</tt></ins> is locked by the calling thread.
+</blockquote>
+[..]
+<blockquote>
+23 <em>Error conditions</em>:
+<ul>
+<li><del><tt>operation_not_permitted</tt> &mdash; if the thread does not own the lock.</del>
+</li>
+<li>equivalent error condition from <tt>lock.lock()</tt> or <tt>lock.unlock()</tt>.
+</li>
+</ul>
+</blockquote>
+<blockquote><pre>
+template &lt;class Rep, class Period&gt;
+cv_status wait_for(unique_lock&lt;mutex&gt;&amp; lock,
+  const chrono::duration&lt;Rep, Period&gt;&amp; rel_time);
+</pre></blockquote>
+<blockquote>
+24 <i>Requires</i>: <tt>lock</tt><ins><tt>.owns_lock()</tt> is <tt>true</tt> and <tt>lock.mutex()</tt></ins> is locked by the calling thread, and either
+<ul>
+<li>no other thread is waiting on this <tt>condition_variable</tt> object or
+</li>
+<li><tt>lock.mutex()</tt> returns the same value for each of the <tt>lock</tt> arguments supplied by all concurrently
+waiting (via <tt>wait</tt>, <tt>wait_for</tt>, or <tt>wait_until</tt>) threads.
+</li>
+</ul>
+</blockquote>
+[..]
+<blockquote>
+27 <em>Postcondition</em>: <tt>lock</tt><ins><tt>.owns_lock()</tt> is <tt>true</tt> and <tt>lock.mutex()</tt></ins> is locked by the calling thread.
+</blockquote>
+[..]
+<blockquote>
+29 <em>Error conditions</em>:
+<ul>
+<li><del><tt>operation_not_permitted</tt> &mdash; if the thread does not own the lock.</del>
+</li>
+<li>equivalent error condition from <tt>lock.lock()</tt> or <tt>lock.unlock()</tt>.
+</li>
+</ul>
+</blockquote>
+<blockquote><pre>
+template &lt;class Clock, class Duration, class Predicate&gt;
+bool wait_until(unique_lock&lt;mutex&gt;&amp; lock,
+  const chrono::time_point&lt;Clock, Duration&gt;&amp; abs_time,
+    Predicate pred);
+</pre></blockquote>
+<blockquote>
+<ins>?? <i>Requires</i>: <tt>lock.owns_lock()</tt> is <tt>true</tt> and <tt>lock.mutex()</tt> is locked by the calling thread, and either</ins>
+<ul>
+<li><ins>no other thread is waiting on this <tt>condition_variable</tt> object or</ins>
+</li>
+<li><ins><tt>lock.mutex()</tt> returns the same value for each of the <tt>lock</tt> arguments supplied by all concurrently
+waiting (via <tt>wait</tt> or <tt>timed_wait</tt>) threads.</ins>
+</li>
+</ul>
+</blockquote>
+<blockquote>
+30 <i>Effects</i>:
+<blockquote><pre>
+while (!pred())
+  if (wait_until(lock, abs_time) == cv_status::timeout)
+    return pred();
+return true;
+</pre></blockquote>
+</blockquote>
+<blockquote>
+31 <i>Returns</i>: <tt>pred()</tt>
+</blockquote>
+
+<blockquote>
+<ins>?? <i>Postcondition</i>: <tt>lock.owns_lock()</tt> is <tt>true</tt> and <tt>lock.mutex()</tt> is locked by the calling thread.</ins>
+</blockquote>
+
+<blockquote>
+32 [ <i>Note</i>: The returned value indicates whether the predicate evaluates to true regardless of whether the
+timeout was triggered. &mdash; <i>end note</i> ]
+</blockquote>
+
+<blockquote>
+<ins>?? <i>Throws</i>: <tt>std::system_error</tt> when an exception is required (30.2.2).</ins>
+</blockquote>
+<blockquote>
+<ins>?? <em>Error conditions</em>:</ins>
+<ul>
+<li><ins>equivalent error condition from <tt>lock.lock()</tt> or <tt>lock.unlock()</tt>.</ins>
+</li>
+</ul>
+</blockquote>
+
+<blockquote><pre>
+template &lt;class Rep, class Period, class Predicate&gt;
+bool wait_for(unique_lock&lt;mutex&gt;&amp; lock,
+  const chrono::duration&lt;Rep, Period&gt;&amp; rel_time,
+    Predicate pred);
+</pre></blockquote>
+<blockquote>
+33 <i>Requires</i>: <tt>lock</tt><ins><tt>.owns_lock()</tt> is <tt>true</tt> and <tt>lock.mutex()</tt></ins> is locked by the calling thread, and either
+<ul>
+<li>no other thread is waiting on this <tt>condition_variable</tt> object or
+</li>
+<li><tt>lock.mutex()</tt> returns the same value for each of the <tt>lock</tt> arguments supplied by all concurrently
+waiting (via <tt>wait</tt>, <tt>wait_for</tt>, or <tt>wait_until</tt>) threads.
+</li>
+</ul>
+</blockquote>
+[..]
+<blockquote>
+36 <em>Postcondition</em>: <tt>lock</tt><ins><tt>.owns_lock()</tt> is <tt>true</tt> and <tt>lock.mutex()</tt></ins> is locked by the calling thread.
+</blockquote>
+[..]
+<blockquote>
+40 <em>Error conditions</em>:
+<ul>
+<li><del><tt>operation_not_permitted</tt> &mdash; if the thread does not own the lock.</del>
+</li>
+<li>equivalent error condition from <tt>lock.lock()</tt> or <tt>lock.unlock()</tt>.
+</li>
+</ul>
+</blockquote>
+
+</li>
+
+<li>Change <sref ref="[thread.condition.condvarany]"/> as indicated:
+<p/>
+[..]
+<blockquote><pre>
+template &lt;class Lock, class Predicate&gt;
+void wait(Lock&amp; lock, Predicate pred);
+</pre></blockquote>
+<blockquote>
+<ins>[<i>Note</i>: if any of the wait functions exits with an exception it is indeterminate if the <tt>Lock</tt> is held. 
+One can use a <tt>Lock</tt> type that allows to query that, such as the <tt>unique_lock</tt> wrapper. &mdash; <i>end note</i>]</ins>
+</blockquote>
+<blockquote>
+14 <i>Effects</i>:
+<blockquote><pre>
+while (!pred())
+  wait(lock);
+</pre></blockquote>
+</blockquote>
+
+[..]
+<blockquote>
+34 <em>Error conditions</em>:
+<ul>
+<li><del><tt>operation_not_permitted</tt> &mdash; if the thread does not own the lock.</del>
+</li>
+<li>equivalent error condition from <tt>lock.lock()</tt> or <tt>lock.unlock()</tt>.
+</li>
+</ul>
+</blockquote>
+</li>
+
+</ol>
 </resolution>
 
 </issue>
