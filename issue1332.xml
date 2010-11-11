@@ -87,6 +87,52 @@ over-constraining the definition of a Hash functor not to propagate exceptions
 in any case and it contradicts the general principle of C++ to impose such a
 requirement for this kind of fundamental requirement.
 </p>
+
+<note>
+2010-11-11 Daniel asks the working group whether they would prefer a replacement
+for the second bullet of the proposed resolution (a result of discussing this
+with Alberto) of the form:
+</note>
+
+<p>
+Add to <sref ref="[unord.hash]"/>/1 a new bullet:
+</p>
+
+<blockquote>
+<p>
+1 The unordered associative containers defined in Clause 23.5 use
+specializations of the class template <tt>hash</tt>
+as the default hash function. For all object types <tt>Key</tt> for which there
+exists a specialization <tt>hash&lt;Key&gt;</tt>, the
+instantiation <tt>hash&lt;Key&gt;</tt> shall:
+</p>
+<ul>
+<li>
+satisfy the <tt>Hash</tt> requirements (20.2.4), with <tt>Key</tt> as the
+function call argument type, the <tt>DefaultConstructible</tt> requirements
+(33), the <tt>CopyAssignable</tt> requirements (37),
+</li>
+<li>
+be swappable (20.2.2) for lvalues,
+</li>
+<li>
+provide two nested types <tt>result_type</tt> and <tt>argument_type</tt> which
+shall be synonyms for <tt>size_t</tt> and <tt>Key</tt>, respectively,
+</li>
+<li>
+satisfy the requirement that if <tt>k1 == k2</tt> is true, <tt>h(k1) ==
+h(k2)</tt> is also true, where <tt>h</tt> is an object of type
+<tt>hash&lt;Key&gt;</tt> and <tt>k1</tt> and <tt>k2</tt> are objects of type
+<tt>Key</tt><ins>,</ins><del>.</del>
+</li>
+<li>
+<ins>satisfy the requirement <tt>noexcept(h(k)) == true</tt>, where <tt>h</tt> is an object
+of type <tt>hash&lt;Key&gt;</tt> and <tt>k</tt> is an object of type <tt>Key</tt>, unless 
+<tt>hash&lt;Key&gt;</tt> is a user-defined specialization that depends on at least one user-defined type.</ins>
+</li>
+</ul>
+</blockquote>
+
 </discussion>
 
 <note>Batavia: Closed as NAD Future, then reopened. See the wiki for Tuesday.</note>
