@@ -3,7 +3,7 @@
   <!ENTITY nbsp "&#160;">
 ] >
 
-<issue num="1418" status="Open">
+<issue num="1418" status="Review">
 <title>[FCD] Effects of <tt>resize(size())</tt> on a <tt>deque</tt></title>
 <section><sref ref="[deque.capacity]"/></section>
 <submitter>BSI</submitter>
@@ -24,9 +24,9 @@ this explicitely.
 </blockquote>
 <p><tt>void resize(size_type sz);</tt></p>
 <p>
-<i>Effects</i>: If <tt>sz &lt; size()</tt>, equivalent to <tt>erase(begin() +
-sz, end());</tt>. If <tt>size() &lt; sz</tt>, appends <tt>sz - size()</tt> <del>default constructed</del><ins>value initialized</ins> elements to the sequence.<ins> If <tt>sz == size()</tt>,
-does nothing.</ins>
+<i>Effects</i>: If <tt>sz &lt;<ins>=</ins> size()</tt>, equivalent to <tt>erase(begin() +
+sz, end());</tt>. If <tt>size() &lt; sz</tt>, appends <tt>sz - size()</tt> <del>default 
+constructed</del><ins>value initialized</ins> elements to the sequence.
 </p>
 </resolution>
 

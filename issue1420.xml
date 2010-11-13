@@ -3,7 +3,7 @@
   <!ENTITY nbsp "&#160;">
 ] >
 
-<issue num="1420" status="Open">
+<issue num="1420" status="Review">
 <title>[FCD] Effects of <tt>resize(size())</tt> on a <tt>list</tt></title>
 <section><sref ref="[list.capacity]"/></section>
 <submitter>BSI</submitter>
@@ -36,11 +36,10 @@ Ammend [list.capacity] p1:
 <blockquote>
 <p><tt>void resize(size_type sz);</tt></p>
 <blockquote>
-<i>Effects</i>: If <tt>sz &lt; size()</tt>, equivalent to <tt>list&lt;T&gt;::iterator
-it = begin(); advance(it, sz); erase(it, end());</tt><del>.</del> <del>I</del><ins>i</ins>f
+<i>Effects</i>: If <tt>sz &lt;<ins>=</ins> size()</tt>, equivalent to <tt>list&lt;T&gt;::iterator
+it = begin(); advance(it, sz); erase(it, end());</tt>. If
 <tt>size() &lt; sz</tt>, appends <tt>sz - size()</tt> <del>default constructed</del>
-<ins>value initialized</ins> elements to the sequence<del>.</del><ins>; otherwise, has no
-effect.</ins>
+<ins>value initialized</ins> elements to the sequence<del></del>.
 </blockquote>
 </blockquote>
 
