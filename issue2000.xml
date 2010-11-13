@@ -3,7 +3,7 @@
   <!ENTITY nbsp "&#160;">
 ] >
 
-<issue num="2000" status="New">
+<issue num="2000" status="Tentatively Ready">
 <title>Missing definition of <tt>packaged_task</tt> specialization of <tt>uses_allocator</tt></title>
 <section><sref ref="[futures.task.nonmembers]"/></section>
 <submitter>Howard Hinnant</submitter>
@@ -13,8 +13,8 @@
 <p>
 [futures.task.nonmembers]/3 says:
 <blockquote><pre>
-   template &lt;class R, class Alloc>
-     struct uses_allocator&lt;packaged_task&lt;R>, Alloc>;
+   template &lt;class R, class Alloc&gt;
+     struct uses_allocator&lt;packaged_task&lt;R&gt;, Alloc&gt;;
 </pre></blockquote>
 
 This is a declaration, but should be a definition.
@@ -27,8 +27,8 @@ Change [futures.task.nonmembers]/3:
 </p>
 
 <blockquote><pre>
-   template &lt;class R, class Alloc>
-     struct uses_allocator&lt;packaged_task&lt;R>, Alloc><del>;</del>
+   template &lt;class R, class Alloc&gt;
+     struct uses_allocator&lt;packaged_task&lt;R&gt;, Alloc&gt;<del>;</del>
         <ins>: true_type {};</ins>
 </pre></blockquote>
 </resolution>
