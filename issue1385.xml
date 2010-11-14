@@ -3,7 +3,7 @@
   <!ENTITY nbsp "&#160;">
 ] >
 
-<issue num="1385" status="Open">
+<issue num="1385" status="Ready">
 <title>[FCD] <tt>tuple_cat</tt> should be a single variadic signature</title>
 <section><sref ref="[tuple.creation]"/></section>
 <submitter>BSI</submitter>
@@ -45,9 +45,16 @@ with the call of <tt>get</tt>. Finally I suggest to replace the requirements <tt
 by proper usage of <tt>is_constructible</tt>, as indicated by <a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2010/n3140.html">n3140</a>.
 </p>
 
-<p>Remark: This alternate proposed resolution works only if <iref ref="1191"/> has been accepted.</p>
+<note>
+2010 Batavia
+</note>
+<p>
+Moved to Ready with Daniel's improved wording.
+</p>
+</discussion>
 
-<p>Alternative proposed resolution:</p>
+<resolution>
+<p>Note: This alternate proposed resolution works only if <iref ref="1191"/> has been accepted.</p>
 
 <p>
 <ol>
@@ -160,120 +167,13 @@ with <tt>get&lt;<i>k<sub>i</sub></i>&gt;(std::forward&lt;Ti&gt;(tp<sub>i</sub>))
 for each valid <tt><i>k<sub>i</sub></i></tt> and each element group <tt><i>e<sub>i</sub></i></tt> in order. 
 </ins></blockquote></p>
 <p><blockquote><ins>
-12 <i>Notes</i>: An implementation may also support additional types that support the <tt>tuple</tt>-like protocol in the 
-parameter pack <tt>Tuples</tt> such as <tt>pair</tt> and <tt>array</tt>.
+12 [<i>Note</i>: An implementation may support additional types in the parameter pack <tt>Tuples</tt>, such as
+<tt>pair</tt> and <tt>array</tt> that support the <tt>tuple</tt>-like protocol. -- <i>end note</i>]
 </ins></blockquote></p>
 </blockquote>
 </li>
 </ol>
 </p>
-
-</discussion>
-
-<resolution>
-<p>
-Ammend <sref ref="[tuple.general]"/>:
-</p>
-
-<blockquote>
-2 Header <tt>&lt;tuple&gt;</tt> synopsis
-<pre>
-namespace std {
-
-...
-
-// <i>20.4.2.4, tuple creation functions:</i>
-const unspecified ignore;
-
-template &lt;class... Types&gt;
-  tuple&lt;<i>VTypes</i>...&gt; make_tuple(Types&amp;&amp;...);
-  template &lt;class... Types&gt;
-  tuple&lt;<i>ATypes</i>...&gt; forward_as_tuple(Types&amp;&amp;...);
-  
-template&lt;class... Types&gt;
-  tuple&lt;Types&amp;...&gt; tie(Types&amp;...);
-  
-<del>template &lt;class... TTypes, class... UTypes&gt;
-  tuple&lt;TTypes..., UTypes...&gt; tuple_cat(const tuple&lt;TTypes...&gt;&amp;, const tuple&lt;UTypes...&gt;&amp;);
-template &lt;class... TTypes, class... UTypes&gt;
-  tuple&lt;TTypes..., UTypes...&gt; tuple_cat(tuple&lt;TTypes...&gt;&amp;&amp;, const tuple&lt;UTypes...&gt;&amp;);
-template &lt;class... TTypes, class... UTypes&gt;
-  tuple&lt;TTypes..., UTypes...&gt; tuple_cat(const tuple&lt;TTypes...&gt;&amp;, tuple&lt;UTypes...&gt;&amp;&amp;);
-template &lt;class... TTypes, class... UTypes&gt;
-  tuple&lt;TTypes..., UTypes...&gt; tuple_cat(tuple&lt;TTypes...&gt;&amp;&amp;, tuple&lt;UTypes...&gt;&amp;&amp;);</del>
-<ins>template &lt;class... Tuples&gt;
-  tuple&lt;<i>see below</i>&gt; tuple_cat(Tuples&amp;&amp;...);</ins>
-
-...
-
-</pre>
-</blockquote>
-
-<p>
-Ammend <sref ref="[tuple.creation]"/>:
-</p>
-
-<blockquote>
-<pre><del>template &lt;class... TTypes, class... UTypes&gt;
-  tuple&lt;TTypes..., UTypes...&gt; tuple_cat(const tuple&lt;TTypes...&gt;&amp; t, const tuple&lt;UTypes...&gt;&amp; u);</del></pre>
-<p><del>
-8 <i>Requires</i>: All the types in <tt>TTypes</tt> shall be <tt>CopyConstructible</tt> (Table 35). All the types in 
-<tt>UTypes</tt> shall be <tt>CopyConstructible</tt> (Table 35).
-</del></p>
-<p><del>
-9 <i>Returns</i>: A <tt>tuple</tt> object constructed by copy constructing its first <tt>sizeof...(TTypes)</tt> elements 
-from the corresponding elements of <tt>t</tt> and copy constructing its last <tt>sizeof...(UTypes)</tt> elements from the 
-corresponding elements of <tt>u</tt>.
-</del></p>
-<pre><del>template &lt;class... TTypes, class... UTypes&gt;
-  tuple&lt;TTypes..., UTypes...&gt; tuple_cat(tuple&lt;TTypes...&gt;&amp;&amp; t, const tuple&lt;UTypes...&gt;&amp; u);</del></pre>
-<p><del>
-10 <i>Requires</i>: All the types in <tt>TTypes</tt> shall be <tt>MoveConstructible</tt> (Table 34). All the types in 
-<tt>UTypes</tt> shall be <tt>CopyConstructible</tt> (Table 35).
-</del></p>
-<p><del>
-11 <i>Returns</i>: A <tt>tuple</tt> object constructed by move constructing its first <tt>sizeof...(TTypes)</tt> elements 
-from the corresponding elements of <tt>t</tt> and copy constructing its last <tt>sizeof...(UTypes)</tt> elements from the 
-corresponding elements of <tt>u</tt>.
-</del></p>
-<pre><del>template &lt;class... TTypes, class... UTypes&gt;
-  tuple&lt;TTypes..., UTypes...&gt; tuple_cat(const tuple&lt;TTypes...&gt;&amp; t, tuple&lt;UTypes...&gt;&amp;&amp; u);</del></pre>
-<p><del>
-12 <i>Requires</i>: All the types in <tt>TTypes</tt> shall be <tt>CopyConstructible</tt> (Table 35). All the types in <tt>UTypes</tt> shall be <tt>MoveConstructible</tt> (Table 34).
-</del></p>
-<p><del>
-13 <i>Returns</i>: A <tt>tuple</tt> object constructed by copy constructing its first <tt>sizeof...(TTypes)</tt> elements 
-from the corresponding elements of <tt>t</tt> and move constructing its last <tt>sizeof...(UTypes)</tt> elements from the 
-corresponding elements of <tt>u</tt>.
-</del></p>
-<pre><del>template &lt;class... TTypes, class... UTypes&gt;
-  tuple&lt;TTypes..., UTypes...&gt; tuple_cat(tuple&lt;TTypes...&gt;&amp;&amp; t, tuple&lt;UTypes...&gt;&amp;&amp; u);</del></pre>
-<p><del>
-14 <i>Requires</i>: All the types in <tt>TTypes</tt> shall be <tt>MoveConstructible</tt> (Table 34). All the types in 
-<tt>UTypes</tt> shall be <tt>MoveConstructible</tt> (Table 34).
-</del></p>
-<p><del>
-15 <i>Returns</i>: A <tt>tuple</tt> object constructed by move constructing its first <tt>sizeof...(TTypes)</tt> elements 
-from the corresponding elements of <tt>t</tt> and move constructing its last <tt>sizeof...(UTypes)</tt> elements from the 
-corresponding elements of <tt>u</tt>.
-</del></p>
-<pre><ins>template &lt;class... Tuples&gt;
-  tuple&lt;<i>see below</i>&gt; tuple_cat(Tuples&amp;&amp;... tpls);</ins></pre>
-<p><ins>
-8 <i>Requires</i>: All the types in template parameter pack <tt>Tuples</tt> shall be instantiations of the <tt>std::tuple</tt> template.
-The type of all elements in each <tt>tuple</tt> shall be <tt>MoveConstructible</tt> (Table 34) if the corresponding argument is 
-passed as an rvalue, or <tt>CopyConstructible</tt> (Table 35) if passed as an lvalue.
-</ins></p>
-<p><ins>
-9 <i>Returns</i>: A <tt>tuple</tt> object constructed by calling <tt>get&lt;I&gt;(tpls)</tt> for each valid <tt>I</tt> in turn on each 
-<tt>tuple</tt> object in the function parameter pack <tt>tpls</tt>. [<i>Note</i>: The effect is to concatenate each succeeding 
-<tt>tuple</tt> in the parameter pack <tt>tpls</tt> into one large <tt>tuple</tt>. Elements are not interleaved &mdash; <i>end note</i>].
-</ins></p>
-<p><ins>
-10 <i>Remark</i>: An implementation may also support additional types that support the <tt>tuple</tt> protocol in the 
-parameter pack <tt>Tuples</tt> such as <tt>pair</tt> and <tt>array</tt>.
-</ins></p>
-</blockquote>
 
 </resolution>
 
