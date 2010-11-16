@@ -1,0 +1,42 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="2015" status="New">
+<title>Incorrect pre-conditions for some type traits</title>
+<section><sref ref="[meta.unary]"/></section>
+<submitter>Nikolay Ivchenkov</submitter>
+<date>08 Nov 2010</date>
+
+<discussion>
+According to N3126&nbsp;&#x2011;&nbsp;3.9/9,
+
+<p>&quot;Scalar types, trivial class types (Clause 9), arrays of such types
+and <i>cv</i>&#x2011;qualified versions of these types (3.9.3) are collectively
+called <i>trivial types</i>.&quot;</p>
+
+<p>Thus, an array (possibly of unknown bound) can be trivial type, non&#x2011;trivial type, 
+or an array type whose triviality cannot be determined because its element type is incomplete.</p>
+
+<p>According to N3126&nbsp;&#x2011;&nbsp;Table 45, preconditions for <tt>std::is_trivial</tt> are
+defined as follows:</p>
+
+<p>&quot;<tt>T</tt> shall be a complete type, (possibly <i>cv</i>-qualified) <tt>void</tt>, 
+or an array of unknown bound&quot;</p>
+
+<p>It seems that &quot;an array of unknown bound&quot; should be changed to &quot;an
+array of unknown bound of a complete element type&quot;. Preconditions for
+some other templates (e.g., <tt>std::is_trivially_copyable</tt>,
+<tt>std::is_standard_layout</tt>, <tt>std::is_pod</tt>, and <tt>std::is_literal_type</tt>) should
+be changed similarly.</p>
+
+<p>On the other hand, some preconditions look too restrictive. For
+example, <tt>std::is_empty</tt> and <tt>std::is_polymorphic</tt> might accept any
+incomplete non-class type.</p>
+</discussion>
+
+<resolution>
+</resolution>
+
+</issue>
