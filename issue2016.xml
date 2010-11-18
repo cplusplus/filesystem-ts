@@ -1,0 +1,32 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="2016" status="New">
+<title><tt>Allocators</tt> must be no-throw <i>swappable</i></title>
+<section><sref ref="[allocator.requirements]"/></section>
+<submitter>Daniel Kr&uuml;gler</submitter>
+<date>17 Nov 2010</date>
+
+<discussion>
+During the Batavia meeting it turned out that there is a definition
+hole for types satisfying the <tt>Allocators</tt> requirements: The problem
+became obvious when it was discussed whether all <tt>swap</tt> functions 
+of <tt>Containers</tt> with internal data handles can be safely tagged
+with <tt>noexcept</tt> or not. While it is correct that the implicit
+<tt>swap</tt> function of an allocator is required to be a no-throw
+operation (because move/copy-constructors and assignment operators are
+required to be <tt>noexcept</tt> functions), there are no such requirements
+for specialized <tt>swap</tt> overloads for a particular allocator.
+
+But this requirement is essential because the <tt>Containers</tt> are
+required to support <i>swappable</i> <tt>Allocators</tt>, when the value
+<tt>allocator_traits&lt;&gt;::propagate_on_container_swap</tt> evaluates
+to <tt>true</tt>.
+</discussion>
+
+<resolution>
+</resolution>
+
+</issue>
