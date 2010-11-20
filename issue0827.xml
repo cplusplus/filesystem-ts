@@ -12,7 +12,7 @@
 <discussion>
 <p>
 Would anyone object to making the default constructor of <tt>shared_ptr</tt> (and
-<tt>weak_ptr</tt> and <tt>enable_shared_from_this) constexpr</tt>? This would enable
+<tt>weak_ptr</tt> and <tt>enable_shared_from_this</tt>) <tt>constexpr</tt>? This would enable
 static initialization for <tt>shared_ptr</tt> variables, eliminating another
 unfair advantage of raw pointers.
 </p>
@@ -39,15 +39,15 @@ nicely here.
 
 <blockquote>
 <p>
-I don't believe that constexpr will buy anything in this case.
+I don't believe that <tt>constexpr</tt> will buy anything in this case.
 <tt>shared_ptr/weak_ptr/enable_shared_from_this</tt> cannot be literal types as they
 have a non-trivial copy constructor.  As they do not produce literal types,
-then the constexpr default constructor will <em>not</em> guarantee constant
+then the <tt>constexpr</tt> default constructor will <em>not</em> guarantee constant
 initialization, and so not buy the hoped for optimization.
 </p>
 <p>
 I recommend referring this back to Core to see if we can get static
-initialization for types with constexpr constructors, even if they are not
+initialization for types with <tt>constexpr</tt> constructors, even if they are not
 literal types.  Otherwise this should be closed as NAD.
 </p>
 </blockquote>
@@ -68,14 +68,14 @@ destructor? (<iref ref="828"/>)
 
 <blockquote>
 <p>
-The feedback from core is that this and similar uses of constexpr
+The feedback from core is that this and similar uses of <tt>constexpr</tt>
 constructors to force static initialization should be supported.  If
 there are any problems with this in the working draught, we should file
 core issues.
 </p>
 
 <p>
-Recommend we declare the default constructor constexpr as the issue suggests
+Recommend we declare the default constructor <tt>constexpr</tt> as the issue suggests
 (proposed wording added).
 </p>
 </blockquote>
@@ -85,7 +85,7 @@ Recommend we declare the default constructor constexpr as the issue suggests
 </note>
 
 <blockquote>
-NAD Editorial.  Solved by
+<del>NAD Editorial</del><ins>Resolved</ins>.  Solved by
 <a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2009/n2994.html">N2994</a>.
 </blockquote>
 </discussion>
@@ -96,7 +96,7 @@ Change <sref ref="[util.smartptr.shared]"/> and <sref ref="[util.smartptr.shared
 </p>
 
 <blockquote><pre>
-<ins>consexpr</ins> shared_ptr();
+<ins>constexpr</ins> shared_ptr();
 </pre></blockquote>
 
 <p>
@@ -104,7 +104,7 @@ Change <sref ref="[util.smartptr.weak]"/> and <sref ref="[util.smartptr.weak.con
 </p>
 
 <blockquote><pre>
-<ins>consexpr</ins> weak_ptr();
+<ins>constexpr</ins> weak_ptr();
 </pre></blockquote>
 
 <p>
@@ -112,7 +112,7 @@ Change <sref ref="[util.smartptr.enab]"/> (2 places):
 </p>
 
 <blockquote><pre>
-<ins>consexpr</ins> enable_shared_from_this();
+<ins>constexpr</ins> enable_shared_from_this();
 </pre></blockquote>
 
 </resolution>
