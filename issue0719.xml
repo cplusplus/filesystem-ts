@@ -59,36 +59,6 @@ way to portably test the condition for literal class types:
 </ul>
 </blockquote>
 
-<!-- 
-<p>
-Here follows a simply example to demonstrate it's usefulness:
-</p>
-
-<blockquote><pre>
-template &lt;typename T&gt;
-constexpr typename std::enable_if&lt;std::is_literal&lt;T&gt;::value, T&gt;::type
-abs(T x) {
-  return x &lt; T() ? -x : x;
-}
-
-template &lt;typename T&gt;
-typename std::enable_if&lt;!std::is_literal&lt;T&gt;::value, T&gt;::type
-abs(const T&amp; x) {
-  return x &lt; T() ? -x : x;
-}
-</pre></blockquote>
-
-<p>
-Here we have the possibility to provide a general <tt>abs</tt> function
-template that can be used in ICE's if it's argument is a literal
-type which's value is a constant expression, otherwise we
-have an optimized version for arguments which are expensive
-to copy and therefore need the usage of arguments of
-reference type (instead of <tt>const T&amp;</tt> we could decide to
-use <tt>T&amp;&amp;</tt>, but that is another issue).
-</p>
- -->
-
 <note>
 Alisdair is considering preparing a paper listing a number of missing
 type traits, and feels that it might be useful to handle them all
@@ -113,7 +83,7 @@ Addressed in <a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2009/n2
 </note>
 
 <blockquote>
-NAD Editorial.  Solved by
+<del>NAD Editorial</del><ins>Resolved</ins>.  Solved by
 <a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2009/n2984.htm">N2984</a>.
 </blockquote>
 
