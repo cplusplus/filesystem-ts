@@ -1,0 +1,120 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="2017" status="New">
+<title><tt>std::reference_wrapper</tt> makes incorrect usage of <tt>std::result_of</tt></title>
+<section><sref ref="[refwrap]"/></section>
+<submitter>Nikolay Ivchenkov</submitter>
+<date>15 Nov 2010</date>
+
+<discussion>
+<tt>std::reference_wrapper</tt>'s function call operator uses <em>wrong</em>
+type encoding for rvalue-arguments. An rvalue-argument of type <tt>T</tt> must
+be encoded as <tt>T&amp;&amp;</tt>, not as just <tt>T</tt>.
+
+<blockquote><pre>
+#include &lt;functional&gt;
+#include &lt;iostream&gt;
+#include &lt;string&gt;
+#include &lt;type_traits&gt;
+#include &lt;utility&gt;
+
+template &lt;class F, class... Types&gt;
+     typename std::result_of&lt;F (Types...)&gt;::type
+         f1(F f, Types&amp;&amp;... params)
+{
+     return f(std::forward&lt;Types...&gt;(params...));
+}
+
+template &lt;class F, class... Types&gt;
+     typename std::result_of&lt;F (Types<b>&amp;&amp;</b>...)
+         f2(F f, Types&amp;&amp;... params)
+{
+     return f(std::forward&lt;Types...&gt;(params...));
+}
+
+struct Functor
+{
+     template &lt;class T&gt;
+         T&amp;&amp; operator()(T&amp;&amp; t) const
+     {
+         return static_cast&lt;T&amp;&amp;&gt;(t);
+     }
+};
+
+int main()
+{
+     typedef std::string const Str;
+     std::cout &lt;&lt; f1(Functor(), Str("1")) &lt;&lt; std::endl; // (1)
+     std::cout &lt;&lt; f2(Functor(), Str("2")) &lt;&lt; std::endl; // (2)
+}
+</pre></blockquote>
+
+Lets consider the function template <tt>f1</tt> (which is similar to
+<tt>std::reference_wrapper</tt>'s function call operator). In the invocation
+(1) <tt>F</tt> is deduced as '<tt>Functor</tt>' and <tt>Types</tt> is deduced as type sequence
+which consists of one type '<tt>std::string const</tt>'. After the substitution
+we have the following equivalent:
+
+<blockquote><pre>
+template &lt;&gt;
+    std::result_of&lt;F (std::string const)&gt;::type
+        f1&lt;Functor, std::string const&gt;(Functor f, std::string const &amp;&amp; params)
+{
+    return f(std::forward&lt;const std::string&gt;(params));
+}
+</pre></blockquote>
+
+The top-level <i>cv</i>-qualifier in the parameter type of '<tt>F (std::string const)</tt>' is removed, so we have
+
+<blockquote><pre>
+template &lt;&gt;
+    std::result_of&lt;F (std::string)&gt;::type
+        f1&lt;Functor, std::string const&gt;(Functor f, std::string const &amp;&amp; params)
+{
+    return f(std::forward&lt;const std::string&gt;(params));
+}
+</pre></blockquote>
+
+Let <tt>r</tt> be an rvalue of type '<tt>std::string</tt>' and <tt>cr</tt> be an rvalue of type
+'<tt>std::string const</tt>'. The expression <tt>Str("1")</tt> is <tt>cr</tt>. The corresponding
+return type for the invocation
+
+<blockquote><pre>
+Functor().operator()(r)
+</pre></blockquote>
+
+is '<tt>std::string &amp;&amp;</tt>'. The corresponding return type for the invocation
+</discussion>
+
+<blockquote><pre>
+Functor().operator()(cr)
+</pre></blockquote>
+
+is '<tt>std::string const &amp;&amp;</tt>'.
+<p/>
+<tt>std::result_of&lt;Functor (std::string)&gt;::type</tt> is the same type as the
+corresponding return type for the invocation <tt>Functor().operator()(r)</tt>,
+i.e. it is '<tt>std::string &amp;&amp;</tt>'. As a consequence, we have wrong reference
+binding in the return statement in <tt>f1</tt>.
+<p/>
+Now lets consider the invocation (2) of the function template <tt>f2</tt>. When
+the template arguments are substituted we have the following equivalent:
+
+<blockquote><pre>
+template &lt;&gt;
+    std::result_of&lt;F (std::string const &amp;&amp;)&gt;::type
+        f2&lt;Functor, std::string const&gt;(Functor f, std::string const &amp;&amp; params)
+{
+    return f(std::forward&lt;const std::string&gt;(params));
+}
+</pre></blockquote>
+
+<tt>std::result_of&lt;F (std::string const &amp;&amp;)&gt;::type</tt> is the same type as
+'<tt>std::string const &amp;&amp;</tt>'. This is correct result.
+<resolution>
+</resolution>
+
+</issue>
