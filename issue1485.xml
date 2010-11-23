@@ -27,7 +27,82 @@ Require a unique <tt>thread::id</tt> for every thread that is
 object.
 </blockquote>
 
+<note>
+2010-11-22 Howard Hinnant observes
+</note>
 </discussion>
+
+<p>
+A thread can either be running or terminated.  Additionally a thread can be joined, detached, or neither.  These combine into the five possible states shown in this table:
+</p>
+
+<table border="1">
+<tr>
+<th></th><th>Running</th><th>Terminated</th>
+</tr>
+<tr>
+<th>Neither joined nor detached</th><td>shall not reuse id</td><td>shall not reuse id</td>
+</tr>
+<tr>
+<th>detached</th><td>shall not reuse id</td><td>may reuse id</td>
+</tr>
+<tr>
+<th>joined</th><td>impossible state</td><td>may reuse id</td>
+</tr>
+</table>
+<p>
+Only if a thread is neither joined nor detached can it be joined.  Or said differently, if a thread has already been joined or detached, then it can not be joined.  The sentence:
+<blockquote>
+The library may reuse the value of a <tt>thread::id</tt> of a terminated thread that can no longer be joined.
+</blockquote>
+precisely defines the two states shown in the above table where a thread::id may be reused.
+</p>
+<p>
+The following program illustrates all of the possibilities:
+</p>
+<blockquote><pre>
+#include &lt;mutex>
+#include &lt;thread>
+#include &lt;iostream>
+#include &lt;chrono>
+
+std::mutex mut;
+
+void f()
+{
+   std::lock_guard&lt;std::mutex> _(mut);
+   std::cout &lt;&lt; "f id = " &lt;&lt; std::this_thread::get_id() &lt;&lt; " terminating\n";
+}
+
+void g()
+{
+   std::lock_guard&lt;std::mutex> _(mut);
+   std::cout &lt;&lt; "g id = " &lt;&lt; std::this_thread::get_id() &lt;&lt; " terminating\n";
+}
+
+int main()
+{
+   std::cout &lt;&lt; "main id = " &lt;&lt; std::this_thread::get_id() &lt;&lt; "\n";
+   std::thread t1(f);
+   std::thread(g).detach();
+   std::this_thread::sleep_for(std::chrono::seconds(1));
+   std::cout &lt;&lt; "g's thread::id can be reused here because g has terminated and is detached.\n";
+   std::cout &lt;&lt; "f's thread::id can't be reused here because f has terminated but is still joinable.\n";
+   std::cout &lt;&lt; "f id = " &lt;&lt; t1.get_id() &lt;&lt; "\n";
+   t1.join();
+   std::cout &lt;&lt; "f's thread::id can be reused here because f has terminated and is joined.\n";
+   std::cout &lt;&lt; "f id = " &lt;&lt; t1.get_id() &lt;&lt; "\n";
+}
+
+main id = 0x7fff71197ca0
+f id = 0x100381000 terminating
+g id = 0x100581000 terminating
+g's thread::id can be reused here because g has terminated and is detached.
+f's thread::id can't be reused here because f has terminated but is still joinable.
+f id = 0x100381000
+f's thread::id can be reused here because f has terminated and is joined.
+f id = 0x0
+</pre></blockquote>
 
 <resolution>
 </resolution>
