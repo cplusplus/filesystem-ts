@@ -1,0 +1,37 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="2019" status="New">
+<title><tt>isblank</tt> not supported by <tt>std::locale</tt></title>
+<section><sref ref="[classification]"/></section>
+<submitter>Jonathan Wakely</submitter>
+<date>16 Nov 2010</date>
+
+<discussion>
+<p>C99 added <tt>isblank</tt> and <tt>iswblank</tt> to <tt>&lt;locale.h&gt;</tt> but <tt>&lt;locale&gt;</tt> does not
+provide any equivalent.</p>
+</discussion>
+
+<resolution>
+<p>Add to 22.3.3.1 [classification] synopsis:</p>
+<blockquote>
+<pre>template &lt;class charT&gt; bool isgraph (charT c, const locale& loc);
+<ins>template &lt;class charT&gt; bool isblank (charT c, const locale& loc);</ins>
+</pre>
+</blockquote>
+
+<p>Add to 22.4.1 [category.ctype] synopsis:</p>
+
+<blockquote>
+<pre>static const mask xdigit = 1 &lt;&lt; 8;
+<ins>static const mask blank = 1 &lt;&lt; 9;</ins>
+static const mask alnum = alpha | digit;
+static const mask graph = alnum | punct;
+</pre>
+</blockquote>
+
+</resolution>
+
+</issue>

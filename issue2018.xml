@@ -1,0 +1,38 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="2018" status="New">
+<title><tt>regex_traits::isctype</tt> Returns clause is wrong</title>
+<section><sref ref="[re.traits]"/></section>
+<submitter>Jonathan Wakely</submitter>
+<date>16 Nov 2010</date>
+
+<discussion>
+<p>28.7 [re.traits] p12 says:</p>
+<blockquote>
+<p>returns true if f bitwise or’ed with the result of calling
+lookup_classname with an iterator pair that designates the character
+sequence "w" is not equal to 0 and c == ’_’</p>
+</blockquote>
+
+<p>If the bitmask value corresponding to "w" has a non-zero value (which
+it must do) then the bitwise or with any value is also non-zero, and
+so isctype('_', f) returns true for any f.  Obviously this is wrong,
+since '_' is not in every ctype category.</p>
+
+<p>There's a similar problem with the following phrases discussing the
+"blank" char class.
+</p>
+</discussion>
+
+<resolution>
+<p>Replace the Returns clause with a description in terms of ctype
+categories, rather than pseudocode in terms of bitwise operations.
+(full replacement wording to follow)
+
+</p>
+</resolution>
+
+</issue>
