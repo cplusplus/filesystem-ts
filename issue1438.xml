@@ -3,7 +3,7 @@
   <!ENTITY nbsp "&#160;">
 ] >
 
-<issue num="1438" status="Review">
+<issue num="1438" status="Ready">
 <title>[FCD] No definition for <tt>base()</tt></title>
 <section><sref ref="[rand.adapt.disc]"/></section>
 <submitter>INCITS</submitter>
@@ -45,13 +45,23 @@ After further review, the working group concurred with the Proposed Resolution.
 
 <resolution>
 <ol>
+<li>
+Add the following sentence to the end of <sref ref="[rand.req.adapt]"/>/1:
+<blockquote>
+A <i>random number engine adaptor</i> (commonly shortened to <i>adaptor</i>) <tt>a</tt> of type <tt>A</tt> is a
+random number engine that takes values produced by some other random number engine, and applies an algorithm to
+those values in order to deliver a sequence of values with different randomness properties. An engine <tt>b</tt>
+of type <tt>B</tt> adapted in this way is termed a <i>base engine</i> in this context.<ins> The expression
+<tt>a.base()</tt> shall be valid and shall return a const reference to <tt>a</tt>'s base engine.</ins>
+</blockquote>
+</li>
 <li>Change in [rand.adapt.disc]/3, class template <tt>discard_block_engine</tt> synopsis, the following declaration:
 <blockquote><pre>
 // <em>property functions</em>
 const Engine&amp; base() const <ins>noexcept</ins>;
 </pre></blockquote>
 </li>
-<li>Add the following new prototype description at the end of sub-clause [rand.adapt.disc]:
+<li>Add the following new prototype description at the end of sub-clause <sref ref="[rand.adapt.disc]"/>:
 <blockquote>
 <pre><ins>const Engine&amp; base() const noexcept;</ins>
 </pre>
@@ -66,7 +76,7 @@ const Engine&amp; base() const <ins>noexcept</ins>;
 const Engine&amp; base() const <ins>noexcept</ins>;
 </pre></blockquote>
 </li>
-<li>Add the following new prototype description at the end of sub-clause [rand.adapt.ibits]:
+<li>Add the following new prototype description at the end of sub-clause <sref ref="[rand.adapt.ibits]"/>:
 <blockquote>
 <pre><ins>const Engine&amp; base() const noexcept;</ins>
 </pre>
@@ -75,13 +85,13 @@ const Engine&amp; base() const <ins>noexcept</ins>;
 </blockquote>
 </blockquote>
 </li>
-<li>Change in [rand.adapt.shuf]/3, class template <tt>shuffle_order_engine</tt> synopsis, the following declaration:
+<li>Change in <sref ref="[rand.adapt.shuf]"/>/3, class template <tt>shuffle_order_engine</tt> synopsis, the following declaration:
 <blockquote><pre>
 // <em>property functions</em>
 const Engine&amp; base() const <ins>noexcept</ins>;
 </pre></blockquote>
 </li>
-<li>Add the following new prototype description at the end of sub-clause [rand.adapt.shuf]:
+<li>Add the following new prototype description at the end of sub-clause <sref ref="[rand.adapt.shuf]"/>:
 <blockquote>
 <pre><ins>const Engine&amp; base() const noexcept;</ins>
 </pre>

@@ -54,7 +54,24 @@ Add <tt>&lt;utility></tt> and <tt>&lt;tuple></tt> to table 15, headers
 required for a free-standing implementation.
 </p>
 </blockquote>
-<note>Batavia: NAD - see rationale below</note>
+
+<note>
+2010-Batavia:
+</note>
+<p>
+Closed as NAD, reversing the decision at Rapperswil.
+</p>
+<p>
+The consensus was that
+any freestanding implementation is going to feel compelled to offer the important
+features of <tt>&lt;utility></tt> even if we do not make them a freestanding
+requirement; breaking out additional small headers may have additional costs at
+compile time, and while the critical <tt>move</tt>-related functions could migrate
+to <tt>&lt;type_traits></tt>, the header name is far from appealing; adding the
+whole of <tt>&lt;utility></tt> starts to drag in dependencies on <tt>&lt;tuple></tt>
+and <tt>&lt;memory></tt>, so we prefer to place the burden of slicing or supporting
+this whole header on free-standing vendors.
+</p>
 
 </discussion>
 
