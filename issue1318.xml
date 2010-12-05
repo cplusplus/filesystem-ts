@@ -46,7 +46,7 @@ should be removed from the list of containers when this change is made.
 </p>
 
 <p>
-In general, I am unfcomfortable placing this reference requirement on each
+In general, I am uncomfortable placing this reference requirement on each
 container, as I would prefer to require:
 </p>
 
@@ -72,7 +72,16 @@ The changes to clause 20 remain important for all the reasons Pete highlights.
 </note>
 
 <p>
-Removed <tt>vector</tt> from list of templates that should be adjusted.
+Removed <tt>vector</tt> from list of templates that should be adjusted as of meeting outcome.
+</p>
+
+<note>
+2010 post-Batavia
+</note>
+
+<p>
+Replaced <tt>vector&lt;bool&gt;</tt> reference by <tt>vector</tt> reference because of misinterpreting meeting typo.
+Additional corrected numbering in P/R to N3225 wording.
 </p>
 </discussion>
 
@@ -80,12 +89,12 @@ Removed <tt>vector</tt> from list of templates that should be adjusted.
 <ol>
 <li>
 <p>
-Add the following two rows to Table 40, Allocator requirements:
+Add the following two rows to Table 44, Allocator requirements:
 </p>
 
 <blockquote>
 <table border="1">
-<caption>Table 40 &mdash; Allocator requirements</caption>
+<caption>Table 44 &mdash; Allocator requirements</caption>
 <tr>
 <th>
 Expression
@@ -132,12 +141,12 @@ Default
 
 <li>
 <p>
-2. Change the following two rows in Table 40:
+2. Change the following two rows in Table 44:
 </p>
 
 <blockquote>
 <table border="1">
-<caption>Table 40 &mdash; Allocator requirements</caption>
+<caption>Table 44 &mdash; Allocator requirements</caption>
 <tr>
 <th>
 Expression
@@ -158,7 +167,7 @@ Default
 </tr>
 
 <tr>
-<td><ins><tt>*p</tt></ins></td>
+<td><tt>*p</tt></td>
 
 <td><tt><del>T&amp;</del> <ins>X::reference</ins></tt></td>
 
@@ -168,11 +177,11 @@ Default
 </tr>
 
 <tr>
-<td><ins><tt>*q</tt></ins></td>
+<td><tt>*q</tt></td>
 
 <td><tt><del>const T&amp;</del> <ins>X::const_reference</ins></tt></td>
 
-<td><tt></tt></td>
+<td><tt>*q</tt> refers to the same object as <tt>*p</tt></td>
 
 <td></td>
 </tr>
@@ -255,7 +264,7 @@ for each of the following class templates:
 <tt>queue</tt> <sref ref="[queue.defn]"/><br/>
 <tt>priority_queue</tt> <sref ref="[priority.queue]"/><br/>
 <tt>stack</tt> <sref ref="[stack.defn]"/><br/>
-<tt>vector&lt;bool&gt;</tt> <sref ref="[vector.bool]"/><br/>
+<tt>vector</tt> <sref ref="[vector]"/><br/>
 <tt>map</tt> <sref ref="[map]"/><br/>
 <tt>multimap</tt> <sref ref="[multimap]"/><br/>
 <tt>set</tt> <sref ref="[set]"/><br/>
