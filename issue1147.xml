@@ -3,7 +3,7 @@
   <!ENTITY nbsp "&#160;">
 ] >
 
-<issue num="1147" status="NAD Editorial">
+<issue num="1147" status="Resolved">
 <title>non-volatile atomic functions</title>
 <section><sref ref="[atomics.types.operations]"/></section>
 <submitter>Jeffrey Yasskin</submitter>
@@ -44,15 +44,15 @@ To let the compiler take advantage of the permission
 to merge non-volatile atomic operations and reorder atomics in certain,
 we'll need to tell the compiler backend
 about exactly which atomic operation was used.
-So I expect most of the functions of the form atomic_&lt;op&gt;_explicit()
-(e.g. atomic_load_explicit, atomic_exchange_explicit,
-atomic_fetch_add_explicit, etc.)
+So I expect most of the functions of the form <tt>atomic_&lt;op&gt;_explicit()</tt>
+(e.g. <tt>atomic_load_explicit</tt>, <tt>atomic_exchange_explicit</tt>,
+<tt>atomic_fetch_add_explicit</tt>, etc.)
 to become compiler builtins.
 A builtin can tell whether its argument was volatile or not,
 so those functions don't really need extra explicit overloads.
 However, I don't expect that we'll want to add builtins
 for every function in chapter 29,
-since most can be implemented in terms of the _explicit free functions:
+since most can be implemented in terms of the <tt>_explicit</tt> free functions:
 </p>
 
 <pre><code>class atomic_int {
@@ -68,8 +68,8 @@ since most can be implemented in terms of the _explicit free functions:
 
 <p>
 But now this <em>always</em> calls
-the volatile builtin version of atomic_fetch_add_explicit(),
-even if the atomic_int wasn't declared volatile.
+the volatile builtin version of <tt>atomic_fetch_add_explicit()</tt>,
+even if the <tt>atomic_int</tt> wasn't declared volatile.
 To preserve volatility and the compiler's permission to optimize,
 I'd need to write:
 </p>
@@ -90,7 +90,7 @@ I'd need to write:
 <p>
 But this is visibly different from the declarations in the standard
 because it's now overloaded.
-(Consider passing &amp;atomic_int::fetch_add as a template parameter.)
+(Consider passing <tt>&amp;atomic_int::fetch_add</tt> as a template parameter.)
 </p>
 
 <p>
@@ -128,8 +128,8 @@ I recommend allowing non-volatile overloads.
 </note>
 
 <blockquote>
-NAD Editorial.  Solved by
-<a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2009/n2992.html">N2992</a>.
+<del>NAD Editorial</del><ins>Resolved</ins>.  Addressed by
+<a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2009/n2992.htm">N2992</a>.
 </blockquote>
 
 </discussion>

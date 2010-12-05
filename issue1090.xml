@@ -3,7 +3,7 @@
   <!ENTITY nbsp "&#160;">
 ] >
 
-<issue num="1090" status="NAD Editorial">
+<issue num="1090" status="Resolved">
 <title>Missing description of <tt>packaged_task</tt> member <tt>swap</tt>,  missing non-member <tt>swap</tt></title>
 <section><sref ref="[futures.task]"/></section>
 <submitter>Daniel Kr&uuml;gler</submitter>
@@ -12,10 +12,8 @@
 <discussion>
 <p>
 Class template <tt>packaged_task</tt> in <sref ref="[futures.task]"/> shows a member <tt>swap</tt>
-declaration, but misses to
-document it's effects (No prototype provided). Further on this class
-misses to provide a non-member
-swap.
+declaration, but misses to document it's effects (No prototype provided). Further on this class
+misses to provide a non-member swap.
 </p>
 
 <note>
@@ -53,14 +51,14 @@ resolution but keeping the other two bullets.
 </note>
 
 <blockquote>
-Moved to NAD Editorial.  Rationale added below.
+Moved to <del>NAD Editorial</del><ins>Resolved</ins>.  Rationale added below.
 </blockquote>
 
 </discussion>
 
 <rationale>
 <p>
-Solved by N3058.
+Solved by <a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2010/n3058.html">N3058</a>.
 </p>
 </rationale>
 
@@ -79,44 +77,10 @@ void swap(packaged_task&lt;R(ArgTypes...)&gt;&amp;, packaged_task&lt;R(ArgTypes.
 </pre></blockquote>
 </li>
 </ol>
-<!-- 
-<li>
-<p>
-In <sref ref="[futures.task]"/>, class template <tt>packaged_task</tt> change the <tt>swap</tt>
-member as indicated:
-</p>
-<note>
-to follow the new lvalue-ref swap style
-</note>
-<blockquote><pre>
-void swap(packaged_task&amp;<del>&amp;</del> other);
-</pre></blockquote>
-</li>
- -->
 <ol start="4">
-<!-- 
 <li>
 <p>
-In <sref ref="[futures.task]"/>, immediately after <tt>operator=</tt> prototype
-description (After p. 8) add:
-</p>
-<blockquote><pre>
-<ins>void swap(packaged_task&amp; other);</ins>
-</pre>
-<blockquote>
-<p><ins>
-<i>Effects:</i> Swaps the associated state of <tt>*this</tt> and <tt>other</tt>.
-</ins></p>
-<p><ins>
-<i>Throws:</i> Nothing.
-</ins></p>
-</blockquote>
-</blockquote>
-</li>
- -->
-<li>
-<p>
-At the end of <sref ref="[futures.task]"/> (after p. 20), add add the following
+At the end of <sref ref="[futures.task]"/> (after p. 20), add the following
 prototype description:
 </p>
 
