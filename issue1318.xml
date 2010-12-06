@@ -3,7 +3,7 @@
   <!ENTITY nbsp "&#160;">
 ] >
 
-<issue num="1318" status="Ready">
+<issue num="1318" status="Open">
 <title>N2982 removes previous allocator capabilities</title>
 <section><sref ref="[allocator.traits.types]"/></section>
 <submitter>Pete Becker</submitter>
@@ -83,10 +83,154 @@ Removed <tt>vector</tt> from list of templates that should be adjusted as of mee
 Replaced <tt>vector&lt;bool&gt;</tt> reference by <tt>vector</tt> reference because of misinterpreting meeting typo.
 Additional corrected numbering in P/R to N3225 wording.
 </p>
+
+<note>
+2010-12-06 Daniel reopens
+</note>
+
+<p>
+Unfortunately, the current P/R is defective for several reasons:
+<ol>
+<li> Table 43 &mdash; Descriptive variable definitions still contains three
+references to <tt>T&amp;</tt>, namely in:
+<blockquote>
+<table border="1">
+<tr>
+<td>
+<tt>t</tt>
+</td>
+<td>a value of type <tt>const T&amp;</tt></td>
+</tr>
+<tr>
+<td>
+<tt>r</tt>
+</td>
+<td>a value of type <tt>T&amp;</tt> obtained by the expression <tt>*p</tt></td>
+</tr>
+<tr>
+<td>
+<tt>s</tt>
+</td>
+<td>a value of type <tt>const T&amp;</tt> obtained by the expression <tt>*q</tt>
+or by conversion from a value <tt>r</tt></td>
+</tr>
+</table>
+</blockquote>
+Especially the second and third items are misses in the 1318 P/R,
+e.g. in N2723 or in C++03 these were referring
+to <tt>X::reference</tt> and <tt>X::const_reference</tt>, resp.
+None of them is referenced anywhere in the allocator requirements
+table: <tt>r</tt> and <tt>s</tt> where historically needed to
+define the expressions <tt>a.address(r)</tt> and <tt>a.address(s)</tt> which are gone now,
+and <tt>t</tt> was needed to define the expression <tt>a.construct(p, t)</tt> which has been
+replaced by <tt>a.construct(p,args)</tt>.
+<p/>
+The easiest fix seems to be to remove all three rows from Table 43.
+</li>
+<li>
+Further-on, the current P/R suggests to replace the the current
+definitions of the adaptor classes
+<blockquote><pre>
+stack
+priority_queue
+queue
+</pre></blockquote>
+similar to the other container types, i.e. to define <tt>reference</tt> and
+<tt>const_reference</tt> now as
+<blockquote><pre>
+typedef typename allocator_traits&lt;Allocator&gt;::reference reference;
+typedef typename allocator_traits&lt;Allocator&gt;::const_reference const_reference;
+</pre></blockquote>
+This would not only be an ill-formed definition (because there is no name
+<tt>Allocator</tt> in scope), but it would also introduce a breakage compared to C++03,
+where these definitions where already referring to the definition of the wrapped 
+containers. So, the adaptor class templates should be removed from the current list.
+</li>
+<li>
+Then the current P/R wording leads to one further unexpected and unwanted change due to 
+the general formular used: <tt>match_result::reference</tt> is currently defined as
+<blockquote><pre>
+typedef const_reference reference;
+</pre></blockquote>
+because it is an <em>immutable</em> container (And we had this definition
+already in N2723). The application of the rule would change this silently.
+</li>
+<li>
+Finally the suggested wording for the <tt>unordered_</tt> containers is incomplete.
+The reason is a current inconsistency between these containers and the rest: While
+normally the definition of the pointer types is
+<blockquote><pre>
+typedef typename allocator_traits&lt;Allocator&gt;::pointer pointer;
+typedef typename allocator_traits&lt;Allocator&gt;::const_pointer const_pointer;
+</pre></blockquote>
+for the unordered containers they are
+<blockquote><pre>
+typedef typename allocator_type::pointer pointer;
+typedef typename allocator_type::const_pointer const_pointer;
+</pre></blockquote>
+These definitions are <em>not</em> equivalent, because allocators are no longer
+required to define typedefs <tt>pointer</tt> and <tt>const_pointer</tt>, the
+<tt>allocator_traits</tt> were invented as a further indirection to cope
+with that. I.e. for the unordered containers we need to bring both the definition
+of references <em>and</em> pointers in sync.
+</li>
+</ol>
+</p>
 </discussion>
 
 <resolution>
 <ol>
+<li>
+<p>
+Remove the following three rows from Table 43:
+</p>
+
+<blockquote>
+<table border="1">
+<caption>Table 43 &mdash; Descriptive variable definitions</caption>
+<tr>
+<th>
+Variable
+</th>
+
+<th>
+Definition
+</th>
+</tr>
+
+<tr>
+<td><del><tt>t</tt></del></td>
+
+<td><del>a value of type <tt>const T&amp;</tt></del></td>
+
+</tr>
+
+<tr>
+<td>&nbsp;<tt>...</tt></td>
+
+<td>&nbsp;<tt>...</tt></td>
+
+</tr>
+
+<tr>
+<td><del><tt>r</tt></del></td>
+
+<td><del>a value of type <tt>T&amp;</tt> obtained by the expression <tt>*p</tt>.</del></td>
+
+</tr>
+
+<tr>
+<td><del><tt>s</tt></del></td>
+
+<td><del>a value of type <tt>const T&amp;</tt> obtained by the expression <tt>*q</tt> or
+by conversion from a value <tt>r</tt>.</del></td>
+
+</tr>
+
+</table>
+</blockquote>
+
+</li>
 <li>
 <p>
 Add the following two rows to Table 44, Allocator requirements:
@@ -141,7 +285,7 @@ Default
 
 <li>
 <p>
-2. Change the following two rows in Table 44:
+Change the following two rows in Table 44:
 </p>
 
 <blockquote>
@@ -212,13 +356,13 @@ Add the following descriptions to <sref ref="[allocator.traits.types]"/>:
 </p>
 
 <blockquote>
-<pre>typedef see below reference;</pre>
+<pre>typedef <i>see below</i> reference;</pre>
 <blockquote>
 <i>Type:</i> <tt>Alloc::reference</tt> if such a type exists; otherwise,
 <tt>value_type&amp;</tt>.
 </blockquote>
 
-<pre>typedef see below const reference;</pre>
+<pre>typedef <i>see below</i> const reference;</pre>
 <blockquote>
 <i>Type:</i> <tt>Alloc::const_reference</tt> if such a type exists; otherwise,
 <tt>const value_type&amp;</tt>.
@@ -244,8 +388,7 @@ class scoped_allocator_adaptor : public OuterAlloc {
 
 <li>
 <p>
-Change the nested typedefs reference and
-const_reference to:
+Change the nested typedefs <tt>reference</tt> and <tt>const_reference</tt> to:
 </p>
 
 <blockquote><pre>
@@ -258,26 +401,67 @@ for each of the following class templates:
 </p>
 
 <blockquote>
+<tt>basic_string</tt> <sref ref="[basic.string]"/><br/>
 <tt>deque</tt> <sref ref="[deque]"/><br/>
 <tt>forward_list</tt> <sref ref="[forwardlist]"/><br/>
 <tt>list</tt> <sref ref="[list]"/><br/>
-<tt>queue</tt> <sref ref="[queue.defn]"/><br/>
-<tt>priority_queue</tt> <sref ref="[priority.queue]"/><br/>
-<tt>stack</tt> <sref ref="[stack.defn]"/><br/>
 <tt>vector</tt> <sref ref="[vector]"/><br/>
 <tt>map</tt> <sref ref="[map]"/><br/>
 <tt>multimap</tt> <sref ref="[multimap]"/><br/>
 <tt>set</tt> <sref ref="[set]"/><br/>
 <tt>multiset</tt> <sref ref="[multiset]"/><br/>
+</blockquote>
+</li>
+
+<li>
+<p>
+Change the nested typedefs <tt>reference</tt> and <tt>const_reference</tt> to:
+</p>
+
+<blockquote><pre>
+typedef typename allocator_traits&lt;Allocator&gt;::reference reference;
+typedef typename allocator_traits&lt;Allocator&gt;::const_reference const_reference;
+</pre></blockquote>
+
+<p>
+and change the nested typedefs <tt>pointer</tt> and <tt>const_pointer</tt> to:
+</p>
+
+<blockquote><pre>
+typedef typename allocator_traits&lt;Allocator&gt;::pointer pointer;
+typedef typename allocator_traits&lt;Allocator&gt;::const_pointer const_pointer;
+</pre></blockquote>
+
+<p>
+for each of the following class templates:
+</p>
+
+<blockquote>
 <tt>unordered_map</tt> <sref ref="[unord.map]"/><br/>
 <tt>unordered_multimap</tt> <sref ref="[unord.multimap]"/><br/>
 <tt>unordered_set</tt> <sref ref="[unord.set]"/><br/>
 <tt>unordered_multiset</tt> <sref ref="[unord.multiset]"/><br/>
-<tt>basic_string</tt> <sref ref="[basic.string]"/><br/>
-<tt>match_results</tt> <sref ref="[re.results]"/>
 </blockquote>
 </li>
 
+<li>
+<p>
+Edit the class template synopsis of <tt>match_results</tt> in <sref ref="[re.results]"/>
+as indicated:
+</p>
+
+<blockquote><pre>
+template &lt;class BidirectionalIterator,
+class Allocator = allocator&lt;sub_match&lt;BidirectionalIterator&gt; &gt;
+class match_results {
+public:
+  typedef sub_match&lt;BidirectionalIterator&gt; value_type;
+  typedef <del>const value_type&amp;</del><ins>typename allocator_traits&lt;Allocator&gt;::const_reference</ins> const_reference;
+  typedef const_reference reference;
+  ...
+};
+</pre></blockquote>
+</li>
 </ol>
 </resolution>
 
