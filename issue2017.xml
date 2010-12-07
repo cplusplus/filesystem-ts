@@ -147,6 +147,35 @@ int main()
 }
 </pre></blockquote>
 </p>
+
+<note>
+2010-12-07 Daniel comments and refines the proposed resolution
+</note>
+
+<p>
+There is one further defect in the usage of <tt>result_of</tt> within
+<tt>reference_wrapper</tt>'s function call operator: According to <sref ref="[refwrap.invoke]"/> p. 1
+the invokable entity of type <tt>T</tt> is provided as lvalue, but 
+<tt>result_of</tt> is fed as if it were an rvalue. This does not only lead to
+potentially incorrect result types, but it will also have the effect that
+we could never use the function call operator with a function type,
+because the type encoding used in <tt>result_of</tt> would form an invalid
+function type return a function type. The following program demonstrates
+this problem:
+<blockquote><pre>
+#include &lt;functional&gt;
+
+void foo(int) {}
+
+int main()
+{
+   std::ref(foo)(0);  // error
+}
+</pre></blockquote>
+The correct solution is to ensure that <tt>T</tt> becomes <tt>T&amp;</tt>
+within <tt>result_of</tt>, which solves both problems at once.
+</p>
+
 </discussion>
 
 <resolution>
@@ -164,7 +193,7 @@ namespace std {
     [...]
     // invocation
     template &lt;class... ArgTypes&gt;
-    typename result_of&lt;T(ArgTypes<ins>&amp;&amp;</ins>...)&gt;::type
+    typename result_of&lt;T<ins>&amp;</ins>(ArgTypes<ins>&amp;&amp;</ins>...)&gt;::type
     operator() (ArgTypes&amp;&amp;...) const;
   };
 }
@@ -178,7 +207,7 @@ Change the signature in <sref ref="[refwrap.invoke]"/> before paragraph 1
 
 <blockquote><pre>
 template &lt;class... ArgTypes&gt;
-typename result_of&lt;T(ArgTypes<ins>&amp;&amp;</ins>... )&gt;::type
+typename result_of&lt;T<ins>&amp;</ins>(ArgTypes<ins>&amp;&amp;</ins>... )&gt;::type
 operator()(ArgTypes&amp;&amp;... args) const;
 </pre><blockquote>
 1 <i>Returns</i>: <tt>INVOKE(get(), std::forward&lt;ArgTypes&gt;(args)...)</tt>. (20.8.2)
