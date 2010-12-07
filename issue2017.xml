@@ -29,7 +29,7 @@ template &lt;class F, class... Types&gt;
 }
 
 template &lt;class F, class... Types&gt;
-     typename std::result_of&lt;F (Types<b>&amp;&amp;</b>...)
+     typename std::result_of&lt;F (Types<b>&amp;&amp;</b>...)&gt;::type
          f2(F f, Types&amp;&amp;... params)
 {
      return f(std::forward&lt;Types...&gt;(params...));
@@ -87,7 +87,6 @@ Functor().operator()(r)
 </pre></blockquote>
 
 is '<tt>std::string &amp;&amp;</tt>'. The corresponding return type for the invocation
-</discussion>
 
 <blockquote><pre>
 Functor().operator()(cr)
@@ -114,7 +113,78 @@ template &lt;&gt;
 
 <tt>std::result_of&lt;F (std::string const &amp;&amp;)&gt;::type</tt> is the same type as
 '<tt>std::string const &amp;&amp;</tt>'. This is correct result.
+
+<note>
+2010-12-07 Jonathan Wakely comments and suggests a proposed resolution
+</note>
+
+<p>
+I agree with the analysis and I think this is a defect in the
+standard, it would be a shame if it can't be fixed.
+
+In the following example one would expect <tt>f(Str("1"))</tt> and
+<tt>std::ref(f)(Str("2"))</tt> to be equivalent but the current wording makes
+the invocation through <tt>reference_wrapper</tt> ill-formed:
+<blockquote><pre>
+#include &lt;functional&gt;
+#include &lt;string&gt;
+
+struct Functor
+{
+   template &lt;class T&gt;
+       T&amp;&amp; operator()(T&amp;&amp; t) const
+       {
+           return static_cast&lt;T&amp;&amp;&gt;(t);
+       }
+};
+
+int main()
+{
+   typedef std::string const Str;
+   Functor f;
+   f( Str("1") );
+   std::ref(f)( Str("2") );  // error
+}
+</pre></blockquote>
+</p>
+</discussion>
+
 <resolution>
+<ol>
+<li>
+<p>
+Change the synopsis in <sref ref="[refwrap]"/> paragraph 1:
+</p>
+
+<blockquote><pre>
+namespace std {
+  template &lt;class T&gt; class reference_wrapper
+  {
+  public :
+    [...]
+    // invocation
+    template &lt;class... ArgTypes&gt;
+    typename result_of&lt;T(ArgTypes<ins>&amp;&amp;</ins>...)&gt;::type
+    operator() (ArgTypes&amp;&amp;...) const;
+  };
+}
+</pre></blockquote>
+</li>
+
+<li>
+<p>
+Change the signature in <sref ref="[refwrap.invoke]"/> before paragraph 1
+</p>
+
+<blockquote><pre>
+template &lt;class... ArgTypes&gt;
+typename result_of&lt;T(ArgTypes<ins>&amp;&amp;</ins>... )&gt;::type
+operator()(ArgTypes&amp;&amp;... args) const;
+</pre><blockquote>
+1 <i>Returns</i>: <tt>INVOKE(get(), std::forward&lt;ArgTypes&gt;(args)...)</tt>. (20.8.2)
+</blockquote></blockquote>
+</li>
+</ol>
 </resolution>
 
 </issue>
