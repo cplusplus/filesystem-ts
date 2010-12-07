@@ -1,0 +1,128 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="2021" status="New">
+<title>Further incorrect usages of <tt>result_of</tt></title>
+<section><sref ref="[func.bind.bind]"/>, <sref ref="[futures.overview]"/>, <sref ref="[futures.async]"/></section>
+<submitter>Daniel Kr&uuml;gler</submitter>
+<date>07 Dec 2010</date>
+
+<discussion>
+Issue <iref ref="2017"/> points out some incorrect usages of <tt>result_of</tt> in the
+declaration of the function call operator overload of <tt>reference_wrapper</tt>,
+but there are more such specification defects:
+<ol>
+<li>According to <sref ref="[func.bind.bind]"/> p. 3: 
+<blockquote>
+[..] The effect of <tt>g(u1, u2, ..., uM)</tt> shall be <tt>INVOKE(fd, v1, v2, ..., vN, result_of&lt;FD cv (V1, V2, ..., VN)&gt;::type)</tt> [..]
+</blockquote>
+but <tt>fd</tt> is defined as &quot;an lvalue of type <tt>FD</tt> constructed from <tt>std::forward&lt;F&gt;(f)</tt>&quot;. This means that
+the above usage must refer to <tt>result_of&lt;FD cv <strong>&amp;</strong> (V1, V2, ..., VN)&gt;</tt> instead.
+</li>
+<li>
+Similar in <sref ref="[func.bind.bind]"/> p. 10 bullet 2 we have:
+<blockquote>
+if the value of <tt>is_bind_expression&lt;TiD&gt;::value</tt> is true, the argument is <tt>tid(std::forward&lt;Uj&gt;(uj)...)</tt>
+and its type <tt>Vi</tt> is <tt>result_of&lt;TiD cv (Uj...)&gt;::type</tt>
+</blockquote>
+Again, <tt>tid</tt> is defined as &quot;lvalue of type <tt>TiD</tt> constructed from <tt>std::forward&lt;Ti&gt;(ti)</tt>&quot;. This means that
+the above usage must refer to <tt>result_of&lt;TiD cv <strong>&amp;</strong> (Uj...)&gt;</tt> instead. We also have similar defect as in
+<iref ref="2017"/> in regard to the argument types, this leads us to the further corrected form 
+<tt>result_of&lt;TiD cv <strong>&amp;</strong> (Uj<strong>&amp;&amp;</strong>...)&gt;</tt>. This is not the end: Since the <tt>Vi</tt>
+are similar sensitive to the argument problem, the last part must say: 
+<p>
+&quot;[..] its type <tt>Vi</tt> is <tt>result_of&lt;TiD cv <strong>&amp;</strong> (Uj<strong>&amp;&amp;</strong>...)&gt;::type <strong>&amp;&amp;</strong>&quot;</tt>
+</p>
+(The bound arguments <tt>Vi</tt> can never be <tt>void</tt> types, therefore we don't need 
+to use the more defensive <tt>std::add_rvalue_reference</tt> type trait)
+</li>
+<li>The function template <tt>async</tt> is declared as follows (the other overload has the same problem):
+<blockquote><pre>
+template &lt;class F, class... Args&gt;
+future&lt;typename result_of&lt;F(Args...)&gt;::type&gt;
+async(F&amp;&amp; f, Args&amp;&amp;... args);
+</pre></blockquote>
+This usage has the some same problems as we have found in <tt>reference_wrapper</tt> (<iref ref="2017"/>) and more: According to
+the specification in <sref ref="[futures.async]"/> the effective result type is that of the call of
+<blockquote><pre>
+INVOKE(decay_copy(std::forward&lt;F&gt;(f)), decay_copy(std::forward&lt;Args&gt;(args))...)
+</pre></blockquote>
+First, <tt>decay_copy</tt> potentially modifies the effective types to <tt>decay&lt;F&gt;::type</tt> and <tt>decay&lt;Args&gt;::type...</tt>.
+Second, the current specification is not really clear, what the value category of callable type or the arguments shall be: According
+to the second bullet of <sref ref="[futures.async]"/> p. 3:
+<blockquote>
+Invocation of the deferred function evaluates <tt>INVOKE(g, xyz)</tt> where <tt>g</tt> is the stored value of 
+<tt>decay_copy(std::forward&lt;F&gt;(f))</tt> and <tt>xyz</tt> is the stored copy of 
+<tt>decay_copy(std::forward&lt;Args&gt;(args))...</tt>.
+</blockquote>
+This seems to imply that lvalues are provided in contrast to the direct call expression of <sref ref="[futures.async]"/> p. 2
+which implies rvalues instead. The specification needs to be clarified.
+</li>
+</ol>
+</discussion>
+
+<resolution>
+The suggested wording changes are against the working draft N3225.
+<ol>
+<li>
+<p>Change <sref ref="[func.bind.bind]"/> p. 3 as indicated:</p>
+
+<blockquote>
+<i>Returns</i>: A forwarding call wrapper <tt>g</tt> with a weak result type (20.8.2). The effect of 
+<tt>g(u1, u2, ..., uM)</tt> shall be <tt>INVOKE(fd, v1, v2, ..., vN, result_of&lt;FD cv <ins>&amp;</ins> (V1, V2, ..., VN)&gt;::type)</tt>, 
+where <i>cv</i> represents the <i>cv</i>-qualifiers of <tt>g</tt> and the values and types of the bound arguments 
+<tt>v1, v2, ..., vN</tt> are determined as specified below. [..]
+</blockquote>
+
+</li>
+
+<li>
+<p>Change <sref ref="[func.bind.bind]"/> p. 10 bullet 2 as indicated:</p>
+
+<blockquote>
+if the value of <tt>is_bind_expression&lt;TiD&gt;::value</tt> is <tt>true</tt>, the argument is 
+<tt>tid(std::forward&lt;Uj&gt;(uj)...)</tt> and its type <tt>Vi</tt> is 
+<tt>result_of&lt;TiD cv <ins>&amp;</ins> (Uj<ins>&amp;&amp;</ins>...)&gt;::type<ins>&amp;&amp;</ins></tt>;
+</blockquote>
+
+</li>
+
+<li>
+<p>
+This resolution assumes that the wording of <sref ref="[futures.async]"/> is incorrectly implying rvalues
+as arguments of <tt>INVOKE</tt>, those should be lvalues instead.
+</p>
+
+<p>
+Change the function signatures in header <tt>&lt;future&gt;</tt> synopsis <sref ref="[futures.overview]"/> p. 1
+and in <sref ref="[futures.async]"/> p. 1 as indicated:
+</p>
+
+<blockquote><pre>
+template &lt;class F, class... Args&gt;
+future&lt;typename result_of&lt;<ins>typename decay&lt;</ins>F<ins>&gt;::type&amp;</ins>(<ins>typename decay&lt;</ins>Args<ins>&gt;::type&amp;</ins>...)&gt;::type&gt;
+async(F&amp;&amp; f, Args&amp;&amp;... args);
+template &lt;class F, class... Args>
+future&lt;typename result_of&lt;<ins>typename decay&lt;</ins>F<ins>&gt;::type&amp;</ins>(<ins>typename decay&lt;</ins>Args<ins>&gt;::type&amp;</ins>...)&gt;::type&gt;
+async(launch policy, F&amp;&amp; f, Args&amp;&amp;... args);
+</pre></blockquote>
+</li>
+
+<li>
+<p>Change <sref ref="[futures.async]"/> p. 4 as indicated: [Note: There is one tiny editorial correction that completes one
+<tt>::</tt> scope specifier]
+[Note: This sub-section need more wording: The call expressions used imply a different value category]
+</p>
+
+<blockquote>
+<i>Returns</i>: an object of type 
+<tt>future&lt;typename result_of&lt;<ins>typename decay&lt;</ins>F<ins>&gt;::type&amp;</ins>(<ins>typename decay&lt;</ins>Args<ins>&gt;::type&amp;</ins>...)&gt;:<ins>:</ins>type&gt;</tt> 
+that refers to the associated asynchronous state created by this call to <tt>async</tt>.
+</blockquote>
+</li>
+</ol>
+</resolution>
+
+</issue>
