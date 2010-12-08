@@ -1,0 +1,62 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="2022" status="New">
+<title><tt>reference_wrapper&lt;T&gt;::result_type</tt> is underspecified</title>
+<section><sref ref="[refwrap]"/></section>
+<submitter>Daniel Kr&uuml;gler</submitter>
+<date>08 Dec 2010</date>
+
+<discussion>
+Issue <iref ref="1295"/> correctly removed function types and references to function types from the
+bullet 1 of <sref ref="[func.require]"/> p. 3 because neither function types nor function references
+satisfy the requirements for a target object which is <em>defined</em> to be an object of a callable 
+type. This has the effect that the reference in <sref ref="[refwrap]"/> p. 2
+
+<blockquote>
+<tt>reference_wrapper</tt> has a weak result type (20.8.2).
+</blockquote>
+
+is insufficient as a reference to define the member type <tt>result_type</tt> when the template argument 
+<tt>T</tt> is a function type.
+<p/>
+There are basically two approaches to solve the problem:
+
+<ol>
+<li>Extend the definition of a <i>weak result type</i> in <sref ref="[func.require]"/> p. 3 to both
+function types and references thereof. This extension must be specified independend from the concept
+of a call wrapper, though.
+</li>
+<li>Add one extra sentence to <sref ref="[refwrap]"/> p. 2 that simply defines the member type
+<tt>result_type</tt> for <tt>reference_wrapper&lt;T&gt;</tt>, when <tt>T</tt> is a function type.
+</li>
+</ol>
+
+I checked the current usages of <i>weak result type</i> to have a base to argue for one or the other
+approach. It turns out, that there is no further reference to this definition in regard to
+function types or references thereof. The only other reference can be found in 
+<sref ref="[func.bind.bind]"/> p. 3, where <tt>g</tt> is required to be a class type.
+</discussion>
+
+<resolution>
+<p>
+The suggested wording changes are against the working draft N3225.
+</p>
+
+<ol>
+<li>
+<p>Change <sref ref="[refwrap]"/> p. 2 as indicated:</p>
+
+<blockquote>
+2 <tt>reference_wrapper<ins>&lt;T&gt;</ins></tt> has a weak result type (20.8.2). <ins>If <tt>T</tt> is a function type, 
+<tt>result_type</tt> shall be a synonym for the return type of <tt>T</tt>.</ins>
+</blockquote>
+
+</li>
+
+</ol>
+</resolution>
+
+</issue>
