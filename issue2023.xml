@@ -1,0 +1,75 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="2023" status="New">
+<title>Incorrect requirements for <tt>lock_guard</tt> and <tt>unique_lock</tt></title>
+<section><sref ref="[thread.lock.guard]"/>, <sref ref="[thread.lock.unique]"/></section>
+<submitter>Daniel Kr&uuml;gler</submitter>
+<date>08 Dec 2010</date>
+
+<discussion>
+There are two different <tt>*Lockable</tt> requirements imposed on template arguments
+of the class template <tt>lock_guard</tt> as of <sref ref="[thread.lock.guard]"/> p. 1+2:
+
+<blockquote>
+1 [..] The supplied <tt>Mutex</tt> type shall meet the <tt>BasicLockable</tt> requirements (30.2.5.2).
+</blockquote>
+<p/>
+<blockquote>
+2 The supplied <tt>Mutex</tt> type shall meet the <tt>Lockable</tt> requirements (30.2.5.3).
+</blockquote>
+
+The <tt>Lockable</tt> requirements include the availability of a member function <tt>try_lock()</tt>,
+but there is no operational semantics in the specification of <tt>lock_guard</tt> that would rely
+on such a function. It seems to me that paragraph 2 should be removed.
+
+<p/>
+Similarly, <sref ref="[thread.lock.unique]"/> p. 1+2 refer to exactly the same two requirements.
+In this case it seems as if the intention was that the template arguement <tt>Mutex</tt> should
+always provide the <tt>try_lock()</tt> member function, because several member functions of
+<tt>unique_lock</tt> (<tt>unique_lock(mutex_type&amp; m, try_to_lock_t)</tt> or <tt>bool try_lock()</tt>) 
+take advantage of such a function without adding extra requirements for this.
+It seems that the requirement subset <tt>BasicLockable</tt> should be removed.
+
+<p/>
+
+I searched for further possible misusages of the <tt>*Lockable</tt> requirements, but could not
+find any more.
+</discussion>
+
+<resolution>
+<p>
+The suggested wording changes are against the working draft N3225.
+</p>
+
+<ol>
+<li>
+<p>Remove <sref ref="[thread.lock.guard]"/> p. 2: completely:</p>
+
+<blockquote>
+<del>2 The supplied <tt>Mutex</tt> type shall meet the <tt>Lockable</tt> requirements (30.2.5.3).</del>
+</blockquote>
+
+</li>
+
+<li>
+<p>Change <sref ref="[thread.lock.unique]"/> p. 1 as indicated:</p>
+
+<blockquote>
+1 [..] The behavior of a program is undefined if the contained pointer <tt>pm</tt> is not null
+and the mutex pointed to by <tt>pm</tt> does not exist for the entire remaining lifetime (3.8) 
+of the <tt>unique_lock</tt> object. <del>The supplied <tt>Mutex</tt> type shall meet the 
+<tt>BasicLockable</tt> requirements (30.2.5.2).</del>
+</blockquote>
+<p/>
+<blockquote>
+2 The supplied <tt>Mutex</tt> type shall meet the <tt>Lockable</tt> requirements (30.2.5.3).
+</blockquote>
+
+</li>
+</ol>
+</resolution>
+
+</issue>
