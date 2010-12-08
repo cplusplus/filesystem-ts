@@ -1,0 +1,52 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="2025" status="New">
+<title>Incorrect semantics of move assignment operator of <tt>packaged_task</tt></title>
+<section><sref ref="[futures.task.members]"/></section>
+<submitter>Daniel Kr&uuml;gler</submitter>
+<date>08 Dec 2010</date>
+
+<discussion>
+According to <sref ref="[futures.task.members]"/> p. 7 bullet 2:
+
+<blockquote><pre>
+packaged_task&amp; operator=(packaged_task&amp;&amp; other);
+</pre><blockquote>
+7 <i>Effects</i>:<br/>
+<ul>
+<li>[...]</li>
+<li><tt>packaged_task&lt;R, ArgTypes...&gt;(other).swap(*this)</tt>.</li>
+</ul>
+</blockquote></blockquote>
+<p/>
+</discussion>
+
+The argument <tt>other</tt> given to the move constructor is an lvalue and must be converted into 
+an rvalue via appropriate usage of <tt>std::move</tt>.
+<resolution>
+<p>
+The suggested wording changes are against the working draft N3225.
+</p>
+
+<ol>
+<li>
+<p>Change  <sref ref="[futures.task.members]"/> p. 7 bullet 2 as indicated:</p>
+
+<blockquote><pre>
+packaged_task&amp; operator=(packaged_task&amp;&amp; other);
+</pre><blockquote>
+7 <i>Effects</i>:<br/>
+<ul>
+<li>[...]</li>
+<li><tt>packaged_task&lt;R, ArgTypes...&gt;(<ins>std::move(</ins>other<ins>)</ins>).swap(*this)</tt>.</li>
+</ul>
+</blockquote></blockquote>
+
+</li>
+</ol>
+</resolution>
+
+</issue>
