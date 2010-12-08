@@ -10,28 +10,31 @@
 <date>16 Nov 2010</date>
 
 <discussion>
-<p>28.7 [re.traits] p12 says:</p>
-<blockquote>
-<p>returns true if f bitwise or’ed with the result of calling
-lookup_classname with an iterator pair that designates the character
-sequence "w" is not equal to 0 and c == ’_’</p>
-</blockquote>
+<p><sref ref="[re.traits]"/> p. 12 says:</p>
 
-<p>If the bitmask value corresponding to "w" has a non-zero value (which
+<blockquote><p>
+returns true if <tt>f</tt> bitwise or&apos;ed with the result of calling
+<tt>lookup_classname</tt> with an iterator pair that designates the character
+sequence &quot;w&quot; is not equal to <tt>0</tt> and <tt>c == '_'</tt>
+</p></blockquote>
+
+<p>
+If the bitmask value corresponding to &quot;w&quot; has a non-zero value (which
 it must do) then the bitwise or with any value is also non-zero, and
-so isctype('_', f) returns true for any f.  Obviously this is wrong,
-since '_' is not in every ctype category.</p>
+so <tt>isctype('_', f)</tt> returns true for any <tt>f</tt>. Obviously this is wrong,
+since <tt>'_'</tt> is not in every <tt>ctype</tt> category.
+</p>
 
-<p>There's a similar problem with the following phrases discussing the
-"blank" char class.
+<p>
+There&apos;s a similar problem with the following phrases discussing the
+&quot;blank&quot; char class.
 </p>
 </discussion>
 
 <resolution>
-<p>Replace the Returns clause with a description in terms of ctype
+<p>Replace the Returns clause with a description in terms of <tt>ctype</tt>
 categories, rather than pseudocode in terms of bitwise operations.
 (full replacement wording to follow)
-
 </p>
 </resolution>
 
