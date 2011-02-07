@@ -1,0 +1,55 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="2026" status="New">
+<title><tt>hash</tt> should be <tt>std</tt> qualified for unordered container</title>
+<section><sref ref="[unord]"/></section>
+<submitter>Pete Becker</submitter>
+<date>7 Feb 2011</date>
+
+<discussion>
+<p>
+Tom Plum pointed out to me that there's an apparent inconsistency in the <tt>std::</tt> qualification of template names in the unordered containers:
+</p>
+
+<pre><blockquote>
+ template &lt;class Key,
+           class T,
+           class Hash = hash&lt;Key>,
+           class Pred = std::equal_to&lt;Key>,
+           class Alloc = std::allocator&lt;std::pair&lt;const Key, T> > >
+   class unordered_map;
+</blockquote></pre>
+
+<p>
+Is there a reason that hash is not qualified with <tt>std::</tt>? TR1 also
+does not use <tt>std::</tt> here.
+</p>
+
+<note>
+2011-02-07 Chris Jefferson adds:
+</note>
+<p>
+I assumed (I might be wrong) it is because <tt>hash</tt> is designed to be a
+customisation point, like <tt>swap</tt>.
+</p>
+
+<note>
+2011-02-07 Howard Hinnant adds:
+</note>
+<p>I think this is incorrect.  We mean <tt>std::hash</tt>, though clients
+are free to specialize <tt>std::hash</tt> on user-defined types.  With the
+possible exception of <tt>begin</tt>/<tt>end</tt> (which I'm not sure if
+we've settled that), <tt>swap</tt> is the only intended customization point (look up a function by ADL) in the <tt>std::</tt> lib.
+</p>
+
+</discussion>
+
+<resolution>
+<p>
+</p>
+</resolution>
+
+</issue>
