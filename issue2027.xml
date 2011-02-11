@@ -1,0 +1,69 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="2027" status="New">
+<title>Initialization of the stored task of a <tt>packaged_task</tt></title>
+<section><sref ref="[futures.task.members]"/></section>
+<submitter>Alberto Ganesh Barbati</submitter>
+<date>9 Feb 2011</date>
+
+<discussion>
+<p>
+Related with LWG issue <iref ref="1514"/>.
+</p>
+
+<p>
+The move constructor of <tt>packaged_task</tt> does not specify how the stored task is constructed. 
+The obvious way is to move-construct it using the task stored in the argument. Moreover, the 
+constructor should be provided with a throws clause similar to one used for the other constructors, 
+as the move constructor of the stored task is not required to be nothrow.</p>
+
+<p>
+As for the other constructors, the terms "stores a copy of <tt>f</tt>" do not reflect the intent, which is 
+to allow <tt>f</tt> to be moved when possible.
+</p>
+
+</discussion>
+
+<resolution>
+<p>(wording written assuming LWG <iref ref="1514"/> is also accepted)</p>
+
+<ol>
+<li>
+<p>Change <sref ref="[futures.task.members]"/> paragraph 3:</p>
+
+<blockquote>
+3 <em>Effects</em>: constructs a new <tt>packaged_task</tt> object with an associated asynchronous state and <del>stores a
+copy of <tt>f</tt> as the object's stored task</del><ins>direct-initializes the object's stored task with <tt>std::forward&lt;F&gt;(f)</tt></ins>. 
+The constructors that take an <tt>Allocator</tt> argument use it to allocate memory needed to store the internal data structures.
+</blockquote>
+
+</li>
+
+<li>
+<p>Change <sref ref="[futures.task.members]"/> paragraph 5:</p>
+
+<blockquote>
+5 <em>Effects</em>: constructs a new <tt>packaged_task</tt> object and transfers ownership of <tt>other</tt>'s associated asynchronous
+state to <tt>*this</tt>, leaving other with no associated asynchronous state. <ins>Direct-initializes the object's stored task 
+with <tt>std::move(f)</tt> where <tt>f</tt> is the task stored in <tt>other</tt>.</ins>
+</blockquote>
+
+</li>
+
+<li>
+<p>Add a new paragraph after <sref ref="[futures.task.members]"/> p. 6:</p>
+
+<blockquote>
+<ins><em>Throws</em>: any exceptions thrown by the move constructor of <tt>f</tt>.</ins>
+</blockquote>
+
+</li>
+
+</ol>
+
+</resolution>
+
+</issue>
