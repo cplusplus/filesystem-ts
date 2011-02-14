@@ -1,0 +1,63 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="2028" status="New">
+<title><tt>messages_base::catalog</tt> overspecified</title>
+<section><sref ref="[locale.messages]"/></section>
+<submitter>Howard Hinnant</submitter>
+<date>14 Feb 2011</date>
+
+<discussion>
+<p>
+In <sref ref="[locale.messages]"/>, <tt>messages_base::catalog</tt> is specified to be a typedef to <tt>int</tt>.  
+This type is subsequently used to open, access and close catalogs.
+</p>
+
+<p>
+However, an OS may have catalog/messaging services that are indexed and managed by types other than <tt>int</tt>.  
+For example <tt>POSIX</tt>, publishes the <a href="http://www.unix.org/single_unix_specification/">following messaging API</a>:
+</p>
+
+<blockquote><pre>
+typedef <em>unspecified</em> nl_catd;
+
+nl_catd catopen(const char* name , int oflag);
+char*   catgets(nl_catd catd, int set_id, int msg_id, const char* s);
+int     catclose(nl_catd catd);
+</pre></blockquote>
+
+<p>
+I.e., the catalog is managed with an unspecified type, not necessarily an <tt>int</tt>.  
+Mac OS uses a <tt>void*</tt> for <tt>nl_catd</tt> (which is conforming to the <tt>POSIX</tt> standard).  
+The current <tt>messages_base</tt> spec effectively outlaws using the built-in OS messaging service 
+supplied for this very purpose!
+</p>
+
+</discussion>
+
+<resolution>
+<p></p>
+
+<ol>
+<li>
+<p>Modify <sref ref="[locale.messages]"/>:</p>
+
+<blockquote><pre>
+namespace std {
+  class messages_base {
+  public:
+    typedef <del>int</del><ins><em>unspecified</em></ins> catalog;
+  };
+  ...
+}
+</pre></blockquote>
+
+</li>
+
+</ol>
+
+</resolution>
+
+</issue>
