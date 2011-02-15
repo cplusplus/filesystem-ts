@@ -5,7 +5,7 @@
 
 <issue num="1474" status="Open">
 <title>[FCD] weak compare-and-exchange confusion</title>
-<section><sref ref="[atomics.types.operations]"/></section>
+<section><sref ref="[atomics.types.operations.req]"/></section>
 <submitter>INCITS</submitter>
 <date>25 Aug 2010</date>
 
@@ -15,38 +15,47 @@
 <duplicate><iref ref="1477"/></duplicate>
 <p><b>Addresses US-175, US-165, CH-23, GB-135</b></p>
 
-<sref ref="[atomics.types.operations]"/> p. 23: The first sentence is grammatically incorrect.
+<sref ref="[atomics.types.operations.req]"/> p. 25: The first sentence is grammatically incorrect.
 
 <note>
 2010-10-28 Daniel adds:
 </note>
 <p>
-Proposed resolution of duplicate issue <iref ref="1475"/>:
+Duplicate issue <iref ref="1475"/> also has a proposed resolution, but both issues are resolved with
+below proposed resolution.
 </p>
-Change <sref ref="[atomics.types.operations]"/> p. 23 as indicated:
-<blockquote>
-23 <em>Remark</em>: <del>The weak compare-and-exchange operations may fail spuriously, that is, return false while
-leaving the contents of memory pointed to by <tt>expected</tt> before the operation is the same that same
-as that of the <tt>object</tt> and the same as that of <tt>expected</tt> after the operation</del><ins>The weak 
-compare-and-exchange operations may fail spuriously, that is, return false while leaving the contents of memory 
-pointed to by <tt>expected</tt> unchanged.</ins>. [ <em>Note</em>: This spurious failure enables implementation of 
-compare-and-exchange on a broader class of machines, e.g., loadlocked store-conditional machines. A consequence of 
-spurious failure is that nearly all uses of weak compare-and-exchange will be in a loop.
-<p/>
-When a compare-and-exchange is in a loop, the weak version will yield better performance on some
-platforms. When a weak compare-and-exchange would require a loop and a strong one would not, the
-strong one is preferable. &mdash; <em>end note</em> ]
-</blockquote>
+
+<note>
+2011-02-15 Howard fixes numbering, Hans improves the wording
+</note>
 </discussion>
 
 <resolution>
-Change <sref ref="[atomics.types.operations]"/> p. 23 as indicated:
+<ol>
+<li>
+<p>Change <sref ref="[atomics.types.operations.req]"/> p. 23 as indicated:</p>
+
 <blockquote>
-23 <em>Remark</em>: <del>The weak compare-and-exchange operations may fail spuriously, that is, return false while
+[ <em>Note</em>: The effect of <del>the compare-and-exchange operations</del><ins><tt>atomic_compare_exchange_strong</tt></ins> is
+<blockquote><pre>
+if (memcmp(object, expected, sizeof(*object)) == 0)
+  memcpy(object, &amp;desired, sizeof(*object));
+else
+  memcpy(expected, object, sizeof(*object));
+</pre></blockquote>
+ &mdash; <em>end note</em> ] [..]
+</blockquote>
+</li>
+
+<li>
+<p>Change <sref ref="[atomics.types.operations.req]"/> p. 25 as indicated:</p>
+<blockquote>
+25 <em>Remark</em>: <del>The weak compare-and-exchange operations may fail spuriously, that is, return false while
 leaving the contents of memory pointed to by <tt>expected</tt> before the operation is the same that same
-as that of the <tt>object</tt> and the same as that of <tt>expected</tt> after the operation</del><ins>The weak
-compare-and-exchange operations may fail spuriously. That is, it may return false while leaving the contents of 
-memory pointed to by <tt>expected</tt> the same as it was before the operation</ins>. [ <em>Note</em>: This spurious
+as that of the <tt>object</tt> and the same as that of <tt>expected</tt> after the operation</del><ins>A weak 
+compare-and-exchange operation may fail spuriously. That is, even when the contents of memory referred to by 
+<tt>expected</tt> and <tt>object</tt> are equal, it may return false and store back to <tt>expected</tt> the same 
+memory contents that were originally there.</ins>. [ <em>Note</em>: This spurious
 failure enables implementation of compare-and-exchange on a broader class of machines, e.g., loadlocked
 store-conditional machines. A consequence of spurious failure is that nearly all uses of weak
 compare-and-exchange will be in a loop.
@@ -55,6 +64,8 @@ When a compare-and-exchange is in a loop, the weak version will yield better per
 platforms. When a weak compare-and-exchange would require a loop and a strong one would not, the
 strong one is preferable. &mdash; <em>end note</em> ]
 </blockquote>
+</li>
+</ol>
 </resolution>
 
 </issue>

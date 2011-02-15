@@ -24,6 +24,30 @@ operations may fail spuriously, that is, return false
 while leaving the contents of memory pointed to
 by expected unchanged."
 </p>
+
+<note>
+Daniel translates NB comment in a proposed resolution
+</note>
+
+<p>Change <sref ref="[atomics.types.operations]"/> p. 23 as indicated:</p>
+
+<blockquote>
+23 <em>Remark</em>: <del>The weak compare-and-exchange operations may fail spuriously, that is, return false while
+leaving the contents of memory pointed to by <tt>expected</tt> before the operation is the same that same
+as that of the <tt>object</tt> and the same as that of <tt>expected</tt> after the operation</del><ins>The weak 
+compare-and-exchange operations may fail spuriously, that is, return false while leaving the contents of memory 
+pointed to by <tt>expected</tt> unchanged.</ins>. [ <em>Note</em>: This spurious failure enables implementation of 
+compare-and-exchange on a broader class of machines, e.g., loadlocked store-conditional machines. A consequence of 
+spurious failure is that nearly all uses of weak compare-and-exchange will be in a loop.
+<p/>
+When a compare-and-exchange is in a loop, the weak version will yield better performance on some
+platforms. When a weak compare-and-exchange would require a loop and a strong one would not, the
+strong one is preferable. &mdash; <em>end note</em> ]
+</blockquote>
+
+<note>
+See <iref ref="1474"/> for the proposed resolution
+</note>
 </discussion>
 
 <resolution>
