@@ -25,9 +25,53 @@ Also possibly add a note that <tt>abs_time</tt> in the past
 or negative <tt>rel_time</tt> is allowed.
 </blockquote>
 
+<note>2011-02-10: Howard Hinnant provides a resolution proposal</note>
+
 </discussion>
 
 <resolution>
+
+<ol>
+<li>
+<p>Change the Operational semantics of <tt>C1::now()</tt> in <sref ref="[time.clock.req]"/>, 
+Table 59 &mdash; <tt>Clock</tt> requirements as follows:
+</p>
+
+<blockquote>
+<table border="1">
+<caption>Table 59 &mdash; <tt>Clock</tt> requirements</caption>
+<tr>
+<th>
+Expression
+</th>
+
+<th>
+Return type
+</th>
+
+<th>
+Operational semantics
+</th>
+
+</tr>
+
+<tr>
+<td><tt>C1::now()</tt></td>
+
+<td><tt>C1::time_point</tt></td>
+
+<td>Returns a <tt>time_point</tt> object<br/>
+representing the current point in time.<br/>
+<ins>Shall not throw an exception.</ins></td>
+</tr>
+
+</table>
+</blockquote>
+
+
+</li>
+</ol>
+
 </resolution>
 
 </issue>
