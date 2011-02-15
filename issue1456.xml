@@ -14,10 +14,10 @@
 
 Table 143 lists the typedefs for various atomic types
 corresponding to the various standard integer typedefs,
-such as atomic_int_least8_t for int_least8_t, and
-atomic_uint_fast64_t for uint_fast64_t. However, there are
+such as <tt>atomic_int_least8_t</tt> for <tt>int_least8_t</tt>, and
+<tt>atomic_uint_fast64_t</tt> for <tt>uint_fast64_t</tt>. However, there are
 no atomic typedefs corresponding to the fixed-size
-standard typedefs int8_t, int16_t, and so forth.
+standard typedefs <tt>int8_t</tt>, <tt>int16_t</tt>, and so forth.
 
 <note>
 2010-10-24 Daniel adds:
@@ -27,6 +27,12 @@ standard typedefs int8_t, int16_t, and so forth.
 Accepting <a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2010/n3164.html">n3164</a> would solve this issue.
 </blockquote>
 
+<note>
+2011-02-15 Anthony corrects numbering/naming for N3225, Howard suggests improvement for the position
+of '(optional)', Daniel reorders rows in harmony to remaining entries and suggests specific optionality
+comments:
+</note>
+
 </discussion>
 
 <resolution>
@@ -34,50 +40,54 @@ Add the following entries to table 143:
 
 <blockquote>
 <table border="1">
-<caption>Table 143 &mdash; Atomics for standard typedef types</caption>
+<caption>Table 146 &mdash; <tt>atomic</tt> <tt>&lt;inttypes.h&gt;</tt> typedefs</caption>
 <tr>
-<th>atomic typedef name</th>
-<th><tt>&lt;cstdint&gt;</tt> typedef name</th>
+<th>Atomic typedef</th>
+<th><tt>&lt;inttypes.h&gt;</tt> type</th>
 </tr>
 <tr>
 <td><tt>...</tt></td>
 <td><tt>...</tt></td>
+</tr>
+<tr>
+<td><tt>atomic_intmax_t</tt></td>
+<td><tt>intmax_t</tt></td>
 </tr>
 <tr>
 <td><tt>atomic_uintmax_t</tt></td>
 <td><tt>uintmax_t</tt></td>
 </tr>
 <tr>
-<td><ins><tt>atomic_int8_t</tt></ins></td>
-<td><ins><tt>int8_t</tt> (optional)</ins></td>
+<td><ins><tt>atomic_int8_t&nbsp;</tt>// <em>iff <tt>int8_t</tt> is provided</em></ins></td>
+<td><ins><tt>int8_t</tt></ins></td>
 </tr>
 <tr>
-<td><ins><tt>atomic_int16_t</tt></ins></td>
-<td><ins><tt>int16_t</tt> (optional)</ins></td>
+<td><ins><tt>atomic_uint8_t&nbsp;</tt>// <em>iff <tt>uint8_t</tt> is provided</em></ins></td>
+<td><ins><tt>uint8_t</tt></ins></td>
 </tr>
 <tr>
-<td><ins><tt>atomic_int32_t</tt></ins></td>
-<td><ins><tt>int32_t</tt> (optional)</ins></td>
+<td><ins><tt>atomic_int16_t&nbsp;</tt>// <em>iff <tt>int16_t</tt> is provided</em></ins></td>
+<td><ins><tt>int16_t</tt></ins></td>
 </tr>
 <tr>
-<td><ins><tt>atomic_int64_t</tt></ins></td>
-<td><ins><tt>int64_t</tt> (optional)</ins></td>
+<td><ins><tt>atomic_uint16_t&nbsp;</tt>// <em>iff <tt>uint16_t</tt> is provided</em></ins></td>
+<td><ins><tt>uint16_t</tt></ins></td>
 </tr>
 <tr>
-<td><ins><tt>atomic_uint8_t</tt></ins></td>
-<td><ins><tt>uint8_t</tt> (optional)</ins></td>
+<td><ins><tt>atomic_int32_t&nbsp;</tt>// <em>iff <tt>int32_t</tt> is provided</em></ins></td>
+<td><ins><tt>int32_t</tt></ins></td>
 </tr>
 <tr>
-<td><ins><tt>atomic_uint16_t</tt></ins></td>
-<td><ins><tt>uint16_t</tt> (optional)</ins></td>
+<td><ins><tt>atomic_uint32_t&nbsp;</tt>// <em>iff <tt>uint32_t</tt> is provided</em></ins></td>
+<td><ins><tt>uint32_t</tt></ins></td>
 </tr>
 <tr>
-<td><ins><tt>atomic_uint32_t</tt></ins></td>
-<td><ins><tt>uint32_t</tt> (optional)</ins></td>
+<td><ins><tt>atomic_int64_t&nbsp;</tt>// <em>iff <tt>int64_t</tt> is provided</em></ins></td>
+<td><ins><tt>int64_t</tt></ins></td>
 </tr>
 <tr>
-<td><ins><tt>atomic_uint64_t</tt></ins></td>
-<td><ins><tt>uint64_t</tt> (optional)</ins></td>
+<td><ins><tt>atomic_uint64_t&nbsp;</tt>// <em>iff <tt>uint64_t</tt> is provided</em></ins></td>
+<td><ins><tt>uint64_t</tt></ins></td>
 </tr>
 </table>
 </blockquote> 
