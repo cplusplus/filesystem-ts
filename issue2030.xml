@@ -1,0 +1,36 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="2030" status="New">
+<title><tt>packaged_task::result_type</tt> should be removed</title>
+<section><sref ref="[futures.task]"/></section>
+<submitter>Anthony Williams</submitter>
+<date>12 Nov 2010</date>
+
+<discussion>
+<p>
+<tt>packaged_task::operator()</tt> always returns <tt>void</tt>, regardless of the return
+type of the wrapped task. However, <tt>packaged_task::result_type</tt> is a
+typedef to the return type of the wrapped task. This is inconsistent
+with other uses of <tt>result_type</tt> in the standard, where it matches the
+return type of <tt>operator()</tt> (e.g. <tt>function</tt>, <tt>owner_less</tt>). This is confusing.
+</p>
+
+<p>
+It also violates the TR1 <tt>result_of</tt> protocol, and thus makes
+<tt>packaged_task</tt> harder to use with anything that respects that protocol.
+</p>
+
+<p>
+Finally, it is of little use anyway.
+</p>
+
+<p><tt>packaged_task::result_type</tt> should therefore be removed.</p>
+</discussion>
+
+<resolution>
+</resolution>
+
+</issue>
