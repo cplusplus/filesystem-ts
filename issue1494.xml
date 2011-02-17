@@ -65,12 +65,13 @@ void call_once(once_flag&amp; flag, Callable&amp;&amp; func, Args&amp;&amp;... a
 </pre><blockquote>
 [..]
 <p/>
-2 <em>Effects</em>: <del>Calls to <tt>call_once</tt> on the same <tt>once_flag</tt> object are serialized.</del><ins>If there are one or more calls to call_once on the same once_flag, some number of these are effective, and the
+2 <em>Effects</em>: <del>Calls to <tt>call_once</tt> on the same <tt>once_flag</tt> object are serialized.</del><ins>If there are 
+one or more calls to <tt>call_once</tt> on the same <tt>once_flag</tt>, some number of these are effective, and the
 rest are ineffective.
 Exactly one of the effective calls returns normally. None of the ineffective calls may happen before (<sref ref="[intro.multithread]"/>) 
 the effective one.  The normally returning effective call may not happen before those that throw an exception.</ins>
 <del>If there has been a prior effective call to <tt>call_once</tt> on the same <tt>once_flag object</tt>, the call to <tt>call_once</tt> 
-returns</del><ins>Ineffective calls to call_once return</ins> without invoking <tt>func</tt>.<del> If there 
+returns</del><ins>Ineffective calls to <tt>call_once</tt> return</ins> without invoking <tt>func</tt>.<del> If there 
 has been no prior effective call to <tt>call_once</tt> on the same <tt>once_flag</tt> object,
 <tt>INVOKE(decay_copy( std::forward&lt;Callable&gt;(func)), decay_copy(std::forward&lt;Args&gt;(args))...)</tt>
 is executed</del><ins>Effective calls to <tt>call_once</tt> execute 
@@ -79,7 +80,7 @@ to <tt>call_once</tt> is effective if and only if
 <tt>INVOKE(decay_copy( std::forward&lt;Callable&gt;(func)), decay_copy(std::forward&lt;Args&gt;(args))...)</tt> 
 returns without throwing an exception</del>. If an exception is thrown it is propagated to the caller.
 <p/>
-3 <em>Synchronization</em>: <ins>All effective calls on the same once_flag object occur in a total order consistent with the
+3 <em>Synchronization</em>: <ins>All effective calls on the same <tt>once_flag</tt> object occur in a total order consistent with the
 happens before order, and such that the normally returning call occurs last. Each completion of an effective call 
 <em>synchronizes with</em> the start of the next one in this total order.</ins> The completion of <del>an</del><ins>the last</ins> 
 effective call <del>to <tt>call_once</tt> on a <tt>once_flag</tt> object</del> <em>synchronizes with</em> 
