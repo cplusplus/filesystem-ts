@@ -21,11 +21,10 @@ the <tt>assign()</tt> function, so the "<tt>Throws: nothing</tt>" applied there 
 </discussion>
 
 <resolution>
-<p></p>
 
 <ol>
 <li>
-<p>Modify the basic_regex synopsis in <sref ref="[re.regex]"/> p. 3:</p>
+<p>Modify the <tt>basic_regex</tt> synopsis in <sref ref="[re.regex]"/> p. 3:</p>
 
 <blockquote><pre>
 namespace std {
@@ -37,7 +36,7 @@ namespace std {
     basic_regex&amp; operator=(const basic_regex&amp;);
     basic_regex&amp; operator=(basic_regex&amp;&amp;) <ins>noexcept</ins>;
     basic_regex&amp; operator=(const charT* ptr);
-	...
+    ...
   };
 }
 </pre></blockquote>
