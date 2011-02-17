@@ -1,0 +1,54 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="2031" status="New">
+<title><tt>std::future&lt;&gt;::share()</tt> only applies to rvalues</title>
+<section><sref ref="[futures.unique_future]"/></section>
+<submitter>Anthony Williams</submitter>
+<date>17 Feb 2011</date>
+
+<discussion>
+<p>
+As specified, <tt>future&lt;&gt;::share()</tt> has the signature
+</p>
+
+<blockquote><pre>
+shared_future&lt;R&gt; share() &amp;&amp;;
+</pre></blockquote>
+
+<p>
+This means that it can only be applied to rvalues. One of the key benefits of <tt>share()</tt> is 
+that it can be used with the new <tt>auto</tt> facility:
+</p>
+
+<blockquote><pre>
+std::promise&lt;<em>some_long_winded_type_name</em>&gt; some_promise;
+auto f = some_promise.get_future(); // std::future
+auto sf = std::move(f).share();
+</pre></blockquote>
+
+<p>
+<tt>share()</tt> is sufficiently explicit that the move should not be required. We should be able to write:
+</p>
+
+<blockquote><pre>
+auto sf = f.share();
+</pre></blockquote>
+
+<p>
+</p>
+</discussion>
+
+<resolution>
+<p>Alter the declaration of <tt>share()</tt> to remove the "&amp;&amp;" rvalue qualifier in 
+<sref ref="[futures.unique_future]"/> p. 3, and <sref ref="[futures.unique_future]"/> p. 11:</p>
+
+<blockquote><pre>
+shared_future&lt;R&gt; share() <del>&amp;&amp;</del>;
+</pre></blockquote>
+
+</resolution>
+
+</issue>
