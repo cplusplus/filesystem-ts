@@ -18,9 +18,11 @@ Conditions clause does not define an error condition when the stored task has
 already been invoked, only when the associated state is already ready (i.e. the
 invocation has completed).
 </p>
-</discussion>
 
-<resolution>
+<note>2011-02-17 Anthony provides an alternative resolution</note>
+
+<p><strong>Previous</strong> proposed resolution:</p>
+
 <p>
 Change the first bullet item in <sref ref="[futures.task.members]"/> /22:
 </p>
@@ -49,6 +51,75 @@ already ready</del> <ins><tt>operator()</tt> has already been called</ins>.
 </ul>
 </blockquote>
 </blockquote>
+
+</discussion>
+
+<resolution>
+<ol>
+<li>
+<p>
+Change the first bullet item in <sref ref="[futures.task.members]"/> p. 17:
+</p>
+
+<blockquote><pre>
+void operator()(ArgTypes... args);
+</pre>
+<blockquote>
+<p>
+15 ...
+</p>
+<p>
+16 ...
+</p>
+<p>
+17 <i>Error conditions:</i>
+</p>
+<ul>
+<li>
+<tt>promise_already_satisfied</tt> if the <del>associated asynchronous state is already 
+ready</del><ins>stored task has already been invoked</ins>.
+</li>
+<li>
+<tt>no_state</tt> if <tt>*this</tt> has no associated asynchronous state.
+</li>
+</ul>
+</blockquote>
+</blockquote>
+</li>
+
+<li>
+<p>
+Change the first bullet item in <sref ref="[futures.task.members]"/> p. 21:
+</p>
+
+<blockquote><pre>
+void make_ready_at_thread_exit(ArgTypes... args);
+</pre>
+<blockquote>
+<p>
+19 ...
+</p>
+<p>
+20 ...
+</p>
+<p>
+21 <i>Error conditions:</i>
+</p>
+<ul>
+<li>
+<tt>promise_already_satisfied</tt> if the <del>associated asynchronous state already has a stored value or
+exception</del><ins>stored task has already been invoked</ins>.
+</li>
+<li>
+<tt>no_state</tt> if <tt>*this</tt> has no associated asynchronous state.
+</li>
+</ul>
+</blockquote>
+</blockquote>
+
+</li>
+</ol>
+
 </resolution>
 
 </issue>
