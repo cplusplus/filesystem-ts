@@ -78,7 +78,9 @@ is executed</del><ins>Effective calls to <tt>call_once</tt> execute
 <tt>INVOKE(decay_copy( std::forward&lt;Callable&gt;(func)), decay_copy(std::forward&lt;Args&gt;(args))...)</tt></ins>. <del>The call 
 to <tt>call_once</tt> is effective if and only if 
 <tt>INVOKE(decay_copy( std::forward&lt;Callable&gt;(func)), decay_copy(std::forward&lt;Args&gt;(args))...)</tt> 
-returns without throwing an exception</del>. If an exception is thrown it is propagated to the caller.
+returns without throwing an exception</del>. If an exception is thrown it is propagated to the caller. <ins>The function <code>call_once</code> 
+may  block while an effective execution on the same <code>once_flag</code> is in progress.  [<i>Note</i>: A recursive invocation of 
+<code>call_once</code> on the same <code>once_flag</code> will deadlock. &mdash; <i>end note</i>]</ins>
 <p/>
 3 <em>Synchronization</em>: <ins>All effective calls on the same <tt>once_flag</tt> object occur in a total order consistent with the
 happens before order, and such that the normally returning call occurs last. Each completion of an effective call 
