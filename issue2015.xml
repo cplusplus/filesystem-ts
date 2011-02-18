@@ -33,10 +33,221 @@ be changed similarly.</p>
 
 <p>On the other hand, some preconditions look too restrictive. For
 example, <tt>std::is_empty</tt> and <tt>std::is_polymorphic</tt> might accept any
-incomplete non-class type.</p>
+incomplete non&#x2011;class type.</p>
+
+<note>2011-02-18: Daniel provides wording proposal</note>
+
+<p>
+While reviewing the individual preconditions I could find three different groups of
+either too weakening or too strengthening constraints:
+</p>
+<ol>
+<li><pre>is_empty/is_polymorphic/is_abstract/has_virtual_destructor:</pre>
+
+<p>These traits can only apply for <em>non&#x2011;union class types</em>, otherwise the result must
+always be false</p>
+</li>
+
+<li><pre>is_base_of:</pre>
+
+<p>Similar to the previous bullet, but the current wording comes already near to that ideal,
+it only misses to add the <em>non&#x2011;union</em> aspect.</p>
+</li>
+
+<li><pre>is_trivial/is_trivially_copyable/is_standard_layout/is_pod/is_literal_type:</pre>
+
+<p>These traits always require that <tt>std::remove_all_extents&lt;T&gt;::type</tt> to be <tt><i>cv</i> void</tt> or 
+a complete type.</p>
+</li>
+</ol>
 </discussion>
 
 <resolution>
+<ol>
+<li>
+<p>
+Modify the pre-conditions of the following type traits in <sref ref="[meta.unary.prop]"/>, Table 48 &mdash; Type property predicates:
+</p>
+
+<blockquote>
+<table border="1">
+<caption>Table 48 &mdash; Type property predicates</caption>
+<tr>
+<th>Template</th>
+<th>Condition</th>
+<th>Preconditions</th>
+</tr>
+
+<tr>
+<td colspan="3"><center>...</center></td>
+</tr>
+
+<tr>
+<td><tt>template &lt;class T&gt;<br/>
+struct is_trivial;</tt></td>
+<td><tt>T</tt> is a trivial type (3.9)</td>
+<td><tt><ins>remove_all_extents&lt;</ins>T<ins>&gt;::type</ins></tt><br/>
+shall be a complete type<del>,</del><ins> or</ins> (possibly<br/>
+cv-qualified) <tt>void</tt><del>, or an array of<br/>
+unknown bound</del>.</td>
+</tr>
+
+<tr>
+<td><tt>template &lt;class T&gt;<br/>
+struct is_trivially_copyable;</tt></td>
+<td><tt>T</tt> is a trivially copyable<br/>
+type (3.9)</td>
+<td><tt><ins>remove_all_extents&lt;</ins>T<ins>&gt;::type</ins></tt><br/>
+shall be a complete type<del>,</del><ins> or</ins> (possibly<br/>
+cv-qualified) <tt>void</tt><del>, or an array of<br/>
+unknown bound</del>.</td>
+</tr>
+
+<tr>
+<td><tt>template &lt;class T&gt;<br/>
+struct is_standard_layout;</tt></td>
+<td><tt>T</tt> is a standard-layout<br/>
+type (3.9)</td>
+<td><tt><ins>remove_all_extents&lt;</ins>T<ins>&gt;::type</ins></tt><br/>
+shall be a complete type<del>,</del><ins> or</ins> (possibly<br/>
+cv-qualified) <tt>void</tt><del>, or an array of<br/>
+unknown bound</del>.</td>
+</tr>
+
+<tr>
+<td><tt>template &lt;class T&gt;<br/>
+struct is_pod;</tt></td>
+<td><tt>T</tt> is a POD type (3.9)</td>
+<td><tt><ins>remove_all_extents&lt;</ins>T<ins>&gt;::type</ins></tt><br/>
+shall be a complete type<del>,</del><ins> or</ins> (possibly<br/>
+cv-qualified) <tt>void</tt><del>, or an array of<br/>
+unknown bound</del>.</td>
+</tr>
+
+<tr>
+<td><tt>template &lt;class T&gt;<br/>
+struct is_literal_type;</tt></td>
+<td><tt>T</tt> is a literal type (3.9)</td>
+<td><tt><ins>remove_all_extents&lt;</ins>T<ins>&gt;::type</ins></tt><br/>
+shall be a complete type<del>,</del><ins> or</ins> (possibly<br/>
+cv-qualified) <tt>void</tt><del>, or an array of<br/>
+unknown bound</del>.</td>
+</tr>
+
+<tr>
+<td><tt>template &lt;class T&gt;<br/>
+struct is_empty;</tt></td>
+<td><tt>T</tt> is a class type, but not a<br/>
+union type, with no<br/>
+non-static data members<br/>
+other than bit-fields of<br/>
+length 0, no virtual<br/>
+member functions, no<br/>
+virtual base classes, and<br/>
+no base class B for which<br/>
+<tt>is_empty&lt;B&gt;::value</tt> is<br/>
+false.</td>
+<td><del><tt>T</tt> shall be a complete type,<br/>
+(possibly cv-qualified) <tt>void</tt>, or<br/>
+an array of unknown bound</del><ins>If <tt>T</tt><br/>
+is a non&#x2011;union class type, <tt>T</tt><br/>
+shall be a complete type</ins>.</td>
+</tr>
+
+<tr>
+<td><tt>template &lt;class T&gt;<br/>
+struct is_polymorphic;</tt></td>
+<td><tt>T</tt> is a polymorphic<br/>
+class (10.3)</td>
+<td><del><tt>T</tt> shall be a complete type,<br/>
+type, (possibly cv-qualified) <tt>void</tt>, or<br/>
+an array of unknown bound</del><ins>If <tt>T</tt><br/>
+is a non&#x2011;union class type, <tt>T</tt><br/>
+shall be a complete type</ins>.</td>
+</tr>
+
+<tr>
+<td><tt>template &lt;class T&gt;<br/>
+struct is_abstract;</tt></td>
+<td><tt>T</tt> is an abstract<br/>
+class (10.4)</td>
+<td><del><tt>T</tt> shall be a complete type,<br/>
+type, (possibly cv-qualified) <tt>void</tt>, or<br/>
+an array of unknown bound</del><ins>If <tt>T</tt><br/>
+is a non&#x2011;union class type, <tt>T</tt><br/>
+shall be a complete type</ins>.</td>
+</tr>
+
+<tr>
+<td colspan="3"><center>...</center></td>
+</tr>
+
+<tr>
+<td><tt>template &lt;class T&gt;<br/>
+struct has_virtual_destructor;</tt></td>
+<td><tt>T</tt> has a virtual<br/>
+destructor (12.4)</td>
+<td><del><tt>T</tt> shall be a complete type,<br/>
+(possibly cv-qualified) <tt>void</tt>, or<br/>
+an array of unknown bound</del><ins>If <tt>T</tt><br/>
+is a non&#x2011;union class type, <tt>T</tt><br/>
+shall be a complete type</ins>.</td>
+</tr>
+
+</table>
+</blockquote>
+
+</li>
+
+<li>
+<p>
+Modify the pre-conditions of the following type traits in <sref ref="[meta.rel]"/>, Table 50 &mdash; Type relationship predicates:
+</p>
+
+<blockquote>
+<table border="1">
+<caption>Table 50 &mdash; Type relationship predicates</caption>
+<tr>
+<th>Template</th>
+<th>Condition</th>
+<th>Comments</th>
+</tr>
+
+<tr>
+<td colspan="3"><center>...</center></td>
+</tr>
+
+<tr>
+<td><tt>template &lt;class Base, class<br/>
+Derived&gt;<br/>
+struct is_base_of;</tt></td>
+<td><tt>Base</tt> is a base class of<br/>
+<tt>Derived</tt> (10) without<br/>
+regard to cv-qualifiers<br/>
+or <tt>Base</tt> and <tt>Derived</tt><br/>
+are not unions and<br/>
+name the same class<br/>
+type without regard to<br/>
+cv-qualifiers</td>
+<td>If <tt>Base</tt> and <tt>Derived</tt> are<br/>
+<ins>non&#x2011;union</ins> class types<br/>
+and are different types<br/>
+(ignoring possible cv-qualifiers)<br/>
+then <tt>Derived</tt> shall be a complete<br/>
+type. [ <i>Note</i>: Base classes that<br/>
+are private, protected, or<br/>
+ambigious are, nonetheless, base<br/>
+classes. &mdash; <i>end note</i> ]</td>
+</tr>
+
+<tr>
+<td colspan="3"><center>...</center></td>
+</tr>
+
+</table>
+</blockquote>
+</li>
+</ol>
 </resolution>
 
 </issue>
