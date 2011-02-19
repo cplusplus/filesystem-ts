@@ -27,10 +27,7 @@ or negative <tt>rel_time</tt> is allowed.
 
 <note>2011-02-10: Howard Hinnant provides a resolution proposal</note>
 
-</discussion>
-
-<resolution>
-
+<note>Previous proposed resolution:</note>
 <ol>
 <li>
 <p>Change the Operational semantics of <tt>C1::now()</tt> in <sref ref="[time.clock.req]"/>, 
@@ -70,6 +67,139 @@ representing the current point in time.<br/>
 
 
 </li>
+</ol>
+
+<note>2011-02-19: Daniel comments and suggests an alternative wording</note>
+
+<p>Imposing the no-throw requirement on <tt>C1::now()</tt> of any clock time
+is an overly radical step: It has the indirect consequences that representation
+types for <tt>C1::rep</tt> can never by types with dynamic memory managment,
+e.g. my <tt>big_int</tt>, which are currently fully supported by the time
+utilities. Further-on this strong constraint does not even solve the problem
+described in the issue, because we are still left with the fact that any
+of the arithmetic operations of <tt>C1::rep</tt>, <tt>C1::duration</tt>,
+and <tt>C1::time_point</tt> may throw exceptions.
+</p>
+<p>The alternative proposal uses the following strategy: The general <tt>Clock</tt>
+requirements remain untouched, but we require that any functions of the library-provided
+clocks from sub-clause <sref ref="[time.clock]"/> and their associated types shall not
+throw exceptions. Second, we impose stronger requirements on clocks, durations, and
+their representation types for all functions in Clause 30. As a whole this is also
+a drastical step, but less invasive than the original suggestion.
+</p>
+</discussion>
+
+<resolution>
+
+<ol>
+<li>
+<p>Modify <sref ref="[time.clock]"/> p. 1 as follows:</p>
+
+<blockquote>
+1 - The types defined in this subclause shall satisfy the <tt>Clock</tt> requirements 
+(20.11.1). <ins>For every clock type <tt>C</tt> specified in this sub-clause 
+<sref ref="[time.clock]"/> the following requirements shall be satisfied:</ins>
+<blockquote>
+<ul>
+<li><ins>the types <tt>C::rep</tt>, <tt>C::duration</tt>, <tt>C::time_point</tt> shall meet 
+the requirements of numeric types ([numeric.requirements]) [<i>Note</i>: This means in 
+particular, that operations of these types will not throw exceptions &mdash; <i>end note</i> ], and</ins></li>
+<li><ins>the function <tt>C::now()</tt> shall not throw exceptions, and</ins></li>
+<li><ins>the type <tt>C::time_point::clock</tt> shall meet the additional clock 
+requirements described in this sub-clause <sref ref="[time.clock]"/>, recursively.</ins></li>
+</ul>
+</blockquote>
+</blockquote>
+</li>
+
+<li>
+<p>Modify <sref ref="[time.clock.system]"/> p. 1, class <tt>system_clock</tt> synopsis, as follows:</p>
+
+<blockquote><pre>
+class system_clock {
+public:
+  typedef <i>see below</i> rep;
+  typedef ratio&lt;<i>unspecified</i> , <i>unspecified</i> &gt; period;
+  typedef chrono::duration&lt;rep, period&gt; duration;
+  typedef chrono::time_point&lt;system_clock&gt; time_point;
+  static const bool is_monotonic is_steady = <i>unspecified</i>;
+  static time_point now() <ins>noexcept</ins>;
+  // Map to C API
+  static time_t to_time_t (const time_point&amp; t) <ins>noexcept</ins>;
+  static time_point from_time_t(time_t t) <ins>noexcept</ins>;
+};
+</pre></blockquote>
+
+</li>
+
+<li>
+<p>Modify the prototype declarations in <sref ref="[time.clock.system]"/> p. 3 + p. 4 as indicated (This 
+edit also fixes the miss of the <tt>static</tt> specifier in these prototype declarations):</p>
+
+<blockquote><pre>
+<ins>static</ins> time_t to_time_t(const time_point&amp; t) <ins>noexcept</ins>;
+</pre><blockquote>
+3 - [...]
+</blockquote>
+
+<pre>
+<ins>static</ins> time_point from_time_t(time_t t) <ins>noexcept</ins>;
+</pre><blockquote>
+4 - [...]
+</blockquote>
+</blockquote>
+
+</li>
+
+<li>
+<p>Modify <sref ref="[time.clock.steady]"/> p. 1, class <tt>steady_clock</tt> synopsis, as follows:</p>
+
+<blockquote><pre>
+class steady_clock {
+public:
+  typedef <i>unspecified</i> rep;
+  typedef ratio&lt;<i>unspecified</i> , <i>unspecified</i> &gt; period;
+  typedef chrono::duration&lt;rep, period&gt; duration;
+  typedef chrono::time_point&lt;<i>unspecified</i>, duration&gt; time_point;
+  static const bool is_monotonic is_steady = true;
+
+  static time_point now() <ins>noexcept</ins>;
+};
+</pre></blockquote>
+
+</li>
+
+<li>
+<p> Modify <sref ref="[time.clock.hires]"/> p. 1, class <tt>high_resolution_clock</tt> synopsis, as follows:</p>
+
+<blockquote><pre>
+class high_resolution_clock {
+public:
+  typedef <i>unspecified</i> rep;
+  typedef ratio&lt;<i>unspecified</i> , <i>unspecified</i> &gt; period;
+  typedef chrono::duration&lt;rep, period&gt; duration;
+  typedef chrono::time_point&lt;<i>unspecified</i>, duration&gt; time_point;
+  static const bool is_monotonic is_steady = <i>unspecified</i>;
+
+  static time_point now() <ins>noexcept</ins>;
+};
+</pre></blockquote>
+
+</li>
+
+<li>
+<p>Add the following new paragraphs at the end of sub-clause <sref ref="[thread.req.paramname]"/>:</p>
+
+<blockquote>
+<ins>?? - If a parameter is <tt>Clock</tt>, calling <tt>Clock::now()</tt> or calling operations of the types <tt>Clock::rep</tt>, 
+<tt>Clock::duration</tt>, and <tt>Clock::time_point</tt> shall not throw exceptions. For the type <tt>Clock::time_point::clock</tt>
+the same requirements are imposed as for type <tt>Clock</tt>.</ins>
+</blockquote>
+<blockquote>
+<ins>?? - If a parameter is <tt>Duration</tt> or <tt>Re</tt>, calling operations of these types shall not throw exceptions.</ins>
+</blockquote>
+</li>
+
 </ol>
 
 </resolution>
