@@ -14,9 +14,9 @@
 <duplicate><iref ref="1475"/></duplicate>
 <duplicate><iref ref="1477"/></duplicate>
 <p><b>Addresses US-175, US-165, CH-23, GB-135</b></p>
-
+<p>
 <sref ref="[atomics.types.operations.req]"/> p. 25: The first sentence is grammatically incorrect.
-
+</p>
 <note>
 2010-10-28 Daniel adds:
 </note>
@@ -35,22 +35,22 @@ below proposed resolution.
 <li>
 <p>Change <sref ref="[atomics.types.operations.req]"/> p. 23 as indicated:</p>
 
-<blockquote>
+<blockquote><p>
 [ <em>Note</em>: <ins>For example, t</ins><del>T</del>he effect of 
 <del>the compare-and-exchange operations</del><ins><tt>atomic_compare_exchange_strong</tt></ins> is
-<blockquote><pre>
+</p><blockquote><pre>
 if (memcmp(object, expected, sizeof(*object)) == 0)
   memcpy(object, &amp;desired, sizeof(*object));
 else
   memcpy(expected, object, sizeof(*object));
 </pre></blockquote>
- &mdash; <em>end note</em> ] [..]
+<p> &mdash; <em>end note</em> ] [..]</p>
 </blockquote>
 </li>
 
 <li>
 <p>Change <sref ref="[atomics.types.operations.req]"/> p. 25 as indicated:</p>
-<blockquote>
+<blockquote><p>
 25 <em>Remark</em>: <del>The weak compare-and-exchange operations may fail spuriously, that is, return false while
 leaving the contents of memory pointed to by <tt>expected</tt> before the operation is the same that same
 as that of the <tt>object</tt> and the same as that of <tt>expected</tt> after the operation</del><ins>A weak 
@@ -64,6 +64,7 @@ compare-and-exchange will be in a loop.
 When a compare-and-exchange is in a loop, the weak version will yield better performance on some
 platforms. When a weak compare-and-exchange would require a loop and a strong one would not, the
 strong one is preferable. &mdash; <em>end note</em> ]
+</p>
 </blockquote>
 </li>
 </ol>

@@ -42,8 +42,7 @@ out-of-range floating-point values results in the most positive/negative
 representable value.
 Although many C library implementations do implement <code>HUGE_VAL</code>
 (etc.) as the highest representable (which is, usually, the infinity), 
-this
-isn't required by the C standard. The C library specification makes no
+this isn't required by the C standard. The C library specification makes no
 statement regarding the value of <code>HUGE_VAL</code> and friends, which
 potentially raises the same compatibility issue as in the above case of
 unsigned integers.
@@ -65,34 +64,47 @@ closely follow the behavior of all of its underlying C functions.
 2010 Rapperswil:
 </note>
 
-<blockquote>
-Some concern that this is changing the specification for an existing C++03 function, but it was pointed out that this was underspecified as resolved by issue 23.  This is clean-up for that issue in turn.
-
-Some concern that we are trying to solve the same problem in both clause 22 and 27.
-
+<blockquote><p>
+Some concern that this is changing the specification for an existing C++03 function, but it was 
+pointed out that this was underspecified as resolved by issue 23.  This is clean-up for that 
+issue in turn. Some concern that we are trying to solve the same problem in both clause 22 and 27.
+</p>
+<p>
 Bill: There's a change here as to whether val is stored to in an error case.
-
+</p>
+<p>
 Pablo: Don't think this changes whether val is stored to or not, but changes the value that is stored.
-
+</p>
+<p>
 Bill: Remembers having skirmishes with customers and testers as to whether val is stored to, and the resolution was not to store in error cases.
-
+</p>
+<p>
 Howard: Believes since C++03 we made a change to always store in overflow.
-
+</p>
+<p>
 Everyone took some time to review the issue.
-
+</p>
+<p>
 Pablo: C++98 definitely did not store any value during an error condition.
-
+</p>
+<p>
 Dietmar: Depends on the question of what is considered an error, and whether overflow is an error or not, which was the crux of LWG 23.
-
+</p>
+<p>
 Pablo: Yes, but given the "zero, if the conversion function fails to convert the entire field", we are requiring every error condition to store.
-
+</p>
+<p>
 Bill: When did this happen?
-
+</p>
+<p>
 Alisdair: One of the last two or three meetings.
-
+</p>
+<p>
 Dietmar: To store a value in case of failure is a very bad idea.
-
+</p>
+<p>
 Move to Open, needs more study.
+</p>
 </blockquote>
 
 </discussion>

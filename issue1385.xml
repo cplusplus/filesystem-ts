@@ -22,10 +22,10 @@ signature that can concatenate an arbitrary number of
 Resolution proposed by ballot comment:
 </note>
 
-<blockquote>
+<blockquote><p>
 Adopt a simplified form of the proposal in <a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2009/n2975.pdf">n2975</a>,
 restricted to <tt>tuple</tt>s and neither requiring nor outlawing support for other <tt>tuple</tt>-like types.
-</blockquote>
+</p></blockquote>
 
 <note>
 2010 Rapperswil: Alisdair to provide wording.
@@ -56,7 +56,6 @@ Moved to Ready with Daniel's improved wording.
 <resolution>
 <p>Note: This alternate proposed resolution works only if <iref ref="1191"/> has been accepted.</p>
 
-<p>
 <ol>
 <li>Change <sref ref="[tuple.general]"/> p. 2, header <tt>&lt;tuple&gt;</tt> synopsis, as indicated:
 <blockquote><pre>
@@ -94,57 +93,57 @@ template &lt;class... TTypes, class... UTypes&gt;
 <blockquote>
 <pre><del>template &lt;class... TTypes, class... UTypes&gt;
   tuple&lt;TTypes..., UTypes...&gt; tuple_cat(const tuple&lt;TTypes...&gt;&amp; t, const tuple&lt;UTypes...&gt;&amp; u);</del></pre>
-<p><blockquote><del>
+<blockquote><p><del>
 8 <i>Requires</i>: All the types in <tt>TTypes</tt> shall be <tt>CopyConstructible</tt> (Table 35). All the types in 
 <tt>UTypes</tt> shall be <tt>CopyConstructible</tt> (Table 35).
-</del></blockquote></p>
-<p><blockquote><del>
+</del></p></blockquote>
+<blockquote><p><del>
 9 <i>Returns</i>: A <tt>tuple</tt> object constructed by copy constructing its first <tt>sizeof...(TTypes)</tt> elements 
 from the corresponding elements of <tt>t</tt> and copy constructing its last <tt>sizeof...(UTypes)</tt> elements from the 
 corresponding elements of <tt>u</tt>.
-</del></blockquote></p>
+</del></p></blockquote>
 <pre><del>template &lt;class... TTypes, class... UTypes&gt;
   tuple&lt;TTypes..., UTypes...&gt; tuple_cat(tuple&lt;TTypes...&gt;&amp;&amp; t, const tuple&lt;UTypes...&gt;&amp; u);</del></pre>
-<p><blockquote><del>
+<blockquote><p><del>
 10 <i>Requires</i>: All the types in <tt>TTypes</tt> shall be <tt>MoveConstructible</tt> (Table 34). All the types in 
 <tt>UTypes</tt> shall be <tt>CopyConstructible</tt> (Table 35).
-</del></blockquote></p>
-<p><blockquote><del>
+</del></p></blockquote>
+<blockquote><p><del>
 11 <i>Returns</i>: A <tt>tuple</tt> object constructed by move constructing its first <tt>sizeof...(TTypes)</tt> elements 
 from the corresponding elements of <tt>t</tt> and copy constructing its last <tt>sizeof...(UTypes)</tt> elements from the 
 corresponding elements of <tt>u</tt>.
-</del></blockquote></p>
+</del></p></blockquote>
 <pre><del>template &lt;class... TTypes, class... UTypes&gt;
   tuple&lt;TTypes..., UTypes...&gt; tuple_cat(const tuple&lt;TTypes...&gt;&amp; t, tuple&lt;UTypes...&gt;&amp;&amp; u);</del></pre>
-<p><blockquote><del>
+<blockquote><p><del>
 12 <i>Requires</i>: All the types in <tt>TTypes</tt> shall be <tt>CopyConstructible</tt> (Table 35). All the types in 
 <tt>UTypes</tt> shall be <tt>MoveConstructible</tt> (Table 34).
-</del></blockquote></p>
-<p><blockquote><del>
+</del></p></blockquote>
+<blockquote><p><del>
 13 <i>Returns</i>: A <tt>tuple</tt> object constructed by copy constructing its first <tt>sizeof...(TTypes)</tt> elements 
 from the corresponding elements of <tt>t</tt> and move constructing its last <tt>sizeof...(UTypes)</tt> elements from the 
 corresponding elements of <tt>u</tt>.
-</del></blockquote></p>
+</del></p></blockquote>
 <pre><del>template &lt;class... TTypes, class... UTypes&gt;
   tuple&lt;TTypes..., UTypes...&gt; tuple_cat(tuple&lt;TTypes...&gt;&amp;&amp; t, tuple&lt;UTypes...&gt;&amp;&amp; u);</del></pre>
-<p><blockquote><del>
+<blockquote><p><del>
 14 <i>Requires</i>: All the types in <tt>TTypes</tt> shall be <tt>MoveConstructible</tt> (Table 34). All the types in 
 <tt>UTypes</tt> shall be <tt>MoveConstructible</tt> (Table 34).
-</del></blockquote></p>
-<p><blockquote><del>
+</del></p></blockquote>
+<blockquote><p><del>
 15 <i>Returns</i>: A <tt>tuple</tt> object constructed by move constructing its first <tt>sizeof...(TTypes)</tt> elements 
 from the corresponding elements of <tt>t</tt> and move constructing its last <tt>sizeof...(UTypes)</tt> elements from the 
 corresponding elements of <tt>u</tt>.
-</del></blockquote></p>
+</del></p></blockquote>
 <pre><ins>template &lt;class... Tuples&gt;
   tuple&lt;<i>CTypes</i>...&gt; tuple_cat(Tuples&amp;&amp;... tpls);
 </ins></pre>
-<p><blockquote><ins>
+<blockquote><p><ins>
 8 Let <tt>Ti</tt> be the <tt><i>i</i></tt><sup>th</sup> type in <tt>Tuples</tt>, <tt>Ui</tt> be <tt>remove_reference&lt;Ti&gt;::type</tt>,
 and <tt>tp<sub><i>i</i></sub></tt> be the <tt><i>i</i></tt><sup>th</sup> parameter in the function parameter pack <tt>tpls</tt>, where all 
 indexing is zero-based in the following paragraphs of this sub-clause [tuple.creation].
-</ins></blockquote></p>
-<p><blockquote><ins>
+</ins></p></blockquote>
+<blockquote><p><ins>
 9 <i>Requires</i>: For all <tt><i>i</i></tt>, <tt>Ui</tt> shall be the type <i>cv<sub><tt>i</tt></sub>&nbsp;</i><tt>tuple&lt;Args<sub><i>i</i></sub>...&gt;</tt>, 
 where <i>cv<sub><tt>i</tt></sub></i> is the (possibly empty) <tt><i>i</i></tt><sup>th</sup> <i>cv</i>-qualifier-seq, and 
 <tt>Args<sub><i>i</i></sub></tt> is the parameter pack representing the element types in <tt>Ui</tt>. Let <tt>Aik</tt> be the 
@@ -152,28 +151,27 @@ where <i>cv<sub><tt>i</tt></sub></i> is the (possibly empty) <tt><i>i</i></tt><s
 requirements shall be satisfied: If <tt>Ti</tt> is deduced as an lvalue reference type, then 
 <tt>is_constructible&lt;Aik, <i>cv<sub>i</sub>&nbsp;</i>Aik&amp;&gt;::value == true</tt>, otherwise 
 <tt>is_constructible&lt;Aik, <i>cv<sub>i</sub>&nbsp;</i>Aik&amp;&amp;&gt;::value == true</tt>.
-</ins></blockquote></p>
-<p><blockquote><ins>
+</ins></p></blockquote>
+<blockquote><p><ins>
 10 <i>Remarks</i>: The types in <tt><i>CTypes</i></tt> shall be equal to the ordered sequence of the expanded types
 <tt>Args<sub>0</sub>..., Args<sub>1</sub>..., Args<sub><i>n</i>-1</sub>...</tt>, where <tt><i>n</i></tt> equals 
 <tt>sizeof...(Tuples)</tt>. Let <tt><i>e<sub>i</sub></i>...</tt> be the <tt><i>i</i></tt><sup>th</sup> ordered 
 sequence of tuple elements of the result <tt>tuple</tt> object corresponding to the type sequence 
 <tt>Args<sub><i>i</i></sub></tt>.
-</ins></blockquote></p>
-<p><blockquote><ins>
+</ins></p></blockquote>
+<blockquote><p><ins>
 11 <i>Returns</i>: A <tt>tuple</tt> object constructed by initializing
 the <tt><i>k<sub>i</sub></i></tt><sup>th</sup> type element <tt>eik</tt> in <tt><i>e<sub>i</sub></i>...</tt>
 with <tt>get&lt;<i>k<sub>i</sub></i>&gt;(std::forward&lt;Ti&gt;(tp<sub>i</sub>))</tt>
 for each valid <tt><i>k<sub>i</sub></i></tt> and each element group <tt><i>e<sub>i</sub></i></tt> in order. 
-</ins></blockquote></p>
-<p><blockquote><ins>
+</ins></p></blockquote>
+<blockquote><p><ins>
 12 [<i>Note</i>: An implementation may support additional types in the parameter pack <tt>Tuples</tt>, such as
 <tt>pair</tt> and <tt>array</tt> that support the <tt>tuple</tt>-like protocol. -- <i>end note</i>]
-</ins></blockquote></p>
+</ins></p></blockquote>
 </blockquote>
 </li>
 </ol>
-</p>
 
 </resolution>
 

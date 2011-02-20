@@ -11,28 +11,29 @@
 
 <discussion>
 <p><b>Addresses US-184</b></p>
-
+<p>
 It is unclear when a <tt>thread::id</tt> ceases to be meaningful.
 The sentence "The library may reuse the value of a
 <tt>thread::id</tt> of a terminated thread that can no longer be
 joined." implies that some terminated threads can be
 joined. It says nothing about detached threads.
-
+</p>
 <note>
 Resolution proposed by ballot comment:
 </note>
-<blockquote>
+<blockquote><p>
 Require a unique <tt>thread::id</tt> for every thread that is
 (1) detached and not terminated or (2) has an associated <tt>std::thread</tt> 
 object.
-</blockquote>
+</p></blockquote>
 
 <note>
 2010-11-22 Howard Hinnant observes
 </note>
 
 <p>
-A thread can either be running or terminated.  Additionally a thread can be joined, detached, or neither.  These combine into the five possible states shown in this table:
+A thread can either be running or terminated. Additionally a thread can be joined, detached, or neither.  
+These combine into the five possible states shown in this table:
 </p>
 
 <table border="1">
@@ -50,10 +51,13 @@ A thread can either be running or terminated.  Additionally a thread can be join
 </tr>
 </table>
 <p>
-Only if a thread is neither joined nor detached can it be joined.  Or said differently, if a thread has already been joined or detached, then it can not be joined.  The sentence:
-<blockquote>
+Only if a thread is neither joined nor detached can it be joined. Or said differently, if a 
+thread has already been joined or detached, then it can not be joined. The sentence:
+</p>
+<blockquote><p>
 The library may reuse the value of a <tt>thread::id</tt> of a terminated thread that can no longer be joined.
-</blockquote>
+</p></blockquote>
+<p>
 precisely defines the two states shown in the above table where a thread::id may be reused.
 </p>
 <p>
@@ -69,13 +73,13 @@ std::mutex mut;
 
 void f()
 {
-   std::lock_guard&lt;std::mutex> _(mut);
+   std::lock_guard&lt;std::mutex&gt; _(mut);
    std::cout &lt;&lt; "f id = " &lt;&lt; std::this_thread::get_id() &lt;&lt; " terminating\n";
 }
 
 void g()
 {
-   std::lock_guard&lt;std::mutex> _(mut);
+   std::lock_guard&lt;std::mutex&gt; _(mut);
    std::cout &lt;&lt; "g id = " &lt;&lt; std::this_thread::get_id() &lt;&lt; " terminating\n";
 }
 

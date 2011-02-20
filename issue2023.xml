@@ -10,21 +10,21 @@
 <date>08 Dec 2010</date>
 
 <discussion>
+<p>
 There are two different <tt>*Lockable</tt> requirements imposed on template arguments
 of the class template <tt>lock_guard</tt> as of <sref ref="[thread.lock.guard]"/> p. 1+2:
-
-<blockquote>
+</p>
+<blockquote><p>
 1 [..] The supplied <tt>Mutex</tt> type shall meet the <tt>BasicLockable</tt> requirements (30.2.5.2).
-</blockquote>
-<p/>
-<blockquote>
-2 The supplied <tt>Mutex</tt> type shall meet the <tt>Lockable</tt> requirements (30.2.5.3).
-</blockquote>
+</p></blockquote>
 
+<blockquote><p>
+2 The supplied <tt>Mutex</tt> type shall meet the <tt>Lockable</tt> requirements (30.2.5.3).
+</p></blockquote>
+<p>
 The <tt>Lockable</tt> requirements include the availability of a member function <tt>try_lock()</tt>,
 but there is no operational semantics in the specification of <tt>lock_guard</tt> that would rely
 on such a function. It seems to me that paragraph 2 should be removed.
-
 <p/>
 Similarly, <sref ref="[thread.lock.unique]"/> p. 1+2 refer to exactly the same two requirements.
 In this case it seems as if the intention was that the template arguement <tt>Mutex</tt> should
@@ -32,11 +32,10 @@ always provide the <tt>try_lock()</tt> member function, because several member f
 <tt>unique_lock</tt> (<tt>unique_lock(mutex_type&amp; m, try_to_lock_t)</tt> or <tt>bool try_lock()</tt>) 
 take advantage of such a function without adding extra requirements for this.
 It seems that the requirement subset <tt>BasicLockable</tt> should be removed.
-
 <p/>
-
 I searched for further possible misusages of the <tt>*Lockable</tt> requirements, but could not
 find any more.
+</p>
 </discussion>
 
 <resolution>
@@ -48,25 +47,25 @@ The suggested wording changes are against the working draft N3225.
 <li>
 <p>Remove <sref ref="[thread.lock.guard]"/> p. 2: completely:</p>
 
-<blockquote>
+<blockquote><p>
 <del>2 The supplied <tt>Mutex</tt> type shall meet the <tt>Lockable</tt> requirements (30.2.5.3).</del>
-</blockquote>
+</p></blockquote>
 
 </li>
 
 <li>
 <p>Change <sref ref="[thread.lock.unique]"/> p. 1 as indicated:</p>
 
-<blockquote>
+<blockquote><p>
 1 [..] The behavior of a program is undefined if the contained pointer <tt>pm</tt> is not null
 and the mutex pointed to by <tt>pm</tt> does not exist for the entire remaining lifetime (3.8) 
 of the <tt>unique_lock</tt> object. <del>The supplied <tt>Mutex</tt> type shall meet the 
 <tt>BasicLockable</tt> requirements (30.2.5.2).</del>
-</blockquote>
-<p/>
-<blockquote>
+</p></blockquote>
+
+<blockquote><p>
 2 The supplied <tt>Mutex</tt> type shall meet the <tt>Lockable</tt> requirements (30.2.5.3).
-</blockquote>
+</p></blockquote>
 
 </li>
 </ol>

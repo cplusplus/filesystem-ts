@@ -17,7 +17,7 @@ described and does not follow the style of the rest of the standard.
 
 <p>
 The complexity for the default constructor is specified as constant.
- Actually, it is proportional to <tt>n</tt>, but there are no invocations of
+Actually, it is proportional to <tt>n</tt>, but there are no invocations of
 <tt>value_type</tt> constructors or other <tt>value_type</tt> operations.
 </p>
 
@@ -25,12 +25,12 @@ The complexity for the default constructor is specified as constant.
 For the iterator-based constructor the complexity should be:
 </p>
 
-<blockquote>
+<blockquote><p>
 <i>Complexity:</i> exactly <tt>n</tt> calls to construct <tt>value_type</tt>
 from <tt>InputIterator::value_type</tt> (where <tt>n = distance(f,l)</tt>).
 The number of calls to <tt>key_equal::operator()</tt> is proportional to
 <tt>n</tt> in the average case and <tt>n*n</tt> in the worst case.
-</blockquote>
+</p></blockquote>
 
 
 
@@ -38,14 +38,19 @@ The number of calls to <tt>key_equal::operator()</tt> is proportional to
 2010 Rapperswil:
 </note>
 
-<blockquote>
-Concern that the current wording may require O(1) where that cannot be delivered.  We need to look at both the clause 23 requirements tables and the constructor description of each unodered container to be sure.
-
+<blockquote><p>
+Concern that the current wording may require O(1) where that cannot be delivered.  We need to look at 
+both the clause 23 requirements tables and the constructor description of each unordered container to be sure.
+</p>
+<p>
 Howard suggests NAD Editorial as we updated the container requirement tables since this issue was written.
-
+</p>
+<p>
 Daniel offers to look deeper, and hopefully produce wording addressing any outstanding concerns at the next meeting.
-
+</p>
+<p>
 Move to Open.
+</p>
 </blockquote>
 
 </discussion>

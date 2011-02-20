@@ -11,25 +11,26 @@
 
 <discussion>
 <p><b>Addresses CA-21, GB-131</b></p>
-
+<p>
 <sref ref="[atomics.lockfree]"/> p.8 states:
-<p><blockquote>
+</p>
+<blockquote><p>
 An atomic store shall only store a value that has
 been computed from constants and program input values
 by a finite sequence of program evaluations, such
 that each evaluation observes the values of variables
 as computed by the last prior assignment in the
 sequence.
-</blockquote></p>
+</p></blockquote>
 <p>
 ... but <sref ref="[intro.execution]"/> p.13 states:
 </p>
-<p><blockquote>
+<blockquote><p>
 If A is not sequenced before B and B is not
 sequenced before A, then A and B are unsequenced.
 [ <em>Note</em>: The execution of unsequenced
 evaluations can overlap. &mdash; <em>end note</em> ]
-</blockquote></p>
+</p></blockquote>
 <p>
 Overlapping executions can make it impossible to
 construct the sequence described in <sref ref="[atomics.lockfree]"/> p.8. We are not
@@ -44,18 +45,21 @@ Suppose that the evaluation of e1 writes y and reads x
 whereas the evaluation of e2 reads y and writes x, with
 reads-from edges as below (all this is within a single
 thread).
-<PRE>
+</p>
+<pre>
  e1           e2
 Wrlx y--   --Wrlx x
       rf\ /rf
          X
         / \
 Rrlx x&lt;-   -&gt;Rrlx y
-</PRE>
+</pre>
+<p>
 This seems like it should be allowed, but there seems to
 be no way to produce a sequence of evaluations with the
 property above.
 </p>
+<p>
 In more detail, here the two evaluations, e1 and e2, are
 being executed as the arguments of a function and are
 consequently not sequenced-before each other. In
@@ -64,6 +68,7 @@ by <sref ref="[intro.execution]"/> p.13), with the two writes taking effect befo
 reads. However, if we have to construct a linear order of
 evaluations, as in <sref ref="[atomics.lockfree]"/> p.8, then the execution above is not
 permited. Is that really intended?
+</p>
 
 <note>
 Resolution proposed by ballot comment

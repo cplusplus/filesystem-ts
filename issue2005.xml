@@ -12,20 +12,21 @@
 <discussion>
 <p>
 In [unord.map.modifiers], the signature:
+</p>
 <blockquote><pre>
 template &lt;class P&gt;
     pair&lt;iterator, bool&gt; insert(P&amp;&amp; obj);
 </pre></blockquote>
+<p>
 now has an added Remarks paragraph:
 </p>
-<blockquote>
+<blockquote><p>
 <i>Remarks</i>: This signature shall not participate in overload resolution unless <tt>P</tt>
 is implicitly convertible to <tt>value_type</tt>.
-</blockquote>
+</p></blockquote>
 <p>
 The same is true for <tt>unordered_multimap</tt>.
-</p>
-<p>
+<p/>
 But neither <tt>map</tt> nor <tt>multimap</tt> have this constraint, even though it is a
 Good Thing(TM) in those cases as well.
 </p>
@@ -48,19 +49,16 @@ The following proposed resolution tries to solve these issues as well and uses s
 the corresponding unordered containers. Unfortunately it has some redundancy over Table&nbsp;99, but I did
 not remove the specification because of the more general template parameter <tt>P</tt> - the Table&nbsp;99 
 requirements apply only for an argument <em>identical</em> to <tt>value_type</tt>.
-</p>
-
-<p>
+<p/>
 Proposed resolution:
 </p>
 
-<p>
 <ol>
 <li>Change <sref ref="[map.modifiers]"/> around p. 1 as indicated:
 <blockquote><pre>
 template &lt;class P&gt; pair&lt;iterator, bool&gt; insert(P&amp;&amp; x);
 template &lt;class P&gt; <del>pair&lt;</del>iterator<del>, bool&gt;</del> insert(const_iterator position, P&amp;&amp; x);
-</pre><blockquote>
+</pre><blockquote><p>
 1 <em>Requires</em>: <del><tt>P</tt> shall be convertible to </del><tt>value_type</tt><ins> is constructible 
 from <tt>std::forward&lt;P&gt;(x)</tt>.</ins>.
 <p/>
@@ -84,13 +82,14 @@ to the key of <tt>value_type(x)</tt>.</ins>
 <p/>
 <ins>? <em>Remarks</em>: These signatures shall not participate in overload resolution unless <tt>P</tt> 
 is implicitly convertible to <tt>value_type</tt>.</ins>
+</p>
 </blockquote></blockquote>
 </li>
 <li>Change <sref ref="[multimap.modifiers]"/> around p. 1 as indicated:
 <blockquote><pre>
 template &lt;class P&gt; iterator insert(P&amp;&amp; x);
 template &lt;class P&gt; iterator insert(const_iterator position, P&amp;&amp; x);
-</pre><blockquote>
+</pre><blockquote><p>
 1 <em>Requires</em>: <del><tt>P</tt> shall be convertible to </del><tt>value_type</tt> <ins>is constructible from 
 <tt>std::forward&lt;P&gt;(x)</tt></ins>.
 <p/>
@@ -111,10 +110,10 @@ is a hint pointing to where the search should start.</ins>
 <p/>
 <ins>? <em>Remarks</em>: These signatures shall not participate in overload resolution unless <tt>P</tt> 
 is implicitly convertible to <tt>value_type</tt>.</ins>
+</p>
 </blockquote></blockquote>
 </li>
 </ol>
-</p>
 
 <note>
 2010 Batavia:
@@ -132,7 +131,7 @@ We need <tt>is_convertible</tt>, not <tt>is_constructible</tt>, both in ordered 
 <blockquote><pre>
 template &lt;class P&gt; pair&lt;iterator, bool&gt; insert(P&amp;&amp; x);
 template &lt;class P&gt; pair&lt;iterator, bool&gt; insert(const_iterator position, P&amp;&amp; x);
-</pre><blockquote>
+</pre><blockquote><p>
 1 <em>Requires</em>: <tt>P</tt> shall be convertible to <tt>value_type</tt>.
 <p/>
 If <tt>P</tt> is instantiated as a reference type, then the argument <tt>x</tt> is copied from. Otherwise <tt>x</tt> is considered
@@ -146,13 +145,14 @@ non-const rvalue <tt>pair&lt;key_type,mapped_type&gt;</tt>. Otherwise <tt>CopyCo
 <p/>
 <ins>? <em>Remarks</em>: These signatures shall not participate in overload resolution unless <tt>P</tt> 
 is implicitly convertible to <tt>value_type</tt>.</ins>
+</p>
 </blockquote></blockquote>
 </li>
 <li>Change <sref ref="[multimap.modifiers]"/> around p. 1 as indicated:
 <blockquote><pre>
 template &lt;class P&gt; iterator insert(P&amp;&amp; x);
 template &lt;class P&gt; iterator insert(const_iterator position, P&amp;&amp; x);
-</pre><blockquote>
+</pre><blockquote><p>
 1 <em>Requires</em>: <tt>P</tt> shall be convertible to <tt>value_type</tt>.
 <p/>
 If <tt>P</tt> is instantiated as a reference type, then the argument <tt>x</tt> is copied from. Otherwise 
@@ -166,6 +166,7 @@ is required for both <tt>key_type</tt> and <tt>mapped_type</tt>.
 <p/>
 <ins>? <em>Remarks</em>: These signatures shall not participate in overload resolution unless <tt>P</tt> 
 is implicitly convertible to <tt>value_type</tt>.</ins>
+</p>
 </blockquote></blockquote>
 </li>
 </ol>

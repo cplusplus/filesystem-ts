@@ -12,21 +12,21 @@
 
 <discussion>
 <p><b>Addresses US-197</b></p>
-
+<p>
 There is no defined synchronization between
 <tt>promise::set_value</tt> and <tt>future::get</tt> (<sref ref="[futures.promise]"/> p. 21, 25).
-
+</p>
 <note>
 Resolution proposed by ballot comment:
 </note>
-<blockquote>
-Replace "[Note: and they synchronize and
+<blockquote><p>
+Replace "[<i>Note</i>: and they synchronize and
 serialize with other functions through the referred
-associated asynchronous state. --end note]" with
+associated asynchronous state. &mdash; <i>end note</i>]" with
 the normative "They synchronize with (1.10) any
 operation on a future object with the same
 associated asynchronous state marked ready."
-</blockquote>
+</p></blockquote>
 
 <note>
 2010-11-02 Daniel translates proposal into proper wording changes
@@ -36,22 +36,22 @@ associated asynchronous state marked ready."
 <resolution>
 <ol>
 <li>Change <sref ref="[futures.promise]"/> p. 21 as indicated:
-<blockquote>
+<blockquote><p>
 21 <em>Synchronization</em>: calls to <tt>set_value</tt> and <tt>set_exception</tt> on a single 
 <tt>promise</tt> object are serialized.
 <del>[ <em>Note</em>: and they synchronize and serialize with other functions through the referred associated asynchronous
 state. &mdash; <em>end note</em> ]</del><ins>They <em>synchronize with</em> ([intro.multithread]) any
 operation on a future object with the same associated asynchronous state marked ready.</ins>
-</blockquote>
+</p></blockquote>
 </li>
 <li>Change <sref ref="[futures.promise]"/> p. 25 as indicated:
-<blockquote>
+<blockquote><p>
 25 <em>Synchronization</em>: calls to <tt>set_value</tt> and <tt>set_exception</tt> on a single 
 <tt>promise</tt> object are serialized.
 <del>[ <em>Note</em>: and they synchronize and serialize with other functions through the referred associated asynchronous
 state. &mdash; <em>end note</em> ]</del><ins>They <em>synchronize with</em> ([intro.multithread]) any
 operation on a future object with the same associated asynchronous state marked ready.</ins>
-</blockquote>
+</p></blockquote>
 </li>
 </ol>
 </resolution>

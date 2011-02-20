@@ -43,16 +43,13 @@ to (VC++, g++ and Sun CC) do.  But according to the standard, it should be
 template&lt;class charT, class traits, class Allocator&gt;
   basic_ostream&lt;charT, traits&gt;&amp;
     operator&lt;&lt;(basic_ostream&lt;charT, traits&gt;&amp; os, const basic_string&lt;charT,traits,Allocator&gt;&amp; str);
-</pre><blockquote>
-<i>Effects:</i> Behaves as a formatted output function (<sref
-ref="[ostream.formatted.reqmts]"/>). After constructing a <tt>sentry</tt>
-object, if this object returns <tt>true</tt> when converted to a value of type
-<tt>bool</tt>, determines padding as described in <sref
-ref="[facet.num.put.virtuals]"/>, then inserts the resulting sequence of
-characters seq as if by calling <tt>os.rdbuf()-&gt;sputn(seq, n)</tt>, where
-<tt>n</tt> is the larger of <tt>os.width()</tt> and <tt>str.size()</tt>; then
-calls <tt>os.width(0)</tt>.
-</blockquote>
+</pre><blockquote><p>
+<i>Effects:</i> Behaves as a formatted output function (<sref ref="[ostream.formatted.reqmts]"/>). After constructing 
+a <tt>sentry</tt> object, if this object returns <tt>true</tt> when converted to a value of type <tt>bool</tt>, 
+determines padding as described in <sref ref="[facet.num.put.virtuals]"/>, then inserts the resulting sequence of
+characters seq as if by calling <tt>os.rdbuf()-&gt;sputn(seq, n)</tt>, where <tt>n</tt> is the larger of 
+<tt>os.width()</tt> and <tt>str.size()</tt>; then calls <tt>os.width(0)</tt>.
+</p></blockquote>
 </blockquote>
 
 <p>
@@ -136,9 +133,9 @@ defect in the standard, and not in the three compilers I tried.
 </note>
 <p>
 Consensus that all known implementations are consistent, and disagree with the
-standard.  Preference is to fix the standard before implementations start trying
+standard. Preference is to fix the standard before implementations start trying
 to conform to the current spec, as the current implementations have the preferred
-form.  Howard volunteered to drught for Madrid, move to Open.
+form. Howard volunteered to drught for Madrid, move to Open.
 </p>
 
 <resolution>

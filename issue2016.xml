@@ -10,6 +10,7 @@
 <date>17 Nov 2010</date>
 
 <discussion>
+<p>
 During the Batavia meeting it turned out that there is a definition
 hole for types satisfying the <tt>Allocators</tt> requirements: The problem
 became obvious when it was discussed whether all <tt>swap</tt> functions 
@@ -19,16 +20,16 @@ with <tt>noexcept</tt> or not. While it is correct that the implicit
 operation (because move/copy-constructors and assignment operators are
 required to be no-throw functions), there are no such requirements
 for specialized <tt>swap</tt> overloads for a particular allocator.
-
+<p/>
 But this requirement is essential because the <tt>Containers</tt> are
 required to support <i>swappable</i> <tt>Allocators</tt>, when the value
 <tt>allocator_traits&lt;&gt;::propagate_on_container_swap</tt> evaluates
 to <tt>true</tt>.
-
+</p>
 <note>2011-02-10 Alberto, Daniel, and Pablo collaborated on the proposed wording</note>
 <p>
 The proposed resolution (based on N3225) attempts to solve the following problems:
-
+</p>
 <ol>
 <li>Table 44 &mdash; Allocator requirements, expression rows 
 <tt>X::propagate_on_container_copy_assignment</tt>, <tt>X::propagate_on_container_move_assignment</tt>, and
@@ -41,8 +42,6 @@ respectively, are imposed on the allocator types.</li>
 situation described twice in p. 8 and p. 9 (undefined behaviour unless <tt>a.get_allocator() == b.get_allocator()</tt>
 or <tt>allocator_traits&lt;allocator_type&gt;::propagate_on_container_swap::value == true</tt>), which should be cleaned up.</li>
 </ol>
-
-</p>
 
 </discussion>
 
@@ -120,7 +119,7 @@ when the client container is swapped. <ins>See Note B, below.</ins></td>
 <li>
 <p>Following <sref ref="[allocator.requirements]"/> p. 3 insert a new normative paragraph:</p>
 
-<blockquote>
+<blockquote><p>
 <ins>Note B: If <tt>X::propagate_on_container_copy_assignment::value</tt> is true, <tt>X</tt> shall 
 satisfy the <tt>CopyAssignable</tt> requirements (Table 39 <sref ref="[copyassignable]"/>). 
 If <tt>X::propagate_on_container_move_assignment::value</tt> is true, <tt>X</tt> shall satisfy the 
@@ -128,13 +127,13 @@ If <tt>X::propagate_on_container_move_assignment::value</tt> is true, <tt>X</tt>
 shall not throw exceptions. If <tt>X::propagate_on_container_swap::value</tt> is true, lvalues of 
 <tt>X</tt> shall be swappable (<sref ref="[swappable.requirements]"/>) and the <tt>swap</tt> operation 
 shall not throw exceptions.</ins>
-</blockquote>
+</p></blockquote>
 </li>
 
 <li>
 <p>Modify <sref ref="[container.requirements.general]"/> p. 8 and p. 9 as indicated:</p>
 
-<blockquote>
+<blockquote><p>
 8 - [..] The allocator may be replaced only via assignment or <tt>swap()</tt>. Allocator replacement is 
 performed by copy assignment, move assignment, or swapping of the allocator only if 
 <tt>allocator_traits&lt;allocator_type&gt;::propagate_on_container_copy_assignment::value</tt>,
@@ -159,7 +158,7 @@ is <tt>true</tt>, then <ins>lvalues of <tt>allocator_type</tt> shall be swappabl
 <tt>a.get_allocator() == b.get_allocator()</tt>. Every iterator referring to an element in one container before
 the swap shall refer to the same element in the other container after the swap. It is unspecified whether an
 iterator with value <tt>a.end()</tt> before the swap will have value <tt>b.end()</tt> after the swap.
-</blockquote>
+</p></blockquote>
 </li>
 </ol>
 

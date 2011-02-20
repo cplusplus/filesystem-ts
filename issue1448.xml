@@ -13,16 +13,16 @@
 <p><b>Addresses GB-124</b></p>
 
 <p>
-N3092 <sref ref="[stringbuf.members]"/> contains this textcspecifying the postconditions of
+N3092 <sref ref="[stringbuf.members]"/> contains this text specifying the postconditions of
 <tt>basic_stringbuf::str(basic_string)</tt>:
 </p>
-<blockquote>
+<blockquote><p>
 Postconditions: If <tt>mode &amp; ios_base::out</tt> is <tt>true</tt>,
 <tt>pbase()</tt> points to the first underlying character and <tt>epptr() >=
 pbase() + s.size()</tt> holds; in addition, if <tt>mode &amp; ios_base::in</tt>
 is <tt>true</tt>, <tt>pptr() == pbase() + s.data()</tt> holds, otherwise
 <tt>pptr() == pbase()</tt> is <tt>true</tt>. [...]
-</blockquote>
+</p></blockquote>
 <p>
 Firstly, there's a simple mistake: It should be <tt>pbase() + s.length()</tt>,
 not <tt>pbase() + s.data()</tt>.

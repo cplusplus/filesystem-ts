@@ -10,22 +10,24 @@
 <date>08 Dec 2010</date>
 
 <discussion>
+<p>
 According to <sref ref="[futures.task.members]"/> p. 7 bullet 2:
-
+</p>
 <blockquote><pre>
 packaged_task&amp; operator=(packaged_task&amp;&amp; other);
-</pre><blockquote>
+</pre><blockquote><p>
 7 <i>Effects</i>:<br/>
+</p>
 <ul>
-<li>[...]</li>
-<li><tt>packaged_task&lt;R, ArgTypes...&gt;(other).swap(*this)</tt>.</li>
+<li><p>[...]</p></li>
+<li><p><tt>packaged_task&lt;R, ArgTypes...&gt;(other).swap(*this)</tt>.</p></li>
 </ul>
 </blockquote></blockquote>
-<p/>
-</discussion>
-
+<p>
 The argument <tt>other</tt> given to the move constructor is an lvalue and must be converted into 
 an rvalue via appropriate usage of <tt>std::move</tt>.
+</p>
+</discussion>
 <resolution>
 <p>
 The suggested wording changes are against the working draft N3225.
@@ -37,11 +39,12 @@ The suggested wording changes are against the working draft N3225.
 
 <blockquote><pre>
 packaged_task&amp; operator=(packaged_task&amp;&amp; other);
-</pre><blockquote>
+</pre><blockquote><p>
 7 <i>Effects</i>:<br/>
+</p>
 <ul>
-<li>[...]</li>
-<li><tt>packaged_task&lt;R, ArgTypes...&gt;(<ins>std::move(</ins>other<ins>)</ins>).swap(*this)</tt>.</li>
+<li><p>[...]</p></li>
+<li><p><tt>packaged_task&lt;R, ArgTypes...&gt;(<ins>std::move(</ins>other<ins>)</ins>).swap(*this)</tt>.</p></li>
 </ul>
 </blockquote></blockquote>
 

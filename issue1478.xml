@@ -11,15 +11,15 @@
 
 <discussion>
 <p><b>Addresses GB-136</b></p>
-
+<p>
 GB requests normative clarification in <sref ref="[atomics.types.operations]"/> p.4 that
 concurrent access constitutes a race, as already done on p.6 and p.7.
-
+</p>
 <note>
 Resolution proposed in ballot comment:
 </note>
 
-<blockquote>
+<blockquote><p>
 Initialisation of atomics:
 <p/>
 We believe the intent is that for any atomics there is a distinguished
@@ -28,17 +28,18 @@ other operations on that atomic - specifically so that the
 initialisation write might be non-atomic and hence give rise to a data
 race, and hence undefined behaviour, in examples such as this (from
 Hans):
+</p>
 <blockquote><pre>
 atomic&lt;atomic&lt;int&gt; *&gt; p
 f()                      |
 { atomic&lt;int&gt;x;          | W_na x
-  p.store(&ampx,mo_rlx); | W_rlx p=&amp;x
+  p.store(&amp;x,mo_rlx);    | W_rlx p=&amp;x
 }                        |
-</pre></blockquote>
+</pre></blockquote><p>
 (where na is nonatomic and rlx is relaxed). We suspect also that no
 other mixed atomic/nonatomic access to the same location is intended
 to be permitted. Either way, a note would probably help.
-</blockquote>
+</p></blockquote>
 </discussion>
 
 <resolution>

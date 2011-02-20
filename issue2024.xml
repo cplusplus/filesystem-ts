@@ -10,19 +10,20 @@
 <date>08 Dec 2010</date>
 
 <discussion>
+<p>
 Paragraph 5 and 6 of <sref ref="[atomics.types.generic]"/> impose different requirements on implementations for
 specializations of the <tt>atomic</tt> class template for integral types and for pointer types:
-
-<blockquote>
+</p>
+<blockquote><p>
 5 The atomic integral specializations and the specialization <tt>atomic&lt;bool&gt;</tt> shall have standard layout. 
 They shall each have a trivial default constructor and a trivial destructor. They shall each support aggregate
 initialization syntax.
-</blockquote>
-<p/>
-<blockquote>
+</p></blockquote>
+
+<blockquote><p>
 6 There are pointer partial specializations on the <tt>atomic</tt> class template. These specializations shall have 
 trivial default constructors and trivial destructors.
-</blockquote>
+</p></blockquote>
 
 <p>
 It looks like an oversight to me, that for pointer specializations the requirements for standard layout and
@@ -47,11 +48,11 @@ The suggested wording changes are against the working draft N3225.
 <li>
 <p>Change <sref ref="[atomics.types.generic]"/> p. 6 as indicated:</p>
 
-<blockquote>
+<blockquote><p>
 6 There are pointer partial specializations on the <tt>atomic</tt> class template. These specializations shall have 
 <ins>standard layout,</ins> trivial default constructors<ins>,</ins> and trivial destructors. <ins> They shall each 
 support aggregate initialization syntax.</ins>
-</blockquote>
+</p></blockquote>
 
 </li>
 </ol>

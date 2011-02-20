@@ -12,14 +12,14 @@
 <discussion>
 <p><b>Addresses US-126</b></p>
 
-Each adaptor has a member function called <tt>base()</tt> which has no definition.
+<p>Each adaptor has a member function called <tt>base()</tt> which has no definition.</p>
 
 <note>
 Resolution proposed by ballot comment:
 </note>
-<blockquote>
+<blockquote><p>
 Give it the obvious definition.
-</blockquote>
+</p></blockquote>
 
 <note>
 2010-11-03 Daniel comments and provides a proposed resolution:
@@ -31,13 +31,16 @@ the <tt>base()</tt> functions as replacement for a &quot;<i>Throws</i>: Nothing&
 
 <note>
 2010 Batavia: The working group reviewed this issue, and recommended to add the following to the Proposed Resolution.
+</note>
 <ul><li>
 Append to paragraph 1 of [rand.req.adapt] (or at the Editor's discretion insert as a new paragraph following that paragraph): 
 The expression <tt>a.base()</tt> shall be valid and shall return a const reference to <tt>a</tt>'s base engine. 
 </li>
 </ul>
+<p>
 After further review, the working group concurred with the Proposed Resolution.
-</note>
+</p>
+
 
 <note>Batavia: waiting for WEB to review wording</note>
 
@@ -47,13 +50,13 @@ After further review, the working group concurred with the Proposed Resolution.
 <ol>
 <li>
 Add the following sentence to the end of <sref ref="[rand.req.adapt]"/>/1:
-<blockquote>
+<blockquote><p>
 A <i>random number engine adaptor</i> (commonly shortened to <i>adaptor</i>) <tt>a</tt> of type <tt>A</tt> is a
 random number engine that takes values produced by some other random number engine, and applies an algorithm to
 those values in order to deliver a sequence of values with different randomness properties. An engine <tt>b</tt>
 of type <tt>B</tt> adapted in this way is termed a <i>base engine</i> in this context.<ins> The expression
 <tt>a.base()</tt> shall be valid and shall return a const reference to <tt>a</tt>'s base engine.</ins>
-</blockquote>
+</p></blockquote>
 </li>
 <li>Change in [rand.adapt.disc]/3, class template <tt>discard_block_engine</tt> synopsis, the following declaration:
 <blockquote><pre>
@@ -65,9 +68,9 @@ const Engine&amp; base() const <ins>noexcept</ins>;
 <blockquote>
 <pre><ins>const Engine&amp; base() const noexcept;</ins>
 </pre>
-<blockquote>
+<blockquote><p>
 <ins>? <i>Returns</i>: <tt>e</tt>.</ins>
-</blockquote>
+</p></blockquote>
 </blockquote>
 </li>
 <li>Change in [rand.adapt.ibits]/4, class template <tt>independent_bits_engine</tt> synopsis, the following declaration:
@@ -80,9 +83,9 @@ const Engine&amp; base() const <ins>noexcept</ins>;
 <blockquote>
 <pre><ins>const Engine&amp; base() const noexcept;</ins>
 </pre>
-<blockquote>
+<blockquote><p>
 <ins>? <i>Returns</i>: <tt>e</tt>.</ins>
-</blockquote>
+</p></blockquote>
 </blockquote>
 </li>
 <li>Change in <sref ref="[rand.adapt.shuf]"/>/3, class template <tt>shuffle_order_engine</tt> synopsis, the following declaration:
@@ -95,9 +98,9 @@ const Engine&amp; base() const <ins>noexcept</ins>;
 <blockquote>
 <pre><ins>const Engine&amp; base() const noexcept;</ins>
 </pre>
-<blockquote>
+<blockquote><p>
 <ins>? <i>Returns</i>: <tt>e</tt>.</ins>
-</blockquote>
+</p></blockquote>
 </blockquote>
 </li>
 </ol>

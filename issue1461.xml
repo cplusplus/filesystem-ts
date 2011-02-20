@@ -11,16 +11,16 @@
 
 <discussion>
 <p><b>Addresses CA-1</b></p>
-
+<p>
 All <tt>ATOMIC_</tt>... macros should be prefixed with <tt>STD_</tt> as
 in <tt>STD_ATOMIC_</tt>... to indicate they are <tt>STD</tt> macros as
 other standard macros. The rationale that they all seem too long seems weak.
+</p>
 </discussion>
 
 <resolution>
 <ol>
-<li>Change sub-clause <sref ref="[atomics.syn]"/> as indicated:
-<p>
+<li><p>Change sub-clause <sref ref="[atomics.syn]"/> as indicated:</p>
 <blockquote><pre>
 [..]
 // <em>29.4, lock-free property</em>
@@ -38,10 +38,9 @@ other standard macros. The rationale that they all seem too long seems weak.
 #define <ins>STD_</ins>ATOMIC_VAR_INIT(value) <em>see below</em>
 [..]
 </pre></blockquote>
-</p>
 </li>
 <li>
-Change <sref ref="[atomics.lockfree]"/> p. 1 as indicated:
+<p>Change <sref ref="[atomics.lockfree]"/> p. 1 as indicated:</p>
 <blockquote><pre>
 #define <ins>STD_</ins>ATOMIC_CHAR_LOCK_FREE <em>implementation-defined</em>
 #define <ins>STD_</ins>ATOMIC_CHAR16_T_LOCK_FREE <em>implementation-defined</em>
@@ -53,39 +52,40 @@ Change <sref ref="[atomics.lockfree]"/> p. 1 as indicated:
 #define <ins>STD_</ins>ATOMIC_LLONG_LOCK_FREE <em>implementation-defined</em>
 #define <ins>STD_</ins>ATOMIC_ADDRESS_LOCK_FREE <em>implementation-defined</em>
 </pre><blockquote>
+<p>
 1 The <tt><ins>STD_</ins>ATOMIC_..._LOCK_FREE</tt> macros indicate the lock-free property of the corresponding atomic types, [..]
-</blockquote></blockquote>
+</p></blockquote></blockquote>
 </li>
 <li>
-Change <sref ref="[atomics.types.operations]"/> p. 5 as indicated:
+<p>Change <sref ref="[atomics.types.operations]"/> p. 5 as indicated:</p>
 <blockquote><pre>
 #define <ins>STD_</ins>ATOMIC_VAR_INIT(value) <em>see below</em>
-</pre><blockquote>
+</pre><blockquote><p>
 5 <em>Remarks</em>: A macro that expands to a token sequence suitable for initializing an atomic variable of
 a type that is initializion-compatible with value. Concurrent access to the variable being initialized,
 even via an atomic operation, constitutes a data race. [ <em>Example:</em>
-<blockquote><pre>
+</p><blockquote><pre>
 atomic_int v = <ins>STD_</ins>ATOMIC_VAR_INIT(5);
 </pre></blockquote>
-&mdash; <em>end example</em> ]
+<p>&mdash; <em>end example</em> ]</p>
 </blockquote></blockquote>
 </li>
 <li>
-Change <sref ref="[atomics.flag]"/> p. 1+4 as indicated:
+<p>Change <sref ref="[atomics.flag]"/> p. 1+4 as indicated:</p>
 <blockquote><pre>
 namespace std {
   [..]
   #define <ins>STD_</ins>ATOMIC_FLAG_INIT <em>see below</em>
 }
-</pre><blockquote>
+</pre><blockquote><p>
 [..]
 4 The macro <tt><ins>STD_</ins>ATOMIC_FLAG_INIT</tt> shall be defined in such a way that it can be used to initialize an object of
 type <tt>atomic_flag</tt> to the clear state. For a static-duration object, that initialization shall be static. It is
 unspecified whether an unitialized <tt>atomic_flag</tt> object has an initial state of set or clear. [ <em>Example:</em>
-<blockquote><pre>
+</p><blockquote><pre>
 atomic_flag guard = <ins>STD_</ins>ATOMIC_FLAG_INIT;
 </pre></blockquote>
-&mdash; <em>end example</em> ]
+<p>&mdash; <em>end example</em> ]</p>
 </blockquote></blockquote>
 </li>
 </ol>

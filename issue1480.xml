@@ -11,25 +11,25 @@
 
 <discussion>
 <p><b>Addresses GB-137</b></p>
-
+<p>
 Thread fence not only establish synchronizes with relationships,
 there are semantics of fences that are expressed not in
 terms of <em>synchronizes with</em> relationships (for example see <sref ref="[atomics.order]"/> p.5).
 These semantics also need to apply to the use of
 <tt>atomic_signal_fence</tt> in a restricted way.
-
+</p>
 <note>Batavia: Concurrency group discussed issue, and is OK with the proposed resolution.</note>
 </discussion>
 
 <resolution>
-Change <sref ref="[atomics.fences]"/> p. 6 as indicated:
+<p>Change <sref ref="[atomics.fences]"/> p. 6 as indicated:</p>
 <blockquote><pre>
 void atomic_signal_fence(memory_order);  
-</pre><blockquote>
+</pre><blockquote><p>
 6 <em>Effects</em>: equivalent to <tt>atomic_thread_fence(order)</tt>, except that <del>synchronizes 
 with relationships</del><ins>the resulting ordering constraints</ins> are established only between a 
 thread and a signal handler executed in the same thread.
-</blockquote></blockquote>
+</p></blockquote></blockquote>
 </resolution>
 
 </issue>

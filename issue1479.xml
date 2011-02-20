@@ -11,8 +11,9 @@
 
 <discussion>
 <p><b>Addresses US-179</b></p>
-
+<p>
 The fence functions (<sref ref="[atomics.fences]"/> p.5 + p.6) should be <tt>extern "C"</tt>, for <tt>C</tt> compatibility.
+</p>
 
 <note>2011-02-16 Reflector discussion</note>
 <p>
@@ -33,18 +34,18 @@ namespace std {
 }
 </pre></blockquote>
 </li>
-<li>Change <sref ref="[atomics.fences]"/>, p. 5 and p. 6 as indicated:
+<li><p>Change <sref ref="[atomics.fences]"/>, p. 5 and p. 6 as indicated:</p>
 <blockquote><pre>
 <ins>extern "C"</ins> void atomic_thread_fence(memory_order);
-</pre><blockquote>
+</pre><blockquote><p>
 5 <em>Effects</em>: depending on the value of <tt>order</tt>, this operation: [..]
-</blockquote></blockquote>
+</p></blockquote></blockquote>
 <blockquote><pre>
 <ins>extern "C"</ins> void atomic_signal_fence(memory_order);  
-</pre><blockquote>
+</pre><blockquote><p>
 6 <em>Effects</em>: equivalent to <tt>atomic_thread_fence(order)</tt>, except that synchronizes with relationships are
 established only between a thread and a signal handler executed in the same thread.
-</blockquote></blockquote>
+</p></blockquote></blockquote>
 </li>
 </ol>
 </resolution>

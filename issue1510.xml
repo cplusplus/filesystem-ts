@@ -30,31 +30,31 @@ Add a new paragraph after <sref ref="[futures.atomic_future]"/>/2 with the same 
 2010-11-02 Daniel translates proposed changes into specific deltas and comments:
 </note>
 
-<blockquote>
+<blockquote><p>
 While applying the wording, I notice that <sref ref="[futures.shared_future]"/>/3 does
 speak of the move-assignment operator, and <em>not</em> of the copy-assignment operator.
 <tt>atomic_future</tt> obviously needs this to be true for the copy-assignment operator,
 but I strongly assume that <tt>shared_future</tt> needs to mention both special member
 assignment operators in this paragraph. To keep this consistent, the following P/R also
 provides wording to fix the corresponding location for <tt>shared_future</tt>.
-</blockquote>
+</p></blockquote>
 
 </discussion>
 
 <resolution>
 <ol>
 <li>Change <sref ref="[futures.shared_future]"/>/3 as indicated:
-<blockquote>
+<blockquote><p>
 3 The effect of calling any member function other than the destructor<ins>, the 
 copy-assignment operator</ins>, the move-assignment operator, or <tt>valid()</tt> 
 on a <tt>shared_future</tt> object for which <tt>valid() == false</tt> is undefined.
-</blockquote>
+</p></blockquote>
 </li>
 <li>Following <sref ref="[futures.atomic_future]"/>/2, add a new paragraph:
-<blockquote>
+<blockquote><p>
 <ins>? The effect of calling any member function other than the destructor, the copy-assignment operator, or <tt>valid()</tt>
 on a <tt>atomic_future</tt> object for which <tt>valid() == false</tt> is undefined.</ins>
-</blockquote>
+</p></blockquote>
 </li>
 </ol>
 </resolution>

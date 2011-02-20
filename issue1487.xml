@@ -11,19 +11,19 @@
 
 <discussion>
 <p><b>Addresses CH-25</b></p>
-
+<p>
 Clock related operations are currently not required not to
 throw. So "Throws: Nothing." is not always true.
-
+</p>
 <note>
 Resolution proposed by ballot comment:
 </note>
-<blockquote>
+<blockquote><p>
 Either require clock related operations not to throw
 (in 20.10) or change the Throws clauses in 30.3.2.
 Also possibly add a note that <tt>abs_time</tt> in the past
 or negative <tt>rel_time</tt> is allowed.
-</blockquote>
+</p></blockquote>
 
 <note>2011-02-10: Howard Hinnant provides a resolution proposal</note>
 
@@ -95,11 +95,11 @@ a drastical step, but less invasive than the original suggestion.
 <li>
 <p>Modify <sref ref="[time.clock]"/> p. 1 as follows:</p>
 
-<blockquote>
+<blockquote><p>
 1 - The types defined in this subclause shall satisfy the <tt>Clock</tt> requirements 
 (20.11.1). <ins>For every clock type <tt>C</tt> specified in this sub-clause 
 <sref ref="[time.clock]"/> the following requirements shall be satisfied:</ins>
-<blockquote>
+</p><blockquote>
 <ul>
 <li><ins>the types <tt>C::rep</tt>, <tt>C::duration</tt>, and <tt>C::time_point</tt> shall meet 
 the requirements of <tt>EqualityComparable</tt> (<sref ref="[equalitycomparable]"/>), 
@@ -141,15 +141,15 @@ edit also fixes the miss of the <tt>static</tt> specifier in these prototype dec
 
 <blockquote><pre>
 <ins>static</ins> time_t to_time_t(const time_point&amp; t) <ins>noexcept</ins>;
-</pre><blockquote>
+</pre><blockquote><p>
 3 - [...]
-</blockquote>
+</p></blockquote>
 
 <pre>
 <ins>static</ins> time_point from_time_t(time_t t) <ins>noexcept</ins>;
-</pre><blockquote>
+</pre><blockquote><p>
 4 - [...]
-</blockquote>
+</p></blockquote>
 </blockquote>
 
 </li>
@@ -193,14 +193,14 @@ public:
 <li>
 <p>Add the following new paragraphs at the end of sub-clause <sref ref="[thread.req.paramname]"/>:</p>
 
-<blockquote>
+<blockquote><p>
 <ins>?? - If a parameter is <tt>Clock</tt>, calling <tt>Clock::now()</tt> or calling operations of the types <tt>Clock::rep</tt>, 
 <tt>Clock::duration</tt>, and <tt>Clock::time_point</tt> shall not throw exceptions. For the type <tt>Clock::time_point::clock</tt>
 the same requirements are imposed as for type <tt>Clock</tt>.</ins>
-</blockquote>
-<blockquote>
+</p></blockquote>
+<blockquote><p>
 <ins>?? - If a parameter is <tt>Duration</tt> or <tt>Re</tt>, calling operations of these types shall not throw exceptions.</ins>
-</blockquote>
+</p></blockquote>
 </li>
 
 </ol>

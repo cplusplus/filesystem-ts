@@ -15,7 +15,7 @@
 </p>
 
 <p>This proposal is meant to resolve potential regression of the
-<a href ref="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2008/n2800.pdf">N2800</a>
+<a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2008/n2800.pdf">N2800</a>
 draft, see
 next section, and to relax the requirements for containers of types with
 throwing move constructors.</p>
@@ -139,10 +139,10 @@ Committee Draft is issued.
 2009-10 Santa Cruz:
 </note>
 
-<blockquote>
+<blockquote><p>
 Should wait to get direction from Dave/Rani
 (<a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2009/n2983.html">N2983</a>).
-</blockquote>
+</p></blockquote>
 
 <note>
 2010-03-28 Daniel updated wording to sync with N3092.
@@ -154,19 +154,19 @@ The suggested change of <sref ref="[deque.modifiers]"/>/2 should be removed,
 because the current wording does say more general things:
 </p>
 
-<blockquote>
+<blockquote><p>
 2 <i>Remarks:</i> If an exception is thrown other than by the copy constructor,
 move constructor, assignment operator, or move assignment operator of <tt>T</tt>
 there are no effects. If an exception is thrown by the move constructor of a
 non-CopyConstructible <tt>T</tt>, the effects are unspecified.
-</blockquote>
+</p></blockquote>
 
 <p>
 The suggested change of <sref ref="[vector.capacity]"/>/2 should be removed,
 because the current wording does say more general things:
 </p>
 
-<blockquote>
+<blockquote><p>
 2 <i>Effects:</i> A directive that informs a <tt>vector</tt> of a planned change
 in size, so that it can manage the storage allocation accordingly. After
 <tt>reserve()</tt>, <tt>capacity()</tt> is greater or equal to the argument of
@@ -175,7 +175,7 @@ in size, so that it can manage the storage allocation accordingly. After
 the current capacity is less than the argument of <tt>reserve()</tt>. If an
 exception is thrown other than by the move constructor of a
 non-<tt>CopyConstructible</tt> type, there are no effects.
-</blockquote>
+</p></blockquote>
 
 </blockquote>
 
@@ -230,7 +230,7 @@ object move constructor</ins>.</p>
 <sref ref="[deque.modifiers]"/> change paragraph 2 to say:
 </p>
 
-<blockquote>
+<blockquote><p>
 -2- <i>Remarks:</i> If an exception is thrown other than by
 the copy constructor<ins>, move constructor</ins>
 or assignment operator of <tt>T</tt>
@@ -238,13 +238,13 @@ there are no effects.
 <ins>If an exception is thrown by <tt>push_back()</tt> or <tt>emplace_back()</tt>
 function, that function has no effects unless the exception is thrown by
 the move constructor of <tt>T</tt>.</ins>
-</blockquote>
+</p></blockquote>
 
 <p>
 <sref ref="[vector.capacity]"/> paragraph 2 change to say:
 </p>
 
-<blockquote>
+<blockquote><p>
 -2- <i>Effects:</i> A directive that informs a <tt>vector</tt>
 of a planned change in size, so
 that it can manage the storage allocation accordingly. After <tt>reserve()</tt>,
@@ -255,30 +255,30 @@ otherwise. Reallocation happens at this point if and only if the current
 capacity is less than the argument of <tt>reserve()</tt>.
 If an exception is thrown, there are no effects<ins>
 unless the exception is thrown by the contained object move constructor</ins>.
-</blockquote>
+</p></blockquote>
 
 <p>
 <sref ref="[vector.capacity]"/> paragraph 12 change to say:
 </p>
 
-<blockquote>
+<blockquote><p>
 -12- <i>Requires:</i> <del>If <tt>value_type</tt> has a move constructor,
 that constructor shall not throw any exceptions.</del>
 <ins>If an exception is thrown, there are no effects unless the exception is thrown by
 the contained object move constructor.</ins>
-</blockquote>
+</p></blockquote>
 
 <p>
 <sref ref="[vector.modifiers]"/> change paragraph 1 to say:
 </p>
 
-<blockquote>
+<blockquote><p>
 -1- <del><i>Requires:</i> If <tt>value_type</tt> has a move constructor,
 that constructor shall not throw any exceptions.</del>
 <ins><i>Remarks:</i> If an exception is thrown by <tt>push_back()</tt>
 or <tt>emplace_back()</tt> function, that function has no effect unless the
 exception is thrown by the move constructor of <tt>T</tt>.</ins>
-</blockquote>
+</p></blockquote>
 
 </resolution>
 
