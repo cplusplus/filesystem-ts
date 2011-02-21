@@ -31,6 +31,15 @@ Finally, it is of little use anyway.
 </discussion>
 
 <resolution>
+<p>Alter the class definition of <tt>packaged_task</tt> in <sref ref="[futures.task]"/> p. 2 as follows:</p>
+<blockquote><pre>
+template&lt;class R, class... ArgTypes&gt;
+class packaged_task&lt;R(ArgTypes...)&gt; {
+public:
+  <del>typedef R result_type;</del>
+  [...]
+};
+</pre></blockquote>
 </resolution>
 
 </issue>
