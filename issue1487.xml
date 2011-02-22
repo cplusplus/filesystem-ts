@@ -83,9 +83,10 @@ and <tt>C1::time_point</tt> may throw exceptions.
 <p>The alternative proposal uses the following strategy: The general <tt>Clock</tt>
 requirements remain untouched, but we require that any functions of the library-provided
 clocks from sub-clause <sref ref="[time.clock]"/> and their associated types shall not
-throw exceptions. Second, we impose stronger requirements on clocks, durations, and
-their representation types for all functions in Clause 30. As a whole this is also
-a drastical step, but less invasive than the original suggestion.
+throw exceptions. Second, we replace existing <tt>noexcept</tt> specifications of
+functions from Clause 30 that depend on durations, clocks, or time points by wording that
+clarifies that these functions can only throw, if the operations of user-provided durations,
+clocks, or time points used as arguments to these functions throw exceptions.
 </p>
 </discussion>
 
@@ -107,6 +108,7 @@ the requirements of <tt>EqualityComparable</tt> (<sref ref="[equalitycomparable]
 <tt>CopyConstructible</tt> (<sref ref="[copyconstructible]"/>), <tt>CopyAssignable</tt> (<sref ref="[copyassignable]"/>), 
 <tt>Destructible</tt> (<sref ref="[destructible]"/>), and of numeric types ([numeric.requirements]) [<i>Note</i>: This means in 
 particular, that operations of these types will not throw exceptions &mdash; <i>end note</i> ], and</ins></li>
+<li><ins>lvalues of the types <tt>C::rep</tt>, <tt>C::duration</tt>, and <tt>C::time_point</tt> shall be swappable, and</ins></li>
 <li><ins>the function <tt>C::now()</tt> shall not throw exceptions, and</ins></li>
 <li><ins>the type <tt>C::time_point::clock</tt> shall meet the additional clock 
 requirements described in this sub-clause <sref ref="[time.clock]"/>, recursively.</ins></li>
@@ -191,18 +193,218 @@ public:
 </li>
 
 <li>
-<p>Add the following new paragraphs at the end of sub-clause <sref ref="[thread.req.paramname]"/>:</p>
+<p>Edit the synopsis of <sref ref="[thread.thread.this]"/> before p. 1:</p>
 
-<blockquote><p>
-<ins>?? - If a parameter is <tt>Clock</tt>, calling <tt>Clock::now()</tt> or calling operations of the types <tt>Clock::rep</tt>, 
-<tt>Clock::duration</tt>, and <tt>Clock::time_point</tt> shall not throw exceptions. For the type <tt>Clock::time_point::clock</tt>
-the same requirements are imposed as for type <tt>Clock</tt>.</ins>
-</p></blockquote>
-<blockquote><p>
-<ins>?? - If a parameter is <tt>Duration</tt> or <tt>Re</tt>, calling operations of these types shall not throw exceptions.</ins>
-</p></blockquote>
+<blockquote><pre>
+template &lt;class Clock, class Duration&gt;
+void sleep_until(const chrono::time_point&lt;Clock, Duration&gt;&amp; abs_time) <del>noexcept</del>;
+template &lt;class Rep, class Period&gt;
+void sleep_for(const chrono::duration&lt;Rep, Period&gt;&amp; rel_time) <del>noexcept</del>;
+</pre></blockquote>
 </li>
 
+<li>
+<p>Modify the prototype specifications in <sref ref="[thread.thread.this]"/> before p. 4 and p. 6 and
+re-add a <i>Throws</i> element following the <i>Synchronization</i> elements at p. 5 and p. 7:</p>
+
+<blockquote><pre>
+template &lt;class Clock, class Duration&gt;
+void sleep_until(const chrono::time_point&lt;Clock, Duration&gt;&amp; abs_time) <del>noexcept</del>;
+</pre><blockquote><p>
+4 - [...]
+<p/>
+5 - <i>Synchronization</i>: None.
+<p/>
+<ins>? - <i>Throws</i>: Nothing unless an exception is thrown by <tt>Clock::now()</tt> or by an operation of <tt>abs_time</tt>.
+[<i>Note</i>: Instantiations of time point types and clocks supplied by the implementation as specified in <sref ref="[time.clock]"/> 
+do not throw exceptions. &mdash; <i>end note</i>]</ins>
+</p>
+</blockquote></blockquote>
+
+<blockquote><pre>
+template &lt;class Rep, class Period&gt;
+void sleep_for(const chrono::duration&lt;Rep, Period&gt;&amp; rel_time) <del>noexcept</del>;
+</pre><blockquote><p>
+6 [...]
+<p/>
+7 <i>Synchronization</i>: None.
+<p/>
+<ins>? <i>Throws</i>: Nothing unless an exception is thrown by an operation of <tt>rel_time</tt>.
+[<i>Note</i>: Instantiations of duration types supplied by the implementation as specified in <sref ref="[time.clock]"/> 
+do not throw exceptions. &mdash; <i>end note</i>]</ins>
+</p>
+</blockquote></blockquote>
+</li>
+
+<li><p>Modify the <i>Throws</i> elements of <sref ref="[thread.timedmutex.requirements]"/> p. 9 and p. 16 as indicated and
+modify the <i>Effects</i> elements p. 5 and p. 12 to clarify the lock state in the presence of exceptions. Note that
+the edit also fixes a minor incorrectness in p. 5: Duration types need to compare against <tt>duration&lt;&gt;::zero()</tt>,
+not <tt>0</tt>:</p>
+
+<blockquote><p>
+3 The expression <tt>m.try_lock_for(rel_time)</tt> shall be well-formed and have the following semantics:
+<p/>
+[...]
+<p/>
+5 <i>Effects</i>: The function attempts to obtain ownership of the mutex within the relative timeout (30.2.4)
+specified by <tt>rel_time</tt>. If the time specified by <tt>rel_time</tt> is less than or equal to <del><tt>0</tt></del><ins><tt>rel_time.zero()</tt></ins>, 
+the function attempts to obtain ownership without blocking (as if by calling <tt>try_lock()</tt>). The function shall return
+within the timeout specified by <tt>rel_time</tt> only if it has obtained ownership of the mutex object <ins>or an exception is thrown</ins>.
+<ins>If an exception is thrown then a lock shall not have been acquired for the current execution agent.</ins>
+[ <i>Note</i>: As with <tt>try_lock()</tt>, there is no guarantee that ownership will be obtained if the lock is
+available, but implementations are expected to make a strong effort to do so. &mdash; <i>end note</i> ]
+<p/>
+[...]
+<p/>
+9 <i>Throws</i>: Nothing <ins>unless an exception is thrown by an operation of <tt>rel_time</tt>.
+[<i>Note</i>: Instantiations of duration types supplied by the implementation as specified in <sref ref="[time.clock]"/> 
+do not throw exceptions. &mdash; <i>end note</i>]</ins>.
+<p/>
+10 The expression <tt>m.try_lock_until(abs_time)</tt> shall be well-formed and have the following semantics:
+<p/>
+[...]
+<p/>
+12 <i>Effects</i>: The function attempts to obtain ownership of the mutex. If <tt>abs_time</tt> has already passed, the function 
+attempts to obtain ownership without blocking (as if by calling <tt>try_lock()</tt>). The function shall return before the
+absolute timeout (30.2.4) specified by <tt>abs_time</tt> only if it has obtained ownership of the mutex object <ins>or an 
+exception is thrown</ins>. <ins>If an exception is thrown then a lock shall not have been acquired for the current execution 
+agent.</ins> [ <i>Note</i>: As with <tt>try_lock()</tt>, there is no guarantee that ownership will be obtained 
+if the lock is available, but implementations are expected to make a strong effort to do so. &mdash; <i>end note</i> ]
+<p/>
+[...]
+<p/>
+16 <i>Throws</i>: Nothing <ins>unless an exception is thrown by the <tt>now()</tt> function of the
+used clock or by an operation of <tt>abs_time</tt>.
+[<i>Note</i>: Instantiations of time point types and clocks supplied by the implementation as specified in <sref ref="[time.clock]"/> 
+do not throw exceptions. &mdash; <i>end note</i>]</ins>.
+</p>
+</blockquote>
+</li>
+
+<li><p>Modify the class <tt>timed_mutex</tt> synopsis in <sref ref="[thread.timedmutex.class]"/> as indicated:</p>
+
+<blockquote><pre>
+class timed_mutex {
+public:
+  [...]
+  template &lt;class Rep, class Period&gt;
+    bool try_lock_for(const chrono::duration&lt;Rep, Period&gt;&amp; rel_time) <del>noexcept</del>;
+  template &lt;class Clock, class Duration&gt;
+    bool try_lock_until(const chrono::time_point&lt;Clock, Duration&gt;&amp; abs_time) <del>noexcept</del>;
+  [...]
+};
+</pre></blockquote>
+</li>
+
+<li><p>Modify the class <tt>recursive_timed_mutex</tt> synopsis in <sref ref="[thread.timedmutex.recursive]"/> as indicated:</p>
+
+<blockquote><pre>
+class recursive_timed_mutex {
+public:
+  [...]
+  template &lt;class Rep, class Period&gt;
+    bool try_lock_for(const chrono::duration&lt;Rep, Period&gt;&amp; rel_time) <del>noexcept</del>;
+  template &lt;class Clock, class Duration&gt;
+    bool try_lock_until(const chrono::time_point&lt;Clock, Duration&gt;&amp; abs_time) <del>noexcept</del>;
+  [...]
+};
+</pre></blockquote>
+</li>
+
+<li><p>Modify the class template <tt>unique_lock</tt> synopsis in <sref ref="[thread.lock.unique]"/> as indicated.
+This edit seems also to fix an inconsistency between the timed waiting c'tors and the timed waiting member functions (see
+next bullet):</p>
+
+<blockquote><pre>
+template &lt;class Mutex&gt;
+class unique_lock {
+public:
+  [...]
+  template &lt;class Clock, class Duration&gt;
+    unique_lock(mutex_type&amp; m, const chrono::time_point&lt;Clock, Duration&gt;&amp; abs_time) <del>noexcept</del>;
+  template &lt;class Rep, class Period&gt;
+    unique_lock(mutex_type&amp; m, const chrono::duration&lt;Rep, Period&gt;&amp; rel_time) <del>noexcept</del>;
+  [...]
+};
+</pre></blockquote>
+</li>
+
+<li><p>Modify the constructor prototypes in <sref ref="[thread.lock.unique.cons]"/> before p. 14 and p. 17 and
+re-add <i>Throws</i> elements as indicated.
+This edit seems also to fix an inconsistency compared to the timed waiting member functions:</p>
+
+<blockquote><pre>
+template &lt;class Clock, class Duration&gt;
+  unique_lock(mutex_type&amp; m, const chrono::time_point&lt;Clock, Duration&gt;&amp; abs_time) <del>noexcept</del>;
+</pre><blockquote><p>
+[...]
+<p/>
+16 <i>Postconditions</i>: <tt>pm == &amp;m</tt> and <tt>owns == res</tt>, where <tt>res</tt> is the value returned 
+by the call to <tt>m.try_lock_until(abs_time)</tt>.
+<p/>
+<ins>? <i>Throws</i>: Nothing unless the exception is thrown by <tt>m.try_lock_until(abs_time)</tt>.</ins>
+</p></blockquote></blockquote>
+
+<blockquote><pre>
+template &lt;class Rep, class Period&gt;
+  unique_lock(mutex_type&amp; m, const chrono::duration&lt;Rep, Period&gt;&amp; rel_time) <del>noexcept</del>;
+</pre><blockquote><p>
+[...]
+<p/>
+19 <i>Postconditions</i>: <tt>pm == &amp;m</tt> and <tt>owns == res</tt>, where <tt>res</tt> is the value returned 
+by the call to <tt>m.try_lock_for(rel_time)</tt>.
+<p/>
+<ins>? <i>Throws</i>: Nothing unless the exception is thrown by <tt>m.try_lock_for(rel_time)</tt>.</ins>
+</p></blockquote></blockquote>
+</li>
+
+<li><p>Modify the time-related <i>Throws</i> elements in <sref ref="[thread.condition.condvar]"/>, p. 19, p. 25, p. 36 as indicated:</p>
+
+<blockquote><p>
+[...]
+<p/>
+19 <i>Throws</i>: <ins>Any exception thrown by <tt>Clock::now()</tt> or by an operation of <tt>abs_time</tt>. [<i>Note</i>: Instantiations 
+of time point types and clocks supplied by the implementation as specified in <sref ref="[time.clock]"/> do not throw exceptions. &mdash; <i>end note</i>]</ins> 
+<tt>system_error</tt> when an exception is required (30.2.2).
+<p/>
+[...]
+<p/>
+25 <i>Throws</i>: <ins>Any exception thrown by an operation of <tt>rel_time</tt>. [<i>Note</i>: Instantiations of duration types supplied 
+by the implementation as specified in <sref ref="[time.clock]"/> do not throw exceptions. &mdash; <i>end note</i>]</ins>
+<tt>system_error</tt> when an exception is required (30.2.2).
+<p/>
+[...]
+<p/>
+36 <i>Throws</i>: <ins>Any exception thrown by an operation of <tt>rel_time</tt>. [<i>Note</i>: Instantiations of duration types supplied 
+by the implementation as specified in <sref ref="[time.clock]"/> do not throw exceptions. &mdash; <i>end note</i>]</ins>
+<tt>system_error</tt> when an exception is required (30.2.2).
+</p>
+</blockquote>
+</li>
+
+<li><p>Modify the time-related <i>Throws</i> elements in <sref ref="[thread.condition.condvarany]"/>, p. 15, p. 20, p. 30 as indicated:</p>
+
+<blockquote><p>
+[...]
+<p/>
+15 <i>Throws</i>: <ins>Any exception thrown by <tt>Clock::now()</tt> or by an operation of <tt>abs_time</tt>. [<i>Note</i>: Instantiations of 
+time point types and clocks supplied by the implementation as specified in <sref ref="[time.clock]"/> do not throw exceptions. &mdash; <i>end note</i>]</ins> 
+<tt>system_error</tt> when an exception is required (30.2.2).
+<p/>
+[...]
+<p/>
+20 <i>Throws</i>: <ins>Any exception thrown by an operation of <tt>rel_time</tt>. [<i>Note</i>: Instantiations of duration types supplied 
+by the implementation as specified in <sref ref="[time.clock]"/> do not throw exceptions. &mdash; <i>end note</i>]</ins>
+<tt>system_error</tt> when an exception is required (30.2.2).
+<p/>
+[...]
+<p/>
+30 <i>Throws</i>: <ins>Any exception thrown by an operation of <tt>rel_time</tt>. [<i>Note</i>: Instantiations of duration types supplied 
+by the implementation as specified in <sref ref="[time.clock]"/> do not throw exceptions. &mdash; <i>end note</i>]</ins>
+<tt>system_error</tt> when an exception is required (30.2.2).
+</p>
+</blockquote>
+</li>
 </ol>
 
 </resolution>
