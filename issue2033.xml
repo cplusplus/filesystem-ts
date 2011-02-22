@@ -1,0 +1,46 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="2033" status="New">
+<title>Preconditions of <tt>reserve</tt>, <tt>shrink_to_fit</tt>, and <tt>resize</tt> functions</title>
+<section><sref ref="[vector.capacity]"/> <sref ref="[deque.capacity]"/></section>
+<submitter>Nikolay Ivchenkov</submitter>
+<date>20 Feb 2011</date>
+
+<discussion>
+<p>
+I have several questions with regard to the working paper N3225 (C++0x working draft):
+</p>
+<ol>
+<li><p>
+Where the working draft specifies preconditions for <tt>shrink_to_fit</tt>
+member function of <tt>std::vector</tt> and <tt>std::deque</tt>?
+</p></li>
+<li><p>
+Where the working draft specifies preconditions for '<tt>void reserve(size_type n)</tt>' 
+member function of <tt>std::vector</tt>?
+</p></li>
+<li><p>
+Does a call to '<tt>void resize(size_type sz)</tt>' of <tt>std::vector</tt> require
+the element type to be <tt>DefaultConstructible</tt>? If yes, why such
+requirement is not listed in the <i>Requires</i> paragraph?
+</p></li>
+<li><p>
+Does a call to '<tt>void resize(size_type sz)</tt>' of <tt>std::vector</tt> require
+the element type to be <tt>MoveAssignable</tt> because the call <tt>erase(begin() + sz, end())</tt> 
+mentioned in the <i>Effects</i> paragraph would require the element type to be <tt>MoveAssignable</tt>?
+</p></li>
+<li><p>
+Why <tt>CopyInsertable</tt> requirement is used for '<tt>void resize(size_type sz)</tt>' of <tt>std::vector</tt> 
+instead of <tt>MoveInsertable</tt> requirement?
+</p></li>
+</ol>
+
+</discussion>
+
+<resolution>
+</resolution>
+
+</issue>
