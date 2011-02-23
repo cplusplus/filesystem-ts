@@ -13,18 +13,17 @@
 <p>
 In the latest published draft
 <a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2009/n2960.pdf">N2960</a>,
-section <sref ref="[associative.reqmts]"/>, paragraph 8, it is specifies
+section <sref ref="[associative.reqmts]"/>, paragraph 8, it is specified
 that that <tt>insert</tt> does not invalidate any iterators. As per
 <sref ref="[container.requirements.general]"/>, paragraph 12, this holds
 true not only for <tt>insert</tt>, but <tt>emplace</tt> as well. This
 gives the <tt>insert</tt> member a special treatment w.r.t.
 <tt>emplace</tt> member in <sref ref="[associative.reqmts]"/>, par. 8,
 since both modify the container. For the sake of consistency, in <sref
-ref="[associative.reqmts]"/>, par. 8: either reference to
-<tt>insert</tt> should be removed (i.e. count on <sref
-ref="[container.requirements.general]"/>, par. 12), or reference to
-<tt>emplace</tt> be added (i.e. mention all members of assoc. containers
-that modify it).
+ref="[associative.reqmts]"/>, par. 8: either reference to <tt>insert</tt> 
+should be removed (i.e. count on <sref ref="[container.requirements.general]"/>, 
+par. 12), or reference to <tt>emplace</tt> be added (i.e. mention all 
+members of assoc. containers that modify it).
 </p>
 
 <note>
@@ -33,7 +32,7 @@ that modify it).
 
 <blockquote><p>
 This suggested wording covers both the issue discussed, and a number of other
-identical issues (namely insert being discussed without emplace). I'm happy to
+identical issues (namely <tt>insert</tt> being discussed without <tt>emplace</tt>). I'm happy to
 go back and split and introduce a new issue if appropriate, but I think the
 changes are fairly mechanical and obvious.
 </p></blockquote>
@@ -43,15 +42,24 @@ changes are fairly mechanical and obvious.
 make the use of <tt>hint</tt> consistent with <tt>insert</tt>.
 </note>
 
+<note>
+2011-02-23 Daniel Kr&uuml;gler adapts wording to numbering changes to match the N3225 draft. During this
+action it was found that <sref ref="[unord.req]"/> had been changed considerably
+due to acceptance of <a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2010/n3068.pdf">N3068</a>
+during the Pittsburgh meeting, such that the suggested wording change to
+p. 6 can no longer be applied. The new wording is more general and should
+now include <tt>insert()</tt> and <tt>emplace()</tt> calls as well ("mutating operations").
+</note>
+
 </discussion>
 
 <resolution>
 <p>
-Modify bullet 1 of <sref ref="[container.requirements.general]"/>, p10:
+Modify bullet 1 of <sref ref="[container.requirements.general]"/>, p11:
 </p>
 
 <p>
-10 Unless otherwise specified (see 23.2.4.1, 23.2.5.1, 23.3.2.3, and 23.3.6.4)
+11 Unless otherwise specified (see 23.2.4.1, 23.2.5.1, 23.3.2.3, and 23.3.5.4)
 all container types defined in this Clause meet the following additional
 requirements:
 </p>
@@ -79,13 +87,13 @@ and <tt>multimap</tt> classes support equivalent keys. For <tt>multiset</tt> and
 </p></blockquote>
 
 <p>
-Modify Table 96 &mdash; Associative container requirements in <sref
-ref="[associative.reqmts]"/>:
+Modify Table 102 &mdash; Associative container requirements in 
+<sref ref="[associative.reqmts]"/>:
 </p>
 
 <blockquote>
 <table border="1">
-<caption>Table 96 &mdash; Associative container requirements (in addition to container)</caption>
+<caption>Table 102 &mdash; Associative container requirements (in addition to container)</caption>
 <tr>
 <th>Expression</th>
 <th>Return type</th>
@@ -100,7 +108,7 @@ ref="[associative.reqmts]"/>:
 <tr>
 <td><tt>a_eq.emplace(args)</tt></td>
 <td><tt>iterator</tt></td>
-<td>inserts a <tt>T</tt> object <tt>t</tt> constructed with
+<td>[..] <i>Effects:</i> Inserts a <tt>T</tt> object <tt>t</tt> constructed with
 <tt>std::forward&lt;Args&gt;(args)...</tt> and returns the iterator pointing to
 the newly inserted element. <ins>If a range containing elements equivalent to
 <tt>t</tt> exists in <tt>a_eq</tt>, <tt>t</tt> is inserted at the end of that
@@ -129,11 +137,11 @@ right <del>after</del> <ins>before</ins> <tt>p</tt></td>
 </blockquote>
 
 <p>
-Modify <sref ref="[associative.reqmts]"/>, p8:
+Modify <sref ref="[associative.reqmts]"/>, p9:
 </p>
 
 <blockquote><p>
-8 The <tt>insert</tt> <ins>and <tt>emplace</tt></ins> members shall not affect
+9 The <tt>insert</tt> <ins>and <tt>emplace</tt></ins> members shall not affect
 the validity of iterators and references to the container, and the
 <tt>erase</tt> members shall invalidate only iterators and references to the
 erased elements.
@@ -151,7 +159,7 @@ has no effect.
 </p></blockquote>
 
 <p>
-Modify <sref ref="[unord.req]"/>, p6, p12 and p13:
+Modify <sref ref="[unord.req]"/>, p13 and p14:
 </p>
 
 <blockquote>
@@ -161,20 +169,23 @@ contain at most one element for each key. Otherwise, it supports <i>equivalent
 keys</i>. <tt>unordered_set</tt> and <tt>unordered_map</tt> support unique keys.
 <tt>unordered_multiset</tt> and <tt>unordered_multimap</tt> support equivalent
 keys. In containers that support equivalent keys, elements with equivalent keys
-are adjacent to each other. For <tt>unordered_multiset</tt> and
-<tt>unordered_multimap</tt>, <tt>insert</tt><ins>, <tt>emplace</tt>,</ins> and
-<tt>erase</tt> preserve the relative ordering of equivalent elements.
+are adjacent to each other in the iteration order of the container. Thus, although 
+the absolute order of elements in an unordered container is not specified, its 
+elements are grouped into <i>equivalent-key groups</i> such that all elements of each 
+group have equivalent keys. Mutating operations on unordered containers shall 
+preserve the relative order of elements within each equivalent-key group unless 
+otherwise specified.
 </p>
 
 <p>
-12 The <tt>insert</tt> <ins>and <tt>emplace</tt></ins> members shall not affect
+13 The <tt>insert</tt> <ins>and <tt>emplace</tt></ins> members shall not affect
 the validity of references to container elements, but may invalidate all
 iterators to the container. The erase members shall invalidate only iterators
 and references to the erased elements.
 </p>
 
 <p>
-13 The <tt>insert</tt> <ins>and <tt>emplace</tt></ins> members shall not affect
+14 The <tt>insert</tt> <ins>and <tt>emplace</tt></ins> members shall not affect
 the validity of iterators if <tt>(N+n) &lt; z * B</tt>, where <tt>N</tt> is the
 number of elements in the container prior to the insert operation, <tt>n</tt> is
 the number of elements inserted, <tt>B</tt> is the container's bucket count, and
