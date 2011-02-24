@@ -3,7 +3,7 @@
   <!ENTITY nbsp "&#160;">
 ] >
 
-<issue num="2023" status="New">
+<issue num="2023" status="Tentatively Ready">
 <title>Incorrect requirements for <tt>lock_guard</tt> and <tt>unique_lock</tt></title>
 <section><sref ref="[thread.lock.guard]"/>, <sref ref="[thread.lock.unique]"/></section>
 <submitter>Daniel Kr&uuml;gler</submitter>
@@ -37,36 +37,6 @@ I searched for further possible misusages of the <tt>*Lockable</tt> requirements
 find any more.
 </p>
 
-<!--
-<p>Initially proposed resolution:</p>
-<ol>
-<li>
-<p>Remove <sref ref="[thread.lock.guard]"/> p. 2: completely:</p>
-
-<blockquote><p>
-<del>2 The supplied <tt>Mutex</tt> type shall meet the <tt>Lockable</tt> requirements (30.2.5.3).</del>
-</p></blockquote>
-
-</li>
-
-<li>
-<p>Change <sref ref="[thread.lock.unique]"/> p. 1 as indicated:</p>
-
-<blockquote><p>
-1 [..] The behavior of a program is undefined if the contained pointer <tt>pm</tt> is not null
-and the mutex pointed to by <tt>pm</tt> does not exist for the entire remaining lifetime (3.8) 
-of the <tt>unique_lock</tt> object. <del>The supplied <tt>Mutex</tt> type shall meet the 
-<tt>BasicLockable</tt> requirements (30.2.5.2).</del>
-</p></blockquote>
-
-<blockquote><p>
-2 The supplied <tt>Mutex</tt> type shall meet the <tt>Lockable</tt> requirements (30.2.5.3).
-</p></blockquote>
-
-</li>
-</ol>
--->
-
 <note>2011-02-23</note>
 
 <p>Howard suggests an alternative approach in regard to <tt>unique_lock</tt>: The current
@@ -76,6 +46,11 @@ This suggestions was supported by Anthony, Daniel, and Pablo.
 <p/>
 Daniel drafts wording that follows this separation strategy.
 </p>
+
+<note>2011-02-24 Reflector discussion</note>
+<p>
+Moved to Tentatively Ready after 5 votes.
+</p> 
 </discussion>
 
 <resolution>
@@ -142,7 +117,7 @@ bool try_lock();
 </pre><blockquote><p>
 <ins>? <i>Requires</i>: The supplied <tt>Mutex</tt> type shall meet the <tt>Lockable</tt> requirements ([thread.req.lockable.req]).</ins> 
 <p/>
-4 <i>Effects</i>: <tt>pm->try_lock()</tt>
+4 <i>Effects</i>: <tt>pm-&gt;try_lock()</tt>
 </p></blockquote></blockquote>
 </li>
 </ol>
