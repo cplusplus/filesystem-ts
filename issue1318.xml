@@ -176,13 +176,27 @@ with that. I.e. for the unordered containers we need to bring both the definitio
 of references <em>and</em> pointers in sync.
 </li>
 </ol>
+
+<note>
+2011-02-23 Daniel updates the proposed wording with support from Pablo
+</note>
+
+<p>The update attempts to fix the backward-compatibility problem that we have
+introduced by ignoring the C++03 member function overloads <tt>address</tt>
+of allocator types in C++0x completely. The resolution attempts to fix that
+by adding these functions as optional members of allocators that are considered
+first before falling back to <tt>pointer_traits::pointer_to</tt>. This still
+allows us to remove the unused symbol <tt>t</tt> from the table, but we adapt
+the symbols <tt>r</tt> and <tt>s</tt> to purely refer to the typenames
+<tt>reference</tt> and <tt>const_reference</tt>.</p>
+
 </discussion>
 
 <resolution>
 <ol>
 <li>
 <p>
-Remove the following three rows from Table 43:
+Edit the following three rows from Table 43:
 </p>
 
 <blockquote>
@@ -213,17 +227,17 @@ Definition
 </tr>
 
 <tr>
-<td><del><tt>r</tt></del></td>
+<td><tt>r</tt></td>
 
-<td><del>a value of type <tt>T&amp;</tt> obtained by the expression <tt>*p</tt>.</del></td>
+<td>a value of type <tt><del>T&amp;</del><ins>XX::reference</ins></tt> obtained by the expression <tt>*p</tt>.</td>
 
 </tr>
 
 <tr>
-<td><del><tt>s</tt></del></td>
+<td><tt>s</tt></td>
 
-<td><del>a value of type <tt>const T&amp;</tt> obtained by the expression <tt>*q</tt> or
-by conversion from a value <tt>r</tt>.</del></td>
+<td>a value of type <tt><del>const T&amp;</del><ins>XX::const_reference</ins></tt> obtained by the expression <tt>*q</tt> or
+by conversion from a value <tt>r</tt>.</td>
 
 </tr>
 
@@ -233,7 +247,7 @@ by conversion from a value <tt>r</tt>.</del></td>
 </li>
 <li>
 <p>
-Add the following two rows to Table 44, Allocator requirements:
+Add the following rows to Table 44, Allocator requirements:
 </p>
 
 <blockquote>
@@ -259,6 +273,16 @@ Default
 </tr>
 
 <tr>
+<td>&nbsp;<tt>...</tt></td>
+
+<td>&nbsp;<tt>...</tt></td>
+
+<td>&nbsp;<tt>...</tt></td>
+
+<td>&nbsp;<tt>...</tt></td>
+</tr>
+
+<tr>
 <td><ins><tt>X::reference</tt></ins></td>
 
 <td><tt></tt></td>
@@ -273,11 +297,19 @@ Default
 
 <td><tt></tt></td>
 
-<td><tt></tt></td>
+<td><ins><tt>X::reference</tt> is convertible to<br/>
+<tt>X::const_reference</tt></ins></td>
 
 <td><ins><tt>const T&amp;</tt></ins></td>
 </tr>
 
+<td><tt>X::value_type</tt></td>
+
+<td>Identical to <tt>T</tt></td>
+
+<td>&nbsp;</td>
+
+<td>&nbsp;</td>
 </table>
 </blockquote>
 
@@ -313,7 +345,7 @@ Default
 <tr>
 <td><tt>*p</tt></td>
 
-<td><tt><del>T&amp;</del> <ins>X::reference</ins></tt></td>
+<td><tt><del>T&amp;</del><ins>X::reference</ins></tt></td>
 
 <td><tt></tt></td>
 
@@ -323,11 +355,61 @@ Default
 <tr>
 <td><tt>*q</tt></td>
 
-<td><tt><del>const T&amp;</del> <ins>X::const_reference</ins></tt></td>
+<td><tt><del>const T&amp;</del><ins>X::const_reference</ins></tt></td>
 
 <td><tt>*q</tt> refers to the same object as <tt>*p</tt></td>
 
 <td></td>
+</tr>
+
+<tr>
+<td>&nbsp;<tt>...</tt></td>
+
+<td>&nbsp;<tt>...</tt></td>
+
+<td>&nbsp;<tt>...</tt></td>
+
+<td>&nbsp;<tt>...</tt></td>
+</tr>
+
+<tr>
+<td><tt>static_cast&lt;X::pointer&gt;(w)</tt></td>
+
+<td><tt>X::pointer</tt></td>
+
+<td><tt>static_cast&lt;X::pointer&gt;(w)<br/>== p</tt></td>
+
+<td>&nbsp;</td>
+</tr>
+
+<tr>
+<td><tt>static_cast&lt;X::const_pointer&gt;(z)</tt></td>
+
+<td><tt>X::const_pointer</tt></td>
+
+<td><tt>static_cast&lt;X::const_pointer&gt;(z)<br/>== q</tt></td>
+
+<td>&nbsp;</td>
+</tr>
+
+<tr>
+<td><ins><tt>a.address(r)</tt></ins></td>
+
+<td><ins><tt>X::pointer</tt></ins></td>
+
+<td><ins><tt>a.address(r) == p</tt></ins></td>
+
+<td><ins><tt>pointer_traits&lt;X::pointer&gt;::pointer_to(r)</tt></ins></td>
+</tr>
+
+<tr>
+<td><ins><tt>a.address(s)</tt></ins></td>
+
+<td><ins><tt>X::const_pointer</tt></ins></td>
+
+<td><ins><tt>a.address(s) == q</tt></ins></td>
+
+<td><ins><tt>pointer_traits&lt;X::const_pointer&gt;::pointer_to(s)</tt></ins></td>
 </tr>
 
 </table>
@@ -337,43 +419,83 @@ Default
 
 <li>
 <p>
-Add the following typedef declarations to allocator_traits <sref
-ref="[allocator.traits]"/>:
+Add the following typedef declarations to allocator_traits 
+<sref ref="[allocator.traits]"/>:
 </p>
 
 <blockquote><pre>
 template &lt;class Alloc&gt; struct allocator_traits {
   ...
+  typedef <i>see below</i> void_pointer;
+  typedef <i>see below</i> const_void_pointer;
+
   <ins>typedef <i>see below</i> reference;</ins>
   <ins>typedef <i>see below</i> const_reference;</ins>
+  ...
+  <ins>static pointer address(Alloc&amp; a, reference r) noexcept;</ins>
+  <ins>static const_pointer address(Alloc&amp; a, const_reference r) noexcept;</ins>
+
+  static pointer allocate(Alloc&amp; a, size_type n);
+  static pointer allocate(Alloc&amp; a, size_type n, const_void_pointer hint);
   ...
 </pre></blockquote>
 </li>
 
 <li>
 <p>
-Add the following descriptions to <sref ref="[allocator.traits.types]"/>:
+Add the following descriptions to <sref ref="[allocator.traits.types]"/> after p. 4:
 </p>
 
 <blockquote>
-<pre>typedef <i>see below</i> reference;</pre>
+<pre>typedef <i>see below</i> const_void_pointer;</pre>
 <blockquote><p>
-<i>Type:</i> <tt>Alloc::reference</tt> if such a type exists; otherwise,
-<tt>value_type&amp;</tt>.
+4 <i>Type:</i> <tt>Alloc::const_void_pointer</tt> if such a type exists; otherwise,
+<tt>pointer_traits&lt;pointer&gt;::rebind&lt;const void&gt;</tt>.
 </p></blockquote>
 
-<pre>typedef <i>see below</i> const reference;</pre>
+<pre><ins>typedef <i>see below</i> reference;</ins></pre>
 <blockquote><p>
-<i>Type:</i> <tt>Alloc::const_reference</tt> if such a type exists; otherwise,
-<tt>const value_type&amp;</tt>.
+<ins>? <i>Type:</i> <tt>Alloc::reference</tt> if such a type exists; otherwise,
+<tt>value_type&amp;</tt>.</ins>
+</p></blockquote>
+
+<pre><ins>typedef <i>see below</i> const reference;</ins></pre>
+<blockquote><p>
+<ins>? <i>Type:</i> <tt>Alloc::const_reference</tt> if such a type exists; otherwise,
+<tt>const value_type&amp;</tt>.</ins>
 </p></blockquote>
 </blockquote>
 </li>
 
 <li>
 <p>
-Add the following typdef declarations to scoped_allocator_adaptor <sref
-ref="[allocator.adaptor]"/>:
+Add the following descriptions at the beginning of <sref ref="[allocator.traits.members]"/>:
+</p>
+
+<blockquote>
+<pre><ins>static pointer address(Alloc&amp; a, reference r) noexcept;</ins></pre>
+<blockquote><p>
+<ins>? <i>Returns:</i> <tt>a.address(r)</tt> if that expression is well-formed; otherwise,
+<tt>pointer_traits&lt;pointer&gt;::pointer_to(r)</tt>.</ins>
+</p></blockquote>
+
+<pre><ins>static const_pointer address(Alloc&amp; a, const_reference r) noexcept;</ins></pre>
+<blockquote><p>
+<ins>? <i>Returns:</i> <tt>a.address(r)</tt> if that expression is well-formed; otherwise,
+<tt>pointer_traits&lt;const_pointer&gt;::pointer_to(r)</tt>.</ins>
+</p></blockquote>
+
+<pre>static pointer allocate(Alloc&amp; a, size_type n);</pre>
+<blockquote><p>
+1 <i>Returns:</i> <tt>a.allocate(n)</tt>.
+</p></blockquote>
+</blockquote>
+</li>
+
+<li>
+<p>
+Add the following typdef and member function declarations to scoped_allocator_adaptor 
+<sref ref="[allocator.adaptor]"/>:
 </p>
 
 <blockquote><pre>
@@ -383,7 +505,37 @@ class scoped_allocator_adaptor : public OuterAlloc {
   <ins>typedef typename OuterTraits::reference reference;</ins>
   <ins>typedef typename OuterTraits::const_reference const_reference;</ins>
   ...
+  <ins>pointer address(reference r) noexcept;</ins>
+  <ins>const_pointer address(const_reference r) noexcept;</ins>
+
+  pointer allocate(size_type n);
+  ...
 </pre></blockquote>
+</li>
+
+<li><p>Add the following prototype descriptions to <sref ref="[allocator.adaptor.members]"/>:</p>
+
+<blockquote>
+<pre>const outer_allocator_type&amp; outer_allocator() const noexcept;</pre>
+<blockquote><p>
+4 <i>Returns:</i> <tt>static_cast&lt;const Outer&amp;&gt;(*this)</tt>.
+</p></blockquote>
+
+<pre><ins>pointer address(reference r) noexcept;</ins></pre>
+<blockquote><p>
+<ins>? <i>Returns:</i> <tt>allocator_traits&lt;OuterAlloc&gt;::address(outer_allocator(), r)</tt>.</ins>
+</p></blockquote>
+
+<pre><ins>const_pointer address(const_reference r) noexcept;</ins></pre>
+<blockquote><p>
+<ins>? <i>Returns:</i> <tt>allocator_traits&lt;OuterAlloc&gt;::address(outer_allocator(), r)</tt>.</ins>
+</p></blockquote>
+
+<pre>pointer allocate(size_type n);</pre>
+<blockquote><p>
+5 <i>Returns:</i> <tt>allocator_traits&lt;OuterAlloc&gt;::allocate(outer_allocator(), n)</tt>.
+</p></blockquote>
+</blockquote>
 </li>
 
 <li>
