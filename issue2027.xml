@@ -25,6 +25,7 @@ As for the other constructors, the terms "stores a copy of <tt>f</tt>" do not re
 to allow <tt>f</tt> to be moved when possible.
 </p>
 
+<note>2011-02-25: Alberto updates wording</note>
 </discussion>
 
 <resolution>
@@ -36,7 +37,7 @@ to allow <tt>f</tt> to be moved when possible.
 
 <blockquote><p>
 3 <em>Effects</em>: constructs a new <tt>packaged_task</tt> object with an associated asynchronous state and <del>stores a
-copy of <tt>f</tt> as the object's stored task</del><ins>direct-initializes the object's stored task with <tt>std::forward&lt;F&gt;(f)</tt></ins>. 
+copy of <tt>f</tt> as the object's stored task</del><ins>initializes the object's stored task with <tt>std::forward&lt;F&gt;(f)</tt></ins>. 
 The constructors that take an <tt>Allocator</tt> argument use it to allocate memory needed to store the internal data structures.
 </p></blockquote>
 
@@ -47,17 +48,7 @@ The constructors that take an <tt>Allocator</tt> argument use it to allocate mem
 
 <blockquote><p>
 5 <em>Effects</em>: constructs a new <tt>packaged_task</tt> object and transfers ownership of <tt>other</tt>'s associated asynchronous
-state to <tt>*this</tt>, leaving other with no associated asynchronous state. <ins>Direct-initializes the object's stored task 
-with <tt>std::move(f)</tt> where <tt>f</tt> is the task stored in <tt>other</tt>.</ins>
-</p></blockquote>
-
-</li>
-
-<li>
-<p>Add a new paragraph after <sref ref="[futures.task.members]"/> p. 6:</p>
-
-<blockquote><p>
-<ins><em>Throws</em>: any exceptions thrown by the move constructor of <tt>f</tt>.</ins>
+state to <tt>*this</tt>, leaving other with no associated asynchronous state. <ins>Moves the stored task from <tt>other</tt> to <tt>*this</tt>.</ins>
 </p></blockquote>
 
 </li>
