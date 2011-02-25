@@ -83,7 +83,9 @@ environment, much like <tt>&lt;thread></tt>.
 </li>
 
 <li><p>Remove the last row <sref ref="[thread.threads]"/> <tt>&lt;threads&gt;</tt>
-from Table 16 &mdash; C++ headers for freestanding implementations:</p>
+from Table 16 &mdash; C++ headers for freestanding implementations and insert
+a new one instead (To the editor: For the actual target Clause please see the comment
+in bullet 5 of this proposed resolution):</p>
 
 <blockquote>
 <table border="1">
@@ -101,6 +103,11 @@ from Table 16 &mdash; C++ headers for freestanding implementations:</p>
 <tr>
 <td><del><sref ref="[thread.threads]"/> Threads</del></td>
 <td><del><tt>&lt;thread&gt;</tt></del></td>
+</tr>
+
+<tr>
+<td><ins>?? Library support</ins></td>
+<td><ins><tt>&lt;library_support&gt;</tt></ins></td>
 </tr>
 
 </table>
@@ -135,7 +142,7 @@ namespace std {
 the editor's discretion):</p>
 
 <blockquote>
-<p><ins>?? Library Support [library.support]</ins></p>
+<p><ins>?? Library support [library.support]</ins></p>
 <blockquote><p>
 <ins>The header <tt>&lt;library_support&gt;</tt> defines an implementation-defined set 
 of macros to allow a program detect the presence of standard headers in freestanding
@@ -144,9 +151,9 @@ standard headers, thus shall provide all macros. &mdash; <i>end note</i>]</ins>
 </p></blockquote>
 <blockquote><p>
 <ins>For each standard header listed in Tables 14 (C++ library headers) and 15 (C++ headers for C library facilities)
-the <tt>&lt;library_support&gt;</tt> header shall define a macro with name <code>_ _HAS_<i>XXX</i>_HEADER_ _</code>
-where <code><i>XXX</i></code> is replaced by the uppercase version of the name of the header. Each such
-macro shall expand to the value <code>_ _cplusplus</code>.
+that is provided by the implementation, <tt>&lt;library_support&gt;</tt> shall define a macro with name 
+<code>_ _HAS_<i>XXX</i>_HEADER_ _</code> where <code><i>XXX</i></code> is replaced by the uppercase version of the 
+name of the header. Each such macro shall expand to the value <code>_ _cplusplus</code>.
 [<i>Example</i>:</ins></p>
 <blockquote><pre>
 <ins>#include &lt;library_support&gt;
