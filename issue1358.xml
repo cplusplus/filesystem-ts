@@ -53,9 +53,121 @@ environment, much like <tt>&lt;thread></tt>.
 </p>
 </blockquote>
 
+<note>2011-02-25: Alberto drafts wording</note>
 </discussion>
 
 <resolution>
+<ol>
+<li><p>Add a new entry in Table 14 &mdash; C++ library headers:</p>
+
+<blockquote>
+<table border="1">
+<caption>Table 14 &mdash; C++ library headers</caption>
+<tr>
+<td><tt>...</tt></td>
+</tr>
+<tr>
+<td><tt>&lt;iterator&gt;</tt></td>
+</tr>
+<tr>
+<td><ins><tt>&lt;library_support&gt;</tt></ins></td>
+</tr>
+<tr>
+<td><tt>&lt;limits&gt;</tt></td>
+</tr>
+<tr>
+<td><tt>...</tt></td>
+</tr>
+</table>
+</blockquote>  
+</li>
+
+<li><p>Remove the last row <sref ref="[thread.threads]"/> <tt>&lt;threads&gt;</tt>
+from Table 16 &mdash; C++ headers for freestanding implementations:</p>
+
+<blockquote>
+<table border="1">
+<caption>Table 16 &mdash; C++ headers for freestanding implementations</caption>
+
+<tr>
+<th>Subclause</th>
+<th>Header(s)</th>
+</tr>
+
+<tr>
+<td colspan="2">...</td>
+</tr>
+
+<tr>
+<td><del><sref ref="[thread.threads]"/> Threads</del></td>
+<td><del><tt>&lt;thread&gt;</tt></del></td>
+</tr>
+
+</table>
+
+</blockquote>
+ </li>
+ 
+ <li><p>Modify paragraph <sref ref="[compliance]"/> p. 3:</p>
+ <blockquote><p>
+ 3 The supplied version of the header <tt>&lt;cstdlib&gt;</tt> shall declare at least the functions 
+ <tt>abort</tt>, <tt>atexit</tt>, <tt>at_quick_exit</tt>, <tt>exit</tt>, and <tt>quick_exit</tt> 
+ (18.5). <del>The supplied version of the header <tt>&lt;thread&gt;</tt> shall meet the
+same requirements as for a hosted implementation or including it shall have no effect</del>. The 
+other headers listed in this table shall meet the same requirements as for a hosted 
+implementation. <ins>A program can detect the presence of standard headers not listed in Table
+16 using the facilities provided by the <tt>&lt;library_support&gt;</tt> header.</ins>
+</p></blockquote>
+</li>
+ 
+<li><p>Remove the following line from the header <tt>&lt;thread&gt;</tt> synopsis in <sref ref="[thread.threads]"/> p. 1:</p>
+<blockquote><pre>
+namespace std {
+  <del>#define __STDCPP_THREADS__ __cplusplus</del>
+
+  class thread;
+  [...]
+}
+</pre></blockquote>
+</li>
+
+<li><p>Add a new section in Clause 18 or 20 (or any other suitable place at
+the editor's discretion):</p>
+
+<blockquote>
+<p><ins>?? Library Support [library.support]</ins></p>
+<blockquote><p>
+<ins>The header <tt>&lt;library_support&gt;</tt> defines an implementation-defined set 
+of macros to allow a program detect the presence of standard headers in freestanding
+implementations. [<i>Note</i>: Hosted implementations shall provide all
+standard headers, thus shall provide all macros. &mdash; <i>end note</i>]</ins>
+</p></blockquote>
+<blockquote><p>
+<ins>For each standard header listed in Tables 14 (C++ library headers) and 15 (C++ headers for C library facilities)
+the <tt>&lt;library_support&gt;</tt> header shall define a macro with name <code>_ _HAS_<i>XXX</i>_HEADER_ _</code>
+where <code><i>XXX</i></code> is replaced by the uppercase version of the name of the header. Each such
+macro shall expand to the value <code>_ _cplusplus</code>.
+[<i>Example</i>:</ins></p>
+<blockquote><pre>
+<ins>#include &lt;library_support&gt;
+
+#ifdef _ _HAS_THREADS_HEADER_ _
+  #include &lt;threads&gt;
+  // code that exploit the presence of threads
+#else
+  // fallback code that doesn't rely on threads
+#endif</ins>
+</pre></blockquote>
+<p><ins>&mdash; <i>end example</i>]</ins></p>
+</blockquote>
+<blockquote><p>
+<ins>No other standard header shall define macros with a name beginning with <code>_ _HAS_</code>
+and ending with <code>_HEADER_ _</code>.</ins>
+</p></blockquote>
+
+</blockquote>
+</li>
+</ol>
 </resolution>
 
 </issue>
