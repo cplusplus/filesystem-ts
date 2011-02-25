@@ -32,48 +32,13 @@ The wording was inspired by Dave Abrahams'
 message c++std-lib-28958, and refined with help from Alisdair, Daniel, and Howard.
 </note>
 
+<note>2011-02-25 P/R wording superseded by N3241.
+</note>
+
 </discussion>
 
 <resolution>
-    <p><i>Add a new definition to 17.3 Definitions [definitions]:</i></p>
-    
-    <blockquote>
-    <p>17.3.24 [defns.valid.unspecified]<br/>
-    <b>valid but unspecified state</b><br/>
-    an object state that is not specified except that the object's invariants are met, and operations 
-    on the object perform as specified, 
-    subject only to the operation's normal preconditions.</p>
-    <p>
-    [<i>Example:</i> If an object <tt>x</tt> of type <tt>std::vector&lt;int&gt;</tt> is in a valid but 
-    unspecified state, <tt>x.empty()</tt> can be called unconditionally, and
-    <tt>x.front()</tt> can be called provided <tt>x.empty()</tt> returns
-    <tt>false</tt>. <i>--end example</i>]</p>
-    </blockquote>
-    
-    <p><i>Change Table 34 - MoveConstructible requirements [moveconstructible] as 
-    indicated:</i></p>
-    <blockquote>
-    <p><del>[ <i>Note:</i> <tt>rv</tt> remains a valid object. Its state is 
-    unspecified&nbsp; <i>--end note</i> ]</del><br/>
-    <ins><i>Postcondition:</i><tt> rv</tt> is in a valid but 
-    unspecified state ([defns.valid.unspecified]).</ins></p>
-    </blockquote>
-    
-    <p><i>Change Table 36 - MoveAssignable requirements [moveassignable] as 
-    indicated:</i></p>
-    <blockquote>
-    <p><del>[ <i>Note:</i> <tt>rv</tt> remains a valid object. Its state is 
-    unspecified&nbsp; <i>--end note</i> ]</del><br/>
-    <ins><i>Postcondition:</i><tt> rv</tt> is in a valid but 
-    unspecified state ([defns.valid.unspecified]).</ins></p>
-    </blockquote>
-    
-    <p><i>No change in the half-dozen or so places in the standard library that 
-    use &quot;valid but unspecified state&quot; directly, and no change in the many places 
-    that require <tt>MoveCostructible</tt> or <tt>MoveAssignable</tt>, 
-    since <tt>MoveCostructible</tt> and <tt>MoveAssignable</tt> will now 
-    normatively require &quot;valid but unspecified state&quot;.</i></p>
-
+<p>Resolved by <a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2011/n3241.html">N3241</a></p>
 </resolution>
 
 </issue>
