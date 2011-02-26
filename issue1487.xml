@@ -98,7 +98,8 @@ This requirement set is <strong>intentionally</strong> incomplete. The reason fo
 this incompleteness is the based on the fact, that if we would make it right for C++0x, we would end up defining
 something like a complete <tt>ArithmeticLike</tt> concept for <tt>TC::rep</tt>, <tt>TC::duration</tt>, and <tt>TC::time_point</tt>. 
 But this looks out-of scope for C++0x to me. The effect is that we essentially do not exactly say, which arithmetic 
-or comparison operations can be used in the time-dependent functions from Clause 30. &mdash; <i>end comment</i>]</p>
+or comparison operations can be used in the time-dependent functions from Clause 30, even though I expect that
+all declared functions of <tt>duration</tt> and <tt>time_point</tt> are well-formed and well-defined. &mdash; <i>end comment</i>]</p>
 <blockquote><p>
 3 [ <i>Note</i>: the relative difference in durations between those reported by a given clock and the SI definition is
 a measure of the quality of implementation. &mdash; <i>end note</i> ]
@@ -106,6 +107,7 @@ a measure of the quality of implementation. &mdash; <i>end note</i> ]
 
 <blockquote><p>
 <ins>? A type <tt>TC</tt> meets the <tt><i>TrivialClock</i></tt> requirements if:</ins>
+</p>
 <ul>
 <li><p>
 <ins><tt>TC</tt> satisfies the <tt>Clock</tt> requirements (<sref ref="[time.clock.req]"/>),</ins>
@@ -126,10 +128,10 @@ particular, that operations of these types will not throw exceptions &mdash; <i>
 <ins>the function <tt>TC::now()</tt> does not throw exceptions, and</ins>
 </p></li>
 <li><p>
-<ins>the type <tt>TC::time_point::clock</tt> does meet the <tt>TrivialClock</tt> requirement, recursively.</ins>
+<ins>the type <tt>TC::time_point::clock</tt> does meet the <tt>TrivialClock</tt> requirements, recursively.</ins>
 </p></li>
 </ul>
-</p></blockquote>
+</blockquote>
 </li>
 
 <li>

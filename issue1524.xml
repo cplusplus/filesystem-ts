@@ -1,0 +1,40 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="1524" status="New">
+<title>[FCD] Allocations functions are missing <i>happens-before</i> requirements and guarantees</title>
+<section><sref ref="[expr.new]"/> <sref ref="[expr.delete]"/></section>
+<submitter>Hans Boehm</submitter>
+<date>26 Feb 2011</date>
+
+<discussion>
+<p><b>Addresses US-34</b></p>
+
+<p>Technical details:
+<p/>
+When the same unit of storage is allocated and deallocated repeatedly, operations on it can't be allowed to
+race between the allocator and the user program. But I don't see any mention of <i>happens-before</i> in the
+descriptions of allocation and deallocation functions.
+<p/>
+Proposed resolution (not wording yet):
+</p>
+<ul>
+<li><p>The call to an allocation function returning a pointer <tt>P</tt> must happen-before the matching
+deallocation call with <tt>P</tt> as a parameter. Otherwise the behavior is undefined. I don't know whether
+receiving <tt>P</tt> with <tt>memory_order_consume</tt> fits this requirement. <tt>memory_order_relaxed</tt> does not.</p>
+</li>
+<li><p>If some memory is passed to a deallocation function, the implementation must ensure that the
+deallocation call happens-before any allocation call that returns the same memory address.</p>
+</li>
+</ul>
+
+</discussion>
+
+<resolution>
+<p>
+</p>
+</resolution>
+
+</issue>
