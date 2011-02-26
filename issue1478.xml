@@ -40,9 +40,59 @@ f()                      |
 other mixed atomic/nonatomic access to the same location is intended
 to be permitted. Either way, a note would probably help.
 </p></blockquote>
+
+<note>2011-02-26: Hans comments and drafts wording</note>
+
+<p>I think the important point here is to clarify that races on atomics
+are possible, and can be introduced as a result of non-atomic
+initialization operations.  There are other parts of this that remain unclear
+to me, such as whether there are other ways to introduce data races on atomics,
+or whether the races with initialization also introduce undefined behavior
+by the 3.8 lifetime rules.  But I don't think that it is necessary to resolve
+those issues before releasing the standard.  That's particularly true
+since we've introduced <tt>atomic_init</tt>, which allows easier ways to
+construct initialization races.
+</p>
 </discussion>
 
 <resolution>
+<ol>
+<li><p>Update <sref ref="[atomics.types.operations.req]"/> p. 5 as follows:</p>
+
+<blockquote><pre>
+constexpr A::A(C desired);
+</pre><blockquote><p>
+5 <i>Effects</i>: Initializes the object with the value <tt>desired</tt>. <del>[ <i>Note</i>: 
+Construction is not atomic. &mdash; <i>end note</i> ]</del><ins> Initialization is not an 
+atomic operation (1.10) [intro.multithread]. [<i>Note</i>: It is possible to have an
+access to an atomic object <tt>A</tt> race with its construction, for example
+by communicating the address of the just-constructed object <tt>A</tt> to another thread 
+via <code>memory_order_relaxed</code> atomic operations on a suitable atomic pointer variable, 
+and then immediately accessing <tt>A</tt> in the receiving thread.  This results in undefined 
+behavior. &mdash; <i>end note</i>]</ins>
+</p></blockquote></blockquote>
+</li>
+
+<li><p>In response to the editor comment to <sref ref="[atomics.types.operations.req]"/> p. 8: 
+The first <i>Effects</i> element is the correct and intended one:</p>
+
+<blockquote><pre>
+void atomic_init(volatile A *object, C desired);
+void atomic_init(A *object, C desired);
+</pre><blockquote><p>
+8 <i>Effects</i>: Non-atomically initializes <tt>*object</tt> with value <tt>desired</tt>.
+This function shall only be applied to objects that have been default constructed, and then only once.
+[ <i>Note</i>: these semantics ensure compatibility with C. &mdash; <i>end note</i> ] [ <i>Note</i>: 
+Concurrent access from another thread, even via an atomic operation, constitutes a data 
+race. &mdash; <i>end note</i> ] <del>[<i>Editor's note</i>: The preceding text is from the WD as 
+amended by N3196. N3193 makes different changes, marked up in the paper as follows:]
+<i>Effects</i>: Dynamically initializes an atomic variable. Non-atomically That is, non-atomically assigns the
+value desired to <tt>*object</tt>. [ <i>Note</i>: this operation may need to initialize 
+locks. &mdash; <i>end note</i> ] Concurrent access from another thread, even via an atomic 
+operation, constitutes a data race.</del>
+</p></blockquote></blockquote>
+</li>
+</ol>
 </resolution>
 
 </issue>
