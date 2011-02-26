@@ -30,11 +30,31 @@ deallocation call happens-before any allocation call that returns the same memor
 </li>
 </ul>
 
+<note>2011-02-26: Hans comments and drafts wording</note>
+
+<p>The second requirement already exists, almost verbatim, as <sref ref="[new.delete.dataraces]"/> p. 1. 
+I think this is where the statement belongs.  However, this paragraph requires work to correctly address 
+the first part of the issue.
+</p>
 </discussion>
 
 <resolution>
-<p>
-</p>
+<p>Change <sref ref="[new.delete.dataraces]"/> p. 1 as follows:</p>
+
+<blockquote><p>
+1 <del>The library versions of <tt>operator new</tt> and <tt>operator delete</tt>, user replacement versions of global 
+<tt>operator new</tt> and <tt>operator delete</tt>, and the C standard library functions <tt>calloc</tt>, <tt>malloc</tt>, 
+<tt>realloc</tt>, and <tt>free</tt> shall not introduce data races (<sref ref="[intro.multithread]"/>) as a result 
+of concurrent calls from different threads.</del><ins><ins> For purposes of determining the existence of data races,
+the library versions of <tt>operator new</tt>, user replacement versions of global <tt>operator new</tt>, and the C 
+standard library functions <tt>calloc</tt> and <tt>malloc</tt> shall behave as though they accessed and modified only 
+the storage referenced by the return value.  The corresponding <tt>delete</tt> operators and the C standard library 
+function <tt>free</tt> shall behave as though they accessed and modified only the storage referenced by their first 
+argument.  The C standard library <tt>realloc</tt> function shall behave as though it accessed and modified only the 
+storage referenced by its first argument and by its return value.</ins></ins> Calls to these functions that allocate 
+or deallocate a particular unit of storage shall occur in a single total order, and each such deallocation call shall 
+happen before the next allocation (if any) in this order.
+</p></blockquote>
 </resolution>
 
 </issue>
