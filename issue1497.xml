@@ -57,6 +57,8 @@ error condition for a violated precondition. This should be removed.
 and add the following proposed solution:
 </p>
 </blockquote>
+
+<note>2011-02-27: Daniel adapts numbering to n3225</note>
 </discussion>
 
 <resolution>
@@ -66,7 +68,7 @@ and add the following proposed solution:
 void wait(unique_lock&lt;mutex&gt;&amp; lock);
 </pre></blockquote>
 <blockquote><p>
-12 <i>Requires</i>: <tt>lock</tt><ins><tt>.owns_lock()</tt> is <tt>true</tt> and <tt>lock.mutex()</tt></ins> is locked by the calling thread, and either
+ 9 <i>Requires</i>: <tt>lock</tt><ins><tt>.owns_lock()</tt> is <tt>true</tt> and <tt>lock.mutex()</tt></ins> is locked by the calling thread, and either
 </p>
 <ul>
 <li>no other thread is waiting on this <tt>condition_variable</tt> object or
@@ -78,7 +80,7 @@ waiting (via <tt>wait</tt> or <tt>timed_wait</tt>) threads.
 </blockquote>
 [..]
 <blockquote><p>
-14 <em>Postcondition</em>: <tt>lock</tt><ins><tt>.owns_lock()</tt> is <tt>true</tt> and <tt>lock.mutex()</tt></ins> is locked by the calling thread.
+11 <em>Postcondition</em>: <tt>lock</tt><ins><tt>.owns_lock()</tt> is <tt>true</tt> and <tt>lock.mutex()</tt></ins> is locked by the calling thread.
 </p></blockquote>
 [..]
 <blockquote><pre>
@@ -97,7 +99,7 @@ waiting (via <tt>wait</tt> or <tt>timed_wait</tt>) threads.</ins>
 </ul>
 </blockquote>
 <blockquote><p>
-17 <i>Effects</i>:
+14 <i>Effects</i>:
 </p><blockquote><pre>
 while (!pred())
   wait(lock);
@@ -125,7 +127,7 @@ cv_status wait_until(unique_lock&lt;mutex&gt;&amp; lock,
   const chrono::time_point&lt;Clock, Duration&gt;&amp; abs_time);
 </pre></blockquote>
 <blockquote><p>
-18 <i>Requires</i>: <tt>lock</tt><ins><tt>.owns_lock()</tt> is <tt>true</tt> and <tt>lock.mutex()</tt></ins> is locked by the calling thread, and either
+15 <i>Requires</i>: <tt>lock</tt><ins><tt>.owns_lock()</tt> is <tt>true</tt> and <tt>lock.mutex()</tt></ins> is locked by the calling thread, and either
 </p>
 <ul>
 <li>no other thread is waiting on this <tt>condition_variable</tt> object or
@@ -137,11 +139,11 @@ waiting (via <tt>wait</tt>, <tt>wait_for</tt>, or <tt>wait_until</tt>) threads.
 </blockquote><p>
 [..]
 </p><blockquote><p>
-20 <em>Postcondition</em>: <tt>lock</tt><ins><tt>.owns_lock()</tt> is <tt>true</tt> and <tt>lock.mutex()</tt></ins> is locked by the calling thread.
+17 <em>Postcondition</em>: <tt>lock</tt><ins><tt>.owns_lock()</tt> is <tt>true</tt> and <tt>lock.mutex()</tt></ins> is locked by the calling thread.
 </p></blockquote>
 [..]
 <blockquote><p>
-23 <em>Error conditions</em>:
+20 <em>Error conditions</em>:
 </p>
 <ul>
 <li><del><tt>operation_not_permitted</tt> &mdash; if the thread does not own the lock.</del>
@@ -156,7 +158,7 @@ cv_status wait_for(unique_lock&lt;mutex&gt;&amp; lock,
   const chrono::duration&lt;Rep, Period&gt;&amp; rel_time);
 </pre></blockquote>
 <blockquote><p>
-24 <i>Requires</i>: <tt>lock</tt><ins><tt>.owns_lock()</tt> is <tt>true</tt> and <tt>lock.mutex()</tt></ins> is locked by the calling thread, and either
+21 <i>Requires</i>: <tt>lock</tt><ins><tt>.owns_lock()</tt> is <tt>true</tt> and <tt>lock.mutex()</tt></ins> is locked by the calling thread, and either
 </p>
 <ul>
 <li>no other thread is waiting on this <tt>condition_variable</tt> object or
@@ -168,11 +170,11 @@ waiting (via <tt>wait</tt>, <tt>wait_for</tt>, or <tt>wait_until</tt>) threads.
 </blockquote><p>
 [..]
 </p><blockquote><p>
-27 <em>Postcondition</em>: <tt>lock</tt><ins><tt>.owns_lock()</tt> is <tt>true</tt> and <tt>lock.mutex()</tt></ins> is locked by the calling thread.
+24 <em>Postcondition</em>: <tt>lock</tt><ins><tt>.owns_lock()</tt> is <tt>true</tt> and <tt>lock.mutex()</tt></ins> is locked by the calling thread.
 </p></blockquote>
 [..]
 <blockquote><p>
-29 <em>Error conditions</em>:
+26 <em>Error conditions</em>:
 </p>
 <ul>
 <li><del><tt>operation_not_permitted</tt> &mdash; if the thread does not own the lock.</del>
@@ -199,7 +201,7 @@ waiting (via <tt>wait</tt> or <tt>timed_wait</tt>) threads.</ins>
 </ul>
 </blockquote>
 <blockquote><p>
-30 <i>Effects</i>:
+27 <i>Effects</i>:
 </p><blockquote><pre>
 while (!pred())
   if (wait_until(lock, abs_time) == cv_status::timeout)
@@ -208,7 +210,7 @@ return true;
 </pre></blockquote>
 </blockquote>
 <blockquote><p>
-31 <i>Returns</i>: <tt>pred()</tt>
+28 <i>Returns</i>: <tt>pred()</tt>
 </p></blockquote>
 
 <blockquote><p>
@@ -216,7 +218,7 @@ return true;
 </p></blockquote>
 
 <blockquote><p>
-32 [ <i>Note</i>: The returned value indicates whether the predicate evaluates to true regardless of whether the
+29 [ <i>Note</i>: The returned value indicates whether the predicate evaluates to true regardless of whether the
 timeout was triggered. &mdash; <i>end note</i> ]
 </p></blockquote>
 
@@ -239,7 +241,7 @@ bool wait_for(unique_lock&lt;mutex&gt;&amp; lock,
     Predicate pred);
 </pre></blockquote>
 <blockquote><p>
-33 <i>Requires</i>: <tt>lock</tt><ins><tt>.owns_lock()</tt> is <tt>true</tt> and <tt>lock.mutex()</tt></ins> is locked by the calling thread, and either
+30 <i>Requires</i>: <tt>lock</tt><ins><tt>.owns_lock()</tt> is <tt>true</tt> and <tt>lock.mutex()</tt></ins> is locked by the calling thread, and either
 </p>
 <ul>
 <li>no other thread is waiting on this <tt>condition_variable</tt> object or
@@ -251,11 +253,11 @@ waiting (via <tt>wait</tt>, <tt>wait_for</tt>, or <tt>wait_until</tt>) threads.
 </blockquote><p>
 [..]
 </p><blockquote><p>
-36 <em>Postcondition</em>: <tt>lock</tt><ins><tt>.owns_lock()</tt> is <tt>true</tt> and <tt>lock.mutex()</tt></ins> is locked by the calling thread.
+33 <em>Postcondition</em>: <tt>lock</tt><ins><tt>.owns_lock()</tt> is <tt>true</tt> and <tt>lock.mutex()</tt></ins> is locked by the calling thread.
 </p></blockquote><p>
 [..]
 </p><blockquote><p>
-40 <em>Error conditions</em>:
+37 <em>Error conditions</em>:
 </p>
 <ul>
 <li><del><tt>operation_not_permitted</tt> &mdash; if the thread does not own the lock.</del>
@@ -279,7 +281,7 @@ void wait(Lock&amp; lock, Predicate pred);
 One can use a <tt>Lock</tt> type that allows to query that, such as the <tt>unique_lock</tt> wrapper. &mdash; <i>end note</i>]</ins>
 </p></blockquote>
 <blockquote><p>
-14 <i>Effects</i>:
+11 <i>Effects</i>:
 </p><blockquote><pre>
 while (!pred())
   wait(lock);
@@ -287,7 +289,7 @@ while (!pred())
 </blockquote><p>
 [..]
 </p><blockquote><p>
-34 <em>Error conditions</em>:
+31 <em>Error conditions</em>:
 </p>
 <ul>
 <li><del><tt>operation_not_permitted</tt> &mdash; if the thread does not own the lock.</del>
