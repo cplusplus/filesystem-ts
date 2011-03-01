@@ -1,0 +1,64 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="2037" status="New">
+<title><tt>atomic</tt> free functions incorrectly specified</title>
+<section><sref ref="[atomics.syn]"/></section>
+<submitter>Pete Becker</submitter>
+<date>1 Mar 2011</date>
+
+<discussion>
+<p>In earlier specifications of atomics the template specialization <tt>atomic&lt;<i>integer</i>&gt;</tt> 
+was derived from <tt>atomic_integer</tt> (e.g. <tt>atomic&lt;int&gt;</tt> was derived from <tt>atomic_int</tt>), 
+and the working draft required free functions such as</p>
+
+<blockquote><pre>
+int atomic_load(const atomic_int*)
+</pre></blockquote>
+
+<p>for each of the <tt>atomic_integer</tt> types. This worked fine with normal function overloading.</p>
+
+<p>For the post-Batavia working draft, N3193 removed the requirement that <tt>atomic&lt;integer&gt;</tt> 
+be derived from <tt>atomic_integer</tt> and replaced the free functions taking pointers to 
+<tt>atomic_integer</tt> with template functions taking <tt>atomic_type*</tt>, such as</p>
+
+<blockquote><pre>
+template &lt;class T&gt; T atomic_load(const atomic_type*);
+</pre></blockquote>
+
+<p>and a code comment explaining that <tt>atomic_type</tt> can be either <tt>atomic&lt;T&gt;</tt> or a 
+named base class of <tt>atomic&lt;T&gt;</tt>. The latter possibility is supposed to allow existing 
+implementations based on the previous specification to continue to conform.</p>
+
+<p>From history, this allowance seems to imply that functions like <tt>atomic_load</tt> can be non-template 
+free functions, as they were before. The explicit requirements do not allow this, and, by requiring that 
+they be templates, make them far more complicated. As the specification is currently written, code that 
+uses an implementation that uses a base class would have to provide an explicit template type:</p>
+
+<blockquote><pre>
+atomic&lt;int&gt; my_atomic_int;
+atomic_load&lt;int&gt;(&amp;my_atomic_int);
+</pre></blockquote>
+
+<p>That type argument isn't needed when <tt>atomic_type</tt> is <tt>atomic&lt;T&gt;</tt>, but cautious 
+users would always provide it to make their code portable across different implementations of the 
+standard library.</p>
+
+<p>One possibility for the implementor would be to do some template meta-programming to infer the type 
+<tt>T</tt> when there are no function parameters of type <tt>T</tt>, but without running afoul of the 
+prohibition on adding parameters with default values (<sref ref="[global.functions]"/>/3).</p>
+
+<p>So the promise that implementations of the previous specification continue to conform has not been 
+met. The specification of these free functions should be rewritten to support library code written to 
+the previous specification or the vacuous promise should be removed.
+</p>
+
+</discussion>
+
+<resolution>
+<p></p>
+</resolution>
+
+</issue>
