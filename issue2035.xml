@@ -18,10 +18,255 @@ that the iterator is incrementable. This is impossible, because it would exclude
 iterator, such as a pointer to a C array. The N3066 wording changes did not have these effects.
 </p>
 
+<note>2011-03-01: Daniel comments:</note>
+
+<p>This issue has some overlap with the issue <iref ref="2038"/> and I would prefer if we
+could solve both at one location. I suggest the following approach:
+</p>
+<ol>
+<li><p>The terms <tt><i>dereferencable</i></tt> and <tt><i>incrementable</i></tt> could be defined in a more
+general way not restricted to iterators (similar to the concepts <tt>HasDereference</tt> and 
+<tt>HasPreincrement</tt> from working draft N2914). But on the other hand, all current usages of 
+<tt><i>dereferencable</i></tt> and <tt><i>incrementable</i></tt> are involved with types that satisfy 
+iterator requirements. Thus, I believe that it is sufficient for C++0x to add corresponding definitions to 
+<sref ref="[iterator.requirements.general]"/> and to let all previous usages of these terms refer to this 
+sub-clause. Since the same problem occurs with the past-the-end iterator, this proposal suggest providing 
+similar references to usages that precede its definition as well.
+</p></li>
+<li><p>We also need to ensure that all iterator expressions get either an operational semantics in
+terms of others or we need to add missing pre- and post-conditions. E.g. we have the following
+ones without semantics:
+</p><blockquote><pre>
+*r++ = o // output iterator
+*r--     // bidirectional iterator
+</pre></blockquote><p>
+According to the <a href="http://www.sgi.com/tech/stl/OutputIterator.html">SGI specification</a>
+these correspond to
+</p><blockquote><pre>
+{ *r = o; ++r; }                         // output iterator
+{ reference tmp = *r; --r; return tmp; } // bidirectional iterator
+</pre></blockquote><p>
+respectively. Please note especially the latter expression for bidirectional iterator. It fixes a problem
+that we have for forward iterator as well: Both these iterator categories provide stronger guarantees
+than input iterator, because the result of the dereference operation is <tt>reference</tt>, and <strong>not</strong>
+only convertible to the value type (The exact form from the SGI documentation does not correctly refer to
+<tt>reference</tt>).
+</p></li>
+</ol>
 </discussion>
 
 <resolution>
-<p>Modify the column contents of Table 108 &mdash; &quot;Output iterator requirements&quot;, <sref ref="[output.iterators]"/>, as indicated:</p>
+<ol>
+<li><p>Add a reference to <sref ref="[iterator.requirements.general]"/> to the following parts of the
+library preceding Clause 24 Iterators library: (I stopped from <sref ref="[unord.req]"/> on, because
+the remaining references are the concrete containers)</p>
+<ol>
+<li><p><sref ref="[swappable.requirements]"/> p. 5:</p>
+
+<blockquote><p>
+5 A type <tt>X</tt> satisfying any of the iterator requirements (24.2) is <tt><i>ValueSwappable</i></tt> if, 
+for any dereferenceable <ins>(<sref ref="[iterator.requirements.general]"/>)</ins> object <tt>x</tt> of type 
+<tt>X</tt>, <tt>*x</tt> is swappable.
+</p></blockquote>
+</li>
+
+<li><p><sref ref="[allocator.requirements]"/>, Table 27 &mdash> &quot;Descriptive variable definitions&quot;, 
+row with the expression <tt>c</tt>:</p>
+
+<blockquote><p>
+a dereferenceable <ins>(<sref ref="[iterator.requirements.general]"/>)</ins> pointer of type <tt>C*</tt>
+</p></blockquote>
+
+</li>
+
+<li><p><sref ref="[pointer.traits.functions]"/>:</p>
+<blockquote><p>
+<i>Returns</i>: The first template function returns a dereferenceable <ins>(<sref ref="[iterator.requirements.general]"/>)</ins> 
+pointer to <tt>r</tt> obtained by calling <tt>Ptr::pointer_to(r)</tt>;  [&hellip;]
+</p></blockquote>
+</li>
+
+<li><p><sref ref="[string.iterators]"/> p. 2:</p>
+<blockquote><p>
+<i>Returns</i>: An iterator which is the past-the-end value <ins>(<sref ref="[iterator.requirements.general]"/>)</ins>.
+</p></blockquote>
+</li>
+
+<li><p><sref ref="[locale.time.get.virtuals]"/> p. 11:</p>
+<blockquote><pre>
+iter_type do_get(iter_type s, iter_type end, ios_base&amp; f,
+  ios_base::iostate&amp; err, tm *t, char format, char modifier) const;
+</pre><blockquote><p>
+<i>Requires</i>: <tt>t</tt> shall be dereferenceable <ins>(<sref ref="[iterator.requirements.general]"/>)</ins>.
+</p></blockquote></blockquote>
+</li>
+
+<li><p><sref ref="[container.requirements.general]"/> p. 6:</p>
+
+<blockquote><p>
+[&hellip;]  <tt>end()</tt> returns an iterator which is the past-the-end <ins>(<sref ref="[iterator.requirements.general]"/>)</ins> 
+value for the container.  [&hellip;]
+</p></blockquote>
+</li>
+
+<li><p><sref ref="[sequence.reqmts]"/> p. 3:</p>
+
+<blockquote><p>
+[&hellip;]  <tt>q</tt> denotes a valid dereferenceable <ins>(<sref ref="[iterator.requirements.general]"/>)</ins> 
+const iterator to <tt>a</tt>,  [&hellip;]
+</p></blockquote>
+</li>
+
+<li><p><sref ref="[associative.reqmts]"/> p. 8 (I omit intentionally one further reference in the same sub-clause):</p>
+
+<blockquote><p>
+[&hellip;]  <tt>q</tt> denotes a valid dereferenceable <ins>(<sref ref="[iterator.requirements.general]"/>)</ins> 
+const iterator to <tt>a</tt>,  [&hellip;]
+</p></blockquote>
+</li>
+
+<li><p><sref ref="[unord.req]"/> p. 10 (I omit intentionally one further reference in the same sub-clause):</p>
+
+<blockquote><p>
+[&hellip;]  <tt>q</tt> and <tt>q1</tt> are valid dereferenceable <ins>(<sref ref="[iterator.requirements.general]"/>)</ins> 
+const iterators to <tt>a</tt>,  [&hellip;]
+</p></blockquote>
+</li>
+</ol>
+
+</li>
+<li><p>Edit <sref ref="[iterator.requirements.general]"/> p. 5 as indicated (The intent is to properly define
+<i>incrementable</i> and to ensure some further library guarantee related to past-the-end iterator values):</p>
+
+<blockquote><p>
+5 Just as a regular pointer to an array guarantees that there is a pointer value pointing past the last element
+of the array, so for any iterator type there is an iterator value that points past the last element of a
+corresponding sequence. These values are called <i>past-the-end values</i>. Values of an iterator <tt>i</tt> for which the
+expression <tt>*i</tt> is defined are called <i>dereferenceable</i>. <ins>Values of an iterator <tt>i</tt> for which the
+expression <tt>++i</tt> is defined are called <i>incrementable</i>. </ins> The library never assumes that 
+past-the-end values are dereferenceable <ins>or incrementable</ins>. Iterators can also have singular values 
+that are not associated with any sequence. [&hellip;]
+</p></blockquote>
+</li>
+
+<li><p>Modify the column contents of Table 106 &mdash; &quot;Iterator requirements&quot;, 
+<sref ref="[iterator.iterators]"/>, as indicated:</p>
+
+<blockquote>
+<table border="1">
+<caption>Table 106 &mdash; Iterator requirements</caption>
+
+<tr>
+<th>Expression</th>
+<th>Return type</th>
+<th>Operational semantics</th>
+<th>Assertion&frasl;note<br/>pre-&frasl;post-condition</th>
+</tr>
+
+<tr>
+<td><tt>*r</tt></td>
+<td><tt>reference</tt></td>
+<td><tt>&nbsp;</tt></td>
+<td>pre: <tt>r</tt> is dereferenceable.</td>
+</tr>
+
+<tr>
+<td><tt>++r</tt></td>
+<td><tt>X&amp;</tt></td>
+<td><tt>&nbsp;</tt></td>
+<td><ins>pre: <tt>r</tt> is incrementable.</ins></td>
+</tr>
+
+</table>
+</blockquote>
+</li>
+
+<li><p>Modify the column contents of Table 107 &mdash; &quot;Input iterator requirements&quot;, 
+<sref ref="[input.iterators]"/>, as indicated:</p>
+
+<blockquote>
+<table border="1">
+<caption>Table 107 &mdash; Input iterator requirements (in addition to Iterator)</caption>
+
+<tr>
+<th>Expression</th>
+<th>Return type</th>
+<th>Operational semantics</th>
+<th>Assertion&frasl;note<br/>pre-&frasl;post-condition</th>
+</tr>
+
+<tr>
+<td><tt>a != b</tt></td>
+<td>contextually<br/>
+convertible to <tt>bool</tt></td>
+<td><tt>!(a == b)</tt></td>
+<td>pre: <tt>(a, b)</tt> is in the domain<br/>
+of <tt>==</tt>.
+</td>
+</tr>
+
+<tr>
+<td><tt>*a</tt></td>
+<td>convertible to <tt>T</tt></td>
+<td><tt>&nbsp;</tt></td>
+<td>pre: <tt>a</tt> is dereferenceable.<br/>
+The expression<br/>
+<tt>(void)*a, *a</tt> is equivalent<br/>
+to <tt>*a</tt>.<br/>
+If <tt>a == b</tt> and <tt>(a,b)</tt> is in<br/>
+the domain of <tt>==</tt> then <tt>*a</tt> is<br/>
+equivalent to <tt>*b</tt>.
+</td>
+</tr>
+
+<tr>
+<td><tt>a-&gt;m</tt></td>
+<td><tt>&nbsp;</tt></td>
+<td><tt>(*a).m</tt></td>
+<td>pre: <tt>a</tt> is dereferenceable.
+</td>
+</tr>
+
+<tr>
+<td><tt>++r</tt></td>
+<td><tt>X&amp;</tt></td>
+<td><tt>&nbsp;</tt></td>
+<td>pre: <tt>r</tt> is dereferenceable<br/>
+<ins>and <tt>r</tt> is incrementable</ins>.<br/>
+post: <tt>r</tt> is dereferenceable or<br/>
+<tt>r</tt> is past-the-end.<br/>
+post: any copies of the<br/>
+previous value of <tt>r</tt> are no<br/>
+longer required either to be<br/>
+dereferenceable<ins>, incrementable,</ins><br/>
+or to be in the domain of <tt>==</tt>.
+</td>
+</tr>
+
+<tr>
+<td><tt>(void)r++</tt></td>
+<td><tt>&nbsp;</tt></td>
+<td><ins><tt>(void)++r</tt></ins></td>
+<td><del>equivalent to <tt>(void)++r</tt></del></td>
+</tr>
+
+<tr>
+<td><tt>*r++</tt></td>
+<td>convertible to <tt>T</tt></td>
+<td><tt>{ T tmp = *r;<br/>
+++r;<br/>
+return tmp; }
+</tt></td>
+<td><tt>&nbsp;</tt></td>
+</tr>
+
+</table>
+</blockquote>
+</li>
+
+<li>
+<p>Modify the column contents of Table 108 &mdash; &quot;Output iterator requirements&quot;, 
+<sref ref="[output.iterators]"/>, as indicated:</p>
 
 <blockquote>
 <table border="1">
@@ -38,7 +283,8 @@ iterator, such as a pointer to a C array. The N3066 wording changes did not have
 <td><tt>*r = o</tt></td>
 <td>result is not used</td>
 <td><tt>&nbsp;</tt></td>
-<td><i>Remark</i>: After this operation<br/>
+<td><ins>pre: <tt>r</tt> is dereferenceable.</ins><br/>
+<i>Remark</i>: After this operation<br/>
 <tt>r</tt> is not required to be<br/>
 dereferenceable.<br/>
 post: <tt>r</tt> is incrementable.
@@ -49,7 +295,8 @@ post: <tt>r</tt> is incrementable.
 <td><tt>++r</tt></td>
 <td><tt>X&amp;</tt></td>
 <td><tt>&nbsp;</tt></td>
-<td><tt>&amp;r == &amp;++r</tt>.<br/>
+<td><ins>pre: <tt>r</tt> is incrementable.</ins><br/>
+<tt>&amp;r == &amp;++r</tt>.<br/>
 <i>Remark</i>: After this operation<br/>
 <tt>r</tt> is not required to be<br/>
 dereferenceable <ins>or incrementable</ins>.<br/>
@@ -74,7 +321,7 @@ dereferenceable <ins>or incrementable</ins>.<br/>
 <tr>
 <td><tt>*r++ = o</tt></td>
 <td>result is not used</td>
-<td><tt>&nbsp;</tt></td>
+<td><ins><tt>{ *r = o; ++r; }</tt></ins></td>
 <td><i>Remark</i>: After this operation<br/>
 <tt>r</tt> is not required to be<br/>
 dereferenceable <ins>or incrementable</ins>.<br/>
@@ -83,7 +330,99 @@ dereferenceable <ins>or incrementable</ins>.<br/>
 </tr>
 </table>
 </blockquote>
+</li>
 
+<li><p>Modify the column contents of Table 109 &mdash; &quot;Forward iterator requirements&quot;, 
+<sref ref="[forward.iterators]"/>, as indicated [<i>Rationale</i>: Since the return type of the
+expression <tt>*r++</tt> is now guaranteed to be type <tt>reference</tt>, the implied operational
+semantics from input iterator based on value copies is wrong &mdash; <i>end rationale</i>]</p>
+
+<blockquote>
+<table border="1">
+<caption>Table 109 &mdash; Forward iterator requirements (in addition to input iterator)</caption>
+
+<tr>
+<th>Expression</th>
+<th>Return type</th>
+<th>Operational semantics</th>
+<th>Assertion&frasl;note<br/>pre-&frasl;post-condition</th>
+</tr>
+
+<tr>
+<td><tt>r++</tt></td>
+<td>convertible to <tt>const X&amp;</tt></td>
+<td><tt>{ X tmp = r;<br/>
+  ++r;<br/>
+  return tmp; }</tt>
+</td>
+<td><tt>&nbsp;</tt></td>
+</tr>
+
+<tr>
+<td><tt>*r++</tt></td>
+<td>reference</td>
+<td><ins><tt>{ reference tmp = *r;<br/>
+ ++r;<br/> 
+ return tmp; }</tt></ins></td>
+<td><tt>&nbsp;</tt></td>
+</tr>
+</table>
+</blockquote>
+
+</li>
+
+<li><p>Modify the column contents of Table 110 &mdash; &quot;Bidirectional iterator requirements&quot;, 
+<sref ref="[bidirectional.iterators]"/>, as indicated:</p>
+
+<blockquote>
+<table border="1">
+<caption>Table 110 &mdash; Bidirectional iterator requirements (in addition to forward iterator)</caption>
+
+<tr>
+<th>Expression</th>
+<th>Return type</th>
+<th>Operational semantics</th>
+<th>Assertion&frasl;note<br/>pre-&frasl;post-condition</th>
+</tr>
+
+<tr>
+<td><tt>--r</tt></td>
+<td><tt>X&amp;</tt></td>
+<td><tt>&nbsp;</tt></td>
+<td>pre: <ins><tt>r</tt> is dereferenceable or<br/>
+<tt>r</tt> is past-the-end. T</ins><del>t</del>here<br/>
+exists <tt>s</tt> such that<br/>
+<tt>r == ++s</tt>.<br/>
+post: <tt>r</tt> is dereferenceable<br/>
+<ins> and <tt>r</tt> is incrementable</ins>.<br/>
+<tt>--(++r) == r</tt>.<br/>
+<tt>--r == --s</tt> implies <tt>r == s</tt>.<br/>
+<tt>&amp;r == &amp;--r</tt>.
+</td>
+</tr>
+
+<tr>
+<td><tt>r--</tt></td>
+<td>convertible to <tt>const X&amp;</tt></td>
+<td><tt>{ X tmp = r;<br/>
+  --r;<br/>
+  return tmp; }</tt>
+</td>
+<td><tt>&nbsp;</tt></td>
+</tr>
+
+<tr>
+<td><tt>*r--</tt></td>
+<td>reference</td>
+<td><ins><tt>{ reference tmp = *r;<br/>
+ --r;<br/> 
+ return tmp; }</tt></ins></td>
+<td><tt>&nbsp;</tt></td>
+</tr>
+</table>
+</blockquote>
+</li>
+</ol>
 </resolution>
 
 </issue>
