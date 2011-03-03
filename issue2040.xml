@@ -1,0 +1,183 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="2040" status="New">
+<title>Missing type traits related to <tt>is_convertible</tt></title>
+<section><sref ref="[meta]"/></section>
+<submitter>Daniel Kr&uuml;gler</submitter>
+<date>3 Mar 2011</date>
+
+<discussion>
+<p>When <a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2010/n3142.html">n3142</a>
+was suggested, it concentrated on constructions, assignments, and destructions, but overlooked 
+to complement the single remaining compiler-support trait</p>
+
+<blockquote><pre>
+template &lt;class From, class To&gt; struct is_convertible;
+</pre></blockquote>
+
+<p>with the no-throw and triviality related aspects as it had been done with the other
+expression-based traits. Specifically, the current specification misses to add the
+following traits:
+</p>
+
+<blockquote><pre>
+template &lt;class From, class To&gt; struct is_nothrow_convertible;
+template &lt;class From, class To&gt; struct is_trivially_convertible;
+</pre></blockquote>
+
+<p>In particular the lack of <tt>is_nothrow_convertible</tt> is severly restricting. This
+was recently recognized when the proposal for <tt>decay_copy</tt> was prepared by 
+<a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2011/n3255.html">n3255</a>.
+There does not exist a portable means to define the correct conditional <tt>noexcept</tt>
+specification for the  <tt>decay_copy</tt> function template, which is declared as:</p>
+
+<blockquote><pre>
+template &lt;class T&gt; 
+typename decay&lt;T&gt;::type decay_copy(T&amp;&amp; v) noexcept(<i>???</i>);
+</pre></blockquote>
+
+<p>The semantics of <tt>decay_copy</tt> bases on an implicit conversion which again
+influences the overload set of functions that are viable here. In most circumstances
+this will have the same effect as comparing against the trait 
+<tt>std::is_nothrow_move_constructible</tt>, but there is no guarantee for that being
+the right answer. It is possible to construct examples, where this would lead
+to the false result, e.g.</p>
+
+<blockquote><pre>
+struct S {
+  S(const S&amp;) noexcept(false);
+ 
+  template&lt;class T&gt;
+  explicit S(T&amp;&amp;) noexcept(true);
+};
+</pre></blockquote>
+
+<p><tt>std::is_nothrow_move_constructible</tt> will properly honor the explicit template
+constructor because of the direct-initialization context which is part of the
+<tt>std::is_constructible</tt> definition and will in this case select it, such that
+<tt>std::is_nothrow_move_constructible&lt;S&gt;::value == true</tt>, but if we had
+the traits <tt>is_nothrow_convertible</tt>, <tt>is_nothrow_convertible&lt;S, S&gt;::value</tt>
+would evaluate to <tt>false</tt>, because it would use the copy-initialization context
+that is part of the <tt>is_convertible</tt> definition, excluding any explicit
+constructors and giving the opposite result.</p>
+
+<p>The <tt>decay_copy</tt> example is surely not one of the most convincing examples, but
+<tt>is_nothrow_convertible</tt> has several use-cases, and can e.g. be used to express
+whether calling the following implicit conversion function could throw an exception or not:</p>
+
+<blockquote><pre>
+template&lt;class T, class U&gt;
+T implicit(U&amp;&amp; u) noexcept(is_nothrow_convertible&lt;U, T&gt;::value) 
+{
+  return std::forward&lt;U&gt;(u);
+}
+</pre></blockquote>
+
+<p>Therefore I suggest to add the missing trait <tt>is_nothrow_convertible</tt> and for
+completeness also the missing trait <tt>is_trivially_convertible</tt> to <sref ref="[meta]"/>.</p>
+</discussion>
+
+<resolution>
+<ol>
+<li><p>Ammend the following declarations to the header <tt>&lt;type_traits&gt;</tt> synopsis
+in <sref ref="[meta.type.synop]"/>:</p>
+
+<blockquote><pre>
+namespace std {
+  &hellip;
+  // 20.9.6, type relations:
+  template &lt;class T, class U&gt; struct is_same;
+  template &lt;class Base, class Derived&gt; struct is_base_of;
+  template &lt;class From, class To&gt; struct is_convertible;
+  <ins>template &lt;class From, class To&gt; struct is_trivially_convertible;</ins>
+  <ins>template &lt;class From, class To&gt; struct is_nothrow_convertible;</ins>
+
+  &hellip;
+}
+</pre></blockquote>
+</li>
+
+<li><p>Modify Table 51 &mdash; &quot;Type relationship predicates&quot; as indicated. The removal of the
+remaining traces of the trait <tt>is_explicitly_convertible</tt> is an editorial
+step, it was removed by <a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2010/n3047.html">n3047</a>:
+</p>
+
+<blockquote>
+<table border="1">
+<caption>Table 51 &mdash; Type relationship predicates</caption>
+
+<tr>
+<th>Template</th>
+<th>Condition</th>
+<th>Comments</th>
+</tr>
+
+<tr>
+<td colspan="3" style="text-align:center;">&hellip;</td> 
+</tr>
+
+<tr>
+<td><tt>template &lt;class From, class To&gt;<br/>
+struct is_convertible;</tt></td>
+<td><i>see below</i></td>
+<td><tt>From</tt> and <tt>To</tt> shall be complete<br/>
+types, arrays of unknown bound, or<br/>
+(possibly cv-qualified) <tt>void</tt><br/>
+types.</td>
+</tr>
+
+<tr>
+<td><del><tt>template &lt;class From, class To&gt;<br/>
+struct is_explicitly_convertible;</tt></del></td>
+<td><del><tt>is_constructible&lt;To, From&gt;::value</tt></del></td>
+<td><del>a synonym for a two-argument<br/>
+version of <tt>is_constructible</tt>.<br/>
+An implementation may define it<br/>
+as an alias template.</del></td>
+</tr>
+
+<tr>
+<td><ins><tt>template &lt;class From, class To&gt;<br/>
+struct is_trivially_convertible;</tt></ins></td>
+<td><ins><tt>is_convertible&lt;From,<br/>
+ To&gt;::value</tt> is <tt>true</tt> and the<br/>
+conversion, as defined by<br/>
+<tt>is_convertible</tt>, is known<br/>
+to call no operation that is<br/>
+not trivial ([basic.types], [special]).</ins></td>
+<td><ins><tt>From</tt> and <tt>To</tt> shall be complete<br/>
+types, arrays of unknown bound,<br/>
+or (possibly cv-qualified) <tt>void</tt><br/>
+types.</ins></td>
+</tr>
+
+<tr>
+<td><ins><tt>template &lt;class From, class To&gt;<br/>
+struct is_nothrow_convertible;</tt></ins></td>
+<td><ins><tt>is_convertible&lt;From,<br/>
+ To&gt;::value</tt> is <tt>true</tt> and the<br/>
+conversion, as defined by<br/>
+<tt>is_convertible</tt>, is known<br/>
+not to throw any<br/>
+exceptions ([expr.unary.noexcept]).</ins></td>
+<td><ins><tt>From</tt> and <tt>To</tt> shall be complete<br/>
+types, arrays of unknown bound,<br/>
+or (possibly cv-qualified) <tt>void</tt><br/>
+types.</ins></td>
+</tr>
+
+<tr>
+<td colspan="3" style="text-align:center;">&hellip;</td> 
+</tr>
+
+</table>
+</blockquote>
+
+</li>
+</ol>
+</resolution>
+
+</issue>
