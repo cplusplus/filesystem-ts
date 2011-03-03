@@ -4,31 +4,31 @@
 ] >
 
 <issue num="388" status="NAD">
-<title>Use of complex as a key in associative containers</title>
+<title>Use of <tt>complex</tt> as a key in associative containers</title>
 <section><sref ref="[complex.numbers]"/></section>
 <submitter>Gabriel Dos Reis</submitter>
 <date>8 Nov 2002</date>
 
 <discussion>
 <p>
-Practice with std::complex&lt;&gt; and the associative containers
+Practice with <tt>std::complex&lt;&gt;</tt> and the associative containers
 occasionally reveals artificial and distracting issues with constructs
-resembling: std::set&lt;std::complex&lt;double&gt; &gt; s;
+resembling: <tt>std::set&lt;std::complex&lt;double&gt; &gt; s;</tt>
 </p>
 
 <p>
-The main reason for the above to fail is the absence of an approriate
-definition for std::less&lt;std::complex&lt;T&gt; &gt;. That in turn comes from
-the definition of the primary template std::less&lt;&gt; in terms of
-operator&lt;.
+The main reason for the above to fail is the absence of an appropriate
+definition for <tt>std::less&lt;std::complex&lt;T&gt; &gt;</tt>. That in turn comes from
+the definition of the primary template <tt>std::less&lt;&gt;</tt> in terms of
+<tt>operator&lt;</tt>.
 </p>
 
 <p>
 The usual argument goes as follows: Since there is no ordering over
 the complex field compatible with field operations it makes little
-sense to define a function operator&lt; operating on the datatype
-std::complex&lt;T&gt;.  That is fine. However, that reasoning does not carry
-over to std::less&lt;T&gt; which is used, among other things, by associative
+sense to define a function <tt>operator&lt;</tt> operating on the datatype
+<tt>std::complex&lt;T&gt;</tt>.  That is fine. However, that reasoning does not carry
+over to <tt>std::less&lt;T&gt;</tt> which is used, among other things, by associative
 containers as an ordering useful to meet complexity requirements.
 </p>
 
@@ -42,7 +42,7 @@ Pre Bellevue: Reopened at the request of Alisdair.
 Bellevue:
 </note>
 
-<blockquote>
+<blockquote><p>
 This is a request for a design change, and not a defect in the standard.
 It is in scope to consider, but the group feels that it is not a change
 that we need to do. Is there a total ordering for floating point values,
@@ -50,13 +50,13 @@ including NaN? There is not a clear enough solution or big enough
 problem for us to solve. Solving this problem would require solving the
 problem for floating point, which is equally unclear. The LWG noted that
 users who want to put objects into an associative container for which
-operator&lt; isn't defined can simply provide their own comparison function
-object. NAD
-</blockquote>
+<tt>operator&lt;</tt> isn't defined can simply provide their own comparison 
+function object. NAD
+</p></blockquote>
 </discussion>
 
 <resolution>
-<p>Informally: Add a specialization of std::less for std::complex.</p>
+<p>Informally: Add a specialization of <tt>std::less</tt> for <tt>std::complex</tt>.</p>
 </resolution>
 
 <rationale>

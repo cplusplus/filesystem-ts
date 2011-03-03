@@ -4,7 +4,7 @@
      ]
 >
 <issue num="421" status="NAD">
-    <title>is basic_streambuf copy-constructible?</title>
+    <title>is <tt>basic_streambuf</tt> copy-constructible?</title>
     <section><sref ref="[streambuf.cons]"/></section>
     <submitter>Martin Sebor</submitter>
     <date>18 Sep 2003</date>
@@ -12,7 +12,7 @@
 <discussion>
 <p>
 The reflector thread starting with c++std-lib-11346 notes that the class
-template basic_streambuf, along with basic_stringbuf and basic_filebuf,
+template <tt>basic_streambuf</tt>, along with <tt>basic_stringbuf</tt> and <tt>basic_filebuf</tt>,
 is copy-constructible but that the semantics of the copy constructors
 are not defined anywhere. Further, different implementations behave
 differently in this respect: some prevent copy construction of objects
@@ -35,9 +35,9 @@ intended) are locale facets.  See issue <iref ref="439"/>.
 2009-07 Frankfurt
 </note>
 
-<blockquote>
+<blockquote><p>
 NAD. Option B is already in the Working Draft.
-</blockquote>
+</p></blockquote>
 
 </discussion>
 
@@ -59,7 +59,7 @@ basic_streambuf&amp; operator=(const basic_streambuf&amp; sb);
 basic_streambuf(const basic_streambuf&amp; sb);
 </pre>
 
-<p>Constructs a copy of sb.</p>
+<p>Constructs a copy of <tt>sb</tt>.</p>
 <p>Postcondtions:</p>
 <pre>
                 eback() == sb.eback()
@@ -75,7 +75,7 @@ basic_streambuf(const basic_streambuf&amp; sb);
 basic_streambuf&amp; operator=(const basic_streambuf&amp; sb);
 </pre>
 
-<p>Assigns the data members of sb to this.</p>
+<p>Assigns the data members of <tt>sb</tt> to this.</p>
 
 <p>Postcondtions:</p>
 <pre>
@@ -96,7 +96,7 @@ basic_streambuf&amp; operator=(const basic_streambuf&amp; sb);
 <p><b>Option A:</b></p>
 
 <blockquote>
-<p>Insert into the basic_stringbuf synopsis in the private section:</p>
+<p>Insert into the <tt>basic_stringbuf</tt> synopsis in the private section:</p>
 
 <pre>
 basic_stringbuf(const basic_stringbuf&amp;);             // not defined
@@ -107,7 +107,7 @@ basic_stringbuf&amp; operator=(const basic_stringbuf&amp;);  // not defined
 <p><b>Option B:</b></p>
 
 <blockquote>
-<p>Insert into the basic_stringbuf synopsis in the public section:</p>
+<p>Insert into the <tt>basic_stringbuf</tt> synopsis in the public section:</p>
 
 <pre>
 basic_stringbuf(const basic_stringbuf&amp; sb);
@@ -119,7 +119,7 @@ basic_stringbuf&amp; operator=(const basic_stringbuf&amp; sb);
 <pre>basic_stringbuf(const basic_stringbuf&amp; sb);</pre>
 
 <p>
-Constructs an independent copy of sb as if with sb.str(), and with the openmode that sb was constructed with.
+Constructs an independent copy of <tt>sb</tt> as if with <tt>sb.str()</tt>, and with the openmode that <tt>sb</tt> was constructed with.
 </p>
 
 <p>Postcondtions: </p>
@@ -132,18 +132,21 @@ Constructs an independent copy of sb as if with sb.str(), and with the openmode 
 </pre>
 
 <p>
-Note:  The only requirement on epptr() is that it point beyond the initialized range if an output sequence exists.  There is no requirement that epptr() - pbase() == sb.epptr() - sb.pbase().
+Note:  The only requirement on <tt>epptr()</tt> is that it point beyond the initialized range if an 
+output sequence exists.  There is no requirement that <tt>epptr() - pbase() == sb.epptr() - sb.pbase()</tt>.
 </p>
 
 <pre>basic_stringbuf&amp; operator=(const basic_stringbuf&amp; sb);</pre>
 <p>
-After assignment the basic_stringbuf has the same state as if it were initially copy constructed from sb, except that the basic_stringbuf is allowed to retain any excess capacity it might have, which may in turn effect the value of epptr().
+After assignment the <tt>basic_stringbuf</tt> has the same state as if it were initially copy constructed 
+from <tt>sb</tt>, except that the <tt>basic_stringbuf</tt> is allowed to retain any excess capacity it 
+might have, which may in turn effect the value of <tt>epptr()</tt>.
 </p>
 </blockquote>
 
 <p>27.8.1.1 [lib.filebuf]</p>
 
-<p>Insert at the bottom of the basic_filebuf synopsis:</p>
+<p>Insert at the bottom of the <tt>basic_filebuf</tt> synopsis:</p>
 
 <blockquote>
 <pre>
@@ -152,22 +155,22 @@ private:
   basic_filebuf&amp; operator=(const basic_filebuf&amp;);  // not defined
 </pre>
 </blockquote>
-<note>Kona: this is an issue for basic_streambuf itself and for its
-  derived classes.  We are leaning toward allowing basic_streambuf to
+<note>Kona: this is an issue for <tt>basic_streambuf</tt> itself and for its
+  derived classes.  We are leaning toward allowing <tt>basic_streambuf</tt> to
   be copyable, and specifying its precise semantics.  (Probably the
   obvious: copying the buffer pointers.)  We are less sure whether
-  the streambuf derived classes should be copyable.  Howard will
+  the <tt>streambuf</tt> derived classes should be copyable.  Howard will
   write up a proposal.</note>
 
-<note>Sydney: Dietmar presented a new argument against basic_streambuf
-  being copyable: it can lead to an encapsulation violation. Filebuf
-  inherits from streambuf. Now suppose you inhert a my_hijacking_buf
-  from streambuf. You can copy the streambuf portion of a filebuf to a
-  my_hijacking_buf, giving you access to the pointers into the
-  filebuf's internal buffer. Perhaps not a very strong argument, but
+<note>Sydney: Dietmar presented a new argument against <tt>basic_streambuf</tt>
+  being copyable: it can lead to an encapsulation violation. <tt>filebuf</tt>
+  inherits from <tt>streambuf</tt>. Now suppose you inherit a <tt>my_hijacking_buf</tt>
+  from <tt>streambuf</tt>. You can copy the <tt>streambuf</tt> portion of a <tt>filebuf</tt> to a
+  <tt>my_hijacking_buf</tt>, giving you access to the pointers into the
+  <tt>filebuf</tt>'s internal buffer. Perhaps not a very strong argument, but
   it was strong enough to make people nervous. There was weak
-  preference for having streambuf not be copyable. There was weak
-  preference for having stringbuf not be copyable even if streambuf
+  preference for having <tt>streambuf</tt> not be copyable. There was weak
+  preference for having <tt>stringbuf</tt> not be copyable even if <tt>streambuf</tt>
   is. Move this issue to open for now.
 </note>
 
@@ -187,7 +190,7 @@ move semantics less tedious and error prone.
 
 <rationale>
 <p>
-27.5.2 [lib.streambuf]: The proposed basic_streambuf copy constructor
+27.5.2 [lib.streambuf]: The proposed <tt>basic_streambuf</tt> copy constructor
 and assignment operator are the same as currently implied by the lack
 of declarations: public and simply copies the data members.  This
 resolution is not a change but a clarification of the current
@@ -196,10 +199,10 @@ standard.
 
 <p>
 27.7.1 [lib.stringbuf]: There are two reasonable options: A) Make
-basic_stringbuf not copyable.  This is likely the status-quo of
+<tt>basic_stringbuf</tt> not copyable.  This is likely the status-quo of
 current implementations.  B) Reasonable copy semantics of
-basic_stringbuf can be defined and implemented.  A copyable
-basic_streambuf is arguably more useful than a non-copyable one.  This
+<tt>basic_stringbuf</tt> can be defined and implemented.  A copyable
+<tt>basic_streambuf</tt> is arguably more useful than a non-copyable one.  This
 should be considered as new functionality and not the fixing of a
 defect.  If option B is chosen, ramifications from issue 432 are taken
 into account.
@@ -207,7 +210,7 @@ into account.
 
 <p>
 27.8.1.1 [lib.filebuf]: There are no reasonable copy semantics for
-basic_filebuf.
+<tt>basic_filebuf</tt>.
 </p>
 
 </rationale>

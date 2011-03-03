@@ -4,7 +4,7 @@
 ] >
 
 <issue num="408" status="NAD Editorial">
-<title>Is vector&lt;reverse_iterator&lt;char*&gt; &gt; forbidden?</title>
+<title>Is <tt>vector&lt;reverse_iterator&lt;char*&gt; &gt;</tt> forbidden?</title>
 <section><sref ref="[iterator.requirements]"/></section>
 <submitter>Nathan Myers</submitter>
 <date>3 Jun 2003</date>
@@ -20,7 +20,7 @@ surprise has popped up.  I don't think this has been discussed before.
 iterator values is to assign a non-singular value to them.  (It 
 doesn't say they can be destroyed, and that's probably a defect.)  
 Some implementations have taken this to imply that there is no need 
-to initialize the data member of a reverse_iterator&lt;&gt; in the default
+to initialize the data member of a <tt>reverse_iterator&lt;&gt;</tt> in the default
 constructor.  As a result, code like
 </p>
 <blockquote><pre>
@@ -61,12 +61,12 @@ rely on copy semantics for arbitrary iterators, just whether the
 types we actually supply support those operations.  I believe the 
 resolution must be expressed in terms of the semantics of the 
 adapter's argument type.  It should make clear that, e.g., the 
-reverse_iterator&lt;T&gt; constructor is actually required to execute
-T(), and so copying is defined if the result of T() is copyable.
+<tt>reverse_iterator&lt;T&gt;</tt> constructor is actually required to execute
+<tt>T()</tt>, and so copying is defined if the result of <tt>T()</tt> is copyable.
 </p>
 
 <p>
-Issue <iref ref="235"/>, which defines reverse_iterator's default
+Issue <iref ref="235"/>, which defines <tt>reverse_iterator</tt>'s default
 constructor more precisely, has some relevance to this issue.
 However, it is not the whole story.
 </p>
@@ -85,7 +85,7 @@ is allowed, vs.
 </pre></blockquote>
 
 <p>
-The difference is when T is char*, where the first leaves the member
+The difference is when <tt>T</tt> is <tt>char*</tt>, where the first leaves the member
 uninitialized, and possibly equal to an existing pointer value, or
 (on some targets) may result in a hardware trap when copied.
 </p>
@@ -97,7 +97,7 @@ types.
 </p>
 
 <p>
-But that only takes care of reverse_iterator, and doesn't establish
+But that only takes care of <tt>reverse_iterator</tt>, and doesn't establish
 a policy for all iterators.  (The reverse iterator adapter was just
 an example.)  In particular, does my function
 </p>
@@ -107,7 +107,7 @@ an example.)  In particular, does my function
 </pre></blockquote>
 <p>
 evoke undefined behavior for some conforming iterator definitions?
-I think it does, now, because vector&lt;&gt; will destroy those singular
+I think it does, now, because <tt>vector&lt;&gt;</tt> will destroy those singular
 iterator values, and that's explicitly disallowed.
 </p>
 
@@ -134,10 +134,10 @@ wrong to impose so strict a requirement for iterators.
 2009-05-10 Alisdair provided wording.
 </note>
 
-<blockquote>
+<blockquote><p>
 The comments regarding destroying singular iterators have already been
 resolved.  That just leaves copying (with moving implied).
-</blockquote>
+</p></blockquote>
 
 <note>
 2009-07 Frankfurt
@@ -182,19 +182,19 @@ This issue depends upon <iref ref="724"/>
 2009-10-14 Daniel adds:
 </note>
 
-<blockquote>
+<blockquote><p>
 There is a clear dependency on <iref ref="1213"/>, because the term "singular",
 which is used as part of the resolution, is not properly defined yet.
-</blockquote>
+</p></blockquote>
 
 <note>
 2009-10 Santa Cruz:
 </note>
 
-<blockquote>
+<blockquote><p>
 Moved to Open. Alisdair will provide improved wording to make
 this have "value semantics" and otherwise behave like a valid iterator.
-</blockquote>
+</p></blockquote>
 
 <note>
 2010 Pittsburgh:  Moved to NAD Editorial.  Rationale added below.

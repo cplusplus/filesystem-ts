@@ -11,8 +11,9 @@
 
 <discussion>
 <p>
-The dtor of the ios_base::Init object is supposed to call flush() on the
-6 standard iostream objects cout, cerr, clog, wcout, wcerr, and wclog.
+The dtor of the <tt>ios_base::Init</tt> object is supposed to call <tt>flush()</tt> on the
+6 standard iostream objects <tt>cout</tt>, <tt>cerr</tt>, <tt>clog</tt>, <tt>wcout</tt>, 
+<tt>wcerr</tt>, and <tt>wclog</tt>.
 This call may cause an exception to be thrown.
 </p>
 
@@ -22,16 +23,16 @@ This call may cause an exception to be thrown.
 
 <p>
 The question is: What should this dtor do if one or more of these calls
-to flush() ends up throwing an exception? This can happen quite easily
+to <tt>flush()</tt> ends up throwing an exception? This can happen quite easily
 if one of the facets installed in the locale imbued in the iostream
 object throws.
 </p>
 <note>Kona: We probably can't do much better than what we've got, so
   the LWG is leaning toward NAD.  At the point where the standard
   stream objects are being cleaned up, the usual error reporting
-  mechanism are all unavailable.  And exception from flush at this
+  mechanism are all unavailable.  And exception from <tt>flush</tt> at this
   point will definitely cause problems.  A quality implementation
-  might reasonably swallow the exception, or call abort, or do
+  might reasonably swallow the exception, or call <tt>abort</tt>, or do
   something even more drastic.</note>
 
 <note>
@@ -42,9 +43,9 @@ See <iref ref="397"/> and <iref ref="622"/> for related issues.
 2009-07 Frankfurt
 </note>
 
-<blockquote>
+<blockquote><p>
 Moved to NAD, no consensus for change.
-</blockquote>
+</p></blockquote>
 
 </discussion>
 

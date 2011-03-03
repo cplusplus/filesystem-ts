@@ -4,27 +4,27 @@
 ] >
 
 <issue num="219" status="NAD">
-<title>find algorithm missing version that takes a binary predicate argument</title>
+<title><tt>find</tt> algorithm missing version that takes a binary predicate argument</title>
 <section><sref ref="[alg.find]"/></section>
 <submitter>Pablo Halpern</submitter>
 <date>6 Mar 2000</date>
 
 <discussion>
-<p>The find function always searches for a value using operator== to compare the
+<p>The find function always searches for a value using <tt>operator==</tt> to compare the
 value argument to each element in the input iterator range. This is inconsistent
-with other find-related functions such as find_end and find_first_of, which
+with other find-related functions such as <tt>find_end</tt> and <tt>find_first_of</tt>, which
 allow the caller to specify a binary predicate object to be used for determining
-equality. The fact that this can be accomplished using a combination of find_if
-and bind_1st or bind_2nd does not negate the desirability of a consistent,
-simple, alternative interface to find.</p>
+equality. The fact that this can be accomplished using a combination of <tt>find_if</tt>
+and <tt>bind_1st</tt> or <tt>bind_2nd</tt> does not negate the desirability of a consistent,
+simple, alternative interface to <tt>find</tt>.</p>
 
 <note>
 Summit:
 </note>
 
-<blockquote>
+<blockquote><p>
 Reopened by Alisdair.
-</blockquote>
+</p></blockquote>
 
 <note>
 2009-07 Frankfurt
@@ -32,7 +32,7 @@ Reopened by Alisdair.
 
 <blockquote>
 <p>
-The same thing can be achieved using find_if (as noted in the issue).
+The same thing can be achieved using <tt>find_if</tt> (as noted in the issue).
 </p>
 <p>
 Moved to NAD.
@@ -51,14 +51,14 @@ follows:</p>
                          const T&amp; value, BinaryPredicate bin_pred);</pre>
 <p>Change the description of the return from:</p>
 <blockquote>
-  <p>Returns: The first iterator i in the range [first, last) for which the following corresponding
-  conditions hold: *i == value, pred(*i) != false. Returns last if no such iterator is found.</p>
+  <p>Returns: The first iterator <tt>i</tt> in the range <tt>[first, last)</tt> for which the following corresponding
+  conditions hold: <tt>*i == value</tt>, <tt>pred(*i) != false</tt>. Returns <tt>last</tt> if no such iterator is found.</p>
 </blockquote>
 <p>&nbsp;to:</p>
 <blockquote>
-  <p>Returns: The first iterator i in the range [first, last) for which the following&nbsp;
-  corresponding condition holds: *i == value, bin_pred(*i,value) != false, pred(*)
-  != false. Return last if no such iterator is found.</p>
+  <p>Returns: The first iterator <tt>i</tt> in the range <tt>[first, last)</tt> for which the following&nbsp;
+  corresponding condition holds: <tt>*i == value</tt>, <tt>bin_pred(*i,value) != false</tt>, <tt>pred(*)
+  != false</tt>. Return <tt>last</tt> if no such iterator is found.</p>
 </blockquote>
 </blockquote>
 </resolution>
@@ -66,7 +66,7 @@ follows:</p>
 <rationale>
 <p>This is request for a pure extension, so it is not a defect in the
 current standard.&nbsp; As the submitter pointed out, &quot;this can
-be accomplished using a combination of find_if and bind_1st or
-bind_2nd&quot;.</p>
+be accomplished using a combination of <tt>find_if</tt> and <tt>bind_1st</tt> or
+<tt>bind_2nd</tt>&quot;.</p>
 </rationale>
 </issue>
