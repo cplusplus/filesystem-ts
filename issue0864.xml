@@ -31,27 +31,27 @@ C A ::load(memory_order order = memory_order_seq_cst) const volatile;
 <p>
 I believe that this should state
 </p>
-<blockquote>
+<blockquote><p>
 shall not be <tt>memory_order_release</tt>.
-</blockquote>
+</p></blockquote>
 
 <p>
 There's also an error in <sref ref="[atomics.types.operations]"/>/p17:
 </p>
 
-<blockquote>
+<blockquote><p>
 ... When only one <tt>memory_order</tt> argument is supplied, the value of success
 is <tt>order</tt>, and
 the value of failure is <tt>order</tt> except that a value of
 <tt>memory_order_acq_rel</tt> shall be replaced by the value
 <tt>memory_order_require</tt> ...
-</blockquote>
+</p></blockquote>
 <p>
 I believe this should state
 </p>
-<blockquote>
+<blockquote><p>
 shall be replaced by the value <tt>memory_order_acquire</tt> ...
-</blockquote>
+</p></blockquote>
 </discussion>
 
 <resolution>
@@ -77,18 +77,18 @@ C A ::load(memory_order order = memory_order_seq_cst) const volatile;
 Change <sref ref="[atomics.types.operations]"/>/p17:
 </p>
 
-<blockquote>
+<blockquote><p>
 ... When only one <tt>memory_order</tt> argument is supplied, the value of success
 is <tt>order</tt>, and
 the value of failure is <tt>order</tt> except that a value of
 <tt>memory_order_acq_rel</tt> shall be replaced by the value
 <del><tt>memory_order_require</tt></del> <ins><tt>memory_order_acquire</tt></ins> ...
-</blockquote>
+</p></blockquote>
 
 </resolution>
 
 <rationale>
-Already fixed by the time the LWG processed it.
+<p>Already fixed by the time the LWG processed it.</p>
 </rationale>
 
 </issue>

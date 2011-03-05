@@ -17,10 +17,10 @@ From <sref ref="[valarray.cons]"/>, paragraph 2:
 <blockquote><pre>
 explicit  valarray(size_t);
 </pre>
-<blockquote>
+<blockquote><p>
 The array created by this constructor has a length equal to the value of the argument. The elements
 of the array are constructed using the default constructor for the instantiating type <tt>T</tt>.
-</blockquote>
+</p></blockquote>
 </blockquote>
 
 <p>
@@ -29,15 +29,15 @@ and <tt>double</tt>, they don't have a default constructor. I guess the intent i
 the elements, so I suggest replacing:
 </p>
 
-<blockquote>
+<blockquote><p>
 The elements of the array are constructed using the default constructor for the instantiating type <tt>T</tt>.
-</blockquote>
+</p></blockquote>
 <p>
 with
 </p>
-<blockquote>
+<blockquote><p>
 The elements of the array are value-initialized.
-</blockquote>
+</p></blockquote>
 
 <p>
 There is another reference to the default constructor of <tt>T</tt> in the non-normative note in paragraph 9.
@@ -48,10 +48,10 @@ and so it doesn't need changes).
 <note>
 Batavia (2009-05):
 </note>
-<blockquote>
+<blockquote><p>
 We agree with the proposed resolution.
 Move to NAD Editorial.
-</blockquote>
+</p></blockquote>
 </discussion>
 
 <resolution>
@@ -63,23 +63,23 @@ Change <sref ref="[valarray.cons]"/>, paragraph 2:
 <pre>
 explicit  valarray(size_t);
 </pre>
-<blockquote>
+<blockquote><p>
 The array created by this constructor has a length equal to the value of the argument. The elements
 of the array are <del>constructed using the default constructor for the instantiating type <tt>T</tt></del>
 <ins>value-initialized (<sref ref="[dcl.init]"/>)</ins>.
-</blockquote>
+</p></blockquote>
 </blockquote>
 
 <p>
 Change <sref ref="[valarray.members]"/>, paragraph 9:
 </p>
 
-<blockquote>
+<blockquote><p>
 [<i>Example:</i> If the argument has the value -2, the first two elements of the result will be <del>constructed using the 
 default constructor</del>
 <ins>value-initialized (<sref ref="[dcl.init]"/>)</ins>;
 the third element of the result will be assigned the value of the first element of the argument; etc. <i>-- end example</i>]
-</blockquote>
+</p></blockquote>
 
 </resolution>
 

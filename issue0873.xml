@@ -47,15 +47,15 @@
 San Francisco:
 </note>
 
-<blockquote>
+<blockquote><p>
 Plum, Sebor to review.
-</blockquote>
+</p></blockquote>
 
 <note>
 Post Summit Daniel adds:
 </note>
 
-<blockquote>
+<blockquote><p>
 The proposed resolution needs to be "conceptualized". Currently we have
 in <sref ref="[concept.support]"/> only concept <tt>IntegralType</tt>
 for all "integral types", thus indeed the current <tt>Container</tt>
@@ -63,7 +63,7 @@ concept and Iterator concepts are sufficiently satisfied with "integral
 types". If the changes are applied, we might ask core for concept
 <tt>BilateralIntegerType</tt> and add proper restrictions to the library
 concepts.
-</blockquote>
+</p></blockquote>
 
   </discussion>
 
@@ -82,6 +82,7 @@ concepts.
     </p>
     <blockquote>
       <p>
+      </p>
         <ol>
           <li>
             When two pointers to elements of the same array object are
@@ -93,7 +94,6 @@ concepts.
             <code>&lt;cstdint&gt;</code> header (18.1)...
           </li>
         </ol>
-      </p>
     </blockquote>
 
     <p>
@@ -103,8 +103,9 @@ concepts.
       types as appropriate.
       <sref ref="[allocator.requirements]"/> table 40...
     </p>
-    <blockquote>
+    <blockquote><p>
       Table 40: Allocator requirements
+	  </p>
       <table border="1">
         <thead>
           <tr>
@@ -142,8 +143,9 @@ concepts.
       <tt>make_unsigned&lt;T&gt;type</tt> and unsigned integer types.
       <sref ref="[meta.trans.sign]"/> table 48...
     </p>
-    <blockquote>
+    <blockquote><p>
       Table 48: Sign modifications
+	  </p>
       <table border="1">
         <thead>
           <tr>
@@ -215,8 +217,9 @@ concepts.
 
       <sref ref="[facet.num.get.virtuals]"/> table 78...
     </p>
-    <blockquote>
+    <blockquote><p>
       Table 78: Integer Conversions
+	  </p>
       <table border="1">
         <thead>
           <tr>
@@ -257,8 +260,9 @@ concepts.
       Rationale is same as above.
       <sref ref="[facet.num.put.virtuals]"/> table 80...
     </p>
-    <blockquote>
+    <blockquote><p>
       Table 80: Integer Conversions
+	  </p>
       <table border="1">
         <thead>
           <tr>
@@ -302,8 +306,9 @@ concepts.
     <p>
       <sref ref="[container.requirements]"/> table 80...
     </p>
-    <blockquote>
+    <blockquote><p>
       Table 89: Container requirements
+	  </p>
       <table border="1">
         <thead>
           <tr>
@@ -338,7 +343,7 @@ concepts.
     <p>
       <sref ref="[iterator.concepts]"/> paragraph 1...
     </p>
-    <blockquote>
+    <blockquote><p>
       Iterators are a generalization of pointers that allow a C++ program to
       work with different data structures (containers) in a uniform manner.
       To be able to construct template algorithms that work correctly and
@@ -357,7 +362,7 @@ concepts.
       <code>X</code> for which equality is defined, there is a corresponding
       <del>signed integral type</del> <ins>signed integer type</ins> called
       the <i>difference type</i> of the iterator.
-    </blockquote>
+    </p></blockquote>
     
     <p>
       I'm a little unsure of this change. Previously this paragraph would
@@ -366,7 +371,7 @@ concepts.
       new wording prohibits this.
       <sref ref="[rand.eng.lcong]"/> paragraph 2...
     </p>
-    <blockquote>
+    <blockquote><p>
       The template parameter <code>UIntType</code> shall denote an
       <del>unsigned integral type</del><ins>unsigned integer type</ins>
       large enough to store values as large as <code>m - 1</code>. If the
@@ -377,31 +382,31 @@ concepts.
       <code>result_type</code>. --end note] Otherwise, the following
       relations shall hold: <code>a &lt; m</code> and <code>c &lt;
       m</code>.
-    </blockquote>
+    </p></blockquote>
     
     <p>
       Same rationale as the previous change.
       <sref ref="[rand.adapt.xor]"/> paragraph 6...
     </p>
-    <blockquote>
+    <blockquote><p>
       Both <code>Engine1::result_type</code> and
       <code>Engine2::result_type</code> shall denote (possibly different)
       <del>unsigned integral types</del><ins>unsigned integer types</ins>.
       The member <i>result_type</i> shall denote either the type
       <i>Engine1::result_type</i> or the type <i>Engine2::result_type</i>,
       whichever provides the most storage according to clause 3.9.1.
-    </blockquote>
+    </p></blockquote>
     
     <p>
       <sref ref="[rand.util.seedseq]"/> paragraph 7...
     </p>
-    <blockquote>
+    <blockquote><p>
       <i>Requires:</i><code>RandomAccessIterator</code> shall meet the
       requirements of a random access iterator (24.1.5) such that
       <code>iterator_traits&lt;RandomAccessIterator&gt;::value_type</code>
       shall denote an <del>unsigned integral type</del><ins>unsigned integer
       type</ins> capable of accomodating 32-bit quantities.  
-    </blockquote>
+    </p></blockquote>
 
     <p>
       By making this change, integral types that happen to have a signed
@@ -410,13 +415,13 @@ concepts.
       the original intent, and should be reviewed.
       <sref ref="[atomics.types.operations]"/> paragraph 24...
     </p>
-    <blockquote>
+    <blockquote><p>
       <i>Remark:</i> For <del>signed integral types</del><ins>signed integer
       types</ins>, arithmetic is defined using two's complement
       representation. There are no undefined results. For address types, the
       result may be an undefined address, but the operations otherwise have
       no undefined behavior.
-    </blockquote>
+    </p></blockquote>
     
   </resolution>
 </issue>

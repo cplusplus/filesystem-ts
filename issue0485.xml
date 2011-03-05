@@ -3,7 +3,7 @@
   <!ENTITY nbsp "&#160;">
 ] >
 
-<issue num="485" status="NAD Editorial">
+<issue num="485" status="Resolved">
 <title>output iterator insufficiently constrained</title>
 <section><sref ref="[output.iterators]"/></section>
 <submitter>Chris Jefferson</submitter>
@@ -16,23 +16,23 @@ performed on output iterators. While it requires that each iterator is
 progressed through only once and that each iterator is written to only
 once, it does not require the following things:</p>
 
-<p>Note: Here it is assumed that x is an output iterator of type X which
+<p>Note: Here it is assumed that <tt>x</tt> is an output iterator of type <tt>X</tt> which
 has not yet been assigned to.</p>
 
 <p>a) That each value of the output iterator is written to:
 The standard allows:
-++x; ++x; ++x;
+<tt>++x; ++x; ++x;</tt>
 </p>
 
 <p>
 b) That assignments to the output iterator are made in order
-X a(x); ++a; *a=1; *x=2; is allowed
+<tt>X a(x); ++a; *a=1; *x=2;</tt> is allowed
 </p>
 
 <p>
 c) Chains of output iterators cannot be constructed:
-X a(x); ++a; X b(a); ++b; X c(b); ++c; is allowed, and under the current
-wording (I believe) x,a,b,c could be written to in any order.
+<tt>X a(x); ++a; X b(a); ++b; X c(b); ++c;</tt> is allowed, and under the current
+wording (I believe) <tt>x,a,b,c</tt> could be written to in any order.
 </p>
 
 <p>I do not believe this was the intension of the standard?</p>
@@ -44,9 +44,9 @@ wording (I believe) x,a,b,c could be written to in any order.
 2009-07 Frankfurt
 </note>
 
-<blockquote>
+<blockquote><p>
 Bill provided wording according to consensus.
-</blockquote>
+</p></blockquote>
 
 <note>
 2009-07-21 Alisdair requests change from Review to Open.  See thread starting
@@ -57,25 +57,25 @@ with c++std-lib-24459 for discussion.
 2009-10 Santa Cruz:
 </note>
 
-<blockquote>
+<blockquote><p>
 Modified wording.  Set to Review.
-</blockquote>
+</p></blockquote>
 
 <note>
 2009-10 Santa Cruz:
 </note>
 
-<blockquote>
+<blockquote><p>
 Move to Ready after looking at again in a larger group in Santa Cruz.
-</blockquote>
+</p></blockquote>
 
 <note>
 2010 Pittsburgh:
 </note>
 
-<blockquote>
-Moved to NAD Editorial.  Rationale added below.
-</blockquote>
+<blockquote><p>
+Moved to <del>NAD Editorial</del><ins>Resolved</ins>.  Rationale added below.
+</p></blockquote>
 
 </discussion>
 

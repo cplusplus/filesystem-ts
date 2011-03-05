@@ -105,9 +105,9 @@ See the minutes at: <a href="http://wiki.dinkumware.com/twiki/bin/view/Posix/POS
 2009-07 Frankfurt
 </note>
 
-<blockquote>
+<blockquote><p>
 Move to NAD.
-</blockquote>
+</p></blockquote>
 
 <note>
 2009-07-18 Detlef reopens the issue:
@@ -167,14 +167,14 @@ text concerning <tt>pthread_cond_timedwait</tt> found
 <a href="http://www.unix.org/single_unix_specification/">here</a>.
 </p>
 
-<blockquote>
+<blockquote><p>
 The <tt>pthread_cond_timedwait()</tt> function shall be equivalent to
 <tt>pthread_cond_wait()</tt>, except that an error is returned if the absolute
 time specified by <tt>abstime</tt> passes (that is, system time equals or exceeds
 <tt>abstime</tt>) before the condition <tt>cond</tt> is signaled or broadcasted, or if the
 absolute time specified by <tt>abstime</tt> has already been passed at the time
 of the call.
-</blockquote>
+</p></blockquote>
 
 <p>
 I.e. the POSIX specification speaks of the error code returned in case of a time
@@ -190,11 +190,11 @@ I do not believe so.  This same section goes on to say in <em>non-normative</em>
 text:
 </p>
 
-<blockquote>
+<blockquote><p>
 For cases when the system clock is advanced discontinuously by an
 operator, it is expected that implementations process any timed wait
 expiring at an intervening time as if that time had actually occurred.
-</blockquote>
+</p></blockquote>
 
 <p>
 Here is non-normative wording encouraging the implementation to ignore an advancing
@@ -260,11 +260,11 @@ not have good wording for such a note, but welcome suggestions.
 2009-10 Santa Cruz:
 </note>
 
-<blockquote>
+<blockquote><p>
 The LWG is in favor of Detlef to supply revision which adopts Option 2 from
 <a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2009/n2969.html">N2969</a>
 but is modified by saying that <tt>system_clock</tt> must be available for <tt>wait_until</tt>.
-</blockquote>
+</p></blockquote>
 
 <note>
 2010-02-11 Anthony provided wording.

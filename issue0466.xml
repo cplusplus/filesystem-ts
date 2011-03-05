@@ -4,7 +4,7 @@
 ] >
 
 <issue num="466" status="NAD">
-<title>basic_string ctor should prevent null pointer error</title>
+<title><tt>basic_string</tt> ctor should prevent null pointer error</title>
 <section><sref ref="[string.require]"/></section>
 <submitter>Daniel Frey</submitter>
 <date>10 Jun 2004</date>
@@ -16,7 +16,7 @@ found the problem. It could be reduced to the following short example:
 </p>
 
 <pre>
-  #include &lt;string>
+  #include &lt;string&gt;
   int main() { std::string( 0 ); }
 </pre>
 
@@ -25,8 +25,8 @@ Comeau online) compile the above without errors or warnings! The
 programs (at least for the GCC) resulted in a SEGV.</p>
 
 <p>I know that the standard explicitly states that the ctor of string
-requires a char* which is not zero. STLs could easily detect the above
-case with a private ctor for basic_string which takes a single 'int'
+requires a <tt>char*</tt> which is not zero. STLs could easily detect the above
+case with a private ctor for <tt>basic_string</tt> which takes a single '<tt>int</tt>'
 argument. This would catch the above code at compile time and would not
 ambiguate any other legal ctors.</p>
 
@@ -46,13 +46,13 @@ designed to solve exactly this kind of problem.
 <note>
 Batavia (2009-05):
 </note>
-<blockquote>
+<blockquote><p>
 We are unable to achieve consensus on an approach to a resolution.
 There is some sentiment for treating this as a QOI matter.
 It is also possible
 that when <tt>string</tt> is brought into the concepts world,
 this issue might be addressed in that context.
-</blockquote>
+</p></blockquote>
 
 <note>
 2009-07 Frankfurt

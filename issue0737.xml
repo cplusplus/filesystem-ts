@@ -39,19 +39,19 @@ interface, in particular the risk that input error might go unnoticed.
 <note>
 Stephan Tolksdorf adds pre-Bellevue:
 </note>
-<blockquote>
+<blockquote><p>
 In reply to the discussion in
 <a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2007/n2424.pdf">N2424</a>
 I'd like to make the same comments as for <iref ref="736"/>.
-</blockquote>
+</p></blockquote>
 
 <note>
 Bellevue:
 </note>
 
-<blockquote>
+<blockquote><p>
 In N2424. There is already precedent elsewhere in the library. Follows existing convention. NAD.
-</blockquote>
+</p></blockquote>
 </discussion>
 
 <resolution>
@@ -77,21 +77,21 @@ Proposed wording a)
 <p>
 Change in para. 2
 </p>
-<blockquote>
+<blockquote><p>
 Constructs a <tt>piecewise_constant_distribution</tt> object with <tt>n = 1</tt>, <tt>p<sub>0</sub> <ins>= w<sub>0</sub></ins> = 1</tt>,
 <tt>b<sub>0</sub> = 0</tt>, and <tt>b<sub>1</sub> = 1</tt>
-</blockquote>
+</p></blockquote>
 
 <p>
 and change in para. 5
 </p>
 
-<blockquote>
+<blockquote><p>
 A <tt>vector&lt;result_type&gt;</tt> whose <tt>size</tt> member returns <tt>n</tt> and whose <tt>operator[]</tt>
 member returns <del><tt>p<sub>k</sub></tt></del>
 <ins>the weight <tt>w<sub>k</sub></tt> as a double value</ins>
 when invoked with argument <tt>k</tt> for <tt>k = 0, ..., n-1</tt>
-</blockquote>
+</p></blockquote>
 
 </blockquote>
 
@@ -104,22 +104,22 @@ Proposed wording b)
 Change both occurrences of
 </p>
 
-<blockquote>
+<blockquote><pre>
 "piecewise_constant_distribution(InputIteratorB firstB, InputIteratorB lastB,
                                  InputIteratorW firstW<ins>, InputIteratorW lastW</ins>)
-</blockquote>
+</pre></blockquote>
 
 <p>
 and change in para. 3
 </p>
 
-<blockquote>
+<blockquote><p>
 <del>the length of the sequence <tt>w</tt> starting from <tt>firstW</tt> shall be at least <tt>n</tt>,
 <tt>*firstW</tt> shall return a value <tt>w<sub>0</sub></tt> that is convertible to <tt>double</tt>, and any
 <tt>w<sub>k</sub></tt> for <tt>k &gt;= n</tt> shall be ignored by the distribution</del>
 <ins><tt>[firstW, lastW)</tt> shall form a sequence <tt>w</tt> of length <tt>n</tt> whose leading element
 <tt>w<sub>0</sub></tt> shall be convertible to <tt>double</tt></ins>
-</blockquote>
+</p></blockquote>
 
 </blockquote>
 

@@ -4,7 +4,7 @@
 ] >
 
 <issue num="454" status="NAD">
-<title>basic_filebuf::open should accept wchar_t names</title>
+<title><tt>basic_filebuf::open</tt> should accept <tt>wchar_t</tt> names</title>
 <section><sref ref="[filebuf.members]"/></section>
 <submitter>Bill Plauger</submitter>
 <date>30 Jan 2004</date>
@@ -26,7 +26,7 @@ the other requires an implementation-defined mapping to determine the
 actual filename.
 </p>
 
-<note>Sydney: Yes, we want to allow wchar_t filenames.  Bill will
+<note>Sydney: Yes, we want to allow <tt>wchar_t</tt> filenames.  Bill will
   provide wording.</note>
 
 <note>
@@ -57,9 +57,9 @@ types.
 Martin adds pre-Sophia Antipolis:
 </note>
 
-<blockquote>
+<blockquote><p>
 Please see <a href="http://wiki.dinkumware.com/twiki/pub/Wg21sophiaAntipolis/LibraryWorkingGroup/issue-454.html">issue 454: problems and solutions</a>.
-</blockquote>
+</p></blockquote>
 
 <note>
 Sophia Antipolis:
@@ -115,12 +115,12 @@ basic_filebuf&lt;charT,traits>* open(
 </pre>
 
 <p>
-Effects: If is_open() != false, returns a null pointer.
-Otherwise, initializes the filebuf as required. It then
-opens a file, if possible, whose name is the NTBS s ("as if"
-by calling std::fopen(s,modstr)).
-For the second signature, the NTBS s is determined from the
-WCBS ws in an implementation-defined manner.
+<i>Effects</i>: If <tt>is_open() != false</tt>, returns a null pointer.
+Otherwise, initializes the <tt>filebuf</tt> as required. It then
+opens a file, if possible, whose name is the NTBS <tt>s</tt> ("as if"
+by calling <tt>std::fopen(s,modstr)</tt>).
+For the second signature, the NTBS <tt>s</tt> is determined from the
+WCBS <tt>ws</tt> in an implementation-defined manner.
 </p>
 
 <p>
@@ -178,11 +178,11 @@ introduced as separate issues.
 San Francisco:
 </note>
 
-<blockquote>
+<blockquote><p>
 Some existing implementations provide overload already. Expected
 filesystem "path" object overloads neatly, without surprises; implying
 NAD.
-</blockquote>
+</p></blockquote>
 </rationale>
 
 
