@@ -70,7 +70,7 @@ whether calling the following implicit conversion function could throw an except
 
 <blockquote><pre>
 template&lt;class T, class U&gt;
-T implicit(U&amp;&amp; u) noexcept(is_nothrow_convertible&lt;U, T&gt;::value) 
+T implicit_cast(U&amp;&amp; u) noexcept(is_nothrow_convertible&lt;U, T&gt;::value) 
 {
   return std::forward&lt;U&gt;(u);
 }
