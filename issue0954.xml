@@ -11,10 +11,10 @@
 
 <discussion>
 <p>
-Table 55 -- Clock Requirements (in <sref ref="[time.clock.req]"/>)
+Table 55 &mdash; Clock Requirements (in <sref ref="[time.clock.req]"/>)
 </p>
 
-<ol type="a">
+<ol style="list-style-type:lower-alpha">
 <li>
 the requirements for <tt>C1::time_point</tt> require <tt>C1</tt> and <tt>C2</tt>
 to "refer to the same epoch", but "epoch" is not defined.
@@ -41,7 +41,7 @@ it's a template. What is the required type?
 2009-05-10 Howard adds:
 </note>
 
-<ol type="a">
+<ol style="list-style-type:lower-alpha">
 <li>
 <p>
 "epoch" is purposefully not defined beyond the common English
@@ -60,22 +60,22 @@ The <tt>time_point</tt> represents an offset (<tt>duration</tt>) from an epoch.
 <p>
 The sentence:
 </p>
-<blockquote>
+<blockquote><p>
 Different clocks 
 may share a <tt>time_point</tt>
 definition if it is valid to 
 compare their <tt>time_point</tt>s by 
 comparing their respective 
 <tt>duration</tt>s.
-</blockquote>
+</p></blockquote>
 
 <p>
 is redundant and could be removed.  I believe the sentence which follows the above:
 </p>
 
-<blockquote>
+<blockquote><p>
 <tt>C1</tt> and <tt>C2</tt> shall refer to the same epoch.
-</blockquote>
+</p></blockquote>
 
 <p>
 is sufficient.  If two clocks share the same epoch, then by definition, comparing
@@ -90,9 +90,9 @@ desired that this value be usable in compile-time computation and branching.
 <p>
 This should probably instead be worded:
 </p>
-<blockquote>
+<blockquote><p>
 An instantiation of <tt>ratio</tt>.
-</blockquote>
+</p></blockquote>
 </li>
 </ol>
 
@@ -116,11 +116,11 @@ Move to Open pending proposed wording.
 2009-05-25 Daniel adds:
 </note>
 
-<blockquote>
+<blockquote><p>
 In regards to (d) I suggest to say "a specialization of ratio" instead of
 "An instantiation of ratio". This seems to be the better matching standard
 core language term for this kind of entity.
-</blockquote>
+</p></blockquote>
 
 <note>
 2009-05-25 Ganesh adds:
@@ -147,24 +147,24 @@ which is part of ISO/IEC 18026 "Information technology -- Spatial Reference Mode
 2009-10 Santa Cruz:
 </note>
 
-<blockquote>
+<blockquote><p>
 Move to Ready.
-</blockquote>
+</p></blockquote>
 
 </discussion>
 
 <resolution>
-<ol type="a">
+<ol style="list-style-type:lower-alpha">
 <li>
 <p>
 Change <sref ref="[time.clock.req]"/> p1:
 </p>
-<blockquote>
+<blockquote><p>
 -1- A clock is a bundle consisting of a native <tt>duration</tt>, a native <tt>time_point</tt>, and a function <tt>now()</tt> to get the 
 current <tt>time_point</tt>.  <ins>The origin of the clock's <tt>time_point</tt> is referred to as the clock's <i>epoch</i> as defined in 
 section 6.3 of ISO/IEC 18026.</ins>
 A clock shall meet the requirements in Table 45.
-</blockquote>
+</p></blockquote>
 </li>
 <li>
 <p>
@@ -188,7 +188,7 @@ The native <tt>time_point</tt> type of the clock.
 </table>
 </li>
 </ol>
-<ol type="a" start="4">
+<ol style="list-style-type:lower-alpha" start="4">
 <li>
 <p>
 Change the row starting with <tt>C1::period</tt> of the table "Clock Requirements":

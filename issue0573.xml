@@ -18,28 +18,28 @@ There are two deficiencies related to file sizes:
       a way that handles modern file sizes, which are often too
       large to be represented by an unsigned long.</li>
 
-<li>The std::fpos class does not currently have the ability to
+<li>The <tt>std::fpos</tt> class does not currently have the ability to
       set/get file positions.</li>
 </ol>
 <p>
 The Dinkumware implementation of the Standard Library as shipped with the Microsoft compiler copes with these issues by:
 </p>
-<ol type="A">
-<li>Defining fpos_t be long long, which is large enough to
+<ol style="list-style-type:upper-alpha">
+<li>Defining <tt>fpos_t</tt> be <tt>long long</tt>, which is large enough to
       represent any file position likely in the foreseeable future.</li>
 
-<li>Adding member functions to class fpos. For example,
+<li>Adding member functions to class <tt>fpos</tt>. For example,
 <blockquote><pre>
 fpos_t seekpos() const;
 </pre></blockquote>
 </li>
 </ol>
 <p>
-Because there are so many types relating to file positions and offsets (fpos_t,
-fpos, pos_type, off_type, streamoff, streamsize, streampos, wstreampos, and
-perhaps more), it is difficult to know if the Dinkumware extensions are
-sufficient. But they seem a useful starting place for discussions, and they do
-represent existing practice.
+Because there are so many types relating to file positions and offsets (<tt>fpos_t</tt>,
+<tt>fpos</tt>, <tt>pos_type</tt>, <tt>off_type</tt>, <tt>streamoff</tt>, <tt>streamsize</tt>, 
+<tt>streampos</tt>, <tt>wstreampos</tt>, and perhaps more), it is difficult to know if 
+the Dinkumware extensions are sufficient. But they seem a useful starting place for 
+discussions, and they do represent existing practice.
 </p>
 
 <note>

@@ -4,7 +4,7 @@
 ] >
 
 <issue num="1359" status="NAD">
-<title>[FCD] Add <tt>&lt;tuple></tt> and <tt>&lt;utility></tt> to freestanding implementations</title>
+<title>[FCD] Add <tt>&lt;tuple&gt;</tt> and <tt>&lt;utility&gt;</tt> to freestanding implementations</title>
 <section><sref ref="[compliance]"/></section>
 <submitter>BSI</submitter>
 <date>25 Aug 2010</date>
@@ -12,11 +12,11 @@
 <discussion>
 <p><b>Addresses GB-56</b></p>
 <p>
-The <tt>&lt;utility></tt> header provides support for several
+The <tt>&lt;utility&gt;</tt> header provides support for several
 important C++ idioms with <tt>move</tt>, <tt>forward</tt> and <tt>swap</tt>.
 Likewise, <tt>declval</tt> will be frequently used like a type trait.
 In order to complete cycles introduced by <tt>std::pair</tt>, the
-<tt>&lt;tuple></tt> header should also be made available. This is a
+<tt>&lt;tuple&gt;</tt> header should also be made available. This is a
 similarly primitive set of functionality, with no dependency
 of a hosted environment, but does go beyond the minimal
 set of functionality otherwise suggested by the
@@ -24,7 +24,7 @@ freestanding libraries.
 </p>
 <p>
 Alternatively, split the <tt>move</tt>/<tt>forward</tt>/<tt>swap</tt>/<tt>declval</tt>
-functions out of <tt>&lt;utility></tt> and into a new primitive header,
+functions out of <tt>&lt;utility&gt;</tt> and into a new primitive header,
 requiring only that of freestanding implementation.
 </p>
 
@@ -32,11 +32,17 @@ requiring only that of freestanding implementation.
 Summary of Rapperswil discusions
 </note>
 <p>
-The preference of the meeting was to extract the rvalue-reference related utilities and swap into a freestanding header, but there was no clear preference for a name.  Howard suggested simply dropping them into <tt>&lt;type_traits></tt> as both these utilities and type traits are used pretty much everywhere in the library implementation, it is the most convenient place to keep them (from an implementer's perspective).
+The preference of the meeting was to extract the rvalue-reference related utilities 
+and swap into a freestanding header, but there was no clear preference for a name.  
+Howard suggested simply dropping them into <tt>&lt;type_traits&gt;</tt> as both 
+these utilities and type traits are used pretty much everywhere in the library 
+implementation, it is the most convenient place to keep them (from an implementer's 
+perspective).
 </p>
 
 <p>
-Poll: Two-way: New header for forward, move, swap, move_with_noexcept and declval vs. calling out forward, move, swap, move_with_noexcept and declval as freestanding explicitly?
+Poll: Two-way: New header for forward, move, swap, move_with_noexcept and declval vs. 
+calling out forward, move, swap, move_with_noexcept and declval as freestanding explicitly?
 
 SF new header: 4 WF new header: 3 WF call out as freestanding: 1 SF call out as freestanding: 2
 
@@ -50,7 +56,7 @@ Resolution proposed by ballot comment
 </note>
 <blockquote>
 <p>
-Add <tt>&lt;utility></tt> and <tt>&lt;tuple></tt> to table 15, headers
+Add <tt>&lt;utility&gt;</tt> and <tt>&lt;tuple&gt;</tt> to table 15, headers
 required for a free-standing implementation.
 </p>
 </blockquote>
@@ -78,7 +84,6 @@ this whole header on free-standing vendors.
 <resolution>
 </resolution>
 
-<rationale>No consensus for a change at this time. 
-</rationale>
+<rationale><p>No consensus for a change at this time.</p></rationale>
 
 </issue>

@@ -50,7 +50,7 @@ ref="[atomics.order]"/>p5 from
 <a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2008/n2798.pdf">N2798</a>:
 </p>
 
-<blockquote>
+<blockquote><p>
 For atomic operations <tt>A</tt> and <tt>B</tt> on an atomic object
 <tt>M</tt>, where <tt>A</tt> modifies <tt>M</tt> and <tt>B</tt> takes
 its value, if there are <tt>memory_order_seq_cst</tt> fences <tt>X</tt>
@@ -59,7 +59,7 @@ and <tt>Y</tt> such that <tt>A</tt> is sequenced before <tt>X</tt>,
 <tt>Y</tt> in <tt>S</tt>, then <tt>B</tt> observes either the effects of
 <tt>A</tt> or a later modification of <tt>M</tt> in its modification
 order.
-</blockquote>
+</p></blockquote>
 
 <p>
 In this case, <tt>A</tt> is <tt>SX</tt>, <tt>B</tt> is <tt>RX</tt>, the
@@ -125,7 +125,7 @@ disaster either.
 In any case, we should probably add text along the lines of the
 following between p5 and p6 in <sref ref="[atomics.order]"/>:
 </p>
-<blockquote>
+<blockquote><p>
 [Note: <tt>Memory_order_seq_cst</tt> only ensures sequential consistency for a
 data-race-free program that uses exclusively <tt>memory_order_seq_cst</tt>
 operations.  Any use of weaker ordering will invalidate this guarantee
@@ -133,7 +133,7 @@ unless extreme care is used.  In particular, <tt>memory_order_seq_cst</tt> fence
 only ensure a total order for the fences themselves.  They cannot, in
 general, be used to restore sequential consistency for atomic operations
 with weaker ordering specifications.]
-</blockquote>
+</p></blockquote>
 
 <p>
 Also see thread beginning at c++std-lib-23271.
@@ -152,11 +152,11 @@ has ingrained an automatic introspection on the use of "only".   I
 think you meant:
 </p>
 
-<blockquote>
+<blockquote><p>
 [Note: <tt>Memory_order_seq_cst</tt> ensures sequential consistency only
 for . . . .  In particular, <tt>memory_order_seq_cst</tt> fences ensure a
 total order only for . . .
-</blockquote>
+</p></blockquote>
 <p>
 Unless, of course, <tt>Memory_order_seq_cst</tt> really do nothing but ensure
 sequential consistency for a data-race-free program that uses
@@ -168,10 +168,10 @@ exclusively <tt>memory_order_seq_cst</tt> operations.
 2009-10 Santa Cruz:
 </note>
 
-<blockquote>
+<blockquote><p>
 NAD Editorial.  Solved by
 <a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2009/n2992.html">N2992</a>.
-</blockquote>
+</p></blockquote>
 
 </discussion>
 
@@ -180,7 +180,7 @@ NAD Editorial.  Solved by
 Add a new paragraph after <sref ref="[atomics.order]"/>p5 that says
 </p>
 
-<blockquote>
+<blockquote><p>
 For atomic operations <tt>A</tt> and <tt>B</tt> on an atomic object
 <tt>M</tt>, where <tt>A</tt> and <tt>B</tt> modify <tt>M</tt>, if there
 are <tt>memory_order_seq_cst</tt> fences <tt>X</tt> and <tt>Y</tt> such
@@ -188,7 +188,7 @@ that <tt>A</tt> is sequenced before <tt>X</tt>, <tt>Y</tt> is sequenced
 before <tt>B</tt>, and <tt>X</tt> precedes <tt>Y</tt> in <tt>S</tt>,
 then <tt>B</tt> occurs later than <tt>A</tt> in the modifiction order of
 <tt>M</tt>.
-</blockquote>
+</p></blockquote>
 </resolution>
 
 </issue>

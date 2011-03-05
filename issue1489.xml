@@ -13,14 +13,16 @@ mutex requirements are inconsistent</title>
 <discussion>
 <p><b>Addresses CH-26</b></p>
 
+<p>
 Specifications of <tt>unlock</tt> member functions and <tt>unlock</tt>
 mutex requirements are inconsistent wrt to exceptions and
 pre- and postconditions.
+</p>
 
 <note>
 Resolution proposed by ballot comment:
 </note>
-<blockquote>
+<blockquote><p>
 <tt>unlock</tt> should specifiy the precondition that the
 current thread "owns the lock", this will make calls
 without holding the locks "undefined behavior".
@@ -33,7 +35,7 @@ Furthermore <tt>unique_lock</tt>'s postcondition is wrong
 in the case of a recursive mutex where <tt>owns</tt>
 might stay true, when it is not the last <tt>unlock</tt>
 needed to be called.
-</blockquote>
+</p></blockquote>
 
 </discussion>
 

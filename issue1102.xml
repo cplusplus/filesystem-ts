@@ -38,7 +38,7 @@ allowed to reallocate it's memory *inside* the <tt>for</tt> loop.
 IMO the problem is due to the fact, that
 </p>
 
-<ol type="a">
+<ol style="list-style-type:lower-alpha">
 <li>
 the actual memory-reallocation stability of <tt>std::vector</tt>
 is explained in <sref ref="[vector.capacity]"/>/3 and /6 which
@@ -57,11 +57,11 @@ easily causes a misunderstanding, because the counter
 parting insert functions described in <sref ref="[vector.modifiers]"/>/2
 explicitly say, that
 </p>
-<blockquote>
+<blockquote><p>
 Causes reallocation if the new size is greater than the
 old capacity. If no reallocation happens, all the iterators
 and references before the insertion point remain valid.
-</blockquote>
+</p></blockquote>
 <p>
 It requires a complex argumentation chain about four
 different places in the standard to provide the - possibly
@@ -92,10 +92,10 @@ Move to Review.
 2009-10 Santa Cruz:
 </note>
 
-<blockquote>
+<blockquote><p>
 Mark as NAD. Rationale: there is no consensus to clarify the standard,
 general consensus that the standard is correct as written.
-</blockquote>
+</p></blockquote>
 
 </discussion>
 
@@ -114,23 +114,23 @@ reasonable wording changes now
 <p>
 Change <sref ref="[vector.capacity]"/>/6 as follows:
 </p>
-<blockquote>
+<blockquote><p>
 It is guaranteed that no reallocation takes place during
 insertions <ins>or erasures</ins> that happen after a call
 to <tt>reserve()</tt> until the time when an insertion would make
 the size of the vector greater than the value of <tt>capacity()</tt>.
-</blockquote>
+</p></blockquote>
 </li>
 <li>
 <p>
 Change <sref ref="[vector.modifiers]"/>/4 as follows:
 </p>
-<blockquote>
+<blockquote><p>
 <i>Effects:</i> <ins>The capacity shall remain unchanged and no reallocation shall
 happen.</ins>
 Invalidates iterators and references at or after the point
 of the erase.
-</blockquote>
+</p></blockquote>
 </li>
 </ol>
 </resolution>

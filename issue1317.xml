@@ -105,20 +105,20 @@ class CustomerHash : public std::unary_function&lt;Customer, std::size_t&gt;
 Note that, in principle, we can either specify that
 </p>
 
-<blockquote>
+<blockquote><p>
 <tt>make_hash</tt> returns the sum of a call of
 <tt>std::hash&lt;T&gt;()(x)</tt> for each argument <tt>x</tt> of type
 <tt>T</tt>
-</blockquote>
+</p></blockquote>
 
 <p>
 or we can specify that
 </p>
 
-<blockquote>
+<blockquote><p>
 <tt>make_hash</tt> provides a hash value for each argument, for which a
 <tt>std::hash()</tt> function is provided
-</blockquote>
+</p></blockquote>
 
 <p>
 with the possible note that the hash value may be poor or only a good hash value
@@ -172,18 +172,18 @@ template &lt;class T&gt;
   size_t make_hash (const T&amp; val);
 </pre>
 
-<blockquote>
+<blockquote><p>
 <i>Returns:</i> <tt>hash&lt;T&gt;()(val);</tt>
-</blockquote>
+</p></blockquote>
 
 <pre>
 template &lt;class T, class... Types&gt;
   size_t make_hash (const T&amp; val, const Types&amp;... args);
 </pre>
 
-<blockquote>
+<blockquote><p>
 <i>Returns:</i> <tt>hash&lt;T&gt;()(val) + std::make_hash(args...)</tt>
-</blockquote>
+</p></blockquote>
 
 </blockquote>
 

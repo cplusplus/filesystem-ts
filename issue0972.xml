@@ -30,9 +30,9 @@ Are all of those instances of "<tt>Assignable</tt>" to be replaced by "<tt>CopyA
 <note>
 Batavia (2009-05):
 </note>
-<blockquote>
+<blockquote><p>
 Move to NAD Editorial.
-</blockquote>
+</p></blockquote>
 </discussion>
 
 <resolution>
@@ -40,48 +40,51 @@ Move to NAD Editorial.
 <p>
 Change Exception Propagation <sref ref="[propagation]"/>:
 </p>
-<blockquote>
+<blockquote><p>
 <tt>exception_ptr</tt> shall be <tt>DefaultConstructible</tt>, <tt>CopyConstructible</tt>,
 <tt><ins>Copy</ins>Assignable</tt> and <tt>EqualityComparable</tt>.
-</blockquote>
+</p></blockquote>
 
 <p>
 Change Class template reference_wrapper <sref ref="[refwrap]"/>:
 </p>
-<blockquote>
-<tt>reference_wrapper&lt;T&gt;</tt> is a <tt>CopyConstructible</tt> and <tt><ins>Copy</ins>Assignable</tt> wrapper around a reference to an object of type <tt>T</tt>.
-</blockquote>
+<blockquote><p>
+<tt>reference_wrapper&lt;T&gt;</tt> is a <tt>CopyConstructible</tt> and <tt><ins>Copy</ins>Assignable</tt> 
+wrapper around a reference to an object of type <tt>T</tt>.
+</p></blockquote>
 <p>
 Change Placeholders <sref ref="[func.bind.place]"/>:
 </p>
-<blockquote>
-It is implementation defined whether placeholder types are <tt><ins>Copy</ins>Assignable</tt>. <tt><ins>Copy</ins>Assignable</tt> placeholders' copy assignment operators shall not throw exceptions.
-</blockquote>
+<blockquote><p>
+It is implementation defined whether placeholder types are <tt><ins>Copy</ins>Assignable</tt>. 
+<tt><ins>Copy</ins>Assignable</tt> placeholders' copy assignment operators shall not throw exceptions.
+</p></blockquote>
 <p>
 Change Class template shared_ptr <sref ref="[util.smartptr.shared]"/>:
 </p>
-<blockquote>
+<blockquote><p>
 Specializations of <tt>shared_ptr</tt> shall be <tt>CopyConstructible</tt>, <tt><ins>Copy</ins>Assignable</tt>, and <tt>LessThanComparable</tt>...
-</blockquote>
+</p></blockquote>
 <p>
 Change Class template weak_ptr <sref ref="[util.smartptr.weak]"/>:
 </p>
-<blockquote>
+<blockquote><p>
 Specializations of <tt>weak_ptr</tt> shall be <tt>CopyConstructible</tt>, <tt><ins>Copy</ins>Assignable</tt>, and <tt>LessThanComparable</tt>...
-</blockquote>
+</p></blockquote>
 <p>
 Change traits typedefs <sref ref="[char.traits.typedefs]"/> (note: including deletion of reference to 23.1!):
 </p>
-<blockquote>
-<i>Requires:</i> <tt>state_type</tt> shall meet the requirements of <tt><ins>Copy</ins>Assignable</tt><del> (23.1)</del>, <tt>CopyConstructible</tt> (20.1.8), and <tt>DefaultConstructible</tt> types.
-</blockquote>
+<blockquote><p>
+<i>Requires:</i> <tt>state_type</tt> shall meet the requirements of <tt><ins>Copy</ins>Assignable</tt><del> 
+(23.1)</del>, <tt>CopyConstructible</tt> (20.1.8), and <tt>DefaultConstructible</tt> types.
+</p></blockquote>
 <p>
 Change Class seed_seq <sref ref="[rand.util.seedseq]"/> (note again: including deletion of reference to 23.1!):
 </p>
-<blockquote>
+<blockquote><p>
 In addition to the requirements set forth below, instances of
 <tt>seed_seq</tt> shall meet the requirements of <tt>CopyConstructible</tt> (20.1.8) and of <tt><ins>Copy</ins>Assignable</tt><del> (23.1)</del>.
-</blockquote>
+</p></blockquote>
 
 <p>
 Note: The proposed resolution of this issue does not deal with the

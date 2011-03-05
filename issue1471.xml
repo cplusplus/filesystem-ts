@@ -12,25 +12,27 @@
 <discussion>
 <p><b>Addresses US-168</b></p>
 
+<p>
 <sref ref="[atomics.types.operations]"/> around p. 4: The definition of the default constructor needs exposition.
+</p>
 </discussion>
 
 <resolution>
-Insert a new general prototype description following the current <sref ref="[atomics.types.operations]"/> p. 3 as indicated:
 <p>
+Insert a new general prototype description following the current <sref ref="[atomics.types.operations]"/> p. 3 as indicated:
 </p>
-<blockquote>
+<blockquote><p>
 3 [<em>Note</em>: Many operations are volatile-qualified. The “volatile as device register” semantics have not changed
 in the standard. This qualification means that volatility is preserved when applying these operations to
 volatile objects. It does not mean that operations on non-volatile objects become volatile. Thus, volatile
 qualified operations on non-volatile objects may be merged under some conditions. -- <em>end note</em>]
-</blockquote>
+</p></blockquote>
 <blockquote><pre>
 <ins>A::A() = default;</ins>
-</pre><blockquote>
+</pre><blockquote><p>
 <ins>? <em>Effects</em>: Leaves the atomic object in an uninitialized state.
 [<em>Note</em>: These semantics ensure compatiblity with <tt>C</tt>. -- <em>end note</em>]</ins>
-</blockquote></blockquote>
+</p></blockquote></blockquote>
 <blockquote><pre>
 constexpr A::A(C desired);
 [..]

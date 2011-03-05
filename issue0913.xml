@@ -14,18 +14,18 @@
 (A) <sref ref="[alg.replace]"/>/1:
 </p>
 
-<blockquote>
+<blockquote><p>
 <i>Requires:</i> The expression <tt>*first = new_value</tt> shall be valid.
-</blockquote>
+</p></blockquote>
 
 <p>
 (B) <sref ref="[alg.replace]"/>/4:
 </p>
 
-<blockquote>
+<blockquote><p>
 <i>Requires:</i> The results of the expressions <tt>*first</tt> and <tt>new_value</tt> shall
 be writable to the result output iterator.[..]
-</blockquote>
+</p></blockquote>
 
 <p>
 Since conceptualization, the quoted content of these clauses is covered
@@ -62,7 +62,7 @@ Move to Tentatively Ready.
 </discussion>
 
 <resolution>
-<ol type="A">
+<ol style="list-style-type:upper-alpha">
 <li>
 <p>
 Remove <sref ref="[alg.replace]"/>/1.
@@ -82,9 +82,9 @@ template&lt;ForwardIterator Iter, Predicate&lt;auto, Iter::value_type&gt; Pred, 
   void replace_if(Iter first, Iter last, 
                   Pred pred, const T&amp; new_value);
 </pre>
-<blockquote>
+<blockquote><p>
 <del>1 <i>Requires:</i> The expression <tt>*first = new_value</tt> shall be valid.</del>
-</blockquote>
+</p></blockquote>
 </blockquote>
 </li>
 <li>
@@ -111,12 +111,12 @@ template&lt;InputIterator InIter, typename OutIter,
                           OutIter result, 
                           Pred pred, const T&amp; new_value);
 </pre>
-<blockquote>
+<blockquote><p>
 4 <i>Requires:</i> <del>The results of the expressions <tt>*first</tt> and
 <tt>new_value</tt> shall be writable to the <tt>result</tt> output
 iterator.</del> The ranges <tt>[first,last)</tt> and <tt>[result,result +
 (last - first))</tt> shall not overlap.
-</blockquote>
+</p></blockquote>
 </blockquote>
 </li>
 </ol>

@@ -35,7 +35,7 @@ because of the special design choices of <tt>forward_list</tt>.
 I propose to apply one of the following resolutions, which are described as:
 </p>
 
-<ol type="A">
+<ol style="list-style-type:upper-alpha">
 <li>
 Provide a definition, which is optimal for this special container without
 previous size test. This choice prevents two <tt>O(N)</tt> calls of <tt>std::distance()</tt>
@@ -72,9 +72,9 @@ Martin will draft the wording for Option C.
 post San Francisco:
 </note>
 
-<blockquote>
+<blockquote><p>
 Martin provided wording for Option C.
-</blockquote>
+</p></blockquote>
 
 <note>
 2009-07 Frankfurt
@@ -99,20 +99,20 @@ Howard: Commented out options A and B.
 2009-10 Santa Cruz:
 </note>
 
-<blockquote>
+<blockquote><p>
 Mark NAD Editorial. Addressed by
 <a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2009/n2986.pdf">N2986</a>.
-</blockquote>
+</p></blockquote>
 
 <note>
 2009-10 Santa Cruz:
 </note>
 
-<blockquote>
+<blockquote><p>
 Reopened.
 <a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2009/n2986.pdf">N2986</a>
 was rejected in full committee on procedural grounds.
-</blockquote>
+</p></blockquote>
 
 <note>
 2010-01-30 Howard updated Table numbers.
@@ -122,9 +122,9 @@ was rejected in full committee on procedural grounds.
 2010 Pittsburgh:
 </note>
 
-<blockquote>
+<blockquote><p>
 Moved to Ready for Pittsburgh.
-</blockquote>
+</p></blockquote>
 
 </discussion>
 
@@ -256,16 +256,16 @@ Option (C):
 In <sref ref="[container.requirements.general]"/> change Table 90 -- Container requirements as indicated:
 </p>
 
-<ol type="a">
+<ol style="list-style-type:lower-alpha">
 <li>
 <p>
 Change the text in the Assertion/note column in the row for "<tt>X u</tt>;"
 as follows:
 </p>
 
-<blockquote>
+<blockquote><p>
 post: <tt>u.<del>size() == 0</del><ins>empty() == true</ins></tt>
-</blockquote>
+</p></blockquote>
 </li>
 
 <li>
@@ -274,9 +274,9 @@ Change the text in the Assertion/note column in the row for "<tt>X();</tt>"
 as follows:
 </p>
 
-<blockquote>
+<blockquote><p>
 <tt>X().<del>size() == 0</del><ins>empty() == true</ins></tt>
-</blockquote>
+</p></blockquote>
 </li>
 
 <li>
@@ -284,12 +284,12 @@ as follows:
 Change the text in the Operational Semantics column in the row for
 "<tt>a == b</tt>" as follows:
 </p>
-<blockquote>
+<blockquote><p>
 <tt>==</tt> is an equivalence relation.
 <tt><del>a.size()</del><ins>distance(a.begin(), a.end())</ins> ==
    <del>b.size()</del><ins>distance(b.begin(), b.end())</ins> &amp;&amp;
 equal(a.begin(), a.end(), b.begin())</tt>
-</blockquote>
+</p></blockquote>
 </li>
 
 <li>
@@ -308,9 +308,9 @@ Change the text in the Operational Semantics column in the row for
 "<tt>a.size()</tt>" as follows:
 </p>
 
-<blockquote>
+<blockquote><p>
 <tt><del>a.end() - a.begin()</del><ins>distance(a.begin(), a.end())</ins></tt>
-</blockquote>
+</p></blockquote>
 </li>
 
 <li>
@@ -319,10 +319,10 @@ Change the text in the Operational Semantics column in the row for
 "<tt>a.max_size()</tt>" as follows:
 </p>
 
-<blockquote>
+<blockquote><p>
 <tt><del>size()</del><ins>distance(begin(), end())</ins></tt> of the largest
 possible container
-</blockquote>
+</p></blockquote>
 </li>
 
 <li>
@@ -331,9 +331,9 @@ Change the text in the Operational Semantics column in the row for
 "<tt>a.empty()</tt>" as follows:
 </p>
 
-<blockquote>
+<blockquote><p>
 <tt><del>a.size() == 0</del><ins>a.begin() == a.end()</ins></tt>
-</blockquote>
+</p></blockquote>
 </li>
 </ol>
 </li>
@@ -343,17 +343,17 @@ Change the text in the Operational Semantics column in the row for
 In <sref ref="[container.requirements.general]"/> change Table 93 -- Allocator-aware container requirements as indicated:
 </p>
 
-<ol type="a">
+<ol style="list-style-type:lower-alpha">
 <li>
 <p>
 Change the text in the Assertion/note column in the row for "<tt>X() /
 X u;</tt>" as follows:
 </p>
 
-<blockquote>
+<blockquote><p>
 <i>Requires:</i> <tt>A</tt> is <tt>DefaultConstructible</tt> post: <tt><del>u.size() ==
 0</del><ins>u.empty() == true</ins></tt>, <tt>get_allocator() == A()</tt>
-</blockquote>
+</p></blockquote>
 </li>
 
 <li>
@@ -362,10 +362,10 @@ Change the text in the Assertion/note column in the row for "<tt>X(m) /
 X u(m);</tt>" as follows:
 </p>
 
-<blockquote>
+<blockquote><p>
 post: <tt><del>u.size() == 0</del><ins>u.empty() == true</ins>,
 get_allocator() == m</tt>
-</blockquote>
+</p></blockquote>
 </li>
 </ol>
 </li>
@@ -375,16 +375,16 @@ get_allocator() == m</tt>
 In <sref ref="[sequence.reqmts]"/> change Table 94 -- Sequence container requirements as indicated:
 </p>
 
-<ol type="a">
+<ol style="list-style-type:lower-alpha">
 <li>
 <p>
 Change the text in the Assertion/note column in the row for "<tt>X(n,
 t) / X a(n, t)</tt>" as follows:
 </p>
 
-<blockquote>
+<blockquote><p>
 post: <tt><del>size()</del><ins>distance(begin(), end())</ins> == n [..]</tt>
-</blockquote>
+</p></blockquote>
 </li>
 
 <li>
@@ -393,10 +393,10 @@ Change the text in the Assertion/note column in the row for "<tt>X(i,
 j) / X a(i, j)</tt>" as follows:
 </p>
 
-<blockquote>
+<blockquote><p>
 [..] post: <del><tt>size() ==</tt> distance between <tt>i</tt> and
 <tt>j</tt></del><ins><tt>distance(begin(), end()) == distance(i, j)</tt></ins> [..]
-</blockquote>
+</p></blockquote>
 </li>
 
 <li>
@@ -404,10 +404,10 @@ j) / X a(i, j)</tt>" as follows:
 Change the text in the Assertion/note column in the row for
 "<tt>a.clear()</tt>" as follows:
 </p>
-<blockquote>
+<blockquote><p>
 <tt><ins>a.</ins>erase(<ins>a.</ins>begin(), <ins>a.</ins>end())</tt> post:
 <tt><del>size() == 0</del><ins>a.empty() == true</ins></tt>
-</blockquote>
+</p></blockquote>
 </li>
 </ol>
 </li>
@@ -425,7 +425,7 @@ semantics of "<tt>erase</tt>"
 for all tables and adds some missing objects
 </note>
 
-<ol type="a">
+<ol style="list-style-type:lower-alpha">
 
 <li>
 <p>
@@ -433,10 +433,10 @@ Change the text in the Complexity column in the row for <tt>X(i,j,c)/X
 a(i,j,c);</tt> as follows:
 </p>
 
-<blockquote>
+<blockquote><p>
 <tt>N</tt> log <tt>N</tt> in general (<tt>N</tt> <ins><tt> == distance(i,
 j)</tt></ins><del>is the distance from <tt>i</tt> to <tt>j</tt></del>); ...
-</blockquote>
+</p></blockquote>
 
 </li>
 
@@ -445,10 +445,10 @@ j)</tt></ins><del>is the distance from <tt>i</tt> to <tt>j</tt></del>); ...
 Change the text in the Complexity column in the row for
 "<tt>a.insert(i, j)</tt>" as follows:
 </p>
-<blockquote>
+<blockquote><p>
 <tt>N log(<ins>a.</ins>size() + N)</tt> <del>(<tt>N</tt> is the distance from <tt>i</tt> to
 <tt>j</tt>)</del><ins> where <tt>N == distance(i, j)</tt></ins>
-</blockquote>
+</p></blockquote>
 </li>
 
 <li>
@@ -456,9 +456,9 @@ Change the text in the Complexity column in the row for
 Change the text in the Complexity column in the row for
 "<tt>a.erase(k)</tt>" as follows:
 </p>
-<blockquote>
+<blockquote><p>
 <tt>log(<ins>a.</ins>size()) + <ins>a.</ins>count(k)</tt>
-</blockquote>
+</p></blockquote>
 </li>
 
 <li>
@@ -467,11 +467,11 @@ Change the text in the Complexity column in the row for
 "<tt>a.erase(q1, q2)</tt>" as follows:
 </p>
 
-<blockquote>
+<blockquote><p>
 <tt>log(<ins>a.</ins>size()) + N</tt> where <tt>N</tt> <del>is the distance from <tt>q1</tt>
 to <tt>q2</tt></del>
    <ins><tt>== distance(q1, q2)</tt></ins>.
-</blockquote>
+</p></blockquote>
 </li>
 
 <li>
@@ -480,10 +480,10 @@ Change the text in the Assertion/note column in the row for
 "<tt>a.clear()</tt>" as follows:
 </p>
 
-<blockquote>
+<blockquote><p>
 <tt><ins>a.</ins>erase(a.begin(),a.end())</tt> post: <tt><del>size() ==
 0</del><ins>a.empty() == true</ins></tt>
-</blockquote>
+</p></blockquote>
 </li>
 
 <li>
@@ -492,9 +492,9 @@ Change the text in the Complexity column in the row for "<tt>a.clear()</tt>"
 as follows:
 </p>
 
-<blockquote>
+<blockquote><p>
 linear in <tt><ins>a.</ins>size()</tt>
-</blockquote>
+</p></blockquote>
 </li>
 
 <li>
@@ -503,31 +503,31 @@ Change the text in the Complexity column in the row for
 "<tt>a.count(k)</tt>" as follows:
 </p>
 
-<blockquote>
+<blockquote><p>
 <tt>log(<ins>a.</ins>size()) + <ins>a.</ins>count(k)</tt>
-</blockquote>
+</p></blockquote>
 </li>
 </ol>
 </li>
 
 <li>
 <p>
-In <sref ref="[unord.req]"/> change Table 98 -- Unordered associative container requirements as indicated:
+In <sref ref="[unord.req]"/> change Table 98 &mdash; Unordered associative container requirements as indicated:
 </p>
 <note>
 The same rational as for Table 96 applies here
 </note>
 
-<ol type="a">
+<ol style="list-style-type:lower-alpha">
 <li>
 <p>
 Change the text in the Assertion/note column in the row for
 "<tt>a.clear()</tt>" as follows:
 </p>
 
-<blockquote>
+<blockquote><p>
 [..] Post: <tt>a.<del>size() == 0</del><ins>empty() == true</ins></tt>
-</blockquote>
+</p></blockquote>
 </li>
 </ol>
 </li>

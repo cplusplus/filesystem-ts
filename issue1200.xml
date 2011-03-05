@@ -14,11 +14,10 @@
 The footnote for <tt>int_type</tt> in <sref ref="[char.traits.typedefs]"/> says that
 </p>
 
-<blockquote>
-If <tt>eof()</tt>
-can be held in <tt>char_type</tt> then some iostreams implementations may give
-surprising results.
-</blockquote>
+<blockquote><p>
+If <tt>eof()</tt> can be held in <tt>char_type</tt> then some iostreams implementations 
+may give surprising results.
+</p></blockquote>
 
 <p>
 This implies that <tt>int_type</tt> should be a superset of
@@ -55,20 +54,20 @@ for the second:
 Replace <sref ref="[char.traits.specializations.char16_t]"/> para 3 with:
 </p>
 
-<blockquote>
+<blockquote><p>
 The member <tt>eof()</tt> shall return <del>an implementation-defined
 constant that cannot appear as a valid UTF-16 code unit</del>
 <ins><tt>UINT_LEAST16_MAX</tt> [<i>Note:</i> this value is guaranteed to
 be a permanently reserved UCS-2 code position if <tt>UINT_LEAST16_MAX ==
 0xFFFF</tt> and it's not a UCS-2 code position otherwise &mdash; <i>end
 note</i>]</ins>.
-</blockquote>
+</p></blockquote>
 
 <p>
 Replace <sref ref="[char.traits.specializations.char32_t]"/> para 3 with:
 </p>
 
-<blockquote>
+<blockquote><p>
 The member <tt>eof()</tt> shall return <del>an implementation-defined constant that
 cannot appear as a Unicode code point</del>
 <ins>
@@ -76,7 +75,7 @@ cannot appear as a Unicode code point</del>
 permanently reserved UCS-4 code position if <tt>UINT_LEAST32_MAX ==
 0xFFFFFFFF</tt> and it's not a UCS-4 code position otherwise &mdash; <i>end
 note</i>]</ins>.
-</blockquote>
+</p></blockquote>
 </li>
 <li>
 <p>
@@ -97,14 +96,14 @@ namespace std {
 Replace <sref ref="[char.traits.specializations.char16_t]"/> para 3 with:
 </p>
 
-<blockquote>
+<blockquote><p>
 The member <tt>eof()</tt> shall return <del>an implementation-defined
 constant that cannot appear as a valid UTF-16 code unit</del>
 <ins><tt>UINT_FAST16_MAX</tt> [<i>Note:</i> this value is guaranteed to
 be a permanently reserved UCS-2 code position if <tt>UINT_FAST16_MAX ==
 0xFFFF</tt> and it's not a UCS-2 code position otherwise &mdash; <i>end
 note</i>]</ins>.
-</blockquote>
+</p></blockquote>
 
 <p>
 In <sref ref="[char.traits.specializations.char32_t]"/>, in the
@@ -124,7 +123,7 @@ namespace std {
 Replace <sref ref="[char.traits.specializations.char32_t]"/> para 3 with:
 </p>
 
-<blockquote>
+<blockquote><p>
 The member <tt>eof()</tt> shall return <del>an implementation-defined constant that
 cannot appear as a Unicode code point</del>
 <ins>
@@ -132,7 +131,7 @@ cannot appear as a Unicode code point</del>
 permanently reserved UCS-4 code position if <tt>UINT_FAST32_MAX ==
 0xFFFFFFFF</tt> and it's not a UCS-4 code position otherwise &mdash; <i>end
 note</i>]</ins>.
-</blockquote>
+</p></blockquote>
 </li>
 </ol>
 </blockquote>
@@ -142,11 +141,13 @@ note</i>]</ins>.
 2010 Rapperswil:
 </note>
 
-<blockquote>
-This seems an overspecification, and it is not clear what problem is being solved - these values can be used portably by using the named functions; there is no need for the value itself to be portable.
+<blockquote><p>
+This seems an overspecification, and it is not clear what problem is being solved - 
+these values can be used portably by using the named functions; there is no need 
+for the value itself to be portable.
 
 Move to Tentatively NAD.
-</blockquote>
+</p></blockquote>
 
 <note>
 Moved to NAD at 2010-11 Batavia

@@ -86,7 +86,7 @@ result_type" is non-editorial, but maybe you prefer that as well.]
 <p>
 In class unary/binary_function
 </p>
-<ol type="a">
+<ol style="list-style-type:lower-alpha">
 <li>
 I suggest to change "ReturnType" to "Returnable" in both cases.
 </li>
@@ -103,7 +103,7 @@ they would still remain unconstrained: To make them constrained at least a
 single requirement needs to be added to enable requirement implication. This
 could be done via a dummy ("requires True&lt;true&gt;") or just explicit as follows:
 </p>
-<ol type="a">
+<ol style="list-style-type:lower-alpha">
 <li>
 <blockquote><pre>
 template &lt;AdaptableUnaryFunction P&gt;
@@ -113,9 +113,9 @@ template &lt;AdaptableUnaryFunction P&gt;
 requires Predicate&lt; P, P::argument_type &gt;
 unary_negate&lt;P&gt; not1(P&amp;&amp; pred);
 </pre>
-<blockquote>
+<blockquote><p>
 -3- Returns: unary_negate&lt;P&gt;(pred).
-</blockquote>
+</p></blockquote>
 </blockquote>
 <p>
 [Don't we want a move call for the second overload as in
@@ -177,10 +177,10 @@ Move to Open.
 2009-10 post-Santa Cruz:
 </note>
 
-<blockquote>
+<blockquote><p>
 Leave open pending the potential move constructor paper. Note that
 we consider the "constraining" part NAD Concepts.
-</blockquote>
+</p></blockquote>
 
 <note>
 2010-01-31 Alisdair removes the current proposed wording from the proposed
@@ -262,9 +262,9 @@ template &lt;<del>class</del> <ins>AdaptableUnaryFunction</ins> P<del>redicate</
     bool operator()(const <del>typename</del> P<del>redicate</del>::argument_type&amp; x) const;
   };
 </pre>
-<blockquote>
+<blockquote><p>
 -2 <tt>operator()</tt> returns <tt>!pred(x)</tt>.
-</blockquote>
+</p></blockquote>
 
 <pre>
 template &lt;class Predicate&gt;
@@ -272,9 +272,9 @@ template &lt;class Predicate&gt;
 <ins>template &lt;class Predicate&gt;
   unary_negate&lt;Predicate&gt; not1(Predicate&amp;&amp; pred);</ins>
 </pre>
-<blockquote>
+<blockquote><p>
 -3-  <i>Returns:</i> <tt>unary_negate&lt;Predicate&gt;(pred)</tt>.
-</blockquote>
+</p></blockquote>
 
 <pre>
 template &lt;<del>class</del> <ins>AdaptableBinaryFunction</ins> P<del>redicate</del> &gt;
@@ -295,9 +295,9 @@ template &lt;<del>class</del> <ins>AdaptableBinaryFunction</ins> P<del>redicate<
                     const <del>typename</del> P<del>redicate</del>::second_argument_type&amp; y) const;
   };
 </pre>
-<blockquote>
+<blockquote><p>
 -4- <tt>operator()</tt> returns <tt>!pred(x,y)</tt>.
-</blockquote>
+</p></blockquote>
 
 <pre>
 template &lt;class Predicate&gt;
@@ -306,9 +306,9 @@ template &lt;class Predicate&gt;
   binary_negate&lt;Predicate&gt; not2(Predicate&amp;&amp; pred);</ins>
 </pre>
 
-<blockquote>
+<blockquote><p>
 -5- <i>Returns:</i> <tt>binary_negate&lt;Predicate&gt;(pred)</tt>.
-</blockquote>
+</p></blockquote>
 </blockquote>
 
 </blockquote>
@@ -318,9 +318,10 @@ template &lt;class Predicate&gt;
 2010 Rapperswil:
 </note>
 
-<blockquote>
-Move to NAD Concepts.  The move-semantic part has been addressed by a core language change, which implicitly generates appropriate move constructors and move-assignment operators.
-</blockquote>
+<blockquote><p>
+Move to NAD Concepts.  The move-semantic part has been addressed by a core language change, 
+which implicitly generates appropriate move constructors and move-assignment operators.
+</p></blockquote>
 
 </discussion>
 

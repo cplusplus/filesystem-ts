@@ -4,7 +4,7 @@
 ] >
 
 <issue num="1422" status="NAD Future">
-<title>[FCD] vector&lt;bool&gt;</tt> iterators are not random access</title>
+<title>[FCD] <tt>vector&lt;bool&gt;</tt> iterators are not random access</title>
 <section><sref ref="[vector.bool]"/></section>
 <submitter>BSI</submitter>
 <date>25 Aug 2010</date>
@@ -63,24 +63,24 @@ Old Proposed Resolution:
 <p>
 Insert a new paragraph into <sref ref="[vector.bool]"/> between p4 and p5:
 </p>
-<blockquote>
+<blockquote><p>
 [<i>Note</i> All functions in the library that take a pair of iterators to
 denote a range shall treat <tt>vector&lt;bool&gt;</tt> iterators as-if they were
 random access iterators, even though the <tt>reference</tt> type is not a
 true reference.<i>-- end note</i>]
-</blockquote>
+</p></blockquote>
 </blockquote>
 
 <note>
 2010-11 Batavia:
 </note>
-<blockquote>
+<blockquote><p>
 Closed as NAD Future, because the current iterator categories cannot correctly describe
 <tt>vector&lt;bool&gt;::iterator</tt>. But saying that they are Random Access Iterators
 is also incorrect, because it is not too hard to create a corresponding test that fails.
 We should deal with the more general proxy iterator problem in the future, and see no
 benefit to take a partial workaround specific to <tt>vector&lt;bool&gt;</tt> now.
-</blockquote>
+</p></blockquote>
 
 </discussion>
 
@@ -88,7 +88,9 @@ benefit to take a partial workaround specific to <tt>vector&lt;bool&gt;</tt> now
 </resolution>
 
 <rationale>
+<p>
 No consensus to make this change at this time.
+</p>
 </rationale>
 
 </issue>

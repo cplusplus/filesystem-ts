@@ -59,7 +59,7 @@ constexpr bool operator[](size_t pos) const;
 Three interpretations:
 </p>
 
-<ol type="A">
+<ol style="list-style-type:upper-alpha">
 <li>
 The <tt>operator[]</tt> overload is indeed allowed to throw an exception
 (via <tt>test()</tt>, if <tt>pos</tt> corresponds to an invalid bit position) which does
@@ -90,11 +90,11 @@ Three alternatives are proposed, corresponding to the three bullets
 (A), (B), and (C), the author suggests to follow proposal (C).
 </p>
 
-<b>
+<p><b>
 Proposed alternatives:
-</b>
+</b></p>
 
-<ol type="A">
+<ol style="list-style-type:upper-alpha">
 <li>
 <p>
 Remove the <tt>constexpr</tt> specifier in front of <tt>operator[]</tt> overload and
@@ -112,21 +112,21 @@ before <sref ref="[bitset.members]"/>/56 and before /64 to read:
 Change the throws clause of p. 65 to read:
 </p>
 
-<blockquote>
+<blockquote><p>
 <i>Throws:</i> <del>nothing</del>
 <ins><tt>out_of_range</tt> if <tt>pos</tt> does not correspond to a valid bit
 position</ins>.
-</blockquote>
+</p></blockquote>
 </li>
 <li>
 <p>
 Replace the throws clause p. 57 to read:
 </p>
 
-<blockquote>
+<blockquote><p>
 <i>Throws:</i> <del><tt>out_of_range</tt> if <tt>pos</tt> does not correspond to a valid bit
 position</del> <ins>nothing</ins>.
-</blockquote>
+</p></blockquote>
 </li>
 <li>
 <p>
@@ -144,10 +144,10 @@ was applied.
 Change the returns clause p. 66 to read:
 </p>
 
-<blockquote>
+<blockquote><p>
 <i>Returns:</i> <del><tt>test(pos)</tt></del> <ins><tt>true</tt> if the bit at position <tt>pos</tt> in <tt>*this</tt>
 has the value one, otherwise <tt>false</tt></ins>.
-</blockquote>
+</p></blockquote>
 </li>
 </ol>
 
@@ -175,7 +175,7 @@ Move to Tentatively Ready.
 
 <resolution>
 
-<ol type="A", start="3">
+<ol style="list-style-type:upper-alpha", start="3">
 <li>
 <p>
 Undo the addition of the <tt>constexpr</tt> specifier to the <tt>test</tt> member
@@ -192,10 +192,10 @@ was applied.
 Change the returns clause p. 66 to read:
 </p>
 
-<blockquote>
+<blockquote><p>
 <i>Returns:</i> <del><tt>test(pos)</tt></del> <ins><tt>true</tt> if the bit at position <tt>pos</tt> in <tt>*this</tt>
 has the value one, otherwise <tt>false</tt></ins>.
-</blockquote>
+</p></blockquote>
 </li>
 </ol>
 

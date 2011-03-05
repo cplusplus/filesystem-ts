@@ -19,11 +19,11 @@ clear that's true from the text of the standard:
 <blockquote><pre>
 void resize(size_type sz);
 </pre>
-<blockquote>
+<blockquote><p>
 <i>Effects:</i> If <tt>sz &lt; size()</tt>, equivalent to <tt>erase(begin() + sz, end());</tt>. If
 <tt>size() &lt; sz</tt>, appends <tt>sz - size()</tt> default constructed elements to the
 sequence.
-</blockquote>
+</p></blockquote>
 </blockquote>
 
 <p>
@@ -35,10 +35,10 @@ the guarantee I'd like.  Thoughts?
 2009-11-10 Howard adds:
 </note>
 
-<blockquote>
+<blockquote><p>
 Moved to Tentatively NAD after 5 positive votes on c++std-lib.  Rationale added
 below.
-</blockquote>
+</p></blockquote>
 
 </discussion>
 
@@ -50,12 +50,12 @@ In <sref ref="[vector.capacity]"/>/10, change
 <blockquote><pre>
 void resize(size_type sz);
 </pre>
-<blockquote>
+<blockquote><p>
 <i>Effects:</i> If <tt>sz &lt; size()</tt>, equivalent to <tt>erase(begin() + sz, end());</tt>. If
 <tt>size() &lt; sz</tt>, <del>appends <tt>sz - size()</tt> default constructed elements to the
 sequence</del>
 <ins>equivalent to <tt>sz - size()</tt> consecutive evaluations of <tt>push_back(T())</tt></ins>.
-</blockquote>
+</p></blockquote>
 </blockquote>
 
 </resolution>

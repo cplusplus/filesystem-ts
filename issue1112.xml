@@ -11,7 +11,7 @@
 
 <discussion>
 <p>
-<tt>Std::bitset</tt> is a homogeneous container-like sequence of bits, yet it does
+<tt>std::bitset</tt> is a homogeneous container-like sequence of bits, yet it does
 not model the Range concept so cannot be used with the new for-loop syntax.
 It is the only such type in the library that does NOT support the new for
 loop.
@@ -22,7 +22,7 @@ The obvious reason is that bitset does not support iterators.
 <p>
 At least two reasonable solutions are available:
 </p>
-<ol type="i">
+<ol style="list-style-type:lower-roman">
 <li>
 Add an iterator interface to <tt>bitset</tt>, bringing its interface close to that
 of <tt>std::array</tt>
@@ -57,10 +57,10 @@ take a reference to a <tt>bitset::reference</tt> if you want to write back.
 <note>
 Batavia (2009-05):
 </note>
-<blockquote>
+<blockquote><p>
 Move to Open.
 We further recommend this be deferred until after the next Committee Draft.
-</blockquote>
+</p></blockquote>
 
 <note>
 2009-05-25 Alisdair adds:
@@ -86,9 +86,9 @@ Howard: I've replaced the proposed wording with Alisdair's suggestion.
 2009-10 post-Santa Cruz:
 </note>
 
-<blockquote>
+<blockquote><p>
 Mark as Tentatively NAD Future due to the loss of concepts.
-</blockquote>
+</p></blockquote>
 
 </discussion>
 
@@ -139,19 +139,19 @@ template&lt;size_t N&gt; <i>unspecified-1</i> begin(bitset&lt;N&gt;&amp;);
 template&lt;size_t N&gt; <i>unspecified-2</i> begin(const bitset&lt;N&gt;&amp;);
 </ins>
 </pre>
-<blockquote>
+<blockquote><p>
 <ins>2.  Returns: an iterator referencing the first bit in the bitset.</ins>
-</blockquote>
+</p></blockquote>
 
 <pre><ins>
 template&lt;size_t N&gt; <i>unspecified-1</i> end(bitset&lt;N&gt;&amp;);
 template&lt;size_t N&gt; <i>unspecified-2</i> end(const bitset&lt;N&gt;&amp;);
 </ins></pre>
 
-<blockquote>
+<blockquote><p>
 <ins>3.  Returns: an iterator referencing one past the last bit in the
 bitset.</ins>
-</blockquote>
+</p></blockquote>
 </blockquote>
 </li>
 </ol>

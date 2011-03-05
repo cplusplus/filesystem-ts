@@ -27,7 +27,7 @@ holding a real reference rather than the intended reference wrapper.
 There are two things as a library author I can do at this point:
 </p>
 
-<ol type="i">
+<ol style="list-style-type:lower-roman">
 <li>
 document my library also has the same reference-wrapper behaviour as
 <tt>std::make_tuple</tt>
@@ -48,8 +48,8 @@ simply implementing a simplified <tt>make_tuple</tt>.)
 Now I don't propose we lose this library facility, I think unwrapping
 references will be the common behaviour.  However, we might want to
 consider adding another overload that does nothing special with
-<tt>ref</tt>-wrappers.  Note that we already have a second overload of <tt>make_tuple</tt>
-in the library, called <tt>tie</tt>.
+<tt>ref</tt>-wrappers.  Note that we already have a second overload of 
+<tt>make_tuple</tt> in the library, called <tt>tie</tt>.
 </p>
 
 <note>
@@ -83,10 +83,10 @@ or alternatively (but with a slightly different semantic):
 </p>
 
 <blockquote>
-<blockquote>
+<blockquote><p>
 <i>Remarks:</i> If <tt>sizeof...(Types) != 2</tt>, this function shall not
 participate in overload resolution.
-</blockquote>
+</p></blockquote>
 </blockquote>
 
 <p>
@@ -98,7 +98,7 @@ it might be preferable to use the normal two-argument-declaration
 style again in either of the following ways:
 </p>
 
-<ol type="A">
+<ol style="list-style-type:upper-alpha">
 <li>
 <pre>template&lt;class T1, class T2&gt;
 pair&lt;typename decay&lt;T1&gt;::type, typename decay&lt;T2&gt;::type&gt;
@@ -109,10 +109,10 @@ make_simple_pair(T1&amp;&amp; t1, T2&amp;&amp; t2);
 <pre>template&lt;class T1, class T2&gt;
 pair&lt;V1, V2&gt; make_simple_pair(T1&amp;&amp; t1, T2&amp;&amp; t2);
 </pre>
-<blockquote>
+<blockquote><p>
 Let <tt>V1</tt> be <tt>typename decay&lt;T1&gt;::type</tt> and <tt>V2</tt> be
 <tt>typename decay&lt;T2&gt;::type</tt>.
-</blockquote>
+</p></blockquote>
 </li>
 </ol>
 
@@ -122,9 +122,9 @@ Let <tt>V1</tt> be <tt>typename decay&lt;T1&gt;::type</tt> and <tt>V2</tt> be
 2009-10 post-Santa Cruz:
 </note>
 
-<blockquote>
+<blockquote><p>
 Mark as Tentatively NAD Future.
-</blockquote>
+</p></blockquote>
 
 </discussion>
 

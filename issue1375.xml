@@ -26,18 +26,18 @@ extensions and future features.
 In [allocator.requirements] Table 42 - Allocotor Requirements, 
 Add a row (after <tt>value_type</tt>) with columns:
 </p>
-<blockquote>
+<blockquote><p>
 Expression: <ins><tt>X::reference_type</tt></ins><BR/>
 Return type: <ins><tt>T&amp;</tt></ins><BR/>
 Assertion/note...: (empty)<BR/>
 Default: <ins><tt>T&amp;</tt></ins><BR/>
-</blockquote>
+</p></blockquote>
 <p>
 [allocator.traits]:
 </p> 
 <blockquote><pre>
 namespace std {
-  template &lt;class Alloc> struct allocator_traits {
+  template &lt;class Alloc&gt; struct allocator_traits {
     typedef Alloc allocator_type;
     
     typedef typename Alloc::value_type value_type;
@@ -48,10 +48,11 @@ namespace std {
     typedef <i>see below</i>   const_void_pointer;
     <ins>typedef value_type&amp; reference_type;</ins>
 </pre></blockquote>
-
+<p>
 Add <tt>reference_type</tt> to
 allocator_traits template, defaulted to
 value_type&amp;.
+</p>
 </resolution>
 
 </issue>

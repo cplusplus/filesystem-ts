@@ -78,13 +78,13 @@ of those declarations.  It seems overly burdensome on the author of <tt>do_until
 template &lt;class Clock, class Duration&gt;
 void do_until(const std::chrono::<b>time_point</b>&lt;Clock, Duration&gt;&amp; t)
 {
-    typename Clock::<b>time_point<font color="#C80000">_type</font></b> now = Clock::now();
+    typename Clock::<b>time_point<span style="color:#C80000">_type</span></b> now = Clock::now();
     if (t &gt; now)
     {
         typedef typename std::common_type
         &lt;
             Duration,
-            typename std::chrono::system_clock::<b>duration<font color="#C80000">_type</font></b>
+            typename std::chrono::system_clock::<b>duration<span style="color:#C80000">_type</span></b>
         &gt;::type CD;
         typedef std::chrono::<b>duration</b>&lt;double, std::nano&gt; ID;
 
@@ -102,9 +102,9 @@ Additionally I'm fairly certain that this suggestion hasn't been implemented.
 If it had, it would have been discovered that it is incomplete.  <tt>time_point</tt>
 also has a nested type (purposefully) named <tt>duration</tt>.
 </p>
-<blockquote>
+<blockquote><p>
 That is, the current proposed wording would put the WP into an inconsistent state.
-</blockquote>
+</p></blockquote>
 <p>
 In contrast,
 the current WP has been implemented and I've received very favorable feedback
@@ -203,9 +203,9 @@ reducing readability.
 2009-10 Santa Cruz:
 </note>
 
-<blockquote>
+<blockquote><p>
 Mark as NAD.  No concensus for changing the WP.
-</blockquote>
+</p></blockquote>
 
 </discussion>
 
@@ -302,21 +302,21 @@ public:
 time_t to_time_t(const time_point<ins>_type</ins>&amp; t);
 </pre>
 
-<blockquote>
+<blockquote><p>
 -3- <i>Returns:</i> A <tt>time_t</tt> object that represents the same
 point in time as <tt>t</tt> when both values are truncated to the
 coarser of the precisions of <tt>time_t</tt> and <tt>time_point<ins>_type</ins></tt>.
-</blockquote>
+</p></blockquote>
 
 <pre>
 <tt>time_point<ins>_type</ins></tt> from_time_t(time_t t);
 </pre>
 
-<blockquote>
+<blockquote><p>
 -4- <i>Returns:</i> A <tt>time_point<ins>_type</ins></tt> object that represents the same point
 in time as <tt>t</tt> when both values are truncated to the coarser of the
 precisions of <tt>time_t</tt> and <tt>time_point<ins>_type</ins></tt>.
-</blockquote>
+</p></blockquote>
 </blockquote>
 
 <p>

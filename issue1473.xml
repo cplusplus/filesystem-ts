@@ -12,6 +12,7 @@
 <discussion>
 <p><b>Addresses US-172</b></p>
 
+<p>
 As of <sref ref="[atomics.types.operations]"/> p. 9, 13, 17, 20:
 <p/>
 The order specifications are incomplete because the non-<tt>_explicit</tt>
@@ -21,7 +22,7 @@ Add a new sentence: "If the program does not specify an order, it shall be
 <tt>memory_order_seq_cst</tt>." Or perhaps: "The non-_explicit
 non-member functions shall affect memory as though they were _explicit with
 <tt>memory_order_seq_cst</tt>."
-
+</p>
 
 <note>
 2010 Batavia
@@ -31,7 +32,7 @@ The Concurrency subgroup reviewed this, and deemed it NAD according to
 <sref ref="[atomics.types.operations]"/> paragraph 2, bullet 4. 
 </p>
 
-<rationale>The working paper is correct as written.</rationale>
+<rationale><p>The working paper is correct as written.</p></rationale>
 
 </discussion>
 
@@ -45,13 +46,14 @@ void atomic_store_explicit(volatile A *object, C desired, memory_order order);
 void atomic_store_explicit(A* object, C desired, memory_order order);
 void A::store(C desired, memory_order order = memory_order_seq_cst) volatile;
 void A::store(C desired, memory_order order = memory_order_seq_cst);
-</pre><blockquote>
+</pre><blockquote><p>
 8 <em>Requires</em>: The order argument shall not be <tt>memory_order_consume</tt>, <tt>memory_order_acquire</tt>, nor
 <tt>memory_order_acq_rel</tt>.
 <p/>
 9 <em>Effects</em>: Atomically replaces the value pointed to by <tt>object</tt> or by this with the value of <tt>desired</tt>.
 Memory is affected according to the value of <tt>order</tt>. <ins>If the program does not specify an order, it shall be
 <tt>memory_order_seq_cst</tt>.</ins>
+</p>
 </blockquote></blockquote>
 </li>
 <li>Change <sref ref="[atomics.types.operations]"/> p. 13 as indicated:
@@ -62,13 +64,14 @@ C atomic_load_explicit(const volatile A* object, memory_order);
 C atomic_load_explicit(const A* object, memory_order);
 C A::load(memory_order order = memory_order_seq_cst) const volatile;
 C A::load(memory_order order = memory_order_seq_cst) const;
-</pre><blockquote>
+</pre><blockquote><p>
 12 <em>Requires</em>: The order argument shall not be <tt>memory_order_release</tt> nor <tt>memory_order_acq_rel</tt>.
 <p/>
 13 <em>Effects</em>: Memory is affected according to the value of <tt>order</tt>. <ins>If the program does not specify an order, it shall be
 <tt>memory_order_seq_cst</tt>.</ins>
 <p/>
 14 <em>Returns</em>: Atomically returns the value pointed to by <tt>object</tt> or by <tt>this</tt>.
+</p>
 </blockquote></blockquote>
 </li>
 <li>Change <sref ref="[atomics.types.operations]"/> p. 17 as indicated:
@@ -79,12 +82,13 @@ C atomic_exchange_explicit(volatile A* object, C desired, memory_order);
 C atomic_exchange_explicit(A* object, C desired, memory_order);
 C A::exchange(C desired, memory_order order = memory_order_seq_cst) volatile;
 C A::exchange(C desired, memory_order order = memory_order_seq_cst);
-</pre><blockquote>
+</pre><blockquote><p>
 17 <em>Effects</em>: Atomically replaces the value pointed to by <tt>object</tt> or by <tt>this</tt> with <tt>desired</tt>. Memory
 is affected according to the value of <tt>order</tt>. These operations are atomic read-modify-write operations
 (1.10). <ins>If the program does not specify an order, it shall be <tt>memory_order_seq_cst</tt>.</ins>
 <p/>
 18 <em>Returns</em>: Atomically returns the value pointed to by <tt>object</tt> or by <tt>this</tt> immediately before the effects.
+</p>
 </blockquote></blockquote>
 </li>
 <li>Change <sref ref="[atomics.types.operations]"/> p. 20 as indicated:
@@ -117,7 +121,7 @@ bool A::compare_exchange_strong(C &amp; expected, C desired,
   memory_order order = memory_order_seq_cst) volatile;
 bool A::compare_exchange_strong(C &amp; expected, C desired,
   memory_order order = memory_order_seq_cst);
-</pre><blockquote>
+</pre><blockquote><p>
 19 <em>Requires</em>: The <tt>failure</tt> argument shall not be <tt>memory_order_release</tt> nor <tt>memory_order_acq_rel</tt>.
 The <tt>failure</tt> argument shall be no stronger than the success argument.
 <p/>
@@ -134,6 +138,7 @@ the program does not specify an order, it shall be <tt>memory_order_seq_cst</tt>
 these operations are atomic read-modify-write operations (1.10). Otherwise, these operations are atomic load operations.
 <p/>
 [..]
+</p>
 </blockquote></blockquote>
 </li>
 </ol>

@@ -13,22 +13,24 @@
 <duplicate><iref ref="1459"/></duplicate>
 <p><b>Addresses GB-131</b></p>
 
+<p>
 <sref ref="[atomics.lockfree]"/> p.8 states:
-<p><blockquote>
+</p>
+<blockquote><p>
 An atomic store shall only store a value that has been computed
 from constants and program input values by a finite sequence of
 program evaluations, such that each evaluation observes the values
 of variables as computed by the last prior assignment in the
 sequence.
-</blockquote></p>
+</p></blockquote>
 <p>
 ... but <sref ref="[intro.execution]"/> p.13 states:
 </p>
-<p><blockquote>
+<blockquote><p>
 If A is not sequenced before B and B is not sequenced before A,
 then A and B are unsequenced. [ <em>Note</em>: The execution of unsequenced
 evaluations can overlap. &mdash; <em>end note</em> ]
-</blockquote></p>
+</p></blockquote>
 <p>
 Overlapping executions can make it impossible to construct the sequence
 described in <sref ref="[atomics.lockfree]"/> p.8. We are not sure of the intention here and do not
@@ -38,9 +40,11 @@ that prevents out-of-thin-air reads.
 </discussion>
 
 <resolution>
+<p>
 Request the concurrency working group to
 determine if changes are needed. Consider
 changing the use of "sequence" in <sref ref="[atomics.lockfree]"/>
+</p>
 </resolution>
 
 </issue>

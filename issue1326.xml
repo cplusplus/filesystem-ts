@@ -20,7 +20,7 @@ CopyConstructible requirements are bad descriptions for non-const
 references. Some examples:
 </p>
 
-<ol type="a">
+<ol style="list-style-type:lower-alpha">
 <li>
 <p>
 <sref ref="[tuple.cnstr]"/> before p.4 and p.8, resp.:
@@ -94,20 +94,20 @@ template &lt;class... UTypes&gt;
 explicit tuple(UTypes&amp;&amp;... u);
 </pre>
 
-<blockquote>
+<blockquote><p>
 6 <i>Requires:</i> Each type in <tt>Types</tt> shall satisfy the
 requirements of <tt>MoveConstructible</tt> (Table 33) from the
 corresponding type in <tt>UTypes</tt>. <tt>sizeof...(Types) ==
 sizeof...(UTypes)</tt>.
-</blockquote>
+</p></blockquote>
 
 <pre>
 tuple(tuple&amp;&amp; u);
 </pre>
-<blockquote>
+<blockquote><p>
 10 <i>Requires:</i> Each <tt>type</tt> in <tt>Types</tt> shall shall
 satisfy the requirements of <tt>MoveConstructible</tt> (Table 33).
-</blockquote>
+</p></blockquote>
 </blockquote>
 
 <p>
@@ -117,20 +117,20 @@ the <tt>MoveConstructible</tt> requirements. In this case the correct
 requirements would be
 </p>
 
-<blockquote>
+<blockquote><p>
 <tt>is_constructible&lt;Ti, Ui&gt;::value</tt> shall evaluate to true
 for all <tt>Ti</tt> in <tt>Types</tt> and for all <tt>Ui</tt> in
 <tt>UTypes</tt>
-</blockquote>
+</p></blockquote>
 
 <p>
 and
 </p>
 
-<blockquote>
+<blockquote><p>
 <tt>is_constructible&lt;Ti, Ti&gt;::value</tt> shall evaluate to true
 for all <tt>Ti</tt> in <tt>Types</tt>
-</blockquote>
+</p></blockquote>
 
 <p>
 respectively.
@@ -148,12 +148,12 @@ suggested resolution. Further-on the P/R has been adapted to the FCD numbering.
 2010-03-25 Daniel updated wording:
 </note>
 
-<blockquote>
+<blockquote><p>
 The issue became updated to fix some minor inconsistencies and to ensure a
 similarly required fix for <tt>std::pair</tt>, which has the same specification
 problem as <tt>std::tuple</tt>, since <tt>pair</tt> became extended to support
 reference members as well.
-</blockquote>
+</p></blockquote>
 
 <note>Original proposed resolution:</note>
 <ol>
@@ -720,8 +720,9 @@ Accepting <a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2010/n3140
 </discussion>
 
 <resolution>
+<p>
 See <a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2010/n3140.html">n3140</a>.
-
+</p>
 </resolution>
 
 </issue>
