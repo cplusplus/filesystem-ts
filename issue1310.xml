@@ -64,7 +64,7 @@ surprise) I'm also proposing to overload <tt>merge</tt> this way as well.
 
 <resolution>
 <p>
-Add to the synopsis of <sref ref="[forwardlist]"/>:
+Add to the synopsis of <sref ref="[forwardlist.overview]"/>:
 </p>
 
 <blockquote><pre>
@@ -72,6 +72,7 @@ template &lt;class T, class Allocator = allocator&lt;T&gt; &gt;
 class forward_list {
 public:
   ...
+  // <i>[forwardlist.ops], forward_list operations:</i>
   <ins>void splice_after(const_iterator p, forward_list&amp; x);</ins>
   void splice_after(const_iterator p, forward_list&amp;&amp; x);
   <ins>void splice_after(const_iterator p, forward_list&amp; x, const_iterator i);</ins>
@@ -107,7 +108,7 @@ void splice_after(const_iterator p, forward_list&amp;&amp; x);
 void splice_after(const_iterator p, forward_list&amp;&amp; x, const_iterator i);
 </pre>
 <blockquote>
-<p>5 ...</p>
+<p>4 ...</p>
 </blockquote>
 
 <pre>
@@ -117,7 +118,7 @@ void splice_after(const_iterator p, forward_list&amp;&amp; x,
                 const_iterator first, const_iterator last);
 </pre>
 <blockquote>
-<p>9 ...</p>
+<p>7 ...</p>
 </blockquote>
 
 <pre>
@@ -127,7 +128,7 @@ void merge(forward_list&amp;&amp; x);
 template &lt;class Compare&gt; void merge(forward_list&amp;&amp; x, Compare comp);
 </pre>
 <blockquote>
-<p>18 ...</p>
+<p>16 ...</p>
 </blockquote>
 
 </blockquote>

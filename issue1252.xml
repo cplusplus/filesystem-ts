@@ -49,9 +49,27 @@ Batavia 2010:
 <p>
 Howard to draft wording, move to Review. Run it by Bill. Need to move this in Madrid.
 </p>
+
+<note>2011-03-06: Howard drafts wording</note>
 </discussion>
 
 <resolution>
+<p>Modify the <tt>state_type</tt> typedef in the synopsis of <sref ref="[conversions.buffer]"/> p.2 as shown
+[This makes the synopsis consistent with <sref ref="[conversions.buffer]"/> p.9]:</p>
+
+<blockquote><pre>
+namespace std {
+template&lt;class Codecvt,
+  class Elem = wchar_t,
+  class Tr = std::char_traits&lt;Elem&gt; &gt;
+class wbuffer_convert
+  : public std::basic_streambuf&lt;Elem, Tr&gt; {
+public:
+  typedef typename <del>Tr</del><ins>Codecvt</ins>::state_type state_type;
+  [&hellip;]
+};
+}
+</pre></blockquote>
 </resolution>
 
 </issue>

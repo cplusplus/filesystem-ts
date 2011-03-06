@@ -141,13 +141,13 @@ of type <tt>hash&lt;Key&gt;</tt> and <tt>k</tt> is an object of type <tt>Key</tt
 <ol>
 <li>
 <p>
-Change Table 40 &mdash; Hash requirements [hash] as indicated:
+Change Table 26 &mdash; <tt>Hash</tt> requirements [tab:hash] as indicated:
 </p>
 
 <blockquote>
 <table border="1">
 
-<caption>Table 40 &mdash; Hash requirements [hash]</caption>
+<caption>Table 26 &mdash; <tt>Hash</tt> requirements [tab:hash]</caption>
 
 <tr>
 <th>Expression</th>
@@ -158,7 +158,7 @@ Change Table 40 &mdash; Hash requirements [hash] as indicated:
 <tr>
 <td><tt>h(k)</tt></td>
 <td><tt>size_t</tt></td>
-<td><del>Shall not throw exceptions.</del> [..]</td>
+<td><del>Shall not throw exceptions.</del> [&hellip;]</td>
 </tr>
 
 </table>
@@ -167,12 +167,12 @@ Change Table 40 &mdash; Hash requirements [hash] as indicated:
 
 <li>
 <p>
-Add to <sref ref="[unord.hash]"/>/1 a new bullet:
+Add to <sref ref="[unord.hash]"/> p. 1 a new bullet:
 </p>
 
 <blockquote>
 <p>
-1 The unordered associative containers defined in Clause 23.5 use
+1 The unordered associative containers defined in Clause <sref ref="[unord]"/> use
 specializations of the class template <tt>hash</tt>
 as the default hash function. For all object types <tt>Key</tt> for which there
 exists a specialization <tt>hash&lt;Key&gt;</tt>, the
@@ -180,12 +180,12 @@ instantiation <tt>hash&lt;Key&gt;</tt> shall:
 </p>
 <ul>
 <li>
-satisfy the <tt>Hash</tt> requirements (20.2.4), with <tt>Key</tt> as the
+satisfy the <tt>Hash</tt> requirements ([hash.requirements]), with <tt>Key</tt> as the
 function call argument type, the <tt>DefaultConstructible</tt> requirements
-(33), the <tt>CopyAssignable</tt> requirements (37),
+(Table [defaultconstructible]), the <tt>CopyAssignable</tt> requirements (Table [copyassignable]),
 </li>
 <li>
-be swappable (20.2.2) for lvalues,
+be swappable ([swappable.requirements]) for lvalues,
 </li>
 <li>
 provide two nested types <tt>result_type</tt> and <tt>argument_type</tt> which
