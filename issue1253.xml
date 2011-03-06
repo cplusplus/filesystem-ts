@@ -51,15 +51,19 @@ p. 6 can no longer be applied. The new wording is more general and should
 now include <tt>insert()</tt> and <tt>emplace()</tt> calls as well ("mutating operations").
 </note>
 
+<note>2011-03-06 Daniel Kr&uuml;gler adapts wording to numbering changes to match the N3242 draft</note>
+
 </discussion>
 
 <resolution>
+<ol>
+<li>
 <p>
-Modify bullet 1 of <sref ref="[container.requirements.general]"/>, p11:
+Modify bullet 1 of <sref ref="[container.requirements.general]"/>, p. 10:
 </p>
 
 <p>
-11 Unless otherwise specified (see 23.2.4.1, 23.2.5.1, 23.3.2.3, and 23.3.5.4)
+10 Unless otherwise specified (see [associative.reqmts.except], [unord.req.except], [deque.modifiers], and [vector.modifiers])
 all container types defined in this Clause meet the following additional
 requirements:
 </p>
@@ -73,8 +77,11 @@ function has no effects.
 <li>...</li>
 </ul>
 
+</li>
+
+<li>
 <p>
-Modify <sref ref="[associative.reqmts]"/>, p4:
+Modify <sref ref="[associative.reqmts]"/>, p. 4:
 </p>
 
 <blockquote><p>
@@ -86,6 +93,9 @@ and <tt>multimap</tt> classes support equivalent keys. For <tt>multiset</tt> and
 <tt>erase</tt> preserve the relative ordering of equivalent elements.
 </p></blockquote>
 
+</li>
+
+<li>
 <p>
 Modify Table 102 &mdash; Associative container requirements in 
 <sref ref="[associative.reqmts]"/>:
@@ -102,13 +112,13 @@ Modify Table 102 &mdash; Associative container requirements in
 </tr>
 
 <tr>
-<td colspan="4" style="text-align:center;">...</td>
+<td colspan="4" style="text-align:center;">[&hellip;]</td>
 </tr>
 
 <tr>
 <td><tt>a_eq.emplace(args)</tt></td>
 <td><tt>iterator</tt></td>
-<td>[..] <i>Effects:</i> Inserts a <tt>T</tt> object <tt>t</tt> constructed with
+<td>[&hellip;] <i>Effects:</i> Inserts a <tt>T</tt> object <tt>t</tt> constructed with
 <tt>std::forward&lt;Args&gt;(args)...</tt> and returns the iterator pointing to
 the newly inserted element. <ins>If a range containing elements equivalent to
 <tt>t</tt> exists in <tt>a_eq</tt>, <tt>t</tt> is inserted at the end of that
@@ -130,14 +140,17 @@ right <del>after</del> <ins>before</ins> <tt>p</tt></td>
 </tr>
 
 <tr>
-<td colspan="4" style="text-align:center;">...</td>
+<td colspan="4" style="text-align:center;">[&hellip;]</td>
 </tr>
 
 </table>
 </blockquote>
 
+</li>
+
+<li>
 <p>
-Modify <sref ref="[associative.reqmts]"/>, p9:
+Modify <sref ref="[associative.reqmts]"/>, p. 9:
 </p>
 
 <blockquote><p>
@@ -147,8 +160,11 @@ the validity of iterators and references to the container, and the
 erased elements.
 </p></blockquote>
 
+</li>
+
+<li>
 <p>
-Modify <sref ref="[associative.reqmts.except]"/>, p2:
+Modify <sref ref="[associative.reqmts.except]"/>, p. 2:
 </p>
 
 <blockquote><p>
@@ -158,8 +174,11 @@ a single element, the <del><tt>insert()</tt> function</del> <ins>insertion</ins>
 has no effect.
 </p></blockquote>
 
+</li>
+
+<li>
 <p>
-Modify <sref ref="[unord.req]"/>, p13 and p14:
+Modify <sref ref="[unord.req]"/>, p. 13 and p. 14:
 </p>
 
 <blockquote>
@@ -177,6 +196,8 @@ preserve the relative order of elements within each equivalent-key group unless
 otherwise specified.
 </p>
 
+[&hellip;]
+
 <p>
 13 The <tt>insert</tt> <ins>and <tt>emplace</tt></ins> members shall not affect
 the validity of references to container elements, but may invalidate all
@@ -193,8 +214,11 @@ the number of elements inserted, <tt>B</tt> is the container's bucket count, and
 </p>
 </blockquote>
 
+</li>
+
+<li>
 <p>
-Modify <sref ref="[unord.req.except]"/>, p2:
+Modify <sref ref="[unord.req.except]"/>, p. 2:
 </p>
 
 <blockquote><p>
@@ -204,6 +228,10 @@ operation other than the container's hash function from within an
 element, the <del><tt>insert()</tt></del> <ins>insertion</ins>
 <del>function</del> has no effect.
 </p></blockquote>
+
+</li>
+</ol>
+
 </resolution>
 
 </issue>

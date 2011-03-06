@@ -36,14 +36,24 @@ Accepting <a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2010/n3145
 </p></blockquote>
 
 <note>
-2010 Batavia: Solved by N3198
+2010 Batavia:
 </note>
+
+<blockquote><p>
+Pete: Is this issue actually addressed by N3198, or did deprecating unary/binary_function?
+<p/>
+We determined that this issue is NOT resolved and that it must be resolved or else 
+N3198 could break code that does specialize unary/binary function.
+<p/>
+Matt: don't move to NAD
+<p/>
+Howard: I suggest we go further and move 1279 to ready for Madrid.
+<p/>
+Group: Agrees move 1279 to ready for Madrid 
+</p></blockquote>
 
 <p>
 Previous proposed resolution:
-</p>
-<p>
-Change paragraph <sref ref="[base]"/>/1 as follows:
 </p>
 
 <blockquote><p>
@@ -52,12 +62,26 @@ simplify the typedefs of the argument and result types<del>:</del><ins>. A
 program shall not declare specializations of these templates.</ins>
 </p></blockquote>
 
+<note>2011-03-06 Daniel comments</note>
+
+<blockquote><p>
+This meeting outcome was not properly reflected in the proposed resolution. I
+also adapted the suggested wording to the N3242 numbering and content state.
+During this course of action it turned out that the first suggested wording
+change has already been applied.
+</p></blockquote>
+
 </discussion>
 
 <resolution>
 <p>
-Addressed by paper <a href="http://wiki.dinkumware.com/twiki/pub/Wg21batavia/LibraryWorkingGroup/D3198.html">D3198</a>.
+Change paragraph <sref ref="[depr.base]"/>/1 as follows:
 </p>
+
+<blockquote><p>
+1 The class templates <tt>unary_function</tt> and <tt>binary_function</tt> are deprecated. 
+<ins>A program shall not declare specializations of these templates.</ins>
+</p></blockquote>
 </resolution>
 
 </issue>
