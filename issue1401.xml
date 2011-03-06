@@ -3,7 +3,7 @@
   <!ENTITY nbsp "&#160;">
 ] >
 
-<issue num="1401" status="Voting">
+<issue num="1401" status="Review">
 <title>[FCD] <tt>unique_ptr&lt;T&gt; == nullptr</tt></title>
 <section><sref ref="[memory]"/></section>
 <submitter>BSI</submitter>
@@ -103,21 +103,30 @@ bool v2 = p &lt; null;
 assert(v1 == v2);
 </pre></blockquote>
 
+<note>2011-03-06: Daniel comments</note>
+
+<p>The current issue state is not acceptable, because the Batavia meeting
+did not give advice whether choice A or B of bullet 3 should be applied.
+Option B will now be removed and if this resolution is accepted, issue
+<iref ref="1297"/> should be declared as resolved by <iref ref="1401"/>.
+This update also resyncs the wording with N3242.</p>
+
 </discussion>
 
 <resolution>
 <p>
-Wording changes are against N3126.
+Wording changes are against N3242.
 </p>
 <ol>
-<li>Change <sref ref="[memory]"/> p. 1, header <tt>&lt;memory&gt;</tt> synopsis as indicated.
+<li>Change <sref ref="[memory.syn]"/> p. 1, header <tt>&lt;memory&gt;</tt> synopsis as indicated.
 <tt>noexcept</tt> specifications are only added, where the guarantee exists, that the function
-shall no throw an exception (as replacement of &quot;<i>Throws</i>: Nothing&quot;. This needs 
-to be harmonized with the result of the <tt>noexcept</tt> proposals:
+shall no throw an exception (as replacement of &quot;<i>Throws</i>: Nothing&quot;. Note that
+the <tt>noexcept</tt> additions to the <tt>shared_ptr</tt> comparisons are editorial, because
+they are already part of the accepted paper <a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2010/n3195.htm">n3195</a>:
 <blockquote><pre>
 namespace std {
-  [..]
-  // <i>20.9.10 Class unique_ptr:</i>
+  [&hellip;]
+  // <i>[unique.ptr] Class unique_ptr:</i>
   template &lt;class T&gt; class default_delete;
   template &lt;class T&gt; class default_delete&lt;T[]&gt;;
   template &lt;class T, class D = default_delete&lt;T&gt;&gt; class unique_ptr;
@@ -161,25 +170,25 @@ namespace std {
   <ins>template &lt;class T, class D&gt;</ins>
   <ins>bool operator&gt;=(nullptr_t, const unique_ptr&lt;T, D&gt;&amp; x);</ins>
   
-  // <i>20.9.11.1, Class bad_weak_ptr:</i>
+  // <i>[util.smartptr.weakptr], Class bad_weak_ptr:</i>
   class bad_weak_ptr;
 
-  // <i>20.9.11.2, Class template shared_ptr:</i>
+  // <i>[util.smartptr.shared], Class template shared_ptr:</i>
   template&lt;class T&gt; class shared_ptr;
 
-  // <i>20.9.11.2.7, shared_ptr comparisons:</i>
+  // <i>[util.smartptr.shared.cmp], shared_ptr comparisons:</i>
   template&lt;class T, class U&gt;
-  bool operator==(shared_ptr&lt;T&gt; const&amp; a, shared_ptr&lt;U&gt; const&amp; b);
+  bool operator==(shared_ptr&lt;T&gt; const&amp; a, shared_ptr&lt;U&gt; const&amp; b) <ins> noexcept</ins>;
   template&lt;class T, class U&gt;
-  bool operator!=(shared_ptr&lt;T&gt; const&amp; a, shared_ptr&lt;U&gt; const&amp; b);
+  bool operator!=(shared_ptr&lt;T&gt; const&amp; a, shared_ptr&lt;U&gt; const&amp; b) <ins> noexcept</ins>;
   template&lt;class T, class U&gt;
-  bool operator&lt;(shared_ptr&lt;T&gt; const&amp; a, shared_ptr&lt;U&gt; const&amp; b);
+  bool operator&lt;(shared_ptr&lt;T&gt; const&amp; a, shared_ptr&lt;U&gt; const&amp; b) <ins> noexcept</ins>;
   template&lt;class T, class U&gt;
-  bool operator&gt;(shared_ptr&lt;T&gt; const&amp; a, shared_ptr&lt;U&gt; const&amp; b);
+  bool operator&gt;(shared_ptr&lt;T&gt; const&amp; a, shared_ptr&lt;U&gt; const&amp; b) <ins> noexcept</ins>;
   template&lt;class T, class U&gt;
-  bool operator&lt;=(shared_ptr&lt;T&gt; const&amp; a, shared_ptr&lt;U&gt; const&amp; b);
+  bool operator&lt;=(shared_ptr&lt;T&gt; const&amp; a, shared_ptr&lt;U&gt; const&amp; b) <ins> noexcept</ins>;
   template&lt;class T, class U&gt;
-  bool operator&gt;=(shared_ptr&lt;T&gt; const&amp; a, shared_ptr&lt;U&gt; const&amp; b);
+  bool operator&gt;=(shared_ptr&lt;T&gt; const&amp; a, shared_ptr&lt;U&gt; const&amp; b) <ins> noexcept</ins>;
 
   <ins>template&lt;class T&gt;</ins>
   <ins>bool operator==(shared_ptr&lt;T&gt; const&amp; a, nullptr_t) noexcept;</ins>
@@ -206,14 +215,14 @@ namespace std {
   <ins>template&gt;class T&gt;</ins>
   <ins>bool operator&gt;=(nullptr_t, shared_ptr&lt;T&gt; const&amp; a) noexcept;</ins>
 
-  [..]
+  [&hellip;]
 }
 </pre></blockquote>
 </li>
 <li>Change the synopsis just after <sref ref="[unique.ptr]"/> p. 6 as indicated:
 <blockquote><pre>
 namespace std {
-  [..]
+  [&hellip;]
   
   template &lt;class T1, class D1, class T2, class D2&gt;
   bool operator==(const unique_ptr&lt;T1, D1&gt;&amp; x, const unique_ptr&lt;T2, D2&gt;&amp; y);
@@ -256,10 +265,9 @@ namespace std {
 }
 </pre></blockquote>
 </li>
-<li><a name="1401_extra_bullet">This bullet splits into two sub-bullets A and B as mentioned in the discussion comment:</a>
-<ol style="list-style-type:upper-alpha">
-<li>Change <sref ref="[unique.ptr.special]"/>/4-7 as indicated and add a series of prototype
-descriptions:
+<li><a name="1401_extra_bullet">This bullet does now only suggest the first approach:</a>
+<p>Change <sref ref="[unique.ptr.special]"/> p. 4-7 as indicated and add a series of prototype
+descriptions:</p>
 <blockquote><pre>
 template &lt;class T1, class D1, class T2, class D2&gt;
   bool operator&lt;(const unique_ptr&lt;T1, D1&gt;&amp; x, const unique_ptr&lt;T2, D2&gt;&amp; y);
@@ -380,7 +388,7 @@ on the pointer values.</ins>
 <ins>? <i>Returns</i>: <tt>!(x &lt; nullptr)</tt>.</ins>
 </p></blockquote></blockquote>
 
-</li>
+<!--
 <li>
 Add the following series of prototype specifications at the very end of <sref ref="[unique.ptr.special]"/>.
 Intentionally, the relational operators are defined individually, because there is no guarantee that
@@ -460,20 +468,23 @@ from <tt>x.get() &lt; nullptr</tt> follows the relation <tt>nullptr &gt; x.get()
 </p></blockquote></blockquote>
 </li>
 </ol>
+-->
 </li>
-<li>Change <sref ref="[util.smartptr.shared]"/> p. 1, class template shared_ptr 
+<li>Change <sref ref="[util.smartptr.shared]"/> p. 1, class template <tt>shared_ptr</tt>
 synopsis as indicated. For consistency reasons the remaining normal relation
 operators are added as well:
 <blockquote><pre>
 namespace std {
-  [..]
-  // <i>20.9.11.2.7, shared_ptr comparisons:</i>
+
+  [&hellip;]
+
+  // <i>[util.smartptr.shared.cmp], shared_ptr comparisons:</i>
   template&lt;class T, class U&gt;
-  bool operator==(const shared_ptr&lt;T&gt;&amp; a, const shared_ptr&lt;U&gt;&amp; b);
+  bool operator==(const shared_ptr&lt;T&gt;&amp; a, const shared_ptr&lt;U&gt;&amp; b) noexcept;
   template&lt;class T, class U&gt;
-  bool operator!=(const shared_ptr&lt;T&gt;&amp; a, const shared_ptr&lt;U&gt;&amp; b);
+  bool operator!=(const shared_ptr&lt;T&gt;&amp; a, const shared_ptr&lt;U&gt;&amp; b) noexcept;
   template&lt;class T, class U&gt;
-  bool operator&lt;(const shared_ptr&lt;T&gt;&amp; a, const shared_ptr&lt;U&gt;&amp; b);
+  bool operator&lt;(const shared_ptr&lt;T&gt;&amp; a, const shared_ptr&lt;U&gt;&amp; b) noexcept;
   <ins>template&lt;class T, class U&gt;</ins>
   <ins>bool operator&gt;(const shared_ptr&lt;T&gt;&amp; a, const shared_ptr&lt;U&gt;&amp; b) noexcept;</ins>
   <ins>template&lt;class T, class U&gt;</ins>
@@ -506,7 +517,7 @@ namespace std {
   <ins>template&gt;class T&gt;</ins>
   <ins>bool operator&gt;=(nullptr_t, const shared_ptr&lt;T&gt;&amp; a) noexcept;</ins>
 
-  [..]
+  [&hellip;]
 }
 </pre></blockquote>
 </li>
