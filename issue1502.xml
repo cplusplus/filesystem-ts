@@ -47,12 +47,13 @@ conflict when accessing that value.</p>
 <p>Modify <sref ref="[futures.state]"/> p10 as follows:</p>
 
 <blockquote><p>
-10 <ins>Some operations, e.g. <code>shared_future::get()</code>
+10 <del>Accesses to the same shared state conflict (1.10).</del><ins>Some 
+  operations, e.g. <code>shared_future::get()</code>
  (30.6.7 [futures.shared_future]), may return a reference to a
- value held in their shared state.</ins> Accesses <ins>through
- those references by concurrent threads</ins> to the same 
- shared state <ins>may potentially</ins> conflict (1.10).
- <ins>[<i>Note:</i> As a consquence, accesses must either use
+ value held in their shared state. Accesses through
+ those references by concurrent threads to the same 
+ shared state may potentially conflict (1.10).
+ [<i>Note:</i> As a consquence, accesses must either use
  read-only operations or provide additional synchronization.
  &mdash; <i>end note</i>]</ins>
 </p></blockquote>
