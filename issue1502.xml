@@ -12,7 +12,11 @@
 <discussion>
 <p><b>Addresses US-195</b></p>
 
-<p>The intent and meaning of the paragraph is not apparent.</p>
+<p>The intent and meaning of <sref ref="[futures.state]"/> p10 is not apparent.</p>
+
+<blockquote><p>
+10 Accesses to the same shared state conflict (1.10).
+</p></blockquote>
 
 <note>
 2011-03-07 Jonathan Wakely adds:
@@ -30,9 +34,28 @@ ballot comments where US-195 reveals it's para 8, which in the FCD
 </blockquote>
 </blockquote>
 
+<note>2011-03-07: Lawrence comments and drafts wording</note>
+
+<p>The intent of this paragraph is to deal with operations,
+such as <code>shared_future::get()</code>, that return a reference
+to a value held in the shared state.  User code could potentially
+conflict when accessing that value.</p>
+
 </discussion>
 
 <resolution>
+<p>Modify <sref ref="[futures.state]"/> p10 as follows:</p>
+
+<blockquote><p>
+10 <ins>Some operations, e.g. <code>shared_future::get()</code>
+ (30.6.7 [futures.shared_future]), may return a reference to a
+ value held in their shared state.</ins> Accesses <ins>through
+ those references by concurrent threads</ins> to the same 
+ shared state <ins>may potentially</ins> conflict (1.10).
+ <ins>[<i>Note:</i> As a consquence, accesses must either use
+ read-only operations or provide additional synchronization.
+ &mdash; <i>end note</i>]</ins>
+</p></blockquote>
 </resolution>
 
 </issue>
