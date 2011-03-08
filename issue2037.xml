@@ -55,10 +55,228 @@ met. The specification of these free functions should be rewritten to support li
 the previous specification or the vacuous promise should be removed.
 </p>
 
+<note>2011-03-08: Lawrence comments and drafts wording:</note>
+
+<p>One of the goals is to permit atomics code to compile under both C and C++. Adding explicit 
+template arguments would defeat that goal.
+<p/>
+The intent was to permit the normal function overloads for <tt>atomic_int</tt> when <tt>atomic_int</tt> 
+is distinct from <tt>atomic&lt;int&gt;</tt>. That intent was not reflected in the wording.
+</p>
+
 </discussion>
 
 <resolution>
-<p></p>
+<p>Explicitly permit free functions.</p>
+
+<ol>
+<li>
+<p>Edit within the header <tt>&lt;atomic&gt;</tt> synopsis <sref ref="[atomics.syn]"/> as follows:</p>
+
+<blockquote><pre>
+<i>// 29.6.1, general operations on atomic types</i>
+<del><i>// In the following declarations, <em>atomic_type</em> is either</i>
+<i>// </i><code>atomic&lt;T&gt;</code><i> or a named base class for</i> <code>T</code><i> from</i>
+<i>// Table 145 or inferred from</i>
+<i>// Table 146.</i></del>
+<ins><i>// In the following declarations, <em>atomic-type</em> is either</i> 
+<i>// </i><code>atomic&lt;T&gt;</code><i> or a named base class for</i> <code>T</code><i> from</i>
+<i>// Table 145 or inferred from</i>
+<i>// Table 146.</i>
+<i>// If it is </i><code>atomic&lt;T&gt;</code><i>, then the declaration is a template
+// declaration prefixed with</i> <code>template &lt;class T&gt;</code></ins>
+<del>template &lt;class T&gt;</del>
+bool atomic_is_lock_free(const volatile <em><del>atomic_type</del><ins>atomic-type</ins></em>*);
+<del>template &lt;class T&gt;</del>
+bool atomic_is_lock_free(const <em><del>atomic_type</del><ins>atomic-type</ins></em>*);
+<del>template &lt;class T&gt;</del>
+void atomic_init(volatile <em><del>atomic_type</del><ins>atomic-type</ins></em>*, T);
+<del>template &lt;class T&gt;</del>
+void atomic_init(<em><del>atomic_type</del><ins>atomic-type</ins></em>*, T);
+<del>template &lt;class T&gt;</del>
+void atomic_store(volatile <em><del>atomic_type</del><ins>atomic-type</ins></em>*, T);
+<del>template &lt;class T&gt;</del>
+void atomic_store(<em><del>atomic_type</del><ins>atomic-type</ins></em>*, T);
+<del>template &lt;class T&gt;</del>
+void atomic_store_explicit(volatile <em><del>atomic_type</del><ins>atomic-type</ins></em>*, T, memory_order);
+<del>template &lt;class T&gt;</del>
+void atomic_store_explicit(<em><del>atomic_type</del><ins>atomic-type</ins></em>*, T, memory_order);
+<del>template &lt;class T&gt;</del>
+T atomic_load(const volatile <em><del>atomic_type</del><ins>atomic-type</ins></em>*);
+<del>template &lt;class T&gt;</del>
+T atomic_load(const <em><del>atomic_type</del><ins>atomic-type</ins></em>*);
+<del>template &lt;class T&gt;</del>
+T atomic_load_explicit(const volatile <em><del>atomic_type</del><ins>atomic-type</ins></em>*, memory_order);
+<del>template &lt;class T&gt;</del>
+T atomic_load_explicit(const <em><del>atomic_type</del><ins>atomic-type</ins></em>*, memory_order);
+<del>template &lt;class T&gt;</del>
+T atomic_exchange(volatile <em><del>atomic_type</del><ins>atomic-type</ins></em>*, T);
+<del>template &lt;class T&gt;</del>
+T atomic_exchange(<em><del>atomic_type</del><ins>atomic-type</ins></em>*, T);
+<del>template &lt;class T&gt;</del>
+T atomic_exchange_explicit(volatile <em><del>atomic_type</del><ins>atomic-type</ins></em>*, T, memory_order);
+<del>template &lt;class T&gt;</del>
+T atomic_exchange_explicit(<em><del>atomic_type</del><ins>atomic-type</ins></em>*, T, memory_order);
+<del>template &lt;class T&gt;</del>
+bool atomic_compare_exchange_weak(volatile <em><del>atomic_type</del><ins>atomic-type</ins></em>*, T*, T);
+<del>template &lt;class T&gt;</del>
+bool atomic_compare_exchange_weak(<em><del>atomic_type</del><ins>atomic-type</ins></em>*, T*, T);
+<del>template &lt;class T&gt;</del>
+bool atomic_compare_exchange_strong(volatile <em><del>atomic_type</del><ins>atomic-type</ins></em>*, T*, T);
+<del>template &lt;class T&gt;</del>
+bool atomic_compare_exchange_strong(<em><del>atomic_type</del><ins>atomic-type</ins></em>*, T*, T);
+<del>template &lt;class T&gt;</del>
+bool atomic_compare_exchange_weak_explicit(volatile <em><del>atomic_type</del><ins>atomic-type</ins></em>*, T*, T,
+  memory_order, memory_order);
+<del>template &lt;class T&gt;</del>
+bool atomic_compare_exchange_weak_explicit(<em><del>atomic_type</del><ins>atomic-type</ins></em>*, T*, T.
+  memory_order, memory_order);
+<del>template &lt;class T&gt;</del>
+bool atomic_compare)exchange_strong_explicit(volatile <em><del>atomic_type</del><ins>atomic-type</ins></em>*, T*, T,
+  memory_order, memory_order);
+<del>template &lt;class T&gt;</del>
+bool atomic_compare_exchange_strong_explicit(<em><del>atomic_type</del><ins>atomic-type</ins></em>*, T*, T,
+  memory_order, memory_order);
+  
+<i>// 29.6.2, templated operations on atomic types</i>
+<del><i>// In the following declarations, <em>atomic_type</em> is either
+// </i><code>atomic&lt;T&gt;</code><i> or a named base class for </i> <code>T</code><i> from
+// Table 145 or inferred from
+// Table 146.</i></del>
+template &lt;class T&gt;
+T atomic_fetch_add(volatile <del><em>atomic-type</em></del><ins>atomic&lt;T&gt;</ins>*, T);
+template &lt;class T&gt;
+T atomic_fetch_add(<del><em>atomic-type</em></del><ins>atomic&lt;T&gt;</ins>*, T);
+template &lt;class T&gt;
+T atomic_fetch_add_explicit(volatile <del><em>atomic-type</em></del><ins>atomic&lt;T&gt;</ins>*, T, memory_order);
+template &lt;class T&gt;
+T atomic_fetch_add_explicit(<del><em>atomic-type</em></del><ins>atomic&lt;T&gt;</ins>*, T, memory_order);
+template &lt;class T&gt;
+T atomic_fetch_sub(volatile <del><em>atomic-type</em></del><ins>atomic&lt;T&gt;</ins>*, T);
+template &lt;class T&gt;
+T atomic_fetch_sub(<del><em>atomic-type</em></del><ins>atomic&lt;T&gt;</ins>*, T);
+template &lt;class T&gt;
+T atomic_fetch_sub_explicit(volatile <del><em>atomic-type</em></del><ins>atomic&lt;T&gt;</ins>*, T, memory_order);
+template &lt;class T&gt;
+T atomic_fetch_sub_explicit(<del><em>atomic-type</em></del><ins>atomic&lt;T&gt;</ins>*, T, memory_order);
+template &lt;class T&gt;
+T atomic_fetch_and(volatile <del><em>atomic-type</em></del><ins>atomic&lt;T&gt;</ins>*, T);
+template &lt;class T&gt;
+T atomic_fetch_and(<del><em>atomic-type</em></del><ins>atomic&lt;T&gt;</ins>*, T);
+template &lt;class T&gt;
+T atomic_fetch_and_explicit(volatile <del><em>atomic-type</em></del><ins>atomic&lt;T&gt;</ins>*, T, memory_order);
+template &lt;class T&gt;
+T atomic_fetch_and_explicit(<del><em>atomic-type</em></del><ins>atomic&lt;T&gt;</ins>*, T, memory_order);
+template &lt;class T&gt;
+T atomic_fetch_or(volatile <del><em>atomic-type</em></del><ins>atomic&lt;T&gt;</ins>*, T);
+template &lt;class T&gt;
+T atomic_fetch_or(<del><em>atomic-type</em></del><ins>atomic&lt;T&gt;</ins>*, T);
+template &lt;class T&gt;
+T atomic_fetch_or_explicit(volatile <del><em>atomic-type</em></del><ins>atomic&lt;T&gt;</ins>*, T, memory_order);
+template &lt;class T&gt;
+T atomic_fetch_or_explicit(<del><em>atomic-type</em></del><ins>atomic&lt;T&gt;</ins>*, T, memory_order);
+template &lt;class T&gt;
+T atomic_fetch_xor(volatile <del><em>atomic-type</em></del><ins>atomic&lt;T&gt;</ins>*, T);
+template &lt;class T&gt;
+T atomic_fetch_xor(<del><em>atomic-type</em></del><ins>atomic&lt;T&gt;</ins>*, T);
+template &lt;class T&gt;
+T atomic_fetch_xor_explicit(volatile <del><em>atomic-type</em></del><ins>atomic&lt;T&gt;</ins>*, T, memory_order);
+template &lt;class T&gt;
+T atomic_fetch_xor_explicit(<del><em>atomic-type</em></del><ins>atomic&lt;T&gt;</ins>*, T, memory_order);
+
+<i>// 29.6.3, arithmetic operations on atomic types</i>
+<ins><i>// In the following declarations, <em>atomic-type</em> is either 
+// </i><code>atomic&lt;T&gt;</code> <i> or a named base class for</i> <code>T</code> <i>from 
+// Table 145 or inferred from 
+// Table 146.
+// If it is</i> <code>atomic&lt;T&gt;</code><i>,
+// then the declaration is a template specialization declaration prefixed with
+//</i> <code>template &lt;&gt;</code></ins>
+<del>template &lt;&gt;</del>
+<em>integral</em> atomic_fetch_add(volatile <em>atomic-integral</em>*, <em>integral</em>);
+<del>template &lt;&gt;</del>
+<em>integral</em> atomic_fetch_add(<em>atomic-integral</em>*, <em>integral</em>);
+<del>template &lt;&gt;</del>
+<em>integral</em> atomic_fetch_add_explicit(volatile <em>atomic-integral</em>*, <em>integral</em>, memory_order);
+<del>template &lt;&gt;</del>
+<em>integral</em> atomic_fetch_add_explicit(<em>atomic-integral</em>*, <em>integral</em>, memory_order);
+<del>template &lt;&gt;</del>
+<em>integral</em> atomic_fetch_sub(volatile <em>atomic-integral</em>*, <em>integral</em>);
+<del>template &lt;&gt;</del>
+<em>integral</em> atomic_fetch_sub(<em>atomic-integral</em>*, <em>integral</em>);
+<del>template &lt;&gt;</del>
+<em>integral</em> atomic_fetch_sub_explicit(volatile <em>atomic-integral</em>*, <em>integral</em>, memory_order);
+<del>template &lt;&gt;</del>
+<em>integral</em> atomic_fetch_sub_explicit(<em>atomic-integral</em>*, <em>integral</em>, memory_order);
+<del>template &lt;&gt;</del>
+<em>integral</em> atomic_fetch_and(volatile <em>atomic-integral</em>*, <em>integral</em>);
+<del>template &lt;&gt;</del>
+<em>integral</em> atomic_fetch_and(<em>atomic-integral</em>*, <em>integral</em>);
+<del>template &lt;&gt;</del>
+<em>integral</em> atomic_fetch_and_explicit(volatile <em>atomic-integral</em>*, <em>integral</em>, memory_order);
+<del>template &lt;&gt;</del>
+<em>integral</em> atomic_fetch_and_explicit(<em>atomic-integral</em>*, <em>integral</em>, memory_order);
+<del>template &lt;&gt;</del>
+<em>integral</em> atomic_fetch_or(volatile <em>atomic-integral</em>*, <em>integral</em>);
+<del>template &lt;&gt;</del>
+<em>integral</em> atomic_fetch_or(<em>atomic-integral</em>*, <em>integral</em>);
+<del>template &lt;&gt;</del>
+<em>integral</em> atomic_fetch_or_explicit(<em>atomic-integral</em>*, <em>integral</em>, memory_order);
+<del>template &lt;&gt;</del>
+<em>integral</em> atomic_fetch_or_explicit(<em>atomic-integral</em>*, <em>integral</em>, memory_order);
+<del>template &lt;&gt;</del>
+<em>integral</em> atomic_fetch_xor(volatile <em>atomic-integral</em>*, <em>integral</em>);
+<del>template &lt;&gt;</del>
+<em>integral</em> atomic_fetch_xor(<em>atomic-integral</em>*, <em>integral</em>);
+<del>template &lt;&gt;</del>
+<em>integral</em> atomic_fetch_xor_explicit(volatile <em>atomic-integral</em>*, <em>integral</em>, memory_order);
+<del>template &lt;&gt;</del>
+<em>integral</em> atomic_fetch_xor_explicit(<em>atomic-integral</em>*, <em>integral</em>, memory_order);
+</pre></blockquote>
+</li>
+
+<li><p>Edit <sref ref="[atomics.types.operations.general]"/> paragraph 1+2 as follows:</p>
+
+<blockquote><p>
+-1- The implementation shall provide the <ins>functions and</ins> function templates identified as 
+&quot;general operations on atomic types&quot; in <sref ref="[atomics.syn]"/>.
+<p/>
+-2- In the declarations of these <ins>functions and function</ins> templates, the name <em>atomic-type</em> 
+refers to either <tt>atomic&lt;T&gt;</tt> or to a named base class for <tt>T</tt> from Table 145 or 
+inferred from Table 146.
+</p>
+</blockquote>
+</li>
+
+<li><p>In <sref ref="[atomics.types.operations.templ]"/> delete paragraph 2:</p>
+
+<blockquote><p>
+-1- The implementation shall declare but not define the function templates identified as 
+&quot;templated operations on atomic types&quot; in <sref ref="[atomics.syn]"/>.
+<p/>
+<del>-2- In the declarations of these templates, the name <em>atomic-type</em> refers to either 
+<tt>atomic&lt;T&gt;</tt> or to a named base class for <tt>T</tt> from Table 145 or 
+inferred from Table 146.</del>
+</p>
+</blockquote>
+</li>
+
+<li><p>Edit <sref ref="[atomics.types.operations.arith]"/> paragraph 1+2 as follows:</p>
+
+<blockquote><p>
+-1- The implementation shall provide the <ins>functions and</ins> function template 
+specializations identified as &quot;arithmetic operations on atomic types&quot; in 
+<sref ref="[atomics.syn]"/>.
+<p/>
+-2- In the declarations of these <ins>functions and function</ins> template specialization<ins>s</ins>, 
+the name <em>integral</em> refers to an integral type and the name <em>atomic-integral</em> 
+refers to either <tt>atomic&lt;</tt><em>integral</em><tt>&gt;</tt> or to a named base class for 
+<em>integral</em> from Table 145 or inferred from Table 146.
+</p>
+</blockquote>
+</li>
+
+</ol>
 </resolution>
 
 </issue>
