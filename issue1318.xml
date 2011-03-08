@@ -421,6 +421,52 @@ Default
 
 </li>
 
+<li><p>Add the following note after <sref ref="[pointer.traits]"/> p. 1 (The intent is to
+encourage non-normatively implementations to provide specializations for <tt>pointer_traits</tt>
+for non-standard pointer types and reference types which are "native" for the supported
+platform):</p>
+
+<blockquote><p>
+1 The class template <tt>pointer_traits</tt> supplies a uniform interface to certain attributes 
+of pointer-like types.
+</p><blockquote><pre>
+namespace std {
+  template &lt;class Ptr&gt; struct pointer_traits {
+    typedef Ptr pointer;
+    typedef <em>see below</em> element_type;
+    typedef <em>see below</em> difference_type;
+    template &lt;class U&gt; using rebind = <em>see below</em>;
+    static pointer pointer_to(<em>see below</em> r);
+  };
+
+  template &lt;class T&gt; struct pointer_traits&lt;T*&gt; {
+    typedef T* pointer;
+    typedef T element_type;
+    typedef ptrdiff_t difference_type;
+    template &lt;class U&gt; using rebind = U*;
+    static pointer pointer_to(<em>see below</em> r);
+  };
+}
+</pre></blockquote>
+<p>
+<ins>? [ <i>Note</i>: If there is an additional pointer type <tt>_ _ far</tt> 
+such that the difference of two <tt>_ _ far</tt> is of type <tt>long</tt>,
+an implementation may define</ins></p>
+<blockquote><pre>
+<ins>namespace std {
+  template &lt;class T&gt; struct pointer_traits&lt;T _ _ far*&gt; {
+    typedef T _ _ far* pointer;
+    typedef T element_type;
+    typedef long difference_type;
+    template &lt;class U&gt; using rebind = U _ _ far*;
+    static pointer pointer_to(<em>see below</em> r);
+  };
+}</ins>
+</pre></blockquote>
+<p><ins>&mdash; <i>end note</i> ]</ins></p>
+</blockquote>
+</li>
+
 <li>
 <p>
 Add the following typedef declarations to allocator_traits 
