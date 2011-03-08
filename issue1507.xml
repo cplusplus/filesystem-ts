@@ -43,7 +43,8 @@ paragraphs.</p>
 
 <blockquote><pre>
 void notify_all_at_thread_exit(condition_variable&amp; cond, unique_lock&lt;mutex&gt; lk);
-</pre><blockquote>
+</pre>
+<blockquote>
 <p>
 -6- <i>Requires</i>: <tt>lk</tt> is locked by the calling thread and either
 </p>
@@ -87,9 +88,11 @@ void promise::set_value(const R&amp; r);
 void promise::set_value(R&amp;&amp; r);
 void promise&lt;R&amp;&gt;::set_value(R&amp; r);
 void promise&lt;void&gt;::set_value();
-</pre><blockquote>
+</pre>
+<blockquote>
 <p>
--14- <i>Effects</i>: atomically stores the value <tt>r</tt> in the shared state and makes that state ready (<sref ref="[futures.state]"/>).
+-14- <i>Effects</i>: atomically stores the value <tt>r</tt> in the shared state and makes that state 
+ready (<sref ref="[futures.state]"/>).
 <p/>
 -15- <i>Throws</i>:
 </p>
@@ -105,7 +108,7 @@ void promise&lt;void&gt;::set_value();
 <li><tt>promise_already_satisfied</tt> if its shared state already has a stored value or exception.</li>
 <li><tt>no_state</tt> if <tt>*this</tt> has no shared state.</li>
 </ul>
-<p/>
+<p>
 -17- <i>Synchronization</i>: calls to <tt>set_value</tt><ins>,</ins> <del>and</del> <tt>set_exception</tt><ins>,
 <code>set_value_at_thread_exit</code>, and <code>set_exception_at_thread_exit</code></ins>on a single 
 <tt>promise</tt> object are serialized. [ <i>Note</i>: And they synchronize and serialize with other functions 
@@ -115,7 +118,8 @@ through the referred shared state. &mdash; <i>end note</i> ]
 
 <blockquote><pre>
 void set_exception(exception_ptr p);
-</pre><blockquote>
+</pre>
+<blockquote>
 <p>
 -18- <i>Effects</i>: atomically stores the exception pointer <tt>p</tt> in the shared state and makes that 
 state ready (<sref ref="[futures.state]"/>).
@@ -139,6 +143,7 @@ state ready (<sref ref="[futures.state]"/>).
 <tt>promise</tt> object are serialized. [ <i>Note</i>: And they synchronize and serialize with other functions 
 through the referred shared state. &mdash; <i>end note</i> ]
 </p>
+
 </blockquote></blockquote>
 </li>
 </ol>
