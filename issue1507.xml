@@ -36,7 +36,7 @@ functions.  The following resolution adds synchronization paragraphs
 to all of them and edits a couple of related synchronization
 paragraphs.</p>
 
-<note>2011-03-09: Hans adds some improvements</note>
+<note>2011-03-09: Hans and Anthony add some improvements</note>
 </discussion>
 
 <resolution>
@@ -124,10 +124,16 @@ ready (<sref ref="[futures.state]"/>).
 <li><tt>no_state</tt> if <tt>*this</tt> has no shared state.</li>
 </ul>
 <p>
--17- <i>Synchronization</i>: calls to <tt>set_value</tt><ins>,</ins> <del>and</del> <tt>set_exception</tt><ins>,
-<code>set_value_at_thread_exit</code>, and <code>set_exception_at_thread_exit</code></ins> on a single 
+-17- <i>Synchronization</i>: <del>calls to <tt>set_value</tt> and <tt>set_exception</tt> on a single 
 <tt>promise</tt> object are serialized. [ <i>Note</i>: And they synchronize and serialize with other functions 
-through the referred shared state. &mdash; <i>end note</i> ]
+through the referred shared state. &mdash; <i>end note</i> ]</del><ins>For purposes of determining the 
+existence of a data race, <tt>set_value</tt>, <tt>set_exception</tt>, <tt>set_value_at_thread_exit</tt>,
+and <tt>set_exception_at_thread_exit</tt> behave as atomic operations (<sref ref="[intro.multithread]"/>) on
+the memory location associated with the <tt>promise</tt>. Calls to these operations on a single promise shall 
+appear to occur in a single total order.  [<i>Note</i>: this can be viewed as the modification order
+(<sref ref="[intro.multithread]"/>) of the promise. &mdash; <i>end note</i>] These operations do not 
+provide any ordering guarantees with respect to other operations, except through operations on futures
+that reference the same shared state.</ins>
 </p>
 </blockquote></blockquote>
 
@@ -153,10 +159,16 @@ state ready (<sref ref="[futures.state]"/>).
 </ul>
 
 <p>
--21- <i>Synchronization</i>: calls to <tt>set_value</tt><ins>,</ins> <del>and</del> <tt>set_exception</tt><ins>,
-<code>set_value_at_thread_exit</code>, and <code>set_exception_at_thread_exit</code></ins> on a single 
-<tt>promise</tt> object are serialized. [ <i>Note</i>: And they synchronize and serialize with other functions 
-through the referred shared state. &mdash; <i>end note</i> ]
+-21- <i>Synchronization</i>: <del>calls to <tt>set_value</tt> and <tt>set_exception</tt> on a single 
+<tt>promise</tt> object are serialized. [ <i>Note</i>: And they synchronize and serialize with 
+other functions through the referred shared state. &mdash; <i>end note</i> ]</del><ins>For purposes of determining the 
+existence of a data race, <tt>set_value</tt>, <tt>set_exception</tt>, <tt>set_value_at_thread_exit</tt>,
+and <tt>set_exception_at_thread_exit</tt> behave as atomic operations (<sref ref="[intro.multithread]"/>) on
+the memory location associated with the <tt>promise</tt>. Calls to these operations on a single promise shall 
+appear to occur in a single total order.  [<i>Note</i>: this can be viewed as the modification order
+(<sref ref="[intro.multithread]"/>) of the promise. &mdash; <i>end note</i>] These operations do not 
+provide any ordering guarantees with respect to other operations, except through operations on futures
+that reference the same shared state.</ins>
 </p>
 </blockquote></blockquote>
 
@@ -181,13 +193,13 @@ all objects of thread storage duration associated with the current thread have b
 <li><tt>no_state</tt> if <tt>*this</tt> has no shared state.</li>
 </ul>
 <p>
-<ins>-??- <i>Synchronization</i>: calls to <code>set_value</code>, <code>set_exception</code>,
-<code>set_value_at_thread_exit</code>, and <code>set_exception_at_thread_exit</code>
-on a single promise object are serialized. [<i>Note:</i> And they synchronize and serialize
-with other functions through the referred shared state. &mdash; <i>end note</i>]
-The completion of the destructors for all the current thread's variables of thread storage 
-duration synchronizes with (<sref ref="[intro.multithread]"/>) the successful return from 
-any member function that detects that the state is set to ready.</ins>
+<ins>-??- <i>Synchronization</i>: For purposes of determining the existence of a data race, <tt>set_value</tt>, 
+<tt>set_exception</tt>, <tt>set_value_at_thread_exit</tt>, and <tt>set_exception_at_thread_exit</tt> behave as 
+atomic operations (<sref ref="[intro.multithread]"/>) on the memory location associated with the <tt>promise</tt>. 
+Calls to these operations on a single promise shall appear to occur in a single total order.  [<i>Note</i>: 
+this can be viewed as the modification order (<sref ref="[intro.multithread]"/>) of the promise. &mdash; 
+<i>end note</i>] These operations do not provide any ordering guarantees with respect to other operations, 
+except through operations on futures that reference the same shared state.</ins>
 </p>
 </blockquote></blockquote>
 
@@ -210,13 +222,13 @@ thread have been destroyed.
 <li><tt>no_state</tt> if <tt>*this</tt> has no shared state.</li>
 </ul>
 <p>
-<ins>-??- <i>Synchronization</i>: calls to <code>set_value</code>, <code>set_exception</code>,
-<code>set_value_at_thread_exit</code>, and <code>set_exception_at_thread_exit</code>
-on a single promise object are serialized. [<i>Note:</i> And they synchronize and serialize 
-with other functions through the referred shared state. &mdash; <i>end note</i>]
-The completion of the destructors for all the current thread's variables of thread storage 
-duration synchronizes with (<sref ref="[intro.multithread]"/>) the successful return from 
-any member function that detects that the state is set to ready.</ins>
+<ins>-??- <i>Synchronization</i>: For purposes of determining the existence of a data race, <tt>set_value</tt>, 
+<tt>set_exception</tt>, <tt>set_value_at_thread_exit</tt>, and <tt>set_exception_at_thread_exit</tt> behave as 
+atomic operations (<sref ref="[intro.multithread]"/>) on the memory location associated with the <tt>promise</tt>. 
+Calls to these operations on a single promise shall appear to occur in a single total order.  [<i>Note</i>: 
+this can be viewed as the modification order (<sref ref="[intro.multithread]"/>) of the promise. &mdash; 
+<i>end note</i>] These operations do not provide any ordering guarantees with respect to other operations, 
+except through operations on futures that reference the same shared state.</ins>
 </p>
 </blockquote></blockquote>
 </li>
