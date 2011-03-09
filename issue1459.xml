@@ -76,6 +76,48 @@ Resolution proposed by ballot comment
 <p>
 Please clarify.
 </p>
+
+<note>2011-03-09 Hans comments:</note>
+
+<p>I'm not proud of <sref ref="[atomics.order]"/> p9 (formerly p8), and I agree with the comments that this
+isn't entirely satisfactory. <sref ref="[atomics.order]"/> p9 was designed to preclude
+out-of-thin-air results for races among <tt>memory_order_relaxed</tt> atomics, in spite of 
+the fact that Java experience has shown we don't really know how to do that adequately. In 
+the long run, we probably want to revisit this.
+<p/>
+However, in the short term, I'm still inclined to declare this NAD, for two separate reasons:
+</p>
+
+<ol>
+<li><p><sref ref="[intro.execution]"/> p15 states: "If a side effect on a scalar
+object is unsequenced relative to either another side
+effect on the same scalar object or a value computation
+using the value of the same scalar object, the behavior is undefined."
+I think the examples presented here have undefined behavior as a result.
+It's not completely clear to me whether examples can be constructed
+that exhibit this problem, and don't have undefined behavior.</p></li>
+
+<li><p>This comment seems to be using a different meaning of "evaluation"
+from what is used elsewhere in the standard. The sequence of evaluations
+here doesn't have to consist of full expression evaluations.  They
+can be evaluations of operations like lvalue to rvalue conversion,
+or individual assignments. In particular, the reads and writes
+executed by <tt>e1</tt> and <tt>e2</tt> in the example could be treated as separate
+evaluations for purposes of producing the sequence.
+The definition of "sequenced before" in <sref ref="[intro.execution]"/> makes
+little sense if the term "evaluation" is restricted to any notion
+of complete expression. Perhaps we should add yet another note
+to clarify this?  <sref ref="[atomics.order]"/> p10 probably leads to 
+the wrong impression here.
+<p/>
+An alternative resolution would be to simply delete our flakey
+attempt at preventing out-of-thin-air reads, by removing <sref ref="[atomics.order]"/> p9-11,
+possibly adding a note that explains that we technically allow,
+but strongly discourage them. If we were starting this from scratch
+now, that would probably be my preference.  But it seems like too drastic
+a resolution at this stage.
+</p></li>
+</ol>
 </discussion>
 
 <resolution>
