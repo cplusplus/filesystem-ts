@@ -35,10 +35,25 @@ and add two new paragraphs, after <sref ref="[futures.promise]"/>/28 and <sref r
 functions.  The following resolution adds synchronization paragraphs
 to all of them and edits a couple of related synchronization
 paragraphs.</p>
+
+<note>2011-03-09: Hans adds some improvements</note>
 </discussion>
 
 <resolution>
 <ol>
+<li><p>Edit <sref ref="[thread.mutex.requirements.mutex]"/> paragraph 5 as follows:</p>
+
+<blockquote><p>
+5 The implementation shall provide lock and unlock operations, as described below. <del>The implementation shall
+serialize those operations.</del><ins>For purposes of determining the existence of a data race, these
+behave as atomic operations (<sref ref="[intro.multithread]"/>).  The lock and unlock operations on
+a single mutex shall appear to occur in a single total order. [<i>Note</i>: this can be viewed as the 
+modification order (<sref ref="[intro.multithread]"/>) of the mutex. &mdash; <i>end note</i>]</ins> [ <i>Note</i>: 
+Construction and destruction of an object of a mutex type need not be thread-safe; other synchronization 
+should be used to ensure that mutex objects are initialized and visible to other threads. &mdash; <i>end note</i> ]
+</p></blockquote>
+</li>
+
 <li><p>Edit <sref ref="[thread.condition]"/> paragraphs 6-9 as follows:</p>
 
 <blockquote><pre>
