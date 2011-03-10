@@ -164,6 +164,13 @@ Nevertheless, it doesn't hurt IMO if we clarify the behavior of <tt>str()</tt>
 here in respect to <tt>app</tt>.
 </p>
 
+<note>2011-03-10: P.J.Plauger comments:</note>
+
+<p>I think we should say nothing special about <tt>app</tt> at construction
+time (thus leaving the write pointer at the beginning of the buffer).
+Leave implementers wiggle room to ensure subsequent append writes as they see 
+fit, but don't change existing rules for initial seek position.</p>
+
 </discussion>
 
 <resolution>
@@ -180,10 +187,11 @@ to <tt>mode</tt>.
 <p/>
 3 <i>Postconditions</i>: If <tt>mode &amp; ios_base::out</tt> is true, <tt>pbase()</tt> 
 points to the first underlying character and <tt>epptr() &gt;= pbase() + s.size()</tt> 
-holds; in addition, if <tt>mode &amp; <del>ios_base::in</del><ins>(ios_base::ate|ios_base::app)</ins></tt> 
-is true, <tt>pptr() == pbase() + s.data()</tt> holds, otherwise <tt>pptr() == pbase()</tt> 
-is true. If <tt>mode &amp; ios_base::in</tt> is true, <tt>eback()</tt> points to the 
-first underlying character, and both <tt>gptr() == eback() and egptr() == eback() + s.size()</tt> 
+holds; in addition, if <tt>mode &amp; <del>ios_base::in</del><ins>(ios_base::ate | ios_base::app)</ins></tt> 
+is true, <tt>pptr() == pbase() + <del>s.data()</del><ins>s.size()</ins></tt> holds, 
+otherwise <tt>pptr() == pbase()</tt> is true. If <tt>mode &amp; ios_base::in</tt> 
+is true, <tt>eback()</tt> points to the first underlying character, and both 
+<tt>gptr() == eback() and egptr() == eback() + s.size()</tt> 
 hold.
 </p>
 </blockquote></blockquote>
