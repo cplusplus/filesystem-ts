@@ -192,13 +192,15 @@ the symbols <tt>r</tt> and <tt>s</tt> to purely refer to the typenames
 
 <note>2011-03-06 Daniel adapts numbering to N3242</note>
 
+<note>2011-03-11 Daniel removes <tt>noexcept</tt> specifiers from <tt>address</tt> functions</note>
+
 </discussion>
 
 <resolution>
 <ol>
 <li>
 <p>
-Edit the following three rows from Table 27:
+Edit the following rows from Table 27:
 </p>
 
 <blockquote>
@@ -222,10 +224,7 @@ Definition
 </tr>
 
 <tr>
-<td>&nbsp;<tt>...</tt></td>
-
-<td>&nbsp;<tt>...</tt></td>
-
+<td colspan="2" style="text-align:center;">[&hellip;]</td>
 </tr>
 
 <tr>
@@ -249,7 +248,7 @@ by conversion from a value <tt>r</tt>.</td>
 </li>
 <li>
 <p>
-Add the following rows to Table 28, Allocator requirements:
+Edit Table 28, Allocator requirements, as indicated:
 </p>
 
 <blockquote>
@@ -275,13 +274,7 @@ Default
 </tr>
 
 <tr>
-<td>&nbsp;<tt>...</tt></td>
-
-<td>&nbsp;<tt>...</tt></td>
-
-<td>&nbsp;<tt>...</tt></td>
-
-<td>&nbsp;<tt>...</tt></td>
+<td colspan="4" style="text-align:center;">[&hellip;]</td>
 </tr>
 
 <tr>
@@ -314,36 +307,9 @@ Default
 
 <td>&nbsp;</td>
 </tr>
-</table>
-</blockquote>
 
-</li>
-
-<li>
-<p>
-Change the following two rows in Table 28:
-</p>
-
-<blockquote>
-<table border="1">
-<caption>Table 28 &mdash; Allocator requirements</caption>
 <tr>
-<th>
-Expression
-</th>
-
-<th>
-Return type
-</th>
-
-<th>
-Assertion/note<br/>pre-/post-condition
-</th>
-
-<th>
-Default
-</th>
-
+<td colspan="4" style="text-align:center;">[&hellip;]</td>
 </tr>
 
 <tr>
@@ -367,13 +333,7 @@ Default
 </tr>
 
 <tr>
-<td>&nbsp;<tt>...</tt></td>
-
-<td>&nbsp;<tt>...</tt></td>
-
-<td>&nbsp;<tt>...</tt></td>
-
-<td>&nbsp;<tt>...</tt></td>
+<td colspan="4" style="text-align:center;">[&hellip;]</td>
 </tr>
 
 <tr>
@@ -421,9 +381,41 @@ Default
 
 </li>
 
+<li><p>Add the following new paragraphs at the end of  <sref ref="[allocator.requirements]"/> (The 
+intent is to encourage implementors to support other reference-like types in components that use
+allocators, but to make implementors conforming that restrict to real reference types. The first
+insertion is a reduced set of additional requirements compared to C++03):</p> 
+
+<blockquote>
+<p>
+-6- If the alignment associated with a specific over-aligned type is not supported by an allocator, 
+instantiation of the allocator for that type may fail. The allocator also may silently ignore the 
+requested alignment. [ <i>Note</i>: Additionally, the member function <tt>allocate</tt> for that 
+type may fail by throwing an object of type <tt>std::bad_alloc</tt>. &mdash; <i>end note</i> ]
+<p/>
+<ins>-?- Implementations of components described in this International Standard which are parameterized in
+terms of types, that are required to satisfy the allocator requirements, are permitted to assume that any such 
+template parameter, name it <tt>A</tt>, meets the following additional requirements:</ins>
+</p>
+<ul>
+<li><ins>the member types <tt>allocator_traits&lt;A&gt;::reference</tt> and 
+<tt>allocator_traits&lt;A&gt;::const_reference</tt> are required to be <tt>T&amp;</tt> and 
+<tt>const T&amp;</tt>, respectively.</ins></li>
+<li><ins>if provided, the member types <tt>A::reference</tt> and <tt>A::const_reference</tt> 
+are required to be <tt>T&amp;</tt> and <tt>const T&amp;</tt>, respectively.</ins></li>
+</ul>  
+<p>
+<ins>-?- Implementations are encouraged to supply libraries that can accept allocators 
+that define more general reference types. In such implementations, any requirements imposed
+on allocators by the depending library components beyond those requirements that are 
+defined in this sub-clause, are implementation-defined.</ins>
+</p>
+</blockquote>
+</li>
+
 <li><p>Add the following note after <sref ref="[pointer.traits]"/> p. 1 (The intent is to
 encourage non-normatively implementations to provide specializations for <tt>pointer_traits</tt>
-for non-standard pointer types and reference types which are "native" for the supported
+for non-standard pointer types and reference types which are native for the supported
 platform):</p>
 
 <blockquote><p>
@@ -450,7 +442,9 @@ namespace std {
 </pre></blockquote>
 <p>
 <ins>? [ <i>Note</i>: If there is an additional pointer type <tt>_ _ far</tt> 
-such that the difference of two <tt>_ _ far</tt> is of type <tt>long</tt>,
+such that the difference of two <tt>_ _ far</tt> is of type <tt>long</tt> and 
+<tt>_ _ make_far_reference&lt;T&gt;::type</tt> forms the corresponding reference 
+type <tt>T _ _ far&amp;</tt> for non-<tt>void</tt> <tt>T</tt> and <tt>int</tt> otherwise, 
 an implementation may define</ins></p>
 <blockquote><pre>
 <ins>namespace std {
@@ -459,7 +453,7 @@ an implementation may define</ins></p>
     typedef T element_type;
     typedef long difference_type;
     template &lt;class U&gt; using rebind = U _ _ far*;
-    static pointer pointer_to(<em>see below</em> r);
+    static pointer pointer_to(typename _ _ make_far_reference&lt;T&gt;::type r);
   };
 }</ins>
 </pre></blockquote>
@@ -469,8 +463,13 @@ an implementation may define</ins></p>
 
 <li>
 <p>
-Add the following typedef declarations to allocator_traits 
-<sref ref="[allocator.traits]"/>:
+Add the following typedef and function declarations to class template <tt>allocator_traits</tt> 
+<sref ref="[allocator.traits]"/>. Please note here, that the declarations with <tt>noexcept</tt> specifier
+of the <tt>address</tt> functions of allocators of an earlier proposed resolution has been removed. The C++03 
+standard seems not to impose this requirement and the equivalent function <tt>pointer_traits&lt;&gt;::pointer_to()</tt>
+does also not have such a specifier. It seems perfectly possibly that throwing <tt>address</tt> functions 
+should be supported, but it should now to be decided, whether a conditional <tt>noexcept</tt> specification 
+should be added here and in <tt>scoped_allocator_adaptor</tt> as well:
 </p>
 
 <blockquote><pre>
@@ -482,8 +481,8 @@ template &lt;class Alloc&gt; struct allocator_traits {
   <ins>typedef <i>see below</i> reference;</ins>
   <ins>typedef <i>see below</i> const_reference;</ins>
   ...
-  <ins>static pointer address(Alloc&amp; a, reference r) noexcept;</ins>
-  <ins>static const_pointer address(Alloc&amp; a, const_reference r) noexcept;</ins>
+  <ins>static pointer address(Alloc&amp; a, reference r);</ins>
+  <ins>static const_pointer address(Alloc&amp; a, const_reference r);</ins>
 
   static pointer allocate(Alloc&amp; a, size_type n);
   static pointer allocate(Alloc&amp; a, size_type n, const_void_pointer hint);
@@ -523,13 +522,13 @@ Add the following descriptions at the beginning of <sref ref="[allocator.traits.
 </p>
 
 <blockquote>
-<pre><ins>static pointer address(Alloc&amp; a, reference r) noexcept;</ins></pre>
+<pre><ins>static pointer address(Alloc&amp; a, reference r);</ins></pre>
 <blockquote><p>
 <ins>? <i>Returns:</i> <tt>a.address(r)</tt> if that expression is well-formed; otherwise,
 <tt>pointer_traits&lt;pointer&gt;::pointer_to(r)</tt>.</ins>
 </p></blockquote>
 
-<pre><ins>static const_pointer address(Alloc&amp; a, const_reference r) noexcept;</ins></pre>
+<pre><ins>static const_pointer address(Alloc&amp; a, const_reference r);</ins></pre>
 <blockquote><p>
 <ins>? <i>Returns:</i> <tt>a.address(r)</tt> if that expression is well-formed; otherwise,
 <tt>pointer_traits&lt;const_pointer&gt;::pointer_to(r)</tt>.</ins>
@@ -544,7 +543,7 @@ Add the following descriptions at the beginning of <sref ref="[allocator.traits.
 
 <li>
 <p>
-Add the following typdef and member function declarations to the
+Add the following typedef and member function declarations to the
 <tt>scoped_allocator_adaptor</tt> synopsis in <sref ref="[allocator.adaptor.syn]"/>:
 </p>
 
@@ -555,8 +554,8 @@ class scoped_allocator_adaptor : public OuterAlloc {
   <ins>typedef typename OuterTraits::reference reference;</ins>
   <ins>typedef typename OuterTraits::const_reference const_reference;</ins>
   ...
-  <ins>pointer address(reference r) noexcept;</ins>
-  <ins>const_pointer address(const_reference r) noexcept;</ins>
+  <ins>pointer address(reference r);</ins>
+  <ins>const_pointer address(const_reference r);</ins>
 
   pointer allocate(size_type n);
   ...
@@ -571,12 +570,12 @@ class scoped_allocator_adaptor : public OuterAlloc {
 4 <i>Returns:</i> <tt>static_cast&lt;const Outer&amp;&gt;(*this)</tt>.
 </p></blockquote>
 
-<pre><ins>pointer address(reference r) noexcept;</ins></pre>
+<pre><ins>pointer address(reference r);</ins></pre>
 <blockquote><p>
 <ins>? <i>Returns:</i> <tt>allocator_traits&lt;OuterAlloc&gt;::address(outer_allocator(), r)</tt>.</ins>
 </p></blockquote>
 
-<pre><ins>const_pointer address(const_reference r) noexcept;</ins></pre>
+<pre><ins>const_pointer address(const_reference r);</ins></pre>
 <blockquote><p>
 <ins>? <i>Returns:</i> <tt>allocator_traits&lt;OuterAlloc&gt;::address(outer_allocator(), r)</tt>.</ins>
 </p></blockquote>
