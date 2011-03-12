@@ -13,9 +13,9 @@
 <p><b>Addresses US-154</b></p>
 
 <p>There is no <tt>ATOMIC_BOOL_LOCK_FREE</tt> macro.</p>
-</discussion>
 
-<resolution>
+<p>Proposed resolution suggested by the NB comment:</p>
+
 <p>
 Add <tt>ATOMIC_BOOL_LOCK_FREE</tt> to <sref ref="[atomics.lockfree]"/> and to <sref ref="[atomics.syn]"/>:
 </p>
@@ -27,6 +27,183 @@ Add <tt>ATOMIC_BOOL_LOCK_FREE</tt> to <sref ref="[atomics.lockfree]"/> and to <s
 #define ATOMIC_CHAR32_T_LOCK_FREE <em>unspecified</em>
 [..]
 </pre></blockquote>
+
+
+<note>2011-03-12: Lawrence comments and drafts wording</note>
+
+<p>Point: We were missing a macro test for <tt>bool</tt>.</p>
+
+<p>Comment: The <tt>atomic&lt;bool&gt;</tt> type is the easiest to make lock-free.
+There is no harm in providing a macro.</p>
+
+<p>Action: Add an <tt>ATOMIC_BOOL_LOCK_FREE</tt>.</p>
+
+<p>Point: We were missing a macro test for pointers.</p>
+
+<p>Comment: The national body comment noting the missing macro
+for <tt>bool</tt> did not note the lack of a macro for pointers because
+<tt>ATOMIC_ADDRESS_LOCK_FREE</tt> was present at the time of the comment.
+Its removal appears to be an overzealous consequence of removing
+<tt>atomic_address</tt>.</p>
+
+<p>Action: Add an <tt>ATOMIC_POINTER_LOCK_FREE</tt>.</p>
+
+<p>Point: Presumably <tt>atomic_is_lock_free()</tt> will be an inline function
+producing a constant in those cases in which the macros are useful.</p>
+
+<p>Comment: The point is technically correct, but could use some
+exposition. Systems providing forward binary compatibility, e.g.
+mainstream desktop and server systems, would likely have these
+functions as inline constants only when the answer is true.
+Otherwise, the function should defer to a platform-specific dynamic
+library to take advantage of future systems that do provide lock-free
+support.</p>
+
+<p>Comment: Such functions are not useful in the preprocessor, and not
+portably useful in <tt>static_assert</tt>.</p>
+
+<p>Action: Preserve the macros.</p>
+
+<p>Point: The required explicit instantiations are <tt>atomic&lt;X&gt;</tt> for each
+of the types <tt>X</tt> in Table 145. Table 145 does not list <tt>bool</tt>, so 
+<tt>atomic&lt;bool&gt;</tt> is not a required instantiation.</p>
+
+<p>Comment: I think specialization was intended in the point instead of
+instantiation. In any event, <sref ref="[atomics.types.generic]"/> paragraph 5 does
+indirectly require a specialization for <tt>atomic&lt;bool&gt;</tt>.  Confusion
+arises because the specialization for other integral types have a
+wider interface than the generic <tt>atomic&lt;T&gt;</tt>, but 
+<tt>atomic&lt;bool&gt;</tt> does not.</p>
+
+<p>Action: Add clarifying text.</p>
+
+<p>Point: The name of Table 145, "atomic integral typedefs", is perhaps
+misleading, since the types listed do not contain all of the
+"integral" types.</p>
+
+<p>Comment: Granted, though the table describe those with extra operations.</p>
+
+<p>Action: Leave the text as is.</p>
+
+<p>Point: The macros correspond to the types in Table 145, "with the
+signed and unsigned variants grouped together". That's a rather
+inartful way of saying that <tt>ATOMIC_SHORT_LOCK_FREE</tt> applies to
+<tt>signed short</tt> and <tt>unsigned short</tt>. Presumably this also means that
+<tt>ATOMIC_CHAR_LOCK_FREE</tt> applies to all three char types.</p>
+
+<p>Comment: Yes, it is inartful.</p>
+
+<p>Comment: Adding additional macros to distinguish signed and unsigned
+would provide no real additional information given the other
+constraints in the language.</p>
+
+<p>Comment: Yes, it applies to all three <tt>char</tt> types.</p>
+
+<p>Action: Leave the text as is.</p>
+
+<p>Point: The standard says that "There are full specializations over the
+integral types (<tt>char</tt>, <tt>signed char</tt>, ...)" <tt>bool</tt> 
+is not in the list. But this text is not normative. It simply tells you 
+that "there are" specializations, not "there shall be" specializations, which would
+impose a requirement. The requirement, to the extent that there is
+one, is in the header synopsis, which, in N3242, sort of pulls in the
+list of types in Table 145.</p>
+
+<p>Comment: The intent was for the specializations to be normative.
+Otherwise the extra member functions could not be present.</p>
+
+<p>Action: Clarify the text.</p>
+</discussion>
+
+<resolution>
+<ol>
+<li><p>Edit header <tt>&lt;atomic&gt;</tt> synopsis <sref ref="[atomics.syn]"/>:</p>
+
+<blockquote><pre>
+namespace std {
+  <i>// 29.3, order and consistency</i>
+  enum memory_order;
+  template &lt;class T&gt;
+  T kill_dependency(T y);
+
+  <i>// 29.4, lock-free property</i>
+  <ins>#define ATOMIC_BOOL_LOCK_FREE <i>unspecified</i></ins>
+  #define ATOMIC_CHAR_LOCK_FREE <i>unspecified</i>
+  #define ATOMIC_CHAR16_T_LOCK_FREE <i>unspecified</i>
+  #define ATOMIC_CHAR32_T_LOCK_FREE <i>unspecified</i>
+  #define ATOMIC_WCHAR_T_LOCK_FREE <i>unspecified</i>
+  #define ATOMIC_SHORT_LOCK_FREE <i>unspecified</i>
+  #define ATOMIC_INT_LOCK_FREE <i>unspecified</i>
+  #define ATOMIC_LONG_LOCK_FREE <i>unspecified</i>
+  #define ATOMIC_LLONG_LOCK_FREE <i>unspecified</i>
+  <ins>#define ATOMIC_POINTER_LOCK_FREE <i>unspecified</i></ins>
+  
+  <i>// 29.5, generic types</i>
+  template&lt;class T&gt; struct atomic;
+  template&lt;&gt; struct atomic&lt;<i>integral</i>&gt;;
+  template&lt;class T&gt; struct atomic&lt;T*&gt;;
+
+  <i>// 29.6.1, general operations on atomic types
+  // In the following declarations, </i>atomic_type<i> is either
+  // </i>atomic&lt;T&gt;<i> or a named base class for </i>T<i> from
+  // Table 145 or inferred from
+  // Table 146 </i><ins><i>or from</i> bool</ins><i>.</i> 
+
+  [&hellip;]
+}
+</pre></blockquote>
+</li>
+
+<li><p>Edit the synopsis of <sref ref="[atomics.lockfree]"/> and paragraph 1 as follows:</p>
+
+<blockquote><pre>
+  <ins>#define ATOMIC_BOOL_LOCK_FREE <i>unspecified</i></ins>
+  #define ATOMIC_CHAR_LOCK_FREE <i><del>implementation-defined</del><ins>unspecified</ins></i>
+  #define ATOMIC_CHAR16_T_LOCK_FREE <i><del>implementation-defined</del><ins>unspecified</ins></i>
+  #define ATOMIC_CHAR32_T_LOCK_FREE <i><del>implementation-defined</del><ins>unspecified</ins></i>
+  #define ATOMIC_WCHAR_T_LOCK_FREE <i><del>implementation-defined</del><ins>unspecified</ins></i>
+  #define ATOMIC_SHORT_LOCK_FREE <i><del>implementation-defined</del><ins>unspecified</ins></i>
+  #define ATOMIC_INT_LOCK_FREE <i><del>implementation-defined</del><ins>unspecified</ins></i>
+  #define ATOMIC_LONG_LOCK_FREE <i><del>implementation-defined</del><ins>unspecified</ins></i>
+  #define ATOMIC_LLONG_LOCK_FREE <i><del>implementation-defined</del><ins>unspecified</ins></i>
+  <ins>#define ATOMIC_POINTER_LOCK_FREE <i>unspecified</i></ins>
+  </pre><blockquote>
+  <p>
+  1 The <tt>ATOMIC_..._LOCK_FREE</tt> macros indicate the lock-free property of the corresponding atomic types, with
+the signed and unsigned variants grouped together. The properties also apply to the corresponding <ins>(partial)</ins> 
+specializations of the <tt>atomic</tt> template. A value of 0 indicates that the types are never lock-free. A value of 1
+indicates that the types are sometimes lock-free. A value of 2 indicates that the types are always lock-free.
+  </p>
+  </blockquote></blockquote>  
+</li>
+
+<li><p>Edit <sref ref="[atomics.types.generic]"/> paragraph 3, 4, and 7 as follows:</p>
+
+<blockquote><p>
+3 Specializations <ins>and instantiations</ins> of the <tt>atomic</tt> template shall have a deleted copy constructor, 
+a deleted copy assignment operator, and a <tt>constexpr</tt> value constructor.
+<p/>
+4 There <del>are</del><ins>shall be</ins> full specializations <del>over</del><ins>for</ins> the integral types <del>(</del>
+<tt>char</tt>, <tt>signed char</tt>, <tt>unsigned char</tt>, <tt>short</tt>, <tt>unsigned short</tt>, <tt>int</tt>, 
+<tt>unsigned int</tt>, <tt>long</tt>, <tt>unsigned long</tt>, <tt>long long</tt>, <tt>unsigned long long</tt>, 
+<tt>char16_t</tt>, <tt>char32_t</tt>, <ins>and</ins> <tt>wchar_t</tt>, and any other types needed by the typedefs in the header 
+<tt>&lt;cstdint&gt;</tt><del>)</del> on the <tt>atomic</tt> class
+template. For each integral type integral, the specialization <tt>atomic&lt;<i>integral</i>&gt;</tt> provides additional atomic
+operations appropriate to integral types. <del>[Editor’s note: I’m guessing that this is the correct rendering of
+the text in the paper; if this sentence was intended to impose a requirement, rather than a description, it
+will have to be changed.]</del>
+<p/>
+[&hellip;]
+<p/>
+7 There are named types corresponding to the integral specializations of <tt>atomic</tt>, as specified in Table 145. 
+<ins>In addition, there is a named type <code>atomic_bool</code> corresponding to the specialization 
+<code>atomic&lt;bool&gt;</code>.</ins> Each named type is <ins>either</ins> a typedef to the corresponding specialization 
+or a base class of the corresponding specialization. If it is a base class, it shall support the same member functions 
+as the corresponding specialization.
+</p>
+</blockquote>
+</li>
+</ol>
 </resolution>
 
 </issue>
