@@ -194,6 +194,8 @@ the symbols <tt>r</tt> and <tt>s</tt> to purely refer to the typenames
 
 <note>2011-03-11 Daniel removes <tt>noexcept</tt> specifiers from <tt>address</tt> functions</note>
 
+<note>2011-03-12 Further wording improvements by Daniel and Pablo</note>
+
 </discussion>
 
 <resolution>
@@ -381,7 +383,27 @@ Default
 
 </li>
 
-<li><p>Add the following new paragraph at the end of  <sref ref="[allocator.requirements]"/> (The 
+<li><p>Add the following sentence at the end of <sref ref="[allocator.requirements]"/> p. 3 (The intent is
+to ensure that any allocator rebind satisfies the allocator requirements as well)</p>
+
+<blockquote><p>
+-3- Note A: The member class template <tt>rebind</tt> in the table above is effectively a typedef template. 
+[ <i>Note</i>: In general, if the name <tt>Allocator</tt> is bound to <tt>SomeAllocator&lt;T&gt;</tt>, then 
+<tt>Allocator::rebind&lt;U&gt;::other</tt> is the same type as <tt>SomeAllocator&lt;U&gt;</tt>, 
+where <tt>SomeAllocator&lt;T&gt;::value_type</tt> is <tt>T</tt> and <tt>SomeAllocator&lt;U&gt;::value_type</tt> 
+is U. &mdash; <i>end note</i> ] If <tt>Allocator</tt> is a class template instantiation of the 
+form <tt>SomeAllocator&lt;T, Args&gt;</tt>, where <tt>Args</tt> is zero or more type arguments, 
+and <tt>Allocator</tt> does not supply a <tt>rebind</tt> member template, the standard 
+<tt>allocator_traits</tt> template uses <tt>SomeAllocator&lt;U, Args&gt;</tt> in place of 
+<tt>Allocator::rebind&lt;U&gt;::other</tt> by default. For allocator types that are not template 
+instantiations of the above form, no default is provided. <ins>The types referred to by <tt>X::rebind&lt;U&gt;::other</tt> 
+(if defined) and by <tt>allocator_traits&lt;X&gt;::rebind_alloc&lt;U&gt;</tt> shall satisfy the Allocator
+requirements for every type <tt>U</tt> used to instantiate them.</ins>
+</p></blockquote>
+
+</li>
+
+<li><p>Add the following new paragraph at the end of <sref ref="[allocator.requirements]"/> (The 
 intent is to make implementors conforming that only support built-in reference types, but to allow
 them to support extended reference types as well):</p> 
 
@@ -392,25 +414,16 @@ instantiation of the allocator for that type may fail. The allocator also may si
 requested alignment. [ <i>Note</i>: Additionally, the member function <tt>allocate</tt> for that 
 type may fail by throwing an object of type <tt>std::bad_alloc</tt>. &mdash; <i>end note</i> ]
 <p/>
-<ins>-?- Implementations of components described in this International Standard which are 
-parameterized in terms of types, that are required to satisfy the allocator requirements,
-are permitted to assume that every type <tt><i>A</i></tt> used as an argument of such a formal 
-parameter, meets the following additional requirements:</ins>
-</p>
-<ul>
-<li><ins>the member types <tt>allocator_traits&lt;<i>A</i>&gt;::reference</tt> and 
-<tt>allocator_traits&lt;A&gt;::const_reference</tt> refer to the types <tt><i>A</i>::value_type&amp;</tt> and 
-<tt>const <i>A</i>::value_type&amp;</tt>, respectively.</ins></li>
-<li><ins>if provided, the member types <tt><i>A</i>::reference</tt> and <tt><i>A</i>::const_reference</tt> 
-refer to the types <tt><i>A</i>::value_type&amp;</tt> and <tt>const <i>A</i>::value_type&amp;</tt>, respectively.</ins></li>
-<li><ins>the types referred to by <tt><i>A</i>::rebind&lt;U&gt;::other</tt> (if <tt>rebind</tt> is provided) and by 
-<tt>allocator_traits&lt;<i>A</i>&gt;::rebind_alloc&lt;U&gt;</tt> for all <tt>U</tt> (including <tt><i>A</i>::value_type</tt>) 
-meet the additional allocator requirements described in this paragraph, recursively.</ins></li>
-</ul>  
-<p>
-<ins>An implementation may define other valid definitions for these allocator types. [<i>Note</i>: For example, 
-an implementation that supports <tt>_ _ far</tt> references might support <tt><i>A</i>::value_type _ _ far&amp;</tt> 
-as a valid definition for <tt><i>A</i>::reference</tt>. &mdash; <i>end note</i>]</ins>
+<ins>-?- For every component described in this International Standard that is parameterized in 
+terms of a type, denoted here as <tt><i>A</i></tt>, that is required to satisfy the 
+Allocator requirements, the type referred to by <tt><i>A</i>::value_type&amp;</tt> shall be a valid 
+definition for <tt><i>A</i>::reference</tt> or for <tt>allocator_traits&lt;<i>A</i>&gt;::reference</tt> 
+and the type referred to by <tt>const <i>A</i>::value_type&amp;</tt> shall be a valid definition for 
+<tt><i>A</i>::const_reference</tt> or for <tt>allocator_traits&lt;<i>A</i>&gt;::const_reference</tt>. 
+An implementation may define other valid definitions for these types. [<i>Note</i>: For example, an 
+implementation that supports <tt>_ _ far</tt> references might support 
+<tt><i>A</i>::value_type _ _ far&amp;</tt> as a valid definition for <tt><i>A</i>::reference</tt>. 
+&mdash; <i>end note</i>]</ins>
 </p>
 </blockquote>
 </li>
@@ -421,7 +434,7 @@ for non-standard pointer types and reference types which are native for the supp
 platform):</p>
 
 <blockquote><p>
-1 The class template <tt>pointer_traits</tt> supplies a uniform interface to certain attributes 
+-1- The class template <tt>pointer_traits</tt> supplies a uniform interface to certain attributes 
 of pointer-like types.
 </p><blockquote><pre>
 namespace std {
@@ -446,7 +459,7 @@ namespace std {
 <ins>-?- An implementation is permitted to define additional specializations for <tt>pointer_traits</tt> 
 corresponding to implementation-defined pointer types. [ <i>Note</i>: If there is an additional pointer type 
 <tt>_ _ far</tt> such that the difference of two <tt>_ _ far</tt> is of type <tt>long</tt> and 
-<tt>_ _ make_far_reference&lt;T&gt;::type</tt> forms the corresponding reference 
+<tt>to_far_reference&lt;T&gt;::type</tt> denotes the corresponding reference 
 type <tt>T _ _ far&amp;</tt> for non-<tt>void</tt> <tt>T</tt> and <tt>int</tt> otherwise, 
 an implementation may define</ins></p>
 <blockquote><pre>
@@ -456,7 +469,7 @@ an implementation may define</ins></p>
     typedef T element_type;
     typedef long difference_type;
     template &lt;class U&gt; using rebind = U _ _ far*;
-    static pointer pointer_to(typename _ _ make_far_reference&lt;T&gt;::type r);
+    static pointer pointer_to(typename to_far_reference&lt;T&gt;::type r);
   };
 }</ins>
 </pre></blockquote>
