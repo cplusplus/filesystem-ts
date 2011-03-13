@@ -1,0 +1,64 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="2042" status="New">
+<title>Comparing <tt>forward_list::before_begin()</tt> to <tt>forward_list::end()</tt></title>
+<section><sref ref="[forwardlist.iter]"/></section>
+<submitter>Joe Gottman</submitter>
+<date>13 Mar 2011</date>
+
+<discussion>
+<p>For an object <tt>c</tt> of type <tt>forward_list&lt;X, Alloc&gt;</tt>, the iterators
+<tt>c.before_begin()</tt> and <tt>c.end()</tt> are part of the same underlying sequence,
+so the expression <tt>c.before_begin() == c.end()</tt>  must be well-defined.
+But the standard says nothing about what the result of this expression
+should be.  The forward iterator requirements says no dereferenceable
+iterator is equal to a non-dereferenceable iterator and that two
+dereferenceable iterators are equal if and only if they point to the
+same element.  But since <tt>before_begin()</tt> and <tt>end()</tt> are both
+non-dereferenceable, neither of these rules applies.
+</p>
+
+<p>
+Many <tt>forward_list</tt> methods, such as <tt>insert_after()</tt>, have a
+precondition that the iterator passed to them must not be equal to
+<tt>end()</tt>. Thus, user code might look like the following:
+</p>
+<blockquote><pre>
+void foo(forward_list&lt;int&gt;&amp; c, forward_list&lt;int&gt;::iterator it)
+{
+  assert(it != c.end());
+  c.insert_after(it, 42);
+}
+</pre></blockquote>
+
+<p>
+Conversely, <tt>before_begin()</tt> was specifically designed to be used with
+methods like <tt>insert_after()</tt>, so if <tt>c.before_begin()</tt> is passed to 
+this function the assertion must not fail.
+</p>
+
+<blockquote><p>
+</p></blockquote>
+
+</discussion>
+
+<resolution>
+
+<p>Add to the definition of <tt>forward_list::before_begin()</tt> <sref ref="[forwardlist.iter]"/> 
+the following:</p>
+
+<blockquote><pre>
+iterator before_begin();
+const_iterator before_begin() const;
+const_iterator cbefore_begin() const;
+</pre><blockquote><p>
+-1- <i>Returns</i>: A non-dereferenceable iterator that, when incremented, is equal to the iterator returned by <tt>begin()</tt>.
+<p/>
+<ins>-?- <i>Remarks</i>: <tt>before_begin() == end()</tt> shall equal false.</ins>
+</p></blockquote></blockquote>
+</resolution>
+
+</issue>
