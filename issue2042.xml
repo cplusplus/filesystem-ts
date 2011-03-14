@@ -40,8 +40,14 @@ methods like <tt>insert_after()</tt>, so if <tt>c.before_begin()</tt> is passed 
 this function the assertion must not fail.
 </p>
 
-<blockquote><p>
-</p></blockquote>
+<note>2011-03-14: Daniel comments and updates the suggested wording</note>
+
+<p>The suggested wording changes are necessary but not sufficient. Since there
+does not exist an equivalent semantic definition of <tt>cbefore_begin()</tt> as
+we have for <tt>cbegin()</tt>, this still leaves the question open whether
+the normative remark applies to <tt>cbefore_begin()</tt> as well. A simple fix
+is to define the operational semantics of <tt>cbefore_begin()</tt> in terms of
+<tt>before_begin()</tt>.</p>
 
 </discussion>
 
@@ -56,6 +62,8 @@ const_iterator before_begin() const;
 const_iterator cbefore_begin() const;
 </pre><blockquote><p>
 -1- <i>Returns</i>: A non-dereferenceable iterator that, when incremented, is equal to the iterator returned by <tt>begin()</tt>.
+<p/>
+<ins>-?- <i>Effects</i>: <tt>cbefore_begin()</tt> is equivalent to <tt>const_cast&lt;forward_list const&amp;>(*this).before_begin()</tt>.</ins>
 <p/>
 <ins>-?- <i>Remarks</i>: <tt>before_begin() == end()</tt> shall equal false.</ins>
 </p></blockquote></blockquote>

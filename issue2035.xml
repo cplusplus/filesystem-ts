@@ -53,6 +53,15 @@ only convertible to the value type (The exact form from the SGI documentation do
 <tt>reference</tt>).
 </p></li>
 </ol>
+
+<note>2011-03-14: Daniel comments and updates the suggested wording</note>
+
+<p>In addition to the before mentioned necessary changes there is another one need, which
+became obvious due to issue <iref ref="2042"/>: <tt>forward_list&lt;&gt;::before_begin()</tt> returns
+an iterator value which is not dereferencable, but obviously the intention is that it should
+be incrementable. This leads to the conclusion that imposing dereferencable as a requirement
+for the expressions <tt>++r</tt> is wrong: We only need the iterator to be incrementable. A
+similar conclusion applies to the expression <tt>--r</tt> of bidirectional iterators.</p>
 </discussion>
 
 <resolution>
@@ -231,8 +240,7 @@ equivalent to <tt>*b</tt>.
 <td><tt>++r</tt></td>
 <td><tt>X&amp;</tt></td>
 <td><tt>&nbsp;</tt></td>
-<td>pre: <tt>r</tt> is dereferenceable<br/>
-<ins>and <tt>r</tt> is incrementable</ins>.<br/>
+<td>pre: <tt>r</tt> is <del>dereferenceable</del><ins>incrementable</ins>.<br/>
 post: <tt>r</tt> is dereferenceable or<br/>
 <tt>r</tt> is past-the-end.<br/>
 post: any copies of the<br/>
@@ -389,12 +397,9 @@ semantics from input iterator based on value copies is wrong &mdash; <i>end rati
 <td><tt>--r</tt></td>
 <td><tt>X&amp;</tt></td>
 <td><tt>&nbsp;</tt></td>
-<td>pre: <ins><tt>r</tt> is dereferenceable or<br/>
-<tt>r</tt> is past-the-end. T</ins><del>t</del>here<br/>
-exists <tt>s</tt> such that<br/>
+<td>pre: there exists <tt>s</tt> such that<br/>
 <tt>r == ++s</tt>.<br/>
-post: <tt>r</tt> is dereferenceable<br/>
-<ins> and <tt>r</tt> is incrementable</ins>.<br/>
+post: <tt>r</tt> is <del>dereferenceable</del><ins>incrementable</ins>.<br/>
 <tt>--(++r) == r</tt>.<br/>
 <tt>--r == --s</tt> implies <tt>r == s</tt>.<br/>
 <tt>&amp;r == &amp;--r</tt>.
