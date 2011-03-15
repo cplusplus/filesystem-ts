@@ -179,34 +179,40 @@ non-<tt>CopyConstructible</tt> type, there are no effects.
 
 </blockquote>
 
+<note>2011-03-15: Daniel updates wording to sync with N3242 and comments</note>
+
+<blockquote><p>
+The issue has nearly been resolved by previous changes to the working paper, in 
+particular all suggested changes for <tt>deque</tt> and <tt>vector</tt> are no 
+longer necessary. The still remaining parts involve the unordered associative containers.
+</p></blockquote>
+
 </discussion>
 
 <resolution>
 
 <p>
-<sref ref="[container.requirements.general]"/>  paragraph 11 add footnote:
+<sref ref="[container.requirements.general]"/>  paragraph 10 add footnote:
 </p>
 
 <blockquote>
 <p>
--11- Unless otherwise specified (see 23.1.4.1, 23.1.5.1, 23.2.2.3, and
-23.2.6.4) all container types defined in this Clause meet the following
-additional requirements:
+-10- Unless otherwise specified (see <sref ref="[associative.reqmts.except]"/>, <sref ref="[unord.req.except]"/>, 
+<sref ref="[deque.modifiers]"/>, and <sref ref="[vector.modifiers]"/>) all container types defined in this 
+Clause meet the following additional requirements:
 </p>
 <ul>
-<li>...</li>
+<li>&hellip;</li>
 </ul>
 
 <p>
-<ins>[<i>Note</i>: for compatibility with C++
-2003, when "no effect" is required, standard containers should not use the
-value_type's throwing move constructor when the contained object is by itself a
-standard container. -- <i>end note</i>]</ins>
+<ins>[<i>Note</i>: for compatibility with C++ 2003, when "no effect" is required, standard containers should not use the
+<tt>value_type</tt>'s throwing move constructor when the contained object is by itself a standard container. &mdash; <i>end note</i>]</ins>
 </p>
 
 </blockquote>
 
-<p><sref ref="[unord.req.except]"/> change paragraph 2 to say: </p>
+<p><sref ref="[unord.req.except]"/> change paragraph 2+4 to say: </p>
 
 <blockquote>
 <p>
@@ -215,9 +221,9 @@ thrown by any operation other than the container's hash function from within an
 <tt>insert()</tt> function inserting a single element, the <tt>insert()</tt>
 function has no effect<ins> unless the exception is thrown by the contained
 object move constructor</ins>.
-</p>
-
-<p>
+<p/>
+[&hellip;]
+<p/>
 -4- For unordered associative containers, if an exception is
 thrown from within a <tt>rehash()</tt> function other than by the container's hash
 function or comparison function, the <tt>rehash()</tt> function has no effect
@@ -227,22 +233,33 @@ object move constructor</ins>.</p>
 </blockquote>
 
 <p>
-<sref ref="[deque.modifiers]"/> change paragraph 2 to say:
+Keep <sref ref="[deque.modifiers]"/> paragraph 2 unchanged <em>[Drafting note: The originally
+proposed wording did suggest to add a last sentence as follows:</em>
 </p>
+<blockquote><p>
+<em><ins>If an exception is thrown by <tt>push_back()</tt> or <tt>emplace_back()</tt>
+function, that function has no effects unless the exception is thrown by
+the move constructor of <tt>T</tt>.</ins></em> 
+</p></blockquote>
+<p> &mdash; <em> end drafting note ]</em></p>
 
 <blockquote><p>
 -2- <i>Remarks:</i> If an exception is thrown other than by
-the copy constructor<ins>, move constructor</ins>
-or assignment operator of <tt>T</tt>
-there are no effects.
-<ins>If an exception is thrown by <tt>push_back()</tt> or <tt>emplace_back()</tt>
-function, that function has no effects unless the exception is thrown by
-the move constructor of <tt>T</tt>.</ins>
+the copy constructor, move constructor, assignment operator, 
+or move assignment operator of <tt>T</tt> there are no effects.
+If an exception is thrown by the move constructor of a non-CopyInsertable 
+<tt>T</tt>, the effects are unspecified.
 </p></blockquote>
 
 <p>
-<sref ref="[vector.capacity]"/> paragraph 2 change to say:
+Keep <sref ref="[vector.capacity]"/> paragraph 2 unchanged <em>[Drafting note: The originally
+proposed wording did suggest to change the last sentence as follows:</em>
 </p>
+<blockquote><p>
+<em>If an exception is thrown, there are no effects<ins> unless the exception is thrown by the 
+contained object move constructor</ins>.</em> 
+</p></blockquote>
+<p> &mdash; <em> end drafting note ]</em></p>
 
 <blockquote><p>
 -2- <i>Effects:</i> A directive that informs a <tt>vector</tt>
@@ -253,31 +270,46 @@ if reallocation happens; and equal
 to the previous value of <tt>capacity()</tt>
 otherwise. Reallocation happens at this point if and only if the current
 capacity is less than the argument of <tt>reserve()</tt>.
-If an exception is thrown, there are no effects<ins>
-unless the exception is thrown by the contained object move constructor</ins>.
+If an exception is thrown other than by the move constructor of a 
+non-<tt>CopyInsertable</tt> type, there are no effects.
 </p></blockquote>
 
 <p>
-<sref ref="[vector.capacity]"/> paragraph 12 change to say:
+Keep <sref ref="[vector.capacity]"/> paragraph 12 unchanged <em>[Drafting note: The originally
+proposed wording did suggest to change the old paragraph as follows:</em>
 </p>
-
 <blockquote><p>
--12- <i>Requires:</i> <del>If <tt>value_type</tt> has a move constructor,
+<em>-12- <i>Requires:</i> <del>If <tt>value_type</tt> has a move constructor,
 that constructor shall not throw any exceptions.</del>
 <ins>If an exception is thrown, there are no effects unless the exception is thrown by
-the contained object move constructor.</ins>
+the contained object move constructor.</ins></em>
+</p></blockquote>
+<p> &mdash; <em> end drafting note ]</em></p>
+
+<blockquote><p>
+-12- <i>Requires:</i> If an exception is thrown other than by the move constructor of a non-<tt>CopyInsertable</tt> 
+<tt>T</tt> there are no effects.
 </p></blockquote>
 
 <p>
-<sref ref="[vector.modifiers]"/> change paragraph 1 to say:
+Keep <sref ref="[vector.modifiers]"/> paragraph 1 unchanged <em>[Drafting note: The originally
+proposed wording did suggest to change the old paragraph as follows:</em>
 </p>
-
 <blockquote><p>
--1- <del><i>Requires:</i> If <tt>value_type</tt> has a move constructor,
+<em>-1- <del><i>Requires:</i> If <tt>value_type</tt> has a move constructor,
 that constructor shall not throw any exceptions.</del>
 <ins><i>Remarks:</i> If an exception is thrown by <tt>push_back()</tt>
 or <tt>emplace_back()</tt> function, that function has no effect unless the
-exception is thrown by the move constructor of <tt>T</tt>.</ins>
+exception is thrown by the move constructor of <tt>T</tt>.</ins></em>
+</p></blockquote>
+<p> &mdash; <em> end drafting note ]</em></p>
+
+<blockquote><p>
+-1- <i>Remarks</i>: Causes reallocation if the new size is greater than the old capacity. If no reallocation happens,
+all the iterators and references before the insertion point remain valid. If an exception is thrown other
+than by the copy constructor, move constructor, assignment operator, or move assignment operator
+of <tt>T</tt> or by any <tt>InputIterator</tt> operation there are no effects. If an exception is thrown by the move
+constructor of a non-<tt>CopyInsertable</tt> <tt>T</tt>, the effects are unspecified.
 </p></blockquote>
 
 </resolution>
