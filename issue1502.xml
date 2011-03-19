@@ -41,9 +41,8 @@ such as <code>shared_future::get()</code>, that return a reference
 to a value held in the shared state.  User code could potentially
 conflict when accessing that value.</p>
 
-</discussion>
+<p>Lawrence proposed resolution:</p>
 
-<resolution>
 <p>Modify <sref ref="[futures.state]"/> p10 as follows:</p>
 
 <blockquote><p>
@@ -56,6 +55,19 @@ conflict when accessing that value.</p>
  [<i>Note:</i> As a consequence, accesses must either use
  read-only operations or provide additional synchronization.
  &mdash; <i>end note</i>]</ins>
+</p></blockquote>
+
+<note>2011-03-19: Detlef suggests an alternative resolution, shown below.</note>
+
+</discussion>
+
+<resolution>
+<p>Modify <sref ref="[futures.state]"/> p10 as follows:</p>
+
+<blockquote><p>
+10 Accesses to the same shared state conflict (<sref ref="[intro.multithread]"/>). <ins>[<i>Note</i>: 
+This explicitely specifies that the shared state is visible in the objects that reference this state 
+in the sense of data race avoidance <sref ref="[res.on.data.races]"/>. &mdash; <i>end note</i>]</ins>
 </p></blockquote>
 </resolution>
 
