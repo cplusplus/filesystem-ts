@@ -37,6 +37,34 @@ to all of them and edits a couple of related synchronization
 paragraphs.</p>
 
 <note>2011-03-09: Hans and Anthony add some improvements</note>
+
+<note>2011-03-19: Detlef comments</note>
+
+<p>In regard to the suggested part:</p>
+
+<blockquote><p>
+These operations do not provide any ordering guarantees with
+respect to other operations, except through operations on futures
+that reference the same shared state.
+</p></blockquote>
+
+<p>I would like this to change to:</p>
+
+<blockquote><p>
+These operations do not provide any ordering guarantees with
+respect to other operations on the same promise object.
+[<i>Note</i>: They synchronize with calls to operations on
+objects that refer to the same shared state according to
+<sref ref="[futures.state]"/>. &mdash; <i>end note</i>]
+</p></blockquote>
+
+<p>The current proposed resolution has exactly the same paragraph at
+for places. I propose to have it only once as new paragraph 2.</p>
+
+<p>This also covers <iref = ref="1504"/> (US-196) and <iref = ref="1505"/> (US-197).
+US-197 is essentially rejected with this resolution, but a clarification is added 
+that the normative wording is already in <sref ref="[futures.state]"/>.</p>
+
 </discussion>
 
 <resolution>
