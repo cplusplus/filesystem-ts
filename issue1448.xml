@@ -171,6 +171,8 @@ time (thus leaving the write pointer at the beginning of the buffer).
 Leave implementers wiggle room to ensure subsequent append writes as they see 
 fit, but don't change existing rules for initial seek position.</p>
 
+<note>Madrid meeting: It was observed that a different issue should be opened that
+clarifies the meaning of <tt>app</tt> for <tt>stringstream</tt></note>
 </discussion>
 
 <resolution>
@@ -187,7 +189,7 @@ to <tt>mode</tt>.
 <p/>
 3 <i>Postconditions</i>: If <tt>mode &amp; ios_base::out</tt> is true, <tt>pbase()</tt> 
 points to the first underlying character and <tt>epptr() &gt;= pbase() + s.size()</tt> 
-holds; in addition, if <tt>mode &amp; <del>ios_base::in</del><ins>(ios_base::ate | ios_base::app)</ins></tt> 
+holds; in addition, if <tt>mode &amp; <del>ios_base::in</del><ins>ios_base::ate</ins></tt> 
 is true, <tt>pptr() == pbase() + <del>s.data()</del><ins>s.size()</ins></tt> holds, 
 otherwise <tt>pptr() == pbase()</tt> is true. If <tt>mode &amp; ios_base::in</tt> 
 is true, <tt>eback()</tt> points to the first underlying character, and both 
