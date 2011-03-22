@@ -42,14 +42,9 @@ potential <tt>noexcept</tt> <tt>swap</tt> function could be isolated:</p>
 <tt>noexcept</tt> <tt>swap</tt> member functions, like those of <tt>function</tt> 
 and <tt>valarray</tt>.</li>
 
-<li>Member and free <tt>swap</tt> functions of containers with only &quot;remote&quot;
-parts and the allocator (which cannot throw exceptions during swap), e.g. <tt>deque</tt> or
-<tt>list</tt>, but <em>not</em> maps or sets which contain potentially throwing
-function objects.</li>
-
 <li>Member and free <tt>swap</tt> functions of some adaptor classes, like <tt>queue</tt> and <tt>stack</tt>,
-but <em>not</em> <tt>priority_queue</tt>, that <em>solely</em>
-depend on the hosted container should have a conditional throw exception. The same
+and <tt>priority_queue</tt>, that depend on the hosted container and possibly some
+functor type should have a conditional throw exception. The same
 approach had been taken for <tt>pair</tt>, <tt>tuple</tt>, and array <tt>swap</tt>.</li>
 
 <li>The static binary member <tt>swap</tt> of <tt>vector&lt;bool&gt;</tt> exchanging
@@ -65,9 +60,6 @@ that these function can never throw, but that should be checked against existing
 <li>Algorithms related to swap, like <tt>iter_swap</tt>, have <em>not</em> been touched,
 because there are no fundamental exceptions constraints on iterator operations in general
 (only for specific types, like library container iterators)</li>
-
-<li>Containers and container adaptors with additional potentially throwing
-components, typically function object types, have not been touched (see above).</li>
 </ol>
 
 <p>While evaluating the current state of <tt>swap</tt> functions 
