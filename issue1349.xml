@@ -82,6 +82,9 @@ template&lt;class T&gt; void swap(T&amp; a, T&amp; b) noexcept;
 <p>The suggested resolution shown below also attempts to fix
 these cases.</p>
 
+<note>2011-03-22 Daniel redrafts to satisfy new criteria for applying <tt>noexcept</tt>.
+Parts resolved by N3263-v2 and D3267 are not added here.</note>
+
 </discussion>
 
 <resolution>
@@ -140,204 +143,6 @@ void swap(function&lt;R(ArgTypes...)&gt;&amp;, function&lt;R(ArgTypes...)&gt;&am
 </pre></blockquote>
 </li>
 
-<li><p>Edit <sref ref="[sequences.general]"/> p. 2, header <tt>&lt;deque&gt;</tt> synopsis 
-<em>and</em> <sref ref="[deque.special]"/> before p. 1 as indicated 
-<em>[Drafting note: <tt>deque</tt> belongs to the container types with &quot;remote&quot; parts,
-where the swap is just a pointer swap in addition to the no-throwing allocator swap]</em></p>
-
-<blockquote><pre>
-template &lt;class T, class Allocator&gt;
-void swap(deque&lt;T,Allocator&gt;&amp; x, deque&lt;T,Allocator&gt;&amp; y) <ins>noexcept</ins>;
-</pre></blockquote>
-</li>
-
-<li><p>Edit <sref ref="[sequences.general]"/> p. 2, header <tt>&lt;forward_list&gt;</tt> synopsis <em>and</em>
-<sref ref="[forwardlist.spec]"/> before p. 1 as indicated 
-<em>[Drafting note: <tt>forward_list</tt> belongs to the container types with &quot;remote&quot; parts,
-where the swap is just a pointer swap in addition to the no-throwing allocator swap]</em></p>
-
-<blockquote><pre>
-template &lt;class T, class Allocator&gt;
-void swap(forward_list&lt;T,Allocator&gt;&amp; x, forward_list&lt;T,Allocator&gt;&amp; y) <ins>noexcept</ins>;
-</pre></blockquote>
-</li>
-
-<li><p>Edit <sref ref="[sequences.general]"/> p. 2, header <tt>&lt;list&gt;</tt> synopsis <em>and</em>
-<sref ref="[list.special]"/> before p. 1 as indicated 
-<em>[Drafting note: <tt>list</tt> belongs to the container types with &quot;remote&quot; parts,
-where the swap is just a pointer swap in addition to the no-throwing allocator swap]</em></p>
-
-<blockquote><pre>
-template &lt;class T, class Allocator&gt;
-void swap(list&lt;T,Allocator&gt;&amp; x, list&lt;T,Allocator&gt;&amp; y) <ins>noexcept</ins>;
-</pre></blockquote>
-</li>
-
-<li><p>Edit <sref ref="[sequences.general]"/> p. 2, header <tt>&lt;vector&gt;</tt> synopsis <em>and</em>
-<sref ref="[vector.special]"/> before p. 1 as indicated 
-<em>[Drafting note: <tt>vector</tt> belongs to the container types with &quot;remote&quot; parts,
-where the swap is just a pointer swap in addition to the no-throwing allocator swap]</em></p>
-
-<blockquote><pre>
-template &lt;class T, class Allocator&gt;
-void swap(vector&lt;T,Allocator&gt;&amp; x, vector&lt;T,Allocator&gt;&amp; y) <ins>noexcept</ins>;
-</pre></blockquote>
-</li>
-
-<li><p>Edit <sref ref="[deque.overview]"/> p. 2, class template <tt>deque</tt> synopsis as indicated:</p>
-
-<blockquote><pre>
-namespace std {
-  template &lt;class T, class Allocator = allocator&lt;T&gt; &gt;
-  class deque {
-    [&hellip;]
-    void swap(deque&lt;T,Allocator&gt;&amp;) <ins>noexcept</ins>;
-    [&hellip;]
-  };
-  [&hellip;]
-  <i>// specialized algorithms:</i>
-  template &lt;class T, class Allocator&gt;
-  void swap(deque&lt;T,Allocator&gt;&amp; x, deque&lt;T,Allocator&gt;&amp; y) <ins>noexcept</ins>;
-}
-</pre></blockquote>
-</li>
-
-<li><p>Edit <sref ref="[forwardlist.overview]"/> p. 3, class template <tt>forward_list</tt> synopsis as indicated:</p>
-
-<blockquote><pre>
-namespace std {
-  template &lt;class T, class Allocator = allocator&lt;T&gt; &gt;
-  class forward_list {
-    [&hellip;]
-    void swap(forward_list&lt;T,Allocator&gt;&amp;) <ins>noexcept</ins>;
-    [&hellip;]
-  };
-  [&hellip;]
-  <i>// 23.3.4.7 specialized algorithms:</i>
-  template &lt;class T, class Allocator&gt;
-  void swap(forward_list&lt;T,Allocator&gt;&amp; x, forward_list&lt;T,Allocator&gt;&amp; y) <ins>noexcept</ins>;
-}
-</pre></blockquote>
-</li>
-
-<li><p>Edit <sref ref="[list.overview]"/> p. 2, class template <tt>list</tt> synopsis as indicated:</p>
-
-<blockquote><pre>
-namespace std {
-  template &lt;class T, class Allocator = allocator&lt;T&gt; &gt;
-  class list {
-    [&hellip;]
-    void swap(list&lt;T,Allocator&gt;&amp;) <ins>noexcept</ins>;
-    [&hellip;]
-  };
-  [&hellip;]
-  <i>// specialized algorithms:</i>
-  template &lt;class T, class Allocator&gt;
-  void swap(list&lt;T,Allocator&gt;&amp; x, list&lt;T,Allocator&gt;&amp; y) <ins>noexcept</ins>;
-}
-</pre></blockquote>
-</li>
-
-<li><p>Edit <sref ref="[vector.overview]"/> p. 2, class template <tt>vector</tt> synopsis as indicated:</p>
-
-<blockquote><pre>
-namespace std {
-  template &lt;class T, class Allocator = allocator&lt;T&gt; &gt;
-  class vector {
-    [&hellip;]
-    void swap(vector&lt;T,Allocator&gt;&amp;) <ins>noexcept</ins>;
-    [&hellip;]
-  };
-  [&hellip;]
-  <i>// 23.3.6.6,specialized algorithms:</i>
-  template &lt;class T, class Allocator&gt;
-  void swap(vector&lt;T,Allocator&gt;&amp; x, vector&lt;T,Allocator&gt;&amp; y) <ins>noexcept</ins>;
-}
-</pre></blockquote>
-</li>
-
-<li><p>Edit <sref ref="[vector.capacity]"/> before p. 7 as indicated:</p>
-
-<blockquote><pre>
-void swap(vector&lt;T,Allocator&gt;&amp; x) <ins>noexcept</ins>;
-</pre></blockquote>
-</li>
-
-<li><p>Edit <sref ref="[vector.bool.overview]"/> p. 1, class template <tt>vector&lt;bool&gt;</tt> synopsis as indicated 
-<em>[Drafting note: The special static swap member for <tt>vector&lt;bool&gt;::reference</tt> should never throw]</em>:</p>
-
-<blockquote><pre>
-namespace std {
-  template &lt;class Allocator&gt; class vector&lt;bool, Allocator&gt; {
-    [&hellip;]
-    void swap(vector&lt;bool,Allocator&gt;&amp;) <ins>noexcept</ins>;
-    static void swap(reference x, reference y) <ins>noexcept</ins>;
-  };
-  [&hellip;]
-}
-</pre></blockquote>
-</li>
-
-<li><p>Edit <sref ref="[vector.bool.overview]"/> before p. 6 as indicated:</p>
-
-<blockquote><pre>
-static void swap(reference x, reference y) <ins>noexcept</ins>;
-</pre></blockquote>
-</li>
-
-<li><p>Edit header <tt>&lt;queue&gt;</tt> synopsis <sref ref="[queue.syn]"/> <em>and</em> 
-<sref ref="[queue.special]"/> before p. 1 as indicated:</p>
-
-<blockquote><pre>
-template &lt;class T, class Allocator&gt;
-void swap(queue&lt;T, Container&gt;&amp; x, queue&lt;T, Container&gt;&amp; y) <ins>noexcept(noexcept(x.swap(y)))</ins>;
-</pre></blockquote>
-</li>
-
-<li><p>Edit <sref ref="[queue.defn]"/> p. 1, class template <tt>queue</tt> synopsis as indicated:</p>
-
-<blockquote><pre>
-namespace std {
-  template &lt;class T, class Container = deque&lt;T&gt; &gt;
-  class queue {
-    [&hellip;]
-    void swap(queue&amp; q) <ins>noexcept(noexcept(swap(c, q.c)))</ins> { using std::swap; swap(c, q.c); };
-    [&hellip;]
-  };
-  [&hellip;]
-  template &lt;class T, class Container&gt;
-  void swap(queue&lt;T, Container&gt;&amp; x, queue&lt;T, Container&gt;&amp; y) <ins>noexcept(noexcept(x.swap(y)))</ins>;
-  [&hellip;]
-}
-</pre></blockquote>
-</li>
-
-<li><p>Edit header <tt>&lt;stack&gt;</tt> synopsis <sref ref="[stack.syn]"/> <em>and</em> 
-<sref ref="[stack.special]"/> before p. 1 as indicated:</p>
-
-<blockquote><pre>
-template &lt;class T, class Allocator&gt;
-void swap(stack&lt;T, Container&gt;&amp; x, stack&lt;T, Container&gt;&amp; y) <ins>noexcept(noexcept(x.swap(y)))</ins>;
-</pre></blockquote>
-</li>
-
-<li><p>Edit <sref ref="[stack.defn]"/> p. 1, class template <tt>stack</tt> synopsis as indicated:</p>
-
-<blockquote><pre>
-namespace std {
-  template &lt;class T, class Container = deque&lt;T&gt; &gt;
-  class stack {
-    [&hellip;]
-    void swap(stack&amp; s) <ins>noexcept(noexcept(swap(c, s.c)))</ins> { using std::swap; swap(c, s.c); };
-  };
-  [&hellip;]
-  template &lt;class T, class Container&gt;
-  void swap(stack&lt;T, Container&gt;&amp; x, stack&lt;T, Container&gt;&amp; y) <ins>noexcept(noexcept(x.swap(y)))</ins>;
-  [&hellip;]
-}
-</pre></blockquote>
-</li>
-
 <li><p>Edit header <tt>&lt;valarray&gt;</tt> synopsis, <sref ref="[valarray.syn]"/> <em>and</em> 
 <sref ref="[valarray.special]"/> before p. 1 as indicated 
 <em>[Drafting comment: The corresponding member swap is already noexcept]</em>:</p>
@@ -356,7 +161,8 @@ void swap(basic_streambuf&amp; rhs) <ins>noexcept</ins>;
 </li>
 
 <li><p>Edit class template <tt>basic_istream</tt> synopsis, <sref ref="[istream]"/>, <em>and</em> 
-<sref ref="[istream.assign]"/> before p. 3 as indicated:</p>
+<sref ref="[istream.assign]"/> before p. 3 as indicated <em>(Drafting note: <tt>swap(basic_istream&amp;)</tt> delegates to 
+<tt>basic_ios::swap</tt> which delegates to <tt>swap(basic_ios&amp;) noexcept;</tt>)</em>:</p>
 
 <blockquote><pre>
 void swap(basic_istream&amp; rhs) <ins>noexcept</ins>;
@@ -364,7 +170,7 @@ void swap(basic_istream&amp; rhs) <ins>noexcept</ins>;
 </li>
 
 <li><p>Edit class template <tt>basic_iostream</tt> synopsis, <sref ref="[iostreamclass]"/>, <em>and</em> 
-<sref ref="[iostream.assign]"/> before p. 2 as indicated:</p>
+<sref ref="[iostream.assign]"/> before p. 2 as indicated <em>(Drafting note: Delegates to <tt>basic_istream::swap(rhs).</tt>)</em>:</p>
 
 <blockquote><pre>
 void swap(basic_iostream&amp; rhs) <ins>noexcept</ins>;
@@ -372,7 +178,8 @@ void swap(basic_iostream&amp; rhs) <ins>noexcept</ins>;
 </li>
 
 <li><p>Edit class template <tt>basic_ostream</tt> synopsis, <sref ref="[ostream]"/>, <em>and</em> 
-<sref ref="[ostream.assign]"/> before p. 3 as indicated:</p>
+<sref ref="[ostream.assign]"/> before p. 3 as indicated <em>(Drafting note: <tt>swap(basic_ostream&amp;)</tt> delegates to 
+<tt>basic_ios::swap</tt> which delegates to <tt>swap(basic_ios&amp;) noexcept;</tt>)</em>:</p>
 
 <blockquote><pre>
 void swap(basic_ostream&amp; rhs) <ins>noexcept</ins>;
@@ -685,47 +492,6 @@ void swap(match_results&amp; that) <ins>noexcept</ins>;
 template &lt;class BidirectionalIterator, class Allocator&gt;
 void swap(match_results&lt;BidirectionalIterator, Allocator&gt;&amp; m1,
           match_results&lt;BidirectionalIterator, Allocator&gt;&amp; m2) <ins>noexcept</ins>;
-</pre></blockquote>
-</li>
-
-<li><p>Edit <sref ref="[thread.threads]"/> p. 1, header <tt>&lt;thread&gt;</tt> synopsis, <em>and</em> 
-<sref ref="[thread.thread.algorithm]"/> before p. 1 as indicated:</p>
-
-<blockquote><pre>
-void swap(thread&amp; x, thread&amp; y) <ins>noexcept</ins>;
-</pre></blockquote>
-</li>
-
-<li><p>Edit <sref ref="[thread.mutex]"/> p. 1, header <tt>&lt;mutex&gt;</tt> synopsis as indicated (This
-fixes an editorial oversight):</p>
-
-<blockquote><pre>
-template &lt;class Mutex&gt;
-void swap(unique_lock&lt;Mutex&gt;&amp; x, unique_lock&lt;Mutex&gt;&amp; y) <ins>noexcept</ins>;
-</pre></blockquote>
-</li>
-
-<li><p>Edit the header <tt>&lt;future&gt;</tt> synopsis in <sref ref="[futures.overview]"/> p. 1, as indicated:</p>
-
-<blockquote><pre>
-namespace std {
-  [&hellip;]
-  template &lt;class R&gt;
-    void swap(promise&lt;R&gt;&amp; x, promise&lt;R&gt;&amp; y) <ins>noexcept</ins>;
-  [&hellip;]
-  template &lt;class R&gt;
-    void swap(packaged_task&lt;R(ArgTypes...)<ins>&gt;</ins>&amp;, packaged_task&lt;R(ArgTypes...)&gt;&amp;) <ins>noexcept</ins>;
-  [&hellip;]
-}
-</pre></blockquote>
-</li>
-
-<li><p>Edit <sref ref="[futures.promise]"/> p. 1, class template <tt>promise</tt> synopsis, <em>and</em> 
-<sref ref="[futures.promise]"/> before p. 28 as indicated:</p>
-
-<blockquote><pre>
-template &lt;class R&gt;
-void swap(promise&lt;R&gt;&amp; x, promise&lt;R&gt;&amp; y) <ins>noexcept</ins>;
 </pre></blockquote>
 </li>
 
