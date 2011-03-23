@@ -112,6 +112,26 @@ buggy specifcation in 20.11.3 p2 which uses "happens-before" relationship with s
 <tt>C1::now()</tt> where the call returning <tt>t1</tt> happens before (1.10) the call returning <tt>t2</tt> and 
 both of these calls happen before <tt>C1::time_point::max()</tt>. 
 </p></blockquote>
+
+<note>2011-03-23 Review with Concurrency group suggested further simplifications and Howard pointed out, that
+we do not need time_point::max() as a special value.</note>
+
+<p>also the second "happens before" will be changed to "occurs before" in the english meaning. this is
+to allow a steady clock to wrap.
+<p/>
+Peter updates issue accordingly to discussion.
+</p>
+
+<note>Note to the editor: we recommend removal of the following redundant paragraphs in 
+ <sref ref="[thread.condition.condvarany]"/> p. 18 to p. 21, p. 27, p. 28, p. 30, and p. 31 that are 
+defining details for the wait functions that are given by the <i>Effects</i> element. 
+</note>
+
+<note>Note to the editor: we recommend removal of the following redundant paragraphs in 
+<sref ref="[thread.condition.condvar]"/>: p24-p26, p33-p34, and p36-p37 that are defining details for the 
+<tt>wait_for</tt> functions. We believe these paragraphs are redundant with respect to the <i>Effects</i> clauses that 
+define semantics based on <tt>wait_until</tt>. An example of such a specification is the <tt>wait()</tt> with a predicate.
+</note>
 </discussion>
 
 <resolution>
@@ -121,8 +141,9 @@ both of these calls happen before <tt>C1::time_point::max()</tt>.
 <blockquote><p>
 2 In Table 59 <tt>C1</tt> and <tt>C2</tt> denote clock types. <tt>t1</tt> and 
 <tt>t2</tt> are values returned by <tt>C1::now()</tt> where the call returning <tt>t1</tt> 
-happens before (1.10) the call returning <tt>t2</tt> and both of these <del>calls happen before</del><ins>values 
-<tt>t1</tt> and <tt>t2</tt> are unequal to</ins> <tt>C1::time_point::max()</tt>.
+happens before (1.10) the call returning <tt>t2</tt> and both of these calls <del>happen</del>
+<ins>occur</ins> before <tt>C1::time_point::max()</tt>. 
+<ins>[ <i>Note</i>: This means <tt>C1</tt> didn't wrap around between <tt>t1</tt> and <tt>t2</tt> &mdash; <i>end note</i> ]</ins>
 </p></blockquote>
 </li>
 
@@ -158,10 +179,10 @@ particular, that operations of these types will not throw exceptions &mdash; <i>
 (<sref ref="[swappable.requirements]"/>),</ins>
 </p></li>
 <li><p>
-<ins>the function <tt>TC::now()</tt> does not throw exceptions and returns <tt>TC::time_point::max()</tt> to signal an error, if any, and</ins>
+<ins>the function <tt>TC::now()</tt> does not throw exceptions, and</ins>
 </p></li>
 <li><p>
-<ins>the type <tt>TC::time_point::clock</tt> does meet the <tt>TrivialClock</tt> requirements, recursively.</ins>
+<ins>the type <tt>TC::time_point::clock</tt> meets the <tt>TrivialClock</tt> requirements, recursively.</ins>
 </p></li>
 </ul>
 </blockquote>
@@ -201,21 +222,11 @@ edit also fixes the miss of the <tt>static</tt> specifier in these prototype dec
 
 <blockquote><pre>
 <ins>static</ins> time_t to_time_t(const time_point&amp; t) <ins>noexcept</ins>;
-</pre><blockquote><p>
-3 - <i>Returns</i>: <ins>If <tt>t == time_point::max()</tt>, returns <tt>(time_t)-1</tt>, otherwise a</ins><del>A</del> 
-<tt>time_t</tt> object that represents the same point in time as <tt>t</tt> when both 
-values are restricted to the coarser of the precisions of <tt>time_t</tt> and <tt>time_point</tt>. It is 
-implementation defined whether values are rounded or truncated to the required precision. 
-</p></blockquote>
+</pre>
 
 <pre>
 <ins>static</ins> time_point from_time_t(time_t t) <ins>noexcept</ins>;
-</pre><blockquote><p>
-4 - <i>Returns</i>: <ins>If <tt>t == (time_t)-1</tt>, returns <tt>time_point::max()</tt>, otherwise a</ins><del>A</del> 
-<tt>time_point</tt> object that represents the same point in time as <tt>t</tt> when both values are
-restricted to the coarser of the precisions of <tt>time_t</tt> and <tt>time_point</tt>. It is implementation defined
-whether values are rounded or truncated to the required precision.
-</p></blockquote>
+</pre>
 </blockquote>
 
 </li>
@@ -270,7 +281,9 @@ requirements (<sref ref="[time.clock.req]"/>).</ins>
 </li>
 
 <li>
-<p>Edit the synopsis of <sref ref="[thread.thread.this]"/> before p. 1:</p>
+<p>Edit the synopsis of <sref ref="[thread.thread.this]"/> before p. 1. 
+<comment>Note, this duplicates edits also in D/N3267:</comment>
+</p>
 
 <blockquote><pre>
 template &lt;class Clock, class Duration&gt;
@@ -332,7 +345,9 @@ available, but implementations are expected to make a strong effort to do so. &m
 </blockquote>
 </li>
 
-<li><p>Modify the class <tt>timed_mutex</tt> synopsis in <sref ref="[thread.timedmutex.class]"/> as indicated:</p>
+<li><p>Modify the class <tt>timed_mutex</tt> synopsis in <sref ref="[thread.timedmutex.class]"/> as indicated:
+<comment>Note, this duplicates edits also in D/N3267:</comment>
+</p>
 
 <blockquote><pre>
 class timed_mutex {
@@ -347,7 +362,9 @@ public:
 </pre></blockquote>
 </li>
 
-<li><p>Modify the class <tt>recursive_timed_mutex</tt> synopsis in <sref ref="[thread.timedmutex.recursive]"/> as indicated:</p>
+<li><p>Modify the class <tt>recursive_timed_mutex</tt> synopsis in <sref ref="[thread.timedmutex.recursive]"/> as indicated:
+<comment>Note, this duplicates edits also in D/N3267:</comment>
+</p>
 
 <blockquote><pre>
 class recursive_timed_mutex {
@@ -363,8 +380,8 @@ public:
 </li>
 
 <li><p>Modify the class template <tt>unique_lock</tt> synopsis in <sref ref="[thread.lock.unique]"/> as indicated.
-This edit seems also to fix an inconsistency between the timed waiting c'tors and the timed waiting member functions (see
-next bullet):</p>
+<comment>Note, this duplicates edits also in D/N3267:</comment>
+</p>
 
 <blockquote><pre>
 template &lt;class Mutex&gt;
@@ -380,111 +397,22 @@ public:
 </pre></blockquote>
 </li>
 
-<li><p>Modify the constructor prototypes in <sref ref="[thread.lock.unique.cons]"/> before p. 14 and p. 17 and
-re-add <i>Throws</i> elements as indicated.
-This edit seems also to fix an inconsistency compared to the timed waiting member functions <em>[Drafting note:
-<tt>m.try_lock_until(abs_time)</tt> and <tt>m.try_lock_for(rel_time)</tt> are no longer allowed to throw exceptions.]</em>:</p>
+<li><p>Modify the constructor prototypes in <sref ref="[thread.lock.unique.cons]"/> before p. 14 and p. 17 
+<comment>Note, this duplicates edits also in D/N3267:</comment>
+</p>
 
 <blockquote><pre>
 template &lt;class Clock, class Duration&gt;
   unique_lock(mutex_type&amp; m, const chrono::time_point&lt;Clock, Duration&gt;&amp; abs_time) <del>noexcept</del>;
-</pre><blockquote><p>
-[...]
-<p/>
-16 <i>Postconditions</i>: <tt>pm == &amp;m</tt> and <tt>owns == res</tt>, where <tt>res</tt> is the value returned 
-by the call to <tt>m.try_lock_until(abs_time)</tt>.
-<p/>
-<ins>?? <i>Throws</i>: Nothing.</ins>
-</p></blockquote></blockquote>
+</pre></blockquote>
 
 <blockquote><pre>
 template &lt;class Rep, class Period&gt;
   unique_lock(mutex_type&amp; m, const chrono::duration&lt;Rep, Period&gt;&amp; rel_time) <del>noexcept</del>;
-</pre><blockquote><p>
-[...]
-<p/>
-19 <i>Postconditions</i>: <tt>pm == &amp;m</tt> and <tt>owns == res</tt>, where <tt>res</tt> is the value returned 
-by the call to <tt>m.try_lock_for(rel_time)</tt>.
-<p/>
-<ins>?? <i>Throws</i>: Nothing.</ins>
-</p></blockquote></blockquote>
-</li>
-
-<li><p>Modify the time-related <i>Throws</i> elements in <sref ref="[thread.condition.condvar]"/>, p. 15, p. 21.
-<p/>We further recommend the editor to consider removal of p24-p26, p33-p34, and p36-p37 that are defining details for the 
-<tt>wait_for</tt> functions. We believe these paragraphs are redundant with respect to the <i>Effects</i> clauses that 
-define semantics based on <tt>wait_until</tt>. An example of such a specification is the <tt>wait()</tt> with a predicate.</p>
-
-<p>
-[...]
-</p>
-<blockquote><pre>
-template &lt;class Clock, class Duration&gt;
-cv_status wait_until(unique_lock&lt;mutex&gt;&amp; lock,
-  const chrono::time_point&lt;Clock, Duration&gt;&amp; abs_time);
 </pre></blockquote>
-<blockquote><p>
-15 <i>Requires</i>: <tt>lock</tt> is locked by the calling thread, and either
-</p>
-<ul>
-<li>no other thread is waiting on this <tt>condition_variable</tt> object or
 </li>
 
-<li><tt>lock.mutex()</tt> returns the same value for each of the lock arguments 
-supplied by all concurrently waiting (via <tt>wait</tt>, <tt>wait_for</tt>, or <tt>wait_until</tt>) threads.
-</li>
-</ul>
-<p>
-<ins>Additionally, <tt>Clock</tt> shall satisfy the <tt>TrivialClock</tt> requirements (<sref ref="[time.clock.req]"/>) and
-operations of <tt>Duration</tt> shall not throw exceptions.</ins>
-</p></blockquote>
-<p>
-[...]
-</p>
-<blockquote><pre>
-template &lt;class Rep, class Period&gt;
-cv_status wait_for(unique_lock&lt;mutex&gt;&amp; lock,
-const chrono::duration&lt;Rep, Period&gt;&amp; rel_time);
-</pre></blockquote>
-<blockquote><p>
-21 <i>Requires</i>: <tt>lock</tt> is locked by the calling thread, and either
-</p>
-<ul>
-<li>no other thread is waiting on this <tt>condition_variable</tt> object or
-</li>
 
-<li><tt>lock.mutex()</tt> returns the same value for each of the lock arguments 
-supplied by all concurrently waiting (via <tt>wait</tt>, <tt>wait_for</tt>, or <tt>wait_until</tt>) threads.
-</li>
-</ul>
-<p>
-<ins>Additionally, operations of <tt>Rep</tt> shall not throw exceptions.</ins>
-</p></blockquote>
-
-</li>
-
-<li><p>Modify the time-related <i>Throws</i> elements in <sref ref="[thread.condition.condvarany]"/>, p. 15.
-<p/>
-We further recommend the editor to consider removal of p. 18 to p. 21, p. 27, p. 28, p. 30, and p. 31 that are 
-defining details for the wait functions that are given by the <i>Effects</i> element. 
-</p>
-
-<blockquote><pre>
-template &lt;class Lock, class Clock, class Duration&gt;
-cv_status wait_until(Lock&amp; lock, const chrono::time_point&lt;Clock, Duration&gt;&amp; abs_time);
-</pre></blockquote>
-<p>
-[...]
-</p>
-<blockquote><p>
-15 <i>Throws</i>: <ins>Any exception thrown by operations of <tt>Clock</tt> or <tt>Duration</tt>. [<i>Note</i>: Instantiations of 
-time point types and clocks supplied by the implementation as specified in <sref ref="[time.clock]"/> do not throw exceptions. &mdash;
-<i>end note</i>] Otherwise</ins> <tt>system_error</tt> when an exception is required (30.2.2).
-</p></blockquote>
-<p>
-[...]
-</p>
-</li>
 </ol>
 
 </resolution>

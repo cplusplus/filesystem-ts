@@ -3,7 +3,7 @@
   <!ENTITY nbsp "&#160;">
 ] >
 
-<issue num="1349" status="Open">
+<issue num="1349" status="Immediate">
 <title>[FCD] <tt>swap</tt> should not throw</title>
 <section><sref ref="[library]"/></section>
 <submitter>BSI</submitter>
@@ -39,13 +39,12 @@ potential <tt>noexcept</tt> <tt>swap</tt> function could be isolated:</p>
 
 <ol>
 <li>Free <tt>swap</tt> functions that are specified in terms of already
-<tt>noexcept</tt> <tt>swap</tt> member functions, like those of <tt>function</tt> 
-and <tt>valarray</tt>.</li>
+<tt>noexcept</tt> <tt>swap</tt> member functions, like that of <tt>valarray</tt>.</li>
 
-<li>Member and free <tt>swap</tt> functions of stream buffers and streams where considered
-but rejected as good candidates, because of the danger to potentially impose requirements
-of existing implementations. These functions could be reconsidered as candidates in the
-future.</li>
+<li>Free <tt>swap</tt> of <tt>std::function</tt>, and member and free <tt>swap</tt> 
+functions of stream buffers and streams where considered but rejected as good candidates, 
+because of the danger to potentially impose requirements of existing implementations. 
+These functions could be reconsidered as candidates in the future.</li>
 </ol>
 
 <p>Negative list:</p>
@@ -57,7 +56,7 @@ because there are no fundamental exceptions constraints on iterator operations i
 </ol>
 
 <p>While evaluating the current state of <tt>swap</tt> functions 
-of library components I observed that several conditional <tt>noexcept</tt>
+of library components it was observed that several conditional <tt>noexcept</tt>
 functions have turned into unconditional ones, e.g. in the
 header <tt>&lt;utility&gt;</tt> synopsis:</p>
 
