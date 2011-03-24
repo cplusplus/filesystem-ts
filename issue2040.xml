@@ -3,7 +3,7 @@
   <!ENTITY nbsp "&#160;">
 ] >
 
-<issue num="2040" status="New">
+<issue num="2040" status="Open">
 <title>Missing type traits related to <tt>is_convertible</tt></title>
 <section><sref ref="[meta]"/></section>
 <submitter>Daniel Kr&uuml;gler</submitter>
@@ -32,7 +32,7 @@ template &lt;class From, class To&gt; struct is_trivially_convertible;
 was recently recognized when the proposal for <tt>decay_copy</tt> was prepared by 
 <a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2011/n3255.html">n3255</a>.
 There does not exist a portable means to define the correct conditional <tt>noexcept</tt>
-specification for the  <tt>decay_copy</tt> function template, which is declared as:</p>
+specification for the <tt>decay_copy</tt> function template, which is declared as:</p>
 
 <blockquote><pre>
 template &lt;class T&gt; 
@@ -78,6 +78,16 @@ T implicit_cast(U&amp;&amp; u) noexcept(is_nothrow_convertible&lt;U, T&gt;::valu
 
 <p>Therefore I suggest to add the missing trait <tt>is_nothrow_convertible</tt> and for
 completeness also the missing trait <tt>is_trivially_convertible</tt> to <sref ref="[meta]"/>.</p>
+
+<note>2011-03-24 Madrid meeting</note>
+
+<p>
+Daniel K: This is a new feature so out of scope.
+<p/>
+Pablo: Any objections to moving 2040 to Open?
+<p/>
+No objections. 
+</p>
 </discussion>
 
 <resolution>
