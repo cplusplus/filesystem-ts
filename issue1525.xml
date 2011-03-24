@@ -1,0 +1,45 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="1525" status="New">
+<title>[FCD] Effects of <tt>resize(size())</tt> on a <tt>vector</tt></title>
+<section><sref ref="[vector.capacity]"/></section>
+<submitter>BSI</submitter>
+<date>24 Mar 2011</date>
+
+<discussion>
+<p><b>Addresses GB-117</b></p>
+
+<p><sref ref="[vector.capacity]"/> p. 9 (Same as for <sref ref="[deque.capacity]"/> p. 1 i.e. 
+<tt>deque::resize</tt>). There is no mention of what happens if <tt>sz==size()</tt>. While 
+it obviously does nothing I feel a standard needs to say this explicitely.</p>
+<p>Suggested resolution:</p>
+<p>Append "If <tt>sz == size()</tt>, does nothing" to the effects.</p>
+
+<note>2011-03-24 Daniel comments</note>
+
+<p>The proposed resolution performs a an additional fly-by fix in regard to a missing
+requirement of this member function. This fix is IMO an uncontroversial subset of
+the issues listed in <iref ref="2033"/>. We could also change <tt>CopyInsertable</tt> to 
+<tt>MoveInsertable</tt>, but I don't suggest to apply this fix now, it should better be
+solved with <iref ref="2033"/>.</p>
+</discussion>
+
+<resolution>
+<p>Change <sref ref="[vector.capacity]"/> p. 9 as follows:</p>
+
+<blockquote><pre>
+void resize(size_type sz);
+</pre>
+<blockquote><p>
+9 <i>Effects</i>: If <tt>sz &lt;<ins>=</ins> size()</tt>, equivalent to <tt>erase(begin() + sz, end());</tt>. 
+If <tt>size() &lt; sz</tt>, appends <tt>sz - size()</tt> value-initialized elements to the sequence.
+<p/>
+10 <i>Requires</i>: <tt>T</tt> <ins>shall satisfy the <tt>DefaultConstructible</tt> requirements and</ins> 
+shall be <tt>CopyInsertable</tt> into <tt>*this</tt>.
+</p></blockquote></blockquote>
+</resolution>
+
+</issue>
