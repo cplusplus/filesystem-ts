@@ -1,0 +1,36 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="1526" status="New">
+<title>[FCD] C++ should not impose thread safety requirements on C99 library implementations</title>
+<section><sref ref="[res.on.data.races]"/></section>
+<submitter>BSI</submitter>
+<date>24 Mar 2011</date>
+
+<discussion>
+<p><b>Addresses GB-111</b></p>
+
+<p>Section <sref ref="[res.on.data.races]"/>, Data Race Avoidance, requires the C++ Standard Library to avoid data races 
+that might otherwise result from two threads making calls to C++ Standard Library functions on 
+distinct objects. The C standard library is part of the C++ Standard Library and some C++ Standary library 
+functions (parts of the Localization library, as well as Numeric Conversions in 21.5), are specified 
+to make use of the C standard library. Therefore, the C++ standard indirectly imposes a requirement 
+on the thread safety of the C standard library. However, since the C standard does not address the 
+concept of thread safety conforming C implementations exist that do no provide such guarantees. 
+This conflict needs to be reconciled.</p>
+
+<p>Suggested resolution by national body comment:</p>
+
+<blockquote><p>
+remove the requirement to make use of <tt>strtol()</tt> and <tt>sprintf()</tt> since these functions depend on the 
+global C locale and thus cannot be made thread safe.
+</p></blockquote>
+
+</discussion>
+
+<resolution>
+</resolution>
+
+</issue>
