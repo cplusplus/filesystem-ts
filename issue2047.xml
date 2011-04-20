@@ -4,7 +4,7 @@
 ] >
 
 <issue num="2047" status="New">
-<title>Incorrect move-assignment semantics of <tt>unique_tr&lt;T, E&gt;</tt> with lvalue-reference deleter</title>
+<title>Incorrect "mixed" move-assignment semantics of <tt>unique_tr</tt></title>
 <section><sref ref="[unique.ptr.single.asgn]"/></section>
 <submitter>Daniel Kr&uuml;gler</submitter>
 <date>16 Apr 2011</date>
@@ -19,8 +19,9 @@ by an assignment from <tt>std::forward&lt;D&gt;(u.get_deleter())</tt>.
 contradicts to the pre-conditions described in p. 4:
 </p>
 <blockquote><p>
-<i>Requires</i>: [&hellip;] Otherwise, <tt>E</tt> is a reference type and assignment of the
-deleter from an lvalue of type <tt>E</tt> shall be well-formed [&hellip;].
+<i>Requires</i>: If E is not a reference type, assignment of the deleter from an rvalue of type <tt>E</tt> shall be
+well-formed and shall not throw an exception. Otherwise, <tt>E</tt> is a reference type and assignment of the
+deleter from an lvalue of type <tt>E</tt> shall be well-formed and shall not throw an exception.
 </p></blockquote>
 <p>
 Either the pre-conditions are incorrect or the semantics should be an assignment from
