@@ -1,0 +1,159 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="2048" status="New">
+<title>Unnecessary <tt>mem_fn</tt> overloads</title>
+<section><sref ref="[function.objects]"/> <sref ref="[func.memfn]"/></section>
+<submitter>Jonathan Wakely</submitter>
+<date>18 Apr 2011</date>
+
+<discussion>
+<p>
+The <tt>mem_fn</tt> overloads for member functions are redundant and misleading
+and should be removed from the post-C++11 WP.
+<p/>
+I believe the history of the overloads is as follows:
+<p/>
+In TR1 and in C++0x prior to the N2798 draft, <tt>mem_fn</tt> was specified by
+a single signature:
+</p>
+<blockquote><pre>
+template&lt;class R, class T&gt; <i>unspecified</i> mem_fn(R T::* pm);
+</pre></blockquote>
+<p>
+and was accompanied by the remark "Implementations may implement <tt>mem_fn</tt> 
+as a set of overloaded function templates." This remark predates variadic templates 
+and was presumably to allow implementations to provide overloads for a limited 
+number of function parameters, to meet the implementation-defined limit on numbers of
+template parameters.
+<p/>
+N2770 "Concepts for the C++0x Standard Library: Utilities" added
+separate overloads for pointers to member functions, apparently so
+that function parameters would require the <tt>CopyConstructible</tt> concept
+(those overloads first appeared in N2322.) The overloads failed to
+account for varargs member functions (i.e. those declared with an
+ellipsis in the parameter-declaration-clause) e.g.
+</p>
+<blockquote><pre>
+struct S {
+ int f(int, ...);
+};
+</pre></blockquote>
+<p>
+Syntactically such a function would be handled by the original
+<tt>mem_fn(R T::* pm)</tt> signature, the only minor drawback being that there
+would be no <tt>CopyConstructible</tt> requirement on the parameter list. (Core
+DR 547 clarifies that partial specializations can be written to match
+cv-qualified and ref-qualified functions to support the case where <tt>R T::*</tt> 
+matches a pointer to member function type.)
+<p/>
+LWG issue <iref ref="920"/> pointed out that additional overloads were missing for
+member functions with ref-qualifiers.  These were not strictly
+necessary, because such functions are covered by the <tt>mem_fn(R T::* pm)</tt> signature.
+<p/>
+Concepts were removed from the draft and N3000 restored the original
+single signature and accompanying remark.
+<p/>
+LWG <iref ref="1230"/> was opened to strike the remark again and to add an overload
+for member functions (this overload was unnecessary for syntactic reasons and 
+insufficient as it didn't handle member functions with cv-qualifiers and/or 
+ref-qualifiers.)
+<p/>
+<iref ref="920"/> (and <iref ref="1230"/>) were resolved by restoring a full set of
+(non-concept-enabled) overloads for member functions with cv-qualifiers and ref-qualifiers,
+but as in the concept-enabled draft there were no overloads for member functions with 
+an ellipsis in the parameter-declaration-clause. This is what is present in the FDIS.
+<p/>
+Following the thread beginning with message c++std-lib-30675, it is my
+understanding that all the <tt>mem_fn</tt> overloads for member functions are
+unnecessary and were only ever added to allow concept requirements.
+I'm not aware of any reason implementations cannot implement <tt>mem_fn</tt> as
+a single function template. Without concepts the overloads are
+redundant, and the absence of overloads for varargs functions can be
+interpreted to imply that varargs functions are not intended to work
+with <tt>mem_fn</tt>. Clarifying the intent by adding overloads for varargs
+functions would expand the list of 12 redundant overloads to 24, it
+would be much simpler to remove the 12 redundant overloads entirely.
+</p>
+</discussion>
+
+<resolution>
+
+<p>This wording is relative to the FDIS.</p>
+
+<ol>
+<li><p>Change the <tt>&lt;functional&gt;</tt> synopsis <sref ref="[function.objects]"/> p. 2 as follows:</p>
+
+<blockquote><pre>
+namespace std {
+  [&hellip;]
+  // <i>[func.memfn], member function adaptors:</i>
+  template&lt;class R, class T&gt; <i>unspecified</i> mem_fn(R T::*);
+  <del>template&lt;class R, class T, class... Args&gt;
+  <i>unspecified</i> mem_fn(R (T::*)(Args...));
+  template&lt;class R, class T, class... Args&gt;
+  <i>unspecified</i> mem_fn(R (T::*)(Args...) const);
+  template&lt;class R, class T, class... Args&gt;
+  <i>unspecified</i> mem_fn(R (T::*)(Args...) volatile);
+  template&lt;class R, class T, class... Args&gt;
+  <i>unspecified</i> mem_fn(R (T::*)(Args...) const volatile);
+  template&lt;class R, class T, class... Args&gt;
+  <i>unspecified</i> mem_fn(R (T::*)(Args...) &amp;);
+  template&lt;class R, class T, class... Args&gt;
+  <i>unspecified</i> mem_fn(R (T::*)(Args...) const &amp;);
+  template&lt;class R, class T, class... Args&gt;
+  <i>unspecified</i> mem_fn(R (T::*)(Args...) volatile &amp;);
+  template&lt;class R, class T, class... Args&gt;
+  <i>unspecified</i> mem_fn(R (T::*)(Args...) const volatile &amp;);
+  template&lt;class R, class T, class... Args&gt;
+  <i>unspecified</i> mem_fn(R (T::*)(Args...) &amp;&amp;);
+  template&lt;class R, class T, class... Args&gt;
+  <i>unspecified</i> mem_fn(R (T::*)(Args...) const &amp;&amp;);
+  template&lt;class R, class T, class... Args&gt;
+  <i>unspecified</i> mem_fn(R (T::*)(Args...) volatile &amp;&amp;);
+  template&lt;class R, class T, class... Args&gt;
+  <i>unspecified</i> mem_fn(R (T::*)(Args...) const volatile &amp;&amp;);</del>
+
+  [&hellip;]
+}
+</pre></blockquote>
+</li>
+
+<li><p>Change <sref ref="[func.memfn]"/> as follows:</p>
+
+<blockquote><pre>
+template&lt;class R, class T&gt; <i>unspecified</i> mem_fn(R T::*);
+<del>template&lt;class R, class T, class... Args&gt;
+<i>unspecified</i> mem_fn(R (T::*)(Args...));
+template&lt;class R, class T, class... Args&gt;
+<i>unspecified</i> mem_fn(R (T::*)(Args...) const);
+template&lt;class R, class T, class... Args&gt;
+<i>unspecified</i> mem_fn(R (T::*)(Args...) volatile);
+template&lt;class R, class T, class... Args&gt;
+<i>unspecified</i> mem_fn(R (T::*)(Args...) const volatile);
+template&lt;class R, class T, class... Args&gt;
+<i>unspecified</i> mem_fn(R (T::*)(Args...) &amp;);
+template&lt;class R, class T, class... Args&gt;
+<i>unspecified</i> mem_fn(R (T::*)(Args...) const &amp;);
+template&lt;class R, class T, class... Args&gt;
+<i>unspecified</i> mem_fn(R (T::*)(Args...) volatile &amp;);
+template&lt;class R, class T, class... Args&gt;
+<i>unspecified</i> mem_fn(R (T::*)(Args...) const volatile &amp;);
+template&lt;class R, class T, class... Args&gt;
+<i>unspecified</i> mem_fn(R (T::*)(Args...) &amp;&amp;);
+template&lt;class R, class T, class... Args&gt;
+<i>unspecified</i> mem_fn(R (T::*)(Args...) const &amp;&amp;);
+template&lt;class R, class T, class... Args&gt;
+<i>unspecified</i> mem_fn(R (T::*)(Args...) volatile &amp;&amp;);
+template&lt;class R, class T, class... Args&gt;
+<i>unspecified</i> mem_fn(R (T::*)(Args...) const volatile &amp;&amp;);</del>
+</pre></blockquote>
+</li>
+
+</ol>
+
+</resolution>
+
+</issue>
