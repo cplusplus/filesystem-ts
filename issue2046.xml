@@ -33,65 +33,7 @@ All this came up when discussing D/N3267 and Concurrency Working Group decided t
 
 <resolution>
 
-<p>This wording is relative to the FDIS.</p>
-
-<ol>
-<li><p>In <sref ref="[futures.shared_future]"/> p. 3, change class template <tt>shared_future</tt> synopsis 
-as indicated:</p>
-
-<blockquote><pre>
-namespace std {
-  template &lt;class R&gt;
-  class shared_future {
-  public:
-    shared_future() noexcept;
-    shared_future(const shared_future&amp; rhs);
-    shared_future(future&lt;R&gt;&amp;&amp;) <del>noexcept</del>;
-    shared_future(shared_future&amp;&amp; rhs) noexcept;
-    ~shared_future();
-
-    [&hellip;]
-
-  };
-}
-</pre></blockquote>
-
-</li>
-
-<li><p>Edit <sref ref="[futures.shared_future]"/> before p. 9, and insert two new paragraphs as indicated:</p>
-
-<blockquote><pre>
-shared_future(future&lt;R&gt;&amp;&amp;) <del>noexcept</del>;
-</pre><blockquote>
-<p><ins>? - <i>Effects</i>:</ins></p>
-<ul>
-<li><ins>constructs a <tt>shared_future</tt> object that refers to the shared state that was originally 
-referred to by <tt>rhs</tt> (if any).</ins></li>
-<li><ins>If the constructor exits with an exception, <tt>rhs</tt> shall remain unchanged.</ins></li>
-</ul>
-<p>
-<ins>? - <i>Postconditions</i>:</ins></p>
-<ul>
-<li><ins><tt>valid()</tt> returns the same value as <tt>rhs.valid()</tt> returned prior to the constructor invocation.</ins></li>
-<li><ins><tt>rhs.valid() == false</tt>.</ins></li>
-</ul>
-</blockquote>
-<pre>
-shared_future(shared_future&amp;&amp; rhs) noexcept;
-</pre><blockquote><p>
-9 - <i>Effects</i>: move constructs a <tt>shared_future</tt> object that refers to the shared state that was originally
-referred to by <tt>rhs</tt> (if any).
-<p/>
-10 - <i>Postconditions</i>:</p>
-<ul>
-<li><tt>valid()</tt> returns the same value as <tt>rhs.valid()</tt> returned prior to the constructor invocation.</li>
-<li><tt>rhs.valid() == false</tt>.</li>
-</ul>
-</blockquote>
-</blockquote>
-
-</li>
-</ol>
+<p>Apply the proposed resolution of <a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2011/n3269.htm">n3269</a></p>
 
 </resolution>
 
