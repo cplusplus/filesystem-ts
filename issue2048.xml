@@ -50,7 +50,7 @@ cv-qualified and ref-qualified functions to support the case where <tt>R T::*</t
 matches a pointer to member function type.)
 <p/>
 LWG issue <iref ref="920"/> pointed out that additional overloads were missing for
-member functions with ref-qualifiers.  These were not strictly
+member functions with ref-qualifiers. These were not strictly
 necessary, because such functions are covered by the <tt>mem_fn(R T::* pm)</tt> signature.
 <p/>
 Concepts were removed from the draft and N3000 restored the original
@@ -58,7 +58,7 @@ single signature and accompanying remark.
 <p/>
 LWG <iref ref="1230"/> was opened to strike the remark again and to add an overload
 for member functions (this overload was unnecessary for syntactic reasons and 
-insufficient as it didn't handle member functions with cv-qualifiers and/or 
+insufficient as it didn't handle member functions with cv-qualifiers and&#47;or 
 ref-qualifiers.)
 <p/>
 <iref ref="920"/> (and <iref ref="1230"/>) were resolved by restoring a full set of
@@ -91,7 +91,7 @@ namespace std {
   [&hellip;]
   // <i>[func.memfn], member function adaptors:</i>
   template&lt;class R, class T&gt; <i>unspecified</i> mem_fn(R T::*);
-  <del>template&lt;class R, class T, class... Args&gt;
+<del>  template&lt;class R, class T, class... Args&gt;
   <i>unspecified</i> mem_fn(R (T::*)(Args...));
   template&lt;class R, class T, class... Args&gt;
   <i>unspecified</i> mem_fn(R (T::*)(Args...) const);
