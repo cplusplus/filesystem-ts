@@ -66,7 +66,7 @@ of a reference to a base class indirectly via a delete expression, as suggested 
 Howard Hinnant:</p>
 <blockquote><pre>
 template &lt;class T&gt;
-my_pointer&lt;T&gt;::~my_pointer() noexcept(noexcept(is_nothrow_destructible&lt;T&gt;::value))
+my_pointer&lt;T&gt;::~my_pointer() noexcept(is_nothrow_destructible&lt;T&gt;::value)
 {
    delete ptr_;
 }
