@@ -4,7 +4,7 @@
 ] >
 
 <issue num="870" status="WP">
-<title>Do unordered containers not support function pointers for predicate/hasher?</title>
+<title>Do unordered containers not support function pointers for predicate&#47;hasher?</title>
 <section><sref ref="[unord.req]"/></section>
 <submitter>Daniel Kr&uuml;gler</submitter>
 <date>17 Aug 2008</date>
@@ -12,26 +12,23 @@
 <discussion>
 <p>
 Good ol' associative containers allow both function pointers and
-function objects as feasible
-comparators, as described in <sref ref="[associative.reqmts]"/>/2:
+function objects as feasible comparators, as described in 
+<sref ref="[associative.reqmts]"/>&#47;2:
 </p>
 
 <blockquote>
 Each associative container is parameterized on <tt>Key</tt> and an ordering
-relation <tt>Compare</tt> that
-induces a strict weak ordering (25.3) on elements of Key. [..]. The
-object of type <tt>Compare</tt> is
-called the comparison object of a container. This comparison object
-may be a pointer to
+relation <tt>Compare</tt> that induces a strict weak ordering (25.3) on 
+elements of Key. [..]. The object of type <tt>Compare</tt> is called the 
+comparison object of a container. This comparison object may be a pointer to
 function or an object of a type with an appropriate function call operator.[..]
 </blockquote>
 
 <p>
 The corresponding wording for unordered containers is not so clear,
-but I read it to disallow
-function pointers for the hasher and I miss a clear statement for the
-equality predicate, see
-<sref ref="[unord.req]"/>/3+4+5:
+but I read it to disallow function pointers for the hasher and I miss 
+a clear statement for the equality predicate, see
+<sref ref="[unord.req]"/>&#47;3+4+5:
 </p>
 
 <blockquote>
@@ -44,19 +41,18 @@ equivalence relation on values of type <tt>Key</tt>.[..]
 </p>
 <p>
 A hash function is a function object that takes a single argument of
-type <tt>Key</tt> and returns a
-value of type <tt>std::size_t</tt>.
+type <tt>Key</tt> and returns a value of type <tt>std::size_t</tt>.
 </p>
 <p>
-Two values <tt>k1</tt> and <tt>k2</tt> of type <tt>Key</tt> are considered equal if the
-container's equality function object
-returns <tt>true</tt> when passed those values.[..]
+Two values <tt>k1</tt> and <tt>k2</tt> of type <tt>Key</tt> are considered 
+equal if the container's equality function object returns <tt>true</tt> 
+when passed those values.[..]
 </p>
 </blockquote>
 
 <p>
 and table 97 says in the column "assertion...post-condition" for the
-expression X::hasher:
+expression <tt>X::hasher</tt>:
 </p>
 
 <blockquote>
@@ -65,7 +61,7 @@ expression X::hasher:
 </blockquote>
 
 <p>
-Note that <sref ref="[function.objects]"/>/1 defines as "Function objects are
+Note that <sref ref="[function.objects]"/>&#47;1 defines as "Function objects are
 objects with an <tt>operator()</tt> defined.[..]"
 </p>
 <p>
@@ -84,8 +80,8 @@ the following
 
 <blockquote>
 Ask Daniel to provide proposed wording that: makes it explicit that
-function pointers are function objects at the beginning of <sref
-ref="[function.objects]"/>; fixes the "requirements" for typedefs in
+function pointers are function objects at the beginning of 
+<sref ref="[function.objects]"/>; fixes the "requirements" for typedefs in
 <sref ref="[refwrap]"/> to instead state that the function objects
 defined in that clause have these typedefs, but not that these typedefs
 are requirements on function objects; remove the wording that explicitly
@@ -107,7 +103,7 @@ pointers.
 
 <p>
 The below provided wording also affects some part of the library which is
-involved with <em>callable types</em> (<sref ref="[func.def]"/>/3). Reason for
+involved with <em>callable types</em> (<sref ref="[func.def]"/>&#47;3). Reason for
 this is that <em>callable objects</em> do have a lot in common with <em>function
 objects</em>. A simple formula seems to be:
 </p>
@@ -129,7 +125,7 @@ between the above subset of callable objects and function objects which seem to
 be unintended: Backed by the Santa Cruz outcome function objects should include
 both function pointers and "object[s] with an operator() defined". This clearly
 excludes class types with a conversion function to a function pointer or all
-similar conversion function situations described in <sref ref="[over.match]"/>/2
+similar conversion function situations described in <sref ref="[over.match]"/>&#47;2
 b. 2. In contrast to this, the wording for callable types seems to be less
 constrained (<sref ref="[func.def]"/>/3):
 </p>
@@ -140,8 +136,7 @@ left of a function call operator.
 </blockquote>
 
 <p>
-The rationale given in <a
-href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2004/n1673.html#fn2">N1673</a>
+The rationale given in <a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2004/n1673.html#fn2">N1673</a>
 and a recent private communication with Peter Dimov revealed that the intention
 of this wording was to cover the above mentioned class types with conversion
 functions as well. To me the current wording of callable types can be read
@@ -169,16 +164,16 @@ conversion function to e.g. pointer to function from being used in algorithms.
 <p>
 Now this last term "function objects" itself brings us to a third unsatisfactory
 state: The term is used both for objects (e.g. "Function objects are
-objects[..]" in <sref ref="[function.objects]"/>/1) and for types (e.g. "Each
+objects[..]" in <sref ref="[function.objects]"/>&#47;1) and for types (e.g. "Each
 unordered associative container is parameterized [..] by a function object Hash
-that acts as a hash function [..]" in <sref ref="[unord.req]"/>/3). This
+that acts as a hash function [..]" in <sref ref="[unord.req]"/>&#47;3). This
 impreciseness should be fixed and I suggest to introduce the term <em>function
 object type</em> as the counter part to <em>callable type</em>. This word seems
 to be a quite natural choice, because the library already uses it here and there
 (e.g. "Hash shall be a unary function object type such that the expression
 <tt>hf(k)</tt> has type <tt>std::size_t</tt>." in Table 98, "<tt>X::hasher</tt>"
-or "Requires: <tt>T</tt> shall be a function object type [..]" in <sref
-ref="[func.wrap.func.targ]"/>/3).
+or "Requires: <tt>T</tt> shall be a function object type [..]" in 
+<sref ref="[func.wrap.func.targ]"/>&#47;3).
 </p>
 
 <p>
@@ -198,7 +193,7 @@ San Francisco:
 
 <blockquote>
 This is fixed by
-<a href ref="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2008/n2776.pdf">N2776</a>.
+<a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2008/n2776.pdf">N2776</a>.
 </blockquote>
 
 </blockquote>
@@ -211,19 +206,19 @@ This is fixed by
 
 <li>
 <p>
-Change <sref ref="[function.objects]"/>/1 as indicated:
+Change <sref ref="[function.objects]"/>&#47;1 as indicated:
 </p>
 
 <blockquote>
 <p>
 1 <del>Function objects are objects with an <tt>operator()</tt>
 defined.</del> <ins>An object type (<sref ref="[basic.types]"/>) that can be the
-type of the <em>postfix-expression</em> in a function call (<sref
-ref="[expr.call]"/>, <sref ref="[over.match.call]"/>) is called a <em>function
+type of the <em>postfix-expression</em> in a function call (<sref ref="[expr.call]"/>, 
+<sref ref="[over.match.call]"/>) is called a <em>function
 object type</em><sup>*</sup>. A <em>function object</em> is an object of a
 <em>function object type</em>.</ins> In the places where one would expect to
-pass a pointer to a function to an algorithmic template (Clause <sref
-ref="[algorithms]"/>), the interface is specified to accept <del>an object with
+pass a pointer to a function to an algorithmic template (Clause <sref ref="[algorithms]"/>), 
+the interface is specified to accept <del>an object with
 an <tt>operator()</tt> defined</del><ins>a function object</ins>. This not only
 makes algorithmic templates work with pointers to functions, but also enables
 them to work with arbitrary function objects.
@@ -238,7 +233,7 @@ provide a conversion to a pointer to function.
 
 <li>
 <p>
-Change <sref ref="[func.def]"/>/3 as indicated: <i>[The intent is to make the
+Change <sref ref="[func.def]"/>&#47;3 as indicated: <i>[The intent is to make the
 commonality of callable types and function object
 types more explicit and to get rid of wording redundancies]</i>
 </p>
@@ -253,7 +248,7 @@ objects can appear immediately to the left of a function call operator</del>
 
 <li>
 <p>
-Change <sref ref="[bind]"/>/1 as indicated:
+Change <sref ref="[bind]"/>&#47;1 as indicated:
 </p>
 
 <blockquote>
@@ -265,7 +260,7 @@ additional arguments.
 
 <li>
 <p>
-Change <sref ref="[func.bind]"/>/1 as indicated:
+Change <sref ref="[func.bind]"/>&#47;1 as indicated:
 </p>
 
 <blockquote>
@@ -276,7 +271,7 @@ Change <sref ref="[func.bind]"/>/1 as indicated:
 
 <li>
 <p>
-Change <sref ref="[func.wrap]"/>/1 as indicated:
+Change <sref ref="[func.wrap]"/>&#47;1 as indicated:
 </p>
 
 <blockquote>
@@ -287,8 +282,8 @@ arbitrary <del>function</del> <ins>callable</ins> objects.
 
 <li>
 <p>
-Change <sref ref="[func.wrap.func]"/>/2 as indicated <i>[The reason for this
-change is that <sref ref="[func.wrap.func]"/>/1 clearly says that all callable
+Change <sref ref="[func.wrap.func]"/>&#47;2 as indicated <i>[The reason for this
+change is that <sref ref="[func.wrap.func]"/>&#47;1 clearly says that all callable
 types may be wrapped by <tt>std::function</tt> and current implementations
 indeed do provide support for pointer to members as well. One further suggested
 improvement is to set the below definition of Callable in italics]</i>:
@@ -301,9 +296,9 @@ is <del>Callable</del> <ins><em>Callable</em></ins> for argument types
 type <tt>R</tt><del>,</del> if<del>, given lvalues <tt>t1, t2, ..., tN</tt> of
 types <tt>T1, T2, ..., TN</tt>, respectively,</del> <ins>the expression</ins>
 <tt><i>INVOKE</i>(f, <ins>declval&lt;ArgTypes&gt;()..., R</ins><del>t1, t2, ...,
-tN</del>)</tt><ins>, considered as an unevaluated operand (<sref
-ref="[expr]"/>),</ins> is well formed (20.7.2)<del> and, if <tt>R</tt> is not
-<tt>void</tt>, convertible to <tt>R</tt></del>.
+tN</del>)</tt><ins>, considered as an unevaluated operand (<sref ref="[expr]"/>),</ins> 
+is well formed (20.7.2)<del> and, if <tt>R</tt> is not <tt>void</tt>, convertible 
+to <tt>R</tt></del>.
 </blockquote>
 </li>
 
@@ -326,7 +321,7 @@ constructed <del>function</del> <ins>callable</ins> object.
 
 <li>
 <p>
-Change <sref ref="[func.wrap.func.con]"/>/7 as indicated:
+Change <sref ref="[func.wrap.func.con]"/>&#47;7 as indicated:
 </p>
 
 <blockquote><pre>
@@ -352,7 +347,7 @@ holding only a pointer or reference to an object and a member function pointer.
 
 <li>
 <p>
-Change <sref ref="[func.wrap.func.con]"/>/11 as indicated:
+Change <sref ref="[func.wrap.func.con]"/>&#47;11 as indicated:
 </p>
 
 <blockquote><pre>
@@ -373,7 +368,7 @@ reference to an object and a member function pointer. &mdash; <i>end note</i>]
 
 <li>
 <p>
-Change <sref ref="[func.wrap.func.inv]"/>/3 as indicated:
+Change <sref ref="[func.wrap.func.inv]"/>&#47;3 as indicated:
 </p>
 
 <blockquote><pre>
@@ -391,7 +386,7 @@ exception thrown by the wrapped <del>function</del> <ins>callable</ins> object.
 
 <li>
 <p>
-Change <sref ref="[func.wrap.func.targ]"/>/3 as indicated:
+Change <sref ref="[func.wrap.func.targ]"/>&#47;3 as indicated:
 </p>
 
 <blockquote><pre>
@@ -411,7 +406,7 @@ and return type <tt>R</tt>.
 
 <li>
 <p>
-Change <sref ref="[associative.reqmts]"/>/2 as indicated: <i>[The suggested
+Change <sref ref="[associative.reqmts]"/>&#47;2 as indicated: <i>[The suggested
 removal seems harmless, because <sref ref="[alg.sorting]"/>1 already clarifies
 that <tt>Compare</tt> is a function object type. Nevertheless it is recommended,
 because the explicit naming of "pointer to function" is misleading]</i>
@@ -419,18 +414,18 @@ because the explicit naming of "pointer to function" is misleading]</i>
 
 <blockquote>
 2 Each associative container is parameterized on <tt>Key</tt> and an ordering
-relation <tt>Compare</tt> that induces a strict weak ordering (<sref
-ref="[alg.sorting]"/>) on elements of <tt>Key</tt>. In addition, <tt>map</tt>
-and <tt>multimap</tt> associate an arbitrary type <tt>T</tt> with the
-<tt>Key</tt>. The object of type <tt>Compare</tt> is called the comparison
-object of a container. <del>This comparison object may be a pointer to function
-or an object of a type with an appropriate function call operator.</del>
+relation <tt>Compare</tt> that induces a strict weak ordering (<sref ref="[alg.sorting]"/>) 
+on elements of <tt>Key</tt>. In addition, <tt>map</tt> and <tt>multimap</tt> 
+associate an arbitrary type <tt>T</tt> with the <tt>Key</tt>. The object of type 
+<tt>Compare</tt> is called the comparison object of a container. <del>This 
+comparison object may be a pointer to function or an object of a type with an 
+appropriate function call operator.</del>
 </blockquote>
 </li>
 
 <li>
 <p>
-Change <sref ref="[unord.req]"/>/3 as indicated:
+Change <sref ref="[unord.req]"/>&#47;3 as indicated:
 </p>
 
 <blockquote>
@@ -443,7 +438,7 @@ induces an equivalence relation on values of type Key. [..]
 
 <li>
 <p>
-Change <sref ref="[algorithms.general]"/>/7 as indicated: <i>[The intent is to
+Change <sref ref="[algorithms.general]"/>&#47;7 as indicated: <i>[The intent is to
 bring this part in sync with <sref ref="[function.objects]"/>]</i>
 </p>
 
@@ -462,7 +457,7 @@ or an object of a type with an appropriate function call operator.</del>
 
 <li>
 <p>
-Change <sref ref="[unique.ptr.single]"/>/1 as indicated:
+Change <sref ref="[unique.ptr.single]"/>&#47;1 as indicated:
 </p>
 
 <blockquote>

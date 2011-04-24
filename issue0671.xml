@@ -4,7 +4,7 @@
 ] >
 
 <issue num="671" status="WP">
-<title>precision of hexfloat</title>
+<title>precision of <tt>hexfloat</tt></title>
 <section><sref ref="[facet.num.put.virtuals]"/></section>
 <submitter>John Salmon</submitter>
 <date>20 Apr 2007</date>
@@ -17,18 +17,18 @@ I am trying to understand how TR1 supports hex float (%a) output.
 As far as I can tell, it does so via the following:
 </p>
 <p>
-8.15 Additions to header &lt;locale&gt; [tr.c99.locale]
+8.15 Additions to header <tt>&lt;locale&gt;</tt> [tr.c99.locale]
 </p>
 <p>
 In subclause <sref ref="[facet.num.put.virtuals]"/>, Table 58 Floating-point conversions, after
-the line:
-floatfield == ios_base::scientific %E
+the line:<br/>
+<tt>floatfield == ios_base::scientific %E</tt>
 </p>
 <p>
 add the two lines:
 </p>
 <blockquote><pre>
-floatfield == ios_base::fixed | ios_base::scientific && !uppercase %a
+floatfield == ios_base::fixed | ios_base::scientific &amp;&amp; !uppercase %a
 floatfield == ios_base::fixed | ios_base::scientific %A 2
 </pre></blockquote>
 <p>
@@ -42,14 +42,14 @@ conversion specifier.  end note]
 Following the thread, in <sref ref="[facet.num.put.virtuals]"/>, we find:
 </p>
 <p>
-For conversion from a floating-point type, if (flags & fixed) != 0 or
-if str.precision() > 0, then str.precision() is specified in the
+For conversion from a floating-point type, if <tt>(flags &amp; fixed) != 0</tt> or
+if <tt>str.precision() &gt; 0</tt>, then <tt>str.precision()</tt> is specified in the
 conversion specification.
 </p>
 <p>
-This would seem to imply that when floatfield == fixed|scientific, the
+This would seem to imply that when <tt>floatfield == fixed|scientific</tt>, the
 precision of the conversion specifier is to be taken from
-str.precision().  Is this really what's intended?  I sincerely hope
+<tt>str.precision()</tt>.  Is this really what's intended?  I sincerely hope
 that I'm either missing something or this is an oversight.  Please
 tell me that the committee did not intend to mandate that hex floats
 (and doubles) should by default be printed as if by %.6a.
