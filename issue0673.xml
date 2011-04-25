@@ -15,7 +15,7 @@ Since the publication of
 <a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2005/n1856.html">N1856</a>
 there have been a few small but significant advances which should be included into
 <tt>unique_ptr</tt>.  There exists a
-<a href="http://home.twcny.rr.com/hinnant/cpp_extensions/unique_ptr.html">example implmenation</a>
+<a href="http://home.roadrunner.com/~hinnant/unique_ptr.hpp">example implementation</a>
 for all of these changes.
 </p>
 
@@ -25,9 +25,8 @@ for all of these changes.
 <p>
 Even though <tt>unique_ptr&lt;void&gt;</tt> is not a valid use case (unlike for <tt>shared_ptr&lt;void&gt;</tt>),
 unexpected cases to crop up which require the instantiation of the interface of <tt>unique_ptr&lt;void&gt;</tt>
-even if it is never used.  For example see
-<a href="http://www.open-std.org/jtc1/sc22/wg21/docs/lwg-defects.html#541">LWG 541</a> for how this accidently
-happened to <tt>auto_ptr</tt>.  I believe the most robust way to protect <tt>unique_ptr</tt> against this
+even if it is never used.  For example see <iref ref="541"/> for how this accidently happened to <tt>auto_ptr</tt>.  
+I believe the most robust way to protect <tt>unique_ptr</tt> against this
 type of failure is to augment the return type of <tt>unique_ptr&lt;T&gt;:operator*()</tt> with
 <tt>add_lvalue_reference&lt;T&gt;::type</tt>.  This means that given an instantiated <tt>unique_ptr&lt;void&gt;</tt>
 the act of dereferencing it will simply return <tt>void</tt> instead of causing a compile time failure.
@@ -51,7 +50,7 @@ for <tt>unique_ptr</tt> by having the deleter define the pointer type:
 <tt>D::pointer</tt>.  Furthermore this type can easily be defaulted to
 <tt>T*</tt> should the deleter <tt>D</tt> choose not to define a pointer
 type (example implementation
-<a href="http://home.twcny.rr.com/hinnant/cpp_extensions/unique_ptr.html">here</a>).
+<a href="http://home.roadrunner.com/~hinnant/unique_ptr.hpp">here</a>).
 This change has no run time overhead.  It has no interface overhead on
 authors of custom delter types.  It simply allows (but not requires)
 authors of custom deleter types to define a smart pointer for the
