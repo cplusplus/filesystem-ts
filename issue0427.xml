@@ -4,7 +4,7 @@
      ]
 >
 <issue num="427" status="WP">
-    <title>stage 2 and rationale of DR 221</title>
+    <title>Stage 2 and rationale of DR 221</title>
     <section><sref ref="[facet.num.get.virtuals]"/></section>
     <submitter>Martin Sebor</submitter>
     <date>18 Sep 2003</date>
@@ -96,11 +96,11 @@ Daniel volunteered to provide wording.
 2009-10 Santa Cruz:
 </note>
 
-<blockquote>
-Leave as Open. Alisdair and/or Tom will provide wording based on discussions.
+<blockquote><p>
+Leave as Open. Alisdair and&#47;or Tom will provide wording based on discussions.
 We want to clearly state that streams and locales work just on <tt>char</tt>
 and <tt>wchar_t</tt> (except where otherwise specified).
-</blockquote>
+</p></blockquote>
 
 <note>
 2010-02-06 Tom updated the proposed wording.
@@ -118,12 +118,12 @@ The original proposed wording is preserved here:
 Change <sref ref="[locale.category]"/>/6:
 </p>
 
-<blockquote>
+<blockquote><p>
 [..] A template formal parameter with name <tt>C</tt> represents the set of all possible
 specializations on a <ins><tt>char</tt> or <tt>wchar_t</tt></ins> parameter<del> that satisfies
 the requirements for a character on which any of the iostream components
 can be instantiated</del>. [..]
-</blockquote>
+</p></blockquote>
 </li>
 
 <li>
@@ -131,13 +131,13 @@ can be instantiated</del>. [..]
 Add the following sentence to the end of <sref ref="[category.numeric]"/>/2:
 </p>
 
-<blockquote>
+<blockquote><p>
 [..] These specializations refer to [..], and also for the <tt>ctype&lt;&gt;</tt> facet to
 perform character classification. <ins>Implementations are encouraged
 but not required to use the <tt>char_traits&lt;charT&gt;</tt> functions for all
 comparisons and assignments of characters of type <tt>charT</tt> that do
 not belong to the set of required specializations.</ins>
-</blockquote>
+</p></blockquote>
 </li>
 
 <li>
@@ -183,13 +183,13 @@ it is a copy-initialization context, not an assignment]
 Add the following sentence to the end of <sref ref="[category.time]"/>/1:
 </p>
 
-<blockquote>
+<blockquote><p>
 [..] Their members use [..] , to determine formatting details.
 <ins>Implementations are encouraged but not required to use the
 <tt>char_traits&lt;charT&gt;</tt> functions for all comparisons and assignments
 of characters of type <tt>charT</tt> that do
 not belong to the set of required specializations.</ins>
-</blockquote>
+</p></blockquote>
 </li>
 
 <li>
@@ -211,13 +211,13 @@ of <tt>fmt char_traits&lt;char_type&gt;::eq(c, use_facet&lt;ctype&lt;char_type&g
 Add the following sentence to the end of <sref ref="[category.monetary]"/>/2:
 </p>
 
-<blockquote>
+<blockquote><p>
 Their members use [..] to determine formatting details.
 <ins>Implementations are encouraged but not required to use the
 <tt>char_traits&lt;charT&gt;</tt> functions for all comparisons and assignments
 of characters of type <tt>charT</tt> that do
 not belong to the set of required specializations.</ins>
-</blockquote>
+</p></blockquote>
 </li>
 
 <li>
@@ -244,13 +244,13 @@ sscanf(buf2, "%Lf", &amp;units);
 Change <sref ref="[locale.money.put.virtuals]"/>/1:
 </p>
 
-<blockquote>
+<blockquote><p>
 [..] for character buffers <tt>buf1</tt> and <tt>buf2</tt>. If <ins>for</ins> the first
 character <ins><tt>c</tt></ins>
 in <tt>digits</tt> or <tt>buf2</tt> <del>is equal to
 <tt>ct.widen('-')</tt></del><ins><tt>char_traits&lt;charT&gt;::eq(c,
 ct.widen('-')) == true</tt></ins>, [..]
-</blockquote>
+</p></blockquote>
 </li>
 
 <li>
@@ -411,7 +411,7 @@ here:
 Change <sref ref="[locale.category]"/>/6:
 </p>
 
-<blockquote>
+<blockquote><p>
 [..] A template formal parameter with name <tt>C</tt> represents 
 the set 
 <del>of all possible specializations on a</del> 
@@ -422,7 +422,7 @@ and any other implementation-defined character type
 that satisfies
 the requirements for a character on which any of the iostream components
 can be instantiated. [..]
-</blockquote>
+</p></blockquote>
 </li>
 
 <li>
@@ -430,13 +430,13 @@ can be instantiated. [..]
 Add the following sentence to the end of <sref ref="[category.numeric]"/>/2:
 </p>
 
-<blockquote>
+<blockquote><p>
 [..] These specializations refer to [..], and also for the <tt>ctype&lt;&gt;</tt> facet to
 perform character classification. <ins>[<i>Note:</i> Implementations are encouraged
 but not required to use the <tt>char_traits&lt;charT&gt;</tt> functions for all
 comparisons and assignments of characters of type <tt>charT</tt> that do
 not belong to the set of required specializations - <i>end note</i>].</ins>
-</blockquote>
+</p></blockquote>
 </li>
 
 <li>
@@ -482,13 +482,13 @@ it is a copy-initialization context, not an assignment]
 Add the following sentence to the end of <sref ref="[category.time]"/>/1:
 </p>
 
-<blockquote>
+<blockquote><p>
 [..] Their members use [..] , to determine formatting details.
 <ins>[<i>Note:</i> Implementations are encouraged but not required to use the
 <tt>char_traits&lt;charT&gt;</tt> functions for all comparisons and assignments
 of characters of type <tt>charT</tt> that do
 not belong to the set of required specializations - <i>end note</i>].</ins>
-</blockquote>
+</p></blockquote>
 </li>
 
 <li>
@@ -510,13 +510,13 @@ of <tt>fmt char_traits&lt;char_type&gt;::eq(c, use_facet&lt;ctype&lt;char_type&g
 Add the following sentence to the end of <sref ref="[category.monetary]"/>/2:
 </p>
 
-<blockquote>
+<blockquote><p>
 Their members use [..] to determine formatting details.
 <ins>[<i>Note:</i> Implementations are encouraged but not required to use the
 <tt>char_traits&lt;charT&gt;</tt> functions for all comparisons and assignments
 of characters of type <tt>charT</tt> that do
 not belong to the set of required specializations - <i>end note</i>].</ins>
-</blockquote>
+</p></blockquote>
 </li>
 
 <li>
@@ -543,13 +543,13 @@ sscanf(buf2, "%Lf", &amp;units);
 Change <sref ref="[locale.money.put.virtuals]"/>/1:
 </p>
 
-<blockquote>
+<blockquote><p>
 [..] for character buffers <tt>buf1</tt> and <tt>buf2</tt>. If <ins>for</ins> the first
 character <ins><tt>c</tt></ins>
 in <tt>digits</tt> or <tt>buf2</tt> <del>is equal to
 <tt>ct.widen('-')</tt></del><ins><tt>char_traits&lt;charT&gt;::eq(c,
 ct.widen('-')) == true</tt></ins>, [..]
-</blockquote>
+</p></blockquote>
 </li>
 
 <li>
@@ -557,7 +557,7 @@ ct.widen('-')) == true</tt></ins>, [..]
 Add a new paragraph after the 
 first paragraph of <sref ref="[iostreams.limits.pos]"/>/1:
 </p>
-<blockquote>
+<blockquote><p>
 In the classes of clause 27,
 a template formal parameter with name <tt>charT</tt> represents 
 one of
@@ -567,7 +567,7 @@ and any other implementation-defined character type
 that satisfies
 the requirements for a character on which any of the iostream components
 can be instantiated.
-</blockquote>
+</p></blockquote>
 </li>
 
 <li>
@@ -720,7 +720,7 @@ results.
 Change <sref ref="[locale.category]"/>/6:
 </p>
 
-<blockquote>
+<blockquote><p>
 [..] A template formal parameter with name <tt>C</tt> represents 
 the set 
 <del>of all possible specializations on a</del> 
@@ -731,7 +731,7 @@ and any other implementation-defined character type
 that satisfies
 the requirements for a character on which any of the iostream components
 can be instantiated. [..]
-</blockquote>
+</p></blockquote>
 </li>
 
 <li>
@@ -739,7 +739,7 @@ can be instantiated. [..]
 Add a new paragraph after the 
 first paragraph of <sref ref="[iostreams.limits.pos]"/>/1:
 </p>
-<blockquote>
+<blockquote><p>
 In the classes of clause 27,
 a template formal parameter with name <tt>charT</tt> represents 
 one of
@@ -749,7 +749,7 @@ and any other implementation-defined character type
 that satisfies
 the requirements for a character on which any of the iostream components
 can be instantiated.
-</blockquote>
+</p></blockquote>
 </li>
 
 </ol>

@@ -4,15 +4,15 @@
 ] >
 
 <issue num="539" status="WP">
-<title>partial_sum and adjacent_difference should mention requirements</title>
+<title><tt>partial_sum</tt> and <tt>adjacent_difference</tt> should mention requirements</title>
 <section><sref ref="[partial.sum]"/></section>
 <submitter>Marc Schoolderman</submitter>
 <date>6 Feb 2006</date>
 
 <discussion>
 <p>
-There are some problems in the definition of partial_sum and
-adjacent_difference in 26.4 [lib.numeric.ops]
+There are some problems in the definition of <tt>partial_sum</tt> and
+<tt>adjacent_difference</tt> in 26.4 [lib.numeric.ops]
 </p>
 
 <p>
@@ -162,23 +162,23 @@ adding signatures to allow user to specify "accumulator".
 Bellevue:
 </note>
 
-<blockquote>
+<blockquote><p>
 The intent of the algorithms is to perform their calculations using the type of the input iterator.
 Proposed wording provided.
-</blockquote>
+</p></blockquote>
 
 <note>
 Sophia Antipolis:
 </note>
 
-<blockquote>
+<blockquote><p>
 We did not agree that the proposed resolution was correct. For example,
 when the arguments are types <tt>(float*, float*, double*)</tt>, the
 highest-quality solution would use double as the type of the
 accumulator. If the intent of the wording is to require that the type of
 the accumulator must be the <tt>input_iterator</tt>'s <tt>value_type</tt>, the wording
 should specify it.
-</blockquote>
+</p></blockquote>
 
 <note>
 2009-05-09 Alisdair adds:
@@ -211,11 +211,11 @@ clearer indication of preferred direction.
 2009-07 Frankfurt
 </note>
 
-<blockquote>
+<blockquote><p>
 The proposed resolution isn't quite right. For example, "the type of
-*first" should be changed to "iterator::value_type" or similar. Daniel
+<tt>*first</tt>" should be changed to "<tt>iterator::value_type</tt>" or similar. Daniel
 volunteered to correct the wording.
-</blockquote>
+</p></blockquote>
 
 <note>
 2009-07-29 Daniel corrected wording.
@@ -225,9 +225,9 @@ volunteered to correct the wording.
 2009-10 Santa Cruz:
 </note>
 
-<blockquote>
+<blockquote><p>
 Move to Ready.
-</blockquote>
+</p></blockquote>
 
 </discussion>
 
@@ -283,11 +283,11 @@ binary_op(binary_op(...,
 Change <sref ref="[partial.sum]"/>/3 as indicated:
 </p>
 
-<blockquote>
+<blockquote><p>
 <i>Complexity:</i> Exactly <tt><ins>max(</ins>(last - first) - 1<ins>, 0)</ins></tt>
 applications
 of <tt><del>binary_op</del></tt><ins>the binary operation</ins>.
-</blockquote>
+</p></blockquote>
 </li>
 
 <li>
@@ -295,13 +295,13 @@ of <tt><del>binary_op</del></tt><ins>the binary operation</ins>.
 Change <sref ref="[partial.sum]"/>/4 as indicated:
 </p>
 
-<blockquote>
+<blockquote><p>
 <i>Requires:</i> <ins><tt>VT</tt> shall be constructible from the type of <tt>*first</tt>, the result of
 <tt>acc + *i</tt> or <tt>binary_op(acc, *i)</tt> shall be implicitly convertible to <tt>VT</tt>, and
 the result of the expression <tt>acc</tt> shall be writable to the <tt>result</tt>
 output iterator.</ins> In the ranges <tt>[first,last]</tt> and
 <tt>[result,result + (last - first)]</tt> [..]
-</blockquote>
+</p></blockquote>
 </li>
 
 <li>
@@ -346,7 +346,7 @@ result gets the value of *first.</del>
 Change <sref ref="[adjacent.difference]"/>/2 as indicated:
 </p>
 
-<blockquote>
+<blockquote><p>
 <i>Requires:</i> <ins><tt>VT</tt> shall be <tt>MoveAssignable</tt> ([moveassignable])
 and shall be
 constructible from the type of <tt>*first</tt>. The result
@@ -354,7 +354,7 @@ of the expression <tt>acc</tt> and the result of the expression <tt>val - acc</t
 <tt>binary_op(val, acc)</tt>
 shall be writable to the <tt>result</tt> output iterator.</ins> In the ranges
 <tt>[first,last]</tt> [..]
-</blockquote>
+</p></blockquote>
 </li>
 
 <li>
@@ -362,11 +362,11 @@ shall be writable to the <tt>result</tt> output iterator.</ins> In the ranges
 Change <sref ref="[adjacent.difference]"/>/5 as indicated:
 </p>
 
-<blockquote>
+<blockquote><p>
 <i>Complexity:</i> Exactly <tt><ins>max(</ins>(last - first) - 1<ins>, 0)</ins></tt>
 applications
 of <del><tt>binary_op</tt></del><ins>the binary operation</ins>.
-</blockquote>
+</p></blockquote>
 </li>
 </ol>
 

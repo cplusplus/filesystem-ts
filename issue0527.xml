@@ -4,14 +4,15 @@
 ] >
 
 <issue num="527" status="CD1">
-<title>tr1::bind has lost its Throws clause</title>
+<title><tt>tr1::bind</tt> has lost its Throws clause</title>
 <section><sref ref="[func.bind.bind]"/><sref ref="[tr.func.bind.bind]"/></section>
 <submitter>Peter Dimov</submitter>
 <date>01 Oct 2005</date>
 
 <discussion>
 <p>
-The original bind proposal gives the guarantee that tr1::bind(f, t1, ..., tN) does not throw when the copy constructors of f, t1, ..., tN don't.
+The original bind proposal gives the guarantee that <tt>tr1::bind(f, t1, ..., tN)</tt> 
+does not throw when the copy constructors of <tt>f, t1, ..., tN</tt> don't.
 </p>
 
 <p>
@@ -69,19 +70,19 @@ throws an exception.
 In <sref ref="[func.bind.bind]"/>, add a new paragraph after p2:
 </p>
 
-<blockquote>
+<blockquote><p>
 <i>Throws:</i> Nothing unless the copy constructor of <tt>F</tt> or of one of the types
 in the <tt>BoundArgs...</tt> pack expansion throws an exception. 
-</blockquote>
+</p></blockquote>
 
 <p>
 In <sref ref="[func.bind.bind]"/>, add a new paragraph after p4:
 </p>
 
-<blockquote>
+<blockquote><p>
 <i>Throws:</i> Nothing unless the copy constructor of <tt>F</tt> or of one of the types
 in the <tt>BoundArgs...</tt> pack expansion throws an exception. 
-</blockquote>
+</p></blockquote>
 
 </resolution>
 

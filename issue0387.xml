@@ -4,20 +4,20 @@
 ] >
 
 <issue num="387" status="CD1">
-<title>std::complex over-encapsulated</title>
+<title><tt>std::complex</tt> over-encapsulated</title>
 <section><sref ref="[complex.numbers]"/></section>
 <submitter>Gabriel Dos Reis</submitter>
 <date>8 Nov 2002</date>
 
 <discussion>
 <p>
-The absence of explicit description of std::complex&lt;T&gt; layout
+The absence of explicit description of <tt>std::complex&lt;T&gt;</tt> layout
 makes it imposible to reuse existing software developed in traditional
 languages like Fortran or C with unambigous and commonly accepted
 layout assumptions.  There ought to be a way for practitioners to
-predict with confidence the layout of std::complex&lt;T&gt; whenever T
+predict with confidence the layout of <tt>std::complex&lt;T&gt;</tt> whenever <tt>T</tt>
 is a numerical datatype.  The absence of ways to access individual
-parts of a std::complex&lt;T&gt; object as lvalues unduly promotes
+parts of a <tt>std::complex&lt;T&gt;</tt> object as lvalues unduly promotes
 severe pessimizations. For example, the only way to change,
 independently, the real and imaginary parts is to write something like
 </p>
@@ -38,7 +38,7 @@ is, in effect, just a pair of numbers with no particular invariant to
 maintain.  Existing practice in numerical computations has it that a
 complex number datatype is usually represented by Cartesian
 coordinates. Therefore the over-encapsulation put in the specification
-of std::complex&lt;&gt; is not justified.
+of <tt>std::complex&lt;&gt;</tt> is not justified.
 </p>
 
 </discussion>
@@ -46,28 +46,28 @@ of std::complex&lt;&gt; is not justified.
 <resolution>
 <p>Add the following requirements to <sref ref="[complex.numbers]"/> as 26.3/4:</p>
 <blockquote>
-<p>If z is an lvalue expression of type cv std::complex&lt;T&gt; then</p>
+<p>If <tt>z</tt> is an lvalue expression of type <i>cv</i> <tt>std::complex&lt;T&gt;</tt> then</p>
 
 <ul>
-<li>the expression reinterpret_cast&lt;cv T(&amp;)[2]&gt;(z)
+<li>the expression <tt>reinterpret_cast&lt;cv T(&amp;)[2]&gt;(z)</tt>
 is well-formed; and</li>
-<li>reinterpret_cast&lt;cv T(&amp;)[2]&gt;(z)[0]designates the
-real part of z; and</li>
-<li>reinterpret_cast&lt;cv T(&amp;)[2]&gt;(z)[1]designates the
-imaginary part of z.</li>
+<li><tt>reinterpret_cast&lt;cv T(&amp;)[2]&gt;(z)[0]</tt> designates the
+real part of <tt>z</tt>; and</li>
+<li><tt>reinterpret_cast&lt;cv T(&amp;)[2]&gt;(z)[1]</tt> designates the
+imaginary part of <tt>z</tt>.</li>
 </ul>
 
 <p>
-Moreover, if a is an expression of pointer type cv complex&lt;T&gt;*
-and the expression a[i] is well-defined for an integer expression
-i then:
+Moreover, if <tt>a</tt> is an expression of pointer type <i>cv</i> <tt>complex&lt;T&gt;*</tt>
+and the expression <tt>a[i]</tt> is well-defined for an integer expression
+<tt>i</tt> then:
 </p>
 
 <ul>
-<li>reinterpret_cast&lt;cv T*&gt;(a)[2*i] designates the real
-part of a[i]; and</li>
-<li>reinterpret_cast&lt;cv T*&gt;(a)[2*i+1] designates the
-imaginary part of a[i].</li>
+<li><tt>reinterpret_cast&lt;cv T*&gt;(a)[2*i]</tt> designates the real
+part of <tt>a[i]</tt>; and</li>
+<li><tt>reinterpret_cast&lt;cv T*&gt;(a)[2*i+1]</tt> designates the
+imaginary part of <tt>a[i]</tt>.</li>
 </ul>
 </blockquote>
 
@@ -89,34 +89,34 @@ Add to <sref ref="[complex.members]"/>
 <pre>
 T real() const;
 </pre>
-<blockquote>
+<blockquote><p>
 <i>Returns:</i> the value of the real component
-</blockquote>
+</p></blockquote>
 <pre>
 void real(T val);
 </pre>
-<blockquote>
-Assigns val to the real component.
-</blockquote>
+<blockquote><p>
+Assigns <tt>val</tt> to the real component.
+</p></blockquote>
 <pre>
 T imag() const;
 </pre>
-<blockquote>
+<blockquote><p>
 <i>Returns:</i> the value of the imaginary component
-</blockquote>
+</p></blockquote>
 <pre>
 void imag(T val);
 </pre>
-<blockquote>
-Assigns val to the imaginary component.
-</blockquote>
+<blockquote><p>
+Assigns <tt>val</tt> to the imaginary component.
+</p></blockquote>
 </blockquote>
 
 <note>Kona: The layout guarantee is absolutely necessary for C
   compatibility.  However, there was disagreement about the other part
   of this proposal: retrieving elements of the complex number as
-  lvalues.  An alternative: continue to have real() and imag() return
-  rvalues, but add set_real() and set_imag().  Straw poll: return
+  lvalues.  An alternative: continue to have <tt>real()</tt> and <tt>imag()</tt> return
+  rvalues, but add <tt>set_real()</tt> and <tt>set_imag()</tt>.  Straw poll: return
   lvalues - 2, add setter functions - 5.  Related issue: do we want
   reinterpret_cast as the interface for converting a complex to an
   array of two reals, or do we want to provide a more explicit way of
@@ -129,26 +129,26 @@ Assigns val to the imaginary component.
 Bellevue:
 </note>
 
-<blockquote>
+<blockquote><p>
 Second half of proposed wording replaced and moved to Ready.
-</blockquote>
+</p></blockquote>
 
 <note>
 Pre-Sophia Antipolis, Howard adds:
 </note>
 
-<blockquote>
+<blockquote><p>
 Added the members to <sref ref="[complex.special]"/> and changed from Ready to Review.
-</blockquote>
+</p></blockquote>
 
 <note>
 Post-Sophia Antipolis:
 </note>
 
-<blockquote>
+<blockquote><p>
 Moved from WP back to Ready so that the "and <sref ref="[complex.special]"/>" in the proposed
 resolution can be officially applied.
-</blockquote>
+</p></blockquote>
 
 </resolution>
 

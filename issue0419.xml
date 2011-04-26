@@ -4,26 +4,28 @@
      ]
 >
 <issue num="419" status="WP">
-    <title>istream extractors not setting failbit if eofbit is already set</title>
+    <title>istream extractors not setting <tt>failbit</tt> if <tt>eofbit</tt> is already set</title>
     <section><sref ref="[istream::sentry]"/></section>
     <submitter>Martin Sebor</submitter>
     <date>18 Sep 2003</date>
     <discussion>
         <p>
 
-<sref ref="[istream::sentry]"/>, p2 says that istream::sentry ctor prepares for input if is.good()
-is true. p4 then goes on to say that the ctor sets the sentry::ok_ member to
+<sref ref="[istream::sentry]"/>, p2 says that <tt>istream::sentry</tt> ctor prepares for input if <tt>is.good()</tt>
+is true. p4 then goes on to say that the ctor sets the <tt>sentry::ok_</tt> member to
 true if the stream state is good after any preparation. <sref ref="[istream.formatted.reqmts]"/>, p1 then
 says that a formatted input function endeavors to obtain the requested input
-if the sentry's operator bool() returns true.
+if the sentry's <tt>operator bool()</tt> returns true.
 
-Given these requirements, no formatted extractor should ever set failbit if
-the initial stream rdstate() == eofbit. That is contrary to the behavior of
+Given these requirements, no formatted extractor should ever set <tt>failbit</tt> if
+the initial stream <tt>rdstate() == eofbit</tt>. That is contrary to the behavior of
 all implementations I tested. The program below prints out
-
+</p>
+<blockquote><pre>
 eof = 1, fail = 0
 eof = 1, fail = 1
-
+</pre></blockquote>
+<p>
 on all of them.
         </p>
 <pre>
@@ -59,7 +61,7 @@ Jerry Schwarz wrote:
 <br/>
 
 I don't know where (if anywhere) it says it in the standard, but the
-formatted extractors are supposed to set failbit if they don't extract
+formatted extractors are supposed to set <tt>failbit</tt> if they don't extract
 any characters. If they didn't then simple loops like
 <br/>
 
@@ -73,9 +75,9 @@ Further comments from Martin Sebor:
 <br/>
 
 The question is which part of the extraction should prevent this from happening
-by setting failbit when eofbit is already set. It could either be the sentry
+by setting <tt>failbit</tt> when <tt>eofbit</tt> is already set. It could either be the sentry
 object or the extractor. It seems that most implementations have chosen to
-set failbit in the sentry [...] so that's the text that will need to be
+set <tt>failbit</tt> in the sentry [...] so that's the text that will need to be
 corrected. 
 
         </p>
@@ -84,9 +86,9 @@ Pre Berlin:  This issue is related to <iref ref="342"/>.  If the sentry
 sets <tt>failbit</tt> when it finds <tt>eofbit</tt> already set, then
 you can never seek away from the end of stream.
 </p>
-<p>Kona: Possibly NAD.  If eofbit is set then good() will return false.  We
+<p>Kona: Possibly NAD.  If <tt>eofbit</tt> is set then <tt>good()</tt> will return false.  We
   then set <i>ok</i> to false.  We believe that the sentry's
-  constructor should always set failbit when <i>ok</i> is false, and
+  constructor should always set <tt>failbit</tt> when <i>ok</i> is false, and
   we also think the standard already says that.  Possibly it could be
   clearer.</p> 
 
@@ -95,9 +97,9 @@ you can never seek away from the end of stream.
 2009-07 Frankfurt
 </note>
 
-<blockquote>
+<blockquote><p>
 Moved to Ready.
-</blockquote>
+</p></blockquote>
 
 </discussion>
 

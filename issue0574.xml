@@ -15,7 +15,7 @@ lib.iostream.objects requires that the standard stream objects are never
 destroyed, and it requires that they be destroyed.
 </p>
 <p>
-DR 369 adds words to say that we really mean for ios_base::Init objects to force
+DR 369 adds words to say that we really mean for <tt>ios_base::Init</tt> objects to force
 construction of standard stream objects. It ends, though, with the phrase "these
 stream objects shall be destroyed after the destruction of dynamically ...".
 However, the rule for destruction is stated in the standard: "The objects are
@@ -34,7 +34,7 @@ Change <sref ref="[iostream.objects]"/>/1:
 some time prior to or during the first time an object of class
 <tt>ios_base::Init</tt> is constructed, and in any case before the body of main
 begins execution.<sup>290)</sup> The objects are not destroyed during program
-execution.<sup>291)</sup> If a translation unit includes <tt>&lt;iostream&t;</tt> or explicitly
+execution.<sup>291)</sup> If a translation unit includes <tt>&lt;iostream&gt;</tt> or explicitly
 constructs an <tt>ios_base::Init</tt> object, these stream objects shall be
 constructed before dynamic initialization of non-local objects defined
 later in that translation unit<del>, and these stream objects shall be

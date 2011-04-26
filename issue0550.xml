@@ -4,7 +4,7 @@
 ] >
 
 <issue num="550" status="CD1">
-<title>What should the return type of pow(float,int) be?</title>
+<title>What should the return type of <tt>pow(float,int)</tt> be?</title>
 <section><sref ref="[c.math]"/></section>
 <submitter>Howard Hinnant</submitter>
 <date>12 Jan 2006</date>
@@ -22,9 +22,9 @@ following signature be:
 <p>
 C++03 says that the return type should be <tt>float</tt>. 
 <a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2005/n1836.pdf">
-TR1</a> and C90/99 say the return type should be <tt>double</tt>.  This can put
+TR1</a> and C90&#47;99 say the return type should be <tt>double</tt>.  This can put
 clients into a situation where C++03 provides answers that are not as high
-quality as C90/C99/TR1.  For example:
+quality as C90&#47;C99&#47;TR1.  For example:
 </p>
 <blockquote><pre>
 #include &lt;math.h&gt;
@@ -36,7 +36,7 @@ int main()
 }
 </pre></blockquote>
 <p>
-Assuming an IEEE 32 bit float and IEEE 64 bit double, C90/C99/TR1 all suggest:
+Assuming an IEEE 32 bit float and IEEE 64 bit double, C90&#47;C99&#47;TR1 all suggest:
 </p>
 
 <blockquote><pre>
@@ -44,7 +44,7 @@ y = 4329326534736.390625
 </pre></blockquote>
 
 <p>
-which is exactly right.  While C++98/C++03 demands:
+which is exactly right.  While C++98&#47;C++03 demands:
 </p>
 
 <blockquote><pre>
@@ -64,7 +64,7 @@ Fortran, C and TR1 and make the return type of <tt>pow(float,int)</tt> be
 <note>
 Kona (2007): Other functions that are affected by this issue include
 <tt>ldexp</tt>, <tt>scalbln</tt>, and <tt>scalbn</tt>. We also believe that there is a typo in
-26.7/10: <tt>float nexttoward(float, long double);</tt> [sic] should be <tt>float
+26.7&#47;10: <tt>float nexttoward(float, long double);</tt> [sic] should be <tt>float
 nexttoward(float, float);</tt> Proposed Disposition: Review (the proposed
 resolution appears above, rather than below, the heading "Proposed
 resolution")
@@ -111,13 +111,13 @@ The proposed resolution basically says: C++98 got it wrong and C99 got it right;
 Bellevue:
 </note>
 
-<blockquote>
+<blockquote><p>
 This signature was not picked up from C99. Instead, if one types
-pow(2.0f,2), the promotion rules will invoke "double pow(double,
+<tt>pow(2.0f,2)</tt>, the promotion rules will invoke "double pow(double,
 double)", which generally gives special treatment for integral
 exponents, preserving full accuracy of the result.  New proposed
 wording provided.
-</blockquote>
+</p></blockquote>
 </discussion>
 
 <resolution>

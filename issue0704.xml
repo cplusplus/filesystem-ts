@@ -4,7 +4,7 @@
 ] >
 
 <issue num="704" status="WP">
-<title>MoveAssignable requirement for container value type overly strict</title>
+<title><tt>MoveAssignable</tt> requirement for container value type overly strict</title>
 <section><sref ref="[container.requirements]"/></section>
 <submitter>Howard Hinnant</submitter>
 <date>20 May 2007</date>
@@ -175,9 +175,9 @@ MoveConstructible, etc.
 2009-10 Santa Cruz:
 </note>
 
-<blockquote>
+<blockquote><p>
 Leave open. Howard to provide wording.
-</blockquote>
+</p></blockquote>
 
 <note>
 2010-02-06 Howard provides wording.
@@ -217,10 +217,10 @@ Take e.g. the second change of <iref ref="868"/>:
 <p>
 Change <sref ref="[deque.cons]"/> para 5:
 </p>
-<blockquote>
+<blockquote><p>
 <i>Effects:</i> Constructs a <tt>deque</tt> with <tt>n</tt> default constructed
 elements.
-</blockquote>
+</p></blockquote>
 <p>
 where "default constructed" should be replaced by "value-initialized".
 This is the constructor out of a number of elements:
@@ -237,9 +237,9 @@ ContType c(num)
 <p>
 Remove the entire section <sref ref="[deque.cons]"/>.
 </p>
-<blockquote>
+<blockquote><p>
 [ This section is already specified by the requirements tables. ]
-</blockquote>
+</p></blockquote>
 </blockquote>
 
 <p>
@@ -310,10 +310,10 @@ and set to Ready for Pittsburgh.
 post San Francisco:
 </note>
 
-<blockquote>
+<blockquote><p>
 Solved by
 <a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2008/n2776.pdf">N2776</a>.
-</blockquote>
+</p></blockquote>
 
 <p>
 This rationale is obsolete. 
@@ -354,13 +354,13 @@ Post-condition
 Change <sref ref="[container.requirements.general]"/>/4:
 </p>
 
-<blockquote>
+<blockquote><p>
 4 In Tables 91 and 92, <tt>X</tt> denotes a container class containing objects
 of type <tt>T</tt>, <tt>a</tt> and <tt>b</tt> denote values of type <tt>X</tt>,
 <tt>u</tt> denotes an identifier, <tt>r</tt> denotes <del>an lvalue or a const
 rvalue</del> <ins>a non-const value</ins> of type <tt>X</tt>, and <tt>rv</tt>
 denotes a non-const rvalue of type <tt>X</tt>.
-</blockquote>
+</p></blockquote>
 
 <p>
 Change the following rows in Table 91 &mdash; Container requirements
@@ -402,16 +402,16 @@ requirements:
 
 <ul>
 <li>
-..
+<p>&hellip;</p>
 </li>
 
-<li>
+<li><p>
 no <tt>erase()</tt>, <ins><tt>clear()</tt>,</ins> <tt>pop_back()</tt> or
 <tt>pop_front()</tt> function throws an exception.
-</li>
+</p></li>
 
 <li>
-...
+<p>&hellip;</p>
 </li>
 </ul>
 
@@ -470,14 +470,14 @@ example</i>]
 Add to <sref ref="[container.requirements.general]"/>/14:
 </p>
 
-<blockquote>
+<blockquote><p>
 14 In Table 93, <tt>X</tt> denotes an allocator-aware container class with a
 <tt>value_type</tt> of <tt>T</tt> using allocator of type <tt>A</tt>, <tt>u</tt>
 denotes a variable, <ins><tt>a</tt> and <tt>b</tt> denote non-const lvalues of
 type <tt>X</tt>,</ins> <tt>t</tt> denotes an lvalue or a const rvalue of type
 <tt>X</tt>, <tt>rv</tt> denotes a non-const rvalue of type <tt>X</tt>,
 <tt>m</tt> is a value of type <tt>A</tt>, and <tt>Q</tt> is an allocator type.
-</blockquote>
+</p></blockquote>
 
 <p>
 Change or add the following rows in Table 93 &mdash; Allocator-aware container
@@ -1272,7 +1272,7 @@ Worst case O(<tt>N * a.size()</tt>).</td>
 Change <sref ref="[forwardlist]"/>/2:
 </p>
 
-<blockquote>
+<blockquote><p>
 2 A <tt>forward_list</tt> satisfies all of the requirements of a container
 (table 91), except that the <tt>size()</tt> member function is not provided.
 <ins>A <tt>forward_list</tt> also satisfies all of the requirements of an
@@ -1283,7 +1283,7 @@ requirements, and several of the optional sequence container requirements (Table
 Descriptions are provided here only for operations on <tt>forward_list</tt> that
 are not described in that table or for operations where there is additional
 semantic information.
-</blockquote>
+</p></blockquote>
 
 <p>
 Add a new paragraph after <sref ref="[forwardlist.modifiers]"/>/23:
@@ -1310,11 +1310,11 @@ Change <sref ref="[vector.capacity]"/>/13:
 <blockquote><pre>
 void resize(size_type sz, const T& c);
 </pre>
-<blockquote>
+<blockquote><p>
 13 <i>Requires:</i> <ins><tt>T</tt> shall be <tt>CopyConstructible</tt>.</ins>
 If <tt>value_type</tt> has a move constructor, that constructor shall not throw
 any exceptions.
-</blockquote>
+</p></blockquote>
 </blockquote>
 
 <p>
