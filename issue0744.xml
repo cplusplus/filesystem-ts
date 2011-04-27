@@ -4,7 +4,7 @@
 ] >
 
 <issue num="744" status="CD1">
-<title>What is the lifetime of an exception pointed to by an exception_ptr?</title>
+<title>What is the lifetime of an exception pointed to by an <tt>exception_ptr</tt>?</title>
 <section><sref ref="[propagation]"/></section>
 <submitter>Alisdair Meredith</submitter>
 <date>10 Oct 2007</date>
@@ -13,7 +13,7 @@
 <p>
 Without some lifetime guarantee, it is hard to know how this type can be
 used.  Very specifically, I don't see how the current wording would
-guarantee and exception_ptr caught at the end of one thread could be safely
+guarantee and <tt>exception_ptr</tt> caught at the end of one thread could be safely
 stored and rethrown in another thread - the original motivation for this
 API.
 </p>
@@ -52,7 +52,7 @@ Move to Open.
 Change <sref ref="[propagation]"/>/7:
 </p>
 
-<blockquote>
+<blockquote><p>
 -7- Returns: An <tt>exception_ptr</tt> object that refers to the currently
 handled exception or a copy of the currently handled exception, or a
 null <tt>exception_ptr</tt> object if no exception is being handled.
@@ -64,7 +64,7 @@ fails, it returns an <tt>exception_ptr</tt> object that refers to an instance of
 calls to <tt>current_exception</tt> refer to the same exception object. [<i>Note:</i>
 that is, it is unspecified whether <tt>current_exception</tt> creates a new copy
 each time it is called. <i>--end note</i>]
-</blockquote>
+</p></blockquote>
 </resolution>
 
 </issue>

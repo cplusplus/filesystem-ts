@@ -50,10 +50,10 @@ For <tt>vector::reserve</tt>, <tt>vector::resize</tt> and the <tt>vector</tt> mo
 <sref ref="[vector.modifiers]"/> we have
 </p>
 
-<blockquote>
+<blockquote><p>
 <i>Requires:</i> If <tt>value_type</tt> has a move constructor, that constructor shall
 not throw any exceptions.
-</blockquote>
+</p></blockquote>
 
 <p>
 Firstly "If <tt>value_type</tt> has a move constructor" is superfluous; every
@@ -118,11 +118,12 @@ Howard adds post-Bellevue:
 
 <blockquote>
 <p>
-Unfortunately I believe the wording recommended by the LWG in Bellevue is incorrect.  <tt>reserve</tt> et. al. will use a move constructor
-if one is available, else it will use a copy constructor.  A type may have both.  If the move constructor is
-used, it must not throw.  If the copy constructor is used, it can throw.  The sentence in the proposed wording
-is correct without the recommended insertion.  The Bellevue LWG recommended moving this issue to Ready.  I am
-unfortunately pulling it back to Open.  But I'm drafting wording to atone for this egregious action. :-)
+Unfortunately I believe the wording recommended by the LWG in Bellevue is incorrect.  <tt>reserve</tt> et. al. 
+will use a move constructor if one is available, else it will use a copy constructor.  A type may have both.  
+If the move constructor is used, it must not throw.  If the copy constructor is used, it can throw.  The 
+sentence in the proposed wording is correct without the recommended insertion.  The Bellevue LWG recommended 
+moving this issue to Ready.  I am unfortunately pulling it back to Open.  But I'm drafting wording to atone 
+for this egregious action. :-)
 </p>
 </blockquote>
 

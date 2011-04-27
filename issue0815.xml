@@ -19,11 +19,11 @@ described in the rvalue core proposal.
 Sophia Antipolis:
 </note>
 
-<blockquote>
+<blockquote><p>
 According to Doug Gregor, as far as <tt>std::function</tt> is concerned, perfect
 forwarding can not be obtained because of type erasure. Not everyone
 agreed with this diagnosis of forwarding.
-</blockquote>
+</p></blockquote>
 
 <note>
 2009-05-01 Howard adds:
@@ -178,19 +178,19 @@ do so, if <tt>ArgTypes</tt> aren't at least <tt>MoveConstructible</tt>?
 2009-07 Frankfurt:
 </note>
 
-<blockquote>
+<blockquote><p>
 Leave this open and wait until concepts are removed from the Working
 Draft so that we know how to write the proposed resolution in terms of
 diffs to otherwise stable text.
-</blockquote>
+</p></blockquote>
 
 <note>
 2009-10 Santa Cruz:
 </note>
 
-<blockquote>
+<blockquote><p>
 Leave as open. Howard to provide wording. Howard welcomes any help.
-</blockquote>
+</p></blockquote>
 
 <note>
 2009-12-12 Jonathan Wakely adds:
@@ -201,13 +201,13 @@ Leave as open. Howard to provide wording. Howard welcomes any help.
 <sref ref="[func.wrap.func]"/> says
 </p>
 
-<blockquote>
+<blockquote><p>
 2  A function object <tt>f</tt> of type <tt>F</tt> is Callable for argument
 types <tt>T1, T2, ..., TN</tt> in <tt>ArgTypes</tt> and a return type
 <tt>R</tt>, if, given lvalues <tt>t1, t2, ..., tN</tt> of types <tt>T1, T2, ...,
 TN</tt>, respectively, <tt>INVOKE (f, t1, t2, ..., tN)</tt> is well formed
 (20.7.2) and, if <tt>R</tt> is not <tt>void</tt>, convertible to <tt>R</tt>.
-</blockquote>
+</p></blockquote>
 
 <p>
 N.B. lvalues, which means you can't use <tt>function&lt;R(T&amp;&amp;)&gt;</tt>
@@ -249,21 +249,21 @@ otherwise"?  I prefer the former, so I propose the following resolution for 815:
 Edit <sref ref="[func.wrap.func]"/> paragraph 2:
 </p>
 
-<blockquote>
+<blockquote><p>
 2  A function object <tt>f</tt> of type <tt>F</tt> is Callable for argument
 types <tt>T1, T2, ..., TN</tt> in <tt>ArgTypes</tt> and a return type
 <tt>R</tt>, if, given <del>l</del>values <tt>t1, t2, ..., tN</tt> of types
 <tt>T1, T2, ..., TN</tt>, respectively, <tt>INVOKE (f, t1, t2, ..., tN)</tt> is
 well formed (20.7.2) and, if <tt>R</tt> is not <tt>void</tt>, convertible to
 <tt>R</tt>.
-</blockquote>
+</p></blockquote>
 </blockquote>
 
 <note>
 2009-12-12 Daniel adds:
 </note>
 
-<blockquote>
+<blockquote><p>
 I don't like the reduction to "values" and prefer the alternative solution
 suggested using "lvalues when Ti is an lvalue-reference and rvalues otherwise".
 The reason why I dislike the shorter version is based on different usages of
@@ -274,16 +274,16 @@ expressions. E.g. <sref ref="[utility.arg.requirements]"/>/1 says "<tt>a</tt>,
 of all these parts is that <em>both</em> rvalues and lvalues are required to be
 supported, but this interpretation would violate the intention of the suggested
 fix of #815, if I correctly understand Jonathan's rationale.
-</blockquote>
+</p></blockquote>
 
 <note>
 2009-12-12 Howard adds:
 </note>
 
 <blockquote>
-<blockquote>
+<blockquote><p>
 "lvalues when Ti is an lvalue-reference and rvalues otherwise"
-</blockquote>
+</p></blockquote>
 <p>
 doesn't quite work here because the <tt>Ti</tt> aren't deduced.  They are
 specified by the <tt>function</tt> type.  <tt>Ti</tt> might be <tt>const

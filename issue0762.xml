@@ -15,17 +15,16 @@ In contrast to the proposed <tt>std::shared_ptr</tt>, <tt>std::unique_ptr</tt>
 does currently not support incomplete types, because it
 gives no explicit grant - thus instantiating <tt>unique_ptr</tt> with
 an incomplete pointee type <tt>T</tt> automatically belongs to
-undefined behaviour according to <sref ref="[res.on.functions]"/>/2, last
+undefined behaviour according to <sref ref="[res.on.functions]"/>&#47;2, last
 bullet. This is an unnecessary restriction and prevents
-many well-established patterns - like the bridge pattern -
-for <tt>std::unique_ptr</tt>.
+many well-established patterns - like the bridge pattern - for <tt>std::unique_ptr</tt>.
 </p>
 
 <note>
 Bellevue:
 </note>
 
-<blockquote>
+<blockquote><p>
 Move to open. The LWG is comfortable with the intent of allowing
 incomplete types and making <tt>unique_ptr</tt> more like <tt>shared_ptr</tt>, but we are
 not comfortable with the wording. The specification for <tt>unique_ptr</tt>
@@ -36,7 +35,7 @@ we need the same level of care here. We also aren't comfortable with the
 "part of the operational semantic" language; it's not used elsewhere in
 the standard, and it's not clear what it means. We need a volunteer to
 produce new wording.
-</blockquote>
+</p></blockquote>
 </discussion>
 
 <resolution>
@@ -50,7 +49,7 @@ The specialization <tt>unique_ptr&lt;T[]&gt;</tt> has some more restrictive cons
 type-completeness on <tt>T</tt> than <tt>unique_ptr&lt;T&gt;</tt>. The following proposed wordings
 try to cope with that. If the committee sees less usefulness on relaxed
 constraints on <tt>unique_ptr&lt;T[]&gt;</tt>, the alternative would be to stop this relaxation
-e.g. by adding one further bullet to <sref ref="[unique.ptr.runtime]"/>/1:
+e.g. by adding one further bullet to <sref ref="[unique.ptr.runtime]"/>&#47;1:
 "<tt>T</tt> shall be a complete type, if used as template argument of
 <tt>unique_ptr&lt;T[], D&gt;</tt>
 </p>
@@ -69,10 +68,10 @@ current specification of <tt>unique_ptr</tt>.
 <ol>
 <li>
 <p>
-In <sref ref="[unique.ptr]"/>/2 add as the last sentence to the existing para:
+In <sref ref="[unique.ptr]"/>&#47;2 add as the last sentence to the existing para:
 </p>
 
-<blockquote>
+<blockquote><p>
 The <tt>unique_ptr</tt> provides a semantics of strict ownership. A
 <tt>unique_ptr</tt> owns the object it holds a pointer to. A
 <tt>unique_ptr</tt> is not <tt>CopyConstructible</tt>, nor
@@ -83,12 +82,12 @@ uses of <tt>unique_ptr</tt> include providing exception safety for
 dynamically allcoated memory, passing ownership of dynamically allocated
 memory to a function, and returning dynamically allocated memory from a
 function. -- <i>end note</i> ]
-</blockquote>
+</p></blockquote>
 </li>
 
 <li>
 <p>
-<sref ref="[unique.ptr.single.ctor]"/>/1: No changes necessary.
+<sref ref="[unique.ptr.single.ctor]"/>&#47;1: No changes necessary.
 </p>
 
 <blockquote>
@@ -101,7 +100,7 @@ The current wording says just this.
 
 <li>
 <p>
-In <sref ref="[unique.ptr.single.ctor]"/>/5 change the requires clause to say:
+In <sref ref="[unique.ptr.single.ctor]"/>&#47;5 change the requires clause to say:
 </p>
 
 <blockquote>
@@ -137,7 +136,7 @@ again requires Completeness of <tt>Y</tt>, if <tt>!SameType&lt;X, Y&gt;</tt>
 
 <li>
 <p>
-Merge <sref ref="[unique.ptr.single.ctor]"/>/12+13 thereby removing the sentence
+Merge <sref ref="[unique.ptr.single.ctor]"/>&#47;12+13 thereby removing the sentence
 of 12, but transferring the "requires" to 13:
 </p>
 
@@ -155,12 +154,12 @@ pointer and the <tt>D</tt> deleter are well-formed and well-defined.
 </li>
 
 <li>
-<sref ref="[unique.ptr.single.ctor]"/>/17: No changes necessary.
+<sref ref="[unique.ptr.single.ctor]"/>&#47;17: No changes necessary.
 </li>
 <li>
-<p><sref ref="[unique.ptr.single.ctor]"/>/21:</p>
+<p><sref ref="[unique.ptr.single.ctor]"/>&#47;21:</p>
 
-<blockquote>
+<blockquote><p>
 <i>Requires:</i> If <tt>D</tt> is not a reference type, construction of
 the deleter <tt>D</tt> from an rvalue of type <tt>E</tt> shall be well
 formed and shall not throw an exception. If <tt>D</tt> is a reference
@@ -168,7 +167,7 @@ type, then <tt>E</tt> shall be the same type as <tt>D</tt> (diagnostic
 required). <tt>U*</tt> shall be implicitly convertible to <tt>T*</tt>.
 <ins>[<i>Note:</i> These requirements imply that <tt>T</tt> and <tt>U</tt>
 be complete types. <i>-- end note</i>]</ins>
-</blockquote>
+</p></blockquote>
 
 <note>
 N.B.: The current wording of 21 already implicitly guarantees that <tt>U</tt>
@@ -198,7 +197,7 @@ type-completeness of <tt>T</tt> is delegated to this expression.
 
 <li>
 <p>
-<sref ref="[unique.ptr.single.asgn]"/>/1: No changes necessary, except the
+<sref ref="[unique.ptr.single.asgn]"/>&#47;1: No changes necessary, except the
 current editorial issue, that "must shall" has to be changed to
 "shall", but this change is not a special part of this resolution.
 </p>
@@ -211,16 +210,16 @@ further requirements on the requirements of the effects clause
 
 <li>
 <p>
-<sref ref="[unique.ptr.single.asgn]"/>/6:
+<sref ref="[unique.ptr.single.asgn]"/>&#47;6:
 </p>
 
-<blockquote>
+<blockquote><p>
 <i>Requires:</i> Assignment of the deleter <tt>D</tt> from an rvalue
 <tt>D</tt> shall not throw an exception. <tt>U*</tt> shall be implicitly
 convertible to <tt>T*</tt>.
 <ins>[<i>Note:</i> These requirements imply that <tt>T</tt> and <tt>U</tt>
 be complete types. <i>-- end note</i>]</ins>
-</blockquote>
+</p></blockquote>
 
 <note>
 N.B.: The current wording of p. 6 already implicitly guarantees that
@@ -231,7 +230,7 @@ is true, see (6)+(8).
 
 <li>
 <p>
-<sref ref="[unique.ptr.single.asgn]"/>/11: No changes necessary.
+<sref ref="[unique.ptr.single.asgn]"/>&#47;11: No changes necessary.
 </p>
 <note>
 N.B.: Delegation to requirements of effects clause is sufficient.
@@ -239,32 +238,32 @@ N.B.: Delegation to requirements of effects clause is sufficient.
 </li>
 
 <li>
-<sref ref="[unique.ptr.single.observers]"/>/1+4+7+9+11:
+<sref ref="[unique.ptr.single.observers]"/>&#47;1+4+7+9+11:
 </li>
 
 <blockquote>
 <pre>T* operator-&gt;() const;</pre>
-<blockquote>
+<blockquote><p>
 <ins><i>Note:</i> Use typically requires <tt>T</tt> shall be complete. <i>-- end note</i>]</ins>
-</blockquote>
+</p></blockquote>
 </blockquote>
 
 <li>
-<sref ref="[unique.ptr.single.modifiers]"/>/1: No changes necessary.
+<sref ref="[unique.ptr.single.modifiers]"/>&#47;1: No changes necessary.
 </li>
 
 <li>
 <p>
-<sref ref="[unique.ptr.single.modifiers]"/>/4: Just before p. 4 add a new paragraph:
+<sref ref="[unique.ptr.single.modifiers]"/>&#47;4: Just before p. 4 add a new paragraph:
 </p>
-<blockquote>
+<blockquote><p>
 <i>Requires:</i> The expression <tt>get_deleter()(get())</tt> shall be well-formed,
 shall have well-defined behavior, and shall not throw exceptions.
-</blockquote>
+</p></blockquote>
 </li>
 
 <li>
-<sref ref="[unique.ptr.single.modifiers]"/>/7: No changes necessary.
+<sref ref="[unique.ptr.single.modifiers]"/>&#47;7: No changes necessary.
 </li>
 
 <li>

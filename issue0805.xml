@@ -22,7 +22,7 @@ namespace posix_error {
 </pre></blockquote>
 
 <p>
-should rather use the new scoped-enum  facility (<sref ref="[dcl.enum]"/>),
+should rather use the new scoped-enum facility (<sref ref="[dcl.enum]"/>),
 which would avoid the necessity for a new <tt>posix_error</tt>
 namespace, if I understand correctly.
 </p>
@@ -75,12 +75,12 @@ template &lt;&gt; struct is_error_condition_enum&lt;<del>posix_error::posix_errn
 Change System error support <sref ref="[syserr]"/> :
 </p>
 
-<blockquote>
+<blockquote><p>
 <del>The <tt>is_error_code_enum</tt> and <tt>is_error_condition_enum</tt> templates may be
 specialized for user-defined types to indicate that such a type is
 eligible for class <tt>error_code</tt> and class <tt>error_condition</tt> automatic
 conversions, respectively.</del>
-</blockquote>
+</p></blockquote>
 
 <p>
 Change System error support <sref ref="[syserr]"/> and its subsections:
@@ -107,12 +107,12 @@ change all instances of <tt>get_posix_category</tt> to <tt>get_generic_category<
 Change Error category objects <sref ref="[syserr.errcat.objects]"/>, paragraph 2:
 </p>
 
-<blockquote>
+<blockquote><p>
 <i>Remarks:</i> The object's <tt>default_error_condition</tt> and equivalent virtual
 functions shall behave as specified for the class <tt>error_category</tt>. The
 object's name virtual function shall return a pointer to the string
 <del>"POSIX"</del> <ins>"generic"</ins>.
-</blockquote>
+</p></blockquote>
 
 <p>
 Change <sref ref="[syserr.errcode.nonmembers]"/> Class <tt>error_code</tt> non-member functions as indicated:
@@ -123,9 +123,9 @@ Change <sref ref="[syserr.errcode.nonmembers]"/> Class <tt>error_code</tt> non-m
 error_code make_error_code(<del>posix_errno</del> <ins>errc</ins> e);
 </pre>
 
-<blockquote>
+<blockquote><p>
 <i>Returns:</i> <tt>error_code(<ins>static_cast&lt;int&gt;(</ins>e<ins>)</ins>, <del>posix</del><ins>generic</ins>_category)</tt>.
-</blockquote>
+</p></blockquote>
 </blockquote>
 
 <p>
@@ -137,9 +137,9 @@ Change <sref ref="[syserr.errcondition.nonmembers]"/> Class <tt>error_condition<
 error_condition make_error_condition(<del>posix_errno</del> <ins>errc</ins> e);
 </pre>
 
-<blockquote>
+<blockquote><p>
 <i>Returns:</i> <tt>error_condition(<ins>static_cast&lt;int&gt;(</ins>e<ins>)</ins>, <del>posix</del><ins>generic</ins>_category)</tt>.
-</blockquote>
+</p></blockquote>
 </blockquote>
 
 </resolution>

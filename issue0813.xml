@@ -18,8 +18,8 @@ and that a copy of a default-constructed <tt>shared_ptr</tt> is empty. Are any
 other <tt>shared_ptr</tt>s empty? For example, is <tt>shared_ptr((T*) 0)</tt> empty? What
 are the properties of an empty <tt>shared_ptr</tt>? We should either clarify this
 term or stop using it.
-<p>
 </p>
+<p>
 One reason it's not good enough to leave this term up to the reader's
 intuition is that, in light of
 <a href="http://www.open-std.org/JTC1/sc22/WG21/docs/papers/2007/n2351.htm">N2351</a>
@@ -49,9 +49,9 @@ completely specified by the last mutating operation on that instance.
 Give me an example and I'll tell you whether the <tt>shared_ptr</tt> is empty or
 not.
 </p>
-<blockquote>
+<blockquote><p>
 (*) If it isn't, this is a legitimate defect.
-</blockquote>
+</p></blockquote>
 </li>
 
 <li>
@@ -135,14 +135,14 @@ Alisdair's wording is fine.
 <p>
 Append the following sentance to <sref ref="[util.smartptr.shared]"/>
 </p>
-<blockquote>
+<blockquote><p>
 The <code>shared_ptr</code> class template stores a pointer, usually obtained
 via <code>new</code>. <code>shared_ptr</code> implements semantics of
 shared ownership; the last remaining owner of the pointer is responsible for
 destroying the object, or otherwise releasing  the resources associated with
 the stored pointer. <ins>A <code>shared_ptr</code> object that does not own
 a pointer is said to be <i>empty</i>.</ins>
-</blockquote>
+</p></blockquote>
 </resolution>
 
 </issue>

@@ -57,11 +57,11 @@ constraints.
 I'm then reading p2, where it says:
 </p>
 
-<blockquote>
+<blockquote><p>
 The <tt>memory_order_seq_cst</tt> operations that load a value are acquire operations
 on the affected locations. The <tt>memory_order_seq_cst</tt> operations that store a value
 are release operations on the affected locations.
-</blockquote>
+</p></blockquote>
 
 <p>
 That seems to imply that atomic reads only have acquire semantics.  If that
@@ -92,10 +92,10 @@ And why does <sref ref="[atomics.types.operations]"/> p9 for "load" say:
 </p>
 
 
-<blockquote>
+<blockquote><p>
 <i>Requires:</i> The order argument shall not be <tt>memory_order_acquire</tt>
 nor <tt>memory_order_acq_rel</tt>.
-</blockquote>
+</p></blockquote>
 
 <p>
 (Since this is exactly the same restriction as for "store", it seems to be a typo.)
@@ -105,12 +105,12 @@ nor <tt>memory_order_acq_rel</tt>.
 And then: <sref ref="[atomics.types.operations]"/> p12:
 </p>
 
-<blockquote>
+<blockquote><p>
 These operations are read-modify-write operations in the sense of the
 "synchronizes with" definition (<sref ref="[intro.multithread]"/>), so both such an operation and the
 evaluation that produced the input value synchronize with any evaluation
 that reads the updated value.
-</blockquote>
+</p></blockquote>
 
 <p>
 This is redundant with <sref ref="[intro.multithread]"/>, see above for the reasoning.

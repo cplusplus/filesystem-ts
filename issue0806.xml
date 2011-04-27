@@ -14,13 +14,13 @@
 <tt>void unique_ptr::reset(T* p = 0)</tt> is currently specified as:
 </p>
 
-<blockquote>
+<blockquote><p>
 <i>Effects:</i> If <tt>p == get()</tt> there are no effects. Otherwise <tt>get_deleter()(get())</tt>.
-</blockquote>
+</p></blockquote>
 
 <p>
 There are two problems with this. One, if <tt>get() == 0</tt> and <tt>p != 0</tt>, the
-deleter is called with a NULL pointer, and this is probably not what's
+deleter is called with a <tt>NULL</tt> pointer, and this is probably not what's
 intended (the destructor avoids calling the deleter with 0.)
 </p>
 
@@ -32,7 +32,7 @@ self-resets in 2001 and there were no complaints.
 </p>
 
 <p>
-One might think that self-resets are necessary for operator= to work; it's specified to perform
+One might think that self-resets are necessary for <tt>operator=</tt> to work; it's specified to perform
 </p>
 
 <blockquote><pre>
@@ -67,9 +67,9 @@ Change <sref ref="[unique.ptr.single.modifiers]"/>:
 <pre>
 void reset(T* p = 0);
 </pre>
-<blockquote>
+<blockquote><p>
 -4- <i>Effects:</i> If <tt><del>p ==</del> get()<ins> == 0</ins></tt> there are no effects. Otherwise <tt>get_deleter()(get())</tt>.
-</blockquote>
+</p></blockquote>
 </blockquote>
 
 <p>

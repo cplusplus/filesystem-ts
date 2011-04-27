@@ -4,7 +4,7 @@
 ] >
 
 <issue num="788" status="WP">
-<title>ambiguity in [istream.iterator]</title>
+<title>Ambiguity in [istream.iterator]</title>
 <section><sref ref="[istream.iterator]"/></section>
 <submitter>Martin Sebor</submitter>
 <date>6 Feb 2008</date>
@@ -16,7 +16,7 @@
 <blockquote>
 <p>
 It is not clear what the initial state of an <tt>istream_iterator</tt> should be. Is
-_value_ initialized by reading the stream, or default/value initialized? If
+_value_ initialized by reading the stream, or default&#47;value initialized? If
 it is initialized by reading the stream, what happens if the initialization
 is deferred until first dereference, when ideally the iterator value should
 have been that of an end-of-stream iterator which is not safely
@@ -35,7 +35,7 @@ end-of-stream iterator is a) ambiguous and b) out of date WRT
 issue <iref ref="468"/>:
 </p>
 
-<blockquote>
+<blockquote><p>
 <tt>istream_iterator</tt> reads (using <tt>operator&gt;&gt;</tt>) successive elements from the
 input stream for which it was constructed. After it is constructed, and
 every time <tt>++</tt> is used, the iterator reads and stores a value of <tt>T</tt>. If
@@ -51,7 +51,7 @@ store things into istream iterators. The main peculiarity of the istream
 iterators is the fact that <tt>++</tt> operators are not equality preserving,
 that is, <tt>i == j</tt> does not guarantee at all that <tt>++i == ++j</tt>. Every time <tt>++</tt>
 is used a new value is read.
-</blockquote>
+</p></blockquote>
 
 <p>
 <tt>istream::operator void*()</tt> returns null if <tt>istream::fail()</tt> is <tt>true</tt>,
@@ -72,10 +72,10 @@ Also I would prefer to be explicit about calling <tt>fail()</tt> here
 Summit:
 </note>
 
-<blockquote>
+<blockquote><p>
 Moved from Ready to Open for the purposes of using this issue to address NB UK 287.
 Martin to handle.
-</blockquote>
+</p></blockquote>
 
 <note>
 2009-07 Frankfurt:
@@ -97,7 +97,7 @@ Move to Ready.
 Change <sref ref="[istream.iterator]"/>/1:
 </p>
 
-<blockquote>
+<blockquote><p>
 <tt>istream_iterator</tt> reads (using <tt>operator&gt;&gt;</tt>) successive elements from the
 input stream for which it was constructed. After it is constructed, and
 every time <tt>++</tt> is used, the iterator reads and stores a value of <tt>T</tt>. If
@@ -114,7 +114,7 @@ store things into istream iterators. The main peculiarity of the istream
 iterators is the fact that <tt>++</tt> operators are not equality preserving,
 that is, <tt>i == j</tt> does not guarantee at all that <tt>++i == ++j</tt>. Every time <tt>++</tt>
 is used a new value is read.
-</blockquote>
+</p></blockquote>
 </resolution>
 
 </issue>

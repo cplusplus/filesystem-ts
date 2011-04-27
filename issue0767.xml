@@ -28,12 +28,12 @@ int main()
 now fails with the following error message:
 </p>
 
-<blockquote>
+<blockquote><p>
 .../include/c++/4.3.0/ext/new_allocator.h: In member function 'void __gnu_cxx::new_allocator&lt;_Tp&gt;::construct(_Tp*, _Args&amp;&amp; ...) [with _Args = int, _Tp = char*]':
 .../include/c++/4.3.0/bits/stl_vector.h:707:   instantiated from 'void std::vector&lt;_Tp, _Alloc&gt;::push_back(_Args&amp;&amp; ...) [with _Args = int, _Tp = char*, _Alloc = std::allocator&lt;char*&gt;]'
 test.cpp:6:   instantiated from here
 .../include/c++/4.3.0/ext/new_allocator.h:114: error: invalid conversion from 'int' to 'char*'
-</blockquote>
+</p></blockquote>
 
 <p>
 As far as I know, g++ follows the current draft here.
@@ -76,7 +76,7 @@ Bellevue:
 
 <blockquote>
 <p>
-Motivation is to handle the old-style int-zero-valued NULL pointers.
+Motivation is to handle the old-style int-zero-valued <tt>NULL</tt> pointers.
 Problem: this solution requires concepts in some cases, which some users
 will be slow to adopt. Some discussion of alternatives involving
 prohibiting variadic forms and additional library-implementation
@@ -85,18 +85,18 @@ complexity.
 <p>
 Discussion of "perfect world" solutions, the only such solution put
 forward being to retroactively prohibit use of the integer zero for a
-NULL pointer. This approach was deemed unacceptable given the large
-bodies of pre-existing code that do use integer zero for a NULL pointer.
+<tt>NULL</tt> pointer. This approach was deemed unacceptable given the large
+bodies of pre-existing code that do use integer zero for a <tt>NULL</tt> pointer.
 </p>
 <p>
 Another approach is to change the member names. Yet another approach is
 to forbid the extension in absence of concepts.
 </p>
 <p>
-Resolution: These issues (<iref ref="756"/>, <iref ref="767"/>, <iref ref="760"/>, <iref ref="763"/>) will be subsumed into a
-paper to be produced by Alan Talbot in time for review at the 2008
-meeting in France. Once this paper is produced, these issues will be
-moved to <del>NAD</del><ins>Resolved</ins>.
+Resolution: These issues (<iref ref="756"/>, <iref ref="767"/>, <iref ref="760"/>, 
+<iref ref="763"/>) will be subsumed into a paper to be produced by Alan Talbot 
+in time for review at the 2008 meeting in France. Once this paper is produced, 
+these issues will be moved to <del>NAD</del><ins>Resolved</ins>.
 </p>
 </blockquote>
 

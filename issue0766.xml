@@ -31,25 +31,24 @@ additional requirements:
 <p>
 <sref ref="[deque.modifiers]"/> and <sref ref="[vector.modifiers]"/> offer
 additional guarantees for <tt>deque</tt>/<tt>vector insert()</tt> and
-<tt>erase()</tt> members. However, <sref
-ref="[container.requirements]"/>p10 does not mention <sref
-ref="[unord.req.except]"/> that specifies exception safety guarantees
-for unordered containers. In addition,  <sref
-ref="[unord.req.except]"/>p1 offers the following guaratee for
+<tt>erase()</tt> members. However, <sref ref="[container.requirements]"/> p10 
+does not mention <sref ref="[unord.req.except]"/> that specifies exception 
+safety guarantees for unordered containers. In addition,  
+<sref ref="[unord.req.except]"/> p1 offers the following guaratee for
 <tt>erase()</tt>:
 </p>
 
-<blockquote>
+<blockquote><p>
 No <tt>erase()</tt> function throws an exception unless that exception
 is thrown by the container's Hash or Pred object (if any).
-</blockquote>
+</p></blockquote>
 
 <p>
 Summary:
 </p>
 
 <p>
-According to <sref ref="[container.requirements]"/>p10 no
+According to <sref ref="[container.requirements]"/> p10 no
 <tt>erase()</tt> function should throw an exception unless otherwise
 specified. Although does not explicitly mention <sref
 ref="[unord.req.except]"/>, this section offers additional guarantees
@@ -96,8 +95,8 @@ exception or swallow it, leaving the object registered.
 
 <resolution>
 <p>
-Create a new sub-section of <sref ref="[associative.reqmts]"/> (perhaps [associative.req.except]) titled "Exception
-safety guarantees".
+Create a new sub-section of <sref ref="[associative.reqmts]"/> (perhaps 
+[associative.req.except]) titled "Exception safety guarantees".
 </p>
 
 <blockquote>
@@ -124,27 +123,27 @@ assignment operator of the container's Pred object (if any).
 Change <sref ref="[unord.req.except]"/>p1:
 </p>
 
-<blockquote>
+<blockquote><p>
 For unordered associative containers, no <tt>clear()</tt> function
 throws an exception. <del>No</del> <tt>erase(<ins>k</ins>)</tt>
 <del>function</del> <ins>does not</ins> throw<del>s</del> an exception
 unless that exception is thrown by the container's Hash or Pred object
 (if any).
-</blockquote>
+</p></blockquote>
 
 <p>
-Change <sref ref="[container.requirements]"/>p10 to add references to new sections:
+Change <sref ref="[container.requirements]"/> p10 to add references to new sections:
 </p>
 
-<blockquote>
+<blockquote><p>
 Unless otherwise specified (see [deque.modifiers]<ins>,</ins>
 <del>and</del> [vector.modifiers]<ins>, [associative.req.except],
 [unord.req.except]</ins>) all container types defined in this clause meet
 the following additional requirements:
-</blockquote>
+</p></blockquote>
 
 <p>
-Change <sref ref="[container.requirements]"/>p10 referring to <tt>swap</tt>:
+Change <sref ref="[container.requirements]"/> p10 referring to <tt>swap</tt>:
 </p>
 
 <blockquote>

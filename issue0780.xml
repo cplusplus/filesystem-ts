@@ -4,7 +4,7 @@
 ] >
 
 <issue num="780" status="WP">
-<title><tt>std::merge()</tt> specification incorrect/insufficient</title>
+<title><tt>std::merge()</tt> specification incorrect&#47;insufficient</title>
 <section><sref ref="[alg.merge]"/></section>
 <submitter>Daniel Kr&uuml;gler</submitter>
 <date>25 Jan 2008</date>
@@ -52,13 +52,13 @@ Post Summit Alisdair adds:
 <p>
 Suggest:
 </p>
-<blockquote>
+<blockquote><p>
 (where <tt>last</tt> is equal to <tt>next(result, distance(first1, last1) +
 distance(first2, last2))</tt>, such that resulting range will be sorted in
 non-decreasing order; that is, for every iterator <tt>i</tt> in <tt>[result,last)</tt> other
 than <tt>result</tt>, the condition <tt>*i &lt; *prev(i)</tt> or, respectively, <tt>comp(*i,
 *prev(i))</tt> will be <tt>false</tt>.
-</blockquote>
+</p></blockquote>
 
 <p>
 Note that this might still not be technically accurate in the case of
@@ -71,18 +71,18 @@ system (<iref ref="1011"/>).
 Post Summit Daniel adds:
 </note>
 
-<blockquote>
+<blockquote><p>
 If we want to use <tt>prev</tt> and <tt>next</tt> here (Note: <tt>merge</tt>
-is sufficiently satisfied with <tt>InputIterator</tt>) we should instead *add* more to
-<sref ref="[algorithms]"/>/6, but I can currently not propose any good wording for this.
-</blockquote>
+is sufficiently satisfied with <tt>InputIterator</tt>) we should instead <em>add</em> more to
+<sref ref="[algorithms]"/> p. 6, but I can currently not propose any good wording for this.
+</p></blockquote>
 
 <note>
 Batavia (2009-05):
 </note>
 <blockquote>
 <p>
-Pete points out the existing wording in [algorithms]/4
+Pete points out the existing wording in [algorithms] p. 4
 that permits the use of + in algorithm specifications.
 </p>
 <p>
@@ -97,9 +97,9 @@ Move to Review.
 2009-07 Frankfurt:
 </note>
 
-<blockquote>
+<blockquote><p>
 Move to Ready.
-</blockquote>
+</p></blockquote>
 
 <note>
 2009-08-23 Daniel reopens:
@@ -110,10 +110,10 @@ Move to Ready.
 The proposed wording must be rephrased, because the part
 </p>
 
-<blockquote>
+<blockquote><p>
 for every iterator <tt>i</tt> in <tt>[result,last)</tt> other than <tt>result</tt>, the condition
 <tt>*i &lt; *(i - 1)</tt> or, respectively, <tt>comp(*i, *(i - 1))</tt> will be <tt>false</tt>"
-</blockquote>
+</p></blockquote>
 
 <p>
 isn't meaningful, because the range <tt>[result,last)</tt> is that of a pure
@@ -206,7 +206,7 @@ in <tt>[first,last)</tt> other than <tt>first</tt>, the condition <tt>*i &lt;
 </blockquote>
 
 <p>
-Change <sref ref="[alg.merge]"/>/6+7 as indicated <i>[This ensures harmonization
+Change <sref ref="[alg.merge]"/> p. 6+7 as indicated <i>[This ensures harmonization
 between <tt>inplace_merge</tt> and <tt>merge</tt>]</i>
 </p>
 

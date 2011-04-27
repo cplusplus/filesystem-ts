@@ -4,7 +4,7 @@
 ] >
 
 <issue num="774" status="WP">
-<title>Member swap undefined for most containers</title>
+<title>Member <tt>swap</tt> undefined for most containers</title>
 <section><sref ref="[containers]"/></section>
 <submitter>Alisdair Meredith</submitter>
 <date>14 Jan 2008</date>
@@ -61,27 +61,27 @@ unordered_set
 <p>
 Suggested resolution:
 </p>
-<blockquote>
+<blockquote><p>
 Provide a definition for each of the affected containers...
-</blockquote>
+</p></blockquote>
 
 <note>
 Bellevue:
 </note>
 
-<blockquote>
+<blockquote><p>
 Move to Open and ask Alisdair to provide wording.
-</blockquote>
+</p></blockquote>
 
 <note>
 2009-07 Frankfurt:
 </note>
 
-<blockquote>
+<blockquote><p>
 Daniel to provide wording.
 <a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2008/n2590.pdf">N2590</a>
 is no longer applicable.
-</blockquote>
+</p></blockquote>
 
 <note>
 2009-07-28 Daniel provided wording.
@@ -113,31 +113,30 @@ hash functions in containers are swapped via unqualified free
 2009-09-30 Daniel adds:
 </note>
 
-<blockquote>
-The outcome of this issue should be considered with the outcome of <iref
-ref="1198"/> both in style and in content (e.g. bullet 9 suggests to
-define the semantic of <tt>void
-priority_queue::swap(priority_queue&amp;)</tt> in terms of the member
-<tt>swap</tt> of the container).
-</blockquote>
+<blockquote><p>
+The outcome of this issue should be considered with the outcome of 
+<iref ref="1198"/> both in style and in content (e.g. bullet 9 suggests to
+define the semantic of <tt>void priority_queue::swap(priority_queue&amp;)</tt> 
+in terms of the member <tt>swap</tt> of the container).
+</p></blockquote>
 
 <note>
 2009-10 Santa Cruz:
 </note>
 
-<blockquote>
+<blockquote><p>
 Looked at, but took no action on as it overlaps too much with
 <a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2009/n2982.pdf">N2982</a>.
 Waiting for a new draft WP.
-</blockquote>
+</p></blockquote>
 
 <note>
 2009-10 Santa Cruz:
 </note>
 
-<blockquote>
+<blockquote><p>
 Leave as open. Pablo to provide wording.
-</blockquote>
+</p></blockquote>
 
 <note>
 2009-10-26 Pablo updated wording.  Here is the wording he replaced:
@@ -180,12 +179,12 @@ swap does never propagate an exception
 Change <sref ref="[associative.reqmts.except]"/>/3 as indicated:
 </p>
 
-<blockquote>
+<blockquote><p>
 For associative containers, no <tt>swap</tt> function throws an exception unless that
 exception is thrown by the <del>copy constructor or copy assignment
 operator</del>
 <ins><tt>swap</tt></ins> of the container's <tt>Pred</tt> object<ins>s</ins><del> (if any)</del>.
-</blockquote>
+</p></blockquote>
 </li>
 
 <li>
@@ -193,14 +192,14 @@ operator</del>
 Change <sref ref="[unord.req.except]"/>/3 as indicated:
 </p>
 
-<blockquote>
+<blockquote><p>
 For unordered associative containers, no <tt>swap</tt> function throws an
 exception unless
 that exception is thrown by the <del>copy constructor or copy
 assignment operator</del>
 <ins><tt>swap</tt></ins> of the container's <tt>Hash</tt> or <tt>Pred</tt> object<ins>s,
 respectively</ins><del> (if any)</del>.
-</blockquote>
+</p></blockquote>
 </li>
 
 <li>
@@ -208,11 +207,11 @@ respectively</ins><del> (if any)</del>.
 Insert a new paragraph just after <sref ref="[sequences]"/>/1:
 </p>
 
-<blockquote>
+<blockquote><p>
 <ins>In addition to being available via inclusion of the <tt>&lt;algorithm&gt;</tt> header,
 the <tt>swap</tt> function templates in <sref ref="[alg.swap]"/> are also available when the
 header <tt>&lt;queue&gt;</tt> is included.</ins>
-</blockquote>
+</p></blockquote>
 
 <note>
 There is a new issue in process that will suggest a minimum header for <tt>swap</tt>
@@ -230,17 +229,17 @@ Add one further clause at the end of <sref ref="[array.special]"/>:
 contradict the
 general contract of <sref ref="[container.requirements.general]"/> p. 10 b. 5</note>
 
-<blockquote>
+<blockquote><p>
 <ins><i>Throws:</i> Nothing, unless one of the element-wise <tt>swap</tt> calls throws
 an exception.</ins>
-</blockquote>
+</p></blockquote>
 </li>
 
 <li>
 <ol style="list-style-type:lower-alpha">
 <li>
 <p>
-In <sref ref="[deque]"/>, class template deque synopsis change as indicated:
+In <sref ref="[deque]"/>, class template <tt>deque</tt> synopsis change as indicated:
 </p>
 <blockquote><pre>
 void swap(deque<del>&lt;T,Alloc&gt;</del>&amp;);
@@ -273,7 +272,7 @@ with that of <tt>x</tt>.</ins>
 <ol style="list-style-type:lower-alpha">
 <li>
 <p>
-In <sref ref="[forwardlist]"/>, class template <tt>forward_list</tt> synposis change as indicated:
+In <sref ref="[forwardlist]"/>, class template <tt>forward_list</tt> synopsis change as indicated:
 </p>
 
 <blockquote><pre>
@@ -355,8 +354,7 @@ At the end of <sref ref="[priqueue.members]"/> add a new prototype description:
 
 <note>
 This requirement is added to ensure that even a user defined <tt>swap</tt>
-which is found by
-ADL for <tt>Compare</tt> satisfies the <tt>Swappable</tt> requirements
+which is found by ADL for <tt>Compare</tt> satisfies the <tt>Swappable</tt> requirements
 </note>
 
 <p>
@@ -387,18 +385,17 @@ void swap(vector<del>&lt;T,Allocator&gt;</del>&amp;);
 
 <li>
 <p>
-Change <sref ref="[vector.capacity]"/>/8 as indicated:
+Change <sref ref="[vector.capacity]"/> p. 8 as indicated:
 </p>
 
 <blockquote><pre>
 void swap(vector<del>&lt;T,Allocator&gt;</del>&amp; x);
 </pre>
 
-<blockquote>
+<blockquote><p>
 <i>Effects:</i> Exchanges the contents and <tt>capacity()</tt> <ins>and swaps the
-allocators</ins>
-of <tt>*this</tt> with that of <tt>x</tt>.
-</blockquote>
+allocators</ins> of <tt>*this</tt> with that of <tt>x</tt>.
+</p></blockquote>
 </blockquote>
 </li>
 </ol>
@@ -409,11 +406,11 @@ of <tt>*this</tt> with that of <tt>x</tt>.
 Insert a new paragraph just before <sref ref="[associative]"/>/1:
 </p>
 
-<blockquote>
+<blockquote><p>
 <ins>In addition to being available via inclusion of the <tt>&lt;algorithm&gt;</tt> header,
 the <tt>swap</tt> function templates in <sref ref="[alg.swap]"/> are also available when any of the
 headers <tt>&lt;map&gt;</tt> or <tt>&lt;set&gt;</tt> are included.</ins>
-</blockquote>
+</p></blockquote>
 </li>
 
 <li>
@@ -593,14 +590,14 @@ of <tt>*this</tt> and <tt>x</tt>.</ins>
 
 <li>
 <p>
-Insert a new paragraph just before <sref ref="[unord]"/>/1:
+Insert a new paragraph just before <sref ref="[unord]"/> p. 1:
 </p>
 
-<blockquote>
+<blockquote><p>
 <ins>In addition to being available via inclusion of the <tt>&lt;algorithm&gt;</tt> header,
 the <tt>swap</tt> function templates in <sref ref="[alg.swap]"/> are also available when any of the
 headers <tt>&lt;unordered_map&gt;</tt> or <tt>&lt;unordered_set&gt;</tt> are included.</ins>
-</blockquote>
+</p></blockquote>
 
 </li>
 
@@ -627,8 +624,7 @@ requirements
 </note>
 
 <p>
-<ins><i>Effects:</i> Exchanges the contents and hash policy and swaps the
-allocators of <tt>*this</tt>
+<ins><i>Effects:</i> Exchanges the contents and hash policy and swaps the allocators of <tt>*this</tt> 
 with that of <tt>x</tt>, followed by an unqualified <tt>swap</tt> of the <tt>Pred</tt> objects
 and an unqualified <tt>swap</tt> of the <tt>Hash</tt> objects of <tt>*this</tt> and <tt>x</tt>.</ins>
 </p>
@@ -750,8 +746,7 @@ and an unqualified <tt>swap</tt> of the <tt>Hash</tt> objects of <tt>*this</tt> 
 <note>
 This resolution is based on the September 2009 WP,
 <a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2009/n2960.pdf">N2960</a>,
-except that it
-assumes that
+except that it assumes that
 <a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2009/n2982.pdf">N2982</a>
 and issues <iref ref="883"/> and <iref ref="1232"/> have already been applied.  Note in
 particular that Table 91 in
@@ -762,8 +757,9 @@ removed the old Table 90.  This resolution also addresses issue <iref ref="431"/
 </note>
 <p>
 In <sref ref="[container.requirements.general]"/>, replace the a.swap(b) row in table 90,
-"container requirements" (was table 91 before the application of <a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2009/n2982.pdf">N2982</a> to the
-WP):
+"container requirements" (was table 91 before the application of 
+<a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2009/n2982.pdf">N2982</a> 
+to the WP):
 </p>
 <blockquote>
 <table border="1">
@@ -786,8 +782,9 @@ WP):
 <p>
 Modify the notes immediately following Table 90 in
 <sref ref="[container.requirements.general]"/> as follows (The wording below is after the
-application of <a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2009/n2982.pdf">N2982</a> to <a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2009/n2960.pdf">N2960</a>.  The editor might also want to combine Notes
-A and B into one.):
+application of <a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2009/n2982.pdf">N2982</a> 
+to <a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2009/n2960.pdf">N2960</a>.  The 
+editor might also want to combine Notes A and B into one.):
 </p>
 <blockquote><p>
 Notes: the algorithms<del> swap(),</del> equal() and lexicographical_compare()

@@ -17,7 +17,8 @@ I be &gt;= 0.  There is a much easier way to do this - declare I as
 <tt>unsigned</tt>.
 </p>
 <p>
-In fact the proposal is to use <code>std::size_t</code>, matching the type used in the <tt>tuple_size</tt> API.
+In fact the proposal is to use <code>std::size_t</code>, matching the 
+type used in the <tt>tuple_size</tt> API.
 </p>
 <p>
 A second suggestion is that it is hard to imagine an API that deduces
@@ -115,8 +116,9 @@ Update <strong><sref ref="[tuple.elem]"/> Element access</strong>
 template &lt;<del>int</del><ins>size_t</ins> I, class... types &gt;
 typename tuple_element&lt;I, tuple&lt;Types...&gt; &gt;::type& get(tuple&lt;Types...&gt;&amp; t);
 </pre>
-1 <em>Requires:</em> <code><del>0 &lt;= I and </del>I &lt; sizeof...(Types)</code>. The program is ill-formed if <code>I</code> is out of bounds.
 <p>
+1 <em>Requires:</em> <code><del>0 &lt;= I and </del>I &lt; sizeof...(Types)</code>. The program is ill-formed if <code>I</code> is out of bounds.
+<p/>
 2 <em>Returns:</em> A reference to the <code>I</code>th element of <code>t</code>, where indexing is zero-based.
 </p>
 <ins><em>Throws:</em> Nothing.</ins>
