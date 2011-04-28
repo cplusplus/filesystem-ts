@@ -12,7 +12,7 @@
 <discussion>
 <p>
 The atomic classes (and class templates) are required to support aggregate
-initialization (<sref ref="[atomics.types.integral]"/>p2 &#47; <sref ref="[atomics.types.address]"/>p1)
+initialization (<sref ref="[atomics.types.integral]"/> p. 2 &#47; <sref ref="[atomics.types.address]"/> p. 1)
 yet also have user declared constructors, so cannot be aggregates.
 </p>
 <p>
@@ -85,7 +85,7 @@ typedef struct atomic_<var>itype</var> {
 edit <sref ref="[atomics.types.integral]"/> paragraph 2 as follows.
 </p>
 
-<blockquote>
+<blockquote><p>
 The atomic integral types shall have standard layout.
 They shall each have a trivial default constructor,
 a constexpr <del>explicit</del> value constructor,
@@ -93,7 +93,7 @@ a deleted copy constructor,
 a deleted copy assignment operator,
 and a trivial destructor.
 They shall each support aggregate initialization syntax.
-</blockquote>
+</p></blockquote>
 
 <p>
 within the synopsis of <sref ref="[atomics.types.address]"/> edit as follows.
@@ -111,7 +111,7 @@ typedef struct atomic_address {
 edit <sref ref="[atomics.types.address]"/> paragraph 1 as follows.
 </p>
 
-<blockquote>
+<blockquote><p>
 The type <code>atomic_address</code> shall have standard layout.
 It shall have a trivial default constructor,
 a constexpr <del>explicit</del> value constructor,
@@ -119,7 +119,7 @@ a deleted copy constructor,
 a deleted copy assignment operator,
 and a trivial destructor.
 It shall support aggregate initialization syntax.
-</blockquote>
+</p></blockquote>
 
 <p>
 within the synopsis of <sref ref="[atomics.types.generic]"/> edit as follows.
@@ -145,12 +145,12 @@ template &lt;&gt; struct atomic&lt;T*&gt; : atomic_address {
 edit <sref ref="[atomics.types.generic]"/> paragraph 2 as follows.
 </p>
 
-<blockquote>
+<blockquote><p>
 Specializations of the <code>atomic</code> template
 shall have a deleted copy constructor,
 a deleted copy assignment operator,
 and a constexpr <del>explicit</del> value constructor.
-</blockquote>
+</p></blockquote>
 
 </resolution>
 

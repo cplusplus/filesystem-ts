@@ -4,7 +4,7 @@
 ] >
 
 <issue num="868" status="WP">
-<title>default construction and value-initialization</title>
+<title>Default construction and value-initialization</title>
 <section><sref ref="[containers]"/></section>
 <submitter>Alberto Ganesh Barbati</submitter>
 <date>22 Jul 2008</date>
@@ -115,16 +115,16 @@ of
 <ol>
 <li>
 <p>
-<sref ref="[string.require]"/>/2:
+<sref ref="[string.require]"/> p. 2:
 </p>
 
-<blockquote>
+<blockquote><p>
 "[..] The <tt>Allocator</tt> object used shall be a copy of the <tt>Allocator></tt>
 object passed to the <tt>basic_string</tt> object's
 constructor or, if the constructor does not take an <tt>Allocator</tt>
 argument, a copy of a default-constructed
 <tt>Allocator</tt> object."
-</blockquote>
+</p></blockquote>
 </li>
 
 <li>
@@ -132,20 +132,17 @@ argument, a copy of a default-constructed
 <a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2008/n2723.pdf">N2723</a>,
 <sref ref="[rand.req.eng]"/>, Table 109, expression "<tt>T()</tt>":
 </p>
-<blockquote>
-Pre-/post-condition: "Creates an engine with the same initial state as
+<blockquote><p>
+Pre-&#47;post-condition: "Creates an engine with the same initial state as
 all other default-constructed engines of type <tt>X</tt>."
-</blockquote>
+</p></blockquote>
 
 <p>
-as well as in <sref ref="[rand.predef]"/>/1-9 (<a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2009/n2914.pdf">N2914</a>), <sref
-ref="[rand.util.seedseq]"/>/3, <sref ref="[istream.cons]"/>/3, <sref
-ref="[ostream.cons]"/>/9 (<a
-href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2009/n2914.pdf"
->N2914</a>), <sref ref="[re.grammar]"/>/2, <sref
-ref="[thread.thread.assign]"/>/1 (<a
-href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2009/n2914.pdf"
->N2914</a>),
+as well as in <sref ref="[rand.predef]"/>/1-9 (<a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2009/n2914.pdf">N2914</a>), 
+<sref ref="[rand.util.seedseq]"/>/3, <sref ref="[istream.cons]"/>/3, 
+<sref ref="[ostream.cons]"/>/9 (<a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2009/n2914.pdf">N2914</a>), 
+<sref ref="[re.grammar]"/>/2, <sref ref="[thread.thread.assign]"/>/1 
+(<a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2009/n2914.pdf">N2914</a>),
 </p>
 <note>
 Candidates for the "the expression "default constructed" need not be
@@ -224,17 +221,17 @@ confusing enough without supporting further ill-defined terms.
 2009-10 Santa Cruz:
 </note>
 
-<blockquote>
+<blockquote><p>
 Move to Ready.
-</blockquote>
+</p></blockquote>
 
 <note>
 2010 Pittsburgh:
 </note>
 
-<blockquote>
+<blockquote><p>
 Moved to review in order to enable conflict resolution with <iref ref="704"/>.
-</blockquote>
+</p></blockquote>
 
 <note>
 2010-03-26 Daniel harmonized the wording with the upcoming FCD.
@@ -245,9 +242,9 @@ Moved to review in order to enable conflict resolution with <iref ref="704"/>.
 2010 Rapperswil:
 </note>
 
-<blockquote>
+<blockquote><p>
 Move to Ready.
-</blockquote>
+</p></blockquote>
 
 <note>
 Adopted at 2010-11 Batavia
@@ -260,101 +257,98 @@ Adopted at 2010-11 Batavia
 Change <sref ref="[utility.arg.requirements]"/> para 2:
 </p>
 
-<blockquote>
+<blockquote><p>
 2 In general, a default constructor is
 not required. Certain container class member function signatures
-specify <del>the default constructor</del><ins>T()</ins>
-as a default argument. T() shall be a well-defined expression (8.5)
+specify <del>the default constructor</del><ins><tt>T()</tt></ins>
+as a default argument. <tt>T()</tt> shall be a well-defined expression (8.5)
 if one of those signatures is called using the default argument
 (8.3.6).
-</blockquote>
+</p></blockquote>
 
 <p>
 Change <sref ref="[deque.cons]"/> para 3:
 </p>
 
-<blockquote>
-3 <i>Effects:</i> Constructs a deque with n
+<blockquote><p>
+3 <i>Effects:</i> Constructs a deque with <tt>n</tt>
 <del>default constructed</del><ins>value-initialized</ins>
 elements. 
-</blockquote>
+</p></blockquote>
 
 <p>
 Change <sref ref="[deque.capacity]"/> para 1:
 </p>
 
-<blockquote>
-1 <i>Effects:</i> If sz &lt; size(), equivalent
-to erase(begin() + sz, end());. If size() &lt; sz, appends sz -
-size() <del>default
-constructed</del><ins>value-initialized</ins>
+<blockquote><p>
+1 <i>Effects:</i> If <tt>sz &lt; size()</tt>, equivalent
+to <tt>erase(begin() + sz, end());</tt>. If <tt>size() &lt; sz</tt>, 
+appends <tt>sz - size()</tt> <del>default constructed</del><ins>value-initialized</ins>
 elements to the sequence.
-</blockquote>
+</p></blockquote>
 
 <p>
 Change <sref ref="[forwardlist.cons]"/> para 3:
 </p>
 
-<blockquote>
-3 <i>Effects:</i> Constructs a forward_list object with n <del>default
-constructed</del><ins>value-initialized</ins>
-elements.
-</blockquote>
+<blockquote><p>
+3 <i>Effects:</i> Constructs a <tt>forward_list</tt> object with <tt>n</tt> 
+<del>default constructed</del><ins>value-initialized</ins> elements.
+</p></blockquote>
 
 <p>
 Change <sref ref="[forwardlist.modifiers]"/> para 22:
 </p>
 
-<blockquote>
+<blockquote><p>
 22 <i>Effects:</i> [...] For the first signature
 the inserted elements are <del>default
 constructed</del><ins>value-initialized</ins>,
-and for the second signature they are copies of c.
-</blockquote>
+and for the second signature they are copies of <tt>c</tt>.
+</p></blockquote>
 
 <p>
 Change <sref ref="[list.cons]"/> para 3:
 </p>
 
-<blockquote>
-3 <i>Effects:</i> Constructs a list with n <del>default
+<blockquote><p>
+3 <i>Effects:</i> Constructs a <tt>list</tt> with <tt>n</tt> <del>default
 constructed</del><ins>value-initialized</ins>
 elements. 
-</blockquote>
+</p></blockquote>
 
 <p>
 Change <sref ref="[list.capacity]"/> para 1:
 </p>
 
-<blockquote>
-1 <i>Effects:</i> If sz &lt; size(), equivalent
-to list&lt;T&gt;::iterator it = begin(); advance(it, sz); erase(it,
-end());. If size() &lt; sz, appends sz - size() <del>default
-constructed</del><ins>value-initialized</ins>
-elements to the sequence.
-</blockquote>
+<blockquote><p>
+1 <i>Effects:</i> If <tt>sz &lt; size()</tt>, equivalent
+to <tt>list&lt;T&gt;::iterator it = begin(); advance(it, sz); erase(it,
+end());</tt>. If <tt>size() &lt; sz</tt>, <tt>appends sz - size()</tt> 
+<del>default constructed</del><ins>value-initialized</ins> elements to 
+the sequence.
+</p></blockquote>
 
 <p>
 Change <sref ref="[vector.cons]"/> para 3:
 </p>
 
-<blockquote>
-3 <i>Effects:</i> Constructs a vector with n
+<blockquote><p>
+3 <i>Effects:</i> Constructs a <tt>vector</tt> with <tt>n</tt>
 <del>default constructed</del><ins>value-initialized</ins>
 elements. 
-</blockquote>
+</p></blockquote>
 
 <p>
 Change <sref ref="[vector.capacity]"/> para 9:
 </p>
 
-<blockquote>
-9 <i>Effects:</i> If sz &lt; size(), equivalent
-to erase(begin() + sz, end());. If size() &lt; sz, appends sz -
-size() <del>default
-constructed</del><ins>value-initialized</ins>
+<blockquote><p>
+9 <i>Effects:</i> If <tt>sz &lt; size()</tt>, equivalent
+to <tt>erase(begin() + sz, end());</tt>. If <tt>size() &lt; sz</tt>, appends 
+<tt>sz - size()</tt> <del>default constructed</del><ins>value-initialized</ins>
 elements to the sequence.
-</blockquote>
+</p></blockquote>
 
 </resolution>
 

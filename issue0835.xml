@@ -4,7 +4,7 @@
 ] >
 
 <issue num="835" status="WP">
-   <title>tying two streams together (correction to DR 581)</title>
+   <title>Tying two streams together (correction to DR 581)</title>
    <section><sref ref="[basic.ios.members]"/></section>
    <submitter>Martin Sebor</submitter>
    <date>17 May 2008</date>
@@ -55,10 +55,10 @@ int main ()
 <note>
 Batavia (2009-05):
 </note>
-<blockquote>
+<blockquote><p>
 We agree with the proposed resolution.
 Move to Review.
-</blockquote>
+</p></blockquote>
 
 <note>
 2009-05-26 Daniel adds:
@@ -77,11 +77,11 @@ This case is explicitly handled in <tt>flush()</tt> and needs to be
 taken care of. My suggested fix is:
 </p>
 
-<blockquote>
+<blockquote><p>
 If <tt>((os.flags() &amp; ios_base::unitbuf) &amp;&amp; !uncaught_exception()</tt>
 <ins><tt>&amp;&amp; os.rdbuf() != 0</tt></ins>) is true, calls <del><tt>os.flush()</tt></del>
 <ins><tt>os.rdbuf()-&gt;pubsync()</tt></ins>.
-</blockquote>
+</p></blockquote>
 
 <p>
 Two secondary questions are:
@@ -122,19 +122,19 @@ Move back to Open.
 2009-10-13 Daniel adds:
 </note>
 
-<blockquote>
+<blockquote><p>
 This proposed wording is written to match the outcome
 of <iref ref="397"/>.
-</blockquote>
+</p></blockquote>
 
 <note>
 2009 Santa Cruz:
 </note>
 
-<blockquote>
+<blockquote><p>
 Move to Open. Martin to propose updated wording that will also resolve
 issue <iref ref="397"/> consistently.
-</blockquote>
+</p></blockquote>
 
 <note>
 2010-02-15 Martin provided wording.
@@ -144,9 +144,9 @@ issue <iref ref="397"/> consistently.
 2010 Pittsburgh:
 </note>
 
-<blockquote>
+<blockquote><p>
 Moved to Ready for Pittsburgh.
-</blockquote>
+</p></blockquote>
 
 </discussion>
 
@@ -155,28 +155,28 @@ Moved to Ready for Pittsburgh.
 <ol>
 <li>
 <p>
-Just before <sref ref="[basic.ios.members]"/>/2 insert a new paragraph:
+Just before <sref ref="[basic.ios.members]"/> p. 2 insert a new paragraph:
 </p>
 
-<blockquote>
+<blockquote><p>
 <ins><i>Requires:</i> If <tt>(tiestr != 0)</tt> is <tt>true</tt>,
 <tt>tiestr</tt> must not be reachable by traversing the linked list of tied
 stream objects starting from <tt>tiestr-&gt;tie()</tt>.</ins>
-</blockquote>
+</p></blockquote>
 </li>
 
 <li>
 <p>
-Change <sref ref="[ostream::sentry]"/>/4 as indicated:
+Change <sref ref="[ostream::sentry]"/> p. 4 as indicated:
 </p>
 
-<blockquote>
+<blockquote><p>
 If <tt>((os.flags() &amp; ios_base::unitbuf) &amp;&amp; !uncaught_exception()
 <ins>&amp;&amp; os.good()</ins>)</tt> is <tt>true</tt>, calls
 <del><tt>os.flush()</tt></del> <ins><tt>os.rdbuf()-&gt;pubsync()</tt>. If that
 function returns -1 sets <tt>badbit</tt> in <tt>os.rdstate()</tt> without
 propagating an exception</ins>.
-</blockquote>
+</p></blockquote>
 </li>
 
 <li>
@@ -184,9 +184,9 @@ propagating an exception</ins>.
 Add after <sref ref="[ostream::sentry]"/> p17, the following paragraph:
 </p>
 
-<blockquote>
+<blockquote><p>
 <ins><i>Throws:</i> Nothing.</ins>
-</blockquote>
+</p></blockquote>
 
 </li>
 

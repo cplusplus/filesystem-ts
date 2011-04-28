@@ -29,8 +29,8 @@ void generate_n(OutputIterator first, Size n, Generator gen);</pre></li>
 <p>
 In both cases the minimum requirements on the iterator are
 <tt>OutputIterator</tt>, which means according to the requirements of
-<sref ref="[output.iterators]"/>/2 that only single-pass iterations are guaranteed.
-So, if users of <tt>fill_n</tt> and <tt>generate_n</tt> have *only* an <tt>OutputIterator</tt>
+<sref ref="[output.iterators]"/> p. 2 that only single-pass iterations are guaranteed.
+So, if users of <tt>fill_n</tt> and <tt>generate_n</tt> have <em>only</em> an <tt>OutputIterator</tt>
 available, they have no chance to continue pushing further values
 into it, which seems to be a severe limitation to me.
 </p>
@@ -62,10 +62,10 @@ Move to Open.
 2009-07 Frankfurt
 </note>
 
-<blockquote>
+<blockquote><p>
 We have a consensus for moving forward on this issue, but Daniel needs
 to deconceptify it.
-</blockquote>
+</p></blockquote>
 
 <note>
 2009-07-25 Daniel provided non-concepts wording.
@@ -75,9 +75,9 @@ to deconceptify it.
 2009-10 Santa Cruz:
 </note>
 
-<blockquote>
+<blockquote><p>
 Moved to Ready.
-</blockquote>
+</p></blockquote>
 
 </discussion>
 
@@ -99,10 +99,10 @@ template&lt;class OutputIterator, class Size, class T&gt;
 Just after the effects clause add a new returns clause saying:
 </p>
 
-<blockquote>
+<blockquote><p>
 <ins><i>Returns:</i> For <tt>fill_n</tt> and positive <tt>n</tt>, returns <tt>first + n</tt>. Otherwise
 returns <tt>first</tt> for <tt>fill_n</tt>.</ins>
-</blockquote>
+</p></blockquote>
 </li>
 
 <li>
@@ -120,10 +120,10 @@ template&lt;class OutputIterator, class Size, class Generator&gt;
 Just after the effects clause add a new returns clause saying:
 </p>
 
-<blockquote>
+<blockquote><p>
 <ins>For <tt>generate_n</tt> and positive <tt>n</tt>, returns <tt>first + n</tt>. Otherwise
 returns <tt>first</tt> for <tt>generate_n</tt>.</ins>
-</blockquote>
+</p></blockquote>
 </li>
 </ol>
 

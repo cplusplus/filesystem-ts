@@ -22,7 +22,7 @@ blocks that's bounded by a small constant.
 The container overhead can in fact be arbitrarily large (i.e. is not
 necessarily O(N) where N is the number of elements currently held by the
 <tt>deque</tt>).  As Bill Plauger noted in a reflector message, unless the map of
-block pointers is shrunk, it must hold at least maxN/B pointers where
+block pointers is shrunk, it must hold at least maxN&frasl;B pointers where
 maxN is the maximum of N over the lifetime of the <tt>deque</tt> since its
 creation.  This is independent of how the map is implemented
 (<tt>vector</tt>-like circular buffer and all), and maxN bears no relation to N,
@@ -35,22 +35,22 @@ map of the <tt>deque</tt> grew quite large before getting back to normal.  Just
 to put some color on it, assuming a <tt>deque</tt> with 1K pointer elements in
 steady regime, that held, at some point in its lifetime, maxN=10M
 pointers, with one block holding 128 elements, the spine must be at
-least (maxN / 128), in that case 100K.   In that case, shrink-to-fit
+least (maxN &frasl; 128), in that case 100K.   In that case, shrink-to-fit
 would allow to reuse about 100K which would otherwise never be reclaimed
 in the lifetime of the <tt>deque</tt>.
 </p>
 <p>
-An added bonus would be that it *allows* implementations to hang on to
+An added bonus would be that it <em>allows</em> implementations to hang on to
 empty blocks at the end (but does not care if they do or not).  A
 <tt>shrink_to_fit</tt> would take care of both shrinks, and guarantee that at
 most O(B) space is used in addition to the storage to hold the N
-elements and the N/B block pointers.
+elements and the N&frasl;B block pointers.
 </p>
 </discussion>
 
 <resolution>
 <p>
-To Class template deque <sref ref="[deque]"/> synopsis, add:
+To class template <tt>deque</tt> <sref ref="[deque]"/> synopsis, add:
 </p>
 <blockquote><pre>
 void shrink_to_fit();
@@ -63,11 +63,11 @@ To deque capacity <sref ref="[deque.capacity]"/>, add:
 void shrink_to_fit();
 </pre>
 
-<blockquote>
+<blockquote><p>
 <i>Remarks:</i> <tt>shrink_to_fit</tt> is a non-binding request to reduce memory
 use. [<i>Note:</i> The request is non-binding to allow latitude for
-implementation-specific optimizations. -- <i>end note</i>]
-</blockquote>
+implementation-specific optimizations. &mdash; <i>end note</i>]
+</p></blockquote>
 </blockquote>
 </resolution>
 

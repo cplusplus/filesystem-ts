@@ -42,20 +42,20 @@ San Francisco:
 
 <blockquote>
 <p>
-Nick: maybe instead of saying that chrono::monotonic_clock is
+Nick: maybe instead of saying that <tt>chrono::monotonic_clock</tt> is
 conditionally supported, we could say that it's always there, but not
 necessarily supported..
 </p>
 <p>
 Beman: I'd prefer a typedef that identifies the best clock to use for
-wait_for locks.
+<tt>wait_for</tt> locks.
 </p>
 <p>
 Tom: combine the two concepts; create a duration clock type, but keep
 the is_monotonic test.
 </p>
 <p>
-Howard: if we create a duration_clock type, is it a typedef or an
+Howard: if we create a <tt>duration_clock</tt> type, is it a typedef or an
 entirely true type?
 </p>
 <p>
@@ -87,11 +87,11 @@ And paragraph 2 of <sref ref="[thread.req.timing]"/> has the words strongly enco
 implementations to use monotonic clocks for <tt>sleep_for</tt>:
 </p>
 
-<blockquote>
+<blockquote><p>
 2 The member functions whose names end in <tt>_for</tt> take an argument that
 specifies a relative time. Implementations should use a monotonic clock to
 measure time for these functions.
-</blockquote>
+</p></blockquote>
 
 <p>
 I believe the approach taken in describing the effects of <tt>sleep_for</tt>

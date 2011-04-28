@@ -14,9 +14,9 @@
 The first sentence of the Effects clause for <tt>undeclare_reachable</tt> seems
 to be missing some words. I can't parse
 </p>
-<blockquote>
+<blockquote><p>
 ... for all non-null <tt>p</tt> referencing the argument is no longer declared reachable...
-</blockquote>
+</p></blockquote>
 <p>
 I take it the intent is that <tt>undeclare_reachable</tt> should be called only
 when there has been a corresponding call to <tt>declare_reachable</tt>. In
@@ -63,31 +63,31 @@ Minimal Support for Garbage Collection)
 Add at the beginning, before paragraph 39
 </p>
 
-<blockquote>
+<blockquote><p>
 A complete object is <i>declared reachable</i> while the number of calls
 to <tt>declare_reachable</tt> with an argument referencing the object exceeds the
 number of <tt>undeclare_reachable</tt> calls with pointers to the same complete
 object.
-</blockquote>
+</p></blockquote>
 
 <p>
 Change paragraph 42 (Requires clause for <tt>undeclare_reachable</tt>)
 </p>
 
-<blockquote>
+<blockquote><p>
 If <tt>p</tt> is not null, <del><tt>declare_reachable(p)</tt> was previously called</del>
 <ins>the complete object referenced by <tt>p</tt> shall have
 been previously declared reachable</ins>, and shall
 be live <ins>(<sref ref="[basic.life]"/>)</ins> from the time of the call until the last <tt>undeclare_reachable(p)</tt>
 call on the object.
-</blockquote>
+</p></blockquote>
 
 <p>
 Change the first sentence in paragraph 44 (Effects clause for
 <tt>undeclare_reachable</tt>):
 </p>
 
-<blockquote>
+<blockquote><p>
 <i>Effects:</i> 
 <del>Once the number of calls to
 <tt>undeclare_reachable(p)</tt> equals the number of calls to
@@ -102,7 +102,7 @@ referenced by <tt>p</tt> is no longer declared reachable, then
 dereferencing any pointer to <tt>q</tt> that is not safely derived
 results in undefined behavior.
 </ins> ...
-</blockquote>
+</p></blockquote>
 
 <p>
 Change the final note:

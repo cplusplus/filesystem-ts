@@ -16,23 +16,23 @@ a <tt>forward_list::iterator</tt> (denoted <tt>position</tt> in the
 function signatures) argument have the following precondition:
 
        </p>
-       <blockquote>
+       <blockquote><p>
 
 <i>Requires:</i> <tt>position</tt> is dereferenceable or equal
 to <tt>before_begin()</tt>.
 
-       </blockquote>
+       </p></blockquote>
        <p>
 
 I believe what's actually intended is this:
 
        </p>
-       <blockquote>
+       <blockquote><p>
 
 <i>Requires:</i> <tt>position</tt> is in the range
 [<tt>before_begin()</tt>, <tt>end()</tt>).
 
-       </blockquote>
+       </p></blockquote>
        <p>
 
 That is, when it's dereferenceable, <tt>position</tt> must point
@@ -44,9 +44,9 @@ into <tt>*this</tt>, not just any <tt>forward_list</tt> object.
 San Francisco:
 </note>
 
-<blockquote>
+<blockquote><p>
 Robert suggested alternate proposed wording which had large support.
-</blockquote>
+</p></blockquote>
 
 <note>
 Post Summit:
@@ -72,13 +72,13 @@ Change the <i>Requires</i> clauses
 as follows:
 
        </p>
-       <blockquote>
+       <blockquote><p>
 
 <i>Requires:</i> <tt>position</tt> is <ins><tt>before_begin()</tt> or is a</ins>
 dereferenceable
 <ins>iterator in the range <tt>[begin(), end())</tt></ins>
 <del>or equal to <tt>before_begin()</tt></del>. ...
 
-       </blockquote>
+       </p></blockquote>
    </resolution>
 </issue>

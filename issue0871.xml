@@ -4,7 +4,7 @@
 ] >
 
 <issue num="871" status="WP">
-<title>Iota's requirements on T are too strong</title>
+<title>Iota's requirements on <tt>T</tt> are too strong</title>
 <section><sref ref="[numeric.iota]"/></section>
 <submitter>Daniel Kr&uuml;gler</submitter>
 <date>20 Aug 2008</date>
@@ -17,10 +17,10 @@ According to the recent WP
 of <tt>std::iota</tt> says:
 </p>
 
-<blockquote>
+<blockquote><p>
 <tt>T</tt> shall meet the requirements of <tt>CopyConstructible</tt> and <tt>Assignable</tt> types, and
 shall be convertible to <tt>ForwardIterator</tt>'s value type.[..]
-</blockquote>
+</p></blockquote>
 
 <p>
 Neither <tt>CopyConstructible</tt> nor <tt>Assignable</tt> is needed, instead <tt>MoveConstructible</tt>
@@ -30,9 +30,8 @@ artifact from comparing it with similar numerical algorithms like <tt>accumulate
 
 <p>
 Note: If this function will be conceptualized, the here proposed
-<tt>MoveConstructible</tt>
-requirement can be removed, because this is an implied requirement of
-function arguments, see
+<tt>MoveConstructible</tt> requirement can be removed, because this 
+is an implied requirement of function arguments, see
 <a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2008/n2710.pdf">N2710</a>/[temp.req.impl]/3, last bullet.
 </p>
 
@@ -40,27 +39,27 @@ function arguments, see
 post San Francisco:
 </note>
 
-<blockquote>
+<blockquote><p>
 Issue pulled by author prior to review.
-</blockquote>
+</p></blockquote>
 
 <note>
 2009-07-30 Daniel reopened:
 </note>
 
-<blockquote>
+<blockquote><p>
 with the absence of concepts, this issue (closed) is valid again and I
 suggest to reopen it.
 I also revised by proposed resolution based on N2723 wording:
-</blockquote>
+</p></blockquote>
 
 <note>
 2009-10 Santa Cruz:
 </note>
 
-<blockquote>
+<blockquote><p>
 Change 'convertible' to 'assignable', Move To Ready.
-</blockquote>
+</p></blockquote>
 
 </discussion>
 
@@ -69,11 +68,11 @@ Change 'convertible' to 'assignable', Move To Ready.
 Change the first sentence of <sref ref="[numeric.iota]"/>/1:
 </p>
 
-<blockquote>
+<blockquote><p>
 <i>Requires:</i> <tt>T</tt> shall <del>meet the requirements of <tt>CopyConstructible</tt> and
 <tt>Assignable</tt> types, and shall</del> be
 assignable to <tt>ForwardIterator</tt>'s value type. [..]
-</blockquote>
+</p></blockquote>
 
 <!-- 
 <p>

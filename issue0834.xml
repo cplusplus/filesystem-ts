@@ -4,7 +4,7 @@
 ] >
 
 <issue num="834" status="Resolved">
-<title>Unique_ptr::pointer requirements underspecified</title>
+<title><tt>unique_ptr::pointer</tt> requirements underspecified</title>
 <section><sref ref="[unique.ptr.single]"/></section>
 <submitter>Daniel Kr&uuml;gler</submitter>
 <date>14 May 2008</date>
@@ -27,15 +27,14 @@ impact on at least two key features of <tt>unique_ptr</tt>:
 </ol>
 
 <p>
-<tt>Unique_ptr</tt> specification makes great efforts to require that essentially *all*
+The <tt>unique_ptr</tt> specification makes great efforts to require that essentially <em>all</em>
 operations cannot throw and therefore adds proper wording to the affected
 operations of the deleter as well. If user-provided <tt>pointer</tt>-emulating types
-("smart pointers") will be allowed, either *all* throw-nothing clauses have to
+("smart pointers") will be allowed, either <em>all</em> throw-nothing clauses have to
 be replaced by weaker "An exception is thrown only if <tt>pointer</tt>'s {op} throws
 an exception"-clauses or it has to be said explicitly that all used
-operations of
-<tt>pointer</tt> are required *not* to throw. I understand the main focus of <tt>unique_ptr</tt>
-to be as near as possible to the advantages of native pointers which cannot
+operations of <tt>pointer</tt> are required <em>not</em> to throw. I understand the main 
+focus of <tt>unique_ptr</tt> to be as near as possible to the advantages of native pointers which cannot
 fail and thus strongly favor the second choice. Also, the alternative position
 would make it much harder to write safe and simple template code for
 <tt>unique_ptr</tt>. Additionally, I assume that a general statement need to be given
@@ -61,9 +60,9 @@ Howard will go through and enumerate the individual requirements wrt. <tt>pointe
 2009-07 Frankfurt:
 </note>
 
-<blockquote>
+<blockquote><p>
 Move to Ready.
-</blockquote>
+</p></blockquote>
 
 <note>
 2009-10-15 Alisdair pulls from Ready:
@@ -79,11 +78,11 @@ fully baked yet.
 For reference the proposed resolution is to add the following words:
 </p>
 
-<blockquote>
+<blockquote><p>
 <tt>unique_ptr&lt;T, D&gt;::pointer</tt>'s operations shall be
 well-formed, shall have well defined behavior, and shall not throw
 exceptions.
-</blockquote>
+</p></blockquote>
 
 <p>
 This leaves me with a big question : which operations?
@@ -101,20 +100,20 @@ certain concept, and so nail down the interactions.
 2009-10-15 Daniel adds:
 </note>
 
-<blockquote>
+<blockquote><p>
 I volunteer to prepare a more fine-grained solution, but I would like
 to ask for feedback that helps me doing so. If this question is asked
 early in the meeting I might be able to fix it within the week, but I
 cannot promise that now.
-</blockquote>
+</p></blockquote>
 
 <note>
 2009-10 Santa Cruz:
 </note>
 
-<blockquote>
+<blockquote><p>
 Leave in open. Daniel to provide wording as already suggested.
-</blockquote>
+</p></blockquote>
 
 <note>
 2009-12-22 Daniel provided wording and rationale.
@@ -137,12 +136,12 @@ This might be a convincing argument to isolate the common subset into one
 requirement. The reason I did not do that is basically because we might find out
 that they are either over-constraining or under-constraining at this late point
 of specification. Note also that as a result of the idea of a general
-requirement set I added the requirement
+requirement set I added the requirement:
 </p>
 
-<blockquote>
+<blockquote><p>
 A default-initialized object may have a singular value
-</blockquote>
+</p></blockquote>
 
 <p>
 even though this does not play a relevant role for <tt>unique_ptr</tt>.
@@ -169,13 +168,13 @@ Solved by
 
 <li>
 <p>
-Change <sref ref="[unique.ptr.single]"/>/1 as indicated: <i>[The intent is to
+Change <sref ref="[unique.ptr.single]"/> p. 1 as indicated: <i>[The intent is to
 replace the coupling between <tt>T*</tt> and the deleter's <tt>operator()</tt>
 by a coupling between <tt>unique_ptr&lt;T, D&gt;::pointer</tt> and this
 <tt>operator()</tt>]</i>
 </p>
 
-<blockquote>
+<blockquote><p>
 1 - The default type for the template parameter <tt>D</tt> is
 <tt>default_delete</tt>. A client-supplied template argument <tt>D</tt> shall be
 a function pointer or functor for which, given a value <tt>d</tt> of type
@@ -184,12 +183,12 @@ a function pointer or functor for which, given a value <tt>d</tt> of type
 expression <tt>d(ptr)</tt> is valid and has the effect of deallocating the
 pointer as appropriate for that deleter. <tt>D</tt> may also be an
 lvalue-reference to a deleter.
-</blockquote>
+</p></blockquote>
 </li>
 
 <li>
 <p>
-Change <sref ref="[unique.ptr.single]"/>/3 as indicated:
+Change <sref ref="[unique.ptr.single]"/> p. 3 as indicated:
 </p>
 
 <blockquote>
@@ -235,7 +234,7 @@ function.
 
 <li>
 <p>
-Change <sref ref="[unique.ptr.single.ctor]"/>/2+3 as indicated: <i>[The first
+Change <sref ref="[unique.ptr.single.ctor]"/> p. 2+3 as indicated: <i>[The first
 change ensures that we explicitly say, how the stored pointer is initialized.
 This is important for a <tt>constexpr</tt> function, because this may make a
 difference for user-defined pointer-like types]</i>
@@ -260,7 +259,7 @@ value-initializing the stored pointer</ins>.
 
 <li>
 <p>
-Change <sref ref="[unique.ptr.single.ctor]"/>/6+7 as indicated: <i>[This is a
+Change <sref ref="[unique.ptr.single.ctor]"/> p. 6+7 as indicated: <i>[This is a
 step-by-fix to ensure consistency to the changes of
 <a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2009/n2976.html">N2976</a>]</i>
 </p>
@@ -314,7 +313,7 @@ then <tt>get_deleter()</tt> returns a reference to the lvalue <tt>d</tt>.
 
 <li>
 <p>
-Change <sref ref="[unique.ptr.single.ctor]"/>/18+22 as indicated: <i>[The intent
+Change <sref ref="[unique.ptr.single.ctor]"/> p. 18+22 as indicated: <i>[The intent
 is to clarify that the moved-from source must contain a null pointer, there is
 no other choice left]</i>
 </p>
@@ -362,7 +361,7 @@ the internally stored deleter which was constructed from
 
 <li>
 <p>
-Change <sref ref="[unique.ptr.single.ctor]"/>/20 as indicated: <i>[With the
+Change <sref ref="[unique.ptr.single.ctor]"/> p. 20 as indicated: <i>[With the
 possibility of user-defined pointer-like types the implication does only exist,
 if those are built-in pointers. Note that this change should also be applied
 with the acceptance of <iref ref="950"/>]</i>
@@ -371,7 +370,7 @@ with the acceptance of <iref ref="950"/>]</i>
 <blockquote><pre>
 template &lt;class U, class E&gt; unique_ptr(unique_ptr&lt;U, E&gt;&amp;&amp; u);
 </pre>
-<blockquote>
+<blockquote><p>
 20 - <i>Requires:</i> If <tt>D</tt> is not a reference type, construction of the
 deleter <tt>D</tt> from an rvalue of type <tt>E</tt> shall be well formed and
 shall not throw an exception. If <tt>D</tt> is a reference type, then <tt>E</tt>
@@ -379,13 +378,13 @@ shall be the same type as <tt>D</tt> (diagnostic required). <tt>unique_ptr&lt;U,
 E&gt;::pointer</tt> shall be implicitly convertible to <tt>pointer</tt>.
 <del>[<i>Note:</i> These requirements imply that <tt>T</tt> and <tt>U</tt> are
 complete types. &mdash; <i>end note</i>]</del>
-</blockquote>
+</p></blockquote>
 </blockquote>
 </li>
 
 <li>
 <p>
-Change <sref ref="[unique.ptr.single.dtor]"/>/2 as indicated:
+Change <sref ref="[unique.ptr.single.dtor]"/> p. 2 as indicated:
 </p>
 
 <blockquote><pre>
@@ -403,7 +402,7 @@ are no effects. Otherwise <tt>get_deleter()(get())</tt>.
 
 <li>
 <p>
-Change <sref ref="[unique.ptr.single.asgn]"/>/3+8 as indicated: <i>[The intent is to
+Change <sref ref="[unique.ptr.single.asgn]"/> p. 3+8 as indicated: <i>[The intent is to
 clarify that the moved-from source must contain a null pointer, there
 is no other choice left]</i>
 </p>
@@ -439,7 +438,7 @@ nullptr</tt></ins>.
 
 <li>
 <p>
-Change <sref ref="[unique.ptr.single.asgn]"/>/6 as indicated: <i>[With the
+Change <sref ref="[unique.ptr.single.asgn]"/> p. 6 as indicated: <i>[With the
 possibility of user-defined pointer-like types the implication does only exist,
 if those are built-in pointers. Note that this change should also be applied
 with the acceptance of <iref ref="950"/>]</i>
@@ -485,7 +484,7 @@ unique_ptr&amp; operator=(nullptr_t<del>}</del><ins>)</ins>;
 
 <li>
 <p>
-Change <sref ref="[unique.ptr.single.observers]"/>/1+4+12 as indicated:
+Change <sref ref="[unique.ptr.single.observers]"/> p. 1+4+12 as indicated:
 </p>
 
 <blockquote><pre>
@@ -523,30 +522,30 @@ pointer operator-&gt;() const;
 explicit operator bool() const;
 </pre>
 
-<blockquote>
+<blockquote><p>
 12 - <i>Returns:</i> <tt>get() != <del>0</del><ins>nullptr</ins></tt>.
-</blockquote>
+</p></blockquote>
 </blockquote>
 </li>
 
 <li>
 <p>
-Change <sref ref="[unique.ptr.single.modifiers]"/>/1 as indicated:
+Change <sref ref="[unique.ptr.single.modifiers]"/> p. 1 as indicated:
 </p>
 
 <blockquote><pre>
 pointer release();
 </pre>
 
-<blockquote>
+<blockquote><p>
 1 - <i>Postcondition:</i> <tt>get() == <del>0</del> <ins>nullptr</ins></tt>.
-</blockquote>
+</p></blockquote>
 </blockquote>
 </li>
 
 <li>
 <p>
-Change <sref ref="[unique.ptr.single.modifiers]"/>/9 as indicated: <i>[The
+Change <sref ref="[unique.ptr.single.modifiers]"/> p. 9 as indicated: <i>[The
 intent is to ensure that potentially user-defined swaps are used. A side-step
 fix and harmonization with the specification of the the deleter is realized.
 Please note the additional requirement in bullet 2 of this proposed resolution
@@ -577,24 +576,24 @@ shall not throw an exception under <tt>swap</tt>.
 
 <li>
 <p>
-Change <sref ref="[unique.ptr.runtime.observers]"/>/1 as indicated:
+Change <sref ref="[unique.ptr.runtime.observers]"/> p. 1 as indicated:
 </p>
 
 <blockquote><pre>
 T&amp; operator[](size_t i) const;
 </pre>
-<blockquote>
+<blockquote><p>
 <i>Requires:</i> <tt>i &lt;</tt> the size of the array to which the stored
 pointer points. <ins>The variable definition <tt>T&amp; t = get()[i]</tt> shall
 be well formed, shall have well-defined behavior, and shall not exit via an
 exception.</ins>
-</blockquote>
+</p></blockquote>
 </blockquote>
 </li>
 
 <li>
 <p>
-Change <sref ref="[unique.ptr.runtime.modifiers]"/>/1 as indicated:
+Change <sref ref="[unique.ptr.runtime.modifiers]"/> p. 1 as indicated:
 </p>
 
 <blockquote><pre>
@@ -602,10 +601,10 @@ void reset(pointer p = pointer());
 void reset(nullptr_t p);
 </pre>
 
-<blockquote>
+<blockquote><p>
 1 - <i>Effects:</i> If <tt>get() == <del>0</del> <ins>nullptr</ins></tt> there
 are no effects. Otherwise <tt>get_deleter()(get())</tt>.
-</blockquote>
+</p></blockquote>
 </blockquote>
 </li>
 
@@ -624,9 +623,8 @@ template &lt;class T1, class D1, class T2, class D2&gt;
 
 <blockquote>
 <p>
-<ins><i>Requires:</i> The variable definition <tt>bool b = x.get() ==
-y.get();</tt> shall be well formed, shall have well-defined behavior, and shall
-not exit via an exception.</ins>
+<ins><i>Requires:</i> The variable definition <tt>bool b = x.get() == y.get();</tt> shall be 
+well formed, shall have well-defined behavior, and shall not exit via an exception.</ins>
 </p>
 
 <p>

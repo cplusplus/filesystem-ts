@@ -4,17 +4,17 @@
 ] >
 
 <issue num="842" status="CD1">
-<title>ConstructibleAsElement and bit containers</title>
+<title><tt>ConstructibleAsElement</tt> and bit containers</title>
 <section><sref ref="[container.requirements]"/>, <sref ref="[vector.bool]"/>, <sref ref="[template.bitset]"/></section>
 <submitter>Howard Hinnant</submitter>
 <date>3 Jun 2008</date>
 
 <discussion>
 <p>
-<sref ref="[container.requirements]"/>/p3 says:
+<sref ref="[container.requirements]"/> p. 3 says:
 </p>
 
-<blockquote>
+<blockquote><p>
 Objects stored in these components shall be constructed using
 <tt>construct_element</tt> (20.6.9). For each operation that inserts an
 element of type <tt>T</tt> into a container (<tt>insert</tt>,
@@ -25,7 +25,7 @@ with a scoped allocator of type <tt>A</tt> (i.e., an allocator for which
 <tt>is_scoped_allocator&lt;A&gt;::value</tt> is <tt>true</tt>), then
 <tt>construct_element</tt> may pass an inner allocator argument to
 <tt>T</tt>'s constructor. <i>-- end note</i>]
-</blockquote>
+</p></blockquote>
 
 <p>
 However <tt>vector&lt;bool, A&gt;</tt> (<sref ref="[vector.bool]"/>) and <tt>bitset&lt;N&gt;</tt> 
@@ -37,10 +37,10 @@ is not implementable.
 
 <resolution>
 <p>
-Change <sref ref="[container.requirements]"/>/p3:
+Change <sref ref="[container.requirements]"/> p. 3:
 </p>
 
-<blockquote>
+<blockquote><p>
 Objects stored in these components shall be constructed using
 <tt>construct_element</tt> (20.6.9)<ins>, unless otherwise specified</ins>.
 For each operation that inserts an
@@ -52,17 +52,17 @@ with a scoped allocator of type <tt>A</tt> (i.e., an allocator for which
 <tt>is_scoped_allocator&lt;A&gt;::value</tt> is <tt>true</tt>), then
 <tt>construct_element</tt> may pass an inner allocator argument to
 <tt>T</tt>'s constructor. <i>-- end note</i>]
-</blockquote>
+</p></blockquote>
 
 <p>
 Change <sref ref="[vector.bool]"/>/p2:
 </p>
 
-<blockquote>
+<blockquote><p>
 Unless described below, all operations have the same requirements and semantics as the primary <tt>vector</tt> template, 
 except that operations dealing with the <tt>bool</tt> value type map to bit values in the container storage<ins>,
 and <tt>construct_element</tt> (<sref ref="[container.requirements]"/>) is not used to construct these values</ins>.
-</blockquote>
+</p></blockquote>
 
 <p>
 Move <sref ref="[template.bitset]"/> to clause 20.

@@ -5,7 +5,7 @@
 
 <issue num="838" status="WP">
  <title>
-   can an <i>end-of-stream</i> iterator become a <i>non-end-of-stream</i> one?
+   Can an <i>end-of-stream</i> iterator become a <i>non-end-of-stream</i> one?
  </title>
  <section><sref ref="[istream.iterator]"/></section>
  <submitter>Martin Sebor</submitter>
@@ -19,19 +19,19 @@ From message c++std-lib-20003...
    <p>
 
 The description of <code>istream_iterator</code> in
-<sref ref="[istream.iterator]"/>, p1 specifies that objects of the
+<sref ref="[istream.iterator]"/>, p. 1 specifies that objects of the
 class become the <i>end-of-stream</i> (EOS) iterators under the
 following condition (see also issue <iref ref="788"/> another problem
 with this paragraph):
 
    </p>
-   <blockquote>
+   <blockquote><p>
 
 If the end of stream is reached (<code>operator void*()</code> on the
 stream returns <code>false</code>), the iterator becomes equal to
 the <i>end-of-stream</i> iterator value.
 
-   </blockquote>
+   </p></blockquote>
    <p>
 
 One possible implementation approach that has been used in practice is
@@ -117,9 +117,9 @@ that no reference is made to exposition only members of
 2009-07 Frankfurt:
 </note>
 
-<blockquote>
+<blockquote><p>
 Move to Ready.
-</blockquote>
+</p></blockquote>
 
 </discussion>
 
@@ -141,7 +141,7 @@ To this end we propose to change <sref ref="[istream.iterator]"/>, p1,
 as follows:
 
    </p>
-   <blockquote>
+   <blockquote><p>
 
 The result of operator-&gt; on an end<ins>-</ins>of<ins>-</ins>stream
 is not defined. For any other iterator value a <code>const T*</code>
@@ -149,7 +149,7 @@ is returned.<ins> Invoking <code>operator++()</code> on
 an <i>end-of-stream</i> iterator is undefined.</ins> It is impossible
 to store things into istream iterators...
 
-   </blockquote>
+   </p></blockquote>
    <p>
 
 Add pre/postconditions to the member function descriptions of <code>istream_iterator</code> like so:
@@ -158,32 +158,33 @@ Add pre/postconditions to the member function descriptions of <code>istream_iter
    <blockquote>
 
 <pre>istream_iterator();</pre>
-
+<p>
 <i>Effects</i>: Constructs the <i>end-of-stream</i> iterator.<br/>
 <ins><i>Postcondition</i>: <code>in_stream == 0</code>.</ins>
-
+</p>
 <pre>istream_iterator(istream_type &amp;s);</pre>
-
+<p>
 <i>Effects</i>: Initializes <code>in_stream</code> with &amp;s. value
 may be initialized during construction or the first time it is
 referenced.<br/>
 <ins><i>Postcondition</i>: <code>in_stream == &amp;s</code>.</ins>
-
+</p>
 <pre>istream_iterator(const istream_iterator &amp;x);</pre>
-
+<p>
 <i>Effects</i>: Constructs a copy of <code>x</code>.<br/>
 <ins><i>Postcondition</i>: <code>in_stream == x.in_stream</code>.</ins>
-
+</p>
 <pre>istream_iterator&amp; operator++();</pre>
-
+<p>
 <ins><i>Requires</i>: <code>in_stream != 0</code>.</ins><br/>
 <i>Effects</i>: <code>*in_stream &gt;&gt; value</code>.
-
+</p>
 <pre>istream_iterator&amp; operator++(int);</pre>
-
+<p>
 <ins><i>Requires</i>: <code>in_stream != 0</code>.</ins><br/>
 <i>Effects</i>:
-   <blockquote><pre>
+</p>
+<blockquote><pre>
 istream_iterator tmp (*this);
 *in_stream &gt;&gt; value;
 return tmp;
