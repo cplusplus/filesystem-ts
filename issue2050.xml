@@ -1,0 +1,156 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="2050" status="New">
+<title>Unordered associative containers do not use <tt>allocator_traits</tt> to define member types</title>
+<section><sref ref="[unord]"/></section>
+<submitter>Tom Zieberman</submitter>
+<date>29 Apr 2011</date>
+
+<discussion>
+<p>The unordered associative containers define their member types <tt>reference</tt>, 
+<tt>const_reference</tt>, <tt>pointer</tt>, <tt>const_pointer</tt> in terms of 
+their template parameter <tt>Allocator</tt> (via <tt>allocator_type</tt> typedef). As 
+a consequence, only the allocator types, that provide sufficient typedefs, are usable 
+as allocators for unordered associative containers, while other containers do not have 
+this deficiency. This issue can be fixed easily by defining said typedefs in terms of 
+<tt>allocator_traits&lt;Allocator&gt;</tt>.
+</p>
+</discussion>
+
+<resolution>
+
+<p>This wording is relative to the FDIS.</p>
+
+<ul>
+<li><p>Change <sref ref="[unord.map.overview]"/> paragraph 3 as indicated:</p>
+
+<blockquote><pre>
+namespace std {
+  template &lt;class Key,
+            class T,
+            class Hash = hash&lt;Key&gt;,
+            class Pred = std::equal_to&lt;Key&gt;,
+            class Allocator = std::allocator&lt;std::pair&lt;const Key, T&gt; &gt; &gt;
+  class unordered_map
+  {
+  public:
+    <i>// types</i>
+    typedef Key key_type;
+    typedef std::pair&lt;const Key, T&gt; value_type;
+    typedef T mapped_type;
+    typedef Hash hasher;
+    typedef Pred key_equal;
+    typedef Allocator allocator_type;
+    typedef typename <del>allocator_type</del><ins>allocator_traits&lt;Allocator&gt;</ins>::pointer pointer;
+    typedef typename <del>allocator_type</del><ins>allocator_traits&lt;Allocator&gt;</ins>::const_pointer const_pointer;
+    typedef typename <del>allocator_type</del><ins>allocator_traits&lt;Allocator&gt;</ins>::reference reference;
+    typedef typename <del>allocator_type</del><ins>allocator_traits&lt;Allocator&gt;</ins>::const_reference const_reference;
+    typedef <i>implementation-defined</i> size_type;
+    typedef <i>implementation-defined</i> difference_type;
+
+    [&hellip;]
+  };
+}
+</pre></blockquote>
+</li>
+
+<li><p>Change <sref ref="[unord.multimap.overview]"/> paragraph 3 as indicated:</p>
+
+<blockquote><pre>
+namespace std {
+  template &lt;class Key,
+            class T,
+            class Hash = hash&lt;Key&gt;,
+            class Pred = std::equal_to&lt;Key&gt;,
+            class Allocator = std::allocator&lt;std::pair&lt;const Key, T&gt; &gt; &gt;
+  class unordered_multimap
+  {
+  public:
+    <i>// types</i>
+    typedef Key key_type;
+    typedef std::pair&lt;const Key, T&gt; value_type;
+    typedef T mapped_type;
+    typedef Hash hasher;
+    typedef Pred key_equal;
+    typedef Allocator allocator_type;
+    typedef typename <del>allocator_type</del><ins>allocator_traits&lt;Allocator&gt;</ins>::pointer pointer;
+    typedef typename <del>allocator_type</del><ins>allocator_traits&lt;Allocator&gt;</ins>::const_pointer const_pointer;
+    typedef typename <del>allocator_type</del><ins>allocator_traits&lt;Allocator&gt;</ins>::reference reference;
+    typedef typename <del>allocator_type</del><ins>allocator_traits&lt;Allocator&gt;</ins>::const_reference const_reference;
+    typedef <i>implementation-defined</i> size_type;
+    typedef <i>implementation-defined</i> difference_type;
+
+    [&hellip;]
+  };
+}
+</pre></blockquote>
+</li>
+
+<li><p>Change <sref ref="[unord.set.overview]"/> paragraph 3 as indicated:</p>
+
+<blockquote><pre>
+namespace std {
+  template &lt;class Key,
+            class Hash = hash&lt;Key&gt;,
+            class Pred = std::equal_to&lt;Key&gt;,
+            class Allocator = std::allocator&lt;Key&gt; &gt;
+  class unordered_set
+  {
+  public:
+    <i>// types</i>
+    typedef Key key_type;
+    typedef Key value_type;
+    typedef Hash hasher;
+    typedef Pred key_equal;
+    typedef Allocator allocator_type;
+    typedef typename <del>allocator_type</del><ins>allocator_traits&lt;Allocator&gt;</ins>::pointer pointer;
+    typedef typename <del>allocator_type</del><ins>allocator_traits&lt;Allocator&gt;</ins>::const_pointer const_pointer;
+    typedef typename <del>allocator_type</del><ins>allocator_traits&lt;Allocator&gt;</ins>::reference reference;
+    typedef typename <del>allocator_type</del><ins>allocator_traits&lt;Allocator&gt;</ins>::const_reference const_reference;
+    typedef <i>implementation-defined</i> size_type;
+    typedef <i>implementation-defined</i> difference_type;
+
+    [&hellip;]
+  };
+}
+</pre></blockquote>
+</li>
+
+<li><p>Change <sref ref="[unord.multiset.overview]"/> paragraph 3 as indicated:</p>
+
+<blockquote><pre>
+namespace std {
+  template &lt;class Key,
+            class Hash = hash&lt;Key&gt;,
+            class Pred = std::equal_to&lt;Key&gt;,
+            class Allocator = std::allocator&lt;Key&gt; &gt;
+  class unordered_multiset
+  {
+  public:
+    <i>// types</i>
+    typedef Key key_type;
+    typedef Key value_type;
+    typedef Hash hasher;
+    typedef Pred key_equal;
+    typedef Allocator allocator_type;
+    typedef typename <del>allocator_type</del><ins>allocator_traits&lt;Allocator&gt;</ins>::pointer pointer;
+    typedef typename <del>allocator_type</del><ins>allocator_traits&lt;Allocator&gt;</ins>::const_pointer const_pointer;
+    typedef typename <del>allocator_type</del><ins>allocator_traits&lt;Allocator&gt;</ins>::reference reference;
+    typedef typename <del>allocator_type</del><ins>allocator_traits&lt;Allocator&gt;</ins>::const_reference const_reference;
+    typedef <i>implementation-defined</i> size_type;
+    typedef <i>implementation-defined</i> difference_type;
+
+    [&hellip;]
+  };
+}
+</pre></blockquote>
+</li>
+
+</ul>
+
+</resolution>
+
+</issue>
