@@ -23,9 +23,9 @@ bool operator==(
     typename iterator_traits&lt;BiIter&gt;::value_type, ST, SA&gt;&amp; lhs,
   const sub_match&lt;BiIter&gt;&amp; rhs);
 </pre>
-<blockquote>
+<blockquote><p>
 <i>Returns:</i> <tt>lhs == rhs.str()</tt>.
-</blockquote>
+</p></blockquote>
 </blockquote>
 
 <p>
@@ -80,9 +80,9 @@ where defined by referring to <tt>sub_match</tt>'s compare function, all remaini
 definitions in terms of these two.
 </p>
 
-<blockquote>
+<blockquote><p>
 Moved to Tentatively Ready after 5 positive votes on c++std-lib.
-</blockquote>
+</p></blockquote>
 
 <note>
 Adopted at 2010-11 Batavia
@@ -103,9 +103,9 @@ template &lt;class BiIter, class ST, class SA&gt;
    const basic_string&lt;
      typename iterator_traits&lt;BiIter&gt;::value_type, ST, SA&gt;&amp; lhs,
    const sub_match&lt;BiIter&gt;&amp; rhs);
-</pre>
+</pre><p>
 7 <em>Returns</em>: <tt><del>lhs == rhs.str()</del><ins>rhs.compare(lhs.c_str()) == 0</ins></tt>.
-</blockquote>
+</p></blockquote>
 </li>
 <li>Change 28.9.2 [re.submatch.op]/8 as indicated:
 <blockquote><pre>
@@ -114,9 +114,9 @@ template &lt;class BiIter, class ST, class SA&gt;
    const basic_string&lt;
      typename iterator_traits&lt;BiIter&gt;::value_type, ST, SA&gt;&amp; lhs,
    const sub_match&lt;BiIter&gt;&amp; rhs);
-</pre>
+</pre><p>
 8 <em>Returns</em>: <tt><del>lhs != rhs.str()</del><ins>!(lhs == rhs)</ins></tt>.
-</blockquote>
+</p></blockquote>
 </li>
 <li>Change 28.9.2 [re.submatch.op]/9 as indicated:
 <blockquote><pre>
@@ -125,9 +125,9 @@ template &lt;class BiIter, class ST, class SA&gt;
    const basic_string&lt;
      typename iterator_traits&lt;BiIter&gt;::value_type, ST, SA&gt;&amp; lhs,
    const sub_match&lt;BiIter&gt;&amp; rhs);
-</pre>
+</pre><p>
 9 <em>Returns</em>: <tt><del>lhs &lt; rhs.str()</del><ins>rhs.compare(lhs.c_str()) &gt; 0</ins></tt>.
-</blockquote>
+</p></blockquote>
 </li>
 <li>Change 28.9.2 [re.submatch.op]/10 as indicated:
 <blockquote><pre>
@@ -136,9 +136,9 @@ template &lt;class BiIter, class ST, class SA&gt;
    const basic_string&lt;
      typename iterator_traits&lt;BiIter&gt;::value_type, ST, SA&gt;&amp; lhs,
    const sub_match&lt;BiIter&gt;&amp; rhs);
-</pre>
+</pre><p>
 10 <em>Returns</em>: <tt><del>lhs &gt; rhs.str()</del><ins>rhs &lt; lhs</ins></tt>.
-</blockquote>
+</p></blockquote>
 </li>
 <li>Change 28.9.2 [re.submatch.op]/11 as indicated:
 <blockquote><pre>
@@ -147,9 +147,9 @@ template &lt;class BiIter, class ST, class SA&gt;
    const basic_string&lt;
    typename iterator_traits&lt;BiIter&gt;::value_type, ST, SA&gt;&amp; lhs,
  const sub_match&lt;BiIter&gt;&amp; rhs);
-</pre>
+</pre><p>
 11 <em>Returns</em>: <tt><del>lhs &gt;= rhs.str()</del><ins>!(lhs &lt; rhs)</ins></tt>.
-</blockquote>
+</p></blockquote>
 </li>
 <li>Change 28.9.2 [re.submatch.op]/12 as indicated:
 <blockquote><pre>
@@ -158,9 +158,9 @@ template &lt;class BiIter, class ST, class SA&gt;
    const basic_string&lt;
      typename iterator_traits&lt;BiIter&gt;::value_type, ST, SA&gt;&amp; lhs,
    const sub_match&lt;BiIter&gt;&amp; rhs);
-</pre>
+</pre><p>
 12 <em>Returns</em>: <tt><del>lhs &lt;= rhs.str()</del><ins>!(rhs &lt; lhs)</ins></tt>.
-</blockquote>
+</p></blockquote>
 </li>
 <li>Change 28.9.2 [re.submatch.op]/13 as indicated:
 <blockquote><pre>
@@ -168,9 +168,9 @@ template &lt;class BiIter, class ST, class SA&gt;
  bool operator==(const sub_match&lt;BiIter&gt;&amp; lhs,
    const basic_string&lt;
      typename iterator_traits&lt;BiIter&gt;::value_type, ST, SA&gt;&amp; rhs);
-</pre>
+</pre><p>
 13 <em>Returns</em>: <tt><del>lhs.str() == rhs</del><ins>lhs.compare(rhs.c_str()) == 0</ins></tt>.
-</blockquote>
+</p></blockquote>
 </li>
 <li>Change 28.9.2 [re.submatch.op]/14 as indicated:
 <blockquote><pre>
@@ -178,9 +178,9 @@ template &lt;class BiIter, class ST, class SA&gt;
  bool operator!=(const sub_match&lt;BiIter&gt;&amp; lhs,
    const basic_string&lt;
      typename iterator_traits&lt;BiIter&gt;::value_type, ST, SA&gt;&amp; rhs);
-</pre>
+</pre><p>
 14 <em>Returns</em>: <tt><del>lhs.str() != rhs</del><ins>!(lhs == rhs)</ins></tt>.
-</blockquote>
+</p></blockquote>
 </li>
 <li>Change 28.9.2 [re.submatch.op]/15 as indicated:
 <blockquote><pre>
@@ -188,9 +188,9 @@ template &lt;class BiIter, class ST, class SA&gt;
  bool operator&lt;(const sub_match&lt;BiIter&gt;&amp; lhs,
    const basic_string&lt;
      typename iterator_traits&lt;BiIter&gt;::value_type, ST, SA&gt;&amp; rhs);
-</pre>
+</pre><p>
 15 <em>Returns</em>: <tt><del>lhs.str() &lt; rhs</del><ins>lhs.compare(rhs.c_str()) &lt; 0</ins></tt>.
-</blockquote>
+</p></blockquote>
 </li>
 <li>Change 28.9.2 [re.submatch.op]/16 as indicated:
 <blockquote><pre>
@@ -198,9 +198,9 @@ template &lt;class BiIter, class ST, class SA&gt;
  bool operator>(const sub_match&lt;BiIter&gt;&amp; lhs,
    const basic_string&lt;
      typename iterator_traits&lt;BiIter&gt;::value_type, ST, SA&gt;&amp; rhs);
-</pre>
+</pre><p>
 16 <em>Returns</em>: <tt><del>lhs.str() &gt; rhs</del><ins>rhs &lt; lhs</ins></tt>.
-</blockquote>
+</p></blockquote>
 </li>
 <li>Change 28.9.2 [re.submatch.op]/17 as indicated:
 <blockquote><pre>
@@ -208,9 +208,9 @@ template &lt;class BiIter, class ST, class SA&gt;
  bool operator&gt;=(const sub_match&lt;BiIter&gt;&amp; lhs,
    const basic_string&lt;
      typename iterator_traits&lt;BiIter&gt;::value_type, ST, SA&gt;&amp; rhs);
-</pre>
+</pre><p>
 17 <em>Returns</em>: <tt><del>lhs.str() &gt;= rhs</del><ins>!(lhs &lt; rhs)</ins></tt>.
-</blockquote>
+</p></blockquote>
 </li>
 <li>Change 28.9.2 [re.submatch.op]/18 as indicated:
 <blockquote><pre>
@@ -218,230 +218,230 @@ template &lt;class BiIter, class ST, class SA&gt;
  bool operator&lt;=(const sub_match&lt;BiIter&gt;&amp; lhs,
    const basic_string&lt;
      typename iterator_traits&lt;BiIter&gt;::value_type, ST, SA&gt;&amp; rhs);
-</pre>
+</pre><p>
 18 <em>Returns</em>: <tt><del>lhs.str() &lt;= rhs</del><ins>!(rhs &lt; lhs)</ins></tt>.
-</blockquote>
+</p></blockquote>
 </li>
 <li>Change 28.9.2 [re.submatch.op]/19 as indicated:
 <blockquote><pre>
 template &lt;class BiIter&gt;
  bool operator==(typename iterator_traits&lt;BiIter&gt;::value_type const* lhs,
    const sub_match&lt;BiIter&gt;&amp; rhs);
-</pre>
+</pre><p>
 19 <em>Returns</em>: <tt><del>lhs == rhs.str()</del><ins>rhs.compare(lhs) == 0</ins></tt>.
-</blockquote>
+</p></blockquote>
 </li>
 <li>Change 28.9.2 [re.submatch.op]/20 as indicated:
 <blockquote><pre>
 template &lt;class BiIter&gt;
  bool operator!=(typename iterator_traits&lt;BiIter&gt;::value_type const* lhs,
    const sub_match&lt;BiIter&gt;&amp; rhs);
-</pre>
+</pre><p>
 20 <em>Returns</em>: <tt><del>lhs != rhs.str()</del><ins>!(lhs == rhs)</ins></tt>.
-</blockquote>
+</p></blockquote>
 </li>
 <li>Change 28.9.2 [re.submatch.op]/21 as indicated:
 <blockquote><pre>
 template &lt;class BiIter&gt;
  bool operator&lt;(typename iterator_traits&lt;BiIter&gt;::value_type const* lhs,
    const sub_match&lt;BiIter&gt;&amp; rhs);
-</pre>
+</pre><p>
 21 <em>Returns</em>: <tt><del>lhs &lt; rhs.str()</del><ins>rhs.compare(lhs) &gt; 0</ins></tt>.
-</blockquote>
+</p></blockquote>
 </li>
 <li>Change 28.9.2 [re.submatch.op]/22 as indicated:
 <blockquote><pre>
 template &lt;class BiIter&gt;
  bool operator&gt;(typename iterator_traits&lt;BiIter&gt;::value_type const* lhs,
    const sub_match&lt;BiIter&gt;&amp; rhs);
-</pre>
+</pre><p>
 22 <em>Returns</em>: <tt><del>lhs &gt; rhs.str()</del><ins>rhs &lt; lhs</ins></tt>.
-</blockquote>
+</p></blockquote>
 </li>
 <li>Change 28.9.2 [re.submatch.op]/23 as indicated:
 <blockquote><pre>
 template &lt;class BiIter&gt;
  bool operator&gt;=(typename iterator_traits&lt;BiIter&gt;::value_type const* lhs,
    const sub_match&lt;BiIter&gt;&amp; rhs);
-</pre>
+</pre><p>
 23 <em>Returns</em>: <tt><del>lhs &gt;= rhs.str()</del><ins>!(lhs &lt; rhs)</ins></tt>.
-</blockquote>
+</p></blockquote>
 </li>
 <li>Change 28.9.2 [re.submatch.op]/24 as indicated:
 <blockquote><pre>
 template &lt;class BiIter&gt;
  bool operator&lt;=(typename iterator_traits&lt;BiIter&gt;::value_type const* lhs,
    const sub_match&lt;BiIter&gt;&amp; rhs);
-</pre>
+</pre><p>
 24 <em>Returns</em>: <tt><del>lhs &lt;= rhs.str()</del><ins>!(rhs &lt; lhs)</ins></tt>.
-</blockquote>
+</p></blockquote>
 </li>
 <li>Change 28.9.2 [re.submatch.op]/25 as indicated:
 <blockquote><pre>
 template &lt;class BiIter&gt;
  bool operator==(const sub_match&lt;BiIter&gt;&amp; lhs,
    typename iterator_traits&lt;BiIter&gt;::value_type const* rhs);
-</pre>
+</pre><p>
 25 <em>Returns</em>: <tt><del>lhs.str() == rhs</del><ins>lhs.compare(rhs) == 0</ins></tt>.
-</blockquote>
+</p></blockquote>
 </li>
 <li>Change 28.9.2 [re.submatch.op]/26 as indicated:
 <blockquote><pre>
 template &lt;class BiIter&gt;
  bool operator!=(const sub_match&lt;BiIter&gt;&amp; lhs,
    typename iterator_traits&lt;BiIter&gt;::value_type const* rhs);
-</pre>
+</pre><p>
 26 <em>Returns</em>: <tt><del>lhs.str() != rhs</del><ins>!(lhs == rhs)</ins></tt>.
-</blockquote>
+</p></blockquote>
 </li>
 <li>Change 28.9.2 [re.submatch.op]/27 as indicated:
 <blockquote><pre>
 template &lt;class BiIter&gt;
  bool operator&lt;(const sub_match&lt;BiIter&gt;&amp; lhs,
    typename iterator_traits&lt;BiIter&gt;::value_type const* rhs);
-</pre>
+</pre><p>
 27 <em>Returns</em>: <tt><del>lhs.str() &lt; rhs</del><ins>lhs.compare(rhs) &lt; 0</ins></tt>.
-</blockquote>
+</p></blockquote>
 </li>
 <li>Change 28.9.2 [re.submatch.op]/28 as indicated:
 <blockquote><pre>
 template &lt;class BiIter&gt;
  bool operator&gt;(const sub_match&lt;BiIter&gt;&amp; lhs,
    typename iterator_traits&lt;BiIter&gt;::value_type const* rhs);
-</pre>
+</pre><p>
 28 <em>Returns</em>: <tt><del>lhs.str() &gt; rhs</del><ins>rhs &lt; lhs</ins></tt>.
-</blockquote>
+</p></blockquote>
 </li>
 <li>Change 28.9.2 [re.submatch.op]/29 as indicated:
 <blockquote><pre>
 template &lt;class BiIter&gt;
  bool operator&gt;=(const sub_match&lt;BiIter&gt;&amp; lhs,
    typename iterator_traits&lt;BiIter&gt;::value_type const* rhs);
-</pre>
+</pre><p>
 29 <em>Returns</em>: <tt><del>lhs.str() &gt;= rhs</del><ins>!(lhs &lt; rhs)</ins></tt>.
-</blockquote>
+</p></blockquote>
 </li>
 <li>Change 28.9.2 [re.submatch.op]/30 as indicated:
 <blockquote><pre>
 template &lt;class BiIter&gt;
  bool operator&lt;=(const sub_match&lt;BiIter&gt;&amp; lhs,
    typename iterator_traits&lt;BiIter&gt;::value_type const* rhs);
-</pre>
+</pre><p>
 30 <em>Returns</em>: <tt><del>lhs.str() &lt;= rhs</del><ins>!(rhs &lt; lhs)</ins></tt>.
-</blockquote>
+</p></blockquote>
 </li>
 <li>Change 28.9.2 [re.submatch.op]/31 as indicated:
 <blockquote><pre>
 template &lt;class BiIter&gt;
  bool operator==(typename iterator_traits&lt;BiIter&gt;::value_type const&amp; lhs,
    const sub_match&lt;BiIter&gt;&amp; rhs);
-</pre>
+</pre><p>
 <del>31 <em>Returns</em>: <tt>basic_string&lt;typename iterator_traits&lt;BiIter&gt;::value_type&gt;(1,	lhs) == rhs.str()</tt>.</del><br/>
 <ins>31 <em>Returns</em>: <tt>rhs.compare(typename sub_match&lt;BiIter&gt;::string_type(1, lhs)) == 0</tt>.</ins>
-</blockquote>
+</p></blockquote>
 </li>
 <li>Change 28.9.2 [re.submatch.op]/32 as indicated:
 <blockquote><pre>
 template &lt;class BiIter&gt;
  bool operator!=(typename iterator_traits&lt;BiIter&gt;::value_type const&amp; lhs,
    const sub_match&lt;BiIter&gt;&amp; rhs);
-</pre>
+</pre><p>
 32 <em>Returns</em>: <tt><del>basic_string&lt;typename iterator_traits&lt;BiIter&gt;::value_type&gt;(1, lhs) !=
 rhs.str()</del><ins>!(lhs == rhs)</ins></tt>.
-</blockquote>
+</p></blockquote>
 </li>
 <li>Change 28.9.2 [re.submatch.op]/33 as indicated:
 <blockquote><pre>
 template &lt;class BiIter&gt;
  bool operator&lt;(typename iterator_traits&lt;BiIter&gt;::value_type const&amp; lhs,
    const sub_match&lt;BiIter&gt;&amp; rhs);
-</pre>
+</pre><p>
 <del>33 <em>Returns</em>: <tt>basic_string&lt;typename iterator_traits&lt;BiIter&gt;::value_type>(1, lhs) &lt; rhs.str()</tt>.</del><br/>
 <ins>33 <em>Returns</em>: <tt>rhs.compare(typename sub_match&lt;BiIter&gt;::string_type(1, lhs)) &gt; 0</tt>.</ins>
-</blockquote>
+</p></blockquote>
 </li>
 <li>Change 28.9.2 [re.submatch.op]/34 as indicated:
 <blockquote><pre>
 template &lt;class BiIter&gt;
  bool operator&gt;(typename iterator_traits&lt;BiIter&gt;::value_type const&amp; lhs,
    const sub_match&lt;BiIter&gt;&amp; rhs);
-</pre>
+</pre><p>
 34 <em>Returns</em>: <tt><del>basic_string&lt;typename iterator_traits&lt;BiIter&gt;::value_type&gt;(1, lhs) &gt; rhs.str()</del><ins>rhs &lt; lhs</ins></tt>.
-</blockquote>
+</p></blockquote>
 </li>
 <li>Change 28.9.2 [re.submatch.op]/35 as indicated:
 <blockquote><pre>
 template &lt;class BiIter&gt;
  bool operator&gt;=(typename iterator_traits&lt;BiIter&gt;::value_type const&amp; lhs,
    const sub_match&lt;BiIter&gt;&amp; rhs);
-</pre>
+</pre><p>
 35 <em>Returns</em>: <tt><del>basic_string&lt;typename iterator_traits&lt;BiIter>::value_type>(1, lhs) &gt;= rhs.str()</del><ins>!(lhs &lt; rhs)</ins></tt>.
-</blockquote>
+</p></blockquote>
 </li>
 <li>Change 28.9.2 [re.submatch.op]/36 as indicated:
 <blockquote><pre>
 template &lt;class BiIter&gt;
  bool operator&lt;=(typename iterator_traits&lt;BiIter&gt;::value_type const&amp; lhs,
    const sub_match&lt;BiIter&gt;&amp; rhs);
-</pre>
+</pre><p>
 36 <em>Returns</em>: <tt><del>basic_string&lt;typename iterator_traits&lt;BiIter&gt;::value_type&gt;(1, lhs) &lt;= rhs.str()</del><ins>!(rhs &lt; lhs)</ins></tt>.
-</blockquote>
+</p></blockquote>
 </li>
 <li>Change 28.9.2 [re.submatch.op]/37 as indicated:
 <blockquote><pre>
 template &lt;class BiIter&gt;
  bool operator==(const sub_match&lt;BiIter&gt;&amp; lhs,
    typename iterator_traits&lt;BiIter&gt;::value_type const&amp; rhs);
-</pre>
+</pre><p>
 <del>37 <em>Returns</em>: <tt>lhs.str() == basic_string&lt;typename iterator_traits&lt;BiIter&gt;::value_type&gt;(1, rhs)</tt>.</del><br/>
 <ins>37 <em>Returns</em>: <tt>lhs.compare(typename sub_match&lt;BiIter&gt;::string_type(1, rhs)) == 0</tt>.</ins>
-</blockquote>
+</p></blockquote>
 </li>
 <li>Change 28.9.2 [re.submatch.op]/38 as indicated:
 <blockquote><pre>
 template &lt;class BiIter&gt;
  bool operator!=(const sub_match&lt;BiIter&gt;&amp; lhs,
    typename iterator_traits&lt;BiIter&gt;::value_type const&amp; rhs);
-</pre>
+</pre><p>
 38 <em>Returns</em>: <tt><del>lhs.str() != basic_string&lt;typename iterator_traits&lt;BiIter&gt;::value_type&gt;(1, rhs)</del><ins>!(lhs == rhs)</ins></tt>.
-</blockquote>
+</p></blockquote>
 </li>
 <li>Change 28.9.2 [re.submatch.op]/39 as indicated:
 <blockquote><pre>
 template &lt;class BiIter&gt;
  bool operator&lt;(const sub_match&lt;BiIter&gt;&amp; lhs,
    typename iterator_traits&lt;BiIter&gt;::value_type const&amp; rhs);
-</pre>
+</pre><p>
 <del>39 <em>Returns</em>: <tt>lhs.str() &lt; basic_string&lt;typename iterator_traits&lt;BiIter&gt;::value_type&gt;(1, rhs)</tt>.</del><br/>
 <ins>39 <em>Returns</em>: <tt>lhs.compare(typename sub_match&lt;BiIter&gt;::string_type(1, rhs)) &lt; 0</tt>.</ins>
-</blockquote>
+</p></blockquote>
 </li>
 <li>Change 28.9.2 [re.submatch.op]/40 as indicated:
 <blockquote><pre>
 template &lt;class BiIter&gt;
  bool operator&gt;(const sub_match&lt;BiIter&gt;&amp; lhs,
    typename iterator_traits&lt;BiIter&gt;::value_type const&amp; rhs);
-</pre>
+</pre><p>
 40 <em>Returns</em>: <tt><del>lhs.str() &gt; basic_string&lt;typename iterator_traits&lt;BiIter&gt;::value_type&gt;(1, rhs)</del><ins>rhs &lt; lhs</ins></tt>.
-</blockquote>
+</p></blockquote>
 </li>
 <li>Change 28.9.2 [re.submatch.op]/41 as indicated:
 <blockquote><pre>
 template &lt;class BiIter&gt;
  bool operator&gt;=(const sub_match&lt;BiIter&gt;&amp; lhs,
    typename iterator_traits&lt;BiIter&gt;::value_type const&amp; rhs);
-</pre>
+</pre><p>
 41 <em>Returns</em>: <tt><del>lhs.str() &gt;= basic_string&lt;typename iterator_traits&lt;BiIter&gt;::value_type&gt;(1, rhs)</del><ins>!(lhs &lt; rhs)</ins></tt>.
-</blockquote>
+</p></blockquote>
 </li>
 <li>Change 28.9.2 [re.submatch.op]/42 as indicated:
 <blockquote><pre>
 template &lt;class BiIter&gt;
  bool operator&lt;=(const sub_match&lt;BiIter&gt;&amp; lhs,
    typename iterator_traits&lt;BiIter&gt;::value_type const&amp; rhs);
-</pre>
+</pre><p>
 42 <em>Returns</em>: <tt><del>lhs.str() &lt;= basic_string&lt;typename iterator_traits&lt;BiIter&gt;::value_type&gt;(1, rhs)</del><ins>!(rhs &lt; lhs)</ins></tt>.
-</blockquote>
+</p></blockquote>
 </li>
 </ol>
 

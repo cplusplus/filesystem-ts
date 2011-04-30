@@ -4,20 +4,19 @@
 ] >
 
 <issue num="1193" status="WP">
-<title><tt>default_delete</tt> cannot be instantiated with  incomplete types</title>
+<title><tt>default_delete</tt> cannot be instantiated with incomplete types</title>
 <section><sref ref="[unique.ptr.dltr]"/></section>
 <submitter>Daniel Kr&uuml;gler</submitter>
 <date>18 Aug 2009</date>
 
 <discussion>
 <p>
-According to the general rules of <sref ref="[res.on.functions]"/>/2 b 5 the effects
+According to the general rules of <sref ref="[res.on.functions]"/> p 2 b 5 the effects
 are undefined, if an incomplete type is used to instantiate a library template. But neither in
 <sref ref="[unique.ptr.dltr]"/> nor
 in any other place of the standard such explicit allowance is given.
 Since this template is intended to be instantiated with incomplete
-types, this must
-be fixed.
+types, this must be fixed.
 </p>
 
 <note>
@@ -30,23 +29,23 @@ be fixed.
 
 <blockquote>
 <p>
-LWG 1193 tries to support unique_ptr for incomplete types.  I believe the
+LWG 1193 tries to support <tt>unique_ptr</tt> for incomplete types.  I believe the
 proposed wording goes too far:
 </p>
 
-<blockquote>
+<blockquote><p>
 The template parameter <tt>T</tt> of <tt>default_delete</tt> may be an
 incomplete type.
-</blockquote>
+</p></blockquote>
 
 <p>
 Do we really want to support <tt>cv-void</tt>?  Suggested ammendment:
 </p>
 
-<blockquote>
+<blockquote><p>
 The template parameter <tt>T</tt> of <tt>default_delete</tt> may be an
 incomplete type <ins>other than <tt>cv-void</tt></ins>.
-</blockquote>
+</p></blockquote>
 
 <p>
 We might also consider saying something about arrays of incomplete types.

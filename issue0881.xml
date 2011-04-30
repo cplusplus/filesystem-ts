@@ -4,7 +4,7 @@
 ] >
 
 <issue num="881" status="WP">
-<title>shared_ptr conversion issue</title>
+<title><tt>shared_ptr</tt> conversion issue</title>
 <section><sref ref="[util.smartptr.shared.const]"/></section>
 <submitter>Peter Dimov</submitter>
 <date>30 Aug 2008</date>
@@ -23,10 +23,10 @@ the converting move constructor is not constrained.
 San Francisco:
 </note>
 
-<blockquote>
+<blockquote><p>
 We might be able to move this to NAD, Editorial once shared_ptr is
 conceptualized, but we want to revisit this issue to make sure.
-</blockquote>
+</p></blockquote>
 
 <note>
 2009-07 Frankfurt
@@ -52,14 +52,14 @@ We need to change the Requires clause of the move constructor:
 shared_ptr(shared_ptr&amp;&amp; r); 
 template&lt;class Y&gt; shared_ptr(shared_ptr&lt;Y&gt;&amp;&amp; r); 
 </pre>
-<blockquote>
+<blockquote><p>
 <i><del>Requires</del> <ins>Remarks</ins>:</i> <del>For the second constructor <tt>Y*</tt> shall be
 convertible to <tt>T*</tt>.</del>
 <ins>
 The second constructor shall not participate in overload resolution
 unless <tt>Y*</tt> is convertible to <tt>T*</tt>.
 </ins>
-</blockquote>
+</p></blockquote>
 </blockquote>
 
 <p>

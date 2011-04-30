@@ -4,7 +4,7 @@
 ] >
 
 <issue num="1211" status="Resolved">
-<title>move iterators should be restricted as input iterators</title>
+<title>Move iterators should be restricted as input iterators</title>
 <section><sref ref="[move.iterator]"/></section>
 <submitter>Alisdair Meredith</submitter>
 <date>18 Sep 2009</date>
@@ -35,10 +35,10 @@ Forward iterators <sref ref="[forward.iterators]"/>
 Table 102 &mdash; Forward iterator requirements
 </p>
 
-<blockquote>
+<blockquote><p>
 For expression <tt>*a</tt> the return type is:
 "<tt>T&amp;</tt> if <tt>X</tt> is mutable, otherwise <tt>const T&amp;</tt>"
-</blockquote>
+</p></blockquote>
 </blockquote>
 
 <p>
@@ -61,10 +61,10 @@ before filing that issue.
 2009-10 post-Santa Cruz:
 </note>
 
-<blockquote>
+<blockquote><p>
 Move to Open. Howard to put his rationale mentioned above into the issue
 as a note.
-</blockquote>
+</p></blockquote>
 
 <note>
 2009-10-26 Howard adds:
@@ -93,10 +93,10 @@ down to make the "hole", and then insert the new elements directly to their corr
 place.
 </p>
 
-<blockquote><b>
+<blockquote><p><b>
 The insert-with-random-access-iterators algorithm is considerably more efficient
 than the insert-with-input-iterators algorithm
-</b></blockquote>
+</b></p></blockquote>
 
 <p>
 Now consider:
@@ -104,11 +104,11 @@ Now consider:
 
 <blockquote><pre>
 vector&lt;A&gt; v;
-<font color="#C80000">//  ... build up a large vector of A ...</font>
+<span style="color:#C80000">//  ... build up a large vector of A ...</span>
 vector&lt;A&gt; temp;
-<font color="#C80000">//  ... build up a large temporary vector of A to later be inserted ...</font>
+<span style="color:#C80000">//  ... build up a large temporary vector of A to later be inserted ...</span>
 typedef move_iterator&lt;vector&lt;A&gt;::iterator&gt; MI;
-<font color="#C80000">//  Now insert the temporary elements:</font>
+<span style="color:#C80000">//  Now insert the temporary elements:</span>
 v.insert(v.begin() + N, MI(temp.begin()), MI(temp.end()));
 </pre></blockquote>
 

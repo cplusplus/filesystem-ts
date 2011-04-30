@@ -17,10 +17,10 @@ property of this function is described by it's effects in
 <sref ref="[basic.ios.members]"/>/19:
 </p>
 
-<blockquote>
+<blockquote><p>
 <i>Effects:</i> Associates the <tt>basic_streambuf</tt> object pointed to by sb with
 this stream without calling <tt>clear()</tt>.
-</blockquote>
+</p></blockquote>
 
 <p>
 This means that implementors of or those who derive from existing IO classes
@@ -56,11 +56,11 @@ set a non-0 value.
 2009-10 Santa Cruz:
 </note>
 
-<blockquote>
+<blockquote><p>
 Moved to Open.  Martin volunteers to provide new wording, where
 <tt>set_rdbuf()</tt> sets the <tt>badbit</tt> but does not cause an
 exception to be thrown like a call to <tt>clear()</tt> would.
-</blockquote>
+</p></blockquote>
 
 <note>
 2009-10-20 Martin provides wording:
@@ -101,14 +101,14 @@ catch(ios_base::failure) {
 </blockquote>
 </blockquote>
 
-<rationale>
+<rationale><p>
 We need to be able to call <tt>set_rdbuf()</tt> on stream objects
 for which (<tt>rdbuf() == 0</tt>) holds without causing <tt>ios_base::failure</tt> to
 be thrown. We also don't want <tt>badbit</tt> to be set as a result of
 setting <tt>rdbuf()</tt> to 0 if it wasn't set before the call. This changed
 Effects clause maintains the current behavior (as of N2914) without
 requiring that <tt>sb</tt> be non-null.
-</rationale>
+</p></rationale>
 
 <note>
 Post-Rapperswil
@@ -119,9 +119,9 @@ Several reviewers and the submitter believe that the best solution would be to a
 buffer shall not be a null pointer value.
 </p>
 
-<blockquote>
+<blockquote><p>
 Moved to Tentatively Ready with revised wording provided by Daniel after 5 positive votes on c++std-lib.
-</blockquote>
+</p></blockquote>
 
 <note>
 Adopted at 2010-11 Batavia
@@ -135,9 +135,9 @@ Adopted at 2010-11 Batavia
 <blockquote><pre>
 void set_rdbuf(basic_streambuf&lt;charT, traits&gt;* sb);
 </pre>
-<blockquote>
+<blockquote><p>
 <ins>?? <em>Requires</em>: <tt>sb != nullptr</tt>.</ins>
-<p>
+<p/>
 23 <em>Effects</em>: Associates the <tt>basic_streambuf</tt> object pointed to by <tt>sb</tt> with this stream without calling <tt>clear()</tt>.
 </p>
 <p>
@@ -151,8 +151,8 @@ void set_rdbuf(basic_streambuf&lt;charT, traits&gt;* sb);
 </ol>
 </resolution>
 
-<rationale>
+<rationale><p>
 We believe that setting a <tt>nullptr</tt> stream buffer can be prevented.
-</rationale>
+</p></rationale>
 
 </issue>

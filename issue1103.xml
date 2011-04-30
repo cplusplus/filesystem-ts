@@ -34,8 +34,8 @@ However the intent is for:
 <blockquote><pre>
 std::system_error se(std::errc::not_a_directory, "In FooBar");
 ...
-se.what();  <font color="#C80000">// returns something along the lines of:</font>
-            <font color="#C80000">//   "In FooBar: Not a directory"</font>
+se.what();  <span style="color:#C80000">// returns something along the lines of:</span>
+            <span style="color:#C80000">//   "In FooBar: Not a directory"</span>
 </pre></blockquote>
 
 <p>
@@ -107,54 +107,54 @@ In <sref ref="[syserr.syserr.members]"/>, change the following constructor postc
 <pre>
 system_error(error_code ec, const string&amp; what_arg);
 </pre>
-<blockquote>
+<blockquote><p>
 -2- <i>Postconditions:</i> <tt>code() == ec</tt>
 and <tt><del>strcmp(runtime_error::what(), what_arg.c_str()) == 0</del>
 <ins>string(what()).find(what_arg) != string::npos</ins></tt>.
-</blockquote>
+</p></blockquote>
 
 <pre>
 system_error(error_code ec, const char* what_arg);
 </pre>
-<blockquote>
+<blockquote><p>
 -4- <i>Postconditions:</i> <tt>code() == ec</tt>
 and <tt><del>strcmp(runtime_error::what(), what_arg) == 0</del>
 <ins>string(what()).find(what_arg) != string::npos</ins></tt>.
-</blockquote>
+</p></blockquote>
 
 <pre>
 system_error(error_code ec);
 </pre>
-<blockquote>
+<blockquote><p>
 -6- <i>Postconditions:</i> <tt>code() == ec</tt>
 <del>and <tt>strcmp(runtime_error::what(), ""</tt></del>.
-</blockquote>
+</p></blockquote>
 
 <pre>
 system_error(int ev, const error_category&amp; ecat, const string&amp; what_arg);
 </pre>
-<blockquote>
+<blockquote><p>
 -8- <i>Postconditions:</i> <tt>code() == error_code(ev, ecat)</tt>
 and <tt><del>strcmp(runtime_error::what(), what_arg.c_str()) == 0</del>
 <ins>string(what()).find(what_arg) != string::npos</ins></tt>.
-</blockquote>
+</p></blockquote>
 
 <pre>
 system_error(int ev, const error_category&amp; ecat, const char* what_arg);
 </pre>
-<blockquote>
+<blockquote><p>
 -10- <i>Postconditions:</i> <tt>code() == error_code(ev, ecat)</tt>
 and <tt><del>strcmp(runtime_error::what(), what_arg) == 0</del>
 <ins>string(what()).find(what_arg) != string::npos</ins></tt>.
-</blockquote>
+</p></blockquote>
 
 <pre>
 system_error(int ev, const error_category&amp; ecat);
 </pre>
-<blockquote>
+<blockquote><p>
 -12- <i>Postconditions:</i> <tt>code() == error_code(ev, ecat)</tt>
 <del>and <tt>strcmp(runtime_error::what(), "") == 0</tt></del>.
-</blockquote>
+</p></blockquote>
 
 </blockquote>
 
@@ -254,9 +254,9 @@ need not be repeated here).
 <pre>
 <del>const char* what() const;</del>
 </pre>
-<blockquote>
+<blockquote><p>
 <del>-7- <i>Returns:</i> The message <tt>msg</tt> with which the exception was created.</del>
-</blockquote>
+</p></blockquote>
 
 </blockquote>
 

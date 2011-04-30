@@ -59,17 +59,17 @@ Further discussion and possible resolutions in c++std-lib-23049.
 <note>
 Summit:
 </note>
-<blockquote>
+<blockquote><p>
 Move to review. Agree with proposed resolution.
-</blockquote>
+</p></blockquote>
 
 <note>
 Batavia (2009-05):
 </note>
-<blockquote>
+<blockquote><p>
 We agree with the proposed resolution.
 Move to Tentatively Ready.
-</blockquote>
+</p></blockquote>
 </discussion>
 
 <resolution>
@@ -78,25 +78,25 @@ Move to Tentatively Ready.
 Change <sref ref="[thread.lock.algorithm]"/>, p2:
 </p>
 
-<blockquote>
+<blockquote><p>
 -2- <i>Effects:</i> Calls <tt>try_lock()</tt> for each argument in order
 beginning with the first until all arguments have been processed or a
 call to <tt>try_lock()</tt> fails, either by returning <tt>false</tt> or by throwing an
 exception. If a call to <tt>try_lock()</tt> fails, <tt>unlock()</tt> shall be called for
 all prior arguments<ins> and there shall be no further calls to <tt>try_lock()</tt></ins>.
-</blockquote>
+</p></blockquote>
 
 <p>
 Delete the note from <sref ref="[thread.lock.algorithm]"/>, p3
 </p>
 
-<blockquote>
+<blockquote><p>
 -3- <i>Returns:</i> -1 if all calls to <tt>try_lock()</tt> returned <tt>true</tt>,
 otherwise a 0-based index value that indicates 
 the argument for which <tt>try_lock()</tt> returned <tt>false</tt>. <del>[<i>Note:</i>
 On return, either all arguments will be 
 locked or none will be locked. -- <i>end note</i>]</del>
-</blockquote>
+</p></blockquote>
 </resolution>
 
 </issue>

@@ -4,7 +4,7 @@
 ] >
 
 <issue num="975" status="WP">
-<title><tt>is_convertible</tt> cannot be instantiated for  non-convertible types</title>
+<title><tt>is_convertible</tt> cannot be instantiated for non-convertible types</title>
 <section><sref ref="[meta.rel]"/></section>
 <submitter>Daniel Kr&uuml;gler</submitter>
 <date>25 Jan 2009</date>
@@ -20,7 +20,7 @@ Related to <iref ref="1114"/>.
 <p>
 The current specification of <tt>std::is_convertible</tt> (reference is draft
 <a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2008/n2798.pdf">N2798</a>)
-is basically defined by <sref ref="[meta.rel]"/>/4:
+is basically defined by <sref ref="[meta.rel]"/> p.4:
 </p>
 
 <blockquote>
@@ -40,7 +40,7 @@ To test() {
 
 <p>
 [<i>Note:</i> This requirement gives well defined results for reference
-types, void types, array types, and function types. --<i>end note</i>]
+types, void types, array types, and function types. &mdash; <i>end note</i>]
 </p>
 </blockquote>
 
@@ -83,7 +83,7 @@ To test() {
 
 <p>
 [<i>Note:</i> This definition gives well defined results for <tt>reference</tt>
-types, <tt>void</tt> types, array types, and function types. --<i>end note</i>]
+types, <tt>void</tt> types, array types, and function types. &mdash; <i>end note</i>]
 </p>
 </blockquote>
 
@@ -93,7 +93,7 @@ Post Summit:
 
 <blockquote>
 <p>
-Jens: Checking that code is well-formed and then returning true/false
+Jens: Checking that code is well-formed and then returning <tt>true</tt>&#4;<tt>false</tt>
 sounds like speculative compilation. John Spicer would really dislike
 this. Please find another wording suggesting speculative compilation.
 </p>
@@ -156,12 +156,12 @@ To test() {
 In <sref ref="[meta.rel]"/>/4 change:
 </p>
 
-<blockquote>
+<blockquote><p>
 <del>In order to instantiate the template <tt>is_convertible&lt;From, To&gt;</tt>, the
 following code shall be well formed</del> <ins>If the following code
 is well formed <tt>is_convertible&lt;From, To&gt;::value</tt> is <tt>true</tt>, otherwise
 <tt>false</tt></ins>:[..]
-</blockquote>
+</p></blockquote>
 
 <p><b>Revision 2</b></p>
 
@@ -225,10 +225,10 @@ void types, array types, and function types. <i>-- end note</i>]
 <note>
 Batavia (2009-05):
 </note>
-<blockquote>
+<blockquote><p>
 We agree with the proposed resolution.
 Move to Tentatively Ready.
-</blockquote>
+</p></blockquote>
 </discussion>
 
 <resolution>
@@ -281,7 +281,7 @@ To test() {
 
 <p>
 [<i>Note:</i> This requirement gives well defined results for reference types,
-void types, array types, and function types. <i>&mdash; end note</i>]
+void types, array types, and function types. &mdash; <i>end note</i>]
 </p>
 
 </blockquote>

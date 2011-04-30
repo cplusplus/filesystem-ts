@@ -4,7 +4,7 @@
 ] >
 
 <issue num="1138" status="WP">
-<title>unusual return value for operator+</title>
+<title>Unusual return value for <tt>operator+</tt></title>
 <section><sref ref="[string::op+]"/></section>
 <submitter>Alisdair Meredith</submitter>
 <date>12 Jun 2009</date>
@@ -40,9 +40,9 @@ auto s = string{"x"} + string{y};
 2009-11-05 Howard adds:
 </note>
 
-<blockquote>
+<blockquote><p>
 Moved to Tentatively Ready after 5 positive votes on c++std-lib.
-</blockquote>
+</p></blockquote>
 </discussion>
 
 <resolution>
@@ -102,62 +102,62 @@ template&lt;class charT, class traits, class Allocator&gt;
     operator+(basic_string&lt;charT,traits,Allocator&gt;&amp;&amp; lhs,
               const basic_string&lt;charT,traits,Allocator&gt;&amp; rhs);
 </pre>
-<blockquote>
+<blockquote><p>
 <i>Returns:</i> <tt><ins>std::move(</ins>lhs.append(rhs)<ins>)</ins></tt>
-</blockquote>
+</p></blockquote>
 <pre>
 template&lt;class charT, class traits, class Allocator&gt;
   basic_string&lt;charT,traits,Allocator&gt;<del>&amp;&amp;</del>
     operator+(const basic_string&lt;charT,traits,Allocator&gt;&amp; lhs,
               basic_string&lt;charT,traits,Allocator&gt;&amp;&amp; rhs);
 </pre>
-<blockquote>
+<blockquote><p>
 <i>Returns:</i> <tt><ins>std::move(</ins>rhs.insert(0, lhs)<ins>)</ins></tt>
-</blockquote>
+</p></blockquote>
 <pre>
 template&lt;class charT, class traits, class Allocator&gt;
   basic_string&lt;charT,traits,Allocator&gt;<del>&amp;&amp;</del>
     operator+(basic_string&lt;charT,traits,Allocator&gt;&amp;&amp; lhs,
               basic_string&lt;charT,traits,Allocator&gt;&amp;&amp; rhs);
 </pre>
-<blockquote>
+<blockquote><p>
 <i>Returns:</i> <tt><ins>std::move(</ins>lhs.append(rhs)<ins>)</ins></tt> [<i>Note:</i> Or equivalently
 <tt><ins>std::move(</ins>rhs.insert(0, lhs)<ins>)</ins></tt> &mdash; <i>end note</i>]
-</blockquote>
+</p></blockquote>
 <pre>
 template&lt;class charT, class traits, class Allocator&gt;
   basic_string&lt;charT,traits,Allocator&gt;<del>&amp;&amp;</del>
     operator+(const charT* lhs,
               basic_string&lt;charT,traits,Allocator&gt;&amp;&amp; rhs);
 </pre>
-<blockquote>
+<blockquote><p>
 <i>Returns:</i> <tt><ins>std::move(</ins>rhs.insert(0, lhs)<ins>)</ins></tt>.
-</blockquote>
+</p></blockquote>
 <pre>
 template&lt;class charT, class traits, class Allocator&gt;
   basic_string&lt;charT,traits,Allocator&gt;<del>&amp;&amp;</del>
     operator+(charT lhs, basic_string&lt;charT,traits,Allocator&gt;&amp;&amp; rhs);
 </pre>
-<blockquote>
+<blockquote><p>
 <i>Returns:</i> <tt><ins>std::move(</ins>rhs.insert(0, 1, lhs)<ins>)</ins></tt>.
-</blockquote>
+</p></blockquote>
 <pre>
 template&lt;class charT, class traits, class Allocator&gt;
   basic_string&lt;charT,traits,Allocator&gt;<del>&amp;&amp;</del>
     operator+(basic_string&lt;charT,traits,Allocator&gt;&amp;&amp; lhs,
               const charT* rhs);
 </pre>
-<blockquote>
+<blockquote><p>
 <i>Returns:</i> <tt><ins>std::move(</ins>lhs.append(rhs)<ins>)</ins></tt>.
-</blockquote>
+</p></blockquote>
 <pre>
 template&lt;class charT, class traits, class Allocator&gt;
   basic_string&lt;charT,traits,Allocator&gt;<del>&amp;&amp;</del>
     operator+(basic_string&lt;charT,traits,Allocator&gt;&amp;&amp; lhs, charT rhs);
 </pre>
-<blockquote>
+<blockquote><p>
 <i>Returns:</i> <tt><ins>std::move(</ins>lhs.append(1, rhs)<ins>)</ins></tt>.
-</blockquote>
+</p></blockquote>
 </blockquote>
 
 </blockquote>

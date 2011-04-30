@@ -81,17 +81,17 @@ attempts to <tt>make shared_ptr</tt> thread-unsafe.
 <p>
 I'd mildly prefer if
 </p>
-<blockquote>
+<blockquote><p>
 [<i>Note:</i> This is true in spite of that fact that such functions often
 modify <tt>use_count()</tt> <i>--end note</i>]
-</blockquote>
+</p></blockquote>
 <p>
 is changed to
 </p>
-<blockquote>
+<blockquote><p>
 [<i>Note:</i> This is true in spite of that fact that such functions often
 cause a change in <tt>use_count()</tt> <i>--end note</i>]
-</blockquote>
+</p></blockquote>
 <p>
 (or something along these lines) to emphasise that <tt>use_count()</tt> is not,
 conceptually, a variable, but a return value.
@@ -122,11 +122,11 @@ Hans to improve wording in consultation with Pete. Leave Open.
 2009-10 Santa Cruz:
 </note>
 
-<blockquote>
+<blockquote><p>
 Move to Ready. Ask Editor to clear up wording a little when integrating to
 make it clear that the portion after the first comma only applies for
 the presence of data races.
-</blockquote>
+</p></blockquote>
 
 <note>
 2009-10-24 Hans adds:
@@ -142,13 +142,13 @@ doesn't say the right thing.
 I suspect we really want to say something along the lines of:
 </p>
 
-<blockquote>
+<blockquote><p>
 For purposes of determining the presence of a data race, member
 functions access and modify only the <tt>shared_ptr</tt> and
 <tt>weak_ptr</tt> objects themselves and not objects they refer to.
 Changes in <tt>use_count()</tt> do not reflect modifications that can
 introduce data races.
-</blockquote>
+</p></blockquote>
 
 <p>
 But I think this needs further discussion by experts to make sure this
@@ -210,12 +210,12 @@ anywhere else, since nothing else has the problem with the modified
 Insert a new paragraph at the end of <sref ref="[util.smartptr.shared]"/>:
 </p>
 
-<blockquote>
+<blockquote><p>
 For purposes of determining the presence of a data race, member functions access
 and modify only the <tt>shared_ptr</tt> and <tt>weak_ptr</tt> objects themselves
 and not objects they refer to. Changes in <tt>use_count()</tt> do not reflect
 modifications that can introduce data races.
-</blockquote>
+</p></blockquote>
 </resolution>
 
 </issue>

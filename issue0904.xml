@@ -4,7 +4,7 @@
 ] >
 
 <issue num="904" status="WP">
-<title>result_of argument types</title>
+<title><tt>result_of</tt> argument types</title>
 <section><sref ref="[func.ret]"/></section>
 <submitter>Jonathan Wakely</submitter>
 <date>10 Sep 2008</date>
@@ -14,10 +14,10 @@
 The WP and TR1 have the same text regarding the argument types of a
 <tt>result_of</tt> expression:
 </p>
-<blockquote>
+<blockquote><p>
 The values <tt>ti</tt> are lvalues when the corresponding type <tt>Ti</tt> is a
 reference type, and rvalues otherwise.
-</blockquote>
+</p></blockquote>
 <p>
 I read this to mean that this compiles:
 </p>
@@ -53,9 +53,9 @@ std::result_of&lt; X(int&amp;&amp;) &gt;::type i = x(std::move(0));
 Post Summit:
 </note>
 
-<blockquote>
+<blockquote><p>
 Recommend Tentatively Ready.
-</blockquote>
+</p></blockquote>
 
 </discussion>
 
@@ -64,11 +64,11 @@ Recommend Tentatively Ready.
 Change <sref ref="[func.ret]"/>, p1:
 </p>
 
-<blockquote>
+<blockquote><p>
 ... The values <tt>ti</tt> are lvalues 
 when the corresponding type <tt>Ti</tt> is a<ins>n</ins> <ins>lvalue-</ins>reference type,
 and rvalues otherwise. 
-</blockquote>
+</p></blockquote>
 </resolution>
 
 </issue>

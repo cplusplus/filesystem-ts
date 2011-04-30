@@ -119,10 +119,10 @@ standard library naming practice.
 Post Summit:
 </note>
 
-<blockquote>
+<blockquote><p>
 Agreement that this is wise and essential, text provided works and has
 been implemented. Seems to be widespread consensus. Move to Tentative Ready.
-</blockquote>
+</p></blockquote>
 
 </discussion>
 
@@ -197,7 +197,7 @@ specified for class <tt>error_category</tt>. The object's <tt>name</tt> virtual 
 shall return a pointer to the string <tt>"system"</tt>. The object's
 <tt>default_error_condition</tt> virtual function shall behave as follows:
 </p>
-<blockquote>
+<blockquote><p>
 If the argument <tt>ev</tt> corresponds to a POSIX <tt>errno</tt> value <tt>posv</tt>, the function
 shall return <tt>error_condition(posv, generic_category<ins>()</ins>)</tt>. Otherwise, the
 function shall return <tt>error_condition(ev, system_category<ins>()</ins>)</tt>. What
@@ -205,13 +205,13 @@ constitutes correspondence for any given operating system is
 unspecified. [<i>Note:</i> The number of potential system error codes is large
 and unbounded, and some may not correspond to any POSIX <tt>errno</tt> value.
 Thus implementations are given latitude in determining correspondence.
-<i>-- end note</i>]
-</blockquote>
-</blockquote>
-
+&mdash; <i>end note</i>]
+</p></blockquote>
 </blockquote>
 
-<p>Change <sref ref="[syserr.errcode.constructors]"/> Class error_code constructors 
+</blockquote>
+
+<p>Change <sref ref="[syserr.errcode.constructors]"/> Class <tt>error_code</tt> constructors 
 as indicated:</p>
 <blockquote>
  <pre>error_code();</pre>
@@ -220,7 +220,7 @@ as indicated:</p>
  <p><i>Postconditions:</i> <code>val_ == 0 </code>and <code>cat_ == &amp;system_category</code><tt><ins>()</ins></tt>.</p>
  </blockquote>
 </blockquote>
-<p>Change <sref ref="[syserr.errcode.modifiers]"/> Class error_code modifiers as 
+<p>Change <sref ref="[syserr.errcode.modifiers]"/> Class <tt>error_code</tt> modifiers as 
 indicated:</p>
 <blockquote>
  <pre>void clear();</pre>
@@ -229,7 +229,7 @@ indicated:</p>
  system_category</code><tt><ins>()</ins></tt>.</p>
  </blockquote>
 </blockquote>
-<p>Change <sref ref="[syserr.errcode.nonmembers]"/> Class error_code non-member 
+<p>Change <sref ref="[syserr.errcode.nonmembers]"/> Class <tt>error_code</tt> non-member 
 functions as indicated:</p>
 <blockquote>
  <pre>error_code make_error_code(errc e);</pre>
@@ -237,7 +237,7 @@ functions as indicated:</p>
  <p><i>Returns:</i> <code>error_code(static_cast&lt;int&gt;(e), generic_category</code><tt><ins>()</ins></tt><code>)</code>.</p>
  </blockquote>
 </blockquote>
-<p>Change <sref ref="[syserr.errcondition.constructors]"/> Class error_condition 
+<p>Change <sref ref="[syserr.errcondition.constructors]"/> Class <tt>error_condition</tt> 
 constructors as indicated:</p>
 <blockquote>
  <pre>error_condition();</pre>
@@ -246,7 +246,7 @@ constructors as indicated:</p>
  <p><i>Postconditions:</i> <code>val_ == 0</code> and <code>cat_ == &amp;generic_category</code><tt><ins>()</ins></tt>.</p>
  </blockquote>
 </blockquote>
-<p>Change <sref ref="[syserr.errcondition.modifiers]"/> Class error_condition 
+<p>Change <sref ref="[syserr.errcondition.modifiers]"/> Class <tt>error_condition</tt> 
 modifiers as indicated:</p>
 <blockquote>
  <pre>void clear();</pre>
@@ -255,7 +255,7 @@ modifiers as indicated:</p>
  generic_category</code><tt><ins>()</ins></tt>.</p>
  </blockquote>
 </blockquote>
-<p>Change <sref ref="[syserr.errcondition.nonmembers]"/> Class error_condition 
+<p>Change <sref ref="[syserr.errcondition.nonmembers]"/> Class <tt>error_condition</tt> 
 non-member functions as indicated:</p>
 <blockquote>
  <pre>error_condition make_error_condition(errc e);</pre>
@@ -263,7 +263,7 @@ non-member functions as indicated:</p>
  <p><i>Returns:</i> <tt>error_condition(static_cast&lt;int&gt;(e), generic_category<ins>()</ins>)</tt>.</p>
  </blockquote>
 </blockquote>
- <p>Change <sref ref="[iostreams.base]"/> Iostreams base classes, Header &lt;ios&gt; 
+ <p>Change <sref ref="[iostreams.base]"/> Iostreams base classes, Header <tt>&lt;ios&gt;</tt> 
  synopsis as indicated:</p>
 <blockquote>
  <pre>concept_map ErrorCodeEnum&lt;io_errc&gt; { };
@@ -274,13 +274,13 @@ error_condition make_error_condition(io_errc e);
 <p>Change <sref ref="[ios::failure]"/> Class ios_base::failure, paragraph 2 as 
 indicated:</p>
 <blockquote>
-<p>When throwing ios_base::failure exceptions, implementations should provide 
-values of ec that identify the specific reason for the failure. [ Note: Errors 
+<p>When throwing <tt>ios_base::failure</tt> exceptions, implementations should provide 
+values of <tt>ec</tt> that identify the specific reason for the failure. [ <i>Note</i>: Errors 
 arising from the operating system would typically be reported as <tt>
 system_category</tt><tt><ins>()</ins></tt> errors with an error value of the 
 error number reported by the operating system. Errors arising from within the 
 stream library would typically be reported as <tt>error_code(io_errc::stream, 
-iostream_category<ins>()</ins>)</tt>. --end note ]</p>
+iostream_category<ins>()</ins>)</tt>. &mdash; <i>end note</i> ]</p>
 </blockquote>
 <p>Change <sref ref="[error.reporting]"/> Error reporting as indicated:</p>
 <blockquote>

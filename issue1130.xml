@@ -46,9 +46,9 @@ template&lt;class E&gt; exception_ptr create_exception(E e);
 with the following explanatory paragraph after it:
 </p>
 
-<blockquote>
+<blockquote><p>
 Creates an <tt>exception_ptr</tt> that refers to a copy of <tt>e</tt>.
-</blockquote>
+</p></blockquote>
 
 <note>
 2009-05-13 Daniel adds:
@@ -80,9 +80,9 @@ We have not a single <tt>create_*</tt> function in the library, it was always
 2009-05-13 Peter adds:
 </note>
 
-<blockquote>
+<blockquote><p>
 <tt>make_exception_ptr</tt> works for me.
-</blockquote>
+</p></blockquote>
 
 <note>
 2009-06-02 Thomas J. Gritzan adds:
@@ -108,23 +108,23 @@ exception_ptr make_exception_ptr&lt;exception_ptr&gt;(exception_ptr e) = delete;
 2009 Santa Cruz:
 </note>
 
-<blockquote>
+<blockquote><p>
 Move to Review for the time being. The subgroup thinks this is a good
 idea, but doesn't want to break compatibility unnecessarily if someone
 is already shipping this. Let's talk to Benjamin and PJP tomorrow to
 make sure neither objects.
-</blockquote>
+</p></blockquote>
 
 <note>
 2009-11-16 Jonathan Wakely adds:
 </note>
 
-<blockquote>
+<blockquote><p>
 GCC 4.4 shipped with <tt>copy_exception</tt> but we could certainly keep that
 symbol in the library (but not the headers) so it can still be found
 by any apps foolishly relying on the experimental C++0x mode being ABI
 stable.
-</blockquote>
+</p></blockquote>
 
 <note>
 2009-11-16 Peter adopts wording supplied by Daniel.
@@ -185,12 +185,12 @@ try {
 Change <sref ref="[futures.promise]"/>/7 as indicated:
 </p>
 
-<blockquote>
+<blockquote><p>
 <i>Effects:</i> if the associated state of <tt>*this</tt> is not ready, stores an exception
 object of type <tt>future_error</tt> with an error code of <tt>broken_promise</tt> as if by
 <tt>this-&gt;set_exception(<del>copy_exception</del><ins>make_exception_ptr</ins>(
 future_error(future_errc::broken_promise))</tt>.  Destroys ...
-</blockquote>
+</p></blockquote>
 </li>
 </ol>
 

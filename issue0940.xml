@@ -15,16 +15,15 @@
 
 <p>
 Regarding the <tt>std::distance</tt> - function, <sref ref="[iterator.operations]"/>
-/ 4 says:
+p.4 says:
 </p>
-<blockquote>
+<blockquote><p>
 Returns the number of increments or decrements needed to get from first to last.
-</blockquote>
+</p></blockquote>
 <p>
 This sentence is completely silent about the sign of the return value.
-<sref ref="[iterator.operations]"/> / 1 gives more information about the
-underlying operations, but
-again no inferences about the sign can be made.
+<sref ref="[iterator.operations]"/> p.1 gives more information about the
+underlying operations, but again no inferences about the sign can be made.
 Strictly speaking, that is taking that sentence literally, I think this
 sentence even implies a positive return value in all cases, as the
 number of increments or decrements is clearly a ratio scale variable,
@@ -68,28 +67,28 @@ Referring to
 <sref ref="[iterator.operations]"/>/ p.4 says:
 </p>
 
-<blockquote>
+<blockquote><p>
 <i>Effects:</i> Returns the number of increments or decrements needed to get
 from <tt>first</tt> to <tt>last</tt>.
-</blockquote>
+</p></blockquote>
 
 <p>
 IMO the part " or decrements" is in contradiction to p. 5 which says
 </p>
 
-<blockquote>
+<blockquote><p>
 <i>Requires:</i> <tt>last</tt> shall be reachable from <tt>first</tt>.
-</blockquote>
+</p></blockquote>
 
 <p>
 because "reachable" is defined in <sref ref="[iterator.concepts]"/>/7 as
 </p>
 
-<blockquote>
+<blockquote><p>
 An iterator <tt>j</tt> is called reachable from an iterator <tt>i</tt> if and only if
-there is a finite
-sequence of applications of the expression <tt>++i</tt> that makes <tt>i == j</tt>.[..]
-</blockquote>
+there is a finite sequence of applications of the expression <tt>++i</tt> that makes 
+<tt>i == j</tt>.[..]
+</p></blockquote>
 
 <p>
 Here is wording that would be consistent with this definition of "reachable":
@@ -99,10 +98,10 @@ Here is wording that would be consistent with this definition of "reachable":
 Change <sref ref="[iterator.operations]"/> p4 as follows:
 </p>
 
-<blockquote>
+<blockquote><p>
 <i>Effects:</i> Returns the number of increments <del>or decrements</del>
 needed to get from <tt>first</tt> to <tt>last</tt>.
-</blockquote>
+</p></blockquote>
 
 </blockquote>
 
@@ -115,9 +114,9 @@ Thomas adds more discussion and an alternative view point
 Summit:
 </note>
 
-<blockquote>
+<blockquote><p>
 The proposed wording below was verbally agreed to.  Howard provided.
-</blockquote>
+</p></blockquote>
 
 <note>
 Batavia (2009-05):
@@ -137,18 +136,18 @@ Move to Tentatively Ready.
 2009-07 Frankfurt
 </note>
 
-<blockquote>
+<blockquote><p>
 Moved from Tentatively Ready to Open only because the wording needs to be
 tweaked for concepts removal.
-</blockquote>
+</p></blockquote>
 
 <note>
 2009-07 Frankfurt:
 </note>
 
-<blockquote>
+<blockquote><p>
 Leave Open pending arrival of a post-Concepts WD.
-</blockquote>
+</p></blockquote>
 
 <note>
 2009-10-14 Daniel provided de-conceptified wording.
@@ -158,20 +157,20 @@ Leave Open pending arrival of a post-Concepts WD.
 2009-10 Santa Cruz:
 </note>
 
-<blockquote>
+<blockquote><p>
 Move to Ready, replacing the Effects clause in the proposed wording with
 "If InputIterator meets the requirements of random access iterator then
 returns (last - first), otherwise returns the number of increments
 needed to get from first to list.".
-</blockquote>
+</p></blockquote>
 
 <note>
 2010 Pittsburgh:
 </note>
 
-<blockquote>
+<blockquote><p>
 Moved to <del>NAD Editorial</del><ins>Resolved</ins>.  Rationale added below.
-</blockquote>
+</p></blockquote>
 
 </discussion>
 

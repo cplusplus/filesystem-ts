@@ -20,7 +20,7 @@ the reference is an rvalue, could have surprising results:
 D d(some-state);
 unique_ptr&lt;A, D&amp;&gt; p(new A, d);
 unique_ptr&lt;A, D&gt; p2 = std::move(p);
-<font color="#C80000">// has d's state changed here?</font>
+<span style="#C80000">// has d's state changed here?</span>
 </pre></blockquote>
 
 <p>
@@ -36,28 +36,28 @@ Thanks Dave.
 <note>
 Batavia (2009-05):
 </note>
-<blockquote>
+<blockquote><p>
 Seems correct, but complicated enough that we recommend moving to Review.
-</blockquote>
+</p></blockquote>
 
 <note>
 2009-10 Santa Cruz:
 </note>
 
-<blockquote>
+<blockquote><p>
 Move to Ready.
-</blockquote>
+</p></blockquote>
 
 <note>
 2010-03-14 Howard adds:
 </note>
 
-<blockquote>
+<blockquote><p>
 We moved
 <a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2010/n3073.html">N3073</a>
 to the formal motions page in Pittsburgh which should obsolete this issue.  I've
 moved this issue to NAD Editorial, solved by N3073.
-</blockquote>
+</p></blockquote>
 
 </discussion>
 
@@ -93,7 +93,7 @@ a reference type, then <tt>E</tt> shall be the same type as <tt>D</tt>
 (diagnostic required). <tt>unique_ptr&lt;U, E&gt;::pointer</tt> shall be
 implicitly convertible to <tt>pointer</tt>. [<tt>Note:</tt> These
 requirements imply that <tt>T</tt> and <tt>U</tt> are complete types.
-<i>-- end note</i>]
+&mdash; <i>end note</i>]
 </p>
 
 <p>
@@ -104,7 +104,7 @@ deleter</ins> is move constructed from <tt>u</tt>'s deleter, otherwise
 <del>the reference</del> <ins>this deleter</ins> is copy constructed
 from <tt>u</tt>.'s deleter. After the construction, <tt>u</tt> no longer
 owns a pointer. [<i>Note:</i> The deleter constructor can be implemented
-with <tt>std::forward&lt;<del>D</del><ins>E</ins>&gt;</tt>. <i>-- end
+with <tt>std::forward&lt;<del>D</del><ins>E</ins>&gt;</tt>. &mdash; <i>end
 note</i>]
 </p>
 
@@ -139,7 +139,7 @@ a<ins>n</ins> <del>move</del> assignment from <del><tt>u</tt>'s deleter to this 
 -3- <i>Postconditions:</i> This <tt>unique_ptr</tt> now owns the pointer
 which <tt>u</tt> owned, and <tt>u</tt> no longer owns it. <del>[<i>Note:</i> If
 <tt>D</tt> is a reference type, then the referenced lvalue deleters are
-move assigned. <i>-- end note</i>]</del>
+move assigned. &mdash; <i>end note</i>]</del>
 </p>
 </blockquote>
 </blockquote>
@@ -163,7 +163,7 @@ Otherwise the deleter <tt>E</tt> is a reference type,
 and assignment of the deleter <tt>D</tt> from an lvalue <tt>E</tt> shall not throw an exception.</ins>
 <tt>unique_ptr&lt;U, E&gt;::pointer</tt> shall be implicitly convertible to <tt>pointer</tt>.
 [<i>Note:</i> These requirements imply that <tt>T</tt> and <tt>U></tt>
-are complete types. <i>-- end note</i>]
+are complete types. &mdash; <i>end note</i>]
 </p>
 
 <p>

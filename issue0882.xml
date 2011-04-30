@@ -23,11 +23,11 @@ template &lt;class Rep1, class Period, class Rep2&gt;
   duration&lt;typename common_type&lt;Rep1, Rep2&gt;::type, Period&gt;
   operator*(const duration&lt;Rep1, Period&gt;&amp; d, const Rep2&amp; s);
 </pre>
-<blockquote>
+<blockquote><p>
 <i>Requires:</i> Let <tt>CR</tt> represent the <tt>common_type</tt> of <tt>Rep1</tt> and
 <tt>Rep2</tt>.  Both <tt>Rep1</tt> and <tt>Rep2</tt> shall be implicitly convertible
 to CR, diagnostic required.
-</blockquote>
+</p></blockquote>
 
 <pre>
 template &lt;class Rep1, class Period, class Rep2&gt;
@@ -35,11 +35,11 @@ template &lt;class Rep1, class Period, class Rep2&gt;
   operator*(const Rep1&amp; s, const duration&lt;Rep2, Period&gt;&amp; d);
 </pre>
 
-<blockquote>
+<blockquote><p>
 <i>Requires:</i> Let <tt>CR</tt> represent the <tt>common_type</tt> of
 <tt>Rep1</tt> and <tt>Rep2</tt>. Both <tt>Rep1</tt> and <tt>Rep2</tt>
 shall be implicitly convertible to <tt>CR</tt>, diagnostic required.
-</blockquote>
+</p></blockquote>
 
 <pre>
 template &lt;class Rep1, class Period, class Rep2&gt;
@@ -47,12 +47,12 @@ template &lt;class Rep1, class Period, class Rep2&gt;
   operator/(const duration&lt;Rep1, Period&gt;&amp; d, const Rep2&amp; s);
 </pre>
 
-<blockquote>
+<blockquote><p>
 <i>Requires:</i> Let <tt>CR</tt> represent the <tt>common_type</tt> of
 <tt>Rep1</tt> and <tt>Rep2</tt>. Both <tt>Rep1</tt> and <tt>Rep2</tt> shall be
 implicitly convertible to <tt>CR</tt>, and <tt>Rep2</tt> shall not be an
 instantiation of <tt>duration</tt>, diagnostic required.
-</blockquote>
+</p></blockquote>
 
 </blockquote>
 
@@ -61,9 +61,9 @@ During transcription into the working paper, the requirements clauses on these
 three functions was changed to:
 </p>
 
-<blockquote>
+<blockquote><p>
 <i>Requires:</i> <tt>CR(Rep1, Rep2)</tt> shall exist. Diagnostic required.
-</blockquote>
+</p></blockquote>
 
 <p>
 This is a non editorial change with respect to
@@ -149,10 +149,10 @@ as specified by
 <a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2008/n2661.htm">N2661</a>.
 </p>
 
-<blockquote>
+<blockquote><p>
 <i>Requires:</i> ... <em>Both</em> <tt>Rep1</tt> and <tt>Rep2</tt> shall be implicitly convertible
 to CR, diagnostic required.
-</blockquote>
+</p></blockquote>
 
 <p>
 It is not necessary for both <tt>Rep</tt>s to be <i>implicitly</i> convertible to
@@ -177,11 +177,11 @@ template &lt;class Rep1, class Period, class Rep2&gt;
   operator*(const duration&lt;Rep1, Period&gt;&amp; d, const Rep2&amp; s);
 </pre>
 
-<blockquote>
+<blockquote><p>
 <i>Requires:</i> <del><tt>CR(Rep1, Rep2)</tt> shall exist.</del>
 <ins><tt>Rep2</tt> shall be implicitly convertible to <tt>CR(Rep1, Rep2)</tt>.</ins>
 Diagnostic required.
-</blockquote>
+</p></blockquote>
 
 <pre>
 template &lt;class Rep1, class Period, class Rep2&gt;
@@ -189,11 +189,11 @@ template &lt;class Rep1, class Period, class Rep2&gt;
   operator*(const Rep1&amp; s, const duration&lt;Rep2, Period&gt;&amp; d);
 </pre>
 
-<blockquote>
+<blockquote><p>
 <i>Require<ins>s</ins><del>d behavior</del>:</i> <del><tt>CR(Rep1, Rep2)</tt> shall exist.</del>
 <ins><tt>Rep1</tt> shall be implicitly convertible to <tt>CR(Rep1, Rep2)</tt>.</ins>
 Diagnostic required.
-</blockquote>
+</p></blockquote>
 
 <pre>
 template &lt;class Rep1, class Period, class Rep2&gt;
@@ -201,12 +201,12 @@ template &lt;class Rep1, class Period, class Rep2&gt;
   operator/(const duration&lt;Rep1, Period&gt;&amp; d, const Rep2&amp; s);
 </pre>
 
-<blockquote>
+<blockquote><p>
 <i>Requires:</i> <del><tt>CR(Rep1, Rep2)</tt> shall exist</del>
 <ins><tt>Rep2</tt> shall be implicitly convertible to <tt>CR(Rep1, Rep2)</tt></ins>
 and <tt>Rep2</tt> shall not
 be an instantiation of <tt>duration</tt>. Diagnostic required.
-</blockquote>
+</p></blockquote>
 
 </blockquote>
 </resolution>

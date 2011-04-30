@@ -4,7 +4,7 @@
 ] >
 
 <issue num="1071" status="WP">
-<title>is_bind_expression should derive from integral_constant&lt;bool&gt;</title>
+<title><tt>is_bind_expression</tt> should derive from <tt>integral_constant&lt;bool&gt;</tt></title>
 <section><sref ref="[func.bind.isbind]"/></section>
 <submitter>Alisdair Meredith</submitter>
 <date>19 Mar 2009</date>
@@ -30,9 +30,9 @@ other similar trait types.
 <note>
 Daniel adds:
 </note>
-<blockquote>
+<blockquote><p>
 We need the same thing for the trait <tt>is_placeholder</tt> as well.
-</blockquote>
+</p></blockquote>
 <note>
 2009-03-22 Daniel provided wording.
 </note>
@@ -80,10 +80,10 @@ alone.
 2009-10 post-Santa Cruz:
 </note>
 
-<blockquote>
+<blockquote><p>
 Move to Tentatively Ready.  We are comfortable with requiring user specializations
 to derive from <tt>integral_constant</tt>.
-</blockquote>
+</p></blockquote>
 
 </discussion>
 
@@ -108,14 +108,14 @@ In <sref ref="[func.bind.isbind]"/>/2 change as indicated:
 <blockquote><pre>
 <del>static const bool value;</del>
 </pre>
-<blockquote>
+<blockquote><p>
 -2- <del><tt>true</tt> if <tt>T</tt> is a type returned from <tt>bind</tt>, <tt>false</tt> otherwise.</del>
   <ins>If <tt>T</tt> is a type returned from <tt>bind</tt>, <tt>is_bind_expression&lt;T&gt;</tt> shall
 be publicly derived from
         <tt>integral_constant&lt;bool, true&gt;</tt>, otherwise it shall be
 publicly derived from
           <tt>integral_constant&lt;bool, false&gt;</tt>.</ins>
-</blockquote>
+</p></blockquote>
 </blockquote>
 </li>
 <li>
@@ -137,14 +137,14 @@ In <sref ref="[func.bind.isplace]"/>/2 change as indicated:
 <blockquote><pre>
 <del>static const int value;</del>
 </pre>
-<blockquote>
+<blockquote><p>
 -2- <del>value is <tt>J</tt> if <tt>T</tt> is the type of <tt>std::placeholders::_J</tt>, 0 otherwise.</del>
   <ins>If <tt>T</tt> is the type of <tt>std::placeholders::_J</tt>, <tt>is_placeholder&lt;T&gt;</tt>
 shall be publicly
           derived from <tt>integral_constant&lt;int, J&gt;</tt> otherwise it shall
 be publicly derived
           from <tt>integral_constant&lt;int, 0&gt;</tt>.</ins>
-</blockquote>
+</p></blockquote>
 </blockquote>
 </li>
 </ol>

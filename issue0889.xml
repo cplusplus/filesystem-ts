@@ -4,7 +4,7 @@
 ] >
 
 <issue num="889" status="Resolved">
-<title>thread::id comparisons</title>
+<title><tt>thread::id</tt> comparisons</title>
 <section><sref ref="[thread.thread.id]"/></section>
 <submitter>Lawrence Crowl</submitter>
 <date>15 Sep 2008</date>
@@ -57,10 +57,10 @@ Recommend NAD.
 Post Summit:
 </note>
 
-<blockquote>
+<blockquote><p>
 Recommend to close as NAD. For POSIX, see if we need to add a function to
 convert <tt>pthread_t</tt> to integer.
-</blockquote>
+</p></blockquote>
 
 <note>
 Post Summit, Alisdair adds:
@@ -74,10 +74,10 @@ The recommendation for LWG-889/UK-324 is NAD, already specified.
 It is not clear to me that the specification is complete.
 </p>
 <p>
-In particular, the synopsis of <tt>&lt;functional&gt;</tt> in <sref
-ref="[function.objects]"/> does not mention <tt>hash&lt; thread::id
-&gt;</tt> nor <tt>hash&lt; error_code &gt;</tt>, although their
-existence is implied by <sref ref="[unord.hash]"/>, p1.
+In particular, the synopsis of <tt>&lt;functional&gt;</tt> in 
+<sref ref="[function.objects]"/> does not mention <tt>hash&lt; thread::id&gt;</tt> 
+nor <tt>hash&lt; error_code &gt;</tt>, although their existence is 
+implied by <sref ref="[unord.hash]"/>, p1.
 </p>
 <p>
 I am fairly uncomfortable putting the declaration for the
@@ -108,29 +108,29 @@ Recommend moving 889 back to open, and tying in a reference to UK-324.
 <note>
 Batavia (2009-05):
 </note>
-<blockquote>
+<blockquote><p>
 Howard observes that <tt>thread::id</tt> need not be a nested class;
 it could be a <tt>typedef</tt> for a more visible type.
-</blockquote>
+</p></blockquote>
 
 <note>
 2009-05-24 Alisdair adds:
 </note>
-<blockquote>
+<blockquote><p>
 I do not believe this is correct.  <tt>thread::id</tt> is explicitly documents as a
 nested class, rather than as an unspecified typedef analogous to an
 iterator.  If the intent is that this is not implemented as a nested class
 (under the as-if freedoms) then this is a novel form of standardese.
-</blockquote>
+</p></blockquote>
 
 <note>
 2009-07 Frankfurt
 </note>
 
-<blockquote>
+<blockquote><p>
 Decided we want to move hash specialization for thread_id to the thread
 header. Alisdair to provide wording.
-</blockquote>
+</p></blockquote>
 
 <note>
 2009-07-28 Alisdair provided wording, moved to Review.
@@ -140,9 +140,9 @@ header. Alisdair to provide wording.
 2009-10 Santa Cruz:
 </note>
 
-<blockquote>
+<blockquote><p>
 Add a strike for <tt>hash&lt;thread::id&gt;</tt>. Move to Ready
-</blockquote>
+</p></blockquote>
 
 <note>
 2009-11-13 The proposed wording of <iref ref="1182"/> is a superset of the
@@ -159,10 +159,10 @@ Issue <iref ref="1182"/> is not quite a superset of this issue and it is controv
 whether or not the note:
 </p>
 
-<blockquote>
+<blockquote><p>
 hash template specialization allows <tt>thread::id</tt> objects to be used as keys in
 unordered containers.
-</blockquote>
+</p></blockquote>
 
 <p>
 should be added to the WP.
@@ -219,13 +219,13 @@ struct hash&lt;thread::id&gt; : public unary_function&lt;thread::id, size_t&gt; 
 Extend note in p2 <sref ref="[thread.thread.id]"/> with second sentence:
 </p>
 
-<blockquote>
+<blockquote><p>
 [<i>Note:</i> Relational operators allow <tt>thread::id</tt> objects to be used
 as keys in associative containers.
 <ins><tt>hash</tt> template specialization allows <tt>thread::id</tt> objects to be used as keys
 in unordered containers.</ins>
 &mdash; <i>end note</i>]
-</blockquote>
+</p></blockquote>
 
 <p>
 Add new paragraph to end of <sref ref="[thread.thread.id]"/>
@@ -234,10 +234,10 @@ Add new paragraph to end of <sref ref="[thread.thread.id]"/>
 <blockquote><pre>
 <ins>template &lt;&gt; struct hash&lt;thread::id&gt;;</ins>
 </pre>
-<blockquote><ins>
+<blockquote><p><ins>
 An explicit specialization of the class template hash (<sref ref="[unord.hash]"/>)
 shall be provided for the type <tt>thread::id</tt>.
-</ins></blockquote>
+</ins></p></blockquote>
 </blockquote>
 </resolution>
 

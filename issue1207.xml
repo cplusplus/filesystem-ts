@@ -4,7 +4,7 @@
 ] >
 
 <issue num="1207" status="WP">
-<title>Underspecified std::list operations?</title>
+<title>Underspecified <tt>std::list</tt> operations?</title>
 <section><sref ref="[list.ops]"/></section>
 <submitter>Lo&iuml;c Joly</submitter>
 <date>13 Sep 2009</date>
@@ -57,10 +57,10 @@ In <sref ref="[list.ops]"/> change paragraph 19
                                  void unique();
 template &lt;class BinaryPredicate&gt; void unique(BinaryPredicate binary_pred);
 </pre>
-<blockquote>
+<blockquote><p>
 <i>Effects:</i> <del>Eliminates</del> <ins>Erases</ins> all but the first
 element from every consecutive group ...
-</blockquote>
+</p></blockquote>
 </blockquote>
 
 <p>
@@ -127,11 +127,11 @@ concerns.
 2010 Rapperswil:
 </note>
 
-<blockquote>
+<blockquote><p>
 The wording looks good.
 
 Move to Tentatively Ready.
-</blockquote>
+</p></blockquote>
 
 <note>
 Adopted at 2010-11 Batavia
@@ -153,14 +153,14 @@ void remove(const T&amp; value);
 template &lt;class Predicate&gt; void remove_if(Predicate pred);
 </pre>
 
-<blockquote>
+<blockquote><p>
 12 <i>Effects:</i> Erases all the elements in the list referred by a list
 iterator <tt>i</tt> for which the following conditions hold: <tt>*i == value
 (for remove()), pred(*i)</tt> is true (<tt>for remove_if()</tt>). This operation
 shall be stable: the relative order of the elements that are not removed is the
 same as their relative order in the original list. <ins>Invalidates only the
 iterators and references to the erased elements.</ins>
-</blockquote>
+</p></blockquote>
 </blockquote>
 </li>
 
@@ -173,14 +173,14 @@ Change <sref ref="[forwardlist.ops]"/>/15 as indicated:
 template &lt;class BinaryPredicate&gt; void unique(BinaryPredicate pred);
 </pre>
 
-<blockquote>
+<blockquote><p>
 15 <i>Effects:</i>: <del>Eliminates</del><ins>Erases</ins> all but the first
 element from every consecutive group of equal elements referred to by the
 iterator <tt>i</tt> in the range <tt>[first + 1,last)</tt> for which <tt>*i ==
 *(i-1)</tt> (for the version with no arguments) or <tt>pred(*i, *(i - 1))</tt>
 (for the version with a predicate argument) holds. <ins>Invalidates only the
 iterators and references to the erased elements.</ins>
-</blockquote>
+</p></blockquote>
 </blockquote>
 </li>
 
@@ -249,10 +249,10 @@ Change <sref ref="[forwardlist.ops]"/>/24 as indicated:
 void reverse();
 </pre>
 
-<blockquote>
+<blockquote><p>
 24 <i>Effects:</i>: Reverses the order of the elements in the list. <ins>Does
 not affect the validity of iterators and references.</ins>
-</blockquote>
+</p></blockquote>
 </blockquote>
 </li>
 
@@ -265,12 +265,12 @@ Change <sref ref="[list.ops]"/>, p15:
                            void remove(const T&amp; value);
 template &lt;class Predicate&gt; void remove_if(Predicate pred);
 </pre>
-<blockquote>
+<blockquote><p>
 <i>Effects:</i> Erases all the elements in the list referred by a list iterator
 <tt>i</tt> for which the following conditions hold: <tt>*i == value, pred(*i) !=
 false</tt>.  <ins>Invalidates only the iterators and references to the erased
 elements.</ins>
-</blockquote>
+</p></blockquote>
 </blockquote>
 </li>
 
@@ -283,7 +283,7 @@ Change <sref ref="[list.ops]"/>, p19:
                                  void unique();
 template &lt;class BinaryPredicate&gt; void unique(BinaryPredicate binary_pred);
 </pre>
-<blockquote>
+<blockquote><p>
 <i>Effects:</i> <del>Eliminates</del> <ins>Erases</ins> all but the first
 element from every consecutive group of equal elements referred to by the
 iterator <tt>i</tt> in the range <tt>[first + 1,last)</tt> for which <tt>*i ==
@@ -291,7 +291,7 @@ iterator <tt>i</tt> in the range <tt>[first + 1,last)</tt> for which <tt>*i ==
 <tt>pred(*i, *(i - 1))</tt> (for the version of <tt>unique</tt> with a predicate
 argument) holds. <ins>Invalidates only the iterators and references to the
 erased elements.</ins>
-</blockquote>
+</p></blockquote>
 </blockquote>
 </li>
 
@@ -304,7 +304,7 @@ Change <sref ref="[list.ops]"/>, p23:
 void                          merge(list&lt;T,Allocator&gt;&amp;&amp; x);
 template &lt;class Compare&gt; void merge(list&lt;T,Allocator&gt;&amp;&amp; x, Compare comp);
 </pre>
-<blockquote>
+<blockquote><p>
 <i>Effects:</i> If <tt>(&amp;x == this)</tt> does nothing; otherwise, merges the
 two sorted ranges <tt>[begin(), end())</tt> and <tt>[x.begin(), x.end())</tt>.
 The result is a range in which the elements will be sorted in non-decreasing
@@ -315,7 +315,7 @@ iterator <tt>i</tt>, in the range other than the first, the condition
 those same elements but as members of <tt>*this</tt>. Iterators referring to the
 moved elements will continue to refer to their elements, but they now behave as
 iterators into <tt>*this</tt>, not into <tt>x</tt>.</ins>
-</blockquote>
+</p></blockquote>
 </blockquote>
 </li>
 
@@ -327,10 +327,10 @@ Change <sref ref="[list.ops]"/>, p26:
 <blockquote><pre>
 void reverse();
 </pre>
-<blockquote>
+<blockquote><p>
 <i>Effects:</i> Reverses the order of the elements in the list.
 <ins>Does not affect the validity of iterators and references.</ins>
-</blockquote>
+</p></blockquote>
 </blockquote>
 </li>
 
@@ -343,11 +343,11 @@ Change <sref ref="[list.ops]"/>, p30:
                          void sort();
 template &lt;class Compare&gt; void sort(Compare comp);
 </pre>
-<blockquote>
+<blockquote><p>
 <i>Effects:</i> Sorts the list according to the <tt>operator&lt;</tt> or a
 <tt>Compare</tt> function object.
 <ins>Does not affect the validity of iterators and references.</ins>
-</blockquote>
+</p></blockquote>
 </blockquote>
 </li>
 

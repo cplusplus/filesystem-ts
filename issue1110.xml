@@ -72,10 +72,10 @@ Committee Draft is issued.
 <p>
 The note in <sref ref="[algorithms.general]"/>/9 already says the right thing:
 </p>
-<blockquote>
+<blockquote><p>
 Unless otherwise specified, algorithms that take function objects
 as arguments are permitted to copy those function objects freely.
-</blockquote>
+</p></blockquote>
 <p>
 So we only need to ensure that the wording for <tt>for_each</tt> is sufficiently
 clear, which is the intend of the following rewording.
@@ -104,9 +104,9 @@ Add a new Requires clause just after the prototype declaration (<sref ref="[alg.
 Change <sref ref="[alg.foreach]"/>/2 as indicated:
 </p>
 
-<blockquote>
+<blockquote><p>
 <i>Returns:</i> <ins>std::move(</ins>f<ins>)</ins>.
-</blockquote>
+</p></blockquote>
 </li>
 </ul>
 </blockquote>
@@ -115,10 +115,10 @@ Change <sref ref="[alg.foreach]"/>/2 as indicated:
 2009-10 post-Santa Cruz:
 </note>
 
-<blockquote>
+<blockquote><p>
 Move to Tentatively Ready, using Daniel's wording without the portion
 saying "CopyConstructible is not required".
-</blockquote>
+</p></blockquote>
 
 <note>
 2009-10-27 Daniel adds:
@@ -129,19 +129,19 @@ saying "CopyConstructible is not required".
 I see that during the Santa Cruz meeting the originally proposed addition
 </p>
 
-<blockquote>
+<blockquote><p>
 , <tt>CopyConstructible</tt> is not required.
-</blockquote>
+</p></blockquote>
 
 <p>
 was removed. I don't think that this removal was a good idea. The combination
-of <sref ref="[algorithms.general]"/>/9
+of <sref ref="[algorithms.general]"/> p.9
 </p>
 
-<blockquote>
+<blockquote><p>
 [<i>Note:</i> Unless otherwise specified, algorithms that take function objects
 as arguments are permitted to copy those function objects freely.[..]
-</blockquote>
+</p></blockquote>
 
 <p>
 with the fact that <tt>CopyConstructible</tt> is a refinement <tt>MoveConstructible</tt>
@@ -149,7 +149,7 @@ makes it necessary that such an explicit statement is given. Even the
 existence of the usage of <tt>std::move</tt> in the <i>Returns</i> clause doesn't
 help much, because this would still be well-formed for a <tt>CopyConstructible</tt>
 without move constructor. Let me add that the originally proposed
-addition reflects current practice in the standard, e.g. <sref ref="[alg.unique]"/>/5
+addition reflects current practice in the standard, e.g. <sref ref="[alg.unique]"/> p.5
 usages a similar terminology.
 </p>
 
@@ -191,9 +191,9 @@ Add a new Requires clause just after the prototype declaration (<sref ref="[alg.
 Change <sref ref="[alg.foreach]"/>/2 as indicated:
 </p>
 
-<blockquote>
+<blockquote><p>
 <i>Returns:</i> <ins>std::move(</ins>f<ins>)</ins>.
-</blockquote>
+</p></blockquote>
 </li>
 </ul>
 

@@ -4,7 +4,7 @@
 ] >
 
 <issue num="1221" status="WP">
-<title>condition_variable wording</title>
+<title><tt>condition_variable</tt> wording</title>
 <section><sref ref="[thread.condition.condvar]"/></section>
 <submitter>Jeffrey Yasskin</submitter>
 <date>30 Sep 2009</date>
@@ -18,14 +18,14 @@
 <pre>
 ~condition_variable();
 </pre>
-<blockquote>
+<blockquote><p>
 <i>Precondition:</i> There shall be no thread blocked on <tt>*this</tt>.
 [<i>Note:</i> That is, all threads shall have been notified; they may
 subsequently block on the lock specified in the wait. Beware that
 destroying a <tt>condition_variable</tt> object while the corresponding
 predicate is <tt>false</tt> is likely to lead to undefined behavior.
 &mdash; <i>end note</i>]
-</blockquote>
+</p></blockquote>
 </blockquote>
 
 <p>
@@ -50,7 +50,7 @@ Modify <sref ref="[thread.condition.condvar]"/>p4 as follows:
 
 <blockquote>
 <pre>~condition_variable();</pre>
-<blockquote>
+<blockquote><p>
 4 <i>Precondition:</i> There shall be no thread blocked on <tt>*this</tt>.
 [<i>Note:</i> That is, all threads shall have been notified; they may
 subsequently block on the lock specified in the wait. <del>Beware that
@@ -61,7 +61,7 @@ destructor has been started, especially when the waiting threads are calling the
 wait functions in a loop or using the overloads of <tt>wait</tt>,
 <tt>wait_for</tt> or <tt>wait_until</tt> that take a predicate.</ins> &mdash;
 <i>end note</i>]
-</blockquote>
+</p></blockquote>
 </blockquote>
 </resolution>
 

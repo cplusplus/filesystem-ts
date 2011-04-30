@@ -25,7 +25,7 @@ Specifically it's unclear
 <li>
 if a predicate trait (<sref ref="[meta.unary]"/>, <sref
 ref="[meta.rel]"/>) could derive from both
-<tt>true_type</tt>/<tt>false_type</tt>.
+<tt>true_type</tt>&#47;<tt>false_type</tt>.
 </li>
 <li>
 if any of the type traits (<sref ref="[meta.rqmts]"/>, <sref
@@ -63,9 +63,9 @@ Move to Open.
 2009-10 post-Santa Cruz:
 </note>
 
-<blockquote>
+<blockquote><p>
 Move to Tentatively Ready.
-</blockquote>
+</p></blockquote>
 
 </discussion>
 
@@ -81,9 +81,9 @@ be moved to Clause 17
 <ol>
 <li>
 <p>
-Change <sref ref="[meta.rqmts]"/>/1 as indicated:
+Change <sref ref="[meta.rqmts]"/> p.1 as indicated:
 </p>
-<blockquote>
+<blockquote><p>
 [..] It shall be <tt>DefaultConstructible</tt>, <tt>CopyConstructible</tt>, and publicly
 <ins>and unambiguously</ins> derived, directly or indirectly, from
 <ins>its <i>BaseCharacteristic</i>, which is</ins> a specialization of the
@@ -92,13 +92,13 @@ template <tt>integral_constant</tt> (20.6.3), with the arguments to the template
 property being described. <ins>The member names of the
 <i>BaseCharacteristic</i> shall be unhidden and unambiguously
 available in the <i>UnaryTypeTrait</i>.</ins>
-</blockquote>
+</p></blockquote>
 </li>
 <li>
 <p>
-Change <sref ref="[meta.rqmts]"/>/2 as indicated:
+Change <sref ref="[meta.rqmts]"/> p.2 as indicated:
 </p>
-<blockquote>
+<blockquote><p>
 [..] It shall be <tt>DefaultConstructible</tt>, <tt>CopyConstructible</tt>, and publicly
 <ins>and unambiguously</ins> derived, directly or indirectly, from
 <del>an instance</del> <ins>its <i>BaseCharacteristic</i>, which is a
@@ -107,32 +107,32 @@ the arguments to the template <tt>integral_constant</tt> determined by the
 requirements for the particular relationship being described. <ins>The
 member names of the <i>BaseCharacteristic</i> shall be unhidden
 and unambiguously available in the <i>BinaryTypeTrait</i>.</ins>
-</blockquote>
+</p></blockquote>
 </li>
 <li>
 <p>
-Change <sref ref="[meta.unary]"/>/2 as indicated:
+Change <sref ref="[meta.unary]"/> p.2 as indicated:
 </p>
-<blockquote>
+<blockquote><p>
 Each of these templates shall be a <i>UnaryTypeTrait</i> (20.6.1),
 <del>publicly derived directly or indirectly from <tt>true_type</tt> if the
 corresponding condition is true, otherwise from <tt>false_type</tt></del>
 <ins>where its <i>BaseCharacteristic</i> shall be <tt>true_type</tt> if the
 corresponding condition is true, otherwise <tt>false_type</tt></ins>.
-</blockquote>
+</p></blockquote>
 </li>
 <li>
 <p>
-Change <sref ref="[meta.rel]"/>/2 as indicated:
+Change <sref ref="[meta.rel]"/> p.2 as indicated:
 </p>
 
-<blockquote>
+<blockquote><p>
 Each of these templates shall be a <i>BinaryTypeTrait</i> (20.6.1),
 <del>publicly derived directly or indirectly from <tt>true_type</tt> if the
 corresponding condition is true, otherwise from <tt>false_type</tt></del>
 <ins>where its <i>BaseCharacteristic</i> shall be <tt>true_type</tt> if the
 corresponding condition is true, otherwise <tt>false_type</tt></ins>.
-</blockquote>
+</p></blockquote>
 </li>
 </ol>
 

@@ -4,7 +4,7 @@
 ] >
 
 <issue num="893" status="WP">
-<title>std::mutex issue</title>
+<title><tt>std::mutex</tt> issue</title>
 <section><sref ref="[thread.mutex.class]"/></section>
 <submitter>Peter Dimov</submitter>
 <date>15 Sep 2008</date>
@@ -58,9 +58,9 @@ calls <tt>lock()</tt> or <tt>try_lock()</tt> on that object, or"
 2009-07 Frankfurt
 </note>
 
-<blockquote>
+<blockquote><p>
 Move to Review. Alisdair to provide note.
-</blockquote>
+</p></blockquote>
 
 <note>
 2009-07-31 Alisdair provided note.
@@ -70,9 +70,9 @@ Move to Review. Alisdair to provide note.
 2009-10 Santa Cruz:
 </note>
 
-<blockquote>
+<blockquote><p>
 Moved to Ready.
-</blockquote>
+</p></blockquote>
 
 <note>
 2009-11-18 Peter Opens:
@@ -83,12 +83,12 @@ Moved to Ready.
 I don't believe that the proposed note:
 </p>
 
-<blockquote>
+<blockquote><p>
 [<i>Note:</i> a program may deadlock if the thread that owns a <tt>mutex</tt>
 object calls <tt>lock()</tt> or <tt>try_lock()</tt> on that object. If the program can
 detect the deadlock, a <tt>resource_deadlock_would_occur</tt> error condition may
 be observed. &mdash; <i>end note</i>]
-</blockquote>
+</p></blockquote>
 
 <p>
 is entirely correct. "or <tt>try_lock()</tt>" should be removed, because
@@ -144,12 +144,12 @@ Strike <sref ref="[thread.mutex.class]"/> paragraph 3 bullet 2:
 Add the following note after p3 <sref ref="[thread.mutex.class]"/>
 </p>
 
-<blockquote>
+<blockquote><p>
 [<i>Note:</i> a program may deadlock if the thread that owns a <tt>mutex</tt>
 object calls <tt>lock()</tt> on that object. If the implementation can detect the
 deadlock, a <tt>resource_deadlock_would_occur</tt> error condition may be
 observed. &mdash; <i>end note</i>]
-</blockquote>
+</p></blockquote>
 
 </resolution>
 

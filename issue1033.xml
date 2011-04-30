@@ -21,18 +21,18 @@ issue or NB comment about that, but I might have missed it.
 The postconditions clause for <tt>thread::join()</tt> is:
 </p>
 
-<blockquote>
+<blockquote><p>
 <i>Postconditions:</i> If <tt>join()</tt> throws an exception, the value
 returned by <tt>get_id()</tt> is unchanged. Otherwise, <tt>get_id() == id()</tt>.
-</blockquote>
+</p></blockquote>
 
 <p>
 and the throws clause is:
 </p>
 
-<blockquote>
+<blockquote><p>
 <i>Throws:</i> <tt>std::system_error</tt> when the postconditions cannot be achieved.
-</blockquote>
+</p></blockquote>
 
 <p>
 Now... how could the postconditions <em>not</em> be achieved?
@@ -46,10 +46,10 @@ postconditions, but the postconditions are different in the two cases.
 I believe the throws clause should be:
 </p>
 
-<blockquote>
+<blockquote><p>
 <i>Throws:</i> <tt>std::system_error</tt> when the effects or postconditions
 cannot be achieved.
-</blockquote>
+</p></blockquote>
 
 <p>
 as it is in <tt>detach()</tt>, or, even better, as the postcondition is
@@ -57,9 +57,9 @@ trivially satisfiable and to remove the circular dependency:
 </p>
 
 
-<blockquote>
+<blockquote><p>
 <i>Throws:</i> <tt>std::system_error</tt> if the effects cannot be achieved.
-</blockquote>
+</p></blockquote>
 
 <p>
 Problem is that... ehm... <tt>join()</tt> has no "Effects" clause. Is that intentional?
