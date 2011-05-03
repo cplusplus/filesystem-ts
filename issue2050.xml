@@ -15,8 +15,12 @@
 their template parameter <tt>Allocator</tt> (via <tt>allocator_type</tt> typedef). As 
 a consequence, only the allocator types, that provide sufficient typedefs, are usable 
 as allocators for unordered associative containers, while other containers do not have 
-this deficiency. This issue can be fixed easily by defining said typedefs in terms of 
-<tt>allocator_traits&lt;Allocator&gt;</tt>.
+this deficiency. In addition to that, the definitions of said typedefs are different 
+from ones used in the other containers. This is counterintuitive and introduces a certain 
+level of confusion. These issues can be fixed by defining <tt>pointer</tt> and 
+<tt>const_pointer</tt> typedefs in terms of <tt>allocator_traits&lt;Allocator&gt;</tt> 
+and by defining <tt>reference</tt> and <tt>const_reference</tt> in terms of 
+<tt>value_type</tt> as is done in the other containers.
 </p>
 </discussion>
 
