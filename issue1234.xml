@@ -4,20 +4,19 @@
 ] >
 
 <issue num="1234" status="WP">
-<title>"Do the right thing" and NULL</title>
+<title>"Do the right thing" and <tt>NULL</tt></title>
 <section><sref ref="[sequence.reqmts]"/></section>
 <submitter>Matt Austern</submitter>
 <date>9 Oct 2009</date>
 
 <discussion>
 <p>
-On g++ 4.2.4 (x86_64-linux-gnu), the following file gives a compile
-error:
+On g++ 4.2.4 (x86_64-linux-gnu), the following file gives a compile error:
 </p>
 
 <blockquote><pre>
 #include &lt;vector&gt;
-void foo() { std::vector&lt;int*&gt; v(500l, NULL); }
+void foo() { std::vector&lt;int*&gt; v(500L, NULL); }
 </pre></blockquote>
 
 <p>
@@ -25,12 +24,11 @@ Is this supposed to work?
 </p>
 
 <p>
-The issue: if <tt>NULL</tt> happens to be defined as <tt>0l</tt>, this is an invocation of
+The issue: if <tt>NULL</tt> happens to be defined as <tt>0L</tt>, this is an invocation of
 the constructor with two arguments of the same integral type.
 <sref ref="[sequence.reqmts]"/>/14
 (<a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2010/n3035.pdf">N3035</a>)
-says that this will behave as if the the
-overloaded constructor
+says that this will behave as if the overloaded constructor
 </p>
 
 <blockquote><pre>
@@ -95,9 +93,9 @@ WP has a defect that should be fixed here as well: The functions signatures <tt>
 incorrectly referring to <tt>iterator</tt> instead of <tt>const_iterator</tt>.
 </p>
 
-<blockquote>
+<blockquote><p>
 Moved to Tentatively Ready with revised wording after 7 positive votes on c++std-lib.
-</blockquote>
+</p></blockquote>
 
 <note>
 Adopted at 2010-11 Batavia
@@ -214,14 +212,12 @@ If the constructor
 template &lt;class InputIterator&gt;
 X(InputIterator first, InputIterator last,
   const allocator_type&amp; alloc = allocator_type())
-
 </pre></blockquote>
 
 <p>
 is called with a type <tt>InputIterator</tt> that does not qualify as an input
 iterator, then the constructor <ins>shall not participate in overload
-resolution.</ins><del>will
-behave as if the overloaded constructor:</del>
+resolution.</ins><del>will behave as if the overloaded constructor:</del>
 </p>
 
 <blockquote><pre><del>
@@ -230,9 +226,8 @@ X(size_type, const value_type& = value_type(),
 </del></pre></blockquote>
 
 <p>
-<del>were called instead, with the arguments
-<tt>static_cast&lt;size_type&gt;(first)</tt>, <tt>last</tt> and <tt>alloc</tt>,
-respectively</del>.
+<del>were called instead, with the arguments <tt>static_cast&lt;size_type&gt;(first)</tt>, 
+<tt>last</tt> and <tt>alloc</tt>, respectively</del>.
 </p>
 </li>
 

@@ -223,13 +223,13 @@ copy-constructible functors could not be provided as arguments to any algorithm
 that takes these by value]</i>
 </p>
 
-<blockquote>
+<blockquote><p>
 4 Every call wrapper (20.8.1) shall be <tt><ins>implicit</ins>
 MoveConstructible</tt>. A simple call wrapper is a call wrapper that is
 <tt><ins>implicit</ins> CopyConstructible</tt> and <tt>CopyAssignable</tt> and
 whose copy constructor, move constructor, and assignment operator do not throw
 exceptions. [..]
-</blockquote>
+</p></blockquote>
 </li>
 
 <li>
@@ -237,11 +237,11 @@ exceptions. [..]
 Change <sref ref="[refwrap]"/>/1 as indicated:
 </p>
 
-<blockquote>
+<blockquote><p>
 1 <tt>reference_wrapper&lt;T&gt;</tt> is a<ins>n <tt>implicit</tt></ins>
 <tt>CopyConstructible</tt> and <tt>CopyAssignable</tt> wrapper around a
 reference to an object or function of type <tt>T</tt>.
-</blockquote>
+</p></blockquote>
 </li>
 
 <li>
@@ -280,10 +280,10 @@ CopyConstructible</tt>. [<i>Note:</i> this implies that all of <tt>FD</tt> and
 Change <sref ref="[func.bind.place]"/> as indicated:
 </p>
 
-<blockquote>
+<blockquote><p>
 1 All placeholder types shall be <tt>DefaultConstructible</tt> and
 <tt><ins>implicit</ins> CopyConstructible</tt>, and [..]
-</blockquote>
+</p></blockquote>
 </li>
 
 <li>
@@ -291,7 +291,7 @@ Change <sref ref="[func.bind.place]"/> as indicated:
 Change <sref ref="[unique.ptr]"/>/5 as indicated:
 </p>
 
-<blockquote>
+<blockquote><p>
 5 Each object of a type <tt>U</tt> instantiated form the <tt>unique_ptr</tt>
 template specified in this subclause has the strict ownership semantics,
 specified above, of a unique pointer. In partial satisfaction of these
@@ -299,7 +299,7 @@ semantics, each such <tt>U</tt> is <tt><ins>implicit</ins>
 MoveConstructible</tt> and <tt>MoveAssignable</tt>, but is not
 <tt>CopyConstructible</tt> nor <tt>CopyAssignable</tt>. The template parameter
 <tt>T</tt> of <tt>unique_ptr</tt> may be an incomplete type.
-</blockquote>
+</p></blockquote>
 </li>
 
 <li>
@@ -307,11 +307,11 @@ MoveConstructible</tt> and <tt>MoveAssignable</tt>, but is not
 Change <sref ref="[util.smartptr.shared]"/>/2 as indicated:
 </p>
 
-<blockquote>
+<blockquote><p>
 2 Specializations of <tt>shared_ptr</tt> shall be
 <tt><ins>implicit</ins> CopyConstructible</tt>, <tt>CopyAssignable</tt>, and
 <tt>LessThanComparable</tt>, [..]
-</blockquote>
+</p></blockquote>
 </li>
 
 <li>
@@ -319,12 +319,12 @@ Change <sref ref="[util.smartptr.shared]"/>/2 as indicated:
 Change <sref ref="[util.smartptr.weak]"/>/2 as indicated:
 </p>
 
-<blockquote>
+<blockquote><p>
 2 Specializations of <tt>weak_ptr</tt> shall be <tt><ins>implicit</ins>
 CopyConstructible</tt> and <tt>CopyAssignable</tt>, allowing their use in
 standard containers. The template parameter <tt>T</tt> of <tt>weak_ptr</tt> may
 be an incomplete type.
-</blockquote>
+</p></blockquote>
 </li>
 
 <li>
@@ -357,12 +357,12 @@ and lvalues of type <tt>X</tt> are swappable (20.2.2), and [..]
 Change <sref ref="[auto.ptr]"/>/3 as indicated:
 </p>
 
-<blockquote>
+<blockquote><p>
 3 [..] Instances of <tt>auto_ptr</tt> meet the requirements of
 <tt><ins>implicit</ins> MoveConstructible</tt> and <tt>MoveAssignable</tt>, but
 do not meet the requirements of <tt>CopyConstructible</tt> and
 <tt>CopyAssignable</tt>. &mdash; <i>end note</i>]
-</blockquote>
+</p></blockquote>
 </li>
 
 </ol>

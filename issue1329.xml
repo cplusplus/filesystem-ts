@@ -40,7 +40,7 @@ Container data races <sref ref="[container.requirements.dataraces]"/>
 Paragraph 1 is unchanged as follows:
 </p>
 
-<blockquote>
+<blockquote><p>
 1 For purposes of avoiding data races (17.6.4.8), implementations shall
 consider the following functions to be <code>const</code>:
 <code>begin</code>, <code>end</code>, <code>rbegin</code>,
@@ -48,24 +48,24 @@ consider the following functions to be <code>const</code>:
 <code>data</code>, <code>find</code>, <code>lower_bound</code>,
 <code>upper_bound</code>, <code>equal_range</code>, and, except in
 associative containers, <code>operator[]</code>.
-</blockquote>
+</p></blockquote>
 
 <p>
 Edit paragraph 2 as follows:
 </p>
 
-<blockquote>
+<blockquote><p>
 2 Notwithstanding (17.6.4.8), implementations are required to avoid data
 races when the contents of the contained object in different elements in
 the same sequence<ins>, excepting <code>vector&lt;bool&gt;</code>,</ins>
 are modified concurrently.
-</blockquote>
+</p></blockquote>
 
 <p>
 Edit paragraph 3 as follows:
 </p>
 
-<blockquote>
+<blockquote><p>
 3 [<i>Note:</i>
 For a <code>vector&lt;int&gt; x</code> with a size greater than one,
 <code>x[1] = 5</code> and <code>*x.begin() = 10</code>
@@ -76,7 +76,7 @@ executed concurrently may result in a data race.
 for a <code>vector&lt;bool&gt; y</code>,
 <code>y[i] = true</code> may race with <code>y[j] = true</code>.</ins>
 &mdash;<i>end note</i>]
-</blockquote>
+</p></blockquote>
 
 </resolution>
 

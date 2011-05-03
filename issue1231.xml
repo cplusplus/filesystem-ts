@@ -13,15 +13,12 @@
 <p>
 The
 <a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2008/n2637.pdf">n2637</a>
-paper suggested several updates of the ordering semantics of
-<tt>shared_ptr</tt>
+paper suggested several updates of the ordering semantics of <tt>shared_ptr</tt>
 and <tt>weak_ptr</tt>, among those the explicit comparison operators of <tt>weak_ptr</tt> were
-removed/deleted, instead a corresponding functor <tt>owner_less</tt> was added.
-The problem
-is that
+removed&#47;deleted, instead a corresponding functor <tt>owner_less</tt> was added.
+The problem is that
 <a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2008/n2637.pdf">n2637</a>
-did not clearly enough specify, how the previous wording
-parts describing
+did not clearly enough specify, how the previous wording parts describing
 the comparison semantics of <tt>weak_ptr</tt> should be removed.
 </p>
 
@@ -29,9 +26,9 @@ the comparison semantics of <tt>weak_ptr</tt> should be removed.
 2009-11-06 Howard adds:
 </note>
 
-<blockquote>
+<blockquote><p>
 Moved to Tentatively Ready after 5 positive votes on c++std-lib.
-</blockquote>
+</p></blockquote>
 
 </discussion>
 
@@ -40,15 +37,15 @@ Moved to Tentatively Ready after 5 positive votes on c++std-lib.
 <li>
 <p>
 Change <sref ref="[util.smartptr.weak]"/>/2 as described, the intention is to fix
-the now no longer valid
-requirement that <tt>weak_ptr</tt> is <tt>LessComparable</tt> [Note the deleted comma]:
+the now no longer valid requirement that <tt>weak_ptr</tt> is <tt>LessComparable</tt> 
+[Note the deleted comma]:
 </p>
 
-<blockquote>
+<blockquote><p>
 Specializations of <tt>weak_ptr</tt> shall be <tt>CopyConstructible</tt><del>,</del>
-<ins>and</ins> <tt>CopyAssignable</tt>,
-<del>and <tt>LessThanComparable</tt>,</del> allowing their use in standard containers.
-</blockquote>
+<ins>and</ins> <tt>CopyAssignable</tt>, <del>and <tt>LessThanComparable</tt>,</del> 
+allowing their use in standard containers.
+</p></blockquote>
 </li>
 
 <li>
@@ -56,10 +53,10 @@ Specializations of <tt>weak_ptr</tt> shall be <tt>CopyConstructible</tt><del>,</
 In <sref ref="[util.smartptr.weak.obs]"/> remove the paragraphs 9-11 including prototype:
 </p>
 
-<blockquote>
+<blockquote><p>
 <del>template&lt;class T, class U&gt; bool operator&lt;(const weak_ptr&lt;T&gt;&amp; a, const weak_ptr&lt;U&gt;&amp; b);</del>
 
-<p>
+<p/>
 <del><i>Returns:</i> an unspecified value such that</del>
 </p>
 <ul>

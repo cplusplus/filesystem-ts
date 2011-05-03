@@ -29,15 +29,14 @@ The following proposed resolution is an improvement over that suggested in
 because the proposed component can now be defined without loss of
 general usefulness and any <i>use</i> by user-code will make the program ill-formed.
 A possible prototype implementation that satisfies the core language
-requirements
-can be written as:
+requirements can be written as:
 </p>
 
 <blockquote><pre>
 template&lt;class T&gt;
   struct declval_protector {
     static const bool stop = false;
-    static typename std::add_rvalue_reference&lt;T&gt;::type delegate(); <font color="#C80000">// undefined</font>
+    static typename std::add_rvalue_reference&lt;T&gt;::type delegate(); <span style="color:#C80000">// undefined</span>
   };
 
 template&lt;class T&gt;
@@ -138,8 +137,8 @@ For another example see class template <tt>common_type</tt>
 
 <li>
 <p>
-This bullet just makes clear that after applying <a
-href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2009/n2984.htm">N2984</a>, 
+This bullet just makes clear that after applying 
+<a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2009/n2984.htm">N2984</a>, 
 the changes in <sref ref="[meta.unary.prop]"/>, before
 table Type property queries should <em>not</em> use <tt>declval</tt>,
 because the well-formedness requirement of the specification of
@@ -152,8 +151,7 @@ unevaluated context.
 <li>
 <p>
 Also <sref ref="[meta.rel]"/>/4 is not modified similar to the previous bullet,
-because with
-the stricter requirements of not using <tt>declval()</tt> the well-formedness condition
+because with the stricter requirements of not using <tt>declval()</tt> the well-formedness condition
 would be harder to specify. The following changes are only editorial ones (e.g.
 the removal of the duplicate declaration of <tt>create()</tt>):
 </p>
@@ -198,7 +196,7 @@ void =&gt; cv void</tt> transformations and thus makes <tt>common_type</tt> usab
 all binary type combinations that are supported by <tt>is_convertible</tt>
 </note>
 
-<blockquote>
+<blockquote><p>
 The member typedef <tt>type</tt> shall be defined as set out below. All
 types in the parameter pack <tt>T</tt> shall be complete <ins>or
 (possibly cv-qualified) <tt>void</tt></ins>. A program may specialize
@@ -206,7 +204,7 @@ this trait if at least one template parameter in the specialization is a
 user-defined type. [<i>Note:</i> Such specializations are needed when
 only explicit conversions are desired among the template arguments.
 &mdash; <i>end note</i>]
-</blockquote>
+</p></blockquote>
 </li>
 
 <li>

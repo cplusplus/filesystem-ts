@@ -6,8 +6,7 @@
 <issue num="1340" status="WP">
 <title>Why does <tt>forward_list::resize</tt> take the object to be copied by value?</title>
 <section><sref ref="[forwardlist.modifiers]"/></section>
-<submitter>		
-James McNellis</submitter>
+<submitter>James McNellis</submitter>
 <date>16 Jul 2010</date>
 
 <discussion>
@@ -58,9 +57,9 @@ a <tt>resize</tt> member function. He deliberately did not touch the wrong usage
 will be taken care of by LWG issue <iref ref="868"/>.
 </p>
 
-<blockquote>
+<blockquote><p>
 Moved to Tentatively Ready with revised wording after 5 positive votes on c++std-lib.
-</blockquote>
+</p></blockquote>
 
 <note>
 Adopted at 2010-11 Batavia
@@ -105,14 +104,14 @@ void clear();
 void resize(size_type sz);
 void resize(size_type sz, <ins>const</ins> value_type<ins>&amp;</ins> c);
 </pre>
-<blockquote>
+<blockquote><p>
 27 <em>Effects</em>: If <tt>sz &lt; distance(begin(), end())</tt>, erases the last <tt>distance(begin(), end()) - sz</tt> elements
 from the list. Otherwise, inserts <tt>sz - distance(begin(), end())</tt> elements at the end of the list. For the first 
 signature the inserted elements are default constructed, and for the second signature they are copies of <tt>c</tt>.
-<p>
+<p/>
 <ins>28 - <em>Requires</em>: <tt>T</tt> shall be <tt>DefaultConstructible</tt> for the first form and	it shall be <tt>CopyConstructible</tt> 
-	for the second form.</ins></p>
-</blockquote></blockquote>
+	for the second form.</ins>
+</p></blockquote></blockquote>
 </li>
 </ol>
 

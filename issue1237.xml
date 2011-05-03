@@ -4,7 +4,7 @@
 ] >
 
 <issue num="1237" status="WP">
-<title>Constrained error_code/error_condition members</title>
+<title>Constrained <tt>error_code</tt>&#47;<tt>error_condition members</tt></title>
 <section><sref ref="[syserr]"/></section>
 <submitter>Daniel Kr&uuml;gler</submitter>
 <date>14 Oct 2009</date>
@@ -24,9 +24,9 @@ which has IMO several disadvantages:
 <li>
 <p>
 With the availability of template default arguments and
-decltype, using <tt>enable_if</tt> in C++0x standard library, seems
+decltype, using <tt>enable_if</tt> in the C++0x standard library, seems
 unnecessary restricting implementation freedom. E.g. there
-should be not need for a useless specification of a dummy
+should be no need for a useless specification of a dummy
 default function argument, which only confuses the reader.
 A more reasonable implementation could e.g. be
 </p>
@@ -49,10 +49,10 @@ We have a <em>lot</em> of constrained functions in other places, that
 now have a standard phrase that is easily understandable:
 </p>
 
-<blockquote>
-<i>Remarks:</i> This constructor/function shall participate in overload
+<blockquote><p>
+<i>Remarks:</i> This constructor&#47;function shall participate in overload
 resolution if and only if X.
-</blockquote>
+</p></blockquote>
 
 <p>
 where X describes the condition. Why should these components deviate?
@@ -84,17 +84,17 @@ corresponding resolution.
 2009-10-18 Beman adds:
 </note>
 
-<blockquote>
+<blockquote><p>
 I support this proposed resolution, and thank Daniel for writing it up.
-</blockquote>
+</p></blockquote>
 
 <note>
 2009-10 Santa Cruz:
 </note>
 
-<blockquote>
+<blockquote><p>
 Moved to Ready.
-</blockquote>
+</p></blockquote>
 
 </discussion>
 
@@ -158,10 +158,10 @@ template &lt;class ErrorCodeEnum&gt;
     operator=(ErrorCodeEnum e);
 </pre>
 
-<blockquote>
+<blockquote><p>
 <ins><i>Remarks:</i> This operator shall not participate in overload resolution, unless
 <tt>is_error_code_enum&lt;ErrorCodeEnum&gt;::value == true</tt>.</ins>
-</blockquote>
+</p></blockquote>
 </blockquote>
 </li>
 
@@ -199,11 +199,11 @@ template &lt;class ErrorConditionEnum&gt;
   error_condition(ErrorConditionEnum e<del>,
     typename enable_if&lt;is_error_condition_enum&lt;ErrorConditionEnum&gt;::value&gt;::type* = 0</del>);
 </pre>
-<blockquote>
+<blockquote><p>
 <ins><i>Remarks:</i> This constructor shall not participate in overload
 resolution, unless
 <tt>is_error_condition_enum&lt;ErrorConditionEnum&gt;::value == true</tt>.</ins>
-</blockquote>
+</p></blockquote>
 </blockquote>
 </li>
 

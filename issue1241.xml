@@ -4,7 +4,7 @@
 ] >
 
 <issue num="1241" status="WP">
-<title>unique_copy needs to require EquivalenceRelation</title>
+<title><tt>unique_copy</tt> needs to require <tt>EquivalenceRelation</tt></title>
 <section><sref ref="[alg.unique]"/></section>
 <submitter>Daniel Kr&uuml;gler</submitter>
 <date>17 Oct 2009</date>
@@ -14,9 +14,8 @@
 A lot of fixes were silently applied during concept-time and we should
 not lose them again. The Requires clause of <sref ref="[alg.unique]"/>/5
 doesn't mention that <tt>==</tt> and the predicate need to satisfy an
-<tt>EquivalenceRelation</tt>, as it is correctly said for
-<tt>unique</tt>. This was intentionally fixed during conceptification,
-were we had:
+<tt>EquivalenceRelation</tt>, as it is correctly said for <tt>unique</tt>. 
+This was intentionally fixed during conceptification, were we had:
 </p>
 
 <blockquote><pre>
@@ -50,9 +49,9 @@ concepts, see <iref ref"1000"/>
 2009-10-31 Howard adds:
 </note>
 
-<blockquote>
+<blockquote><p>
 Moved to Tentatively Ready after 5 positive votes on c++std-lib.
-</blockquote>
+</p></blockquote>
 
 </discussion>
 
@@ -71,7 +70,7 @@ template&lt;class InputIterator, class OutputIterator, class BinaryPredicate&gt;
     unique_copy(InputIterator first, InputIterator last,
                 OutputIterator result, BinaryPredicate pred);
 </pre>
-<blockquote>
+<blockquote><p>
 <i>Requires:</i> <ins>The comparison function shall be an equivalence
 relation.</ins> The ranges <tt>[first,last)</tt> and
 <tt>[result,result+(last-first))</tt> shall not overlap. The expression
@@ -81,7 +80,7 @@ requirements of forward iterator then the value type of
 <tt>InputIterator</tt> shall be <tt>CopyConstructible</tt> (34) and
 <tt>CopyAssignable</tt> (table 36). Otherwise <tt>CopyConstructible</tt>
 is not required.
-</blockquote>
+</p></blockquote>
 </blockquote>
 </resolution>
 

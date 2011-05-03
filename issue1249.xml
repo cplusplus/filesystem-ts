@@ -4,16 +4,16 @@
 ] >
 
 <issue num="1249" status="WP">
-<title>basic_ios default ctor</title>
+<title><tt>basic_ios</tt> default ctor</title>
 <section><sref ref="[basic.ios.cons]"/></section>
 <submitter>Martin Sebor</submitter>
 <date>25 Oct 2009</date>
 
 <discussion>
 <p>
-The basic_ios default ctor is required to leave the objects members
+The <tt>basic_ios</tt> default ctor is required to leave the objects members
 uninitialized (see below). The paragraph says the object must be
-initialized by calling basic_ios::init() before it's destroyed by
+initialized by calling <tt>basic_ios::init()</tt> before it's destroyed but
 I can't find a requirement that it be initialized before calling
 any of the class other member functions. Am I not looking in the
 right place or that an issue?
@@ -28,31 +28,31 @@ right place or that an issue?
 I agree, that your wording makes that clearer, but suggest to write
 </p>
 
-<blockquote>
+<blockquote><p>
 ... calling <tt>basic_ios::init<del>()</del></tt> before ...
-</blockquote>
+</p></blockquote>
 
 <p>
 Doing so, I recommend to adapt that of <tt>ios_base();</tt> as well, where
 we have:
 </p>
 
-<blockquote>
+<blockquote><p>
 <i>Effects:</i> Each <tt>ios_base</tt> member has an indeterminate value
 after construction. These members shall be initialized by calling
 <tt>basic_ios::init</tt>. If an <tt>ios_base</tt> object is destroyed
 before these initializations have taken place, the behavior is
 undefined.
-</blockquote>
+</p></blockquote>
 </blockquote>
 
 <note>
 Post-Rapperswil:
 </note>
 
-<blockquote>
+<blockquote><p>
 Moved to Tentatively Ready after 5 positive votes on c++std-lib.
-</blockquote>
+</p></blockquote>
 
 <note>
 Adopted at 2010-11 Batavia
@@ -68,7 +68,7 @@ Change <sref ref="[ios.base.cons]"/> p1:
 <blockquote><pre>
 ios_base();
 </pre>
-<blockquote>
+<blockquote><p>
 <i>Effects:</i> Each <tt>ios_base</tt> member has an indeterminate value
 after construction. <del>These</del> <ins>The object's</ins> members shall be initialized by calling
 <tt>basic_ios::init</tt> <ins>before the object's first use or before
@@ -76,7 +76,7 @@ after construction. <del>These</del> <ins>The object's</ins> members shall be in
  is undefined.</ins>. <del>If an <tt>ios_base</tt> object is destroyed
 before these initializations have taken place, the behavior is
 undefined.</del>
-</blockquote>
+</p></blockquote>
 </blockquote>
 
 <p>
@@ -86,7 +86,7 @@ Change <sref ref="[basic.ios.cons]"/> p2:
 <blockquote><pre>
 basic_ios();
 </pre>
-<blockquote>
+<blockquote><p>
 <i>Effects:</i> Constructs an object of class <tt>basic_ios</tt>
 (27.5.2.7) leaving its member objects uninitialized. The object shall be
 initialized by calling <del>its</del>
@@ -94,7 +94,7 @@ initialized by calling <del>its</del>
 use or before it is destroyed, whichever comes first; otherwise the
 behavior is undefined.</ins> <del>member function. If it is destroyed
 before it has been initialized the behavior is undefined.</del>
-</blockquote>
+</p></blockquote>
 </blockquote>
 </resolution>
 

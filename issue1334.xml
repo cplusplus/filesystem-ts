@@ -4,7 +4,7 @@
 ] >
 
 <issue num="1334" status="WP">
-<title>Insert iterators are broken for some proxy  containers compared to C++03</title>
+<title>Insert iterators are broken for some proxy containers compared to C++03</title>
 <section><sref ref="[back.insert.iter.op=]"/>, <sref ref="[front.insert.iter.op=]"/>,
 <sref ref="[insert.insert.iter.op=]"/></section>
 <submitter>Daniel Kr&uuml;gler</submitter>
@@ -113,9 +113,9 @@ The following P/R is a revision of the orignal P/R and was initially suggested b
 Hinnant. Paolo verified that the approach works in gcc.
 </p>
 
-<blockquote>
+<blockquote><p>
 Moved to Tentatively Ready with revised wording after 6 positive votes on c++std-lib.
-</blockquote>
+</p></blockquote>
 
 <note>
 Adopted at 2010-11 Batavia
@@ -149,10 +149,10 @@ public:
 back_insert_iterator&lt;Container&gt;&amp;
    operator=(<ins>const</ins> typename Container::<del>const_reference</del><ins>value_type&amp;</ins> value);
 </pre>
-<blockquote>
+<blockquote><p>
 1 <em>Effects</em>: <tt>container-&gt;push_back(value)</tt>;<br/>
 2 <em>Returns</em>: <tt>*this</tt>.
-</blockquote></blockquote>
+</p></blockquote></blockquote>
 </li>
 <li>Change [front.insert.iterator], class <tt>front_insert_iterator</tt> synposis as indicated:
 <blockquote><pre>
@@ -176,10 +176,10 @@ public:
 front_insert_iterator&lt;Container&gt;&amp;
    operator=(<ins>const</ins> typename Container::<del>const_reference</del><ins>value_type&amp;</ins> value);
 </pre>
-<blockquote>
+<blockquote><p>
 1 <em>Effects</em>: <tt>container-&gt;push_front(value)</tt>;<br/>
 2 <em>Returns</em>: <tt>*this</tt>.
-</blockquote></blockquote>
+</p></blockquote></blockquote>
 </li>
 <li>Change [insert.iterator], class insert_iterator synopsis as indicated:
 <blockquote><pre>
@@ -204,14 +204,14 @@ template &lt;class Container&gt;
 insert_iterator&lt;Container&gt;&amp;
     operator=(<ins>const</ins> typename Container::<del>const_reference</del><ins>value_type&amp;</ins> value);
 </pre>
-<blockquote>
+<blockquote><p>
 1 <em>Effects</em>: 
-<blockquote><pre>
+</p><blockquote><pre>
   iter = container-&gt;insert(iter, value);
   ++iter;
-</pre></blockquote>
+</pre></blockquote><p>
 2 <em>Returns</em>: <tt>*this</tt>.
-</blockquote></blockquote>
+</p></blockquote></blockquote>
 </li>
 </ol>
 

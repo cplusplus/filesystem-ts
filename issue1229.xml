@@ -12,8 +12,7 @@
 <discussion>
 <p>
 <a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2009/n2960.pdf">N2960</a>
-<sref ref="[syserr.errcode.overview]"/> and <sref
-ref="[syserr.errcode.modifiers]"/> say:
+<sref ref="[syserr.errcode.overview]"/> and <sref ref="[syserr.errcode.modifiers]"/> say:
 </p>
 
 <blockquote><pre> 
@@ -59,9 +58,9 @@ So, the current wording makes <tt>operator=</tt> return
 <sref ref="[syserr.errcode.modifiers]"/>/4 says
 </p>
 
-<blockquote>
+<blockquote><p>
 <i>Returns:</i> <tt>*this</tt>.
-</blockquote>
+</p></blockquote>
 <p>
 which is correct.
 </p>
@@ -99,7 +98,8 @@ Which returns <tt>void&amp;</tt>.  They should both say:
  
 <blockquote><pre> 
 template &lt;class ErrorConditionEnum&gt;
-  typename enable_if&lt;is_error_condition_enum&lt;ErrorConditionEnum&gt;::value, error_condition&gt;::type&amp;
+  typename enable_if&lt;is_error_condition_enum&lt;ErrorConditionEnum&gt;::value, 
+  error_condition&gt;::type&amp;
     operator=(ErrorConditionEnum e);
 </pre></blockquote>
 
@@ -109,7 +109,8 @@ Or (again, I prefer this form):
 
 <blockquote><pre> 
 template &lt;class ErrorConditionEnum&gt;
-  typename enable_if&lt;is_error_condition_enum&lt;ErrorConditionEnum&gt;::value, error_condition&amp;&gt;::type
+  typename enable_if&lt;is_error_condition_enum&lt;ErrorConditionEnum&gt;::value, 
+  error_condition&amp;&gt;::type
     operator=(ErrorConditionEnum e);
 </pre></blockquote>
 
@@ -123,31 +124,31 @@ necessary.
 2009-10-18 Beman adds:
 </note>
 
-<blockquote>
+<blockquote><p>
 The proposed resolution for issue <iref ref="1237"/> makes this issue
 moot, so it should become NAD.
-</blockquote>
+</p></blockquote>
 
 <note>
 2009-10 Santa Cruz:
 </note>
 
-<blockquote>
+<blockquote><p>
 <del>NAD</del><ins>Resolved</ins>, solved by <iref ref="1237"/>.
-</blockquote>
+</p></blockquote>
 
 </discussion>
 
 <resolution>
 
 <p>
-Change <sref ref="[syserr.errcode.overview]"/> and <sref
-ref="[syserr.errcode.modifiers]"/>:
+Change <sref ref="[syserr.errcode.overview]"/> and <sref ref="[syserr.errcode.modifiers]"/>:
 </p>
 
 <blockquote><pre>
 template &lt;class ErrorCodeEnum&gt;
-  typename enable_if&lt;is_error_code_enum&lt;ErrorCodeEnum&gt;::value<ins>, error_code&amp;</ins>&gt;::type<del>&amp;</del>
+  typename enable_if&lt;is_error_code_enum&lt;ErrorCodeEnum&gt;::value<ins>, 
+  error_code&amp;</ins>&gt;::type<del>&amp;</del>
     operator=(ErrorCodeEnum e);
 </pre></blockquote>
 
@@ -157,7 +158,8 @@ Change <sref ref="[syserr.errcondition.overview]"/>:
 
 <blockquote><pre>
 template&lt;<del>typename</del> <ins>class</ins> ErrorConditionEnum&gt;
-  typename enable_if&lt;is_error_condition_enum&lt;ErrorConditionEnum&gt;<ins>::value</ins>, error_co<ins>ndition</ins><del>de</del><ins>&amp;</ins>&gt;::type<del> &amp;</del>
+  typename enable_if&lt;is_error_condition_enum&lt;ErrorConditionEnum&gt;<ins>::value</ins>, 
+  error_co<ins>ndition</ins><del>de</del><ins>&amp;</ins>&gt;::type<del> &amp;</del>
     operator=( ErrorConditionEnum e );
 </pre></blockquote>
 
@@ -167,7 +169,8 @@ Change <sref ref="[syserr.errcondition.modifiers]"/>:
 
 <blockquote><pre>
 template &lt;class ErrorConditionEnum&gt;
-  typename enable_if&lt;is_error_condition_enum&lt;ErrorConditionEnum&gt;::value<ins>, error_condition&amp;</ins>&gt;::type<del>&amp;</del>
+  typename enable_if&lt;is_error_condition_enum&lt;ErrorConditionEnum&gt;::value<ins>, 
+  error_condition&amp;</ins>&gt;::type<del>&amp;</del>
     operator=(ErrorConditionEnum e);
 </pre>
 <blockquote>

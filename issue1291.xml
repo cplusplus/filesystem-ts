@@ -4,7 +4,7 @@
 ] >
 
 <issue num="1291" status="Resolved">
-<title>exceptions thrown during <tt>promise::set_value</tt></title>
+<title>Exceptions thrown during <tt>promise::set_value</tt></title>
 <section><sref ref="[futures.promise]"/></section>
 <submitter>Jonathan Wakely</submitter>
 <date>18 Dec 2009</date>
@@ -15,7 +15,7 @@ In <sref ref="[futures.promise]"/>
 </p>
 
 <p>
-Does <tt>promise&lt;R&gt;::set_value</tt> return normally if the copy/move
+Does <tt>promise&lt;R&gt;::set_value</tt> return normally if the copy&#47;move
 constructor of <tt>R</tt> throws?
 </p>
 
@@ -50,12 +50,12 @@ Solved by
 Change <sref ref="[futures.promise]"/>/18:
 </p>
 
-<blockquote>
+<blockquote><p>
 18 <i>Throws:</i> <tt>future_error</tt> if its associated state is already
 ready<ins> or, for the first version an exception thrown by the copy constructor
 of <tt>R</tt>, or for the second version an exception thrown by the move
 constructor of <tt>R</tt></ins>.
-</blockquote>
+</p></blockquote>
 </resolution>
 
 </issue>

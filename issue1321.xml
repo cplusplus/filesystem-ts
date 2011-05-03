@@ -66,9 +66,9 @@ inner allocator to a contained element. &mdash; <i>end note</i>]
 template &lt;class T&gt;
   void destroy(T* p);
 </pre>
-<blockquote>
+<blockquote><p>
 9 <i>Effects:</i> calls <tt>outer_allocator().destroy(p)</tt>.
-</blockquote>
+</p></blockquote>
 
 </blockquote>
 
@@ -82,10 +82,10 @@ call members of an allocator directly, but rather does so indirectly via
 <pre>
 size_type max_size() const;
 </pre>
-<blockquote>
+<blockquote><p>
 7 <i>Returns:</i>
 <tt><b>allocator_traits&lt;OuterAlloc&gt;::</b>max_size(outer_allocator())</tt>.
-</blockquote>
+</p></blockquote>
 </blockquote>
 
 <p>
@@ -190,11 +190,11 @@ inner allocator to a contained element. &mdash; <i>end note</i>]
 template &lt;class T&gt;
   void destroy(T* p);
 </pre>
-<blockquote>
+<blockquote><p>
 9 <i>Effects:</i> calls <tt><del>outer_allocator().</del>
 <ins><i>OUTERMOST_ALLOC_TRAITS(outer_allocator())</i>::</ins>destroy(
 <ins><i>OUTERMOST(outer_allocator())</i>,</ins> p)</tt>.
-</blockquote>
+</p></blockquote>
 
 </blockquote>
 
