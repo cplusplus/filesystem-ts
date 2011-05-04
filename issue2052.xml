@@ -1,0 +1,38 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="2052" status="New">
+<title>Mixup between <tt>mapped_type</tt> and <tt>value_type</tt> for associative containers</title>
+<section><sref ref="[associative.reqmts]"/></section>
+<submitter>Marc Glisse</submitter>
+<date>4 May 2011</date>
+
+<discussion>
+<p>
+(this is basically reopening the first part of issue <iref ref="2006"/>, as discussed in the thread 
+starting at c++std-lib-30698 )
+<p/>
+Section <sref ref="[associative.reqmts]"/>
+<p/>
+In Table 102, several uses of <tt>T</tt> (which means <tt>mapped_type</tt> here) should
+be <tt>value_type</tt> instead. This is almost editorial. For instance:
+</p>
+<blockquote><pre>
+a_uniq.emplace(args)
+</pre><p>
+<i>Requires</i>: <tt>T</tt> shall be <tt>EmplaceConstructible</tt> into <tt>X</tt> from args.
+<p/>
+<i>Effects</i>: Inserts a <tt>T</tt> object <tt>t</tt> constructed with
+<tt>std::forward&lt;Args&gt;(args)...</tt> if and only if there is no element in the
+container with key equivalent to the key of <tt>t</tt>. The <tt>bool</tt> component of
+the returned pair is true if and only if the insertion takes place, and the iterator component 
+of the pair points to the element with key equivalent to the key of <tt>t</tt>.
+</p></blockquote>
+</discussion>
+
+<resolution>
+</resolution>
+
+</issue>
