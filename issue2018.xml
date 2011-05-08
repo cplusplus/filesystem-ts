@@ -29,13 +29,240 @@ since <tt>'_'</tt> is not in every <tt>ctype</tt> category.
 There&#39;s a similar problem with the following phrases discussing the
 &quot;blank&quot; char class.
 </p>
+
+<note>2011-05-06: Jonathan Wakely comments and provides suggested wording</note>
+
+<p>
+DR <iref ref="2019"/> added <tt>isblank</tt> support to <tt>&lt;locale&gt;</tt> which simplifies the
+definition of <tt>regex_traits::isctype</tt> by removing the special case for the "blank" class.
+<p/>
+My suggestion for 2018 is to add a new table replacing the lists of
+recognized names in the Remarks clause of <tt>regex_traits::lookup_classname</tt>. 
+I then refer to that table in the Returns clause of <tt>regex_traits::isctype</tt> 
+to expand on the "in an unspecified manner" wording which is too vague. The conversion 
+can now be described using the "is set" term defined by <sref ref="[bitmask.types]"/> and
+the new table to convey the intented relationship between e.g.
+[[:digit:]] and <tt>ctype_base::digit</tt>, which is not actually stated in the
+FDIS.
+<p/>
+The effects of <tt>isctype</tt> can then most easily be described in code,
+given an "exposition only" function prototype to do the not-quite-so-unspecified conversion 
+from <tt>char_class_type</tt> to <tt>ctype_base::mask</tt>.
+<p/>
+The core of LWG 2018 is the "bitwise or'ed" wording which gives the
+wrong result, always evaluating to true for all values of <tt>f</tt>. That is
+replaced by the condition <tt>(f&amp;x) == x</tt> where <tt>x</tt> is the result of calling
+<tt>lookup_classname</tt> with "w".  I believe that's necessary, because the
+"w" class could be implemented by an internal "underscore" class i.e.
+<tt>x = _Alnum|_Underscore</tt> in which case <tt>(f&amp;x) != 0</tt> would give the wrong
+result when <tt>f==_Alnum</tt>.
+<p/>
+The proposed resolution also makes use of <tt>ctype::widen</tt> which addresses
+the problem that the current wording only talks about "w" and '_' which assumes 
+<tt>charT</tt> is char.  There's still room for improvement here:
+the regex grammar in <sref ref="[re.grammar]"/> says that the class names in the
+table should always be recognized, implying that e.g. U"digit" should
+be recognized by <tt>regex_traits&lt;char32_t&gt;</tt>, but the specification of
+<tt>regex_traits::lookup_classname</tt> doesn't cover that, only mentioning
+<tt>char</tt> and <tt>wchar_t</tt>.  Maybe the table should not distinguish narrow and
+wide strings, but should just have one column and add wording to say
+that <tt>regex_traits</tt> widens the name as if by using <tt>use_facet&lt;ctype&lt;charT&gt;&gt;::widen()</tt>.
+<p/>
+Another possible improvement would be to allow additional
+implementation-defined extensions in <tt>isctype</tt>. An implementation is
+allowed to support additional class names in <tt>lookup_classname</tt>, e.g.
+[[:octdigit:]] for [0-7] or [[:bindigit:]] for [01], but the current
+definition of isctype provides no way to use them unless <tt>ctype_base::mask</tt> 
+also supports them.
+</p>
 </discussion>
 
 <resolution>
-<p>Replace the Returns clause with a description in terms of <tt>ctype</tt>
-categories, rather than pseudocode in terms of bitwise operations.
-(full replacement wording to follow)
-</p>
+<p>This wording is relative to the FDIS.</p>
+<ol>
+<li><p>Modify <sref ref="[re.traits]"/> p. 10 as indicated:</p>
+<blockquote><pre>
+template &lt;class ForwardIterator&gt;
+  char_class_type lookup_classname(
+    ForwardIterator first, ForwardIterator last, bool icase = false) const;
+</pre><blockquote><p>
+-9- <i>Returns</i>: an unspecified value that represents the character classification named by the character
+sequence designated by the iterator range [<tt>first</tt>,<tt>last</tt>). If the parameter <tt>icase</tt> is true then the
+returned mask identifies the character classification without regard to the case of the characters being
+matched, otherwise it does honor the case of the characters being matched.(footnote 335) The value returned shall
+be independent of the case of the characters in the character sequence. If the name is not recognized
+then returns a value that compares equal to 0.
+<p/>
+-10- <i>Remarks</i>: For <tt>regex_traits&lt;char&gt;</tt>, at least the <del>names "d", "w", "s", "alnum", "alpha", "blank",
+"cntrl", "digit", "graph", "lower", "print", "punct", "space", "upper" and "xdigit"</del><ins>narrow character
+names in Table X</ins> shall be recognized. For <tt>regex_traits&lt;wchar_t&gt;</tt>, at least the <del>names L"d", L"w", 
+L"s", L"alnum", L"alpha", L"blank", L"cntrl", L"digit", L"graph", L"lower", L"print", L"punct", L"space", L"upper" and 
+L"xdigit"</del><ins>wide character names in Table X</ins> shall be recognized.
+</p></blockquote></blockquote>
+</li>
+
+<li><p>Modify <sref ref="[re.traits]"/> p. 12 as indicated:</p>
+<blockquote><pre>
+bool isctype(charT c, char_class_type f) const;
+</pre><blockquote><p>
+-11- <i>Effects</i>: Determines if the character <tt>c</tt> is a member of the character classification represented by <tt>f</tt>.
+<p/>
+-12- <i>Returns</i>: Converts <tt>f</tt> into a value <tt>m</tt> of type <tt>std::ctype_base::mask</tt> in an unspecified manner, <del>and
+returns true if <tt>use_facet&lt;ctype&lt;charT&gt; &gt;(getloc()).is(m, c)</tt> is true. Otherwise returns true
+if <tt>f</tt> bitwise or'ed with the result of calling <tt>lookup_classname</tt> with an iterator pair that designates
+the character sequence "w" is not equal to <tt>0</tt> and <tt>c == '_'</tt>, or if <tt>f</tt> bitwise or'ed with the result of
+calling <tt>lookup_classname</tt> with an iterator pair that designates the character sequence "blank" is not
+equal to <tt>0</tt> and <tt>c</tt> is one of an implementation-defined subset of the characters for which 
+<tt>isspace(c, getloc())</tt> returns true, otherwise returns false.</del><ins>except that when <tt>f</tt> represents 
+membership of a character class named in Table X, the corresponding <tt>ctype_base::mask</tt> value shall be set in <tt>m</tt>. 
+Given the function prototype</ins>
+</p><blockquote><pre>
+<ins>template&lt;class C&gt;
+   ctype_base::mask convert(typename regex_traits&lt;C&gt;::char_class_type);</ins>
+</pre></blockquote>
+<p><ins>the result is determined as if by</ins>
+</p><blockquote><pre><ins>
+ctype_base::mask m = convert&lt;charT&gt;(f);
+const ctype&lt;charT&gt;&amp; ct = use_facet&lt;ctype&lt;charT&gt; &gt;(getloc());
+if (ct.is(m, c))
+  return true;
+charT w[1] = { ct.widen('w') };
+char_class_type x = lookup_classname(w, w+1);
+if ((f&amp;x) == x &amp;&amp; c == ct.widen('_'))
+  return true;
+return false;
+</ins></pre></blockquote>
+<p><ins>[<i>Example</i>:</ins>
+</p><blockquote><pre><ins>
+regex_traits&lt;char&gt; t;
+string d("d");
+string u("upper");
+regex_traits&lt;char&gt;::char_class_type f;
+f = t.lookup_classname(d.begin(), d.end());
+f &amp;= t.lookup_classname(u.begin(), u.end());
+ctype_base::mask m = convert(f); // m == ctype_base::digit|ctype_base::upper
+</ins></pre></blockquote>
+<p><ins>&mdash; <i>end example</i>]</ins></p>
+<p><ins>[<i>Example</i>:</ins>
+</p><blockquote><pre><ins>
+regex_traits&lt;char&gt; t;
+string w("w");
+regex_traits&lt;char&gt;::char_class_type f;
+f = t.lookup_classname(w.begin(), w.end());
+t.isctype('A', f); // returns true
+t.isctype('_', f); // returns true
+t.isctype(' ', f); // returns false
+</ins></pre></blockquote>
+<p><ins>&mdash; <i>end example</i>]</ins>
+</p></blockquote></blockquote>
+</li>
+
+<li><p>At the end of [re.traits] add a new Table X &mdash; Character class names and corresponding ctype masks:</p>
+
+<blockquote>
+<table border="1">
+<caption>Table X &mdash; Character class names and corresponding ctype masks</caption>
+
+<tr>
+<th>Narrow character name</th>
+<th>Wide character name</th>
+<th>Corresponding <tt>ctype_base::mask</tt> value</th>
+</tr>
+ 
+<tr>
+<td><tt>"alnum"</tt></td>
+<td><tt>L"alnum"</tt></td>
+<td><tt>ctype_base::alnum</tt></td>
+</tr>
+
+<tr>
+<td><tt>"alpha"</tt></td>
+<td><tt>L"alpha"</tt></td>
+<td><tt>ctype_base::alpha</tt></td>
+</tr>
+
+<tr>
+<td><tt>"blank"</tt></td>
+<td><tt>L"blank"</tt></td>
+<td><tt>ctype_base::blank</tt></td>
+</tr>
+
+<tr>
+<td><tt>"cntrl"</tt></td>
+<td><tt>L"cntrl"</tt></td>
+<td><tt>ctype_base::cntrl</tt></td>
+</tr>
+
+<tr>
+<td><tt>"digit"</tt></td>
+<td><tt>L"digit"</tt></td>
+<td><tt>ctype_base::digit</tt></td>
+</tr>
+
+<tr>
+<td><tt>"d"</tt></td>
+<td><tt>L"d"</tt></td>
+<td><tt>ctype_base::digit</tt></td>
+</tr>
+
+<tr>
+<td><tt>"graph"</tt></td>
+<td><tt>L"graph"</tt></td>
+<td><tt>ctype_base::graph</tt></td>
+</tr>
+
+<tr>
+<td><tt>"lower"</tt></td>
+<td><tt>L"lower"</tt></td>
+<td><tt>ctype_base::lower</tt></td>
+</tr>
+
+<tr>
+<td><tt>"print"</tt></td>
+<td><tt>L"print"</tt></td>
+<td><tt>ctype_base::print</tt></td>
+</tr>
+
+<tr>
+<td><tt>"punct"</tt></td>
+<td><tt>L"punct"</tt></td>
+<td><tt>ctype_base::punct</tt></td>
+</tr>
+
+<tr>
+<td><tt>"space"</tt></td>
+<td><tt>L"space"</tt></td>
+<td><tt>ctype_base::space</tt></td>
+</tr>
+
+<tr>
+<td><tt>"s"</tt></td>
+<td><tt>L"s"</tt></td>
+<td><tt>ctype_base::space</tt></td>
+</tr>
+
+<tr>
+<td><tt>"upper"</tt></td>
+<td><tt>L"upper"</tt></td>
+<td><tt>ctype_base::upper</tt></td>
+</tr>
+
+<tr>
+<td><tt>"w"</tt></td>
+<td><tt>L"w"</tt></td>
+<td><tt>ctype_base::alnum</tt></td>
+</tr>
+
+<tr>
+<td><tt>"xdigit"</tt></td>
+<td><tt>L"xdigit"</tt></td>
+<td><tt>ctype_base::xdigit</tt></td>
+</tr>
+
+</table>
+</blockquote> 
+</li>
+</ol>
 </resolution>
 
 </issue>
