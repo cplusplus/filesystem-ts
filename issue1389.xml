@@ -28,9 +28,9 @@ compute these values".
 2010-10-25 Daniel adds:
 </note>
 
-<blockquote>
+<blockquote><p>
 Accepting <a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2010/n3131.html">n3131</a> would solve this issue.
-</blockquote>
+</p></blockquote>
 
 <note>Batavia: Resolved by accepting
 <a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2010/n3210.pdf">n3210</a>.</note>
@@ -38,48 +38,47 @@ Accepting <a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2010/n3131
 </discussion>
 
 <resolution>
-Change the wording in <sref ref="[ratio.arithmetic]"/> p. 2-5 as follows:
-<p/>
+<p>Change the wording in <sref ref="[ratio.arithmetic]"/> p. 2-5 as follows:</p>
 <blockquote><pre>
 template &lt;class R1, class R2&gt; using ratio_add = <em>see below</em>;
-</pre><blockquote>
+</pre><blockquote><p>
 2 The type <tt>ratio_add&lt;R1, R2&gt;</tt> shall be a synonym for <del><tt>ratio&lt;T1, T2&gt;</tt></del>
 <ins><tt>ratio&lt;U, V&gt;</tt> such that <tt>ratio&lt;U, V&gt;::num</tt> and <tt>ratio&lt;U, V&gt;::den</tt> 
 are the same as the corresponding members of <tt>ratio&lt;T1, T2&gt;</tt> would be in the absence of 
 arithmetic overflow</ins> where <tt>T1</tt> has the value <tt>R1::num * R2::den + R2::num * R1::den</tt> 
 and <tt>T2</tt> has the value <tt>R1::den * R2::den</tt>. <ins>If the required values of <tt>ratio&lt;U, V&gt;::num</tt> 
 and <tt>ratio&lt;U, V&gt;::den</tt> cannot be represented in <tt>intmax_t</tt> then the program is ill-formed.</ins>
-</blockquote></blockquote>
+</p></blockquote></blockquote>
 <blockquote><pre>
 template &lt;class R1, class R2&gt; using ratio_subtract = <em>see below</em>;
-</pre><blockquote>
+</pre><blockquote><p>
 3 The type <tt>ratio_subtract&lt;R1, R2&gt;</tt> shall be a synonym for <del><tt>ratio&lt;T1, T2&gt;</tt></del>
 <ins><tt>ratio&lt;U, V&gt;</tt> such that <tt>ratio&lt;U, V&gt;::num</tt> and <tt>ratio&lt;U, V&gt;::den</tt> 
 are the same as the corresponding members of <tt>ratio&lt;T1, T2&gt;</tt> would be in the absence of 
 arithmetic overflow</ins> where <tt>T1</tt> has the value <tt>R1::num * R2::den - R2::num * R1::den</tt> 
 and <tt>T2</tt> has the value <tt>R1::den * R2::den</tt>. <ins>If the required values of <tt>ratio&lt;U, V&gt;::num</tt> 
 and <tt>ratio&lt;U, V&gt;::den</tt> cannot be represented in <tt>intmax_t</tt> then the program is ill-formed.</ins>
-</blockquote></blockquote>
+</p></blockquote></blockquote>
 <blockquote><pre>
 template &lt;class R1, class R2&gt; using ratio_multiply = <em>see below</em>;
-</pre><blockquote>
+</pre><blockquote><p>
 4 The type <tt>ratio_multiply&lt;R1, R2&gt;</tt> shall be a synonym for <del><tt>ratio&lt;T1, T2&gt;</tt></del>
 <ins><tt>ratio&lt;U, V&gt;</tt> such that <tt>ratio&lt;U, V&gt;::num</tt> and <tt>ratio&lt;U, V&gt;::den</tt> 
 are the same as the corresponding members of <tt>ratio&lt;T1, T2&gt;</tt> would be in the absence of 
 arithmetic overflow</ins> where <tt>T1</tt> has the value <tt>R1::num * R2::num</tt> and <tt>T2</tt> 
 has the value <tt>R1::den * R2::den</tt>. <ins>If the required values of <tt>ratio&lt;U, V&gt;::num</tt> 
 and <tt>ratio&lt;U, V&gt;::den</tt> cannot be represented in <tt>intmax_t</tt> then the program is ill-formed.</ins>
-</blockquote></blockquote>
+</p></blockquote></blockquote>
 <blockquote><pre>
 template &lt;class R1, class R2&gt; using ratio_divide = <em>see below</em>;
-</pre><blockquote>
+</pre><blockquote><p>
 5 The type <tt>ratio_divide&lt;R1, R2&gt;</tt> shall be a synonym for <del><tt>ratio&lt;T1, T2&gt;</tt></del>
 <ins><tt>ratio&lt;U, V&gt;</tt> such that <tt>ratio&lt;U, V&gt;::num</tt> and <tt>ratio&lt;U, V&gt;::den</tt> 
 are the same as the corresponding members of <tt>ratio&lt;T1, T2&gt;</tt> would be in the absence of 
 arithmetic overflow</ins> where <tt>T1</tt> has the value <tt>R1::num * R2::den</tt> and <tt>T2</tt> 
 has the value <tt>R1::den * R2::num</tt>. <ins>If the required values of <tt>ratio&lt;U, V&gt;::num</tt> 
 and <tt>ratio&lt;U, V&gt;::den</tt> cannot be represented in <tt>intmax_t</tt> then the program is ill-formed.</ins>
-</blockquote></blockquote>
+</p></blockquote></blockquote>
 </resolution>
 
 </issue>

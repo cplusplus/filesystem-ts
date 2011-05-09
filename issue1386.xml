@@ -12,7 +12,7 @@
 <discussion>
 <p><b>Addresses US-99</b></p>
 <p>
-pack_arguments is overly complex.
+<tt>pack_arguments</tt> is overly complex.
 </p>
 
 <note>
@@ -21,19 +21,18 @@ Resolved in Rapperswil by a motion to directly apply the words from the ballot c
 
 </discussion>
 
-<resolution>
+<resolution><p>
 This issue resulted from a lack of understanding of
 how references are forwarded. The definition of
-pack_arguments should be simply:<BR/>
-template &lt;class... Types&gt;
+<tt>pack_arguments</tt> should be simply:<br/>
+<tt>template &lt;class... Types&gt;
 tuple&lt;<del>A</del>Types<ins>&amp;&amp;</ins>&gt;
-pack_arguments(Types&amp;&amp;...t);<BR/>
-<del>Types:Let Ti be each type in Types....</del><BR/>
-Effects: ...<BR/>
-Returns:<BR/>
-tuple&lt;<del>A</del>Types<ins>&amp;&amp;</ins>...&gt;(std::forward&lt;Types&gt;(t)...)<BR/>
-The synopsis should also change to reflect this
-simpler signature.
-</resolution>
+pack_arguments(Types&amp;&amp;...t);</tt><br/>
+<del>Types: Let <tt>Ti</tt> be each type in <tt>Types</tt>....</del><br/>
+<i>Effects</i>: ...<br/>
+<i>Returns</i>:<br/>
+<tt>tuple&lt;<del>A</del>Types<ins>&amp;&amp;</ins>...&gt;(std::forward&lt;Types&gt;(t)...)</tt><br/>
+The synopsis should also change to reflect this simpler signature.
+</p></resolution>
 
 </issue>

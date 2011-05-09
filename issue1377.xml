@@ -23,14 +23,14 @@ implementation along the lines of n2835 (using <tt>enable_if</tt>s
 instead of concepts for the constraining, of course)
 </p>
 <pre>
-#include &lt;utility>
+#include &lt;utility&gt;
 struct Base { Base(Base&amp;&amp;); };
 
 struct Derived
   : private Base
 {
   Derived(Derived&amp;&amp; d)
-    : Base(std::forward&lt;Base>(d)) { }
+    : Base(std::forward&lt;Base&gt;(d)) { }
 };
 </pre>
 <p>
@@ -42,14 +42,14 @@ way, the present status is not acceptable.
 2010-10-24 Daniel adds:
 </note>
 
-<blockquote>
+<blockquote><p>
 Accepting <a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2010/n3143.html">n3143</a> would solve this issue.
-</blockquote>
+</p></blockquote>
 
 </discussion>
 
-<resolution>
+<resolution><p>
 Resolved as NAD Editorial by paper <a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2010/n3143.html">n3143</a>.
-</resolution>
+</p></resolution>
 
 </issue>

@@ -16,12 +16,12 @@ Several function templates of <tt>pair</tt> and <tt>tuple</tt> allow for too
 many implicit conversions, for example:
 </p>
 <pre>
-#include &lt;tuple>
-std::tuple&lt;char*> p(0); // Error?
+#include &lt;tuple&gt;
+std::tuple&lt;char*&gt; p(0); // Error?
 
 struct A { explicit A(int){} };
 A a = 1; // Error
-std::tuple&lt;A> ta = std::make_tuple(1); // OK?
+std::tuple&lt;A&gt; ta = std::make_tuple(1); // OK?
 </pre>
 
 <note>
@@ -35,15 +35,15 @@ Consider to add wording to constrain these function templates.
 2010-10-24 Daniel adds:
 </note>
 
-<blockquote>
+<blockquote><p>
 Accepting <a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2010/n3140.html">n3140</a> would solve this issue.
-</blockquote>
+</p></blockquote>
 
 </discussion>
 
 
-<resolution>
+<resolution><p>
 See <a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2010/n3140.html">n3140</a>.
-</resolution>
+</p></resolution>
 
 </issue>
