@@ -1,0 +1,91 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="2053" status="New">
+<title>Errors in <tt>regex</tt> bitmask types</title>
+<section><sref ref="[re.const]"/></section>
+<submitter>Jonathan Wakely</submitter>
+<date>9 May 2011</date>
+
+<discussion>
+<p>
+When <a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2010/n3110.html">N3110</a> 
+was applied to the WP some redundant "static" keywords were added and one form of initializer 
+which isn't valid for enumeration types was replaced with another form of invalid initializer.
+</p>
+</discussion>
+
+<resolution>
+<p>This wording is relative to the FDIS.</p>
+<ol>
+<li><p>Change <sref ref="[re.synopt]"/> as indicated:</p>
+<blockquote><pre>
+namespace std {
+  namespace regex_constants {
+    typedef <i>T1</i> syntax_option_type;
+    <del>static </del>constexpr syntax_option_type icase = <i>unspecified</i> ;
+    <del>static </del>constexpr syntax_option_type nosubs = <i>unspecified</i> ;
+    <del>static </del>constexpr syntax_option_type optimize = <i>unspecified</i> ;
+    <del>static </del>constexpr syntax_option_type collate = <i>unspecified</i> ;
+    <del>static </del>constexpr syntax_option_type ECMAScript = <i>unspecified</i> ;
+    <del>static </del>constexpr syntax_option_type basic = <i>unspecified</i> ;
+    <del>static </del>constexpr syntax_option_type extended = <i>unspecified</i> ;
+    <del>static </del>constexpr syntax_option_type awk = <i>unspecified</i> ;
+    <del>static </del>constexpr syntax_option_type grep = <i>unspecified</i> ;
+    <del>static </del>constexpr syntax_option_type egrep = <i>unspecified</i> ;
+  }
+}
+</pre></blockquote>
+</li>
+
+<li><p>Change <sref ref="[re.matchflag]"/> as indicated:</p>
+<blockquote><pre>
+namespace std {
+  namespace regex_constants {
+    typedef <i>T2</i> match_flag_type;
+    <del>static </del>constexpr match_flag_type match_default<del> = 0</del><ins>{};</ins>
+    <del>static </del>constexpr match_flag_type match_not_bol = <i>unspecified</i> ;
+    <del>static </del>constexpr match_flag_type match_not_eol = <i>unspecified</i> ;
+    <del>static </del>constexpr match_flag_type match_not_bow = <i>unspecified</i> ;
+    <del>static </del>constexpr match_flag_type match_not_eow = <i>unspecified</i> ;
+    <del>static </del>constexpr match_flag_type match_any = <i>unspecified</i> ;
+    <del>static </del>constexpr match_flag_type match_not_null = <i>unspecified</i> ;
+    <del>static </del>constexpr match_flag_type match_continuous = <i>unspecified</i> ;
+    <del>static </del>constexpr match_flag_type match_prev_avail = <i>unspecified</i> ;
+    <del>static </del>constexpr match_flag_type format_default<del> = 0</del><ins>{}</ins>;
+    <del>static </del>constexpr match_flag_type format_sed = <i>unspecified</i> ;
+    <del>static </del>constexpr match_flag_type format_no_copy = <i>unspecified</i> ;
+    <del>static </del>constexpr match_flag_type format_first_only = <i>unspecified</i> ;
+  }
+}
+</pre></blockquote>
+</li>
+
+<li><p>Change <sref ref="[re.err]"/> as indicated:</p>
+<blockquote><pre>
+namespace std {
+  namespace regex_constants {
+    typedef <i>T3</i> error_type;
+    <del>static </del>constexpr error_type error_collate = <i>unspecified</i> ;
+    <del>static </del>constexpr error_type error_ctype = <i>unspecified</i> ;
+    <del>static </del>constexpr error_type error_escape = <i>unspecified</i> ;
+    <del>static </del>constexpr error_type error_backref = <i>unspecified</i> ;
+    <del>static </del>constexpr error_type error_brack = <i>unspecified</i> ;
+    <del>static </del>constexpr error_type error_paren = <i>unspecified</i> ;
+    <del>static </del>constexpr error_type error_brace = <i>unspecified</i> ;
+    <del>static </del>constexpr error_type error_badbrace = <i>unspecified</i> ;
+    <del>static </del>constexpr error_type error_range = <i>unspecified</i> ;
+    <del>static </del>constexpr error_type error_space = <i>unspecified</i> ;
+    <del>static </del>constexpr error_type error_badrepeat = <i>unspecified</i> ;
+    <del>static </del>constexpr error_type error_complexity = <i>unspecified</i> ;
+    <del>static </del>constexpr error_type error_stack = <i>unspecified</i> ;
+  }
+}
+</pre></blockquote>
+</li>
+</ol>
+</resolution>
+
+</issue>
