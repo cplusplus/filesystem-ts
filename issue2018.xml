@@ -75,6 +75,8 @@ allowed to support additional class names in <tt>lookup_classname</tt>, e.g.
 definition of isctype provides no way to use them unless <tt>ctype_base::mask</tt> 
 also supports them.
 </p>
+
+<note>2011-05-10: Alberto and Daniel perform minor fixes in the P&#47;R</note>
 </discussion>
 
 <resolution>
@@ -139,8 +141,8 @@ string d("d");
 string u("upper");
 regex_traits&lt;char&gt;::char_class_type f;
 f = t.lookup_classname(d.begin(), d.end());
-f &amp;= t.lookup_classname(u.begin(), u.end());
-ctype_base::mask m = convert(f); // m == ctype_base::digit|ctype_base::upper
+f |= t.lookup_classname(u.begin(), u.end());
+ctype_base::mask m = convert&lt;char&gt;(f); // m == ctype_base::digit|ctype_base::upper
 </ins></pre></blockquote>
 <p><ins>&mdash; <i>end example</i>]</ins></p>
 <p><ins>[<i>Example</i>:</ins>
