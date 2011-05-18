@@ -1,0 +1,50 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="2055" status="New">
+<title><tt>std::move</tt> in <tt>std::accumulate</tt> and other algorithms</title>
+<section><sref ref="[numeric.ops]"/></section>
+<submitter>Chris Jefferson</submitter>
+<date>1 Jan 2011</date>
+
+<discussion>
+<p>
+The C++0x draft says <tt>std::accumulate</tt> uses: <tt>acc = binary_op(acc, *i)</tt>.
+<p/>
+Eelis van der Weegen has pointed out, on the libstdc++ mailing list, that using 
+<tt>acc = binary_op(std::move(acc), *i)</tt> can lead to massive improvements (particularly, 
+it means accumulating strings is linear rather than quadratic).
+<p/>
+Consider the simple case, accumulating a bunch of strings of length 1 (the same argument holds for other length buffers).
+For strings <tt>s</tt> and <tt>t</tt>, <tt>s+t</tt> takes time <tt>length(s)+length(t)</tt>, as you have to copy 
+both <tt>s</tt> and <tt>t</tt> into a new buffer.
+<p/>
+So in accumulating <tt>n</tt> strings, step <tt>i</tt> adds a string of length <tt>i-1</tt> to a string of length 
+1, so takes time <tt>i</tt>.
+<p/>
+Therefore the total time taken is: <tt>1+2+3+...+n</tt> = O(<tt>n<sup>2</sup></tt>)
+<p/>
+<tt>std::move(s)+t</tt>, for a "good" implementation, is amortized time <tt>length(t)</tt>, like <tt>vector</tt>, 
+just copy <tt>t</tt> onto the end of the buffer. So the total time taken is:
+<p/>
+<tt>1+1+1+...+1</tt> (<tt>n</tt> times) = O(<tt>n</tt>). This is the same as <tt>push_back</tt> on a <tt>vector</tt>.
+<p/>
+I'm trying to decide if this implementation might already be allowed. I suspect it might not 
+be (although I can't imagine any sensible code it would break). There are other algorithms 
+which could benefit similarly (<tt>inner_product</tt>, <tt>partial_sum</tt> and 
+<tt>adjacent_difference</tt> are the most obvious).
+<p/>
+Is there any general wording for "you can use rvalues of temporaries"?
+<p/>
+The reflector discussion starting with message c++std-lib-29763 came to the conclusion
+that above example is not covered by the "as-if" rules and that enabling this behaviour
+would seem quite useful.
+</p>
+</discussion>
+
+<resolution>
+</resolution>
+
+</issue>
