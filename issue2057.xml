@@ -1,0 +1,53 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="2057" status="New">
+<title><tt>time_point + duration</tt> semantics should be made <tt>constexpr</tt> conforming</title>
+<section><sref ref="[time.point.nonmember]"/></section>
+<submitter>Daniel Kr&uuml;gler</submitter>
+<date>21 May 2011</date>
+
+<discussion>
+<p>
+It has been observed by LWG <iref ref="2054"/> that the specification of some <tt>time_point</tt> member functions
+already imply that <tt>time_point</tt> needs to be a literal type and suggests to specify the constructors
+and the member function <tt>time_since_epoch()</tt> as <tt>constexpr</tt> functions at the
+minimum necessary. Adding further <tt>constexpr</tt> specifier to other operations should
+clearly be allowed and should probably be done as well. But to allow for further <tt>constexpr</tt> 
+functions in the future requires that their semantics is compatible to operations allowed in <tt>constexpr</tt> 
+functions. This is already fine for all operations, except this binary plus operator:
+</p>
+<blockquote><pre>
+template &lt;class Clock, class Duration1, class Rep2, class Period2&gt;
+time_point&lt;Clock, typename common_type&lt;Duration1, duration&lt;Rep2, Period2&gt;&gt;::type&gt;
+operator+(const time_point&lt;Clock, Duration1&gt;&amp; lhs, const duration&lt;Rep2, Period2&gt;&amp; rhs);
+</pre><blockquote><p>
+-1- <i>Returns</i>: <tt>CT(lhs) += rhs</tt>, where <tt>CT</tt> is the type of the return value.
+</p></blockquote></blockquote>
+<p>
+for similar reasons as those mentioned in <iref ref="2020"/>. The semantics should be fixed to allow
+for making them <tt>constexpr</tt>. This issue should also be considered as a placeholder for a request
+to make the remaining <tt>time_point</tt> operations similarly <tt>constexpr</tt> as had been done for 
+<tt>duration</tt>.
+</p>
+</discussion>
+
+<resolution>
+<p>This wording is relative to the FDIS.</p>
+<ol>
+<li><p>In <sref ref="[time.point.nonmember]"/>, p.1 change the <i>Returns</i> element semantics as indicated:</p>
+<blockquote><pre>
+template &lt;class Clock, class Duration1, class Rep2, class Period2&gt;
+time_point&lt;Clock, typename common_type&lt;Duration1, duration&lt;Rep2, Period2&gt;&gt;::type&gt;
+operator+(const time_point&lt;Clock, Duration1&gt;&amp; lhs, const duration&lt;Rep2, Period2&gt;&amp; rhs);
+</pre><blockquote><p>
+-1- <i>Returns</i>: <tt><del>CT(lhs) += rhs</del><ins>CT(lhs.time_since_epoch() + rhs)</ins></tt>, where <tt>CT</tt> 
+is the type of the return value.
+</p></blockquote></blockquote>
+</li>
+</ol>
+</resolution>
+
+</issue>
