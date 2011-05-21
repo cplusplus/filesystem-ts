@@ -1,0 +1,55 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="2058" status="New">
+<title><tt>valarray</tt> and <tt>begin&#47;end</tt></title>
+<section><sref ref="[numarray]"/></section>
+<submitter>Gabriel Dos Reis</submitter>
+<date>17 May 2011</date>
+
+<discussion>
+<p>
+It was just brought to my attention that the pair of functions
+<tt>begin&#47;end</tt> were added to <tt>valarray</tt> component.
+Those additions strike me as counter to the long standing agreement
+that <tt>valarray&lt;T&gt;</tt> is not yet another container. Valarray values
+are in general supposed to be treated as a whole, and as such
+has a loose specification allowing expression template techniques.
+<p/>
+The addition of these functions sound to me as making it much harder
+(or close to impossible) to effectively use expression templates
+as implementation techniques, for no clear benefits.
+<p/>
+My recommendation would be to drop <tt>begin&#47;end</tt> - or at least for the
+<tt>const valarray&lt;T&gt;&amp;</tt> version. I strongly believe those 
+are defects.
+</p>
+<note>This issue was discussed on the library reflector starting from c++std-lib-30761.
+Some of the key conclusions of this discussion were:</note>
+<ol>
+<li>The <tt>begin&#47;end</tt> members were added to allow <tt>valarray</tt> to participate
+in the new range-based for-loop by <a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2009/n2930.html">n2930</a>
+and not to make them container-like.</li>
+<li>It is currently underspecified when the iterator values returned from
+<tt>begin&#47;end</tt> become invalidated. To fix this, these invalidation rules need at
+least to reflect the invalidation rules of the references returned by the
+<tt>operator[]</tt> overloads of <tt>valarray</tt> (<sref ref="[valarray.access]"/>).
+</li>
+<li>A further problem is that the requirements expressed in <sref ref="[valarray.syn]"/> p.3-5
+enforce an implementation to provide further overloads of <tt>begin&#47;end</tt>, if the
+replacement type technique is used (which was clearly part of the design of <tt>valarray</tt>).
+Providing such additional overloads would also lead to life-time problems in examples like 
+<tt>begin(x + y)</tt> where <tt>x</tt> and <tt>y</tt> are expressions involving <tt>valarray</tt> 
+objects. To fix this, the <tt>begin&#47;end</tt> overloads could be explicitly excluded from the 
+general statements of <sref ref="[valarray.syn]"/> p.3-5. This would make it unspecified
+whether the expression <tt>begin(x + y)</tt> would be well-formed, portable code would
+need to write this as <tt>begin(std::valarray&lt;T&gt;(x + y))</tt>.</li>
+</ol>
+</discussion>
+
+<resolution>
+</resolution>
+
+</issue>
