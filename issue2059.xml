@@ -1,0 +1,41 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="2059" status="New">
+<title>C++0x ambiguity problem with <tt>map::erase</tt></title>
+<section><sref ref="[map]"/></section>
+<submitter>Christopher Jefferson</submitter>
+<date>18 May 2011</date>
+
+<discussion>
+<p>
+<tt>map::erase</tt> (and several related methods) took an iterator in C++03, but take a <tt>const_iterator</tt> 
+in C++0x. This breaks code where the map's <tt>key_type</tt> has a constructor which accepts an iterator 
+(for example a template constructor), as the compiler cannot choose between <tt>erase(const key_type&amp;)</tt> 
+and <tt>erase(const_iterator)</tt>.</p>
+<blockquote><pre>
+#include &lt;map&gt;
+
+struct X
+{
+  template&lt;typename T&gt;
+  X(T&amp;) {}
+};
+
+bool operator&lt;(const X&amp;, const X&amp;) { return false; }
+
+void erasor(std::map&lt;X,int&gt;&amp; s, X x)
+{
+  std::map&lt;X,int&gt;::iterator it = s.find(x);
+  if (it != s.end())
+    s.erase(it);
+}
+</pre></blockquote>
+</discussion>
+
+<resolution>
+</resolution>
+
+</issue>
