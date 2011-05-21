@@ -12,6 +12,7 @@
 <discussion>
 <p><b>Addresses US-134</b></p>
 
+<p>
 These two distributions have a member function called
 <tt>densities()</tt> which returns a <tt>vector&lt;double&gt;</tt>. The
 distribution is templated on <tt>RealType</tt>. The distribution
@@ -21,23 +22,25 @@ a <tt>vector&lt;RealType&gt;</tt>. Why doesn't densities return
 the computed densities property isn't being computed to
 the precision the client desires. If <tt>RealType</tt> is <tt>float</tt>, the
 densities vector is taking up twice as much space as the client desires.
+</p>
 
 <note>
 Resolution proposed by ballot comment:
 </note>
 <blockquote>
+<p>
 Change the piecewise constant and linear
 distributions to hold / return the densities in a
 <tt>vector&lt;result_type&gt;</tt>.
 <p/>
 If this is not done, at least correct <sref ref="[rand.dist.samp.pconst]"/> p. 13 which describes
 the return of densities as a <tt>vector&lt;result_type&gt;</tt>.
-</blockquote>
+</p></blockquote>
 
 <note>
 Batavia 2010: After reviewing this issue, the working group concurred with the first of the 
 suggestions proposed by the NB comment: "Change the piecewise constant and linear distributions 
-to hold / return the densities in a vector. "
+to hold&#47;return the densities in a vector. "
 </note>
 
 <note>

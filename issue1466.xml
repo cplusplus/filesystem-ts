@@ -12,9 +12,11 @@
 <discussion>
 <p><b>Addresses US-162</b></p>
 
+<p>
 The <tt>compare_exchange_weak</tt> and <tt>compare_exchange_strong</tt> member functions that take
 <tt>const void*</tt> arguments lead to a silent removal of <tt>const</tt>, because the <tt>load</tt> 
 member function and other acessors return the stored value as a <tt>void*</tt>.
+</p>
 
 <note>
 Proposed resolution as of NB comment:
@@ -22,7 +24,7 @@ Proposed resolution as of NB comment:
 
 <p>
 Change <sref ref="[atomics.types.address]"/>, class <tt>atomic_address</tt> synopsis, as indicated:
-
+</p>
 <blockquote><pre>
 namespace std {
   typedef struct atomic_address {
@@ -49,16 +51,14 @@ namespace std {
 }
 </pre></blockquote>
 
-</p>
-
 <note>
 2010-10-27 Daniel adds:
 </note>
 
-<blockquote>
+<blockquote><p>
 Accepting <a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2010/n3164.html">n3164</a> 
 would solve this issue by replacing <tt>atomic_address</tt> by <tt>atomic&lt;void*&gt;</tt>.
-</blockquote>
+</p></blockquote>
 
 <note>
 Resolved in Batavia by accepting 
@@ -67,8 +67,8 @@ Resolved in Batavia by accepting
 
 </discussion>
 
-<resolution>
+<resolution><p>
 Solved by <a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2010/n3193.htm">n3193</a>.
-</resolution>
+</p></resolution>
 
 </issue>

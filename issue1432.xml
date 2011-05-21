@@ -4,7 +4,7 @@
 ] >
 
 <issue num="1432" status="WP">
-<title>[FCD] random_shuffle signatures</title>
+<title>[FCD] <tt>random_shuffle</tt> signatures</title>
 <section><sref ref="[alg.random.shuffle]"/></section>
 <submitter>INCITS</submitter>
 <date>25 Aug 2010</date>
@@ -15,8 +15,8 @@
 
 <p>
 <tt>random_shuffle</tt> and <tt>shuffle</tt> should be consistent in how
-they accept their source of randomness: either both by
-rvalue reference or both by lvalue reference.
+they accept their source of randomness: either both by rvalue reference or 
+both by lvalue reference.
 </p>
 
 <note>
@@ -28,23 +28,19 @@ The signatures of the <tt>shuffle</tt> and <tt>random_shuffle</tt> algorithms ar
 in regard to the support of rvalues and lvalues of the provided generator:
 </p>
 
-<p>
 <blockquote><pre>
 template&lt;class RandomAccessIterator, class RandomNumberGenerator&gt;
 void random_shuffle(RandomAccessIterator first,
 RandomAccessIterator last,
 RandomNumberGenerator<b>&amp;&amp;</b> rand);
 </pre></blockquote>
-</p>
 
-<p>
 <blockquote><pre>
 template&lt;class RandomAccessIterator, class UniformRandomNumberGenerator&gt;
 void shuffle(RandomAccessIterator first,
 RandomAccessIterator last,
 UniformRandomNumberGenerator<b>&amp;</b> g);
 </pre></blockquote>
-</p>
 
 <p>
 The first form uses the perfect forwarding signature and that change compared to
@@ -111,9 +107,9 @@ user-error, if there would exist one.
 Thus this proposal recommends to make both <tt>shuffle</tt> functions consistent and perfectly forward-able.
 </p>
 
-<blockquote>
+<blockquote><p>
 Moved to Tentatively Ready after 6 positive votes on c++std-lib.
-</blockquote>
+</p></blockquote>
 
 <note>
 Adopted at 2010-11 Batavia

@@ -12,14 +12,18 @@
 <discussion>
 <p><b>Addresses US-163</b></p>
 
+<p>
 Requiring <tt>atomic&lt;T*&gt;</tt> to be derived from <tt>atomic_address</tt> breaks type safety:
+</p>
 <blockquote><pre>
 atomic&lt;double*&gt; ip;
 char ch;
 atomic_store(&amp;ip, &amp;ch);
 *ip.load() = 3.14159;
 </pre></blockquote>
+<p>
 The last line overwrites <tt>ch</tt> with a value of type <tt>double</tt>.
+</p>
 
 <note>
 2010-10-27 Daniel adds:
@@ -28,10 +32,12 @@ The last line overwrites <tt>ch</tt> with a value of type <tt>double</tt>.
 <blockquote>
 <p>
 Resolving this issue will also solve <iref ref="1469"/>
-</p>
+<p/>
 Accepting <a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2010/n3164.html">n3164</a> would solve this issue by
 removing <tt>atomic_address</tt>.
+</p>
 </blockquote>
+
 <note>
 Resolved in Batavia by accepting 
 <a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2010/n3193.htm">n3193</a>.
@@ -51,11 +57,11 @@ namespace std {
 </pre></blockquote>
 </li>
 <li>Change <sref ref="[atomics.types.generic]"/> p. 4 as indicated:
-<p><blockquote>
+<blockquote><p>
 4 There are pointer partial specializations on the <tt>atomic</tt> class template. <del>These specializations shall be publicly
 derived from <tt>atomic_address</tt>.</del> The unit of addition/subtraction for these specializations shall be the size
 of the referenced type. These specializations shall have trivial default constructors and trivial destructors.
-</blockquote></p>
+</p></blockquote>
 </li>
 </ol>
 

@@ -12,6 +12,7 @@
 <discussion>
 <p><b>Addresses GB-121</b></p>
 
+<p>
 All the random number engine types in this clause have a
 constructor taking an unsigned integer type, and a
 constructor template for seed sequences. This means that
@@ -24,6 +25,7 @@ helpful if at least these anticipated cases produced a
 defined behaviour, either an erroneous program with
 diagnostic, or a conversion to unsigned int forwarding to
 the appropriate constructor.
+</p>
 
 <note>
 2010-11-03 Daniel comments and provides a proposed resolution:
@@ -55,38 +57,42 @@ Adopted at 2010-11 Batavia
 </discussion>
 
 <resolution>
+<p>
 Add the following paragraph at the end of <sref ref="[rand.eng]"/>:
+</p>
 <blockquote>
-<blockquote>
+<blockquote><p>
 5 Each template specified in this section [rand.eng] requires one or more relationships, involving the value(s) of
 its non-type template parameter(s), to hold. A program instantiating any of these templates is ill-formed if
 any such required relationship fails to hold.
-</blockquote>
+</p></blockquote>
 
-<blockquote>
+<blockquote><p>
 <ins>? For every random number engine and for every random number engine adaptor <tt>X</tt> defined in this sub-clause 
-[rand.eng] and in sub-clause [rand.adapt]:</ins>
+[rand.eng] and in sub-clause [rand.adapt]:</ins></p>
 <ul>
 <li><ins>If the constructor</ins>
 <blockquote><pre>
 <ins>template&lt;class Sseq&gt; explicit X(Sseq&amp; q);</ins>
-</pre></blockquote>
+</pre></blockquote><p>
 <ins>is called with a type <tt>Sseq</tt> that does not qualify as a seed sequence, then this constructor 
 shall not participate in overload resolution.
-</ins>
+</ins></p>
 </li>
 <li><ins>If the member function</ins>
 <blockquote><pre>
 <ins>template&lt;class Sseq&gt; void seed(Sseq&amp; q);</ins>
-</pre></blockquote>
+</pre></blockquote><p>
 <ins>is called with a type <tt>Sseq</tt> that does not qualify as a seed sequence, then this function 
 shall not participate in overload resolution.
-</ins>
+</ins></p>
 </li>
 </ul>
+<p>
 <ins>The extent to which an implementation determines that a type cannot be a seed sequence is unspecified,
 except that as a minimum a type shall not qualify as seed sequence, if it is implicitly convertible
 to <tt>X::result_type</tt>.</ins>
+</p>
 </blockquote>
 
 </blockquote>

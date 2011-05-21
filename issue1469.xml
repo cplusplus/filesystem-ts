@@ -12,18 +12,22 @@
 <discussion>
 <p><b>Addresses GB-133</b></p>
 
+<p>
 The free functions that operate on <tt>atomic_address</tt> can be
 used to store a pointer to an unrelated type in an <tt>atomic&lt;T*&gt;</tt> 
 without a cast. e.g.
+</p>
 <blockquote><pre>
 int i;
 atomic&lt;int*&gt; ai(&amp;i);
 string s;
 atomic_store(&amp;ai,&amp;s);
 </pre></blockquote>
+<p>
 Overload the <tt>atomic_store</tt>, <tt>atomic_exchange</tt> and
 <tt>atomic_compare_exchange_[weak/strong]</tt> operations for 
 <tt>atomic&lt;T*&gt;</tt> to allow storing only pointers to <tt>T</tt>.
+</p>
 
 <note>
 2010-10-27 Daniel adds:
@@ -32,9 +36,10 @@ Overload the <tt>atomic_store</tt>, <tt>atomic_exchange</tt> and
 <blockquote>
 <p>
 Resolving this issue will also solve <iref ref="1467"/>
-</p>
+<p/>
 Accepting <a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2010/n3164.html">n3164</a> would solve this issue by
 removing <tt>atomic_address</tt>.
+</p>
 </blockquote>
 
 <note>Resolved in Batavia by accepting
@@ -44,7 +49,7 @@ removing <tt>atomic_address</tt>.
 
 <resolution>
 <p>Add the following overloads to <sref ref="[atomics.types.generic]"/>, the synopsis around the specialization
-<tt>atomic&lt;T*&gt;</tt>, as indicated:
+<tt>atomic&lt;T*&gt;</tt>, as indicated:</p>
 <blockquote><pre>
 namespace std {
   [..]
@@ -87,7 +92,6 @@ namespace std {
 
 }
 </pre></blockquote>
-</p>
 </resolution>
 
 </issue>

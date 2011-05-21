@@ -54,7 +54,7 @@ Moved to Ready.
 
 <blockquote>
 <p>
-Looking again at LWG #1079, the wording in the issue no longer exists, and
+Looking again at LWG <iref ref="1079"/>, the wording in the issue no longer exists, and
 appears to be entirely an artefact of the concepts wording.
 </p>
 
@@ -85,13 +85,15 @@ The previous wording is preserved here:
 <blockquote><pre>
 difference_type operator-(const X&amp; a, const X&amp; b);
 </pre>
-<ol start="7">
-  <li><i>Precondition</i>: there exists a value <code>n</code> of
-  <code>difference_type</code> such that <code>a == b + n</code>.</li>
-  <li><del><i>Effects</i>: <code>b == a + (b - a)</code></del></li>
-  <li><i>Returns</i>: <del><code>(a &lt; b) ? distance(a,b) :
-  -distance(b,a)</code></del><ins><code>n</code></ins></li>
-</ol>
+<blockquote><p>
+  -7- <i>Precondition</i>: there exists a value <code>n</code> of
+  <code>difference_type</code> such that <code>a == b + n</code>.
+  <p/>
+  -8- <del><i>Effects</i>: <code>b == a + (b - a)</code></del>
+  <p/>
+  -9- <i>Returns</i>: <del><code>(a &lt; b) ? distance(a,b) :
+  -distance(b,a)</code></del><ins><code>n</code></ins>
+</p></blockquote>
 </blockquote>
 
 </blockquote>
@@ -121,7 +123,7 @@ bidirectional iterator)</caption>
 <th>Expression</th>
 <th>Return type</th>
 <th>Operational semantics</th>
-<th>Assertion/note<br/>pre-/post-condition</th>
+<th>Assertion&#47;note<br/>pre-&#47;post-condition</th>
 </tr>
 
 <tr>

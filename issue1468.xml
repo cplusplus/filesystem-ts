@@ -12,19 +12,21 @@
 <discussion>
 <p><b>Addresses US-164</b></p>
 
+<p>
 <tt>atomic_address</tt> has member functions <tt>compare_exchange_weak</tt> and
 <tt>compare_exchange_strong</tt> that take arguments of type <tt>const void*</tt>, 
 in addition to the <tt>void*</tt> versions. If these member functions survive, 
 there should be corresponding free functions.
+</p>
 
 <note>
 2010-10-27 Daniel adds:
 </note>
 
-<blockquote>
+<blockquote><p>
 Accepting <a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2010/n3164.html">n3164</a> would solve this issue 
 differently by removing the overloads with <tt>const void*</tt> arguments, because they break type-safety.
-</blockquote>
+</p></blockquote>
 <note>
 Resolved in Batavia by accepting 
 <a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2010/n3193.htm">n3193</a>.
@@ -32,8 +34,10 @@ Resolved in Batavia by accepting
 </discussion>
 
 <resolution>
+<p>
 Extend the synopsis around <tt>atomic_address</tt> in <sref ref="[atomics.types.address]"/>
 as indicated:
+</p>
 <blockquote><pre>
 namespace std {
   [..]

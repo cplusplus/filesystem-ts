@@ -12,6 +12,7 @@
 <discussion>
 <p><b>Addresses CA-4</b></p>
 
+<p>
 Subclause 27.9.2 [c.files] specifies that &lt;cinttypes&gt; has
 declarations for abs() and div(); however, the signatures
 are not present in this subclause. The signatures
@@ -24,6 +25,7 @@ functions, among other things, are not specified in FCD to
 be the functions from Subclause 7.8 of the C Standard.
 Finally, &lt;cinttypes&gt; is not specified in FCD to include
 &lt;cstdint&gt; (whereas &lt;inttypes.h&gt; includes &lt;stdint.h&gt; in C).
+</p>
 
 <note>
 Post-Rapperswil, Daniel provides wording
@@ -39,9 +41,9 @@ FCD to be the functions from subclause 7.8 of the <tt>C</tt> Standard. Finally, 
 in FCD to include <tt>&lt;cstdint&gt;</tt> (whereas <tt>&lt;inttypes.h&gt;</tt> includes <tt>&lt;stdint.h&gt;</tt> in <tt>C</tt>).
 </p>
 
-<blockquote>
+<blockquote><p>
 Moved to Tentatively Ready with proposed wording after 5 positive votes on c++std-lib.
-</blockquote>
+</p></blockquote>
 
 <note>
 Adopted at 2010-11 Batavia
@@ -55,27 +57,26 @@ Adopted at 2010-11 Batavia
 </p>
 <ol>
 <li>Add the following series of new paragraphs following [c.files] p.1:
-<blockquote>
+<blockquote><p>
 Table 132 describes header <tt>&lt;cinttypes&gt;</tt>. [<em>Note</em>: The macros defined by <tt>&lt;cinttypes&gt;</tt> are provided unconditionally.
 In particular, the symbol <tt>__STDC_FORMAT_MACROS</tt>, mentioned in footnote 182 of the <tt>C</tt> standard, plays no role in <tt>C++</tt>. 
 &mdash; <em>end note</em> ]
-<p>
+<p/>
 <ins>2 - The contents of header <tt>&lt;cinttypes&gt;</tt> are the same as the Standard <tt>C</tt> library header <tt>&lt;inttypes.h&gt;</tt>, 
 with the following changes:</ins>
-</p>
-<p>
+<p/>
 <ins>3 - The header <tt>&lt;cinttypes&gt;</tt> includes the header <tt>&lt;cstdint&gt;</tt> instead of <tt>&lt;stdint.h&gt;</tt>.</ins>
-</p>
-<p>
+<p/>
 <ins>4 - If and only if the type <tt>intmax_t</tt> designates an extended integer type ([basic.fundamental]), the following function 
-signatures are added:
+signatures are added:</ins>
+</p>
 <blockquote><pre>
 <ins>intmax_t abs(intmax_t);</ins>
 <ins>imaxdiv_t div(intmax_t, intmax_t);</ins>
 </pre></blockquote>
+<p>
 <ins>which shall have the same semantics as the function signatures <tt>intmax_t imaxabs(intmax_t)</tt> and 
 <tt>imaxdiv_t imaxdiv(intmax_t, intmax_t)</tt>, respectively.</ins>
-</ins>
 </p>
 </blockquote>
 </li>

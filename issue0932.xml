@@ -23,9 +23,9 @@ have been caught at compile time:
 
 <blockquote><pre>
 {
-unique_ptr&lt;int, void(*)(void*)&gt; p1(malloc(sizeof(int)));  <font color="#C80000">// should not compile</font>
-}  <font color="#C80000">// p1.~unique_ptr() dereferences a null function pointer</font>
-unique_ptr&lt;int, void(*)(void*)&gt; p2(malloc(sizeof(int)), free);  <font color="#C80000">// ok</font>
+unique_ptr&lt;int, void(*)(void*)&gt; p1(malloc(sizeof(int)));  <span style="color:#C80000">// should not compile</span>
+}  <span style="color:#C80000">// p1.~unique_ptr() dereferences a null function pointer</span>
+unique_ptr&lt;int, void(*)(void*)&gt; p2(malloc(sizeof(int)), free);  <span style="color:#C80000">// ok</span>
 </pre></blockquote>
 
 <note>
@@ -183,10 +183,6 @@ not be a reference type or pointer type (diagnostic required).</del>
 <p><ins>
 <i>Remarks:</i> The program shall be ill-formed if this constructor is
 instantiated when <tt>D</tt> is a pointer type or reference type.
-<!-- 
-<i>Remarks:</i> A diagnostic shall be emitted if this constructor is instantiated
-when <tt>D</tt> is a pointer type or reference type.
- -->
 </ins></p>
 </blockquote>
 </blockquote>
@@ -203,10 +199,6 @@ unique_ptr(pointer p);
 <p><ins>
 <i>Remarks:</i> The program shall be ill-formed if this constructor is
 instantiated when <tt>D</tt> is a pointer type or reference type.
-<!-- 
-<i>Remarks:</i> A diagnostic shall be emitted if this constructor is instantiated
-when <tt>D</tt> is a pointer type or reference type.
- -->
 </ins></p>
 </blockquote>
 </blockquote>

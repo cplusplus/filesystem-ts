@@ -12,8 +12,10 @@
 <discussion>
 <p><b>Addresses US-108</b></p>
 
+<p>
 <tt>shared_ptr</tt> should have the same policy for constructing
 from <tt>auto_ptr</tt> as <tt>unique_ptr</tt>. Currently it does not.
+</p>
 
 <note>
 Resolved in Rapperswil by paper N3109.
@@ -22,9 +24,12 @@ Resolved in Rapperswil by paper N3109.
 </discussion>
 
 <resolution>
-Add &#8220;template &lt;class Y&gt; explicit
-shared_ptr(auto_ptr&lt;Y&gt;&amp;); to
-[util.smartptr.shared.const] (and to the synopsis).
-</resolution>
+<p>
+Add 
+</p><pre>
+template &lt;class Y&gt; explicit shared_ptr(auto_ptr&lt;Y&gt;&amp;); 
+</pre><p>
+to [util.smartptr.shared.const] (and to the synopsis).
+</p></resolution>
 
 </issue>

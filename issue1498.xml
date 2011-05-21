@@ -12,27 +12,29 @@
 <discussion>
 <p><b>Addresses CH-29</b></p>
 
+<p>
 It is unclear if a spurious wake-up during the loop and reentering
 of the blocked state due to a repeated execution
 of the loop will adjust the timer of the blocking with the
 respect to the previously specified <tt>rel_time</tt> value.
+</p>
 
 <note>
 Resolution proposed by ballot comment:
 </note>
 
-<blockquote>
+<blockquote><p>
 Make it clear (e.g. by a note) that when reexecuting
 the loop the waiting time when blocked
 will be adjusted with respect to the elapsed time of
 the previous loop executions.
-</blockquote>
+</p></blockquote>
 
 <note>
 2010-08-13 Peter Sommerlad comments and provides wording:
 </note>
 
-<blockquote>
+<blockquote><p>
 Problem: It is unclear if a spurious wake-up during the loop and re-entering of the blocked state due 
 to a repeated execution of the loop will adjust the timer of the blocking with the respect to the 
 previously specified <tt>rel_time</tt> value.
@@ -50,7 +52,7 @@ using the <tt>steady_clock</tt>. This is also interleaving with US-181, because 
 same paragraph (30.5.1 p 25, p34 and 30.5.2 p 20, p 28 in n3092.pdf)
 <p/>
 (The "as if" in the proposed solutions should be confirmed by the standardization terminology experts)
-</blockquote>
+</p></blockquote>
 
 <note>
 2010-11 Batavia: Resolved by applying <a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2010/n3191.htm">n3191</a>
@@ -64,10 +66,11 @@ template &lt;class Rep, class Period&gt;
 cv_status wait_for(unique_lock&lt;mutex&gt;&amp; lock,
   const chrono::duration&lt;Rep, Period&gt;&amp; rel_time);
 </pre></blockquote>
-<blockquote>
+<blockquote><p>
 [..]
 <p/>
 25 <i>Effects</i>: <ins>as if</ins>
+</p>
 <blockquote><pre>
 <ins>return wait_until(lock, chrono::steady_clock::now() + rel_time);</ins>
 </pre></blockquote>
@@ -91,10 +94,11 @@ bool wait_for(unique_lock&lt;mutex&gt;&amp; lock,
   const chrono::duration&lt;Rep, Period&gt;&amp; rel_time,
   Predicate pred);
 </pre></blockquote>
-<blockquote>
+<blockquote><p>
 [..]
 <p/>
 34 <i>Effects</i>: <ins>as if</ins>
+</p>
 <blockquote><pre>
 <ins>return wait_until(lock, chrono::steady_clock::now() + rel_time, std::move(pred));</ins>
 </pre></blockquote>
@@ -130,9 +134,9 @@ has elapsed.
 template &lt;class Lock, class Rep, class Period&gt;
 cv_status wait_for(Lock&amp; lock, const chrono::duration&lt;Rep, Period&gt;&amp; rel_time);
 </pre></blockquote>
-<blockquote>
+<blockquote><p>
 20 <i>Effects</i>: <ins>as if</ins>
-<blockquote><pre>
+</p><blockquote><pre>
 <ins>return wait_until(lock, chrono::steady_clock::now() + rel_time);</ins>
 </pre></blockquote>
 <ul>
@@ -158,9 +162,9 @@ scope.
 template &lt;class Lock, class Rep, class Period, class Predicate&gt;
 bool wait_for(Lock&amp; lock, const chrono::duration&lt;Rep, Period&gt;&amp; rel_time, Predicate pred);
 </pre></blockquote>
-<blockquote>
+<blockquote><p>
 28 <i>Effects</i>: <ins>as if</ins>
-<blockquote><pre>
+</p><blockquote><pre>
 <ins>return wait_until(lock, chrono::steady_clock::now() + rel_time, std::move(pred));</ins>
 </pre></blockquote>
 <ul>
@@ -194,8 +198,8 @@ has elapsed.
 </blockquote>
 </discussion>
 
-<resolution>
+<resolution><p>
 Resolved by <a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2010/n3191.htm">n3191</a>.
-</resolution>
+</p></resolution>
 
 </issue>

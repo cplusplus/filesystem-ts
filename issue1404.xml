@@ -48,9 +48,9 @@ we can easily define <tt>size_type</tt> for <tt>allocator_traits</tt> without
 artificially adding <tt>size_type</tt> to <tt>pointer_traits</tt>.
 </p>
 
-<blockquote>
+<blockquote><p>
 Moved to Tentatively Ready after 6 positive votes on c++std-lib.
-</blockquote>
+</p></blockquote>
 
 <note>
 Adopted at 2010-11 Batavia
@@ -88,23 +88,23 @@ In [allocator.requirements], Table 42, change two rows as follows:
 </table>
 </blockquote>
 <p>
-In [allocator.traits.types], Change the definition of difference_type and
-size_type as follows:
+In [allocator.traits.types], Change the definition of <tt>difference_type</tt> and
+<tt>size_type</tt> as follows:
 </p>
-<blockquote>
+<blockquote><p>
   <tt>typedef</tt> <i>see below</i> <tt>difference_type;</tt>
-  <blockquote>
+  </p><blockquote><p>
     <i>Type:</i> <tt>Alloc::difference_type</tt> if such a type exists,
     else <tt><del>ptrdiff_t</del>
     <ins>pointer_traits&lt;pointer&gt;::difference_type</ins></tt>.
-  </blockquote>
-
+  </p></blockquote>
+  <p>
   <tt>typedef</tt> <i>see below</i> <tt>size_type;</tt>
-  <blockquote>
+  </p><blockquote><p>
     <i>Type:</i> <tt>Alloc::size_type</tt> if such a type exists,
     else <tt><del>size_t</del>
     <ins>make_unsigned&lt;difference_type&gt;::type</ins></tt>.
-  </blockquote>
+  </p></blockquote>
 </blockquote>
 </resolution>
 

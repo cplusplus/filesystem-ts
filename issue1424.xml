@@ -10,8 +10,10 @@
 <date>25 Aug 2010</date>
 
 <discussion>
+<p>
 Constructor accepting an allocator as a single parameter
 should be qualified as explicit.
+</p>
 
 <note>
 Resolved in Rapperswil by a motion to directly apply the words from the ballot comment in N3102.
@@ -20,8 +22,8 @@ Resolved in Rapperswil by a motion to directly apply the words from the ballot c
 </discussion>
 
 <resolution>
-Add explicit.
-<PRE>
+<p>Add explicit.</p>
+<pre>
 namespace std {
 template &lt;class Key, class T, class Compare =
 less&lt;Key&gt;,
@@ -29,8 +31,8 @@ class Allocator = allocator&lt;pair&lt;const Key, T&gt; &gt; &gt;
 class multimap {
 public:
 ...
-explicit multimap(const Allocator&amp;);
-</PRE>
+<ins>explicit</ins> multimap(const Allocator&amp;);
+</pre>
 </resolution>
 
 </issue>

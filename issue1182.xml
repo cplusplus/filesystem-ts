@@ -33,8 +33,6 @@ changes to <sref ref="[unord.hash]"/>.
 2009-09-15 Daniel adds:
 </note>
 
-<blockquote>
-</blockquote>
 <p>
 I suggest to add to the current existing
 proposed resolution the following items.
@@ -82,13 +80,13 @@ Add a new clause 19.5.X (probably after 19.5.4):
 template &lt;&gt; struct hash&lt;error_code&gt;;
 </ins></pre>
 
-<blockquote><ins>
+<blockquote><p><ins>
 An explicit specialization of the class template hash (<sref ref="[unord.hash]"/>)
 shall be provided
 for the type <tt>error_code</tt> suitable for using this type as key in
 unordered associative
 containers (<sref ref="[unord]"/>).
-</ins></blockquote>
+</ins></p></blockquote>
 </blockquote>
 </li>
 
@@ -116,13 +114,13 @@ Add a new paragraph at the end of <sref ref="[thread.thread.id]"/>:
 template &lt;&gt; struct hash&lt;thread::id&gt;;
 </ins></pre>
 
-<blockquote><ins>
+<blockquote><p><ins>
 An explicit specialization of the class template hash (<sref ref="[unord.hash]"/>)
 shall be provided
 for the type <tt>thread::id</tt> suitable for using this type as key in
 unordered associative
 containers (<sref ref="[unord]"/>).
-</ins></blockquote>
+</ins></p></blockquote>
 </blockquote>
 </li>
 
@@ -154,8 +152,8 @@ Issue <iref ref="889"/> independently suggests moving the specialization
 <resolution>
 <p><i>Strike the following specializations declared in the <tt>&lt;functional&gt;</tt> 
 synopsis p2 <sref ref="[function.objects]"/> </i> </p>
-<blockquote>
-  <pre><del>template &lt;&gt; struct hash&lt;std::string&gt;;</del>
+<blockquote><pre>
+<del>template &lt;&gt; struct hash&lt;std::string&gt;;</del>
 <del>template &lt;&gt; struct hash&lt;std::u16string&gt;;</del>
 <del>template &lt;&gt; struct hash&lt;std::u32string&gt;;</del>
 <del>template &lt;&gt; struct hash&lt;std::wstring&gt;;</del>
@@ -166,8 +164,8 @@ synopsis p2 <sref ref="[function.objects]"/> </i> </p>
 <del>template &lt;std::size_t N&gt; struct hash&lt;std::bitset&lt;N&gt; &gt;;</del></pre>
 </blockquote>
 <p><i>Add the following at the end of <sref ref="[unord.hash]"/>:</i></p>
-<blockquote>
-  <pre><ins>template &lt;&gt; struct hash&lt;bool&gt;;
+<blockquote><pre>
+<ins>template &lt;&gt; struct hash&lt;bool&gt;;
 template &lt;&gt; struct hash&lt;char&gt;;
 template &lt;&gt; struct hash&lt;signed char&gt;;
 template &lt;&gt; struct hash&lt;unsigned char&gt;;
@@ -205,8 +203,8 @@ template &lt;&gt; struct hash&lt;error_code&gt;;</ins></pre>
 <p><i>Add the following declarations to the synopsis of <tt>&lt;string&gt;</tt> in <sref ref="[string.classes]"/>
 </i>
 </p>
-<blockquote>
-  <pre><ins>// [basic.string.hash] hash support
+<blockquote><pre>
+<ins>// [basic.string.hash] hash support
 template &lt;class T&gt; struct hash;
 template &lt;&gt; struct hash&lt;string&gt;;
 template &lt;&gt; struct hash&lt;u16string&gt;;
@@ -224,8 +222,8 @@ template &lt;&gt; struct hash&lt;wstring&gt;;</ins></pre>
 </blockquote>
 <p><i>Add the following declarations to the synopsis of <tt>&lt;vector&gt;</tt> in
 <sref ref="[sequences]"/></i> </p>
-<blockquote>
-  <pre><ins>// 21.4.x hash support
+<blockquote><pre>
+<ins>// 21.4.x hash support
 template &lt;class T&gt; struct hash;
 template &lt;class Allocator&gt; struct hash&lt;vector&lt;bool, Allocator&gt;&gt;;</ins></pre>
 </blockquote>

@@ -58,12 +58,10 @@ template&lt;class InputIterator&gt;
 <p>
 6 <i>Effects:</i> Constructs a <tt>seed_seq</tt> object by
 </p>
-<blockquote>
-<pre>
+<blockquote><p style="white-space: pre;">
 for (InputIterator s = begin; s != end; ++s)
-   v.push_back((*s) mod 2^32);
-</pre>
-</blockquote>
+   v.push_back((*s) mod 2<sup>32</sup>);
+</p></blockquote>
 </blockquote>
 </blockquote>
 </blockquote>
@@ -233,18 +231,18 @@ mod 2<sup>u</sup>) &middot; 2<sup>w&middot;i</sup></tt> (in which the bits of ea
 are treated as denoting an unsigned quantity). Then carry out 
 the following algorithm:</del>
 </p>
-<blockquote><pre><del>
+<blockquote><p style="white-space: pre;"><del>
 v.clear(); 
 if ($w$ &lt; 32) 
   v.push_back($n$); 
 for( ; $n$ &gt; 0; --$n$) 
   v.push_back(b mod 2<sup>32</sup>), b /= 2<sup>32</sup>;
-</del></pre></blockquote>
+</del></p></blockquote>
 <blockquote>
-<pre><ins>
+<p style="white-space: pre;"><ins>
 for (InputIterator s = begin; s != end; ++s)
    v.push_back((*s) mod 2<sup>32</sup>);
-</ins></pre>
+</ins></p>
 </blockquote>
 </blockquote>
 </blockquote>

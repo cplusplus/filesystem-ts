@@ -12,32 +12,42 @@
 <discussion>
 <p><b>Addresses GB-132, US-157</b></p>
 
+<p>
 The <tt>atomic_<em>itype</em></tt> types and <tt>atomic_address</tt> have two
 overloads of <tt>operator=</tt>; one is <tt>volatile</tt> qualified, and the
 other is not. <tt>atomic_bool</tt> only has the <tt>volatile</tt> qualified
 version:
-<pre><blockquote>
+</p>
+<blockquote><pre>
 bool operator=(bool) volatile;
-</blockquote></pre>
+</pre></blockquote>
+<p>
 On a non-<tt>volatile</tt>-qualified object this is ambiguous with
 the deleted copy-assignment operator
-<pre><blockquote>
+</p>
+<blockquote><pre>
 atomic_bool&amp; operator=(atomic_bool const&amp;) = delete;
-</blockquote></pre>
+</pre></blockquote>
+<p>
 due to the need for a single standard conversion in each
 case when assigning a bool to an <tt>atomic_bool</tt> as in:
-<pre><blockquote>
+</p>
+<blockquote><pre>
 atomic_bool b;
 b = true;
-</blockquote></pre>
+</pre></blockquote>
+<p>
 The conversions are: 
-<pre><blockquote>
+</p>
+<blockquote><pre>
 atomic_bool&amp; &rarr; atomic_bool volatile&amp;
-</blockquote></pre>
+</pre></blockquote>
+<p>
  vs 
-<pre><blockquote>
+</p>
+<blockquote><pre>
 bool &rarr; atomic_bool
-</blockquote></pre>
+</pre></blockquote>
 
 <note>
 Proposed resolution as of NB comment:
@@ -45,7 +55,7 @@ Proposed resolution as of NB comment:
 
 <p>
 Change <sref ref="[atomics.types.integral]"/> as indicated:
-
+</p>
 <blockquote><pre>
 namespace std {
   typedef struct atomic_bool {
@@ -56,16 +66,15 @@ namespace std {
   [..]
 }
 </pre></blockquote>
-</p>
 
 <note>
 2010-10-27 Daniel adds:
 </note>
 
-<blockquote>
+<blockquote><p>
 Accepting <a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2010/n3164.html">n3164</a> would solve this issue
 by replacing <tt>atomic_bool</tt> by <tt>atomic&lt;bool&gt;</tt>.
-</blockquote>
+</p></blockquote>
 
 <note>
 2010 Batavia
@@ -75,8 +84,8 @@ Resolved by adoption of <a href="http://www.open-std.org/jtc1/sc22/wg21/docs/pap
 </p>
 </discussion>
 
-<resolution>
+<resolution><p>
 Solved by <a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2010/n3193.htm">n3193</a>.
-</resolution>
+</p></resolution>
 
 </issue>

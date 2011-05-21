@@ -12,6 +12,7 @@
 <discussion>
 <p><b>Addresses CH-27</b></p>
 
+<p>
 The mutex requirements force <tt>try_lock</tt> to be
 <tt>noexcept(true)</tt>. However, where they are used by the
 generic algorithms, those relax this requirement and say
@@ -19,25 +20,26 @@ that <tt>try_lock</tt> may throw. This means the requirement is
 too stringent, also a non-throwing <tt>try_lock</tt> does not allow
 for a diagnostic such as <tt>system_error</tt> that <tt>lock()</tt> 
 will give us.
+</p>
 
 <note>
 Resolution proposed by ballot comment:
 </note>
-<blockquote>
+<blockquote><p>
 delete p18, adjust 30.4.4 p1 and p4 accordingly
-</blockquote>
+</p></blockquote>
 
 <note>
 2010-11-01 Daniel comments:
 </note>
 
-<blockquote>
+<blockquote><p>
 Accepting <a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2010/n3130.html">n3130</a> would solve this issue.
-</blockquote>
+</p></blockquote>
 </discussion>
 
-<resolution>
+<resolution><p>
 Resolved by <a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2010/n3197.htm">n3197</a>.
-</resolution>
+</p></resolution>
 
 </issue>

@@ -111,7 +111,7 @@ Ready status that touch this wording, such as <iref ref="1255"/>.
 </discussion>
 
 <resolution>
-<p><i>From Function objects <sref ref="[function.objects]"/>, Header &lt;functional&gt; 
+<p><i>From Function objects <sref ref="[function.objects]"/>, Header <tt>&lt;functional&gt;</tt> 
 synopsis, remove:</i></p>
 <blockquote>
   <pre>// 20.7.4 result_of:
@@ -149,7 +149,7 @@ the indicated location:</i></p>
 <p><i>To Other transformations <sref ref="[meta.trans.other]"/>, Table 51 &mdash; 
 Other transformations, add:</i></p>
 <blockquote>
-  <table style="border-collapse: collapse;" border="1" bordercolor="#111111" cellpadding="3" cellspacing="0">
+  <table style="border-collapse: collapse;" border="1" cellpadding="3" cellspacing="0">
     <tr>
       <td><b>Template</b></td>
       <td><b>Condition</b></td>
@@ -189,9 +189,9 @@ struct S {
 &nbsp; double operator()(char, int&amp;);
  };</pre>
 <p>the following assertions will hold:</p>
-  <pre>static_assert(std::is_same&lt;<wbr />std::result_of&lt;S(int)&gt;::type, short&gt;::value, &quot;Error!&quot;);
-static_assert(std::is_same&lt;<wbr />std::result_of&lt;S&amp;(unsigned char, int&amp;)&gt;::type, double&gt;::value, &quot;Error!&quot;);
-static_assert(std::is_same&lt;<wbr />std::result_of&lt;PF1()&gt;::type, bool&gt;::value, &quot;Error!&quot;);</pre>
+  <pre>static_assert(std::is_same&lt;std::result_of&lt;S(int)&gt;::type, short&gt;::value, &quot;Error!&quot;);
+static_assert(std::is_same&lt;std::result_of&lt;S&amp;(unsigned char, int&amp;)&gt;::type, double&gt;::value, &quot;Error!&quot;);
+static_assert(std::is_same&lt;std::result_of&lt;PF1()&gt;::type, bool&gt;::value, &quot;Error!&quot;);</pre>
   <p><i>&nbsp;&mdash; end example</i>]</p>
 </blockquote>
 </resolution>
