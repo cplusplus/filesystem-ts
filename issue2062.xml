@@ -1,0 +1,51 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="2062" status="New">
+<title>Effect contradictions w&#47;o no-throw guarantee of <tt>std::function</tt> swaps</title>
+<section><sref ref="[func.wrap.func]"/>, <sref ref="[func.wrap.func.mod]"/></section>
+<submitter>Howard Hinnant</submitter>
+<date>28 May 2011</date>
+
+<discussion>
+<p>
+<sref ref="[func.wrap.func]"/> makes the member swap noexcept, even though the non-member swap is 
+not <tt>noexcept</tt>. The latter was a clear outcome of the discussions during the Batavia meeting 
+and the Madrid meeting involving LWG <iref ref="1349"/>, which seems to indicate that the remaining
+<tt>noexcept</tt> specifier at the member swap is incorrect and should be removed.
+<p/>
+But if we allow for a potentially throwing member swap of <tt>std::function</tt>, this would render
+the usage of the swap-idiom moot, that is used to specify several member functions, e.g.:
+</p>
+<blockquote><pre>
+template&lt;class F&gt; function&amp; operator=(F&amp;&amp; f);
+</pre><blockquote><p>
+<i>Effects</i>: <tt>function(std::forward&lt;F&gt;(f)).swap(*this);</tt>
+</p>
+</blockquote></blockquote>
+<blockquote><pre>
+template&lt;class F&gt; function&amp; operator=(reference_wrapper&lt;F&gt; f) noexcept;
+</pre><blockquote><p>
+<i>Effects</i>: <tt>function(f).swap(*this);</tt>
+</p>
+</blockquote></blockquote>
+<blockquote><pre>
+template&lt;class F, class A&gt;
+void assign(F&amp;&amp; f, const A&amp; a);
+</pre><blockquote><p>
+<i>Effects</i>: <tt>function(allocator_arg, a, std::forward&lt;F&gt;(f)).swap(*this)</tt>
+</p>
+</blockquote></blockquote>
+<p>
+The swap idiom makes only sense, if swap cannot throw exceptions. So, either the Madrid meeting
+decision need to be revised (and both member and free swap of <tt>std::function</tt> should be
+noexcept), or the semantics of these functions need to be changed.
+</p>
+</discussion>
+
+<resolution>
+</resolution>
+
+</issue>
