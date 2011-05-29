@@ -6,46 +6,92 @@
 <issue num="2062" status="New">
 <title>Effect contradictions w&#47;o no-throw guarantee of <tt>std::function</tt> swaps</title>
 <section><sref ref="[func.wrap.func]"/>, <sref ref="[func.wrap.func.mod]"/></section>
-<submitter>Howard Hinnant</submitter>
+<submitter>Daniel Kr&uuml;gler</submitter>
 <date>28 May 2011</date>
 
 <discussion>
 <p>
-<sref ref="[func.wrap.func]"/> makes the member swap noexcept, even though the non-member swap is 
-not <tt>noexcept</tt>. The latter was a clear outcome of the discussions during the Batavia meeting 
-and the Madrid meeting involving LWG <iref ref="1349"/>, which seems to indicate that the remaining
-<tt>noexcept</tt> specifier at the member swap is incorrect and should be removed.
+Howard Hinnant observed in reflector message c++std-lib-30841 that <sref ref="[func.wrap.func]"/> 
+makes the member swap <tt>noexcept</tt>, even though the non-member swap is not <tt>noexcept</tt>. 
 <p/>
-But if we allow for a potentially throwing member swap of <tt>std::function</tt>, this would render
-the usage of the swap-idiom moot, that is used to specify several member functions, e.g.:
+The latter was an outcome of the discussions during the Batavia meeting and the Madrid meeting 
+involving LWG <iref ref="1349"/>, which seems to indicate that the remaining <tt>noexcept</tt> 
+specifier at the member swap is incorrect and should be removed.
+<p/>
+But if we allow for a potentially throwing member swap of <tt>std::function</tt>, this causes 
+another conflict with the exception specification for:
 </p>
-<blockquote><pre>
-template&lt;class F&gt; function&amp; operator=(F&amp;&amp; f);
-</pre><blockquote><p>
-<i>Effects</i>: <tt>function(std::forward&lt;F&gt;(f)).swap(*this);</tt>
-</p>
-</blockquote></blockquote>
 <blockquote><pre>
 template&lt;class F&gt; function&amp; operator=(reference_wrapper&lt;F&gt; f) noexcept;
 </pre><blockquote><p>
 <i>Effects</i>: <tt>function(f).swap(*this);</tt>
 </p>
 </blockquote></blockquote>
-<blockquote><pre>
-template&lt;class F, class A&gt;
-void assign(F&amp;&amp; f, const A&amp; a);
-</pre><blockquote><p>
-<i>Effects</i>: <tt>function(allocator_arg, a, std::forward&lt;F&gt;(f)).swap(*this)</tt>
-</p>
-</blockquote></blockquote>
 <p>
-The swap idiom makes only sense, if swap cannot throw exceptions. So, either the Madrid meeting
-decision need to be revised (and both member and free swap of <tt>std::function</tt> should be
-noexcept), or the semantics of these functions need to be changed.
+Note that in this example the sub-expression <tt>function(f)</tt> does not cause any problems,
+because of the nothrow-guarantee given in <sref ref="[func.wrap.func.con]"/> p. 10. The problem
+would be located in the usage of the swap which could potentially throw given the general
+latitude. 
+<p/>
+So, either the Madrid meeting decision need to be revised (and both member and free swap of 
+<tt>std::function</tt> should be noexcept), or this function needs to be adapted as well,
+e.g. by taking the exception-specification away or by changing the semantics.
+<p/>
+One argument of the "swap-may-throw" side would be to allow for small-object optimization techniques
+where the copy of the target may throw. But given the fact that the swap function has been guaranteed 
+to be "Throws: Nothing" from TR1 on, it seems to me that that there would still be opportunities to 
+perform small-object optimizations just restricted to the set of target copies that cannot throw. 
+<p/>
+In my opinion member swap of <tt>std::function</tt> has always been intended to be no-throw, because
+otherwise there would be no good technical reason to specify the effects of several member 
+functions in terms of the "construct-swap" idiom (There are three functions that are defined
+this way), which provides the strong exception safety in this case. I suggest to enforce that both 
+member swap and non-member swap of <tt>std::function</tt> are nothrow functions as it had been guaranteed 
+since TR1 on.
 </p>
 </discussion>
 
 <resolution>
+<p>This wording is relative to the FDIS.</p>
+<ol>
+<li><p>Modify the header <tt>&lt;functional&gt;</tt> synopsis in <sref ref="[function.objects]"/> as indicated:</p>
+<blockquote><pre>
+namespace std {
+  [&hellip;]
+
+  template&lt;class R, class... ArgTypes&gt;
+  void swap(function&lt;R(ArgTypes...)&gt;&amp;, function&lt;R(ArgTypes...)&gt;&amp;) <ins>noexcept</ins>;
+
+  [&hellip;]
+}
+</pre></blockquote>
+</li>
+
+<li><p>Modify the class template <tt>function</tt> synopsis in <sref ref="[func.wrap.func]"/> as indicated:</p>
+<blockquote><pre>
+namespace std {
+  [&hellip;]
+
+  <i>// 20.8.11.2.7, specialized algorithms:</i>
+  template&lt;class R, class... ArgTypes&gt;
+  void swap(function&lt;R(ArgTypes...)&gt;&amp;, function&lt;R(ArgTypes...)&gt;&amp;) <ins>noexcept</ins>;
+
+  [&hellip;]
+}
+</pre></blockquote>
+</li>
+
+<li><p>Modify <sref ref="[func.wrap.func.alg]"/> as indicated:</p>
+<blockquote><pre>
+template&lt;class R, class... ArgTypes&gt;
+void swap(function&lt;R(ArgTypes...)&gt;&amp; f1, function&lt;R(ArgTypes...)&gt;&amp; f2) <ins>noexcept</ins>;
+</pre><blockquote><p>
+-1- <i>Effects</i>: <tt>f1.swap(f2);</tt>
+</p></blockquote></blockquote>
+</li>
+
+</ol>
+
 </resolution>
 
 </issue>
