@@ -1,0 +1,133 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="2063" status="New">
+<title>Contradictory requirements for string move assignment</title>
+<section><sref ref="[basic.string]"/></section>
+<submitter>Howard Hinnant</submitter>
+<date>29 May 2011</date>
+
+<discussion>
+<p>
+<sref ref="[string.require]"/>&#47;p4 says that <tt>basic_string</tt> is an "allocator-aware" 
+container and behaves as described in <sref ref="[container.requirements.general]"/>.
+<p/>
+<sref ref="[container.requirements.general]"/> describes move assignment in p7 and Table 99.
+<p/>
+If <tt>allocator_traits&lt;allocator_type&gt;::propagate_on_container_move_assignment::value</tt> 
+is false, and if the allocators stored in the lhs and rhs sides are not equal, then move 
+assigning a string has the same semantics as copy assigning a string as far as resources are 
+concerned (resources can not be transferred). And in this event, the lhs may have to acquire 
+resources to gain sufficient capacity to store a copy of the rhs.
+<p/>
+However <sref ref="[string.cons]"/>&#47;p22 says:
+</p><blockquote><pre>
+basic_string&lt;charT,traits,Allocator&gt;&amp;
+operator=(basic_string&lt;charT,traits,Allocator&gt;&amp;&amp; str) noexcept;
+</pre><blockquote><p>
+<i>Effects</i>: If <tt>*this</tt> and <tt>str</tt> are not the same object, modifies <tt>*this</tt> 
+as shown in Table 71. [<i>Note</i>: A valid implementation is <tt>swap(str)</tt>. &mdash; <i>end note</i> ]
+</p></blockquote></blockquote><p>
+These two specifications for <tt>basic_string::operator=(basic_string&amp;&amp;)</tt> are in conflict with 
+each other. It is not possible to implement a <tt>basic_string</tt> which satisfies both requirements.
+<p/>
+Additionally assign from an rvalue <tt>basic_string</tt> is defined as:
+</p><blockquote><pre>
+basic_string&amp; assign(basic_string&amp;&amp; str) noexcept;
+</pre><blockquote><p>
+<i>Effects</i>: The function replaces the string controlled by <tt>*this</tt> with a string of length 
+<tt>str.size()</tt> whose elements are a copy of the string controlled by <tt>str</tt>. [ <i>Note</i>: A valid 
+implementation is <tt>swap(str)</tt>. &mdash; <i>end note</i> ]
+</p></blockquote></blockquote><p>
+It seems contradictory that this member can be sensitive to <tt>propagate_on_container_swap</tt> instead 
+of <tt>propagate_on_container_move_assignment</tt>.  Indeed, there is a very subtle chance for undefined 
+behavior here:  If the implementation implements this in terms of <tt>swap</tt>, and if 
+<tt>propagate_on_container_swap</tt> is false, and if the two allocators are unequal, the behavior 
+is undefined, and will likely lead to memory corruption.  That's a lot to go wrong under a member 
+named "assign".
+</p>
+</discussion>
+
+<resolution>
+<p>This wording is relative to the FDIS.</p>
+<ol>
+<li><p>Modify the class template <tt>basic_string</tt> synopsis in <sref ref="[basic.string]"/>:</p>
+<blockquote><pre>
+namespace std {
+  template&lt;class charT, class traits = char_traits&lt;charT&gt;,
+    class Allocator = allocator&lt;charT&gt; &gt;
+  class basic_string {
+  public:
+    [&hellip;]
+    basic_string&amp; operator=(basic_string&amp;&amp; str) <del>noexcept</del>;
+    [&hellip;]
+    basic_string&amp; assign(basic_string&amp;&amp; str) <del>noexcept</del>;
+    [&hellip;]
+  };
+}
+</pre></blockquote>
+</li>
+
+<li><p>Remove the definition of the <tt>basic_string</tt> move assignment operator from <sref ref="[string.cons]"/> 
+entirely, including Table 71 &mdash; <tt>operator=(const basic_string&lt;charT, traits, Allocator&gt;&amp;&amp;)</tt>.
+This is consistent with how we define move assignment for the containers in Clause 23:</p>
+<blockquote><pre>
+<del>basic_string&lt;charT,traits,Allocator&gt;&amp;
+operator=(basic_string&lt;charT,traits,Allocator&gt;&amp;&amp; str) noexcept;</del>
+</pre><blockquote><p>
+<del>-22- <i>Effects</i>: If <tt>*this</tt> and <tt>str</tt> are not the same object, modifies <tt>*this</tt> as shown 
+in Table 71. [ <i>Note</i>: A valid implementation is <tt>swap(str)</tt>. &mdash; <i>end note</i> ]</del>
+<p/>
+<del>-23- If <tt>*this</tt> and <tt>str</tt> are the same object, the member has no effect.</del>
+<p/>
+<del>-24- <i>Returns</i>: <tt>*this</tt></del>
+</p></blockquote></blockquote>
+<blockquote>
+<table border="1">
+<caption><del>Table 71 &mdash; <tt>operator=(const basic_string&lt;charT, traits, Allocator&gt;&amp;&amp;)</tt></del></caption>
+
+<tr>
+<th><del>Element</del></th>
+<th><del>Value</del></th>
+</tr>
+
+<tr>
+<td><del><tt>data()</tt></del></td>
+<td><del>points at the array whose first element was pointed
+at by <tt>str.data()</tt></del></td>
+</tr>
+
+<tr>
+<td><del><tt>size()</tt></del></td>
+<td><del>previous value of <tt>str.size()</tt></del></td>
+</tr>
+
+<tr>
+<td><del><tt>capacity()</tt></del></td>
+<td><del>a value at least as large as <tt>size()</tt></del></td>
+</tr>
+
+</table> 
+</blockquote>
+</li>
+
+<li><p>Modify the paragraphs prior to <sref ref="[string::assign]"/> p.3 as indicated (The
+first insertion recommends a separate paragraph number for the indicated paragraph):</p>
+<blockquote><pre>
+basic_string&amp; assign(basic_string&amp;&amp; str) <del>noexcept</del>;
+</pre><blockquote><p>
+<ins>-?-</ins> <i>Effects</i>: <ins>Equivalent to <tt>*this = std::move(str)</tt>.</ins>
+<del>The function replaces the string controlled by <tt>*this</tt> with a string of length 
+<tt>str.size()</tt> whose elements are a copy of the string controlled by <tt>str</tt>. 
+[ <i>Note</i>: A valid implementation is <tt>swap(str)</tt>. &mdash; <i>end note</i> ]</del>
+<p/>
+-3- <i>Returns</i>: <tt>*this</tt>
+</p></blockquote></blockquote>
+
+</li>
+</ol>
+</resolution>
+
+</issue>
