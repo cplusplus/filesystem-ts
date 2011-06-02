@@ -53,7 +53,6 @@ While it is true, that random generators are excellent examples of stateful
 functors, there still exist good reasons to support rvalues as arguments:
 </p>
 
-<p>
 <ol>
 <li>If one of the shuffle algorithms is called with the intention to shuffle items with a reproducible ordering 
 	from a given generator class, it makes sense to create a generator exactly at the call point.
@@ -66,14 +65,12 @@ unintentionally. Any lvalue generator will deduce an lvalue-reference and behave
 cases, where rvalues are provided, the argument will be accepted instead of being rejected.
 </li>
 </ol>
-</p>
 
 <p>
 Arguments have been raised that accepting rvalues is error-prone or even fundamentally wrong. The author of this 
 proposal disagrees with that position for two additional reasons:
 </p>
 
-<p>
 <ol>
 <li>Enforcing lvalues as arguments won't prevent user code to enforce what they
 want. So given
@@ -101,7 +98,6 @@ Therefore preventing <tt>[random_]shuffle</tt> to accept rvalues is an unnecessa
 user-error, if there would exist one.
 </li>
 </ol>
-</p>
 
 <p>
 Thus this proposal recommends to make both <tt>shuffle</tt> functions consistent and perfectly forward-able.

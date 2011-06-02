@@ -35,11 +35,11 @@ Resolved in Batavia by accepting
 </discussion>
 
 <resolution>
-<p>Change <sref ref="[atomics.types.address]"/>, class <tt>atomic_address</tt> synopsis, as indicated:
+<p>Change <sref ref="[atomics.types.address]"/>, class <tt>atomic_address</tt> synopsis, as indicated:</p>
 <blockquote><pre>
 namespace std {
   typedef struct atomic_address {
-    [..]
+    [&hellip;]
     void* operator=(const void*) volatile;
     void* operator=(const void*);
     <ins>void* operator++(int) volatile;</ins>
@@ -55,10 +55,9 @@ namespace std {
     void* operator-=(ptrdiff_t) volatile;
     void* operator-=(ptrdiff_t);
   } atomic_address;
-  [..]
+  [&hellip;]
 }
 </pre></blockquote>
-</p>
 
 </resolution>
 

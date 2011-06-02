@@ -22,7 +22,7 @@ defect!
 </p>
 <p>
 Based on Greg's example, the following code demonstrates the issue:
-<pre>
+</p><pre>
  #include &lt;iostream&gt; 
  #include &lt;fstream&gt;
  #include &lt;streambuf&gt; 
@@ -37,15 +37,14 @@ Based on Greg's example, the following code demonstrates the issue:
    i-&gt;~C();  // ... so this should be supported!
  }
 </pre>
+<p>
+Of course, <tt>operator-&gt;</tt> is also needed when the <tt>value_type</tt> of
+<tt>istreambuf_iterator</tt> is a class.
 </p>
 <p>
-Of course, operator-&gt; is also needed when the value_type of
-istreambuf_iterator is a class.
-</p>
-<p>
-The operator-&gt; could be implemented in various ways.  For instance,
+The <tt>operator-&gt;</tt> could be implemented in various ways.  For instance,
 by storing the current value inside the iterator, and returning its
-address.  Or by returning a proxy, like operator_arrow_proxy, from
+address.  Or by returning a proxy, like <tt>operator_arrow_proxy</tt>, from
 <a href="http://www.boost.org/boost/iterator/iterator_facade.hpp">http://www.boost.org/boost/iterator/iterator_facade.hpp</a>
 </p>
 <p>

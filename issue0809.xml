@@ -13,23 +13,21 @@
 <p>
 For the sake of generic programming, the header <code>&lt;algorithm&gt;</code> should provide an
 overload of <code>std::swap</code> for array types:
-<pre>
+</p><pre>
 template&lt;class T, size_t N&gt; void swap(T (&amp;a)[N], T (&amp;b)[N]);
 </pre>
-</p>
 
 <p>
 It became apparent to me that this overload is missing, when I considered how to write a swap
 function for a generic wrapper class template.
-(Actually I was thinking of Boost's <a
-href="http://www.boost.org/libs/utility/value_init.htm">value_initialized</a>.)
+(Actually I was thinking of Boost's <a href="http://www.boost.org/libs/utility/value_init.htm">value_initialized</a>.)
 Please look at the following template, <code>W</code>, and suppose that is intended to be a very
 <em>generic</em> wrapper:
 </p>
 <pre>
 template&lt;class T&gt; class W {
 public:
-   T data;
+  T data;
 };
 </pre>
 <p>
