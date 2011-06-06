@@ -18,6 +18,33 @@ for equality&#47;inequality.
 </discussion>
 
 <resolution>
+<p>This wording is relative to the FDIS.</p>
+<ol>
+<li><p>Modify the example in <sref ref="[allocator.requirements]"/> p5 as indicated:</p>
+<blockquote><p>
+-5- [&hellip;]
+<p/>
+[ <i>Example</i>: the following is an allocator class template supporting the minimal interface 
+that satisfies the requirements of Table 28:
+</p><blockquote><pre>
+template &lt;class Tp&gt;
+struct SimpleAllocator {
+  typedef Tp value_type;
+  SimpleAllocator(<i>ctor args</i>);
+  template &lt;class T&gt; SimpleAllocator(const SimpleAllocator&lt;T&gt;&amp; other);
+  Tp *allocate(std::size_t n);
+  void deallocate(Tp *p, std::size_t n);
+};
+
+<ins>template &lt;class T, class U&gt;
+bool operator==(const SimpleAllocator&lt;T&gt;&amp;, const SimpleAllocator&lt;U&gt;&amp;);
+template &lt;class T, class U&gt;
+bool operator!=(const SimpleAllocator&lt;T&gt;&amp;, const SimpleAllocator&lt;U&gt;&amp;);</ins>
+</pre></blockquote><p>
+&mdash; <i>end example</i> ]
+</p></blockquote>
+</li>
+</ol>
 </resolution>
 
 </issue>
