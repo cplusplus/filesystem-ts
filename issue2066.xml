@@ -20,10 +20,10 @@ void resize(size_type sz, const T&amp; c);
 <p>
 The text in <sref ref="[vector.capacity]"/>&#47;12 only mentions "no effects on throw" for the
 two args version of resize:
-</p><blockquote>
+</p><blockquote><p>
 <i>Requires</i>: If an exception is thrown other than by the move constructor
 of a non-<tt>CopyConstructible</tt> <tt>T</tt> there are no effects.
-</blockquote><p>
+</p></blockquote><p>
 This seems like unintentional oversight since <tt>resize(size)</tt> is
 semantically the same as <tt>resize(size, T())</tt>.
 Additionally, the C++03 standard only specify single version of resize
@@ -43,6 +43,7 @@ in fact a regression.
 </discussion>
 
 <resolution>
+<p>Apply the proposed resolution of issue <iref ref="2033"/></p>
 </resolution>
 
 </issue>
