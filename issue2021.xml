@@ -73,20 +73,9 @@ which implies rvalues instead. The specification needs to be clarified.
 
 <note>2011-06-13: Daniel comments and refines the proposed wording changes</note>
 
-<p>The feedback obtained following message c++std-lib-30745 points to the intention, that the implied provision of
-lvalues due to named variables in <tt>bind</tt> and <tt>async</tt> should be provided as rvalues to support
-move-only types. The rvalue-provision is performed for the callable object as well for the following reason: With
-the existence of member functions with <i>ref-qualifier</i> we can now define function object types with either
-lvalue-reference or rvalue-reference qualified overloads of the function call operator. This means that we
-can create combinations where <tt>bind</tt> or <tt>async</tt> don't work because the functor object would
-have the wrong value category. In this case, providing them as rvalues to the <tt>INVOKE</tt> call allows
-the caller to control the situation in both cases: If the <tt>operator()</tt> overload (or a similar member function
-like a conversion function to function pointer) is has an <i>ref-qualifier</i> <tt>&amp;&amp;</tt>, we are done. 
-If this member operator has an <i>ref-qualifier</i> <tt>&amp;</tt>, we only need to provide the function object 
-wrapped in a <tt>reference_wrapper</tt>, because the call semantics described in <sref ref="[refwrap.invoke]"/>
-ensures that the effective call expression will provide the referenced functor as an lvalue. The same
-technique via <tt>reference_wrapper</tt> can be used, if we have a pointer-to-member as the callable object applied 
-to an reference-qualified function member.
+<p>The feedback obtained following message c++std-lib-30745  and follow-ups point to the intention, that 
+the implied provision of lvalues due to named variables in <tt>async</tt> should be provided as rvalues to support
+move-only types, but should be provided as lvalues in <tt>bind</tt>.
 <p/>
 The wording has been adapted to honor these observations and to fit to FDIS numbering as well.</p>
 </discussion>
@@ -97,60 +86,47 @@ The suggested wording changes are against the FDIS.
 </p>
 <ol>
 <li>
-<p>Change <sref ref="[func.bind.bind]"/> p. 2+3 as indicated (Remark: The expression <tt>std::move(fd)</tt> is
-equivalent to the expression <tt>std::forward&lt;FD&gt;(fd)</tt> in this special case where <tt>FD</tt> is
-guaranteed to be a non-reference type):</p>
+<p>Change <sref ref="[func.bind.bind]"/> p. 3 as indicated:</p>
 
 <blockquote><pre>
 template&lt;class F, class... BoundArgs&gt;
   <i>unspecified</i> bind(F&amp;&amp; f, BoundArgs&amp;&amp;... bound_args);
 </pre><blockquote><p>
 -2- <i>Requires</i>: <tt>is_constructible&lt;FD, F&gt;::value</tt> shall be true. For each <tt>Ti</tt> in <tt>BoundArgs</tt>, 
-<tt>is_constructible&lt;TiD, Ti&gt;::value</tt> shall be true. <tt><i>INVOKE</i>(<ins>std::move(</ins>fd<ins>)</ins>, w1, 
-w2, ..., wN)</tt> (20.8.2) shall be a valid expression for some values <tt>w1</tt>, <tt>w2</tt>, ..., <tt>wN</tt>, 
-where <tt>N == sizeof...(bound_args)</tt>.
+<tt>is_constructible&lt;TiD, Ti&gt;::value</tt> shall be true. <tt><i>INVOKE</i>(fd, w1, w2, ..., wN)</tt> (20.8.2) shall 
+be a valid expression for some values <tt>w1</tt>, <tt>w2</tt>, ..., <tt>wN</tt>, where <tt>N == sizeof...(bound_args)</tt>.
 <p/>
 -3- <i>Returns</i>: A forwarding call wrapper <tt>g</tt> with a weak result type (20.8.2). The effect of 
-<tt>g(u1, u2, ..., uM)</tt> shall be <tt>INVOKE(<ins>std::move(</ins>fd<ins>)</ins>, <ins>std::forward&lt;V1&gt;(</ins>v1<ins>)</ins>, 
+<tt>g(u1, u2, ..., uM)</tt> shall be <tt>INVOKE(fd, <ins>std::forward&lt;V1&gt;(</ins>v1<ins>)</ins>, 
 <ins>std::forward&lt;V2&gt;(</ins>v2<ins>)</ins>, ..., <ins>std::forward&lt;VN&gt;(</ins>vN<ins>)</ins>, 
-result_of&lt;FD cv (V1, V2, ..., VN)&gt;::type)</tt>, where <i>cv</i> represents the <i>cv</i>-qualifiers of 
-<tt>g</tt> and the values and types of the bound arguments <tt>v1, v2, ..., vN</tt> are determined as specified below. [&hellip;]
+result_of&lt;FD <i>cv</i> <ins>&amp;</ins> (V1, V2, ..., VN)&gt;::type)</tt>, where <i>cv</i> represents 
+the <i>cv</i>-qualifiers of <tt>g</tt> and the values and types of the bound arguments <tt>v1</tt>, 
+<tt>v2</tt>, ..., <tt>vN</tt> are determined as specified below. [&hellip;]
 </p></blockquote></blockquote>
 
 </li>
 
 <li>
-<p>Change <sref ref="[func.bind.bind]"/> p. 6+7 as indicated (Remark: The expression <tt>std::move(fd)</tt> is
-equivalent to the expression <tt>std::forward&lt;FD&gt;(fd)</tt> in this special case where <tt>FD</tt> is
-guaranteed to be a non-reference type):</p>
+<p>Change <sref ref="[func.bind.bind]"/> p. 7 as indicated:</p>
 
 <blockquote><pre>
 template&lt;class R, class F, class... BoundArgs&gt;
    <i>unspecified</i> bind(F&amp;&amp; f, BoundArgs&amp;&amp;... bound_args);
 </pre><blockquote><p>
 -6- <i>Requires</i>: <tt>is_constructible&lt;FD, F&gt;::value</tt> shall be true. For each <tt>Ti</tt> in <tt>BoundArgs</tt>, 
-<tt>is_constructible&lt;TiD, Ti&gt;::value</tt> shall be true. <tt><i>INVOKE</i>(<ins>std::move(</ins>fd<ins>)</ins>, w1, 
-w2, ..., wN)</tt> shall be a valid expression for some values <tt>w1</tt>, <tt>w2</tt>, ..., <tt>wN</tt>, 
-where <tt>N == sizeof...(bound_args)</tt>.
+<tt>is_constructible&lt;TiD, Ti&gt;::value</tt> shall be true. <tt><i>INVOKE</i>(fd, w1, w2, ..., wN)</tt> shall be a valid 
+expression for some values <tt>w1</tt>, <tt>w2</tt>, ..., <tt>wN</tt>, where <tt>N == sizeof...(bound_args)</tt>.
 <p/>
 -7- <i>Returns</i>: A forwarding call wrapper <tt>g</tt> with a nested type <tt>result_type</tt> defined as a synonym for
-<tt>R</tt>. The effect of <tt>g(u1, u2, ..., uM)</tt> shall be <tt>INVOKE(<ins>std::move(</ins>fd<ins>)</ins>, 
-<ins>std::forward&lt;V1&gt;(</ins>v1<ins>)</ins>, <ins>std::forward&lt;V2&gt;(</ins>v2<ins>)</ins>, ..., 
-<ins>std::forward&lt;VN&gt;(</ins>vN<ins>)</ins>, R)</tt>, where the values and types of the bound arguments 
-<tt>v1, v2, ..., vN</tt> are determined as specified below. [&hellip;]
+<tt>R</tt>. The effect of <tt>g(u1, u2, ..., uM)</tt> shall be <tt>INVOKE(fd, <ins>std::forward&lt;V1&gt;(</ins>v1<ins>)</ins>, 
+<ins>std::forward&lt;V2&gt;(</ins>v2<ins>)</ins>, ..., <ins>std::forward&lt;VN&gt;(</ins>vN<ins>)</ins>, R)</tt>, where 
+the values and types of the bound arguments <tt>v1</tt>, <tt>v2</tt>, ..., <tt>vN</tt> are determined as specified below. [&hellip;]
 </p></blockquote></blockquote>
 
 </li>
 
 <li>
-<p>Change <sref ref="[func.bind.bind]"/> p. 10 as indicated (Remark: If the provision of the callable object
-<tt>tid</tt> as rvalue in bullet 2 is considered as controversial, the changes in this bullet need to be as follows:</p>
-<blockquote><p>
-if the value of <tt>is_bind_expression&lt;TiD&gt;::value</tt> is <tt>true</tt>, the argument is 
-<tt>tid(std::forward&lt;Uj&gt;(uj)...)</tt> and its type <tt>Vi</tt> is 
-<tt>result_of&lt;TiD <i>cv</i> <ins>&amp;</ins> (Uj<ins>&amp;&amp;</ins>...)&gt;::type<ins>&amp;&amp;</ins></tt>;
-</p></blockquote>
-<p>instead):</p>
+<p>Change <sref ref="[func.bind.bind]"/> p. 10 as indicated:</p>
 
 <blockquote><p>
 -10- The values of the <i>bound arguments</i> <tt>v1</tt>, <tt>v2</tt>, ..., <tt>vN</tt> and their corresponding types <tt>V1</tt>, 
@@ -160,8 +136,8 @@ if the value of <tt>is_bind_expression&lt;TiD&gt;::value</tt> is <tt>true</tt>, 
 <li>if <tt>TiD</tt> is <tt>reference_wrapper&lt;T&gt;</tt>, the argument is <tt>tid.get()</tt> and its type <tt>Vi</tt> 
 is <tt>T&amp;</tt>;</li>
 <li>if the value of <tt>is_bind_expression&lt;TiD&gt;::value</tt> is <tt>true</tt>, the argument is 
-<tt><ins>std::move(</ins>tid<ins>)</ins>(std::forward&lt;Uj&gt;(uj)...)</tt> and its type <tt>Vi</tt> is 
-<tt>result_of&lt;TiD <i>cv</i> (Uj<ins>&amp;&amp;</ins>...)&gt;::type<ins>&amp;&amp;</ins></tt>;</li>
+<tt>tid(std::forward&lt;Uj&gt;(uj)...)</tt> and its type <tt>Vi</tt> is 
+<tt>result_of&lt;TiD <i>cv</i> <ins>&amp;</ins> (Uj<ins>&amp;&amp;</ins>...)&gt;::type<ins>&amp;&amp;</ins></tt>;</li>
 <li>if the value <tt>j</tt> of <tt>is_placeholder&lt;TiD&gt;::value</tt> is not zero, the argument is 
 <tt>std::forward&lt;Uj&gt;(uj)</tt> and its type <tt>Vi</tt> is <tt>Uj&amp;&amp;</tt>;</li>
 <li>otherwise, the value is <tt>tid</tt> and its type <tt>Vi</tt> is <tt>TiD <i>cv</i> &amp;</tt>.</li>
