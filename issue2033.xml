@@ -44,8 +44,8 @@ some requirements are missing in the standard as response to above questions:</p
 <ol>
 <li>The preconditions of <tt>shrink_to_fit</tt> for both <tt>std::vector</tt> and <tt>std::deque</tt>
 should impose the <tt>MoveInsertable</tt> requirements. The reason for this is, that these containers
-can host move-only types. For such a type <tt>X</tt> the C++03 idiom <tt>X(*this).swap(*this)</tt>
-would impose the <tt>CopyInsertable</tt> requirements which would make the function call ill-formed,
+can host move-only types. For a container type <tt>X</tt> the C++03 idiom <tt>X(*this).swap(*this)</tt>
+imposes the <tt>CopyInsertable</tt> requirements which would make the function call ill-formed,
 which looks like an unacceptable restriction to me. Assuming the committee decides to support the
 move-only case, further wording has to be added for the situation where such a move-only type could
 throw an exception, because this can leave the object in an unspecified state. This seems consistent
@@ -71,10 +71,10 @@ requirements.
 </li>
 
 <li>Unfortunately the current specification in terms of <tt>erase</tt> implies the <tt>MoveAssignable</tt>
-requirements. I don't think that this implication is intended. This function requires "append-only" and 
-"pop-back" effects, respectively, which should be expressed in terms of <tt>MoveInsertable</tt> requirements. 
-The same fix in regard to using <tt>pop_back</tt> instead of <tt>erase</tt> is necessary for the two argument 
-overload of <tt>resize</tt> as well (no <tt>MoveAssignable</tt> is required).
+requirements. I don't think that this implication is intended. This function requires "append" and 
+"pop-back" effects, respectively, where the former can be realized in terms of <tt>MoveInsertable</tt> 
+requirements. The same fix in regard to using <tt>pop_back</tt> instead of <tt>erase</tt> is necessary 
+for the two argument overload of <tt>resize</tt> as well (no <tt>MoveAssignable</tt> is required).
 </li>
 
 <li>The <tt>CopyInsertable</tt> requirement is incorrect and should be <tt>MoveInsertable</tt> instead.</li>
@@ -88,7 +88,7 @@ overload of <tt>resize</tt> as well (no <tt>MoveAssignable</tt> is required).
 <p>This wording is relative to the FDIS.</p>
 <ol>
 <li><p>Edit <sref ref="[deque.capacity]"/> as indicated [Remark: The suggested change of p4 is
-not editorial, because <tt>CopyInsertable</tt> is not necessarily a refinement of <tt>MoveInsertable</tt>
+not redundant, because <tt>CopyInsertable</tt> is not necessarily a refinement of <tt>MoveInsertable</tt>
 in contrast to the fact that <tt>CopyConstructible</tt> is a refinement of <tt>MoveConstructible</tt>]:</p>
 
 <blockquote><pre>
@@ -134,9 +134,9 @@ for implementation-specific optimizations. &mdash; <i>end note</i> ]
 </li>
 
 <li><p>Edit <sref ref="[vector.capacity]"/> as indicated including edits that also resolve <iref ref="2066"/> 
-[Remark: The suggested change before p12 is not editorial, because <tt>CopyInsertable</tt> is not necessarily 
-a refinement of <tt>MoveInsertable</tt> in contrast to the fact that <tt>CopyConstructible</tt> is a 
-refinement of <tt>MoveConstructible</tt>]:</p>
+[Remark: The combined listing of <tt>MoveInsertable</tt> and <tt>CopyInsertable</tt> before p12 is not redundant, 
+because <tt>CopyInsertable</tt> is not necessarily a refinement of <tt>MoveInsertable</tt> in contrast to the 
+fact that <tt>CopyConstructible</tt> is a refinement of <tt>MoveConstructible</tt>]:</p>
 
 <p>[&hellip;]</p>
 
