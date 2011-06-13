@@ -70,40 +70,110 @@ which implies rvalues instead. The specification needs to be clarified.
 </p>
 </li>
 </ol>
+
+<note>2011-06-13: Daniel comments and refines the proposed wording changes</note>
+
+<p>The feedback obtained following message c++std-lib-30745 points to the intention, that the implied provision of
+lvalues due to named variables in <tt>bind</tt> and <tt>async</tt> should be provided as rvalues to support
+move-only types. The rvalue-provision is performed for the callable object as well for the following reason: With
+the existence of member functions with <i>ref-qualifier</i> we can now define function object types with either
+lvalue-reference or rvalue-reference qualified overloads of the function call operator. This means that we
+can create combinations where <tt>bind</tt> or <tt>async</tt> don't work because the functor object would
+have the wrong value category. In this case, providing them as rvalues to the <tt>INVOKE</tt> call allows
+the caller to control the situation in both cases: If the <tt>operator()</tt> overload (or a similar member function
+like a conversion function to function pointer) is has an <i>ref-qualifier</i> <tt>&amp;&amp;</tt>, we are done. 
+If this member operator has an <i>ref-qualifier</i> <tt>&amp;</tt>, we only need to provide the function object 
+wrapped in a <tt>reference_wrapper</tt>, because the call semantics described in <sref ref="[refwrap.invoke]"/>
+ensures that the effective call expression will provide the referenced functor as an lvalue. The same
+technique via <tt>reference_wrapper</tt> can be used, if we have a pointer-to-member as the callable object applied 
+to an reference-qualified function member.
+<p/>
+The wording has been adapted to honor these observations and to fit to FDIS numbering as well.</p>
 </discussion>
 
 <resolution>
 <p>
-The suggested wording changes are against the working draft N3242.
+The suggested wording changes are against the FDIS.
 </p>
 <ol>
 <li>
-<p>Change <sref ref="[func.bind.bind]"/> p. 3 as indicated:</p>
+<p>Change <sref ref="[func.bind.bind]"/> p. 2+3 as indicated (Remark: The expression <tt>std::move(fd)</tt> is
+equivalent to the expression <tt>std::forward&lt;FD&gt;(fd)</tt> in this special case where <tt>FD</tt> is
+guaranteed to be a non-reference type):</p>
 
-<blockquote><p>
-<i>Returns</i>: A forwarding call wrapper <tt>g</tt> with a weak result type (20.8.2). The effect of 
-<tt>g(u1, u2, ..., uM)</tt> shall be <tt>INVOKE(fd, v1, v2, ..., vN, result_of&lt;FD cv <ins>&amp;</ins> (V1, V2, ..., VN)&gt;::type)</tt>, 
-where <i>cv</i> represents the <i>cv</i>-qualifiers of <tt>g</tt> and the values and types of the bound arguments 
-<tt>v1, v2, ..., vN</tt> are determined as specified below. [..]
-</p></blockquote>
+<blockquote><pre>
+template&lt;class F, class... BoundArgs&gt;
+  <i>unspecified</i> bind(F&amp;&amp; f, BoundArgs&amp;&amp;... bound_args);
+</pre><blockquote><p>
+-2- <i>Requires</i>: <tt>is_constructible&lt;FD, F&gt;::value</tt> shall be true. For each <tt>Ti</tt> in <tt>BoundArgs</tt>, 
+<tt>is_constructible&lt;TiD, Ti&gt;::value</tt> shall be true. <tt><i>INVOKE</i>(<ins>std::move(</ins>fd<ins>)</ins>, w1, 
+w2, ..., wN)</tt> (20.8.2) shall be a valid expression for some values <tt>w1</tt>, <tt>w2</tt>, ..., <tt>wN</tt>, 
+where <tt>N == sizeof...(bound_args)</tt>.
+<p/>
+-3- <i>Returns</i>: A forwarding call wrapper <tt>g</tt> with a weak result type (20.8.2). The effect of 
+<tt>g(u1, u2, ..., uM)</tt> shall be <tt>INVOKE(<ins>std::move(</ins>fd<ins>)</ins>, <ins>std::forward&lt;V1&gt;(</ins>v1<ins>)</ins>, 
+<ins>std::forward&lt;V2&gt;(</ins>v2<ins>)</ins>, ..., <ins>std::forward&lt;VN&gt;(</ins>vN<ins>)</ins>, 
+result_of&lt;FD cv (V1, V2, ..., VN)&gt;::type)</tt>, where <i>cv</i> represents the <i>cv</i>-qualifiers of 
+<tt>g</tt> and the values and types of the bound arguments <tt>v1, v2, ..., vN</tt> are determined as specified below. [&hellip;]
+</p></blockquote></blockquote>
 
 </li>
 
 <li>
-<p>Change <sref ref="[func.bind.bind]"/> p. 10 bullet 2 as indicated:</p>
+<p>Change <sref ref="[func.bind.bind]"/> p. 6+7 as indicated (Remark: The expression <tt>std::move(fd)</tt> is
+equivalent to the expression <tt>std::forward&lt;FD&gt;(fd)</tt> in this special case where <tt>FD</tt> is
+guaranteed to be a non-reference type):</p>
 
+<blockquote><pre>
+template&lt;class R, class F, class... BoundArgs&gt;
+   <i>unspecified</i> bind(F&amp;&amp; f, BoundArgs&amp;&amp;... bound_args);
+</pre><blockquote><p>
+-6- <i>Requires</i>: <tt>is_constructible&lt;FD, F&gt;::value</tt> shall be true. For each <tt>Ti</tt> in <tt>BoundArgs</tt>, 
+<tt>is_constructible&lt;TiD, Ti&gt;::value</tt> shall be true. <tt><i>INVOKE</i>(<ins>std::move(</ins>fd<ins>)</ins>, w1, 
+w2, ..., wN)</tt> shall be a valid expression for some values <tt>w1</tt>, <tt>w2</tt>, ..., <tt>wN</tt>, 
+where <tt>N == sizeof...(bound_args)</tt>.
+<p/>
+-7- <i>Returns</i>: A forwarding call wrapper <tt>g</tt> with a nested type <tt>result_type</tt> defined as a synonym for
+<tt>R</tt>. The effect of <tt>g(u1, u2, ..., uM)</tt> shall be <tt>INVOKE(<ins>std::move(</ins>fd<ins>)</ins>, 
+<ins>std::forward&lt;V1&gt;(</ins>v1<ins>)</ins>, <ins>std::forward&lt;V2&gt;(</ins>v2<ins>)</ins>, ..., 
+<ins>std::forward&lt;VN&gt;(</ins>vN<ins>)</ins>, R)</tt>, where the values and types of the bound arguments 
+<tt>v1, v2, ..., vN</tt> are determined as specified below. [&hellip;]
+</p></blockquote></blockquote>
+
+</li>
+
+<li>
+<p>Change <sref ref="[func.bind.bind]"/> p. 10 as indicated (Remark: If the provision of the callable object
+<tt>tid</tt> as rvalue in bullet 2 is considered as controversial, the changes in this bullet need to be as follows:</p>
 <blockquote><p>
 if the value of <tt>is_bind_expression&lt;TiD&gt;::value</tt> is <tt>true</tt>, the argument is 
 <tt>tid(std::forward&lt;Uj&gt;(uj)...)</tt> and its type <tt>Vi</tt> is 
-<tt>result_of&lt;TiD cv <ins>&amp;</ins> (Uj<ins>&amp;&amp;</ins>...)&gt;::type<ins>&amp;&amp;</ins></tt>;
+<tt>result_of&lt;TiD <i>cv</i> <ins>&amp;</ins> (Uj<ins>&amp;&amp;</ins>...)&gt;::type<ins>&amp;&amp;</ins></tt>;
 </p></blockquote>
+<p>instead):</p>
+
+<blockquote><p>
+-10- The values of the <i>bound arguments</i> <tt>v1</tt>, <tt>v2</tt>, ..., <tt>vN</tt> and their corresponding types <tt>V1</tt>, 
+<tt>V2</tt>, ..., <tt>VN</tt> depend on the types <tt>TiD</tt> derived from the call to bind and the <i>cv</i>-qualifiers 
+<i>cv</i> of the call wrapper <tt>g</tt> as follows:</p>
+<ul>
+<li>if <tt>TiD</tt> is <tt>reference_wrapper&lt;T&gt;</tt>, the argument is <tt>tid.get()</tt> and its type <tt>Vi</tt> 
+is <tt>T&amp;</tt>;</li>
+<li>if the value of <tt>is_bind_expression&lt;TiD&gt;::value</tt> is <tt>true</tt>, the argument is 
+<tt><ins>std::move(</ins>tid<ins>)</ins>(std::forward&lt;Uj&gt;(uj)...)</tt> and its type <tt>Vi</tt> is 
+<tt>result_of&lt;TiD <i>cv</i> (Uj<ins>&amp;&amp;</ins>...)&gt;::type<ins>&amp;&amp;</ins></tt>;</li>
+<li>if the value <tt>j</tt> of <tt>is_placeholder&lt;TiD&gt;::value</tt> is not zero, the argument is 
+<tt>std::forward&lt;Uj&gt;(uj)</tt> and its type <tt>Vi</tt> is <tt>Uj&amp;&amp;</tt>;</li>
+<li>otherwise, the value is <tt>tid</tt> and its type <tt>Vi</tt> is <tt>TiD <i>cv</i> &amp;</tt>.</li>
+</ul>
+</blockquote>
 
 </li>
 
 <li>
 <p>
-This resolution assumes that the wording of <sref ref="[futures.async]"/> is incorrectly implying rvalues
-as arguments of <tt>INVOKE</tt>, those should be lvalues instead.
+This resolution assumes that the wording of <sref ref="[futures.async]"/> is intended to provide rvalues
+as arguments of <tt>INVOKE</tt>.
 </p>
 
 <p>
@@ -113,23 +183,43 @@ and in <sref ref="[futures.async]"/> p. 1 as indicated:
 
 <blockquote><pre>
 template &lt;class F, class... Args&gt;
-future&lt;typename result_of&lt;<ins>typename decay&lt;</ins>F<ins>&gt;::type&amp;</ins>(<ins>typename decay&lt;</ins>Args<ins>&gt;::type&amp;</ins>...)&gt;::type&gt;
+future&lt;typename result_of&lt;<ins>typename decay&lt;</ins>F<ins>&gt;::type</ins>(<ins>typename decay&lt;</ins>Args<ins>&gt;::type</ins>...)&gt;::type&gt;
 async(F&amp;&amp; f, Args&amp;&amp;... args);
 template &lt;class F, class... Args>
-future&lt;typename result_of&lt;<ins>typename decay&lt;</ins>F<ins>&gt;::type&amp;</ins>(<ins>typename decay&lt;</ins>Args<ins>&gt;::type&amp;</ins>...)&gt;::type&gt;
+future&lt;typename result_of&lt;<ins>typename decay&lt;</ins>F<ins>&gt;::type</ins>(<ins>typename decay&lt;</ins>Args<ins>&gt;::type</ins>...)&gt;::type&gt;
 async(launch policy, F&amp;&amp; f, Args&amp;&amp;... args);
 </pre></blockquote>
 </li>
 
 <li>
-<p>Change <sref ref="[futures.async]"/> p. 4 as indicated: [Note: There is one tiny editorial correction that completes one
-<tt>::</tt> scope specifier]
-[Note: This sub-section need more wording: The call expressions used imply a different value category]
+<p>Change <sref ref="[futures.async]"/> as indicated: (Remark: There is also a tiny editorial correction 
+in p. 4 that completes one <tt>::</tt> scope specifier)
 </p>
 
 <blockquote><p>
-<i>Returns</i>: an object of type 
-<tt>future&lt;typename result_of&lt;<ins>typename decay&lt;</ins>F<ins>&gt;::type&amp;</ins>(<ins>typename decay&lt;</ins>Args<ins>&gt;::type&amp;</ins>...)&gt;:<ins>:</ins>type&gt;</tt> 
+-3- <i>Effects</i>: [&hellip;]
+</p>
+<ul>
+<li>[&hellip;]</li>
+<li>if <tt>policy &amp; launch::deferred</tt> is non-zero &mdash; Stores <tt><i>DECAY_COPY</i>(std::forward&lt;F&gt;(f))</tt> 
+and <tt><i>DECAY_COPY</i>(std::forward&lt;Args&gt;(args))...</tt> in the shared state. These copies of <tt>f</tt> and 
+<tt>args</tt> constitute a <i>deferred function</i>. Invocation of the deferred function evaluates 
+<tt><i>INVOKE</i>(<ins>std::move(</ins>g<ins>)</ins>, <ins>std::move(</ins>xyz<ins>)</ins>)</tt>
+where <tt>g</tt> is the stored value of <tt><i>DECAY_COPY</i>(std::forward&lt;F&gt;(f))</tt> and <tt>xyz</tt> is the 
+stored copy of <tt><i>DECAY_COPY</i>(std::forward&lt;Args&gt;(args))...</tt>. The shared state is not made ready 
+until the function has completed. The first call to a non-timed waiting function (30.6.4) on an asynchronous
+return object referring to this shared state shall invoke the deferred function in the thread that
+called the waiting function. Once evaluation of <tt><i>INVOKE</i>(<ins>std::move(</ins>g<ins>)</ins>, 
+<ins>std::move(</ins>xyz<ins>)</ins>)</tt> begins, the function is no longer considered deferred. [ <i>Note</i>: If 
+this policy is specified together with other policies, such as when using a <tt>policy</tt> value of 
+<tt>launch::async | launch::deferred</tt>, implementations should defer invocation or the selection of 
+the policy when no more concurrency can be effectively exploited. &mdash; <i>end note</i> ]</li>
+</ul>
+</blockquote>
+
+<blockquote><p>
+-4- <i>Returns</i>: an object of type 
+<tt>future&lt;typename result_of&lt;<ins>typename decay&lt;</ins>F<ins>&gt;::type</ins>(<ins>typename decay&lt;</ins>Args<ins>&gt;::type</ins>...)&gt;:<ins>:</ins>type&gt;</tt> 
 that refers to the associated asynchronous state created by this call to <tt>async</tt>.
 </p></blockquote>
 </li>
