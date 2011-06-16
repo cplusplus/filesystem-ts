@@ -75,7 +75,13 @@ which implies rvalues instead. The specification needs to be clarified.
 
 <p>The feedback obtained following message c++std-lib-30745  and follow-ups point to the intention, that 
 the implied provision of lvalues due to named variables in <tt>async</tt> should be provided as rvalues to support
-move-only types, but should be provided as lvalues in <tt>bind</tt>.
+move-only types, but the functor type should be forwarded as lvalue in <tt>bind</tt>.
+<p/>
+If <tt>bind</tt> were newly invented, the value strategy could be improved, because now we have a preference of
+<i>ref</i> <tt>&amp;</tt> qualified function call operator overloads. But such a change seems to be too late now.
+User-code that needs to bind a callable object with an <i>ref</i> <tt>&amp;&amp;</tt> qualified function call
+operator (or conversion function to function pointer) needs to use a corresponding wrapper similar to <tt>reference_wrapper</tt>
+that forwards the reference as rvalue-reference instead.
 <p/>
 The wording has been adapted to honor these observations and to fit to FDIS numbering as well.</p>
 </discussion>
