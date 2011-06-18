@@ -49,12 +49,48 @@ Some aspects of this problem are possibly core-language related, but I consider 
 more than a service to programmers, if the library would declare the usual form of
 the copy operations (i.e. those with const first parameter type) as deleted for
 <tt>packaged_task</tt> to prevent such problems.
+<p/>
+A similar problem exists for class template <tt>basic_ostream</tt> in <sref ref="[ostream]"/>:
+</p>
+<blockquote><pre>
+namespace std {
+  template &lt;class charT, class traits = char_traits&lt;charT&gt; &gt;
+  class basic_ostream : virtual public basic_ios&lt;charT,traits&gt; {
+    [&hellip;]
+
+    // 27.7.3.3 Assign/swap
+    basic_ostream&amp; operator=(basic_ostream&amp; rhs) = delete;
+    basic_ostream&amp; operator=(const basic_ostream&amp;&amp; rhs);
+    void swap(basic_ostream&amp; rhs);
+};
+</pre></blockquote>
+<p>
+albeit this could be considered as an editorial swap of copy and move
+assignment operator, I suggest to fix this as part of this issue as well.
 </p>
 </discussion>
 
 <resolution>
 <p>This wording is relative to the FDIS.</p>
 <ol>
+<li><p>Modify the class template <tt>basic_ostream</tt> synopsis in <sref ref="[ostream]"/>
+as indicated (Note: The prototype signature of the move assignment operator in <sref ref="[ostream.assign]"/>
+is ok):</p>
+
+<blockquote><pre>
+namespace std {
+  template &lt;class charT, class traits = char_traits&lt;charT&gt; &gt;
+  class basic_ostream : virtual public basic_ios&lt;charT,traits&gt; {
+    [&hellip;]
+
+    // 27.7.3.3 Assign/swap
+    basic_ostream&amp; operator=(<ins>const</ins> basic_ostream&amp; rhs) = delete;
+    basic_ostream&amp; operator=(<del>const</del> basic_ostream&amp;&amp; rhs);
+    void swap(basic_ostream&amp; rhs);
+};
+</pre></blockquote>
+</li>
+
 <li><p>Modify the class template <tt>packaged_task</tt> synopsis in <sref ref="[futures.task]"/> p2
 as indicated:</p>
 
