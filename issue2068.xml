@@ -73,8 +73,11 @@ rules would not be changed to fix that, I see the following options:
 </p>
 <ol>
 <li>Intentionally decide to break the support for element types with non-const copy c'tors in <tt>pair</tt>.</li>
-<li>User-declare the copy and move c'tors to at least support the instantiation of the types, but this
-would still not allow to copy them by the copy constructor.</li>
+<li>User-declare both copy and move ctor to at least support the instantiation of the <tt>pair</tt> specializations, 
+but this would still not allow to copy them by the copy constructor.</li>
+<li>User-declare both the const and non-const copy ctors, the move ctor, and additionally the non-const copy assignment
+operator to support the instantiation of the <tt>pair</tt> specializations and of these members. This would 
+support all element types as it did in C++03, but all copy&#47;move members would be non-trivial.</li>
 <li>Intentionally decide to give up support for element types that are references for <tt>pair</tt>, but
 still keep the allocator support with the effect of removing all declarations of the special
 copy&#47;move members. User code that needs to use <tt>tuple</tt> instead. But this would be a rather
