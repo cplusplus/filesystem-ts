@@ -141,9 +141,132 @@ Daniel Kr&uuml;gler volunteered to provide wording, interacting with Dietmar and
 Bill. 
 </p>
 
+<note>2011-06-24 Daniel comments and provides wording</note>
+
+<p>
+The same problem applies to the output provided by <tt>const char*</tt> and similar
+character sequences as of <sref ref="[ostream.inserters.character]"/> p. 5. and even for
+single character output (!) as described in <sref ref="[ostream.inserters.character]"/> p. 1,
+just consider the character value '-' where '-' is the sign character. In this case
+Table 91 &mdash; "Fill padding" requires to pad after the sign, i.e. the output
+for the program
+</p>
+<blockquote><pre>
+#include &lt;iostream&gt;
+#include &lt;iomanip&gt;
+
+int main() 
+{ 
+   char c = '-'; 
+   std::cout.fill('*'); 
+   std::cout.setf(std::ios::internal, std::ios::adjustfield); 
+   std::cout &lt;&lt; std::setw(2) &lt;&lt; c &lt;&lt; std::endl; 
+} 
+</pre></blockquote>
+
+<p>
+According to the current wording this program should output "<tt>-*</tt>", but
+all tested implementations output "<tt>*-</tt>" instead.
+
+<p/>
+I suggest to replace the reference to <sref ref="[facet.num.put.virtuals]"/> in all three places. 
+It is not very complicated to describe the padding rules for simple character sequences "inline". 
+A similar approach is used as for the <tt>money_put</tt> functions.
+</p>
+
 </discussion>
 
 <resolution>
+<p>
+The new wording refers to the FDIS numbering.
+</p>
+<ol>
+<li><p>Change <sref ref="[string.io]"/>&#47;5 as indicated:</p>
+<blockquote><pre>
+template&lt;class charT, class traits, class Allocator&gt;
+  basic_ostream&lt;charT, traits&gt;&amp;
+    operator&lt;&lt;(basic_ostream&lt;charT, traits&gt;&amp; os,
+               const basic_string&lt;charT,traits,Allocator&gt;&amp; str);
+</pre><blockquote><p>
+-5- <i>Effects</i>: Behaves as a formatted output function (27.7.3.6.1). After constructing a sentry object,
+if this object returns true when converted to a value of type <tt>bool</tt>, determines padding as <del>described
+in 22.4.2.2.2,</del><ins>as follows: A <tt>charT</tt> character sequence is produced, initially consisting of 
+the elements defined by the range <tt>[str.begin(), str.end)</tt>. If <tt>str.size()</tt> is less than <tt>os.width()</tt>, 
+then enough copies of <tt>os.fill()</tt> are added to this sequence as necessary to pad to a width of <tt>os.width()</tt> 
+characters. If <tt>(os.flags() &amp; ios_base::adjustfield) == ios_base::left</tt> is true, the fill characters 
+are placed after the character sequence; otherwise, they are placed before the character sequence. 
+T</ins><del>t</del>hen inserts the resulting sequence of characters <tt>seq</tt> as if by calling 
+<tt>os.rdbuf()-&gt;sputn(seq, n)</tt>, where <tt>n</tt> is the larger of <tt>os.width()</tt> and 
+<tt>str.size()</tt>; then calls <tt>os.width(0)</tt>.
+</p></blockquote></blockquote>
+</li>
+
+<li><p>Change <sref ref="[ostream.inserters.character]"/>&#47;1 as indicated (An additional editorial
+fix is suggested for the first prototype declaration):</p>
+<blockquote><pre>
+template&lt;class charT, class traits&gt;
+  basic_ostream&lt;charT,traits&gt;&amp; operator&lt;&lt;(basic_ostream&lt;charT,traits&gt;&amp; out,
+                                          charT c<del>}</del><ins>)</ins>;
+template&lt;class charT, class traits&gt;
+  basic_ostream&lt;charT,traits&gt;&amp; operator&lt;&lt;(basic_ostream&lt;charT,traits&gt;&amp; out,
+                                          char c);
+<i>// specialization</i>
+template&lt;class traits&gt;
+  basic_ostream&lt;char,traits&gt;&amp; operator&lt;&lt;(basic_ostream&lt;char,traits&gt;&amp; out,
+                                         char c);
+<i>// signed and unsigned</i>
+template&lt;class traits&gt;
+  basic_ostream&lt;char,traits&gt;&amp; operator&lt;&lt;(basic_ostream&lt;char,traits&gt;&amp; out,
+                                         signed char c);
+template&lt;class traits&gt;
+  basic_ostream&lt;char,traits&gt;&amp; operator&lt;&lt;(basic_ostream&lt;char,traits&gt;&amp; out,
+                                         unsigned char c);
+</pre><blockquote><p>
+-1- <i>Effects</i>: Behaves like a formatted inserter (as described in 27.7.3.6.1) of <tt>out</tt>. 
+After a sentry object is constructed it inserts characters. In case <tt>c</tt> has type <tt>char</tt> and the 
+character type of the stream is not <tt>char</tt>, then the character to be inserted is <tt>out.widen(c)</tt>; 
+otherwise the character is <tt>c</tt>. Padding is determined <del>as described in 22.4.2.2.2</del><ins>as follows: 
+A character sequence is produced, initially consisting of the insertion character. If <tt>out.width()</tt> is greater
+one, then enough copies of <tt>out.fill()</tt> are added to this sequence as necessary to pad to a width of 
+<tt>out.width()</tt> characters. If <tt>(out.flags() &amp; ios_base::adjustfield) == ios_base::left</tt> is true, 
+the fill characters are placed after the insertion character; otherwise, they are placed before the insertion 
+character</ins>. <del><tt>width(0)</tt> is called.</del> The insertion character and any required padding are 
+inserted into <tt>out</tt><ins>; then calls <tt>os.width(0)</tt></ins>.
+</p></blockquote></blockquote>
+</li>
+
+<li><p>Change <sref ref="[ostream.inserters.character]"/>&#47;5 as indicated:</p>
+<blockquote><pre>
+template&lt;class charT, class traits&gt;
+  basic_ostream&lt;charT,traits&gt;&amp; operator&lt;&lt;(basic_ostream&lt;charT,traits&gt;&amp; out,
+                                          const charT* s);
+template&lt;class charT, class traits&gt;
+  basic_ostream&lt;charT,traits&gt;&amp; operator&lt;&lt;(basic_ostream&lt;charT,traits&gt;&amp; out,
+                                          const char* s);
+template&lt;class traits&gt;
+  basic_ostream&lt;char,traits&gt;&amp; operator&lt;&lt;(basic_ostream&lt;char,traits&gt;&amp; out,
+                                         const char* s);
+template&lt;class traits&gt;
+  basic_ostream&lt;char,traits&gt;&amp; operator&lt;&lt;(basic_ostream&lt;char,traits&gt;&amp; out,
+                                         const signed char* s);
+template&lt;class traits&gt;
+  basic_ostream&lt;char,traits&gt;&amp; operator&lt;&lt;(basic_ostream&lt;char,traits&gt;&amp; out,
+                                         const unsigned char* s);
+</pre><blockquote><p>
+[&hellip;]
+<p/>
+-5- Padding is determined as <del>described in 22.4.2.2.2. The <tt>n</tt> characters starting at <tt>s</tt> 
+are widened using <tt>out.widen</tt> (27.5.5.3)</del><ins>as follows: A character sequence is produced, initially 
+consisting of the elements defined by the <tt>n</tt> characters starting at <tt>s</tt> widened using 
+<tt>out.widen</tt> (27.5.5.3). If <tt>n</tt> is less than <tt>out.width()</tt>, then enough copies of 
+<tt>out.fill()</tt> are added to this sequence as necessary to pad to a width of <tt>out.width()</tt> characters. 
+If <tt>(out.flags() &amp; ios_base::adjustfield) == ios_base::left</tt> is true, the fill characters are 
+placed after the character sequence; otherwise, they are placed before the character sequence</ins>. The 
+widened characters and any required padding are inserted into <tt>out</tt>. Calls <tt>width(0)</tt>.
+</p></blockquote></blockquote>
+</li>
+</ol>
+
 </resolution>
 
 </issue>
