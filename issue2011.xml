@@ -189,15 +189,14 @@ template&lt;class charT, class traits, class Allocator&gt;
                const basic_string&lt;charT,traits,Allocator&gt;&amp; str);
 </pre><blockquote><p>
 -5- <i>Effects</i>: Behaves as a formatted output function ([ostream.formatted.reqmts]). After constructing a sentry object,
-if this object returns true when converted to a value of type <tt>bool</tt>, determines padding as <del>described
+if this object returns <tt>true</tt> when converted to a value of type <tt>bool</tt>, determines padding as <del>described
 in [facet.num.put.virtuals],</del><ins>follows: A <tt>charT</tt> character sequence is produced, initially consisting of 
-the elements defined by the range <tt>[str.begin(), str.end)</tt>. If <tt>str.size()</tt> is less than <tt>os.width()</tt>, 
+the elements defined by the range <tt>[str.begin(), str.end())</tt>. If <tt>str.size()</tt> is less than <tt>os.width()</tt>, 
 then enough copies of <tt>os.fill()</tt> are added to this sequence as necessary to pad to a width of <tt>os.width()</tt> 
-characters. If <tt>(os.flags() &amp; ios_base::adjustfield) == ios_base::left</tt> is true, the fill characters 
-are placed after the character sequence; otherwise, they are placed before the character sequence. 
-T</ins><del>t</del>hen inserts the resulting sequence of characters <tt>seq</tt> as if by calling 
-<tt>os.rdbuf()-&gt;sputn(seq, n)</tt>, where <tt>n</tt> is the larger of <tt>os.width()</tt> and 
-<tt>str.size()</tt>; then calls <tt>os.width(0)</tt>.
+characters. If <tt>(os.flags() &amp; ios_base::adjustfield) == ios_base::left</tt> is <tt>true</tt>, the fill characters 
+are placed after the character sequence; otherwise, they are placed before the character sequence. T</ins><del>t</del>hen 
+inserts the resulting sequence of characters <tt>seq</tt> as if by calling <tt>os.rdbuf()-&gt;sputn(seq, n)</tt>, where 
+<tt>n</tt> is the larger of <tt>os.width()</tt> and <tt>str.size()</tt>; then calls <tt>os.width(0)</tt>.
 </p></blockquote></blockquote>
 </li>
 
@@ -227,8 +226,8 @@ After a sentry object is constructed it inserts characters. In case <tt>c</tt> h
 character type of the stream is not <tt>char</tt>, then the character to be inserted is <tt>out.widen(c)</tt>; 
 otherwise the character is <tt>c</tt>. Padding is determined as <del>described in [facet.num.put.virtuals]</del><ins>follows: 
 A character sequence is produced, initially consisting of the insertion character. If <tt>out.width()</tt> is greater
-one, then enough copies of <tt>out.fill()</tt> are added to this sequence as necessary to pad to a width of 
-<tt>out.width()</tt> characters. If <tt>(out.flags() &amp; ios_base::adjustfield) == ios_base::left</tt> is true, 
+than one, then enough copies of <tt>out.fill()</tt> are added to this sequence as necessary to pad to a width of 
+<tt>out.width()</tt> characters. If <tt>(out.flags() &amp; ios_base::adjustfield) == ios_base::left</tt> is <tt>true</tt>, 
 the fill characters are placed after the insertion character; otherwise, they are placed before the insertion 
 character</ins>. <del><tt>width(0)</tt> is called.</del> The insertion character and any required padding are 
 inserted into <tt>out</tt><ins>; then calls <tt>os.width(0)</tt></ins>.
@@ -260,7 +259,7 @@ are widened using <tt>out.widen</tt> ([basic.ios.members])</del><ins>follows: A 
 consisting of the elements defined by the <tt>n</tt> characters starting at <tt>s</tt> widened using 
 <tt>out.widen</tt> ([basic.ios.members]). If <tt>n</tt> is less than <tt>out.width()</tt>, then enough copies of 
 <tt>out.fill()</tt> are added to this sequence as necessary to pad to a width of <tt>out.width()</tt> characters. 
-If <tt>(out.flags() &amp; ios_base::adjustfield) == ios_base::left</tt> is true, the fill characters are 
+If <tt>(out.flags() &amp; ios_base::adjustfield) == ios_base::left</tt> is <tt>true</tt>, the fill characters are 
 placed after the character sequence; otherwise, they are placed before the character sequence</ins>. The 
 widened characters and any required padding are inserted into <tt>out</tt>. Calls <tt>width(0)</tt>.
 </p></blockquote></blockquote>
