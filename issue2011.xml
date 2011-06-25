@@ -188,9 +188,9 @@ template&lt;class charT, class traits, class Allocator&gt;
     operator&lt;&lt;(basic_ostream&lt;charT, traits&gt;&amp; os,
                const basic_string&lt;charT,traits,Allocator&gt;&amp; str);
 </pre><blockquote><p>
--5- <i>Effects</i>: Behaves as a formatted output function (27.7.3.6.1). After constructing a sentry object,
+-5- <i>Effects</i>: Behaves as a formatted output function ([ostream.formatted.reqmts]). After constructing a sentry object,
 if this object returns true when converted to a value of type <tt>bool</tt>, determines padding as <del>described
-in 22.4.2.2.2,</del><ins>as follows: A <tt>charT</tt> character sequence is produced, initially consisting of 
+in [facet.num.put.virtuals],</del><ins>follows: A <tt>charT</tt> character sequence is produced, initially consisting of 
 the elements defined by the range <tt>[str.begin(), str.end)</tt>. If <tt>str.size()</tt> is less than <tt>os.width()</tt>, 
 then enough copies of <tt>os.fill()</tt> are added to this sequence as necessary to pad to a width of <tt>os.width()</tt> 
 characters. If <tt>(os.flags() &amp; ios_base::adjustfield) == ios_base::left</tt> is true, the fill characters 
@@ -222,10 +222,10 @@ template&lt;class traits&gt;
   basic_ostream&lt;char,traits&gt;&amp; operator&lt;&lt;(basic_ostream&lt;char,traits&gt;&amp; out,
                                          unsigned char c);
 </pre><blockquote><p>
--1- <i>Effects</i>: Behaves like a formatted inserter (as described in 27.7.3.6.1) of <tt>out</tt>. 
+-1- <i>Effects</i>: Behaves like a formatted inserter (as described in [ostream.formatted.reqmts]) of <tt>out</tt>. 
 After a sentry object is constructed it inserts characters. In case <tt>c</tt> has type <tt>char</tt> and the 
 character type of the stream is not <tt>char</tt>, then the character to be inserted is <tt>out.widen(c)</tt>; 
-otherwise the character is <tt>c</tt>. Padding is determined <del>as described in 22.4.2.2.2</del><ins>as follows: 
+otherwise the character is <tt>c</tt>. Padding is determined as <del>described in [facet.num.put.virtuals]</del><ins>follows: 
 A character sequence is produced, initially consisting of the insertion character. If <tt>out.width()</tt> is greater
 one, then enough copies of <tt>out.fill()</tt> are added to this sequence as necessary to pad to a width of 
 <tt>out.width()</tt> characters. If <tt>(out.flags() &amp; ios_base::adjustfield) == ios_base::left</tt> is true, 
@@ -255,10 +255,10 @@ template&lt;class traits&gt;
 </pre><blockquote><p>
 [&hellip;]
 <p/>
--5- Padding is determined as <del>described in 22.4.2.2.2. The <tt>n</tt> characters starting at <tt>s</tt> 
-are widened using <tt>out.widen</tt> (27.5.5.3)</del><ins>as follows: A character sequence is produced, initially 
+-5- Padding is determined as <del>described in [facet.num.put.virtuals]. The <tt>n</tt> characters starting at <tt>s</tt> 
+are widened using <tt>out.widen</tt> ([basic.ios.members])</del><ins>follows: A character sequence is produced, initially 
 consisting of the elements defined by the <tt>n</tt> characters starting at <tt>s</tt> widened using 
-<tt>out.widen</tt> (27.5.5.3). If <tt>n</tt> is less than <tt>out.width()</tt>, then enough copies of 
+<tt>out.widen</tt> ([basic.ios.members]). If <tt>n</tt> is less than <tt>out.width()</tt>, then enough copies of 
 <tt>out.fill()</tt> are added to this sequence as necessary to pad to a width of <tt>out.width()</tt> characters. 
 If <tt>(out.flags() &amp; ios_base::adjustfield) == ios_base::left</tt> is true, the fill characters are 
 placed after the character sequence; otherwise, they are placed before the character sequence</ins>. The 
