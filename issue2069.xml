@@ -1,0 +1,57 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="2069" status="New">
+<title>Inconsistent exception spec for <tt>basic_string</tt> move constructor</title>
+<section><sref ref="[string.cons]"/></section>
+<submitter>Bo Persson</submitter>
+<date>1 Jul 2011</date>
+
+<discussion>
+<p>
+Sub-clause <sref ref="[string.cons]"/> contains these constructors in paragraphs 2 and 3:
+</p>
+<blockquote><pre>
+basic_string(const basic_string&lt;charT,traits,Allocator&gt;&amp; str);
+basic_string(basic_string&lt;charT,traits,Allocator&gt;&amp;&amp; str) noexcept;
+</pre><blockquote>
+<p>
+[&hellip;]
+<p/>
+-3- <i>Throws</i>: The second form throws nothing if the allocator's move constructor throws nothing.
+</p></blockquote></blockquote>
+<p>
+How can it <i>ever</i> throw anything if it is marked <tt>noexcept</tt>?
+<p/>
+Further, according to paragraph 18 of the same sub-clause:
+</p>
+<blockquote><pre>
+basic_string(const basic_string&amp; str, const Allocator&amp; alloc);
+basic_string(basic_string&amp;&amp; str, const Allocator&amp; alloc);
+</pre><blockquote>
+<p>
+[&hellip;]
+<p/>
+-18- <i>Throws</i>: The second form throws nothing if <tt>alloc == str.get_allocator()</tt> 
+unless the copy constructor for <tt>Allocator</tt> throws.
+</p>
+</blockquote></blockquote>
+<p>
+The constraint &quot;unless the copy constructor for <tt>Allocator</tt> throws&quot;
+is redundant, because according to Table 28 &mdash; Allocator requirements, the expressions
+</p>
+<blockquote><pre>
+X a1(a);
+X a(b);
+</pre></blockquote>
+<p>
+impose the requirement: &quot;Shall not exit via an exception&quot;.
+</p>
+</discussion>
+
+<resolution>
+</resolution>
+
+</issue>
