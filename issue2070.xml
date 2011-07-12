@@ -34,7 +34,9 @@ public constructors.
 <p>This wording is relative to the FDIS.</p>
 
 <ol>
-<li>Change the following paragraphs of <sref ref="[util.smartptr.shared.create]"/> as indicated:</li>
+<li>Change the following paragraphs of <sref ref="[util.smartptr.shared.create]"/> as indicated (The suggested
+removal of the last sentence of p1 is not strictly required to resolve this issue, but is still recommended,
+because it does not say anything new but may give the impression that it says something new):</li>
 
 <blockquote><pre>
 template&lt;class T, class... Args&gt; shared_ptr&lt;T&gt; make_shared(Args&amp;&amp;... args);
@@ -49,7 +51,7 @@ formed. <ins>For the template <tt>allocate_shared</tt>, the expression
 <tt>allocator_traits&lt;A&gt;::construct(a, pt, std::forward&lt;Args&gt;(args)...)</tt>,
 where <tt>pt</tt> has type <tt>T*</tt> and points to storage suitable to hold an object
 of type <tt>T</tt>, shall be well formed.</ins> <tt>A</tt> shall be an allocator ([allocator.requirements]). 
-The copy constructor and destructor of  <tt>A</tt> shall not throw exceptions.
+<del>The copy constructor and destructor of  <tt>A</tt> shall not throw exceptions.</del>
 <p/>
 -2- <i>Effects</i>: Allocates memory suitable for an object of type <tt>T</tt> and constructs an object in 
 that memory<ins>. The template <tt>make_shared</tt> constructs the object</ins> via the placement new expression 
@@ -62,9 +64,10 @@ object of type <tt>T</tt>.
 <p/>
 -4- <i>Postconditions</i>: <tt>get() != 0 &amp;&amp; use_count() == 1</tt>
 <p/>
--5- <i>Throws</i>: <tt>bad_alloc</tt>, or an exception thrown from <tt>A::allocate</tt> or<ins>, for the template
-<tt>make_shared</tt>,</ins> from the constructor of <tt>T</tt><ins>, or, for the template <tt>allocate_shared</tt>,
-from <tt>allocator_traits&lt;A&gt;::construct</tt></ins>.
+-5- <i>Throws</i>: <tt>bad_alloc</tt>, or<ins>, for the template <tt>make_shared</tt>, an exception thrown from
+the constructor of <tt>T</tt>, or, for the template <tt>allocate_shared</tt>,</ins> an exception thrown from 
+<tt>A::allocate</tt> or <ins>from <tt>allocator_traits&lt;A&gt;::construct</tt></ins><del>from the constructor of 
+<tt>T</tt></del>.
 <p/>
 -6- <i>Remarks</i>: Implementations are encouraged, but not required, to perform no more than one memory
 allocation. [ <i>Note</i>: This provides efficiency equivalent to an intrusive smart pointer. &mdash; <i>end note</i> ]
