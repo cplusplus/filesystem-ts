@@ -62,6 +62,25 @@ an iterator value which is not dereferencable, but obviously the intention is th
 be incrementable. This leads to the conclusion that imposing dereferencable as a requirement
 for the expressions <tt>++r</tt> is wrong: We only need the iterator to be incrementable. A
 similar conclusion applies to the expression <tt>--r</tt> of bidirectional iterators.</p>
+
+<note>
+2011 Bloomington
+</note>
+
+<p>
+Consensus this is the correct direction, but there are (potentially) missing <i>incrementable</i>
+preconditions on some table rows, and the Remarks on when an output iterator becomes dereferencable
+are probably better handled outside the table, in a manner similar to the way we word for input
+iterators.
+</p>
+
+<p>
+There was some concern about redundant pre-conditions when the operational semantic is defined in
+terms of operations that have preconditions, and a similar level of concern over dropping such
+redundancies vs. applying a consistent level of redundant specification in all the iterator tables.
+Wording clean-up in either direction would be welcome.
+</p>
+
 </discussion>
 
 <resolution>
