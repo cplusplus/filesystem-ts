@@ -3,7 +3,7 @@
   <!ENTITY nbsp "&#160;">
 ] >
 
-<issue num="2068" status="New">
+<issue num="2068" status="NAD">
 <title><tt>std::pair</tt> not C++03-compatible with defaulted copy c'tor</title>
 <section><sref ref="[pairs.pair]"/></section>
 <submitter>Daniel Kr&uuml;gler</submitter>
@@ -95,6 +95,20 @@ tuple&amp; operator=(const tuple&amp;);
 </pre></blockquote>
 <p>
 </p>
+
+<note>Bloomington, 2011</note>
+<p>
+Closed as NAD.
+</p>
+
+<p>
+This is an unfortunate change of behavior between C++03 and C++11, but is consistent with <tt>tuple</tt>.  There is no desire to go to lengths supporting types like <tt>auto_ptr</tt> now that rvalue references are in the language.
+</p>
+
+<p>
+There may be an issue for Core/EWG to look at, so that some simple <tt>=default</tt> syntax could be used that would do the right thing.  If such a facility became availabile, LWG might revisit this issue.
+</p>
+
 </discussion>
 
 <resolution>

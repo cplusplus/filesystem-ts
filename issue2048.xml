@@ -3,7 +3,7 @@
   <!ENTITY nbsp "&#160;">
 ] >
 
-<issue num="2048" status="New">
+<issue num="2048" status="Review">
 <title>Unnecessary <tt>mem_fn</tt> overloads</title>
 <section><sref ref="[function.objects]"/> <sref ref="[func.memfn]"/></section>
 <submitter>Jonathan Wakely</submitter>
@@ -77,6 +77,20 @@ with <tt>mem_fn</tt>. Clarifying the intent by adding overloads for varargs
 functions would expand the list of 12 redundant overloads to 24, it
 would be much simpler to remove the 12 redundant overloads entirely.
 </p>
+
+<note>Bloomington, 2011</note>
+<p>
+Move to Review.
+</p>
+
+<p>
+The issue and resolution appear to be correct, but there is some concern that the wording of INVOKE may be different depending on whether you pass a pointer-to-member-data or pointer-to-member-function.  That might make the current wording necessary after all, and then we might need to add the missing elipsis overloads.
+</p>
+
+<p>
+There was some concern that the Remark confirming implementors had freedom to implement this as a set of overloaded functions may need to be restored if we delete the specification for these overloads.
+</p>
+
 </discussion>
 
 <resolution>
