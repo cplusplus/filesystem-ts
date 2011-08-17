@@ -3,7 +3,7 @@
   <!ENTITY nbsp "&#160;">
 ] >
 
-<issue num="2058" status="New">
+<issue num="2058" status="Open">
 <title><tt>valarray</tt> and <tt>begin&#47;end</tt></title>
 <section><sref ref="[numarray]"/></section>
 <submitter>Gabriel Dos Reis</submitter>
@@ -47,9 +47,55 @@ general statements of <sref ref="[valarray.syn]"/> p.3-5. This would make it uns
 whether the expression <tt>begin(x + y)</tt> would be well-formed, portable code would
 need to write this as <tt>begin(std::valarray&lt;T&gt;(x + y))</tt>.</li>
 </ol>
+
+<note>
+2011 Bloomington
+</note>
+
+<p>
+The intent of these overloads is entirely to support the new for syntax, and not to create
+new containers.
+</p>
+
+<p>
+Stefanus provides suggested wording.
+</p>
+
 </discussion>
 
 <resolution>
+<p>
+In <sref ref="[valarray.syn]"/>/4, make the following <ins>insertion</ins>:
+</p>
+
+<p>
+4 Implementations introducing such replacement types shall provide additional functions and operators as
+follows:
+</p>
+<p>
+— for every function taking a <tt>const valarray&lt;T>&amp;</tt> <ins>other than <tt>begin()</tt> and <tt>end()</tt>
+(<sref ref="[valarray.range]"/>)</ins>, identical functions taking the replacement types shall be added;
+</p>
+<p>
+— for every function taking two <tt>const valarray&lt;T>&amp;</tt> arguments, identical functions taking every combination
+of <tt>const valarray&lt;T>&amp;</tt> and replacement types shall be added.
+</p>
+
+<p>
+In <sref ref="[valarray.range]"/>, make the following <ins>insertion</ins>:
+</p>
+<p> 
+1 In the <tt>begin</tt> and <tt>end</tt> function templates that follow, <i>unspecified</i>1 is a type that meets
+the requirements of a mutable random access iterator (24.2.7) whose <tt>value_type</tt> is the template parameter
+<tt>T</tt> and whose <tt>reference</tt> type is <tt>T&amp;</tt>. <i>unspecified</i>2 is a type that meets the
+requirements of a constant random access iterator (24.2.7) whose <tt>value_type</tt> is the template parameter
+<tt>T</tt> and whose <tt>reference</tt> type is <tt>const T&amp;</tt>.
+</p>
+<p><ins>
+2 The iterators  returned by <tt>begin()</tt> and <tt>end()</tt> for an array are guaranteed to be valid until the
+member function <tt>resize(size_t, T)</tt> (<sref = ref"[valarray.members]"/>) is called for that array or until
+the lifetime of that array ends, whichever happens first.
+</ins></p>
 </resolution>
 
 </issue>
