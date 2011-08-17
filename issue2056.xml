@@ -3,7 +3,7 @@
   <!ENTITY nbsp "&#160;">
 ] >
 
-<issue num="2056" status="New">
+<issue num="2056" status="Review">
 <title><tt>future_errc</tt> enums start with value 0 (invalid value for <tt>broken_promise</tt>)</title>
 <section><sref ref="[futures.overview]"/></section>
 <submitter>Nicolai Josuttis</submitter>
@@ -30,9 +30,12 @@ So, the enums defined here have to start with 1.
 <p/>
 Howard, Anthony, and Jonathan have no objections.
 </p>
-</discussion>
-
-<resolution>
+<p>[Discussion in Bloomington 2011-08-16]
+</p>
+<p>
+Previous resolution:
+</p>
+<blockquote class="note">
 <p>This wording is relative to the FDIS.</p>
 <ol>
 <li><p>In <sref ref="[futures.overview]"/>, header <tt>&lt;future&gt;</tt> synopsis, fix 
@@ -51,6 +54,44 @@ namespace std {
 </pre></blockquote>
 </li>
 </ol>
-</resolution>
+</blockquote>
+<p>
+Is this resolution overspecified? These seem to be all implementation-defined. How do users add new values and not conflict with established error codes?
+</p><p>
+PJP proxy says: over-specified. boo.
+</p><p>
+Other error codes: look for is_error_code_enum specializations. Only one exists <tt>io_errc</tt>
+</p><p>
+Peter: I don't see any other parts of the standard that specify error codes where we have to do something similar.
+</p><p>
+Suggest that for every place where we add an error code, the following:
+</p>
+<ol>
+   <li> no zero values
+   </li><li> all implementation defined values, so future_already_retrieved = implementation_defined
+   </li><li> values are distinct
+</li></ol>
 
+</discussion>
+
+<resolution>
+<p>This wording is relative to the FDIS.</p>
+<p>In <sref ref="[futures.overview]"/>, header <tt>&lt;future&gt;</tt> synopsis, fix 
+the declaration of <tt>future_errc</tt> as follows:</p>
+
+<blockquote><pre>
+namespace std {
+  enum class future_errc {
+    broken_promise<ins> = <var>implementation defined</var></ins>,
+    future_already_retrieved<ins> = <var>implementation defined</var></ins>,
+    promise_already_satisfied<ins> = <var>implementation defined</var></ins>,
+    no_state<ins> = <var>implementation defined</var></ins>
+  };
+  [&hellip;]
+}
+</pre></blockquote>
+<p>In 30.6.1 [futures.overview], header <tt>&lt;future&gt;</tt> synopsis, add a paragraph after paragraph 2 as follows:</p>
+
+<ins>The enum values of <tt>future_errc</tt> are distinct and not zero.</ins>
+</resolution>
 </issue>
