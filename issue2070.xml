@@ -28,9 +28,13 @@ using <tt>scoped_allocator_adaptor</tt> to do uses-allocator construction, or
 using an allocator declared as a friend to construct objects with no
 public constructors.
 </p>
-</discussion>
-
-<resolution>
+<p>
+<i>[2011-08-16 Bloomington: Agreed to fix in principle, but believe that
+make_shared and allocate_shared have not diverged enough that their
+descriptions should be separated.  Pablo and Stefanus to provide revised
+wording.]</i>
+</p>
+<p><strong>Daniel's (old) proposed resolution</strong></p>
 <p>This wording is relative to the FDIS.</p>
 
 <ol>
@@ -79,6 +83,100 @@ bookkeeping structures such as the reference counts. &mdash; <i>end note</i> ]
 
 </ol>
 
+</discussion>
+
+<resolution>
+<p>This wording is relative to the FDIS.</p>
+
+<ol>
+<li>Change the following paragraphs of <sref ref="[util.smartptr.shared.create]"/> as indicated (The suggested
+removal of the last sentence of p1 is not strictly required to resolve this issue, but is still recommended,
+because it does not say anything new but may give the impression that it says something new):</li>
+
+<blockquote><pre>
+template&lt;class T, class... Args&gt; shared_ptr&lt;T&gt; make_shared(Args&amp;&amp;... args);
+<del>template&lt;class T, class A, class... Args&gt;
+
+  shared_ptr&lt;T&gt; allocate_shared(const A&amp; a, Args&amp;&amp;... args);</del>
+</pre></blockquote>
+<p>
+-1- <i>Requires</i>: The expression 
+<tt>::new (pv) T(std::forward&lt;Args&gt;(args)...)</tt>, where <tt>pv</tt> 
+
+has type <tt>void*</tt> and points to storage suitable to hold an object of type <tt>T</tt>, shall be well 
+formed. <del><tt>A</tt> shall be an allocator ([allocator.requirements]). 
+The copy constructor and destructor of  <tt>A</tt> shall not throw exceptions.</del>
+<p/>
+-2- <i>Effects</i>: Allocates memory suitable for an object of type <tt>T</tt> and constructs an object in 
+that memory via the placement new expression 
+
+<tt>::new (pv) T(std::forward&lt;Args&gt;(args)...)</tt>. <del>The template <tt>allocate_shared</tt> uses a copy 
+of <tt>a</tt> to allocate memory.</del>
+If an exception is thrown, the function<del>s have</del><ins> has</ins> no effect.
+
+<p/>
+-3- <i>Returns</i>: A <tt>shared_ptr</tt> instance that stores and owns the address of the newly constructed 
+object of type <tt>T</tt>.
+<p/>
+-4- <i>Postconditions</i>: <tt>get() != 0 &amp;&amp; use_count() == 1</tt>
+
+<p/>
+-5- <i>Throws</i>: <tt>bad_alloc</tt>, or an exception thrown from 
+<del><tt>A::allocate</tt> or from</del> the constructor of 
+<tt>T</tt>>.
+<p/>
+-6- <i>Remarks</i>: Implementations are encouraged, but not required, to perform no more than one memory
+allocation. [ <i>Note</i>: <del>This</del><ins>Such an implementation</ins>
+
+provides efficiency equivalent to an intrusive smart pointer. &mdash; <i>end note</i> ]
+<p/>
+-7- [ <i>Note</i>: <del>These functions</del><ins>This function</ins> will typically allocate more memory than <tt>sizeof(T)</tt> to allow for internal
+bookkeeping structures such as the reference counts. &mdash; <i>end note</i> ]
+
+</p>
+<li>Add the following <ins>new paragraph</ins>:</li>
+<blockquote><pre>
+template&lt;class T, class A, class... Args&gt;
+  shared_ptr&lt;T&gt; allocate_shared(const A&amp; a, Args&amp;&amp;... args);
+
+</pre></blockquote>
+<p>
+-1- <i>Requires</i>: The expression 
+<tt>allocator_traits&lt;A&gt;::construct(a, pt, std::forward&lt;Args&gt;(args)...)</tt>, shall be well formed,
+where <tt>pt</tt> has type <tt>T*</tt> and points to storage suitable to hold an object
+of type <tt>T</tt>. <tt>A</tt> shall be an allocator ([allocator.requirements]). 
+
+<p/>
+-2- <i>Effects</i>: Allocates memory suitable for an object of type <tt>T</tt> and constructs an object in 
+that memory. Using a suitably-rebound version <tt>A</tt>, <tt>A2</tt>,
+allocates memory from a copy of <tt>a</tt> by calling
+<tt>allocator_traits&lt;A2&gt;::allocate(a, 1)</tt>
+
+ and constructs the object by calling 
+<tt>allocator_traits&lt;A2&gt;::construct(a, pt,
+std::forward&lt;Args&gt;(args)...)</tt>. If an exception is thrown, the
+function has no effect.
+<p/>
+-3- <i>Returns</i>: A <tt>shared_ptr</tt> instance that stores and owns the address of the newly constructed 
+object of type <tt>T</tt>.
+
+<p/>
+-4- <i>Postconditions</i>: <tt>get() != 0 &amp;&amp; use_count() == 1</tt>
+<p/>
+-5- <i>Throws</i>: nothing unless <tt>allocator_traits&lt;A&gt;::allocate</tt>
+or <tt>allocator_traits&lt;A&gt;::construct</tt> throws an exception.
+
+<p/>
+-6- <i>Remarks</i>: Implementations are encouraged, but not required, to
+perform no more than one memory allocation. 
+[ <i>Note</i>: Such an implementation provides efficiency equivalent to an intrusive smart pointer. &mdash; <i>end note</i> ]
+<p/>
+-7- [ <i>Note</i>: These functions will typically allocate more memory than <tt>sizeof(T)</tt> to allow for internal
+bookkeeping structures such as the reference counts. &mdash; <i>end note</i> ]
+
+</p>
+
+</ol>
 </resolution>
 
 </issue>
