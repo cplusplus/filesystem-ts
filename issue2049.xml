@@ -3,7 +3,7 @@
   <!ENTITY nbsp "&#160;">
 ] >
 
-<issue num="2049" status="Open">
+<issue num="2049" status="Review">
 <title><tt>is_destructible</tt> is underspecified</title>
 <section><sref ref="[meta.unary.prop]"/></section>
 <submitter>Daniel Kr&uuml;gler</submitter>
@@ -74,9 +74,46 @@ my_pointer&lt;T&gt;::~my_pointer() noexcept(is_nothrow_destructible&lt;T&gt;::va
 <p>Additional to the <tt>is_destructible</tt> traits, its derived forms <tt>is_trivially_destructible</tt>
 and <tt>is_nothrow_destructible</tt> are similarly affected, because their wording refers to "the indicated
 destructor" and probably need to be adapted as well.</p>
+
+<note>
+2011 Bloomington
+</note>
+
+<p>
+After discussion about to to handle the exceptional cases of reference types, function types (available by defererencing a function pointer)
+and <tt>void</tt> types, Howard supplied proposed wording.
+</p>
 </discussion>
 
 <resolution>
+
+<p>
+Update <sref ref="[meta.unary.prop]"/>, table 49:
+</p>
+
+<table border="1">
+<tr>
+<td><tt>template &lt;class T>
+struct is_destructible;</tt></td>
+<td>
+<del>For a complete type <tt>T</tt> and given <tt>template &lt;class U> struct test { U u; };</tt>, <tt>test&lt;T>:: ̃test()</tt> is not deleted.
+</del>
+<br/>
+<ins>
+For object types, if the expression: <tt>std::declval&lt;T&amp;>().~T()</tt> is well-formed in an unevaluated context then
+<tt>is_destructible&lt;T>::value</tt> is <tt>true</tt>, otherwise it is <tt>false</tt>.
+<br/>
+For <tt>void</tt> types, <tt>is_destructible&lt;T>::value</tt> is <tt>false</tt>.
+<br/>
+For reference types, <tt>is_destructible&lt;T>::value</tt> is <tt>true</tt>.
+<br/>
+For function types, <tt>is_destructible&lt;T>::value</tt> is <tt>false</tt>.
+</ins>
+</td>
+<td><tt>T</tt> shall be a complete type, (possibly cv-qualified) <tt>void</tt>, or an array of unknown bound.</td>
+</tr>
+</table>
+
 </resolution>
 
 </issue>
