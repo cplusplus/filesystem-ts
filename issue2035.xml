@@ -81,6 +81,19 @@ redundancies vs. applying a consistent level of redundant specification in all t
 Wording clean-up in either direction would be welcome.
 </p>
 
+<note>2011-08-18: Daniel adapts the proposed resolution to honor the Bloomington request</note>
+
+<p>
+There is only a small number of further changes suggested to get rid of superfluous 
+requirements and essentially non-normative assertions. Operations should not have extra 
+pre-conditions, if defined by "in-terms-of" semantics, see e.g. <tt>a != b</tt> or <tt>a-&gt;m</tt> 
+for Table 107. Further, some remarks, that do not impose anything or say nothing new have been removed, 
+because I could not find anything helpful they provide.
+E.g. consider the remarks for Table 108 for the operations dereference-assignment and
+preincrement: They don't provide additional information say nothing surprising. With the
+new pre-conditions <em>and</em> post-conditions it is implied what the remarks intend to say.
+</p>
+
 </discussion>
 
 <resolution>
@@ -228,8 +241,8 @@ that are not associated with any sequence. [&hellip;]
 <td>contextually<br/>
 convertible to <tt>bool</tt></td>
 <td><tt>!(a == b)</tt></td>
-<td>pre: <tt>(a, b)</tt> is in the domain<br/>
-of <tt>==</tt>.
+<td><del>pre: <tt>(a, b)</tt> is in the domain<br/>
+of <tt>==</tt>.</del>
 </td>
 </tr>
 
@@ -251,8 +264,7 @@ equivalent to <tt>*b</tt>.
 <td><tt>a-&gt;m</tt></td>
 <td><tt>&nbsp;</tt></td>
 <td><tt>(*a).m</tt></td>
-<td>pre: <tt>a</tt> is dereferenceable.
-</td>
+<td><del>pre: <tt>a</tt> is dereferenceable.</del></td>
 </tr>
 
 <tr>
@@ -311,9 +323,9 @@ return tmp; }
 <td>result is not used</td>
 <td><tt>&nbsp;</tt></td>
 <td><ins>pre: <tt>r</tt> is dereferenceable.</ins><br/>
-<i>Remark</i>: After this operation<br/>
+<del><i>Remark</i>: After this operation<br/>
 <tt>r</tt> is not required to be<br/>
-dereferenceable.<br/>
+dereferenceable.</del><br/>
 post: <tt>r</tt> is incrementable.
 </td>
 </tr>
@@ -324,10 +336,11 @@ post: <tt>r</tt> is incrementable.
 <td><tt>&nbsp;</tt></td>
 <td><ins>pre: <tt>r</tt> is incrementable.</ins><br/>
 <tt>&amp;r == &amp;++r</tt>.<br/>
-<i>Remark</i>: After this operation<br/>
+<del><i>Remark</i>: After this operation<br/>
 <tt>r</tt> is not required to be<br/>
-dereferenceable <ins>or incrementable</ins>.<br/>
-<del>post: <tt>r</tt> is incrementable.</del>
+dereferenceable.</del><br/>
+post: <tt>r</tt> is <ins>dereferenceable<br/>
+or <tt>r</tt> is past-the-end</ins><del>incrementable</del>.
 </td>
 </tr>
 
@@ -338,10 +351,10 @@ dereferenceable <ins>or incrementable</ins>.<br/>
   ++r;<br/>
   return tmp; }</tt>
 </td>
-<td><i>Remark</i>: After this operation<br/>
+<td><del><i>Remark</i>: After this operation<br/>
 <tt>r</tt> is not required to be<br/>
-dereferenceable <ins>or incrementable</ins>.<br/>
-<del>post: <tt>r</tt> is incrementable.</del>
+dereferenceable.<br/>
+post: <tt>r</tt> is incrementable.</del>
 </td>
 </tr>
 
@@ -349,10 +362,10 @@ dereferenceable <ins>or incrementable</ins>.<br/>
 <td><tt>*r++ = o</tt></td>
 <td>result is not used</td>
 <td><ins><tt>{ *r = o; ++r; }</tt></ins></td>
-<td><i>Remark</i>: After this operation<br/>
+<td><del><i>Remark</i>: After this operation<br/>
 <tt>r</tt> is not required to be<br/>
-dereferenceable <ins>or incrementable</ins>.<br/>
-<del>post: <tt>r</tt> is incrementable.</del>
+dereferenceable.<br/>
+post: <tt>r</tt> is incrementable.</del>
 </td>
 </tr>
 </table>
