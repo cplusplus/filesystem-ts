@@ -3,7 +3,7 @@
   <!ENTITY nbsp "&#160;">
 ] >
 
-<issue num="2063" status="New">
+<issue num="2063" status="Open">
 <title>Contradictory requirements for string move assignment</title>
 <section><sref ref="[basic.string]"/></section>
 <submitter>Howard Hinnant</submitter>
@@ -129,6 +129,101 @@ basic_string&amp; assign(basic_string&amp;&amp; str) <del>noexcept</del>;
 
 </li>
 </ol>
+
+<note>
+2011 Bloomington
+</note>
+
+<p>
+Alisdair: Can this be conditional noexcept?
+</p>
+<p>
+Pablo: We said we were not going to put in many conditional noexcepts. Problem is not allocator, but non-normative definition. It says swap is a valid operation which it is not.
+</p>
+<p>
+Dave: Move assignment is not a critical method.
+</p>
+<p>
+Alisdair: Was confusing assignment and construction.
+</p>
+<p>
+Dave: Move construction is critical for efficiency.
+</p>
+<p>
+Kyle: Is it possible to test for noexcept.
+</p>
+<p>
+Alisdair: Yes, query the noexcept operator.
+</p>
+<p>
+Alisdair: Agreed there is a problem that we cannot unconditionally mark these operations as noexcpet.
+</p>
+<p>
+Pablo: How come swap is not defined in alloc
+</p>
+<p>
+Alisdair: It is in utility.
+</p>
+<p>
+Pablo: Swap has a conditional noexcept. Is no throw move constructable, is no throw move assignable.
+</p>
+<p>
+Pablo: Not critical for strings or containers.
+</p>
+<p>
+Kyle: Why?
+</p>
+<p>
+Pablo: They do not use the default swap.
+</p>
+<p>
+Dave: Important for deduction in other types.
+</p>
+<p>
+Alisdair: Would change the policy we adopted during FDIS mode.
+</p>
+<p>
+Pablo: Keep it simple and get some vendor experience.
+</p>
+<p>
+Alisdair: Is this wording correct? Concerned with bullet 2.
+</p>
+<p>
+Pablo: Where does it reference containers section.
+</p>
+<p>
+Alisdair: String is a container.
+</p>
+<p>
+Alisdair: We should not remove redundancy piecemeal.
+</p>
+<p>
+Pablo: I agree. This is a deviation from rest of string. Missing forward reference to containers section.
+</p>
+<p>
+Pablo: To fix section 2. Only the note needs to be removed. The rest needs to be a forward reference to containers.
+</p>
+<p>
+Alisdair: That is a new issue.
+</p>
+<p>
+Pablo: Not really. Talking about adding one sentence, saying that basic string is a container.
+</p>
+<p>
+Dave: That is not just a forward reference, it is a semantic change.
+</p>
+<p>
+PJ: We intended to make it look like a container, but it did not satisfy all the requirements.
+</p>
+<p>
+Pablo: Clause 1 is correct. Clause 2 is removing note and noexcept (do not remove the rest). Clause 3 is correct.
+</p>
+<p>
+Alisdair: Not sure data() is correct (in clause 2).
+</p>
+<p>
+Conclusion: Move to open, Alisdair and Pablo volunteered to provide wording
+</p>
 </resolution>
 
 </issue>
