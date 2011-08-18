@@ -33,9 +33,210 @@ void erasor(std::map&lt;X,int&gt;&amp; s, X x)
     s.erase(it);
 }
 </pre></blockquote>
+
+<note>
+2011 Bloomington
+</note>
+
+<p>
+This issue affects only associative container <tt>erase</tt> calls, and is not more general, as these are the
+only functions that are also overloaded on another single arguement that might cause confusion - the <tt>erase</tt>
+by key method.  The complete resolution should simply restore the <tt>iterator</tt> overload in addition to the
+<tt>const_iterator</tt> overload for all eight associative containers. 
+</p>
+
+<p>
+Proposed wording supplied by Alan Talbot.
+</p>
 </discussion>
 
 <resolution>
+<p>
+Editorial note: The following things are different between <sref ref="[associative.reqmts]"/> p.8 and
+<sref ref="[unord.req]"/> p.10. These should probably be reconciled.
+</p>
+<blockquote>
+<ol>
+<li>First uses the convention "denotes";  second uses the convention "is".</li>
+<li>First redundantly says: "If no such element exists, returns a.end()." in erase table entry, second does not.</li>
+</ol>
+</blockquote>
+
+<p>
+<sref = ref"[associative.reqmts]"/> Associative containers
+</p>
+<p>
+8 In Table 102, <tt>X</tt> denotes an associative container class, <tt>a</tt> denotes a value of <tt>X</tt>, <tt>a_uniq</tt>
+denotes a value of <tt>X</tt> when <tt>X</tt> supports unique keys, <tt>a_eq</tt> denotes a value of <tt>X</tt> when
+<tt>X</tt> supports multiple keys, <tt>u</tt> denotes an identifier, <tt>i</tt> and <tt>j</tt> satisfy input iterator
+requirements and refer to elements implicitly convertible to <tt>value_type</tt>, <tt>[i,j)</tt> denotes a valid range,
+<tt>p</tt> denotes a valid const iterator to <tt>a</tt>, <tt>q</tt> denotes a valid dereferenceable const iterator to <tt>a</tt>,
+<ins><tt>r</tt> denotes a valid dereferenceable iterator to a,</ins> <tt>[q1, q2)</tt> denotes a valid range of const iterators
+in <tt>a</tt>, <tt>il</tt> designates an object of type <tt>initializer_list&lt;value_type></tt>, <tt>t</tt> denotes a value of
+<tt>X::value_type</tt>, <tt>k</tt> denotes a value of <tt>X::key_type</tt> and <tt>c</tt> denotes a value of type
+<tt>X::key_compare</tt>. <tt>A</tt> denotes the storage allocator used by <tt>X</tt>, if any, or
+<tt>std::allocator&lt;X::value_type></tt> otherwise, and <tt>m</tt> denotes an allocator of a type convertible to <tt>A</tt>.
+</p>
+
+<p>
+<sref ref="[associative.reqmts]"/> Associative containers Table 102
+</p>
+<p>
+Add row:
+</p>
+<ins>
+<table border="1">
+<tr>
+<td><tt>a.erase(r)</tt></td>
+<td><tt>iterator</tt></td>
+<td>
+erases the element pointed to by <tt>r</tt>. Returns an iterator pointing to the element immediately following <tt>r</tt>
+prior to the element being erased. If no such element exists, returns <tt>a.end()</tt>.
+</td>
+<td>amortized constant</td>
+</tr>
+</table>
+</ins>
+
+<p>
+<sref ref="[unord.req]"/> Unordered associative containers</p>
+<p>
+10 In table 103: <tt>X</tt> is an unordered associative container class, <tt>a</tt> is an object of type <tt>X</tt>,
+<tt>b</tt> is a possibly const object of type <tt>X</tt>, <tt>a_uniq</tt> is an object of type <tt>X</tt> when
+<tt>X</tt> supports unique keys, <tt>a_eq</tt> is an object of type <tt>X</tt> when <tt>X</tt> supports equivalent keys,
+<tt>i</tt> and <tt>j</tt> are input iterators that refer to <tt>value_type</tt>, <tt>[i, j)</tt> is a valid range,
+<tt>p</tt> and <tt>q2</tt> are valid const iterators to <tt>a</tt>, <tt>q</tt> and <tt>q1</tt> are valid dereferenceable
+const iterators to <tt>a</tt>, <ins><tt>r</tt> is a valid dereferenceable iterator to a,</ins> <tt>[q1,q2)</tt> is a
+valid range in <tt>a</tt>, <tt>il</tt> designates an object of type <tt>initializer_list&lt;value_type></tt>,
+<tt>t</tt> is a value of type <tt>X::value_type</tt>, <tt>k</tt> is a value of type <tt>key_type</tt>, <tt>hf</tt> is a
+possibly const value of type <tt>hasher</tt>, <tt>eq</tt> is a possibly const value of type <tt>key_equal</tt>,
+<tt>n</tt> is a value of type <tt>size_type</tt>, and <tt>z</tt> is a value of type <tt>float</tt>.
+</p>
+
+<p>
+<sref ref="[unord.req]"/> Unordered associative containers Table 103
+</p>
+<p>
+Add row:
+</p>
+<ins>
+<table border="1">
+<tr>
+<td><tt>a.erase(r)</tt></td>
+<td><tt>iterator</tt></td>
+<td>
+Erases the element pointed to by <tt>r</tt>. Returns the iterator immediately following <tt>r</tt> prior to the erasure.
+</td>
+<td>Average case O(1), worst case O(<tt>a.size()</tt>).</td>
+</tr>
+</table>
+</ins>
+
+<p>
+<sref ref="[map.overview]"/> Class template map overview p. 2
+</p>
+<pre>
+<ins>iterator erase(iterator position);</ins>
+iterator erase(const_iterator position);
+size_type erase(const key_type&amp; x);
+iterator erase(const_iterator first, const_iterator last);
+</pre>
+
+<p>
+<sref ref="[multimap.overview]"/> Class template multimap overview p. 2
+</p>
+<pre>
+<ins>iterator erase(iterator position);</ins>
+iterator erase(const_iterator position);
+size_type erase(const key_type&amp; x);
+iterator erase(const_iterator first, const_iterator last);
+</pre>
+
+<p>
+<sref ref="[set.overview]"/> Class template set overview p. 2
+</p>
+<pre>
+<ins>iterator erase(iterator position);</ins>
+iterator erase(const_iterator position);
+size_type erase(const key_type&amp; x);
+iterator erase(const_iterator first, const_iterator last);
+</pre>
+
+<p>
+<sref ref="[multiset.overview]"/> Class template multiset overview 
+</p>
+<pre>
+<ins>iterator erase(iterator position);</ins>
+iterator erase(const_iterator position);
+size_type erase(const key_type&amp; x);
+iterator erase(const_iterator first, const_iterator last);
+</pre>
+
+<p>
+<sref ref="[unord.map.overview]"/> Class template unordered_map overview p. 3
+</p>
+<pre>
+<ins>iterator erase(iterator position);</ins>
+iterator erase(const_iterator position);
+size_type erase(const key_type&amp; x);
+iterator erase(const_iterator first, const_iterator last);
+</pre>
+
+<p>
+<sref ref="[unord.multimap.overview]"/> Class template unordered_multimap overview p. 3
+</p>
+<pre>
+<ins>iterator erase(iterator position);</ins>
+iterator erase(const_iterator position);
+size_type erase(const key_type&amp; x);
+iterator erase(const_iterator first, const_iterator last);
+</pre>
+
+<p>
+<sref ref="[unord.set.overview]"/> Class template unordered_set overview p. 3
+</p>
+<pre>
+<ins>iterator erase(iterator position);</ins>
+iterator erase(const_iterator position);
+size_type erase(const key_type&amp; x);
+iterator erase(const_iterator first, const_iterator last);
+</pre>
+
+
+<p>
+<sref ref="[unord.multiset.overview]"/> Class template unordered_multiset overview p. 3
+</p>
+<pre>
+<ins>iterator erase(iterator position);</ins>
+iterator erase(const_iterator position);
+size_type erase(const key_type&amp; x);
+iterator erase(const_iterator first, const_iterator last);
+</pre>
+
+<p>
+<sref ref="[diff.cpp03.containers]"/> C.2.12 Clause 23: containers library 
+</p>
+<p>
+23.2.3, 23.2.4
+</p>
+<p>
+Change: Signature changes: from iterator to const_iterator parameters
+</p>
+<p>
+Rationale: Overspecification. Effects: The signatures of the following member functions changed from
+taking an iterator to taking a const_iterator:
+</p>
+<ul>
+<li>insert(iter, val) for vector, deque, list, set, multiset, map, multimap</li>
+<li>insert(pos, beg, end) for vector, deque, list, forward_list</li>
+<li><del>erase(iter) for set, multiset, map, multimap</del></li>
+<li>erase(begin, end) for set, multiset, map, multimap</li>
+<li>all forms of list::splice</li>
+<li>all forms of list::merge</li>
+</ul>
+<p>
+Valid C++ 2003 code that uses these functions may fail to compile with this International Standard.
+</p>
 </resolution>
 
 </issue>
