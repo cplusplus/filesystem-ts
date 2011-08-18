@@ -145,9 +145,7 @@ New wording by Pablo.
 template &lt;class P&gt; pair&lt;iterator, bool&gt; insert(P&amp;&amp; x);
 template &lt;class P&gt; <del>pair&lt;</del>iterator<del>, bool&gt;</del> insert(const_iterator position, P&amp;&amp; x);
 </pre><blockquote>
-1 <em>Requires</em>: <del><tt>P</tt> shall be convertible
-to </del><tt>value_type</tt><ins> is EmplaceConstructible into
-<tt>*this</tt> from <tt>std::forward&lt;P&gt;(x)</tt></ins>.
+<del>1 <em>Requires</em>: <tt>P</tt> shall be convertible to <tt>value_type</tt>.</del>
 <p/>
 <del>If <tt>P</tt> is instantiated as a reference type, then the argument <tt>x</tt> is copied from. Otherwise <tt>x</tt> is considered
 to be an rvalue as it is converted to <tt>value_type</tt> and inserted into the map. Specifically, in
@@ -172,9 +170,7 @@ is implicitly convertible to <tt>value_type</tt>.</ins>
 template &lt;class P&gt; iterator insert(P&amp;&amp; x);
 template &lt;class P&gt; iterator insert(const_iterator position, P&amp;&amp; x);
 </pre><blockquote>
-1 <em>Requires</em>: <del><tt>P</tt> shall be convertible
-to </del><tt>value_type</tt> <ins>is EmplaceConstructible into <tt>*this</tt> from 
-<tt>std::forward&lt;P&gt;(x)</tt></ins>.
+<del>1 <em>Requires</em>: <tt>P</tt> shall be convertible to <tt>value_type</tt>.</del>
 <p/>
 <del>If <tt>P</tt> is instantiated as a reference type, then the argument <tt>x</tt> is copied from. Otherwise 
 <tt>x</tt> is considered to be an rvalue as it is converted to <tt>value_type</tt> and inserted into the map. 
@@ -200,9 +196,7 @@ template &lt;class P&gt;
 pair&lt;iterator, bool&gt; insert(P&amp;&amp; obj);
 </pre>
 <blockquote>
-1 <em>Requires</em>: <tt>value_type</tt> is 
-<del>constructible</del><ins>EmplaceConstructible into <tt>*this</tt></ins>
-from <tt>std::forward&lt;P&gt;(obj)</tt>.
+<del>1 <em>Requires</em>: <tt>value_type</tt> is constructible from <tt>std::forward&lt;P&gt;(obj)</tt>.</del>
 <p/>
 2 <em>Effects</em>:
 <ins>equivalent to <tt>return emplace(std::forward&lt;P&gt;(obj))</tt>.</ins>
@@ -222,9 +216,7 @@ to <tt>value_type</tt>.
 iterator insert(const_iterator hint, P&amp;&amp; obj);
 </pre>
 <blockquote>
-<del>6</del><em>?</em> <em>Requires</em>: <tt>value_type</tt> is 
-<del>constructible</del><ins>EmplaceConstructible into <tt>*this</tt></ins>
-from <tt>std::forward&lt;P&gt;(obj)</tt>.
+<del>6 <em>Requires</em>: <tt>value_type</tt> is constructible from <tt>std::forward&lt;P&gt;(obj)</tt>.</del>
 <p/>
 <del>7</del><em>?</em> <em>Effects</em>:
 <ins>equivalent to <tt>return emplace_hint(hint, std::forward&lt;P&gt;(obj))</tt>.</ins>
@@ -246,9 +238,7 @@ template &lt;class P&gt;
 iterator insert(P&amp;&amp; obj);
 </pre>
 <blockquote>
-1 <em>Requires</em>: <tt>value_type</tt> is 
-<del>constructible</del><ins>EmplaceConstructible into <tt>*this</tt></ins>
-from <tt>std::forward&lt;P&gt;(obj)</tt>.
+<del>1 <em>Requires</em>: <tt>value_type</tt> is constructible from <tt>std::forward&lt;P&gt;(obj)</tt>.</del>
 <p/>
 2 <em>Effects</em>:
 <ins>equivalent to <tt>return emplace(std::forward&lt;P&gt;(obj))</tt>.</ins>
@@ -266,9 +256,7 @@ template &lt;class P&gt;
 iterator insert(const_iterator hint, P&amp;&amp; obj);
 </pre>
 <blockquote>
-<del>6</del><em>?</em> <em>Requires</em>: <tt>value_type</tt> is 
-<del>constructible</del><ins>EmplaceConstructible into <tt>*this</tt></ins>
-from <tt>std::forward&lt;P&gt;(obj)</tt>.
+<del>6 <em>Requires</em>: <tt>value_type</tt> is constructible from <tt>std::forward&lt;P&gt;(obj)</tt>.</del>
 <p/>
 <del>7</del><em>?</em> <em>Effects</em>:
 <ins>equivalent to <tt>return emplace_hint(hint, std::forward&lt;P&gt;(obj))</tt>.</ins>
