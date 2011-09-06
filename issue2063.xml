@@ -49,87 +49,6 @@ is undefined, and will likely lead to memory corruption.  That's a lot to go wro
 named "assign".
 </p>
 
-</discussion>
-
-<resolution>
-<p>This wording is relative to the FDIS.</p>
-<ol>
-<li><p>Modify the class template <tt>basic_string</tt> synopsis in <sref ref="[basic.string]"/>:</p>
-<blockquote><pre>
-namespace std {
-  template&lt;class charT, class traits = char_traits&lt;charT&gt;,
-    class Allocator = allocator&lt;charT&gt; &gt;
-  class basic_string {
-  public:
-    [&hellip;]
-    basic_string&amp; operator=(basic_string&amp;&amp; str) <del>noexcept</del>;
-    [&hellip;]
-    basic_string&amp; assign(basic_string&amp;&amp; str) <del>noexcept</del>;
-    [&hellip;]
-  };
-}
-</pre></blockquote>
-</li>
-
-<li><p>Remove the definition of the <tt>basic_string</tt> move assignment operator from <sref ref="[string.cons]"/> 
-entirely, including Table 71 &mdash; <tt>operator=(const basic_string&lt;charT, traits, Allocator&gt;&amp;&amp;)</tt>.
-This is consistent with how we define move assignment for the containers in Clause 23:</p>
-<blockquote><pre>
-<del>basic_string&lt;charT,traits,Allocator&gt;&amp;
-operator=(basic_string&lt;charT,traits,Allocator&gt;&amp;&amp; str) noexcept;</del>
-</pre><blockquote><p>
-<del>-22- <i>Effects</i>: If <tt>*this</tt> and <tt>str</tt> are not the same object, modifies <tt>*this</tt> as shown 
-in Table 71. [ <i>Note</i>: A valid implementation is <tt>swap(str)</tt>. &mdash; <i>end note</i> ]</del>
-<p/>
-<del>-23- If <tt>*this</tt> and <tt>str</tt> are the same object, the member has no effect.</del>
-<p/>
-<del>-24- <i>Returns</i>: <tt>*this</tt></del>
-</p></blockquote></blockquote>
-<blockquote>
-<table border="1">
-<caption><del>Table 71 &mdash; <tt>operator=(const basic_string&lt;charT, traits, Allocator&gt;&amp;&amp;)</tt></del></caption>
-
-<tr>
-<th><del>Element</del></th>
-<th><del>Value</del></th>
-</tr>
-
-<tr>
-<td><del><tt>data()</tt></del></td>
-<td><del>points at the array whose first element was pointed
-at by <tt>str.data()</tt></del></td>
-</tr>
-
-<tr>
-<td><del><tt>size()</tt></del></td>
-<td><del>previous value of <tt>str.size()</tt></del></td>
-</tr>
-
-<tr>
-<td><del><tt>capacity()</tt></del></td>
-<td><del>a value at least as large as <tt>size()</tt></del></td>
-</tr>
-
-</table> 
-</blockquote>
-</li>
-
-<li><p>Modify the paragraphs prior to <sref ref="[string::assign]"/> p.3 as indicated (The
-first insertion recommends a separate paragraph number for the indicated paragraph):</p>
-<blockquote><pre>
-basic_string&amp; assign(basic_string&amp;&amp; str) <del>noexcept</del>;
-</pre><blockquote><p>
-<ins>-?-</ins> <i>Effects</i>: <ins>Equivalent to <tt>*this = std::move(str)</tt>.</ins>
-<del>The function replaces the string controlled by <tt>*this</tt> with a string of length 
-<tt>str.size()</tt> whose elements are a copy of the string controlled by <tt>str</tt>. 
-[ <i>Note</i>: A valid implementation is <tt>swap(str)</tt>. &mdash; <i>end note</i> ]</del>
-<p/>
--3- <i>Returns</i>: <tt>*this</tt>
-</p></blockquote></blockquote>
-
-</li>
-</ol>
-
 <note>
 2011 Bloomington
 </note>
@@ -224,6 +143,91 @@ Alisdair: Not sure data() is correct (in clause 2).
 <p>
 Conclusion: Move to open, Alisdair and Pablo volunteered to provide wording
 </p>
+
+<note>
+originally proposed wording:
+</note>
+
+<p>This wording is relative to the FDIS.</p>
+<ol>
+<li><p>Modify the class template <tt>basic_string</tt> synopsis in <sref ref="[basic.string]"/>:</p>
+<blockquote><pre>
+namespace std {
+  template&lt;class charT, class traits = char_traits&lt;charT&gt;,
+    class Allocator = allocator&lt;charT&gt; &gt;
+  class basic_string {
+  public:
+    [&hellip;]
+    basic_string&amp; operator=(basic_string&amp;&amp; str) <del>noexcept</del>;
+    [&hellip;]
+    basic_string&amp; assign(basic_string&amp;&amp; str) <del>noexcept</del>;
+    [&hellip;]
+  };
+}
+</pre></blockquote>
+</li>
+
+<li><p>Remove the definition of the <tt>basic_string</tt> move assignment operator from <sref ref="[string.cons]"/> 
+entirely, including Table 71 &mdash; <tt>operator=(const basic_string&lt;charT, traits, Allocator&gt;&amp;&amp;)</tt>.
+This is consistent with how we define move assignment for the containers in Clause 23:</p>
+<blockquote><pre>
+<del>basic_string&lt;charT,traits,Allocator&gt;&amp;
+operator=(basic_string&lt;charT,traits,Allocator&gt;&amp;&amp; str) noexcept;</del>
+</pre><blockquote><p>
+<del>-22- <i>Effects</i>: If <tt>*this</tt> and <tt>str</tt> are not the same object, modifies <tt>*this</tt> as shown 
+in Table 71. [ <i>Note</i>: A valid implementation is <tt>swap(str)</tt>. &mdash; <i>end note</i> ]</del>
+<p/>
+<del>-23- If <tt>*this</tt> and <tt>str</tt> are the same object, the member has no effect.</del>
+<p/>
+<del>-24- <i>Returns</i>: <tt>*this</tt></del>
+</p></blockquote></blockquote>
+<blockquote>
+<table border="1">
+<caption><del>Table 71 &mdash; <tt>operator=(const basic_string&lt;charT, traits, Allocator&gt;&amp;&amp;)</tt></del></caption>
+
+<tr>
+<th><del>Element</del></th>
+<th><del>Value</del></th>
+</tr>
+
+<tr>
+<td><del><tt>data()</tt></del></td>
+<td><del>points at the array whose first element was pointed
+at by <tt>str.data()</tt></del></td>
+</tr>
+
+<tr>
+<td><del><tt>size()</tt></del></td>
+<td><del>previous value of <tt>str.size()</tt></del></td>
+</tr>
+
+<tr>
+<td><del><tt>capacity()</tt></del></td>
+<td><del>a value at least as large as <tt>size()</tt></del></td>
+</tr>
+
+</table> 
+</blockquote>
+</li>
+
+<li><p>Modify the paragraphs prior to <sref ref="[string::assign]"/> p.3 as indicated (The
+first insertion recommends a separate paragraph number for the indicated paragraph):</p>
+<blockquote><pre>
+basic_string&amp; assign(basic_string&amp;&amp; str) <del>noexcept</del>;
+</pre><blockquote><p>
+<ins>-?-</ins> <i>Effects</i>: <ins>Equivalent to <tt>*this = std::move(str)</tt>.</ins>
+<del>The function replaces the string controlled by <tt>*this</tt> with a string of length 
+<tt>str.size()</tt> whose elements are a copy of the string controlled by <tt>str</tt>. 
+[ <i>Note</i>: A valid implementation is <tt>swap(str)</tt>. &mdash; <i>end note</i> ]</del>
+<p/>
+-3- <i>Returns</i>: <tt>*this</tt>
+</p></blockquote></blockquote>
+
+</li>
+</ol>
+</discussion>
+
+<resolution>
 </resolution>
 
 </issue>
