@@ -1,0 +1,91 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="2071" status="New">
+<title><tt>std::valarray</tt> move-assignment</title>
+<section><sref ref="[valarray.assign]"/></section>
+<submitter>Paolo Carlini</submitter>
+<date>5 May 2011</date>
+
+<discussion>
+
+<p>
+Yesterday I noticed that the language we have in the FDIS about <tt>std::valarray</tt> move assignment 
+is inconsistent with the resolution of LWG 675. Indeed, we guarantee constant complexity (vs linear 
+complexity). We also want it to be noexcept, that is more subtle, but again it's at variance with all 
+the containers.
+<p/>
+Also, even if we suppose that LWG <iref ref="675"/> applies only to the containers proper, I don't think the current 
+"as if by calling resize(v.size())" is internally consistent with the noexcept requirement.
+<p/>
+So, what do we really want for <tt>std::valarray</tt>? Shall we maybe just strike or fix the as-if, consider it 
+some sort of pasto from the copy-assignment text, thus keep the noexcept and constant complexity requirements 
+(essentially the whole operation would boild down to a swap of POD data members). Or LWG <iref ref="675"/> should be 
+explicitly extended to <tt>std::valarray</tt> too? In that case both noexcept and constant complexity 
+would go, I think, and the operation would boil down to the moral equivalent of <tt>clear()</tt> (which 
+doesn't really exist in this case) + <tt>swap</tt>?
+</p>
+
+<p>
+Howard: I agree the current wording is incorrect.  The complexity should be linear in <tt>size()</tt> (not 
+<tt>v.size()</tt>) because the first thing this operator needs to do is <tt>resize(0)</tt> (or <tt>clear()</tt> 
+as you put it).
+<p/>
+I think we can keep the <tt>noexcept</tt>.
+<p/>
+As for proper wording, here's a first suggestion:
+</p><blockquote><p>
+<i>Effects</i>: <tt>*this</tt> obtains the value of <tt>v</tt>. The value of <tt>v</tt> after the assignment 
+is not specified.
+<p/>
+<i>Complexity</i>: linear.
+</p></blockquote><p>
+</p>
+
+<p>
+Daniel: I believe the difference in regard to noexcept for Containers and valarray
+is related to the fact that for containers we allow element-wise move-assignment 
+of types that may throw during a move and that we allow such containers to use 
+move-assign instead of a handle-swap. The move-assignment itself can be considered 
+as a wide-contract function. According to my understanding <tt>valarray</tt> element 
+types shall not throw exceptions during operations but with some ugly weasel 
+wording added in <sref ref="[valarray.syn]"/> p6:
+<p/>
+"These library functions are permitted to throw a <tt>bad_alloc</tt> (18.6.2.1)
+exception if there are not sufficient resources available to carry out
+the operation. Note that the exception is not mandated."
+<p/>
+It seems to me that the intention of <tt>valarray</tt>s always was to minimize
+the chances of such exceptions and it's easy to realize that with some constraints 
+on implementations e.g. enforce handle-swap or use element-wise swap only of elements 
+moves cannot throw. (They are actually not required to be constrained as of my 
+reading, because it looks as if it would be OK, if an out-of-memory problem of 
+<tt>valarray</tt> could simply end in program termination according to the above wording).
+<p/>
+I certainly agree that the current description of the effects of <tt>valarray</tt>
+in regard to "as-if resize" and the complexity (should be linear) are simply wrong and 
+should be fixed. I would rather prefer to keep the noexcept here.
+</p>
+</discussion>
+
+<resolution>
+<p>This wording is relative to the FDIS.</p>
+
+<p>In <sref ref="[valarray.assign]"/> update as follows:</p>
+
+<blockquote><pre>
+valarray&lt;T&gt;&amp; operator=(valarray&lt;T&gt;&amp;&amp; v) noexcept;
+</pre><blockquote><p>
+3 <i>Effects</i>: <tt>*this</tt> obtains the value of <tt>v</tt>. <del>If the length of <tt>v</tt> 
+is not equal to the length of <tt>*this</tt>, resizes <tt>*this</tt> to make the two arrays the 
+same length, as if by calling <tt>resize(v.size())</tt>, before performing the assignment.</del><ins>The 
+value of <tt>v</tt> after the assignment is not specified.</ins>
+<p/>
+4 <i>Complexity</i>: <del>Constant</del><ins>Linear</ins>.
+</p></blockquote></blockquote>
+
+</resolution>
+
+</issue>
