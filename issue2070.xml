@@ -38,15 +38,15 @@ Agreed to fix in principle, but believe that <tt>make_shared</tt> and
 should be separated.  Pablo and Stefanus to provide revised wording.
 </p>
 
-<p><strong>Daniel's (old) proposed resolution</strong></p>
+<p><strong>Daniel's (old) proposed resolution:</strong></p>
+<blockquote class="note">
 <p>This wording is relative to the FDIS.</p>
 
 <ol>
-<li>Change the following paragraphs of <sref ref="[util.smartptr.shared.create]"/> as indicated (The suggested
+<li><p>Change the following paragraphs of <sref ref="[util.smartptr.shared.create]"/> as indicated (The suggested
 removal of the last sentence of p1 is not strictly required to resolve this issue, but is still recommended,
-because it does not say anything new but may give the impression that it says something new):</li>
-
-<blockquote><pre>
+because it does not say anything new but may give the impression that it says something new):
+</p><blockquote><pre>
 template&lt;class T, class... Args&gt; shared_ptr&lt;T&gt; make_shared(Args&amp;&amp;... args);
 template&lt;class T, class A, class... Args&gt;
   shared_ptr&lt;T&gt; allocate_shared(const A&amp; a, Args&amp;&amp;... args);
@@ -84,8 +84,11 @@ allocation. [ <i>Note</i>: This provides efficiency equivalent to an intrusive s
 bookkeeping structures such as the reference counts. &mdash; <i>end note</i> ]
 </p>
 </blockquote></blockquote>
-
+</li>
 </ol>
+</blockquote>
+<p>
+</p>
 
 </discussion>
 
@@ -93,10 +96,10 @@ bookkeeping structures such as the reference counts. &mdash; <i>end note</i> ]
 <p>This wording is relative to the FDIS.</p>
 
 <ol>
-<li>Change the following paragraphs of <sref ref="[util.smartptr.shared.create]"/> as indicated (The suggested
+<li><p>Change the following paragraphs of <sref ref="[util.smartptr.shared.create]"/> as indicated (The suggested
 removal of the last sentence of p1 is not strictly required to resolve this issue, but is still recommended,
-because it does not say anything new but may give the impression that it says something new):</li>
-
+because it does not say anything new but may give the impression that it says something new):
+</p>
 <blockquote><pre>
 template&lt;class T, class... Args&gt; shared_ptr&lt;T&gt; make_shared(Args&amp;&amp;... args);
 <del>template&lt;class T, class A, class... Args&gt;
@@ -136,9 +139,10 @@ provides efficiency equivalent to an intrusive smart pointer. &mdash; <i>end not
 <p/>
 -7- [ <i>Note</i>: <del>These functions</del><ins>This function</ins> will typically allocate more memory than <tt>sizeof(T)</tt> to allow for internal
 bookkeeping structures such as the reference counts. &mdash; <i>end note</i> ]
-
 </p>
-<li>Add the following <ins>new paragraph</ins>:</li>
+</li>
+<li><p>Add the following <ins>new paragraph</ins>:
+</p>
 <blockquote><pre>
 template&lt;class T, class A, class... Args&gt;
   shared_ptr&lt;T&gt; allocate_shared(const A&amp; a, Args&amp;&amp;... args);
@@ -177,9 +181,8 @@ perform no more than one memory allocation.
 <p/>
 -7- [ <i>Note</i>: These functions will typically allocate more memory than <tt>sizeof(T)</tt> to allow for internal
 bookkeeping structures such as the reference counts. &mdash; <i>end note</i> ]
-
 </p>
-
+</li>
 </ol>
 </resolution>
 

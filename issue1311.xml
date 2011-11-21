@@ -34,12 +34,13 @@ struct bad_iterator {
      return *impl;
   }
 
-  auto operator==(bad_iterator const &amp; rhs) {
+  auto operator==(bad_iterator const &amp; rhs) const -&gt; bool {
      return impl == rhs.impl;
   }
 
-  auto operator++() {
-     ++(*imp);
+  auto operator++() -&gt; bad_iterator&amp; {
+     ++(*impl);
+     return *this;
   }
   // other operations as necessary...
 };
