@@ -83,20 +83,60 @@ destructor" and probably need to be adapted as well.</p>
 After discussion about to to handle the exceptional cases of reference types, function types (available by defererencing a function pointer)
 and <tt>void</tt> types, Howard supplied proposed wording.
 </p>
-</discussion>
 
-<resolution>
+<note>
+2011-08-20 Daniel comments and provides alternatives wording
+</note>
 
+<p>
+The currently proposed wording would have the consequence that 
+<em>every</em> array type is not destructible, because the pseudo-destructor
+requires a scalar type with the effect that the expression
+</p><blockquote><pre>
+std::declval&lt;T&amp;&gt;().~T()
+</pre></blockquote><p>
+is not well-formed for e.g. <tt>T</tt> equal to <tt>int[3]</tt>. The intuitive
+solution to fix this problem would be to adapt the object type case to refer to 
+the expression
+</p><blockquote><pre>
+std::declval&lt;U&amp;&gt;().~U()
+</pre></blockquote><p>
+with <tt>U</tt> equal to <tt>remove_all_extents&lt;T&gt;::type</tt>, but that
+would have the effect that arrays of unknown bounds would be destructible, if 
+the element type is destructible, which was not the case before (This was 
+intentionally covered by the special "For a complete type T" rule in
+the FDIS).
+<p/>
+Suggestion: Use the following definition instead:
+</p>
+<blockquote><p>
+Let <tt>U</tt> be <tt>remove_all_extents&lt;T&gt;::type</tt>.<br/>
+For incomplete types and function types, <tt>is_destructible&lt;T&gt;::value</tt> is <tt>false</tt>.<br/>
+For object types, if the expression <tt>std::declval&lt;U&amp;&gt;().~U()</tt> is well-formed<br/>
+when treated as an unevaluated operand (Clause 5), then <tt>is_destructible&lt;T&gt;::value</tt><br/>
+is <tt>true</tt>, otherwise it is <tt>false</tt>.<br/>
+For reference types, <tt>is_destructible&lt;T&gt;::value</tt> is <tt>true</tt>.
+</p></blockquote>
+<p>
+This wording also harmonizes with the "unevaluated operand" phrase
+used in other places, there does not exist the definition of an
+"unevaluated context"
+<p/>
+<em>Note:</em> In the actually proposed wording this wording has been slightly reordered with the same effects. 
+</p>
+
+<p><strong>Howard's (old) proposed resolution:</strong></p>
+<blockquote class="note">
 <p>
 Update <sref ref="[meta.unary.prop]"/>, table 49:
 </p>
 
 <table border="1">
 <tr>
-<td><tt>template &lt;class T>
+<td><tt>template &lt;class T&gt;
 struct is_destructible;</tt></td>
 <td>
-<del>For a complete type <tt>T</tt> and given <tt>template &lt;class U> struct test { U u; };</tt>, <tt>test&lt;T>:: ̃test()</tt> is not deleted.
+<del>For a complete type <tt>T</tt> and given <tt>template &lt;class U&gt; struct test { U u; };</tt>, <tt>test&lt;T&gt;::~test()</tt> is not deleted.
 </del>
 <br/>
 <ins>
@@ -108,6 +148,37 @@ For <tt>void</tt> types, <tt>is_destructible&lt;T>::value</tt> is <tt>false</tt>
 For reference types, <tt>is_destructible&lt;T>::value</tt> is <tt>true</tt>.
 <br/>
 For function types, <tt>is_destructible&lt;T>::value</tt> is <tt>false</tt>.
+</ins>
+</td>
+<td><tt>T</tt> shall be a complete type, (possibly cv-qualified) <tt>void</tt>, or an array of unknown bound.</td>
+</tr>
+</table>
+</blockquote>
+<p>
+</p>
+</discussion>
+
+<resolution>
+
+<p>
+Update <sref ref="[meta.unary.prop]"/>, table 49:
+</p>
+
+<table border="1">
+<tr>
+<td><tt>template &lt;class T&gt;
+struct is_destructible;</tt></td>
+<td>
+<del>For a complete type <tt>T</tt> and given <tt>template &lt;class U&gt; struct test { U u; };</tt>, <tt>test&lt;T&gt;::~test()</tt> is not deleted.
+</del>
+<br/>
+<ins>
+For reference types, <tt>is_destructible&lt;T&gt;::value</tt> is <tt>true</tt>.<br/>
+For incomplete types and function types, <tt>is_destructible&lt;T&gt;::value</tt> is <tt>false</tt>.<br/>
+For object types and given <tt>U</tt> equal to <tt>remove_all_extents&lt;T&gt;::type</tt>,<br/> 
+if the expression <tt>std::declval&lt;U&amp;&gt;().~U()</tt> is well-formed when treated as an<br/>
+unevaluated operand (Clause <sref ref="[expr]"/>), then <tt>is_destructible&lt;T&gt;::value</tt> is <tt>true</tt>,<br/>
+otherwise it is <tt>false</tt>.<br/>
 </ins>
 </td>
 <td><tt>T</tt> shall be a complete type, (possibly cv-qualified) <tt>void</tt>, or an array of unknown bound.</td>
