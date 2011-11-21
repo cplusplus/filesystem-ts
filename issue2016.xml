@@ -43,6 +43,16 @@ situation described twice in p. 8 and p. 9 (undefined behaviour unless <tt>a.get
 or <tt>allocator_traits&lt;allocator_type&gt;::propagate_on_container_swap::value == true</tt>), which should be cleaned up.</li>
 </ol>
 
+<note>2011-04-08 Pablo comments</note>
+<p>
+I'm implementing a version of list now and I actually do find it impossible to write an exception-safe assignment 
+operator unless I can assume that allocator assignment does not throw.  (The problem is that I use a sentinel node 
+and I need to allocate a new sentinel using the new allocator without destroying the old one -- then swap the 
+allocator and sentinel pointer in atomically, without risk of an exception leaving one inconsistent with the other.
+<p/>
+Please update the proposed resolution to add the nothrow requirement to copy-assignment.
+</p>
+
 </discussion>
 
 <resolution>
@@ -121,12 +131,12 @@ when the client container is swapped. <ins>See Note B, below.</ins></td>
 
 <blockquote><p>
 <ins>Note B: If <tt>X::propagate_on_container_copy_assignment::value</tt> is true, <tt>X</tt> shall 
-satisfy the <tt>CopyAssignable</tt> requirements (Table 39 <sref ref="[copyassignable]"/>). 
-If <tt>X::propagate_on_container_move_assignment::value</tt> is true, <tt>X</tt> shall satisfy the 
-<tt>MoveAssignable</tt> requirements (Table 38 <sref ref="[moveassignable]"/>) and the move operation
-shall not throw exceptions. If <tt>X::propagate_on_container_swap::value</tt> is true, lvalues of 
-<tt>X</tt> shall be swappable (<sref ref="[swappable.requirements]"/>) and the <tt>swap</tt> operation 
-shall not throw exceptions.</ins>
+satisfy the <tt>CopyAssignable</tt> requirements (Table 39 <sref ref="[copyassignable]"/>) and the copy 
+operation shall not throw exceptions. If <tt>X::propagate_on_container_move_assignment::value</tt> is 
+true, <tt>X</tt> shall satisfy the <tt>MoveAssignable</tt> requirements (Table 38 <sref ref="[moveassignable]"/>) 
+and the move operation shall not throw exceptions. If <tt>X::propagate_on_container_swap::value</tt> is 
+true, lvalues of <tt>X</tt> shall be swappable (<sref ref="[swappable.requirements]"/>) and the <tt>swap</tt> 
+operation shall not throw exceptions.</ins>
 </p></blockquote>
 </li>
 
