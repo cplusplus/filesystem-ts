@@ -42,25 +42,57 @@ Not even an exhaustive list of problem locations. No reason to doubt issue.
 Pablo agrees to provide wording.
 </p>
 
+<note>
+2011-09-04 Pablo Halpern provides improved wording
+</note>
+
 </discussion>
 
 <resolution>
 <p>
-In section <sref ref="[associative.reqmnts]"/> table 102 and <sref ref="[unord.req]"/>, table 103, make the following text replacements:
+In both section <sref ref="[associative.reqmts]"/> Table 102 and <sref ref="[unord.req]"/>, Table 103, make the following text replacements:
 </p>
 
 <table border="1">
-<tr> <td>Original text, in FDIS</td>                   <td>Replacement text</td> </tr>
-<tr> <td><tt>T</tt> is CopyInsertable</td>             <td><tt>value_type</tt> is CopyInsertable</td> </tr>
-<tr> <td><tt>T</tt> shall be CopyInsertable</td>       <td><tt>value_type</tt> shall be CopyInsertable</td> </tr>
-<tr> <td><tt>T</tt> shall be MoveInsertable</td>       <td><tt>value_type</tt> shall be MoveInsertable</td> </tr>
-<tr> <td><tt>T</tt> shall be EmplaceConstructible</td> <td><tt>value_type</tt> shall be EmplaceConstructible</td> </tr>
-<tr> <td><tt>T</tt> object</td>                        <td><tt>value_type</tt> object</td> </tr>
+<tr> <td>Original text, in FDIS</td> <td>Replacement text</td> </tr>
+
+<tr> 
+<td><tt>T</tt> is CopyInsertable into <tt>X</tt> and <tt>CopyAssignable</tt>.</td>
+<td><tt>value_type</tt> is <tt>CopyInsertable</tt> into <tt>X</tt>, <tt>key_type</tt> is <tt>CopyAssignable</tt>, and
+<tt>mapped_type</tt> is <tt>CopyAssignable</tt> (for containers having a <tt>mapped_type</tt>)</td>    
+</tr>
+
+<tr> 
+<td><tt>T</tt> is <tt>CopyInsertable</tt></td>                                                
+<td><tt>value_type</tt> is CopyInsertable</td> 
+</tr>
+
+<tr> 
+<td><tt>T</tt> shall be <tt>CopyInsertable</tt></td>                                          
+<td><tt>value_type</tt> shall be CopyInsertable</td> 
+</tr>
+
+<tr> 
+<td><tt>T</tt> shall be <tt>MoveInsertable</tt></td>                                          
+<td><tt>value_type</tt> shall be MoveInsertable</td> 
+</tr>
+
+<tr> 
+<td><tt>T</tt> shall be <tt>EmplaceConstructible</tt></td>                                    
+<td><tt>value_type</tt> shall be EmplaceConstructible</td> 
+</tr>
+
+<tr> 
+<td><tt>T</tt> object</td>                                                                    
+<td><tt>value_type</tt> object</td> 
+</tr>
 </table>
 
 <note>
-<b>Notes to the editor</b>: The above are carefully selected phrases that can be used for global
-search-and-replace within the specified sections without accidentally making changes to correct uses <tt>T</tt>.
+<b>Notes to the editor</b>: The above are carefully selected 
+phrases that can be used for global search-and-replace within 
+the specified sections without accidentally making changes to 
+correct uses <tt>T</tt>.
 </note>
 </resolution>
 
