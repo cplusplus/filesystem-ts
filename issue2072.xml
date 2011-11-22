@@ -1,0 +1,82 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="2072" status="New">
+<title>Unclear wording about capacity of temporary buffers</title>
+<section><sref ref="[temporary.buffer]"/></section>
+<submitter>Kazutoshi Satoda</submitter>
+<date>10 Aug 2011</date>
+
+<discussion>
+
+<p>
+According to <sref ref="[temporary.buffer]"/> p1+2:
+
+</p><blockquote><pre>
+template &lt;class T&gt;
+pair&lt;T*, ptrdiff_t&gt; get_temporary_buffer(ptrdiff_t n) noexcept;
+</pre><blockquote><p>
+-1- <i>Effects</i>: Obtains a pointer to storage sufficient to store up to <tt>n</tt> adjacent <tt>T</tt> 
+objects. It is implementation-defined whether over-aligned types are supported (3.11).
+<p/>
+-2- <i>Returns</i>: A pair containing the buffer's address and capacity (in the units of <tt>sizeof(T)</tt>), 
+or a pair of 0 values if no storage can be obtained or if <tt>n &lt;= 0</tt>.
+</p></blockquote></blockquote>
+<p>
+I read this as prohibiting to return a buffer of which capacity is less than <tt>n</tt>, because 
+such a buffer is not sufficient to store <tt>n</tt> objects.
+<p/>
+The corresponding description in <a href="http://www.sgi.com/tech/stl/get_temporary_buffer.html">SGI STL</a> 
+is clear on this point, but I think it is a bit too verbose:
+</p>
+
+<blockquote class="note"><p>
+(for the return value, a pair <tt>P</tt>) [...] the buffer pointed to by <tt>P.first</tt> is large enough 
+to hold <tt>P.second</tt> objects of type <tt>T</tt>. <tt>P.second</tt> is greater than or equal to 0, 
+and less than or equal to <tt>len</tt>.
+</p></blockquote>
+
+<p>
+There seems to be two different targets of the "up to n" modification:
+The capacity of obtained buffer, and the actual number that the caller
+will store into the buffer.
+<p/>
+First I read as the latter, and got surprised seeing that libstdc++
+implementation can return a smaller buffer. I started searching about
+<tt>get_temporary_buffer()</tt>. After reading a quote from TC++PL at
+<a href="http://stackoverflow.com/questions/3264299/why-do-i-need-stdget-temporary-buffer">stackoverflow</a>, 
+I realized that the former is intended.
+<p/>
+Such misinterpretation seems common:
+</p>
+<ul>
+<li>The above question is likely started from same misinterpretation.</li>
+<li><p>JIS standard (Japanese translation of ISO&#47;IEC standard) says nothing
+    like "up to". I think the editor misinterpreted the original wording,
+    and omitted words for "up to" as it is redundant. (If a buffer is
+    sufficient to store <tt>n</tt> objects, it is also sufficient to store
+    up to <tt>n</tt> objects.)</p></li>
+<li><p>Rogue Wave implementation doesn't return smaller buffer, instead, it
+    can return larger buffer on some circumstances. Apache 
+	<a href="http://stdcxx.apache.org/">STDCXX</a> is a derived version of that
+    implementation, and <a href="https://stdcxx.apache.org/doc/stdlibref/get-temporary-buffer.html">publicly accessible</a>:
+</p>
+<blockquote class="note"><p>
+Specializations of the <tt>get_temporary_buffer()</tt> function template
+attempt to allocate a region of storage sufficiently large to store at
+least <tt>n</tt> adjacent objects of type <tt>T</tt>.
+</p></blockquote>
+<p>
+I know one commercial compiler package based on Rogue Wave implementation, 
+and its implementation is essentially same as the above.
+</p>
+</li>
+</ul>
+</discussion>
+
+<resolution>
+</resolution>
+
+</issue>
