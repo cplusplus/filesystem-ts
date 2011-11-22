@@ -45,28 +45,7 @@ is not specified.
 </p>
 
 <p>
-Daniel: I believe the difference in regard to noexcept for Containers and valarray
-is related to the fact that for containers we allow element-wise move-assignment 
-of types that may throw during a move and that we allow such containers to use 
-move-assign instead of a handle-swap. The move-assignment itself can be considered 
-as a wide-contract function. According to my understanding <tt>valarray</tt> element 
-types shall not throw exceptions during operations but with some ugly weasel 
-wording added in <sref ref="[valarray.syn]"/> p6:
-<p/>
-"These library functions are permitted to throw a <tt>bad_alloc</tt> (18.6.2.1)
-exception if there are not sufficient resources available to carry out
-the operation. Note that the exception is not mandated."
-<p/>
-It seems to me that the intention of <tt>valarray</tt>s always was to minimize
-the chances of such exceptions and it's easy to realize that with some constraints 
-on implementations e.g. enforce handle-swap or use element-wise swap only of elements 
-moves cannot throw. (They are actually not required to be constrained as of my 
-reading, because it looks as if it would be OK, if an out-of-memory problem of 
-<tt>valarray</tt> could simply end in program termination according to the above wording).
-<p/>
-I certainly agree that the current description of the effects of <tt>valarray</tt>
-in regard to "as-if resize" and the complexity (should be linear) are simply wrong and 
-should be fixed. I would rather prefer to keep the noexcept here.
+See also reflector discussion startin with c++std-lib-30690.
 </p>
 </discussion>
 
