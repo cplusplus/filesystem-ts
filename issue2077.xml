@@ -1,0 +1,32 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="2077" status="New">
+<title>Further incomplete constraints for type traits</title>
+<section><sref ref="[meta.unary.prop]"/></section>
+<submitter>Daniel Kr&uuml;gler</submitter>
+<date>20 Aug 2011</date>
+
+<discussion>
+
+<p>
+The currently agreed on proposed wording for <iref ref="2015"/> using 
+<tt>remove_all_extents&lt;T&gt;::type</tt> instead of the "an array of 
+unknown bound" terminology in the precondition should be extended to 
+some further entries especially in Table 49, notably the 
+<tt>is_*constructible</tt>, <tt>is_*assignable</tt>, and 
+<tt>is_*destructible</tt> entries. To prevent ODR violations, incomplete
+element types of arrays must be excluded for value-initialization and
+destruction for example. Construction and assignment has to be honored, 
+when we have array-to-pointer conversions or pointer conversions of
+incomplete pointees in effect.
+</p>
+
+</discussion>
+
+<resolution>
+</resolution>
+
+</issue>

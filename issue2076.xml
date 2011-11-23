@@ -1,0 +1,70 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="2076" status="New">
+<title>Bad <tt>CopyConstructible</tt> requirement in set constructors</title>
+<section><sref ref="[set.cons]"/></section>
+<submitter>Jens Maurer</submitter>
+<date>20 Aug 2011</date>
+
+<discussion>
+
+<p>
+<sref ref="[set.cons]"/> paragraph 4 says: 
+</p>
+
+<blockquote><p>
+<i>Requires</i>: If the iterator’s dereference operator returns an lvalue or a non-const rvalue, 
+then <tt>Key</tt> shall be <tt>CopyConstructible</tt>.
+</p></blockquote>
+
+<p>
+I'm confused why a "non-const rvalue" for the return value of the iterator
+would require <tt>CopyConstructible</tt>; isn't that exactly the situation 
+when you'd want to apply the move constructor?
+<p/>
+The corresponding requirement for <tt>multimap</tt> seems better in that regard
+([multimap.cons] paragraph 3):
+</p>
+<blockquote><p>
+Requires: If the iterator’s dereference operator returns an lvalue or a const rvalue 
+<tt>pair&lt;key_type, mapped_type&gt;</tt>, then both <tt>key_type</tt> and mapped_type 
+shall be <tt>CopyConstructible</tt>.
+</p></blockquote>
+<p>
+Obviously, if I have a const rvalue, I can't apply the move constructor (which will 
+likely attempt modify its argument).
+<p/>
+Dave Abrahams:
+<p/>
+I think you are right.
+Proposed resolution: drop "non-" from <sref ref="[set.cons]"/> paragraph 3.
+</p>
+
+</discussion>
+
+<resolution>
+<p>This wording is relative to the FDIS.</p>
+
+<p>
+Change <sref ref="[set.cons]"/> p3 as follows:
+</p> 
+<blockquote><pre>
+template &lt;class InputIterator&gt;
+  set(InputIterator first, InputIterator last,
+    const Compare&amp; comp = Compare(), const Allocator&amp; = Allocator());
+</pre><blockquote><p>
+-3- Effects: Constructs an empty set using the specified comparison object and allocator, and inserts
+elements from the range [<tt>first,last</tt>).
+<p/>
+-4- <i>Requires</i>: If the iterator’s dereference operator returns an lvalue or a <del>non-</del>const rvalue, 
+then <tt>Key</tt> shall be <tt>CopyConstructible</tt>.
+<p/>
+-5- <i>Complexity</i>: Linear in <tt>N</tt> if the range [<tt>first,last</tt>) is already sorted using 
+<tt>comp</tt> and otherwise <tt>N logN</tt>, where <tt>N</tt> is <tt>last - first</tt>.
+</p></blockquote></blockquote>
+</resolution>
+
+</issue>
