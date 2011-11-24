@@ -1,0 +1,85 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="2085" status="New">
+<title>Wrong description of effect 1 of <tt>basic_istream::ignore</tt></title>
+<section><sref ref="[istream.unformatted]"/></section>
+<submitter>Krzysztof Zelechowski</submitter>
+<date>11 Sep 2011</date>
+
+<discussion>
+
+<p>
+<sref ref="[istream.unformatted]"/> in N3242 currently has the following to say about the
+semantics of <tt>basic_istream::ignore</tt>:
+</p>
+
+<blockquote><p>
+[..]. Characters are extracted until any of the following occurs:
+</p>
+<ul>
+<li>if <tt>n != numeric_limits&lt;streamsize&gt;::max()</tt> (18.3.2), <tt>n</tt> characters are extracted
+</li>
+</ul>
+</blockquote>
+
+<p>
+This statement, apart from being slightly ungrammatical, indicates that if
+(<tt>n == numeric_limits&lt;streamsize&gt;::max()</tt>), the method returns without
+extracting any characters.
+<p/>
+The description intends to describe the observable behaviour of an
+implementation in terms of logical assertions.  Logical assertions are not
+"bullets" that can be "entered" but need not; they are predicates that can
+evaluate to true or false.
+<p/>
+The description contains two predicates, either of them causes extraction to
+terminate.  In the incriminated case, the first predicate is evaluates to
+true because its premise is false, therefore no characters will be
+extracted.
+<p/>
+The intended semantics would be described by the following statement:
+</p>
+
+<blockquote><p>
+[..]. Characters are extracted until any of the following occurs:
+</p>
+<ul>
+<li><tt>(n != numeric_limits&lt;streamsize&gt;::max())</tt> (18.3.2) and (<tt>n</tt>) characters
+have been extracted so far.
+</li>
+</ul>
+</blockquote>
+
+</discussion>
+
+<resolution>
+<p>This wording is relative to the FDIS.</p>
+
+<p>Change <sref ref="[istream.unformatted]"/> p25 as indicated:</p>
+
+<blockquote><pre>
+basic_istream&lt;charT,traits&gt;&amp;
+  ignore(streamsize n = 1, int_type delim = traits::eof());
+</pre><blockquote><p>
+-25- <i>Effects</i>: Behaves as an unformatted input function (as described in <sref ref="[istream.unformatted]"/>, paragraph 1). After
+constructing a <tt>sentry</tt> object, extracts characters and discards them. Characters are extracted until
+any of the following occurs:
+</p>
+<ul>
+<li><del>if</del> <tt>n != numeric_limits&lt;streamsize&gt;::max()</tt> (<sref ref="[limits.numeric]"/>)<del>,</del><ins>and</ins> 
+<tt>n</tt> characters <del>are</del><ins>have been</ins> extracted <ins>so far</ins>
+</li>
+<li>end-of-file occurs on the input sequence (in which case the function calls <tt>setstate(eofbit)</tt>,
+which may throw <tt>ios_base::failure</tt> (<sref ref="[iostate.flags]"/>));
+</li>
+<li><tt>traits::eq_int_type(traits::to_int_type(c), delim)</tt> for the next available input character <tt>c</tt> 
+(in which case <tt>c</tt> is extracted).
+</li>
+</ul>
+</blockquote></blockquote>
+</resolution>
+
+</issue>
