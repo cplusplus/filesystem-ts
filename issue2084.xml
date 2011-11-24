@@ -1,0 +1,82 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="2084" status="NAD">
+<title><tt>basic_string</tt> use of <tt>charT*</tt></title>
+<section><sref ref="[basic.string]"/></section>
+<submitter>Howard Hinnant</submitter>
+<date>11 Sep 2011</date>
+
+<discussion>
+
+<p>
+For C++11 we gave all of the containers, including basic_string new generalized pointer types:
+</p>
+
+<blockquote><pre>
+typedef typename allocator_traits&lt;Allocator&gt;::pointer       pointer:
+typedef typename allocator_traits&lt;Allocator&gt;::const_pointer const_pointer;
+</pre></blockquote>
+
+<p>
+However, the constructors, assignment, and member functions still traffic exclusively in terms 
+of <tt>const charT*</tt>, for example:
+</p>
+
+<blockquote><pre>
+basic_string(const charT* s, const Allocator&amp; a = Allocator());
+</pre></blockquote>
+
+<p>
+Was this an oversight? Did we mean instead:
+</p>
+
+<blockquote><pre>
+basic_string(const_pointer s, const Allocator&amp; a = Allocator());
+</pre></blockquote>
+
+<rationale><p>
+It's intentional. <tt>char_traits</tt> assumes that all elements of
+a string can be accessed indirect on plain pointers. So <tt>basic_string</tt> 
+doesn't support allocators with fancy pointers or references. And we meant 
+to do that.
+<p/>
+Let's take the constructor example you called out:
+</p>
+
+<blockquote><pre>
+basic_string(const charT* s, const Allocator&amp; a = Allocator());
+</pre></blockquote>
+
+<p>
+This constructor allows us to create a <tt>basic_string</tt> object from a string literal.  
+If we were to change the pointer type, that would no longer be possible.
+<p/>
+There is no issue here, as the implementation of the constructor must make a 
+copy of the string pointed-to by the pointer 's' rather than adopt ownership of 
+that buffer. It is that internal copy that must make use of the <tt>allocator::pointer</tt> type.
+<p/>
+Now what about the return value of '<tt>c_str()</tt>', should that return an <tt>allocator::pointer</tt>?
+<p/>
+Again, the answer (I believe) is 'no' because this is the function that allows us 
+to pass the string's contents to a legacy&#47;OS 'C' API. It is deliberately returning 
+a raw pointer for a reason.
+<p/>
+There was an issue where <tt>vector::data</tt> was changed to return an <tt>allocator::pointer</tt>
+to the internal buffer, and this was changed back exactly because this was intended 
+to support passing to external APIs.
+<p/>
+Do we have a use-case where the pointer type of internal data structures of our 
+containers (notably <tt>basic_string</tt> and <tt>vector</tt>) need to be exposed through a public API?  
+All my current use-cases for <tt>allocator::pointer</tt> are specific to the implementation 
+of containers themselves.
+</p></rationale>
+
+</discussion>
+
+<resolution>
+</resolution>
+
+</issue>
