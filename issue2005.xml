@@ -54,6 +54,7 @@ requirements apply only for an argument <em>identical</em> to <tt>value_type</tt
 Daniel's Proposed resolution (not current):
 </p>
 
+<blockquote class="note">
 <ol>
 <li>Change <sref ref="[map.modifiers]"/> around p. 1 as indicated:
 <blockquote><pre>
@@ -116,6 +117,8 @@ is implicitly convertible to <tt>value_type</tt>.</ins>
 </li>
 </ol>
 
+</blockquote>
+
 <note>
 2010 Batavia:
 </note>
@@ -132,9 +135,41 @@ We need <tt>is_convertible</tt>, not <tt>is_constructible</tt>, both in ordered 
 The effects of these inserts can be concisely stated in terms of emplace().
 Also, the correct term is "EmplaceConstructible", not "constructible".
 </p>
+
 <p>
 New wording by Pablo, eliminating duplicate requirements already implied by the effects clause.  Move to Review.
 </p>
+
+<note>
+2011-10-02 Daniel comments and refines the proposed wording
+</note>
+
+<blockquote><p>
+Unfortunately the template constraints expressed as "<tt>P</tt> is implicitly convertible to <tt>value_type</tt>"
+reject the intended effect to support move-only key types, which was the original intention when
+the library became move-enabled through the rvalue-reference proposals by Howard (This can clearly be deduced
+from existing carefully selected wording that emphasizes that <tt>CopyConstructible</tt> is only required
+for special situations involving lvalues or const rvalues as arguments). The root of the problem is based
+on current core rules, where an "implicitly converted" value has copy-initialization semantics. Consider
+a move-only key type <tt>KM</tt>, some mapped type <tt>T</tt>, and a source value <tt>p</tt> of type <tt>P</tt> 
+equal to <tt>std::pair&lt;KM, T&gt;</tt>, this is equivalent to:
+</p>
+<blockquote><pre>
+std::pair&lt;const KM, T&gt; dest = std::move(p);
+</pre></blockquote>
+<p>
+Now <sref ref="[dcl.init]"/> p16 b6 sb2 says that the effects of this heterogeneous copy-initialization (<tt>p</tt>
+has a different type than <tt>dest</tt>) are as-if a temporary of the target type <tt>std::pair&lt;const KM, T&gt;</tt>
+is produced from the rvalue <tt>p</tt> of type <tt>P</tt> (which is fine), and this temporary is used to initialize 
+<tt>dest</tt>. This second step cannot succeed, because we cannot move from <tt>const KM</tt> to <tt>const KM</tt>. This 
+means that <tt>std::is_convertible&lt;P, std::pair&lt;const KM, T&gt;&gt;::value</tt> is false.
+<p/>
+But the actual code that is required (with the default allocator) is simply a direct-initialization
+from <tt>P</tt> to <tt>value_type</tt>, so imposing an implicit conversion is more than necessary. Therefore
+I strongly recommend to reduce the "overload participation" constraint to  
+<tt>std::is_constructible&lt;std::pair&lt;const KM, T&gt;, P&gt;::value</tt> instead. This change is the
+only change that has been performed to the previous proposed wording from Pablo shown below. 
+</p></blockquote>
 
 </discussion>
 
@@ -161,8 +196,8 @@ non-const rvalue <tt>pair&lt;key_type,mapped_type&gt;</tt>. Otherwise <tt>CopyCo
 The second form is equivalent to
 <tt>return emplace_hint(position, std::forward&lt;P&gt;(x))</tt>.</ins>
 <p/>
-<ins>? <em>Remarks</em>: These signatures shall not participate in overload resolution unless <tt>P</tt> 
-is implicitly convertible to <tt>value_type</tt>.</ins>
+<ins>? <em>Remarks</em>: These signatures shall not participate in overload resolution unless 
+<tt>std::is_constructible&lt;value_type, P&amp;&amp;&gt;::value</tt> is true.</ins>
 <p/>
 </blockquote></blockquote>
 </li>
@@ -186,8 +221,8 @@ is required for both <tt>key_type</tt> and <tt>mapped_type</tt>.</del><br/>
 The second form is equivalent to
 <tt>return emplace_hint(position, std::forward&lt;P&gt;(x))</tt>.</ins>
 <p/>
-<ins>? <em>Remarks</em>: These signatures shall not participate in overload resolution unless <tt>P</tt> 
-is implicitly convertible to <tt>value_type</tt>.</ins>
+<ins>? <em>Remarks</em>: These signatures shall not participate in overload resolution unless 
+<tt>std::is_constructible&lt;value_type, P&amp;&amp;&gt;::value</tt> is true.</ins>
 <p/>
 </blockquote></blockquote>
 </li>
@@ -209,8 +244,9 @@ and the iterator component points to the element with key equivalent to the key 
 <p/>
 <del>4 <em>Complexity</em>: Average case O(1), worst case O(size()).</del>
 <p/>
-<del>5</del><ins>3</ins> <em>Remarks</em>: This signature shall not participate in overload resolution unless <tt>P</tt> is implicitly convertible
-to <tt>value_type</tt>.
+<del>5</del><ins>3</ins> <em>Remarks</em>: This signature shall not participate in overload resolution unless 
+<del><tt>P</tt> is implicitly convertible to <tt>value_type</tt></del><ins><tt>std::is_constructible&lt;value_type, 
+P&amp;&amp;&gt;::value</tt> is true</ins>.
 <p/>
 </blockquote>
 <pre>template &lt;class P&gt;
@@ -225,12 +261,14 @@ iterator insert(const_iterator hint, P&amp;&amp; obj);
 key equivalent to the key of <tt>value_type(obj)</tt>. The iterator hint is a hint pointing to where the
 search should start.</del>
 <p/>
-<del>8 <em>Returns</em>: An iterator that points to the element with key equivalent to the key of <tt>value_type(obj)</tt>.</del>
+<del>8 <em>Returns</em>: An iterator that points to the element with key equivalent to the key of 
+<tt>value_type(obj)</tt>.</del>
 <p/>
 <del>9 <em>Complexity</em>: Average case O(1), worst case O(size()).</del>
 <p/>
-<del>10</del><em>?</em> <em>Remarks</em>: This signature shall not participate in overload resolution unless <tt>P</tt> is implicitly convertible
-to <tt>value_type</tt>.
+<del>10</del><em>?</em> <em>Remarks</em>: This signature shall not participate in overload resolution unless 
+<del><tt>P</tt> is implicitly convertible to <tt>value_type</tt></del><ins><tt>std::is_constructible&lt;value_type, 
+P&amp;&amp;&gt;::value</tt> is true</ins>.
 </blockquote></blockquote>
 </li>
 <li>Change <sref ref="[unord.multimap.modifers]"/> around p. 1 as indicated:
@@ -249,8 +287,9 @@ iterator insert(P&amp;&amp; obj);
 <p/>
 <del>4 <em>Complexity</em>: Average case O(1), worst case O(size()).</del>
 <p/>
-<del>5</del><ins>3</ins> <em>Remarks</em>: This signature shall not participate in overload resolution unless P is implicitly convertible
-to <tt>value_type</tt>.
+<del>5</del><ins>3</ins> <em>Remarks</em>: This signature shall not participate in overload resolution 
+unless <del><tt>P</tt> is implicitly convertible to <tt>value_type</tt></del><ins><tt>std::is_constructible&lt;value_type, 
+P&amp;&amp;&gt;::value</tt> is true</ins>.
 </blockquote>
 <pre>
 template &lt;class P&gt;
@@ -268,8 +307,9 @@ should start.</del>
 <p/>
 <del>9 <em>Complexity</em>: Average case O(1), worst case O(size()).</del>
 <p/>
-<del>10</del><ins><em>?</em></ins> <em>Remarks</em>: This signature shall not participate in overload resolution unless P is implicitly convertible
-to value_type.
+<del>10</del><ins><em>?</em></ins> <em>Remarks</em>: This signature shall not participate in overload resolution 
+unless <del><tt>P</tt> is implicitly convertible to <tt>value_type</tt></del><ins><tt>std::is_constructible&lt;value_type, 
+P&amp;&amp;&gt;::value</tt> is true</ins>.
 </blockquote></blockquote>
 </li>
 </ol>
