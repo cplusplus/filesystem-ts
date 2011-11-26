@@ -1,0 +1,40 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="2091" status="New">
+<title>Misplaced effect in <tt>m.try_lock_for()</tt></title>
+<section><sref ref="[thread.timedmutex.requirements]"/></section>
+<submitter>Pete Becker</submitter>
+<date>18 Oct 2011</date>
+
+<discussion>
+
+<p>
+<sref ref="[thread.timedmutex.requirements]"/>&#47;4 says, in part, 
+</p><blockquote><p>
+"<i>Requires</i>: If the tick period of [the argument] is not exactly 
+convertible &hellip; [it] shall be rounded up &hellip;"
+</p></blockquote>
+<p>
+This doesn't belong in the requires clause. It's an effect. It belongs in paragraph 5. 
+Nitpickingly, this would be a technical change: as written it imposes an obligation on 
+the caller, while moving it imposes an obligation on the callee. Although that's certainly 
+not what was intended.
+<p/>
+Peter Dimov comments:
+<p/>
+Not to mention that it should round down, not up. :-)
+<p/>
+Incidentally, I see that the wrong <tt>try_lock</tt> requirement that the caller shall not own 
+the mutex has entered the standard, after all. Oh well. Let's hope that the real world 
+continues to ignore it.
+</p>
+
+</discussion>
+
+<resolution>
+</resolution>
+
+</issue>
