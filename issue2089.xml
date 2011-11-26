@@ -1,0 +1,32 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="2089" status="New">
+<title><tt>std::allocator::construct</tt> should use uniform initialization</title>
+<section><sref ref="[allocator.traits]"/></section>
+<submitter>David Krauss</submitter>
+<date>7 Oct 2011</date>
+
+<discussion>
+
+<p>
+When the <tt>EmplaceConstructible</tt> requirement is used to initialize an object, 
+direct initialization occurs, i.e. the argument list needs to match a constructor. 
+Initializing an aggregate or using a <tt>std::initializer_list</tt> constructor with 
+emplace (or other initialization by perfect forwarding) requires naming the 
+initialized type and moving a temporary. This is a result of <tt>std::allocator</tt> 
+not using the list initialization syntax. The body of <tt>std::allocator&lt;T&gt;::construct</tt> 
+should be changed to
+</p>
+<blockquote><pre>
+::new( ptr ) T{ std::forward&lt;Args&gt;( args ) ... };
+</pre></blockquote>
+
+</discussion>
+
+<resolution>
+</resolution>
+
+</issue>
