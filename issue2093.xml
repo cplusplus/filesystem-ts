@@ -1,0 +1,67 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="2093" status="New">
+<title>Throws clause of <tt>condition_variable::wait</tt> with predicate</title>
+<section><sref ref="[thread.condition.condvar]"/></section>
+<submitter>Alberto Ganesh Barbati</submitter>
+<date>27 Oct 2011</date>
+
+<discussion>
+
+<p>
+the Throws: clause of <tt>condition_variable::wait&#47;wait_xxx</tt> functions that 
+take a predicate argument is:
+</p>
+<blockquote><p>
+<i>Throws</i>: <tt>system_error</tt> when an exception is required (<sref ref="[thread.req.exception]"/>).
+</p></blockquote>
+<p>
+If executing the predicate throws an exception, I would expect such exception to propagate unchanged 
+to the caller, but the throws clause seems to indicate that it gets mutated into a system_error. T
+hat's because of <sref ref="[structure.specifications]"/>&#47;4:
+<p/>
+"If F’s semantics contains a Throws:, Postconditions:, or Complexity: element, then that supersedes 
+any occurrences of that element in the code sequence."
+<p/>
+Is my interpretation correct? Does it match the intent?
+<p/>
+Daniel comments:
+<p/>
+I don't think that this interpretation is entirely correct, the wording does not say that 
+<tt>std::system_error</tt> or a derived class must be thrown, it simply is underspecified 
+in this regard (The extreme interpretation is that the behaviour would be undefined, but 
+that would be too far reaching I think). We have better wording for this in 
+<sref ref="[thread.once.callonce]"/> p4, where it says:
+<p/>
+"<i>Throws</i>: <tt>system_error</tt> when an exception is required (<sref ref="[thread.req.exception]"/>), 
+or any exception thrown by <tt>func</tt>."
+<p/>
+or in <sref ref="[thread.thread.this]"/> p6&#47;p9:
+<p/>
+"<i>Throws</i>: Nothing if <tt>Clock</tt> satisfies the <tt>TrivialClock</tt> requirements 
+(<sref ref="[time.clock.req]"/>) and operations of <tt>Duration</tt> do not throw exceptions. 
+[ <i>Note</i>: instantiations of time point types and clocks supplied by the implementation 
+as specified in <sref ref="[time.clock]"/> do not throw exceptions. &mdash; <i>end note</i> ]"
+<p/>
+So, the here discussed Throws elements should add lines along the lines of
+<p/>
+"Any exception thrown by operations of <tt>pred</tt>."
+<p/>
+and similar wording for time-related operations:
+<p/>
+"Any exception thrown by operations of <tt>Duration</tt>",
+<p/>
+"Any exception thrown by operations of <tt>chrono::duration&lt;Rep, Period&gt;</tt>"
+<p/>
+Daniel provided proposed wording.
+</p>
+
+</discussion>
+
+<resolution>
+</resolution>
+
+</issue>

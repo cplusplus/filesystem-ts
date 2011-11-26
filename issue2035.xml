@@ -94,6 +94,54 @@ preincrement: They don't provide additional information say nothing surprising. 
 new pre-conditions <em>and</em> post-conditions it is implied what the remarks intend to say.
 </p>
 
+<note>
+2011-11-03: Some observations from Alexander Stepanov via c++std-lib-31405
+</note>
+
+<p>
+The following sentence is dropped from the standard section on OutputIterators:
+<p/>
+"In particular, the following two conditions should hold: first, any
+iterator value should be assigned through before it is incremented
+(this is, for an output iterator <tt>i, i++; i++;</tt> is not a valid code
+sequence); second, any value of an output iterator may have at most
+one active copy at any given time (for example, <tt>i = j; *++i = a; *j = b;</tt> 
+is not a valid code sequence)."
+</p>
+
+<note>
+2011-11-04: Daniel comments and improves the wording
+</note>
+
+<p>
+In regard to the first part of the comment, the intention of the newly proposed wording 
+was to make clear that for the expression
+</p>
+<blockquote><pre>
+*r = o
+</pre></blockquote>
+<p>
+we have the precondition dereferenceable and the post-condition
+incrementable. And for the expression
+</p>
+<blockquote><pre>
+++r
+</pre></blockquote>
+<p>
+we have the precondition incrementable and the post-condition dereferenceable 
+or past-the-end. This <em>should not</em>  allow for a sequence like <tt>i++; i++;</tt> 
+but I agree that it doesn't exactly say that.
+<p/>
+In regard to the second point: To make this point clearer, I suggest to
+add a similar additional wording as we already have for input iterator to the 
+"Assertion&#47;note" column of the expression <tt>++r</tt>:
+<p/>
+"Post: any copies of the previous value of <tt>r</tt> are no longer 
+required to be dereferenceable or incrementable."
+<p/>
+The proposed has been updated to honor the observations of Alexander Stepanov.
+</p>
+
 </discussion>
 
 <resolution>
@@ -102,10 +150,10 @@ new pre-conditions <em>and</em> post-conditions it is implied what the remarks i
 library preceding Clause 24 Iterators library: (I stopped from <sref ref="[unord.req]"/> on, because
 the remaining references are the concrete containers)</p>
 <ol>
-<li><p><sref ref="[swappable.requirements]"/> p. 5:</p>
+<li><p><sref ref="[swappable.requirements]"/> p5:</p>
 
 <blockquote><p>
-5 A type <tt>X</tt> satisfying any of the iterator requirements (24.2) is <tt><i>ValueSwappable</i></tt> if, 
+-5- A type <tt>X</tt> satisfying any of the iterator requirements (24.2) is <tt><i>ValueSwappable</i></tt> if, 
 for any dereferenceable <ins>(<sref ref="[iterator.requirements.general]"/>)</ins> object <tt>x</tt> of type 
 <tt>X</tt>, <tt>*x</tt> is swappable.
 </p></blockquote>
@@ -180,7 +228,7 @@ const iterators to <tt>a</tt>,  [&hellip;]
 <i>incrementable</i> and to ensure some further library guarantee related to past-the-end iterator values):</p>
 
 <blockquote><p>
-5 Just as a regular pointer to an array guarantees that there is a pointer value pointing past the last element
+-5- Just as a regular pointer to an array guarantees that there is a pointer value pointing past the last element
 of the array, so for any iterator type there is an iterator value that points past the last element of a
 corresponding sequence. These values are called <i>past-the-end values</i>. Values of an iterator <tt>i</tt> for which the
 expression <tt>*i</tt> is defined are called <i>dereferenceable</i>. <ins>Values of an iterator <tt>i</tt> for which the
@@ -223,7 +271,11 @@ that are not associated with any sequence. [&hellip;]
 </li>
 
 <li><p>Modify the column contents of Table 107 &mdash; &quot;Input iterator requirements&quot;, 
-<sref ref="[input.iterators]"/>, as indicated:</p>
+<sref ref="[input.iterators]"/>, as indicated [<i>Rationale</i>: The wording changes attempt
+to define a minimal "independent" set of operations, namely <tt>*a</tt> and <tt>++r</tt>, and 
+to specify the semantics of the remaining ones. This approach seems to be in agreement with the 
+original <a href="http://www.sgi.com/tech/stl/InputIterator.html">SGI specification</a> 
+&mdash; <i>end rationale</i>]:</p>
 
 <blockquote>
 <table border="1">
@@ -305,7 +357,11 @@ return tmp; }
 
 <li>
 <p>Modify the column contents of Table 108 &mdash; &quot;Output iterator requirements&quot;, 
-<sref ref="[output.iterators]"/>, as indicated:</p>
+<sref ref="[output.iterators]"/>, as indicated [<i>Rationale</i>: The wording changes attempt
+to define a minimal "independent" set of operations, namely <tt>*r = o</tt> and <tt>++r</tt>,
+and to specify the semantics of the remaining ones. This approach seems to be in agreement with
+the original <a href="http://www.sgi.com/tech/stl/OutputIterator.html">SGI specification</a> 
+&mdash; <i>end rationale</i>]:</p>
 
 <blockquote>
 <table border="1">
@@ -323,9 +379,12 @@ return tmp; }
 <td>result is not used</td>
 <td><tt>&nbsp;</tt></td>
 <td><ins>pre: <tt>r</tt> is dereferenceable.</ins><br/>
-<del><i>Remark</i>: After this operation<br/>
+<i>Remark</i>: After this operation<br/>
 <tt>r</tt> is not required to be<br/>
-dereferenceable.</del><br/>
+dereferenceable <ins>and any copies of<br/>
+the previous value of <tt>r</tt> are no<br/>
+longer required to be dereferenceable<br/>
+or incrementable.</ins><br/>
 post: <tt>r</tt> is incrementable.
 </td>
 </tr>
@@ -338,9 +397,15 @@ post: <tt>r</tt> is incrementable.
 <tt>&amp;r == &amp;++r</tt>.<br/>
 <del><i>Remark</i>: After this operation<br/>
 <tt>r</tt> is not required to be<br/>
-dereferenceable.</del><br/>
+dereferenceable.<br/></del>
+<ins><i>Remark</i>: After this operation<br/>
+<tt>r</tt> is not required to be<br/>
+incrementable and any copies of<br/>
+the previous value of <tt>r</tt> are no<br/>
+longer required to be dereferenceable<br/>
+or incrementable.</ins><br/>
 post: <tt>r</tt> is <ins>dereferenceable<br/>
-or <tt>r</tt> is past-the-end</ins><del>incrementable</del>.
+or <tt>r</tt> is past-the-end</ins><del>incrementable</del>.<br/>
 </td>
 </tr>
 
