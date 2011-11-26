@@ -1,0 +1,183 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="2086" status="New">
+<title>Overly generic type support for math functions</title>
+<section><sref ref="[c.math]"/></section>
+<submitter>Daniel Kr&uuml;gler</submitter>
+<date>22 Sep 2011</date>
+
+<discussion>
+
+<p>
+<sref ref="[c.math]"/> ends with a description of a rule set for "sufficient overloads"
+in p11:
+</p>
+
+<blockquote>
+<p>Moreover, there shall be additional overloads sufficient to ensure:</p>
+<ol>
+<li>
+If any argument corresponding to a <tt>double</tt> parameter has type <tt>long double</tt>, then all arguments
+corresponding to <tt>double</tt> parameters are effectively cast to <tt>long double</tt>.
+</li>
+<li>
+Otherwise, if any argument corresponding to a <tt>double</tt> parameter has type <tt>double</tt> or an integer type,
+then all arguments corresponding to <tt>double</tt> parameters are effectively cast to <tt>double</tt>.
+</li>
+<li>
+Otherwise, all arguments corresponding to <tt>double</tt> parameters are effectively cast to <tt>float</tt>.
+</li>
+</ol>
+</blockquote>
+
+<p>
+My impression is that this rule set is probably more generic as intended, my assumption is that it is written 
+to mimic the C99&#47;C1x rule set in 7.25 p2+3 in the "C++" way:
+</p>
+
+<blockquote>
+<p>
+-2- Of the <tt>&lt;math.h&gt;</tt> and <tt>&lt;complex.h&gt;</tt> functions without an 
+<tt>f</tt> (<tt>float</tt>) or <tt>l</tt> (<tt>long double</tt>) suffix, several have 
+one or more parameters whose corresponding real type is <tt>double</tt>. For each such 
+function, except <tt>modf</tt>, there is a corresponding type-generic macro. (footnote 313) 
+The parameters whose corresponding real type is <tt>double</tt> in the function
+synopsis are generic parameters. Use of the macro invokes a function whose
+corresponding real type and type domain are determined by the arguments for the generic
+parameters. (footnote 314)
+<p/>
+-3- Use of the macro invokes a function whose generic parameters have the corresponding 
+real type determined as follows:
+</p>
+<ul>
+<li>
+First, if any argument for generic parameters has type <tt>long double</tt>, the type
+determined is <tt>long double</tt>.
+</li>
+<li>
+Otherwise, if any argument for generic parameters has type <tt>double</tt> or is of integer
+type, the type determined is <tt>double</tt>.
+</li>
+<li>
+Otherwise, the type determined is <tt>float</tt>.
+</li>
+</ul>
+</blockquote>
+
+<p>
+where footnote 314 clarifies the intent:
+</p>
+
+<blockquote>
+<p>
+If the type of the argument is not compatible with the type of the parameter for the selected function,
+the behavior is undefined.
+</p>
+</blockquote>
+
+<p>
+The combination of the usage of the unspecific term "cast" with otherwise no further constraints 
+(note that C constraints the valid set to types that C++ describes as arithmetic types, but see below 
+for one important difference) has the effect that it requires the following examples to be well-formed 
+and well-defined:
+</p>
+
+<blockquote><pre>
+#include &lt;cmath&gt;
+
+enum class Ec { };
+
+struct S { explicit operator long double(); };
+
+void test(Ec e, S s) {
+ std::sqrt(e); // OK, behaves like std::sqrt((float) e);
+ std::sqrt(s); // OK, behaves like std::sqrt((float) s);
+}
+</pre></blockquote>
+<p>
+GCC 4.7 does not accept any of these examples.
+<p/>
+I found another example where the C++ rule differs from the C set, 
+but in this case I'm not so sure, which direction C++ should follow. 
+The difference is located in the fact, that in C enumerated types are 
+<em>integer types</em> as described in 6.2.5 p17 (see e.g. n1569 or n1256):
+<p/>
+"The type char, the signed and unsigned integer types, and
+the enumerated types are collectively called integer types. The
+integer and real floating types are collectively called real types."
+<p/>
+This indicates that in C the following code
+</p>
+<blockquote><pre>
+#include &lt;math.h&gt;
+
+enum E { e };
+
+void test(void) {
+  sqrt(e); // OK, behaves like sqrt((double) e);
+}
+</pre></blockquote>
+<p>
+seems to be well-defined and <tt>e</tt> is cast to <tt>double</tt>, but in C++
+referring to
+</p>
+<blockquote><pre>
+#include &lt;cmath&gt;
+
+enum E { e };
+
+void test() {
+  std::sqrt(e); // OK, behaves like sqrt((float) e);
+}
+</pre></blockquote>
+
+<p>
+is also well-defined (because of our lack of constraints) but we
+must skip bullet 2 (because E is not an integer type) and effectively
+cast <tt>e</tt> to <tt>float</tt>. Accepting this, we would introduce 
+a silent, but observable runtime difference for C and C++.
+<p/>
+GCC 4.7 does not accept this example, but causes an ambiguity
+error among the three floating point overloads of sqrt.
+<p/>
+My current suggestion to fix these problems would be to constrain the 
+valid argument types of these functions to arithmetic types.
+</p>
+
+<blockquote><p>
+Howard provided wording to solve the issue.
+</p></blockquote>
+
+</discussion>
+
+<resolution>
+<p>This wording is relative to the FDIS.</p>
+
+<p>Change <sref ref="[c.math]"/> p11 as indicated:</p>
+
+<blockquote>
+<p>Moreover, there shall be additional overloads sufficient to ensure:</p>
+<ol>
+<li>
+If any <ins>arithmetic</ins> argument corresponding to a <tt>double</tt> parameter has 
+type <tt>long double</tt>, then all <ins>arithmetic</ins> arguments corresponding to 
+<tt>double</tt> parameters are effectively cast to <tt>long double</tt>.
+</li>
+<li>
+Otherwise, if any <ins>arithmetic</ins> argument corresponding to a <tt>double</tt> 
+parameter has type <tt>double</tt> or an integer type, then all <ins>arithmetic</ins> 
+arguments corresponding to <tt>double</tt> parameters are effectively cast to <tt>double</tt>.
+</li>
+<li>
+Otherwise, all <ins>arithmetic</ins> arguments corresponding to <tt>double</tt> parameters 
+<del>are effectively cast to</del><ins>have type</ins> <tt>float</tt>.
+</li>
+</ol>
+</blockquote>
+
+</resolution>
+
+</issue>
