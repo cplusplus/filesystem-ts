@@ -5,7 +5,7 @@
 
 <issue num="2089" status="New">
 <title><tt>std::allocator::construct</tt> should use uniform initialization</title>
-<section><sref ref="[allocator.traits]"/></section>
+<section><sref ref="[allocator.members]"/></section>
 <submitter>David Krauss</submitter>
 <date>7 Oct 2011</date>
 
@@ -27,6 +27,19 @@ should be changed to
 </discussion>
 
 <resolution>
+<p>This wording is relative to the FDIS.</p>
+
+<p>Change <sref ref="[allocator.members]"/> p12 as indicated:</p>
+
+<blockquote><pre>
+template &lt;class U, class... Args&gt;
+  void construct(U* p, Args&amp;&amp;... args);
+</pre><blockquote>
+<p>
+12 <i>Effects</i>: <tt>::new((void *)p) U<del>(</del><ins>{</ins>std::forward&lt;Args&gt;(args)...<del>)</del><ins>}</ins></tt>
+</p>
+</blockquote></blockquote>
+
 </resolution>
 
 </issue>
