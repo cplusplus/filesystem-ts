@@ -1,0 +1,152 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="2095" status="New">
+<title><tt>promise</tt> and <tt>packaged_task</tt> missing constructors needed for uses-allocator construction</title>
+<section><sref ref="[futures.promise]"/>,<sref ref="[futures.task]"/></section>
+<submitter>Jonathan Wakely</submitter>
+<date>1 Nov 2011</date>
+
+<discussion>
+
+<p>
+This example is ill-formed according to C++11 because <tt>uses_allocator&lt;promise&lt;R&gt;, A&gt;::value</tt> is true, but
+<tt>is_constructible&lt;promise&lt;R&gt;, A, promise&lt;R&gt;&amp;&amp;&gt;::value</tt> is false. Similarly for <tt>packaged_task</tt>.
+</p>
+<blockquote><pre>
+#include &lt;future&gt;
+#include &lt;memory&gt;
+#include &lt;tuple&gt;
+
+using namespace std;
+
+typedef packaged_task&lt;void()&gt; task;
+typedef promise&lt;void&gt; prom;
+allocator&lt;task&gt; a;
+
+tuple&lt;task, prom&gt; t1{ allocator_arg, a };
+tuple&lt;task, prom&gt; t2{ allocator_arg, a, task{}, prom{} };
+</pre></blockquote>
+<p>
+<p/>
+</p>
+
+</discussion>
+
+<resolution>
+<p>This wording is relative to the FDIS.</p>
+
+<ol>
+<li><p>Add to <sref ref="[futures.promise]"/>, class template <tt>promise</tt> synopsis, 
+as indicated:</p>
+
+<blockquote><pre>
+namespace std {
+  template &lt;class R&gt;
+  class promise {
+  public:
+    promise();
+    template &lt;class Allocator&gt;
+    promise(allocator_arg_t, const Allocator&amp; a);
+    <ins>template&lt;class Allocator&gt;
+    promise(allocator_arg_t, const Allocator&amp; a, promise&amp;&amp; rhs) noexcept;</ins>
+    promise(promise&amp;&amp; rhs) noexcept;
+    promise(const promise&amp; rhs) = delete;
+    ~promise();	
+    [&hellip;]
+  };
+  [&hellip;]
+}
+</pre></blockquote>
+</li>
+
+<li><p>Change <sref ref="[futures.promise]"/> as indicated:</p>
+
+<blockquote><pre>
+promise(promise&amp;&amp; rhs) noexcept;
+<ins>template&lt;class Allocator&gt;
+promise(allocator_arg_t, const Allocator&amp; a, promise&amp;&amp; rhs) noexcept;</ins>
+</pre><blockquote>
+<p>
+-5- <i>Effects</i>: constructs a new <tt>promise</tt> object and transfers ownership of 
+the shared state of <tt>rhs</tt> (if any) to the newly-constructed object.
+<p/>
+-6- <i>Postcondition</i>: <tt>rhs</tt> has no shared state.
+<p/>
+<ins>-?- [<i>Note</i>: <tt>a</tt> is not used &mdash; <i>end note</i>]</ins>
+</p>
+</blockquote></blockquote>
+
+</li>
+
+<li><p>Add to <sref ref="[futures.task]"/>, class template <tt>packaged_task</tt> synopsis, 
+as indicated:</p>
+
+<blockquote><pre>
+namespace std {
+  template&lt;class&gt; class packaged_task; // <i>undefined</i>
+
+  template&lt;class R, class... ArgTypes&gt;
+  class packaged_task&lt;R(ArgTypes...)&gt; {
+  public:
+    // construction and destruction
+    packaged_task() noexcept;
+    template &lt;class F&gt;
+    explicit packaged_task(F&amp;&amp; f);
+    <ins>template &lt;class F, class Allocator&gt;
+    explicit packaged_task(allocator_arg_t, const Allocator&amp; a) noexcept;
+    template &lt;class F, class Allocator&gt;
+    explicit packaged_task(allocator_arg_t, const Allocator&amp; a, packaged_task&amp;&amp; rhs) noexcept;
+    template&lt;class F, class Allocator&gt;
+    explicit packaged_task(allocator_arg_t, const Allocator&amp; a, const packaged_task&amp;) = delete;</ins>
+    template &lt;class F, class Allocator&gt;
+    explicit packaged_task(allocator_arg_t, const Allocator&amp; a, F&amp;&amp; f);
+    ~packaged_task();
+    [&hellip;]
+  };
+  [&hellip;]
+}
+</pre></blockquote>
+</li>
+
+<li><p>Change <sref ref="[futures.task.members]"/> as indicated:</p>
+
+<blockquote><pre>
+packaged_task() noexcept;
+<ins>template &lt;class F, class Allocator&gt;
+  explicit packaged_task(allocator_arg_t, const Allocator&amp; a) noexcept;</ins>
+</pre><blockquote>
+<p>
+-1- <i>Effects</i>: constructs a <tt>packaged_task</tt> object with no shared state and no stored task.
+</p>
+</blockquote></blockquote>
+<p>[&hellip;]</p>
+<blockquote><pre>
+packaged_task(packaged_task&amp;&amp; rhs) noexcept;
+<ins>template &lt;class F, class Allocator&gt;
+  explicit packaged_task(allocator_arg_t, const Allocator&amp; a, packaged_task&amp;&amp; rhs) noexcept;</ins>
+</pre><blockquote>
+<p>
+-5- <i>Effects</i>: constructs a new <tt>packaged_task</tt> object and transfers ownership of <tt>rhs</tt>’s 
+shared state to <tt>*this</tt>, leaving <tt>rhs</tt> with no shared state. Moves the stored task from <tt>rhs</tt> 
+to <tt>*this</tt>.
+<p/>
+-6- <i>Postcondition</i>: <tt>rhs</tt> has no shared state.
+<p/>
+<ins>-?- [<i>Note</i>: <tt>a</tt> is not used &mdash; <i>end note</i>]</ins>
+</p>
+</blockquote></blockquote>
+
+</li>
+</ol>
+
+<blockquote><pre>
+</pre><blockquote>
+<p>
+</p></blockquote></blockquote>
+
+</resolution>
+
+</issue>
