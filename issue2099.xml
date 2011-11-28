@@ -1,0 +1,69 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="2099" status="New">
+<title>Unnecessary constraints of <tt>va_start()</tt> usage</title>
+<section><sref ref="[support.runtime]"/></section>
+<submitter>Daniel Kr&uuml;gler</submitter>
+<date>12 Nov 2011</date>
+
+<discussion>
+
+<p>
+In <sref ref="[support.runtime]"/> p3 we find (emphasis mine):
+</p>
+<blockquote><p>
+The restrictions that ISO C places on the second parameter to the <tt>va_start()</tt> macro in header <tt>&lt;stdarg.h&gt;</tt>
+are different in this International Standard. The parameter <tt>parmN</tt> is the identifier of the rightmost parameter
+in the variable parameter list of the function definition (the one just before the ...).227 <em>If the parameter
+<tt>parmN</tt> is <strong>declared</strong> with a <strong>function</strong>, <strong>array</strong></em>, or reference type, 
+or with a type that is not compatible with the type that results when passing an argument for which there is no parameter, 
+the behavior is undefined.
+</p></blockquote>
+
+<p>
+It seems astonishing that the constraints on function types and array types imposes these 
+on the <strong>declared</strong> parameter <tt>parmN</tt>, not to the adjusted one (which would
+not require this extra wording, because that is implicit). This seems to say that a function 
+definition of the form (Thanks to Johannes Schaub for this example)
+</p>
+<blockquote><pre>
+#include &lt;stdarg.h&gt;
+
+void f(char const paramN[], ...) {
+  va_list ap;
+  va_start(ap, paramN);
+  va_end(ap);
+}
+</pre></blockquote>
+<p>
+would produce undefined behaviour when used.
+<p/>
+Similar wording exists in C99 and in the most recent C11 draft in 7.16.1.4 p4
+<p/>
+In my opinion the constraints in regard to array types and function types are
+unnecessary and should be relaxed. Are there really implementations out in the 
+wild that would (according to my understanding incorrectly) provide the declared and
+not the adjusted type of <tt>paramN</tt> as deduced type to <tt>va_start()</tt>?
+</p>
+
+</discussion>
+
+<resolution>
+<p>This wording is relative to the FDIS.</p>
+
+<p>Change <sref ref="[support.runtime]"/> p3 as indicated:</p>
+<blockquote><p>
+The restrictions that ISO C places on the second parameter to the <tt>va_start()</tt> macro in header <tt>&lt;stdarg.h&gt;</tt>
+are different in this International Standard. The parameter <tt>parmN</tt> is the identifier of the rightmost parameter
+in the variable parameter list of the function definition (the one just before the ...).227 If the parameter
+<tt>parmN</tt> is <del>declared with</del><ins>of</ins> a <del>function, array, or</del> reference type, or 
+<del>with</del><ins>of</ins> a type that is not compatible with the type that results when passing an argument for 
+which there is no parameter, the behavior is undefined.
+</p></blockquote>
+
+</resolution>
+
+</issue>
