@@ -1,0 +1,51 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="2102" status="New">
+<title>Why is <tt>std::launch</tt> an implementation-defined type?</title>
+<section><sref ref="[futures.overview]"/></section>
+<submitter>Jonathan Wakely</submitter>
+<date>20 Nov 2011</date>
+
+<discussion>
+
+<p>
+<sref ref="[futures.overview]"/> says <tt>std::launch</tt> is an
+implementation-defined bitmask type, which would usually mean the
+implementation can choose whether to define an enumeration type, or a
+biset, or an integer type.  But in the case of <tt>std::launch</tt> it's
+required to be a scoped enumeration type, 
+</p>
+<blockquote><pre>
+enum class launch : <i>unspecified</i> {
+  async = <i>unspecified</i>,
+  deferred = <i>unspecified</i>,
+  <i>implementation-defined</i>
+};
+</pre></blockquote>
+<p>
+so what is implementation defined about it, and what is an implementation supposed to document
+about its choice?
+</p>
+
+</discussion>
+
+<resolution>
+<p>This wording is relative to the FDIS.</p>
+
+<p>Change <sref ref="[futures.overview]"/> paragraph 2 as indicated:</p>
+
+<blockquote><p>
+The enum type <tt>launch</tt> is <del>an implementation-defined</del><ins>a</ins> bitmask type 
+(<sref ref="[bitmask.types]"/>) with <tt>launch::async</tt> and <tt>launch::deferred</tt> 
+denoting individual bits. [ <i>Note</i>: Implementations can provide bitmasks to specify restrictions
+on task interaction by functions launched by <tt>async()</tt> applicable to a corresponding subset of
+available launch policies. Implementations can extend the behavior of the first overload of <tt>async()</tt> by
+adding their extensions to the launch policy under the “as if” rule. &mdash; <i>end note</i> ]
+</p></blockquote>
+
+</resolution>
+
+</issue>
