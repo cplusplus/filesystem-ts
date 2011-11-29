@@ -1,0 +1,155 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="2101" status="New">
+<title>Some transformation types can produce impossible types</title>
+<section><sref ref="[meta.trans]"/></section>
+<submitter>Daniel Kr&uuml;gler</submitter>
+<date>18 Nov 2011</date>
+
+<discussion>
+
+<p>
+Table 53 &mdash; "Reference modifications" says in regard to the type trait 
+<tt>add_lvalue_reference</tt> (emphasize mine)
+</p>
+
+<blockquote>
+<p>
+If <tt>T</tt> names an object or <strong>function</strong> type then the member typedef type
+shall name <tt>T&amp;</tt>;
+</p>
+</blockquote>
+
+<p>
+The problem with this specification is that function types with <i>cv</i>-qualifier or <i>ref</i>-qualifier, 
+like
+</p>
+<blockquote><pre>
+void() const
+void() &amp;
+</pre></blockquote>
+<p>
+are also affected by the first part of the rule, but this would essentially mean, that
+instantiating <tt>add_lvalue_reference</tt> with such a type would attempt to form
+a type that is not defined in the C++ type system, namely
+</p>
+<blockquote><pre>
+void(&amp;)() const
+void(&amp;)() &amp;
+</pre></blockquote>
+<p>
+The general policy for <i>TransformationTrait</i>s is to define always some meaningful 
+mapping type, but this does not hold for <tt>add_lvalue_reference</tt>, <tt>add_rvalue_reference</tt>,
+and in addition to these two for <tt>add_pointer</tt> as well. The latter one would 
+attempt to form the invalid types
+</p>
+<blockquote><pre>
+void(*)() const
+void(*)() &amp;
+</pre></blockquote>
+<p>
+A possible reason why those traits were specified in this way is that in C++03 (and that means
+for TR1), <i>cv</i>-qualifier were underspecified in the core language and several compilers
+just ignored them during template instantiations. This situation became fixed by adopting
+CWG issues <a href="www.open-std.org/jtc1/sc22/wg21/docs/cwg_defects.html#295">295</a> and 
+<a href="http://www.open-std.org/jtc1/sc22/wg21/docs/cwg_defects.html#547">547</a>.
+<p/>
+While there is possibly some core language clarification needed (see reflector messages
+starting from c++std-core-20740), it seems also clear that the library should fix the
+specification. The suggested resolution follows the style of the specification of the
+support concepts <tt>PointeeType</tt> and <tt>ReferentType</tt> defined in 
+<a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2009/n2914.pdf">N2914</a>.
+</p>
+
+</discussion>
+
+<resolution>
+<p>This wording is relative to the FDIS.</p>
+
+<ol>
+<li><p>Change Table 53 &mdash; "Reference modifications" in <sref ref="[meta.trans.ref]"/> as indicated:</p>
+
+<table border="1">
+<caption>Table 53 &mdash; Reference modifications</caption>
+<tr>
+<th>Template</th>
+<th>Comments</th>
+</tr> 
+
+<tr>
+<td colspan="2" align="center">
+<tt>&hellip;</tt>
+</td>
+</tr>
+
+<tr>
+<td>
+<tt>template &lt;class T&gt;<br/>
+struct<br/>
+add_lvalue_reference;</tt>
+</td>
+<td>
+If <tt>T</tt> names an object <tt>type</tt> or <ins>if <tt>T</tt> names a</ins> function type <ins>that does not have<br/>
+<i>cv</i>-qualifiers or a <i>ref</i>-qualifier</ins> then the member typedef <tt>type</tt><br/>
+shall name <tt>T&amp;</tt>; otherwise, if <tt>T</tt> names a type “rvalue reference to <tt>T1</tt>” then<br/>
+the member typedef <tt>type</tt> shall name <tt>T1&amp;</tt>; otherwise, <tt>type</tt> shall name <tt>T</tt>.
+</td>
+</tr>
+
+<tr>
+<td>
+<tt>template &lt;class T&gt;<br/>
+struct<br/>
+add_rvalue_reference;</tt>
+</td>
+<td>
+If <tt>T</tt> names an object <tt>type</tt> or <ins>if <tt>T</tt> names a</ins> function type <ins>that does not have<br/>
+<i>cv</i>-qualifiers or a <i>ref</i>-qualifier</ins> then the member typedef <tt>type</tt><br/>
+shall name <tt>T&amp;&amp;</tt>; otherwise, <tt>type</tt> shall name <tt>T</tt>. [ <i>Note</i>: This rule reflects<br/>
+the semantics of reference collapsing (<sref ref="[dcl.ref]"/>). For example, when a type <tt>T</tt><br/>
+names a type <tt>T1&amp;</tt>, the type <tt>add_rvalue_reference&lt;T&gt;::type</tt> is not an<br/>
+rvalue reference. &mdash; <i>end note</i> ]
+</td>
+</tr>
+</table>
+
+</li>
+
+<li><p>Change Table 56 &mdash; "Pointer modifications" in <sref ref="[meta.trans.ptr]"/> as indicated:</p>
+
+<table border="1">
+<caption>Table 56 &mdash; Pointer modifications</caption>
+<tr>
+<th>Template</th>
+<th>Comments</th>
+</tr> 
+
+<tr>
+<td colspan="2" align="center">
+<tt>&hellip;</tt>
+</td>
+</tr>
+
+<tr>
+<td>
+<tt>template &lt;class T&gt;<br/>
+struct add_pointer;</tt>
+</td>
+<td>
+<del>The member typedef <tt>type</tt> shall name the same type as</del><br/>
+<ins>If <tt>T</tt> names a function type that has <i>cv</i>-qualifiers or a <i>ref</i>-qualifier<br/>
+then the member typedef <tt>type</tt> shall name <tt>T</tt>; otherwise, it<br/> 
+shall name the same type as</ins> <tt>remove_reference&lt;T&gt;::type*</tt>.
+</td>
+</tr>
+
+</table>
+
+</li>
+</ol>
+</resolution>
+
+</issue>
