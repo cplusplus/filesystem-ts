@@ -1,0 +1,82 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="2103" status="New">
+<title><tt>std::allocator_traits&lt;std::allocator&lt;T&gt;&gt;::propagate_on_container_move_assignment</tt></title>
+<section><sref ref="[default.allocator]"/></section>
+<submitter>Ai Azuma</submitter>
+<date>8 Nov 2011</date>
+
+<discussion>
+
+<p>
+&quot;<tt>std::allocator_traits&lt;std::allocator&lt;T&gt;&gt;::propagate_on_container_move_assignment::value</tt>&quot;
+is specified as &quot;false&quot;, according to (<sref ref="[default.allocator]"/>) and (<sref ref="[allocator.traits.types]"/>).
+However, according to (<sref ref="[container.requirements.general]"/>), this specification leads to the unneeded requirements
+(<tt>MoveInsertable</tt> and <tt>MoveAssignable</tt> of the value type) on the move assignment operator of containers
+with the default allocator. 
+<p/>
+Proposed resolution:
+<p/>
+Either of the following two changes;  
+</p>
+<ol>
+<li>
+adding the nested typedef like
+&quot;<tt>typedef std::true_type propagate_on_container_move_assignment;</tt>&quot;
+in the definition of <tt>std::allocator</tt> class template,
+</li>
+<li>
+adding the explicit partial specialization of
+&quot;<tt>std::allocator_traits</tt>&quot; class template for &quot;<tt>std::allocator</tt>&quot;
+class template, in which &quot;<tt>propagate_on_container_move_assignment</tt>&quot;
+nested typedef is specified as &quot;<tt>std::true_type</tt>&quot;. 
+</li>
+</ol>
+<p>
+Pablo prefers the first resolution.
+</p>
+
+</discussion>
+
+<resolution>
+<p>This wording is relative to the FDIS.</p>
+
+<p>Change <sref ref="[default.allocator]"/>, the class template <tt>allocator</tt> synopsis as indicated:</p>
+
+<blockquote><pre>
+namespace std {
+  template &lt;class T&gt; class allocator;
+
+  <i>// specialize for <tt>void</tt>:</i>
+  template &lt;&gt; class allocator&lt;void&gt; {
+  public:
+    typedef void* pointer;
+    typedef const void* const_pointer;
+    <i>// reference-to-<tt>void</tt> members are impossible.</i>
+    typedef void value_type;
+    template &lt;class U&gt; struct rebind { typedef allocator&lt;U&gt; other; };
+  };
+
+  template &lt;class T&gt; class allocator {
+  public:
+    typedef size_t size_type;
+    typedef ptrdiff_t difference_type;
+    typedef T* pointer;
+    typedef const T* const_pointer;
+    typedef T&amp; reference;
+    typedef const T&amp; const_reference;
+    typedef T value_type;
+    template &lt;class U&gt; struct rebind { typedef allocator&lt;U&gt; other; };
+    <ins>typedef true_type propagate_on_container_move_assignment;</ins>
+
+    [&hellip;]
+  };
+}
+</pre></blockquote>
+
+</resolution>
+
+</issue>
