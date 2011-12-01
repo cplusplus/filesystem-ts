@@ -57,9 +57,161 @@ and similar wording for time-related operations:
 "Any exception thrown by operations of <tt>chrono::duration&lt;Rep, Period&gt;</tt>"
 </p>
 
+<note>2011-11-28: Ganesh comments and suggests wording</note>
+
+<p>
+As for the discussion about the exception thrown by the manipulation of time-related objects, 
+I believe the argument applies to all functions declared in <sref ref="[thread]"/>. Therefore, 
+instead of adding wording to each member, I would simply move those requirements from 
+<sref ref="[thread.thread.this]"/> p6&#47;p9 to a new paragraph in <sref ref="[thread.req.timing]"/>. 
+<p/>
+As for <sref ref="[thread.condition.condvarany]"/>, the member functions <tt>wait()</tt> and 
+<tt>wait_until()</tt> are described only in terms of the Effects: clause (so strictly speaking, 
+they need no changes), however, <tt>wait_for()</tt> is described with a full set of clauses 
+including Throws: and Error conditions:. Either we should add those clauses to <tt>wait&#47;wait_until</tt> 
+with changes similar to the one above, or remove paragraphs 29 to 34 entirely. By the way, 
+even paragraph 26 could be removed IMHO.
+</p>
+
 </discussion>
 
 <resolution>
+<p>This wording is relative to the FDIS.</p>
+
+<ol>
+<li><p>Add a new paragraph at the end of <sref ref="[thread.req.timing]"/>:</p>
+
+<blockquote>
+<p>
+[&hellip;]
+<p/>
+-6- The resolution of timing provided by an implementation depends on both operating system and hardware.
+The finest resolution provided by an implementation is called the native resolution.
+<p/>
+-7- Implementation-provided clocks that are used for these functions shall meet the <tt>TrivialClock</tt> 
+requirements (<sref ref="[time.clock.req]"/>).
+<p/>
+<ins>-?- For all functions that specify a timeout, in addition to what specified in the respective <i>Throws:</i> 
+elements, operations on clocks, time points and time duration types may throw exceptions. [ <i>Note</i>: 
+instantiations of clock, time point and duration types supplied by the implementation as specified in 
+<sref ref="[time.clock]"/> do not throw exceptions. &mdash; <i>end note</i>]</ins>
+</p>
+</blockquote>
+</li>
+
+<li><p>Change <sref ref="[thread.thread.this]"/> as indicated:</p>
+
+<blockquote><pre>
+template &lt;class Clock, class Duration&gt;
+  void sleep_until(const chrono::time_point&lt;Clock, Duration&gt;&amp; abs_time);;
+</pre><blockquote>
+<p>
+-4- <i>Effects</i>: Blocks the calling thread for the absolute timeout (<sref ref="[thread.req.timing]"/>) specified by <tt>abs_time</tt>.
+<p/>
+-5- <i>Synchronization</i>: None.
+<p/>
+-6- <i>Throws</i>: Nothing <del>if <tt>Clock</tt> satisfies the <tt>TrivialClock</tt> requirements 
+(<sref ref="[time.clock.req]"/>) and operations of <tt>Duration</tt> do not throw exceptions. 
+[ <i>Note</i>: instantiations of time point types and clocks supplied by the implementation
+as specified in <sref ref="[time.clock]"/> do not throw exceptions. &mdash; <i>end note</i>]</del>
+</p>
+</blockquote></blockquote>
+
+<blockquote><pre>
+template &lt;class Rep, class Period&gt;
+  void sleep_for(const chrono::duration&lt;Rep, Period&gt;&amp; rel_time);;
+</pre><blockquote>
+<p>
+-7- <i>Effects</i>: Blocks the calling thread for the relative timeout (<sref ref="[thread.req.timing]"/>) specified by <tt>rel_time</tt>.
+<p/>
+-8- <i>Synchronization</i>: None.
+<p/>
+-9- <i>Throws</i>: Nothing <del>if operations of <tt>chrono::duration&lt;Rep, Period&gt;</tt> do not throw exceptions. 
+[ <i>Note</i>: instantiations of time point types and clocks supplied by the implementation
+as specified in <sref ref="[time.clock]"/> do not throw exceptions. &mdash; <i>end note</i>]</del>
+</p>
+</blockquote></blockquote>
+
+</li>
+
+<li><p>Change <sref ref="[thread.condition.condvar]"/> as indicated:</p>
+
+<blockquote><pre>
+template &lt;class Predicate&gt;
+  void wait(unique_lock&lt;mutex&gt;&amp; lock, Predicate pred);
+</pre><blockquote>
+<p>
+[&hellip;]
+<p/>
+-15- <i>Effects</i>:
+</p>
+<blockquote><pre>
+while (!pred())
+  wait(lock);
+</pre></blockquote>
+<p>
+[&hellip;]
+<p/>
+-17- <i>Throws</i>: <tt>std::system_error</tt> when an exception is required (<sref ref="[thread.req.timing]"/>) <ins>or 
+any exception thrown by <tt>pred</tt></ins>.
+<p/>
+[&hellip;]
+</p>
+</blockquote></blockquote>
+
+<blockquote><pre>
+template &lt;class Clock, class Duration, class Predicate&gt;
+  bool wait_until(unique_lock&lt;mutex&gt;&amp; lock,
+                  const chrono::time_point&lt;Clock, Duration&gt;&amp; abs_time,
+                  Predicate pred);
+</pre><blockquote>
+<p>
+[&hellip;]
+<p/>
+-32- <i>Effects</i>:
+</p>
+<blockquote><pre>
+while (!pred())
+  if (wait_until(lock, abs_time) == cv_status::timeout)
+    return pred();
+return true;
+</pre></blockquote>
+<p>
+[&hellip;]
+<p/>
+-36- <i>Throws</i>: <tt>std::system_error</tt> when an exception is required (<sref ref="[thread.req.timing]"/>) <ins>or 
+any exception thrown by <tt>pred</tt></ins>.
+<p/>
+[&hellip;]
+</p>
+</blockquote></blockquote>
+
+<blockquote><pre>
+template &lt;class Rep, class Period, class Predicate&gt;
+  bool wait_for(unique_lock&lt;mutex&gt;&amp; lock,
+                const chrono::duration&lt;Rep, Period&gt;&amp; rel_time,
+                Predicate pred);
+</pre><blockquote>
+<p>
+[&hellip;]
+<p/>
+-39- <i>Effects</i>: as if
+</p>
+<blockquote><pre>
+return wait_until(lock, chrono::steady_clock::now() + rel_time, std::move(pred));
+</pre></blockquote>
+<p>
+[&hellip;]
+<p/>
+-44- <i>Throws</i>: <tt>std::system_error</tt> when an exception is required (<sref ref="[thread.req.timing]"/>) <ins>or 
+any exception thrown by <tt>pred</tt></ins>.
+<p/>
+[&hellip;]
+</p>
+</blockquote></blockquote>
+
+</li>
+</ol>
 </resolution>
 
 </issue>
