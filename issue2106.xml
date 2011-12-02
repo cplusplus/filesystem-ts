@@ -1,0 +1,120 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="2106" status="New">
+<title><tt>move_iterator</tt> wrapping iterators returning prvalues</title>
+<section><sref ref="[move.iterators]"/></section>
+<submitter>Dave Abrahams</submitter>
+<date>30 Nov 2011</date>
+
+<discussion>
+
+<p>
+Shouldn't <tt>move_iterator</tt> be specialized so that if the iterator it wraps
+returns a prvalue when dereferenced, the <tt>move_iterator</tt> also returns by
+value? Otherwise, it creates a dangling reference.
+<p/>
+Howard: I believe just changing <tt>move_iterator&lt;I&gt;::reference</tt> would do.
+A direction might be testing on <tt>is_reference&lt;iterator_traits&lt;I&gt;::reference&gt;</tt>, 
+or <tt>is_reference&lt;decltype(*declval&lt;I&gt;())&gt;</tt>.
+<p/>
+Daniel: I would prefer to use a consistent style among the iterator adaptors, so I
+suggest to keep with the <tt>iterator_traits</tt> typedefs if possible. 
+</p>
+<blockquote><pre>
+using reference = typename conditional&lt;
+  is_reference&lt;typename iterator_traits&lt;Iterator&gt;::reference&gt;::value,
+  value_type&amp;&amp;,
+  value_type
+&gt;::type;
+</pre></blockquote>
+<p>
+We might also want to ensure that if <tt>Iterator</tt>'s <tt>reference</tt> type <em>is</em>
+a reference, the referent is equal to <tt>value_type</tt> (after removal of <i>cv</i>-qualifiers). 
+In <em>general</em> we have no such guarantee.
+<p/>
+Marc: In the default case where we don't return <tt>value_type&amp;&amp;</tt>, should we use 
+<tt>value_type</tt> or should we keep the <tt>reference</tt> type of the wrapped iterator?
+<p/>
+Daniel: This suggestion looks appealing at first, but the problem here is that using this typedef
+can make it impossible for <tt>move_iterator</tt> to satisfy its contract, which means returning
+an rvalue of the value type (Currently it says rvalue-reference, but this must be fixed as of
+this issue anyway). Let's set <tt>R</tt> equal to <tt>iterator_traits&lt;Iterator&gt;::reference</tt>
+for simplicity. We can discuss the following situations:
+</p>
+<ol><li><tt>R</tt> is a reference type: We can only return the corresponding xvalue of <tt>R</tt>,
+if that type is reference-compatible with <tt>value_type&amp;&amp;</tt>, else this is presumably no
+forward iterator and we cannot say much about it, except that it must be convertible to
+<tt>value_type</tt>, so it will be an prvalue.</li>
+<li><tt>R</tt> is not a reference type: In this case we can rely on a conversion to
+<tt>value_type</tt> again, but not much more. Assume we would return <tt>R</tt> directly,
+this might turn out to have a conversion to an lvalue-reference type of the value type (for
+example). If that is the case, this would indirectly violate the contract of 
+<tt>move_iterator</tt>.</li>
+</ol>
+<p>
+In regard to the first scenario I suggest that implementations are simply required to
+check that <tt>remove_cv&lt;remove_reference&lt;R&gt;::type&gt;::type</tt> is equal
+to the value type as a criterion to remove this reference as an xvalue, in all other
+cases it should return the value type directly as prvalue.
+<p/>
+The additional advantage of this strategy is, that we always ensure that <tt>reference</tt> has 
+the correct <i>cv</i>-qualification, if <tt>R</tt> is a real reference.
+</p>
+
+</discussion>
+
+<resolution>
+<p>This wording is relative to the FDIS.</p>
+
+<ol>
+<li><p>Change <sref ref="[move.iterators]"/> p1 as indicated:</p>
+
+<blockquote><p>
+Class template <tt>move_iterator</tt> is an iterator adaptor with the same behavior as the underlying iterator
+except that its dereference operator implicitly converts the value returned by the underlying iterator’s
+dereference operator to an rvalue <del>reference</del><ins>of the value type</ins>. Some generic algorithms 
+can be called with move iterators to replace copying with moving.
+</p></blockquote>
+</li>
+
+<li><p>Change <sref ref="[move.iterator]"/>, class template <tt>move_iterator</tt> synopsis, as indicated:</p>
+
+<blockquote><pre>
+namespace std {
+  template &lt;class Iterator&gt;
+  class move_iterator {
+  public:
+    typedef Iterator iterator_type;
+    typedef typename iterator_traits&lt;Iterator&gt;::difference_type difference_type;
+    typedef Iterator pointer;
+    typedef typename iterator_traits&lt;Iterator&gt;::value_type value_type;
+    typedef typename iterator_traits&lt;Iterator&gt;::iterator_category iterator_category;
+    typedef <del>value_type&amp;&amp;</del><ins><i>see below</i></ins> reference;
+    [&hellip;]
+  };
+}
+</pre></blockquote>
+
+</li>
+
+<li><p>Immediately following the class template <tt>move_iterator</tt> synopsis in 
+<sref ref="[move.iterator]"/> insert a new paragraph as indicated:</p>
+
+<blockquote><p>
+<ins>-?- Let <tt><i>R</i></tt> be <tt>iterator_traits&lt;Iterator&gt;::reference</tt> and
+let <tt><i>V</i></tt> be <tt>iterator_traits&lt;Iterator&gt;::value_type</tt>. If 
+<tt>is_reference&lt;R&gt;::value</tt> is <tt>true</tt> and if 
+<tt>remove_cv&lt;remove_reference&lt;R&gt;::type&gt;::type</tt> is the same type as <tt><i>V</i></tt>, 
+the template instantiation <tt>move_iterator&lt;Iterator&gt;</tt> shall define the nested type 
+named <tt>reference</tt> as a synonym for <tt>remove_reference&lt;R&gt;::type&amp;&amp;</tt>, 
+otherwise as a synonym for <tt><i>V</i></tt>.</ins>
+</p></blockquote>
+</li>
+</ol>
+
+</resolution>
+
+</issue>
