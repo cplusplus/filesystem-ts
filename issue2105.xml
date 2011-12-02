@@ -18,15 +18,10 @@ as an "iterator type whose value type is <tt>const T</tt>" and which is defined 
 <tt>reverse_iterator&lt;const_iterator&gt;</tt>. But <tt>reverse_iterator::value_type</tt> is 
 just "<tt>typename iterator_traits&lt;Iterator&gt;::value_type</tt>" <sref ref="[reverse.iterator]"/>, 
 so <tt>const_iterator</tt> and <tt>const_reverse_iterator</tt> must have the same <tt>value_type</tt>.
-<p/>
-<tt>std::iterator&lt;&gt;</tt>'s default template arguments are arranged assuming
-that <tt>const_iterator</tt> should have a <tt>value_type</tt> of "<tt>const T</tt>", but
-<tt>boost::iterator_facade</tt>'s defaults make <tt>const_iterators</tt> have a
-<tt>value_type</tt> of "<tt>T</tt>", so it's not clear whether it's better to fix this
-by changing <tt>const_iterator</tt> or <tt>const_reverse_iterator</tt>.
-<p/>
-I found <iref ref="322"/>, which implies that it's <tt>const_reverse_iterator</tt> that should 
-change.
+</p>
+<p>
+The resolution to issue <iref ref="322"/> implies that
+<tt>const_reverse_iterator</tt> should change.
 </p>
 
 </discussion>
