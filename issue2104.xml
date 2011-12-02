@@ -1,0 +1,127 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="2104" status="New">
+<title><tt>unique_lock</tt> move-assignment should not be <tt>noexcept</tt></title>
+<section><sref ref="[thread.lock.unique]"/></section>
+<submitter>Anthony Williams</submitter>
+<date>27 Nov 2011</date>
+
+<discussion>
+
+<p>
+I just noticed that the <tt>unique_lock</tt> move-assignment operator is declared <tt>noexcept</tt>. This 
+function may call <tt>unlock()</tt> on the wrapped mutex, which may throw.
+<p/>
+Suggested change: remove the <tt>noexcept</tt> specification from <tt>unique_lock::operator=(unique_lock&amp;&amp;)</tt> 
+in <sref ref="[thread.lock.unique]"/> and <sref ref="[thread.lock.unique.cons]"/>. 
+<p/>
+Daniel:
+<p/>
+I think the situation is actually a bit more complex as it initially looks.
+<p/>
+First, the effects of the move-assignment operator are (emphasize mine):
+</p>
+<blockquote><p>
+<i>Effects</i>: <strong>If</strong> <tt>owns</tt> calls <tt>pm->unlock()</tt>.
+</p></blockquote>
+<p>
+Now according to the <tt>BasicLockable</tt> requirements:
+</p>
+<blockquote><p>
+<tt>m.unlock()</tt>
+<p/>
+3 <i>Requires</i>: The current execution agent shall hold a lock on <tt>m</tt>.
+<p/>
+4 <i>Effects</i>: Releases a lock on <tt>m</tt> held by the current execution agent.
+<p/>
+<i>Throws</i>: Nothing.
+</p></blockquote>
+<p>
+This shows that unlock itself is a function with narrow contract and for 
+this reasons no unlock function of a mutex or lock itself does have a noexcept 
+specifier according to our mental model.
+<p/>
+Now the move-assignment operator <strong>attempts</strong> to satisfy these
+requirement of the function and calls it only when it assumes that the conditions 
+are ok, so from the view-point of the caller of the move-assignment operator it 
+looks as if the move-assignment operator would in total a function with a
+wide contract.
+<p/>
+The problem with this analysis so far is, that it depends on the assumed 
+correctness of the state "owns".
+<p/>
+Looking at the construction or state-changing functions, there do exist several 
+ones that depend on caller-code satisfying the requirements and there is one 
+guy, who looks most suspicious:
+</p>
+<blockquote><p>
+<tt>unique_lock(mutex_type&amp; m, adopt_lock_t);</tt>
+<p/>
+11 <i>Requires</i>: The calling thread own the mutex.<br/>
+[&hellip;]<br/>
+13 <i>Postconditions</i>: <tt>pm == &amp;m</tt> and <tt>owns == true</tt>.<br/>
+</p></blockquote>
+<p>
+because this function does not even call <tt>lock()</tt> (which may, but is not 
+required to throw an exception if the calling thread does already own the mutex). 
+So we have in fact still a move-assignment operator that might throw an exception, 
+if the mutex was either constructed or used (call of lock) incorrectly.
+<p/>
+The correct fix seems to me to also add a "<i>Throws</i>: Nothing" element to
+the move-assignment operator, because using it correctly shall now throw an
+exception.
+</p>
+
+</discussion>
+
+<resolution>
+<p>This wording is relative to the FDIS.</p>
+
+<ol>
+<li>
+<p>Change <sref ref="[thread.lock.unique]"/>, class template <tt>unique_lock</tt> synopsis as indicated:</p>
+
+<blockquote><pre>
+namespace std {
+  template &lt;class Mutex&gt;
+  class unique_lock {
+  public:
+    typedef Mutex mutex_type;
+    [&hellip;]
+    unique_lock(unique_lock&amp;&amp; u) noexcept;
+    unique_lock&amp; operator=(unique_lock&amp;&amp; u) <del>noexcept</del>;
+    [&hellip;]
+  };
+}
+</pre></blockquote>
+</li>
+
+<li>
+<p>Change <sref ref="[thread.lock.unique.cons]"/> around p22 as indicated:</p>
+
+<blockquote><pre>
+unique_lock&amp; operator=(unique_lock&amp;&amp; u) <del>noexcept</del>;
+</pre><blockquote>
+<p>
+-22- <i>Effects</i>: If <tt>owns</tt> calls <tt>pm->unlock()</tt>.
+<p/>
+-23- <i>Postconditions</i>: <tt>pm == u_p.pm</tt> and <tt>owns == u_p.owns</tt> (where <tt>u_p</tt> 
+is the state of <tt>u</tt> just prior to this construction), <tt>u.pm == 0</tt> and <tt>u.owns == false</tt>.
+<p/>
+-24- [<i>Note</i>: With a recursive mutex it is possible for both <tt>*this</tt> and <tt>u</tt> to own 
+the same mutex before the assignment. In this case, <tt>*this</tt> will own the mutex after the assignment 
+and <tt>u</tt> will not. &mdash; <i>end note</i>]
+</p>
+<ins>-??- <i>Throws</i>: Nothing.</ins>
+<p/>
+</blockquote></blockquote>
+</li>
+
+</ol>
+
+</resolution>
+
+</issue>
