@@ -1,0 +1,87 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="2105" status="New">
+<title>Inconsistent requirements on <tt>const_iterator</tt>'s <tt>value_type</tt></title>
+<section><sref ref="[container.requirements.general]"/></section>
+<submitter>Jeffrey Yasskin</submitter>
+<date>28 Nov 2011</date>
+
+<discussion>
+
+<p>
+In the FDIS, Table 96 specifies <tt>X::const_iterator</tt> as a "constant iterator type 
+whose value type is <tt>T</tt>". However, Table 97 specifies <tt>X::const_reverse_iterator</tt> 
+as an "iterator type whose value type is <tt>const T</tt>" and which is defined as 
+<tt>reverse_iterator&lt;const_iterator&gt;</tt>. But <tt>reverse_iterator::value_type</tt> is 
+just "<tt>typename iterator_traits&lt;Iterator&gt;::value_type</tt>" <sref ref="[reverse.iterator]"/>, 
+so <tt>const_iterator</tt> and <tt>const_reverse_iterator</tt> must have the same <tt>value_type</tt>.
+<p/>
+<tt>std::iterator&lt;&gt;</tt>'s default template arguments are arranged assuming
+that <tt>const_iterator</tt> should have a <tt>value_type</tt> of "<tt>const T</tt>", but
+<tt>boost::iterator_facade</tt>'s defaults make <tt>const_iterators</tt> have a
+<tt>value_type</tt> of "<tt>T</tt>", so it's not clear whether it's better to fix this
+by changing <tt>const_iterator</tt> or <tt>const_reverse_iterator</tt>.
+<p/>
+I found <iref ref="322"/>, which implies that it's <tt>const_reverse_iterator</tt> that should 
+change.
+</p>
+
+</discussion>
+
+<resolution>
+<p>This wording is relative to the FDIS.</p>
+
+<p>Change Table 97 &mdash; "Reversible container requirements" as indicated</p>
+
+<table border="1">
+<caption>Table 97 &mdash; Reversible container requirements</caption>
+<tr>
+<th>Expression</th>
+<th>Return type</th>
+<th>Assertion&#47;note pre-&#47;post-condition</th>
+<th>Complexity</th>
+</tr> 
+
+<tr>
+<td>
+<tt>X::reverse_-<br/>
+iterator</tt>
+</td>
+<td>
+iterator type whose value type<br/>
+is <tt>T</tt>
+</td>
+<td>
+<tt>reverse_iterator&lt;iterator&gt;</tt>
+</td>
+<td>
+compile time
+</td>
+</tr>
+
+<tr>
+<td>
+<tt>X::const_-<br/>
+reverse_-<br/>
+iterator</tt>
+</td>
+<td>
+<ins>constant</ins> iterator type whose value type<br/>
+is <tt><del>const</del> T</tt>
+</td>
+<td>
+<tt>reverse_iterator&lt;const_iterator&gt;</tt>
+</td>
+<td>
+compile time
+</td>
+</tr>
+</table>
+
+
+</resolution>
+
+</issue>
