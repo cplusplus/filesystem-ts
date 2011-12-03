@@ -1,0 +1,188 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="2108" status="New">
+<title>No way to identify allocator types that always compare equal</title>
+<section><sref ref="[allocator.requirements]"/></section>
+<submitter>Jonathan Wakely</submitter>
+<date>1 Dec 2011</date>
+
+<discussion>
+
+<p>
+Whether two allocator objects compare equal affects the complexity of
+container copy and move assignments and also the possibility of an
+exception being thrown by container move assignments. The latter point
+means container move assignment cannot be <tt>noexcept</tt> when
+<tt>propagate_on_container_move_assignment</tt> (POCMA) is false for the
+allocator because there is no way to detect at compile-time if two
+allocators will compare equal. LWG <iref ref="2013"/> means this affects all
+containers using <tt>std::allocator</tt>, but even if that is resolved, this
+affects all stateless allocators which do not explicitly define POCMA
+to <tt>true_type</tt>.
+<p/>
+One solution would be to add an "always_compare_equal" trait to
+<tt>allocator_traits</tt>, but that would be duplicating information that is
+already defined by the type's equality operator if that operator
+always returns true. Requiring users to write <tt>operator==</tt> that simply
+returns true and also explicitly override a trait to repeat the same
+information would be unfortunate and risk user errors that allow the
+trait and actual <tt>operator==</tt> to disagree.
+<p/>
+Dave Abrahams suggested a better solution in message c++std-lib-31532,
+namely to allow <tt>operator==</tt> to return <tt>true_type</tt>, which is convertible
+to <tt>bool</tt> but also detectable at compile-time. Adopting this as the
+recommended way to identify allocator types that always compare equal
+only requires a slight relaxation of the allocator requirements so
+that <tt>operator==</tt> is not required to return <tt>bool</tt> exactly.
+<p/>
+The allocator requirements do not make it clear that it is well-defined 
+to compare non-const values, that should be corrected too.
+<p/>
+In message c++std-lib-31615 Pablo Halpern suggested an <tt>always_compare_equal</tt> 
+trait that could still be defined, but with a sensible default value rather 
+than requiring users to override it, and using that to set sensible values for 
+other allocator traits:
+</p>
+<blockquote><p>
+Do we still need <tt>always_compare_equal</tt> if we can have an <tt>operator==</tt>
+that returns <tt>true_type</tt>?  What would its default value be? <tt>is_empty&lt;A&gt;
+|| is_convertible&lt;decltype(a == a), true_type&gt;::value</tt>, perhaps?  One
+benefit I see to such a definition is that stateless C++03 allocators
+that don't use the <tt>true_type</tt> idiom will still benefit from the new
+trait.
+<p/>
+[&hellip;]
+<p/>
+One point that I want to ensure doesn't get lost is that if we adopt some sort of 
+<tt>always_compare_equal</tt>-like trait, then <tt>propagate_on_container_swap</tt> 
+and <tt>propagate_on_container_move_assignment</tt> should default to 
+<tt>always_compare_equal</tt>. Doing this will eliminate unnecessary requirements 
+on the container element type, as per [LWG <iref href="2103"/>].
+</p></blockquote>
+<p>
+Optionally, <tt>operator==</tt> for <tt>std::allocator</tt> could be made to return 
+<tt>true_type</tt>, however if LWG <iref href="2103"/> is adopted that is less important.
+</p>
+
+</discussion>
+
+<resolution>
+<p>This wording is relative to the FDIS.</p>
+
+<ol>
+<li><p>Change Table 27 &mdash; "Descriptive variable definitions" in <sref ref="[allocator.requirements]"/>:</p>
+
+<table border="1">
+<caption>Table 27 &mdash; Descriptive variable definitions</caption>
+<tr>
+<th>Variable</th>
+<th>Definition</th>
+</tr> 
+
+<tr>
+<td>
+<tt>a3<ins>, a4</ins></tt>
+</td>
+<td>
+<del>an rvalue of</del><ins>values of (possibly <tt>const</tt>)</ins> type <tt>X</tt>
+</td>
+</tr>
+
+<tr>
+<td>
+<tt>b</tt>
+</td>
+<td>
+a value of <ins>(possibly <tt>const</tt>)</ins> type <tt>Y</tt>
+</td>
+</tr>
+
+</table>
+
+</li>
+
+<li><p>Change Table 28 &mdash; "Allocator requirements" in <sref ref="[allocator.requirements]"/>:</p>
+
+<table border="1">
+<caption>Table 28 &mdash; Allocator requirements</caption>
+<tr>
+<th>Expression</th>
+<th>Return type</th>
+<th>Assertion&#47;note pre-&#47;post-condition</th>
+<th>Default</th>
+</tr> 
+
+<tr>
+<td>
+<tt><del>a1 == a2</del><ins>a3 == a4</ins></tt>
+</td>
+<td>
+<ins>contextually converted to</ins> <tt>bool</tt>
+</td>
+<td>
+returns true only if storage<br/>
+allocated from each can be<br/>
+deallocated via the other.<br/>
+<tt>operator==</tt> shall be reflexive,<br/>
+symmetric, and transitive, and<br/>
+shall not exit via an exception.
+</td>
+<td>
+</td>
+</tr>
+
+<tr>
+<td>
+<tt><del>a1 != a2</del><ins>a3 != a4</ins></tt>
+</td>
+<td>
+<ins>contextually converted to</ins> <tt>bool</tt>
+</td>
+<td>
+same as <tt><del>!(a1 == a2)</del><ins>!(a3 == a4)</ins></tt>
+</td>
+<td>
+</td>
+</tr>
+
+<tr>
+<td>
+<tt>a<ins>3</ins> == b</tt>
+</td>
+<td>
+<ins>contextually converted to</ins> <tt>bool</tt>
+</td>
+<td>
+same as <tt>a<ins>3</ins> ==<br/>
+Y::rebind&lt;T&gt;::other(b)</tt>
+</td>
+<td>
+</td>
+</tr>
+
+<tr>
+<td>
+<tt>a<ins>3</ins> != b</tt>
+</td>
+<td>
+<ins>contextually converted to</ins> <tt>bool</tt>
+</td>
+<td>
+same as <tt>!(a<ins>3</ins> == b)</tt>
+</td>
+<td>
+</td>
+</tr>
+
+</table>
+
+</li>
+
+</ol>
+
+</resolution>
+
+</issue>
