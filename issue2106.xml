@@ -41,13 +41,23 @@ Marc: In the default case where we don't return <tt>value_type&amp;&amp;</tt>, s
 Daniel: This suggestion looks appealing at first, but the problem here is that using this typedef
 can make it impossible for <tt>move_iterator</tt> to satisfy its contract, which means returning
 an rvalue of the value type (Currently it says rvalue-reference, but this must be fixed as of
-this issue anyway). Let's set <tt>R</tt> equal to <tt>iterator_traits&lt;Iterator&gt;::reference</tt>
-for simplicity. We can discuss the following situations:
+this issue anyway). I think that user-code can reasonably expect that when it has constructed
+an object <tt>m</tt> of <tt>move_iterator&lt;It&gt;</tt>, where <tt>It</tt> is a valid 
+mutable iterator type, the expression
+</p>
+<blockquote><pre>
+<span style="color:#C80000;font-weight:bold">It::value_type&amp;&amp; rv = *m;</span>
+</pre></blockquote>
+<p>
+is well-formed.
+<p/>
+Let's set <tt>R</tt> equal to <tt>iterator_traits&lt;Iterator&gt;::reference</tt>
+in the following. We can discuss the following situations:
 </p>
 <ol><li><tt>R</tt> is a reference type: We can only return the corresponding xvalue of <tt>R</tt>,
-if that type is reference-compatible with <tt>value_type&amp;&amp;</tt>, else this is presumably no
+if <tt>value_type</tt> is reference-related to the referent type, else this is presumably no
 forward iterator and we cannot say much about it, except that it must be convertible to
-<tt>value_type</tt>, so it will be an prvalue.</li>
+<tt>value_type</tt>, so it better should return a prvalue.</li>
 <li><tt>R</tt> is not a reference type: In this case we can rely on a conversion to
 <tt>value_type</tt> again, but not much more. Assume we would return <tt>R</tt> directly,
 this might turn out to have a conversion to an lvalue-reference type of the value type (for
@@ -56,12 +66,18 @@ example). If that is the case, this would indirectly violate the contract of
 </ol>
 <p>
 In regard to the first scenario I suggest that implementations are simply required to
-check that <tt>remove_cv&lt;remove_reference&lt;R&gt;::type&gt;::type</tt> is equal
-to the value type as a criterion to remove this reference as an xvalue, in all other
+check that <tt>V2 = remove_cv&lt;remove_reference&lt;R&gt;::type&gt;::type</tt> is equal
+to the value type <tt>V1</tt> as a criterion to return this reference as an xvalue, in all other
 cases it should return the value type directly as prvalue.
 <p/>
 The additional advantage of this strategy is, that we always ensure that <tt>reference</tt> has 
 the correct <i>cv</i>-qualification, if <tt>R</tt> is a real reference.
+<p/>
+It is possible to improve this a bit by indeed supporting reference-related types,
+this would require to test <tt>is_same&lt;V1, V2&gt;::value || is_base_of&lt;V1, V2&gt;::value</tt> 
+instead. I'm unsure whether (a) this additional effort is worth it and (b) a strict reading of
+the forward iterator requirements seems not to allow to return a reference-related type (Whether 
+this is a defect or not is another question).
 </p>
 
 </discussion>
@@ -106,10 +122,10 @@ namespace std {
 <blockquote><p>
 <ins>-?- Let <tt><i>R</i></tt> be <tt>iterator_traits&lt;Iterator&gt;::reference</tt> and
 let <tt><i>V</i></tt> be <tt>iterator_traits&lt;Iterator&gt;::value_type</tt>. If 
-<tt>is_reference&lt;R&gt;::value</tt> is <tt>true</tt> and if 
-<tt>remove_cv&lt;remove_reference&lt;R&gt;::type&gt;::type</tt> is the same type as <tt><i>V</i></tt>, 
+<tt>is_reference&lt;<i>R</i>&gt;::value</tt> is <tt>true</tt> and if 
+<tt>remove_cv&lt;remove_reference&lt;<i>R</i>&gt;::type&gt;::type</tt> is the same type as <tt><i>V</i></tt>, 
 the template instantiation <tt>move_iterator&lt;Iterator&gt;</tt> shall define the nested type 
-named <tt>reference</tt> as a synonym for <tt>remove_reference&lt;R&gt;::type&amp;&amp;</tt>, 
+named <tt>reference</tt> as a synonym for <tt>remove_reference&lt;<i>R</i>&gt;::type&amp;&amp;</tt>, 
 otherwise as a synonym for <tt><i>V</i></tt>.</ins>
 </p></blockquote>
 </li>
