@@ -205,8 +205,9 @@ and constructs an object in that memory via the placement new expression
 of <tt>a</tt> to allocate memory. If an exception is thrown, the functions have no effect.</del>
 <p/>
 <ins>-?- <i>Remarks</i>: An implementation may meet the effects (and the implied guarantees) without 
-creating the allocator object [<i>Note</i>: That is, it may call the expression 
-<tt>::new (pv) T(std::forward&lt;Args&gt;(args)...)</tt> directly &mdash; <i>end note</i>].</ins>
+creating the allocator object [<i>Note</i>: That is, it may call the expressions 
+<tt>::new (pv) T(std::forward&lt;Args&gt;(args)...)</tt> and <tt>pv-&gt;T()~</tt> directly 
+&mdash; <i>end note</i>].</ins>
 <p/>
 <del>-3- <i>Returns</i>: A <tt>shared_ptr</tt> instance that stores and owns the address of the newly constructed 
 object of type <tt>T</tt>.</del>
@@ -232,19 +233,25 @@ template&lt;class T, class A, class... Args&gt;
   shared_ptr&lt;T&gt; allocate_shared(const A&amp; a, Args&amp;&amp;... args);
 </pre></blockquote>
 <p>
--?- <i>Requires</i>: The expression 
-<tt>allocator_traits&lt;A&gt;::construct(a2, pt, std::forward&lt;Args&gt;(args)...)</tt> shall be well-formed
-and well-defined, where <tt>a2</tt> has type <tt>A</tt> and is a copy of <tt>a</tt> and where <tt>pt</tt> 
-has type <tt>T*</tt> and points to storage suitable to hold an object of type <tt>T</tt>. <tt>T</tt> shall 
-be Destructible. <tt>A</tt> shall meet the allocator requirements (<sref ref="[allocator.requirements]"/>). 
+-?- <i>Requires</i>: The expressions 
+<tt>allocator_traits&lt;A&gt;::construct(b, pt, std::forward&lt;Args&gt;(args)...)</tt> and
+<tt>allocator_traits&lt;A&gt;::destroy(b, pt)</tt>  shall be well-formed and well-defined, 
+where <tt>b</tt> has type <tt>A</tt> and is a copy of <tt>a</tt> and where <tt>pt</tt> 
+has type <tt>T*</tt> and points to storage suitable to hold an object of type <tt>T</tt>. 
+<tt>A</tt> shall meet the allocator requirements (<sref ref="[allocator.requirements]"/>). 
 <p/>
--?- <i>Effects</i>: Constructs an object <tt>a2</tt> of type <tt>A</tt> from <tt>a</tt> and uses this 
-copy to allocate memory suitable for an object of type <tt>T</tt> and to construct an object in that 
-memory by calling <tt>allocator_traits&lt;A&gt;::construct(a2, pt, std::forward&lt;Args&gt;(args)...)</tt>. 
+-?- <i>Effects</i>: Uses a suitably-rebound version of <tt>A</tt>, an object <tt>a2</tt> of type 
+<tt>A2</tt>, to allocate memory suitable for an object of type <tt>T</tt>. Uses a copy 
+<tt>b</tt> of type <tt>A</tt> from <tt>a</tt> to construct an object of type <tt>T</tt> in 
+that memory by calling <tt>allocator_traits&lt;A&gt;::construct(b, pt, std::forward&lt;Args&gt;(args)...)</tt>. 
 If an exception is thrown, the function has no effect.
 <p/>
 -?- <i>Returns</i>: A <tt>shared_ptr</tt> instance that stores and owns the address of the newly constructed 
-object of type <tt>T</tt>.
+object of type <tt>T</tt>. When ownership is given up, the effects are as follows: Uses a copy <tt>b2</tt> 
+of type <tt>A</tt> from <tt>a</tt> to destruct an object of type <tt>T</tt> by calling 
+<tt>allocator_traits&lt;A&gt;::destroy(b2, pt2)</tt> where <tt>pt2</tt> has type <tt>T*</tt> 
+and refers to the newly constructed object. Then uses a copy <tt>a2<sub>'</sub></tt> of type <tt>A2</tt> 
+from <tt>a2</tt> to deallocate the allocated memory.
 <p/>
 -?- <i>Postconditions</i>: <tt>get() != 0 &amp;&amp; use_count() == 1</tt>
 <p/>
@@ -255,7 +262,7 @@ throws an exception.
 allocation. [<i>Note</i>: Such an implementation provides efficiency equivalent to an intrusive smart 
 pointer. &mdash; <i>end note</i>]
 <p/>
--?- [<i>Note</i>: These functions will typically allocate more memory than <tt>sizeof(T)</tt> to allow for internal
+-?- [<i>Note</i>: This function will typically allocate more memory than <tt>sizeof(T)</tt> to allow for internal
 bookkeeping structures such as the reference counts. &mdash; <i>end note</i>]
 </p>
 </li>
