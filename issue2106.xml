@@ -80,11 +80,42 @@ the forward iterator requirements seems not to allow to return a reference-relat
 this is a defect or not is another question).
 </p>
 
+<note>2011-12-05: Marc Glisse comments and splits into two resolution alternatives</note>
+
+<p>
+I guess I am looking at the speed of:
+</p>
+<blockquote><pre>
+value_type x;
+x = *m;
+</pre></blockquote>
+<p>
+(copy construction would likely trigger copy elision and thus be neutral)
+
+instead of the validity of:
+</p>
+<blockquote><pre>
+value_type&amp;&amp; x = *m;
+</pre></blockquote>
+<p>
+In this sense, Daniels earlier proposition that ignored <tt>value_type</tt> and just did 
+switch_lvalue_ref_to_rvalue_ref&lt;reference&gt; was easier to understand (and it didn't 
+require thinking about reference related types).
+<p/>
+The currently proposed resolution has been split into two alternatives.
+</p>
+
 </discussion>
 
 <resolution>
 <p>This wording is relative to the FDIS.</p>
 
+<p><strong>This section shows two mutually exclusive resolutions &mdash; only one can
+be picked!</strong></p>
+
+<ol style="list-style-type:upper-alpha">
+
+<li>
 <ol>
 <li><p>Change <sref ref="[move.iterators]"/> p1 as indicated:</p>
 
@@ -130,7 +161,55 @@ otherwise as a synonym for <tt><i>V</i></tt>.</ins>
 </p></blockquote>
 </li>
 </ol>
+</li>
 
+<li>
+<ol>
+<li><p>Change <sref ref="[move.iterators]"/> p1 as indicated:</p>
+
+<blockquote><p>
+Class template <tt>move_iterator</tt> is an iterator adaptor with the same behavior as the underlying iterator
+except that its dereference operator implicitly converts the value returned by the underlying iterator’s
+dereference operator to an rvalue <del>reference</del>. Some generic algorithms 
+can be called with move iterators to replace copying with moving.
+</p></blockquote>
+</li>
+
+<li><p>Change <sref ref="[move.iterator]"/>, class template <tt>move_iterator</tt> synopsis, as indicated:</p>
+
+<blockquote><pre>
+namespace std {
+  template &lt;class Iterator&gt;
+  class move_iterator {
+  public:
+    typedef Iterator iterator_type;
+    typedef typename iterator_traits&lt;Iterator&gt;::difference_type difference_type;
+    typedef Iterator pointer;
+    typedef typename iterator_traits&lt;Iterator&gt;::value_type value_type;
+    typedef typename iterator_traits&lt;Iterator&gt;::iterator_category iterator_category;
+    typedef <del>value_type&amp;&amp;</del><ins><i>see below</i></ins> reference;
+    [&hellip;]
+  };
+}
+</pre></blockquote>
+
+</li>
+
+<li><p>Immediately following the class template <tt>move_iterator</tt> synopsis in 
+<sref ref="[move.iterator]"/> insert a new paragraph as indicated:</p>
+
+<blockquote><p>
+<ins>-?- Let <tt><i>R</i></tt> be <tt>iterator_traits&lt;Iterator&gt;::reference</tt>. If 
+<tt>is_reference&lt;<i>R</i>&gt;::value</tt> is <tt>true</tt>, the template instantiation 
+<tt>move_iterator&lt;Iterator&gt;</tt> shall define the nested type named <tt>reference</tt> 
+as a synonym for <tt>remove_reference&lt;<i>R</i>&gt;::type&amp;&amp;</tt>, 
+otherwise as a synonym for <tt>iterator_traits&lt;Iterator&gt;::value_type</tt>.</ins>
+</p></blockquote>
+</li>
+</ol>
+
+</li>
+</ol>
 </resolution>
 
 </issue>
