@@ -177,8 +177,97 @@ same as <tt>!(a<ins>3</ins> == b)</tt>
 </td>
 </tr>
 
+<tr>
+<td colspan="4" align="center">
+<tt>[&hellip;]</tt>
+</td>
+</tr>
+
+<tr>
+<td>
+<tt>a.select_on_-<br/>
+container_copy_-<br/>
+construction()</tt>
+</td>
+<td>
+<tt>X</tt>
+</td>
+<td>
+Typically returns either <tt>a</tt> or<br/>
+<tt>X()</tt>
+</td>
+<td>
+<tt>return a;</tt>
+</td>
+</tr>
+
+<tr>
+<td>
+<ins><tt>X::always_compares_equal</tt></ins>
+</td>
+<td>
+<ins>Identical to or derived<br/>
+from <tt>true_type</tt> or<br/>
+<tt>false_type</tt></ins>
+</td>
+<td>
+<ins><tt>true_type</tt> only if <tt>a3 == a4</tt><br/>
+is guaranteed to be <tt>true</tt>, when<br/>
+contextually converted to bool</ins>
+</td>
+<td>
+<ins><tt>integral_constant&lt;bool,<br/>
+is_empty&lt;X&gt;::value ||<br/> 
+is_convertible&lt;decltype(a3 == a4),<br/> 
+true_type&gt;::value&gt;</tt></ins>
+</td>
+</tr>
+
+<tr>
+<td colspan="4" align="center">
+<tt>[&hellip;]</tt>
+</td>
+</tr>
+
 </table>
 
+</li>
+
+<li><p>Change class template <tt>allocator_traits</tt> synopsis, <sref ref="[allocator.traits]"/> as indicated:</p>
+
+<blockquote><pre>
+namespace std {
+  template &lt;class Alloc&gt; struct allocator_traits {
+    typedef Alloc allocator_type;
+    [&hellip;]
+    <ins>typedef <i>see below</i> always_compares_equal;</ins>
+    typedef <i>see below</i> propagate_on_container_copy_assignment;
+    [&hellip;]
+  };
+}
+</pre></blockquote>
+</li>
+
+<li><p>Insert the following between <sref ref="[allocator.traits.types]"/> p6 and p7 as indicated:</p>
+
+<blockquote><pre>
+<ins>typedef <i>see below</i> always_compares_equal;</ins>
+</pre><blockquote>
+<p>
+<ins>-?- <i>Type</i>: <tt>Alloc::always_compares_equal</tt> if such a type exits, otherwise the same
+type as <tt>integral_constant&lt;bool, is_empty&lt;Alloc&gt;::value || 
+is_convertible&lt;decltype(declval&lt;const Alloc&amp;&gt;() == declval&lt;const Alloc&amp;&gt;()), 
+true_type&gt;::value&gt;</tt>.</ins>
+</p>
+</blockquote></blockquote>
+<blockquote><pre>
+typedef <i>see below</i> propagate_on_container_copy_assignment;
+</pre><blockquote>
+<p>
+-7- <i>Type</i>: <tt>Alloc::propagate_on_container_copy_assignment</tt> if such a type exits, 
+otherwise <tt>false_type</tt>.
+</p>
+</blockquote></blockquote>
 </li>
 
 </ol>
