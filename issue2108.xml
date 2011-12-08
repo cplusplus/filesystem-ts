@@ -211,15 +211,15 @@ from <tt>true_type</tt> or<br/>
 <tt>false_type</tt></ins>
 </td>
 <td>
-<ins><tt>true_type</tt> only if <tt>a3 == a4</tt><br/>
-is guaranteed to be <tt>true</tt>, when<br/>
-contextually converted to bool</ins>
+<ins><tt>true_type</tt> if the expression <tt>a' == a''</tt> is<br/>
+guaranteed to be <tt>true</tt> for any two (possibly<br/>
+<tt>const</tt>) values <tt>a', a''</tt> of type <tt>X</tt>, when<br/>
+contextually converted to <tt>bool</tt></ins>
 </td>
 <td>
-<ins><tt>integral_constant&lt;bool,<br/>
-is_empty&lt;X&gt;::value ||<br/> 
-is_convertible&lt;decltype(a3 == a4),<br/> 
-true_type&gt;::value&gt;</tt></ins>
+<ins><tt>true_type</tt>, if <tt>is_empty&lt;X&gt;::value</tt> is <tt>true</tt> or if<br/>
+<tt>decltype(declval&lt;const X&amp;&gt;() == declval&lt;const X&amp;&gt;())</tt><br/> 
+is convertible to <tt>true_type</tt>, otherwise <tt>false_type</tt></ins>
 </td>
 </tr>
 
@@ -231,6 +231,20 @@ true_type&gt;::value&gt;</tt></ins>
 
 </table>
 
+</li>
+
+<li><p>Change header <tt>&lt;memory&gt;</tt> synopsis, <sref ref="[memory.syn]"/> as indicated:</p>
+
+<blockquote><pre>
+namespace std {
+  [&hellip;]
+  template &lt;class T, class U&gt;
+    <del>bool</del><ins>true_type</ins> operator==(const allocator&lt;T&gt;&amp;, const allocator&lt;U&gt;&amp;) noexcept;
+  template &lt;class T, class U>
+    <del>bool</del><ins>false_type</ins> operator!=(const allocator&lt;T&gt;&amp;, const allocator&lt;U&gt;&amp;) noexcept;
+  [&hellip;]
+}
+</pre></blockquote>
 </li>
 
 <li><p>Change class template <tt>allocator_traits</tt> synopsis, <sref ref="[allocator.traits]"/> as indicated:</p>
@@ -254,10 +268,11 @@ namespace std {
 <ins>typedef <i>see below</i> always_compares_equal;</ins>
 </pre><blockquote>
 <p>
-<ins>-?- <i>Type</i>: <tt>Alloc::always_compares_equal</tt> if such a type exits, otherwise the same
-type as <tt>integral_constant&lt;bool, is_empty&lt;Alloc&gt;::value || 
-is_convertible&lt;decltype(declval&lt;const Alloc&amp;&gt;() == declval&lt;const Alloc&amp;&gt;()), 
-true_type&gt;::value&gt;</tt>.</ins>
+<ins>-?- <i>Type</i>: <tt>Alloc::always_compares_equal</tt> if such a type exists; otherwise, 
+<tt>true_type</tt> if <tt>is_empty&lt;Alloc&gt;::value</tt> is <tt>true</tt> or if 
+<tt>decltype(declval&lt;const Alloc&amp;&gt;() == declval&lt;const Alloc&amp;&gt;())</tt> 
+is convertible to <tt>true_type</tt>; otherwise, <tt>false_type</tt>
+.</ins>
 </p>
 </blockquote></blockquote>
 <blockquote><pre>
@@ -266,6 +281,26 @@ typedef <i>see below</i> propagate_on_container_copy_assignment;
 <p>
 -7- <i>Type</i>: <tt>Alloc::propagate_on_container_copy_assignment</tt> if such a type exits, 
 otherwise <tt>false_type</tt>.
+</p>
+</blockquote></blockquote>
+</li>
+
+<li><p>Change <sref ref="[allocator.globals]"/> as indicated:</p>
+
+<blockquote><pre>
+template &lt;class T1, class T2&gt;
+  <del>bool</del><ins>true_type</ins> operator==(const allocator&lt;T1&gt;&amp;, const allocator&lt;T2&gt;&amp;) noexcept;
+</pre><blockquote>
+<p>
+-1- <i>Returns</i>: <tt>true<ins>_type{}</ins></tt>.
+</p>
+</blockquote></blockquote>
+<blockquote><pre>
+template &lt;class T1, class T2>
+  <del>bool</del><ins>false_type</ins> operator!=(const allocator&lt;T1&gt;&amp;, const allocator&lt;T2&gt;&amp;) noexcept;
+</pre><blockquote>
+<p>
+-2- <i>Returns</i>: <tt>false<ins>_type{}</ins></tt>.
 </p>
 </blockquote></blockquote>
 </li>
