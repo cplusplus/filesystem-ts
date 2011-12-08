@@ -1,0 +1,64 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="2110" status="New">
+<title><tt>remove</tt> can't swap but note says it might</title>
+<section><sref ref="[alg.remove]"/></section>
+<submitter>Howard Hinnant</submitter>
+<date>7 Dec 2011</date>
+
+<discussion>
+
+<p>
+<sref ref="[alg.remove]"/>&#47;p1 says:
+</p>
+
+<blockquote><p>
+1 <i>Requires</i>: The type of <tt>*first</tt> shall satisfy the <tt>MoveAssignable</tt> requirements (Table 22).
+</p></blockquote>
+
+<p>
+This means that <tt>remove</tt>&#47;<tt>remove_if</tt> can only use move assignment to permute the sequence. But then 
+<sref ref="[alg.remove]"/>&#47;p6 (non-normatively) contradicts p1:
+</p>
+
+<blockquote><p>
+6 <i>Note</i>: each element in the range <tt>[ret,last)</tt>, where <tt>ret</tt> is the returned value, has a valid 
+but unspecified state, because the algorithms can eliminate elements by swapping with or moving from elements that 
+were originally in that range.
+</p></blockquote>
+
+<p>
+
+</p>
+
+</discussion>
+
+<resolution>
+<p>This wording is relative to the FDIS.</p>
+
+<p>Change <sref ref="[alg.remove]"/> as indicated:</p>
+
+<blockquote><pre>
+template&lt;class ForwardIterator, class T&gt;
+  ForwardIterator remove(ForwardIterator first, ForwardIterator last,
+                         const T&amp; value);
+
+template&lt;class ForwardIterator, class Predicate&gt;
+  ForwardIterator remove_if(ForwardIterator first, ForwardIterator last,
+                            Predicate pred);
+</pre><blockquote>
+<p>
+[&hellip;]
+<p/>
+-6-<i>Note</i>: each element in the range <tt>[ret,last)</tt>, where <tt>ret</tt> is the 
+returned value, has a valid but unspecified state, because the algorithms can eliminate 
+elements by <del>swapping with or</del> moving from elements that were originally in that range.
+</p>
+</blockquote></blockquote>
+
+</resolution>
+
+</issue>
