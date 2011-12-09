@@ -120,7 +120,7 @@ a value of <ins>(possibly <tt>const</tt>)</ins> type <tt>Y</tt>
 <tt><del>a1 == a2</del><ins>a3 == a4</ins></tt>
 </td>
 <td>
-<ins>contextually converted to</ins> <tt>bool</tt>
+<ins>convertible to</ins> <tt>bool</tt>
 </td>
 <td>
 returns true only if storage<br/>
@@ -139,7 +139,7 @@ shall not exit via an exception.
 <tt><del>a1 != a2</del><ins>a3 != a4</ins></tt>
 </td>
 <td>
-<ins>contextually converted to</ins> <tt>bool</tt>
+<ins>convertible to</ins> <tt>bool</tt>
 </td>
 <td>
 same as <tt><del>!(a1 == a2)</del><ins>!(a3 == a4)</ins></tt>
@@ -153,7 +153,7 @@ same as <tt><del>!(a1 == a2)</del><ins>!(a3 == a4)</ins></tt>
 <tt>a<ins>3</ins> == b</tt>
 </td>
 <td>
-<ins>contextually converted to</ins> <tt>bool</tt>
+<ins>convertible to</ins> <tt>bool</tt>
 </td>
 <td>
 same as <tt>a<ins>3</ins> ==<br/>
@@ -168,7 +168,7 @@ Y::rebind&lt;T&gt;::other(b)</tt>
 <tt>a<ins>3</ins> != b</tt>
 </td>
 <td>
-<ins>contextually converted to</ins> <tt>bool</tt>
+<ins>convertible to</ins> <tt>bool</tt>
 </td>
 <td>
 same as <tt>!(a<ins>3</ins> == b)</tt>
@@ -211,10 +211,10 @@ from <tt>true_type</tt> or<br/>
 <tt>false_type</tt></ins>
 </td>
 <td>
-<ins><tt>true_type</tt> if the expression <tt>a' == a''</tt> is<br/>
+<ins><tt>true_type</tt> if the expression <tt>x1 == x2</tt> is<br/>
 guaranteed to be <tt>true</tt> for any two (possibly<br/>
-<tt>const</tt>) values <tt>a', a''</tt> of type <tt>X</tt>, when<br/>
-contextually converted to <tt>bool</tt></ins>
+<tt>const</tt>) values <tt>x1, x2</tt> of type <tt>X</tt>, when<br/>
+implicitly converted to <tt>bool</tt></ins>
 </td>
 <td>
 <ins><tt>true_type</tt>, if <tt>is_empty&lt;X&gt;::value</tt> is <tt>true</tt> or if<br/>
@@ -231,20 +231,6 @@ is convertible to <tt>true_type</tt>, otherwise <tt>false_type</tt></ins>
 
 </table>
 
-</li>
-
-<li><p>Change header <tt>&lt;memory&gt;</tt> synopsis, <sref ref="[memory.syn]"/> as indicated:</p>
-
-<blockquote><pre>
-namespace std {
-  [&hellip;]
-  template &lt;class T, class U&gt;
-    <del>bool</del><ins>true_type</ins> operator==(const allocator&lt;T&gt;&amp;, const allocator&lt;U&gt;&amp;) noexcept;
-  template &lt;class T, class U>
-    <del>bool</del><ins>false_type</ins> operator!=(const allocator&lt;T&gt;&amp;, const allocator&lt;U&gt;&amp;) noexcept;
-  [&hellip;]
-}
-</pre></blockquote>
 </li>
 
 <li><p>Change class template <tt>allocator_traits</tt> synopsis, <sref ref="[allocator.traits]"/> as indicated:</p>
@@ -285,24 +271,38 @@ otherwise <tt>false_type</tt>.
 </blockquote></blockquote>
 </li>
 
-<li><p>Change <sref ref="[allocator.globals]"/> as indicated:</p>
+<li><p>Change class template <tt>allocator</tt> synopsis, <sref ref="[default.allocator]"/> as indicated:</p>
 
 <blockquote><pre>
-template &lt;class T1, class T2&gt;
-  <del>bool</del><ins>true_type</ins> operator==(const allocator&lt;T1&gt;&amp;, const allocator&lt;T2&gt;&amp;) noexcept;
-</pre><blockquote>
-<p>
--1- <i>Returns</i>: <tt>true<ins>_type{}</ins></tt>.
-</p>
-</blockquote></blockquote>
-<blockquote><pre>
-template &lt;class T1, class T2>
-  <del>bool</del><ins>false_type</ins> operator!=(const allocator&lt;T1&gt;&amp;, const allocator&lt;T2&gt;&amp;) noexcept;
-</pre><blockquote>
-<p>
--2- <i>Returns</i>: <tt>false<ins>_type{}</ins></tt>.
-</p>
-</blockquote></blockquote>
+namespace std {
+  template &lt;class T&gt; class allocator;
+
+  <i>// specialize for <tt>void</tt>:</i>
+  template &lt;&gt; class allocator&lt;void&gt; {
+  public:
+    typedef void* pointer;
+    typedef const void* const_pointer;
+    <i>// reference-to-<tt>void</tt> members are impossible.</i>
+    typedef void value_type;
+    template &lt;class U&gt; struct rebind { typedef allocator&lt;U&gt; other; };
+  };
+
+  template &lt;class T&gt; class allocator {
+  public:
+    typedef size_t size_type;
+    typedef ptrdiff_t difference_type;
+    typedef T* pointer;
+    typedef const T* const_pointer;
+    typedef T&amp; reference;
+    typedef const T&amp; const_reference;
+    typedef T value_type;
+    template &lt;class U&gt; struct rebind { typedef allocator&lt;U&gt; other; };
+    <ins>typedef true_type always_compares_equal;</ins>
+
+    [&hellip;]
+  };
+}
+</pre></blockquote>
 </li>
 
 </ol>
