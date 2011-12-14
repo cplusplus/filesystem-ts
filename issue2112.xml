@@ -4,51 +4,84 @@
 ] >
 
 <issue num="2112" status="New">
-<title>Do library implementers have the freedom to add <tt>final</tt> to non-polymorphic components?</title>
-<section><sref ref="[conforming]"/>,<sref ref="[derivation]"/></section>
+<title>User-defined classes that cannot be derived from</title>
+<section><sref ref="[conforming]"/>,<sref ref="[allocator.traits]"/>,<sref ref="[allocator.adaptor.syn]"/></section>
 <submitter>Daniel Kr&uuml;gler</submitter>
 <date>30 Nov 2011</date>
 
 <discussion>
 
 <p>
-Related to LWG 2113 the question has been raised whether a library implementation <em>may</em> declare
-non-polymorphic library components, such as class template <tt>std::vector</tt> or <tt>std::basic_string</tt>,
-as <tt>final</tt> class types.
+It is a very established technique for implementations to derive internally from user-defined class types that are
+used to customize some library component, e.g. deleters and allocators are typical candidates. The advantage of this
+approach is to possibly take advantage of the empty-base-class optimization (EBCO).
 <p/>
-This issue is <em>not</em> suggesting to enforce that libraries are required to do that, it is asking
-whether libraries should have the freedom to do so.
+Whether or whether not libraries did take advantage of such a detail didn't much matter in C++03. Even though there
+did exist a portable idiom to prevent that a class type could be derived from, this idiom has never reached great
+popularity: The <a href="http://en.wikibooks.org/wiki/More_C%2B%2B_Idioms/Final_Class">technique</a> required
+to introduce a virtual base class and it did not really prevent the derivation, but only any construction of
+such a type. Further, such types are not <em>empty</em> as defined by the <tt>std::is_empty</tt> trait, so
+could easily be detected by implementations from TR1 on.
 <p/>
-The existing wording in <sref ref="[derivation]"/> does not give a clear permission to do so. In my opinion
-this position should be clarified in either direction.
+With the new C++11 feature of final classes and final member functions it is now very easy to define an empty,
+but not derivable from class type. From the point of the user it is quite natural to use this feature for
+types that he or she did not foresee to be derivable from.
 <p/>
-Giving implementations this freedom would have both advantages and disadvantages. Most counterparts where
-worried about breakage of code of existing user implementations. On the other hand such types where not
-designed to be used as base classes. Allowing implementations to mark these components as <tt>final</tt>
-could allow them to provide compile-modes that are intentionally restrictive to the advantage of user code.
-Any implementation that would be concerned about user complaints would not take advantage of this feature
-anyway.
-<p/>
-If agreement exists that such implementation freedom would be useful, wording like
+On the other hand, most library implementations (including third-party libraries) often take advantage of EBCO 
+applied to user-defined types used to instantiate library templates internally. As the time of submitting this 
+issue the following program failed to compile on all tested library implementations:
 </p>
-<blockquote><p>
-An implementation may declare additional non-virtual member function signatures within a class as <tt>final</tt>.
-</p></blockquote>
+<blockquote><pre>
+#include &lt;memory&gt;
+
+struct Noop <span style="color:#C80000;font-weight:bold">final</span> {
+ template&lt;class Ptr&gt;
+ void operator()(Ptr) const {}
+};
+
+std::unique_ptr&lt;int, Noop&gt; up;
+</pre></blockquote>
 <p>
-or
-</p>
-<blockquote><p>
-An implementation may declare additional class without virtual member function signatures as <tt>final</tt>.
-</p></blockquote>
-<p>
-should be added to <sref ref="[conforming]"/> with corresponding exceptions of these rules (e.g. <tt>iterator</tt>,
-<tt>unary_function</tt>, or <tt>pair</tt>).
+In addition, many <tt>std::tuple</tt> implementations with empty, final classes as element types failed as well, 
+due to a popular inheritance-based implementation technique. EBCO has also a long tradition to be 
+used in library containers to efficiently store potentially stateless, empty allocators.
 <p/>
-If such freedom should not exist, it seems better to clarify this as well, e.g. by adding around <sref ref="[derivation]"/>:
+It seems that both user and library did the best they could: None of the affected types did impose explicit
+requirements on the corresponding user-defined types to be derivable from (This capability was not part of
+the required operations), and libraries did apply EBCO whereever possible to the convenience of the customer.
+<p/>
+Nonetheless given the existence of non-derivable-from class types in C++11, libraries have to cope with
+failing derivations. How should that problem be solved?
+<p/>
+It would certainly be possible to add weazel wording to the allocator requirements similar to what we had
+in C++03, but restricted to derivation-from requirements. I consider this as the bad solution, because it
+would add new requirements that never had existed before in this explicit form onto types like allocators.
+<p/>
+Existing libraries presumably will need internal traits like <tt>__is_final</tt> or <tt>__is_derivable</tt>
+to make EBCO possible in the current form but excluding non-derivable class types. As of this writing this
+seems to happen already. Problem is that without a <tt>std::is_derivable</tt> trait, third-party libraries
+have no portable means to do the same thing as standard library implementations. This should be a good 
+reason to make such a trait public available soon, but seems not essential to have now. Further, this issue
+should also be considered as a chance to recognice that EBCO has always been a very special corner case
+(There exist parallels to the previously existing odd core language rule that did make the interplay 
+between <tt>std::auto_ptr</tt> and <tt>std::auto_ptr_ref</tt> possible) and that it would be better to
+provide explicit means for space-efficient storage, not necessarily restricted to inheritance relations, 
+e.g. by marking data members with a special attribute.
+<p/>
+At least two descriptions in the current standard should be fixed now for better clarification:
 </p>
-<blockquote><p>
-An implementation shall not declare any class or any member function signature as <tt>final</tt>.
-</p></blockquote>
+<ol>
+<li><p>As mentioned by Ganesh, <sref ref="[allocator.traits]"/> p1 currently contains a (non-normative) note
+"Thus, it is always possible to create a derived class from an allocator." which should be removed.
+</p>
+</li>
+<li><p>As pointed out by Howard, the specification of <tt>scoped_allocator_adaptor</tt> as of
+<sref ref="[allocator.adaptor.syn]"/> already requires derivation from <tt>OuterAlloc</tt>, but 
+only implies indirectly the same for the inner allocators due to the <em>exposition-only</em> 
+description of member <tt>inner</tt>. This indirect implication should be normatively required for 
+all participating allocators.
+</p></li>
+</ol>
 
 </discussion>
 

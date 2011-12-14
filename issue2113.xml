@@ -1,0 +1,58 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="2113" status="New">
+<title>Do library implementers have the freedom to add <tt>final</tt> to non-polymorphic components?</title>
+<section><sref ref="[conforming]"/></section>
+<submitter>Daniel Kr&uuml;gler</submitter>
+<date>30 Nov 2011</date>
+
+<discussion>
+
+<p>
+Related to LWG <iref ref="2112"/> the question has been raised whether a library implementation <em>may</em> declare
+non-polymorphic library components, such as class template <tt>std::vector</tt> or <tt>std::basic_string</tt>,
+as <tt>final</tt> class types.
+<p/>
+This issue is <em>not</em> suggesting to enforce that libraries are required to do that, it is asking
+whether libraries should have the freedom to do so.
+<p/>
+The existing wording in <sref ref="[derivation]"/> does not give a clear permission to do so. In my opinion
+this position should be clarified in either direction.
+<p/>
+Giving implementations this freedom would have both advantages and disadvantages. Several opponents where
+worried about breakage of code of existing user implementations. On the other hand such types where not
+designed to be used as base classes. Allowing implementations to mark these components as <tt>final</tt>
+could allow them to provide compile-modes that are intentionally restrictive to the advantage of user code
+that want to be alterted about that. Any implementation that would be concerned about user complaints would 
+not take advantage of this feature anyway.
+<p/>
+If agreement exists that such implementation freedom would be useful, wording like
+</p>
+<blockquote><p>
+An implementation may declare additional non-virtual member function signatures within a class as <tt>final</tt>.
+</p></blockquote>
+<p>
+or
+</p>
+<blockquote><p>
+An implementation may declare additional class without virtual member function signatures as <tt>final</tt>.
+</p></blockquote>
+<p>
+should be added to <sref ref="[conforming]"/> with corresponding exceptions of these rules (e.g. <tt>iterator</tt>,
+<tt>unary_function</tt>, or <tt>pair</tt>).
+<p/>
+If such freedom should not exist, it seems better to clarify this as well, e.g. by adding around <sref ref="[derivation]"/>:
+</p>
+<blockquote><p>
+An implementation shall not declare any class or any member function signature as <tt>final</tt>.
+</p></blockquote>
+
+</discussion>
+
+<resolution>
+</resolution>
+
+</issue>
