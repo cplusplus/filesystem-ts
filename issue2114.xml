@@ -1,0 +1,365 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="2114" status="New">
+<title>Incorrect "<em>contextually</em> convertible to <tt>bool</tt>" requirements</title>
+<section><sref ref="[nullablepointer.requirements]"/>,<sref ref="[input.iterators]"/>,<sref ref="[random.access.iterators]"/>,
+<sref ref="[algorithms.general]"/>, <sref ref="[alg.sorting]"/>, <sref ref="[thread.req.paramname]"/></section>
+<submitter>Daniel Kr&uuml;gler</submitter>
+<date>9 Dec 2011</date>
+
+<discussion>
+
+<p>
+As of <sref ref="[utility.arg.requirements]"/> Table 17&#47;18, the return types of the expressions
+</p>
+<blockquote><pre>
+a == b
+</pre></blockquote>
+<p>
+or
+</p>
+<blockquote><pre>
+a &lt; b
+</pre></blockquote>
+<p>
+for types satisfying the <tt>EqualityComparable</tt> or <tt>LessThanComparable</tt>
+types, respectively, are required to be "convertible to <tt>bool</tt>" which corresponds to
+a copy-initialization context. But several newer parts of the library that refer to 
+such contexts have lowered the requirements taking  advantage of the new terminology of 
+"<em>contextually</em> convertible to <tt>bool</tt>" instead, which corresponds to a 
+direct-initialization context (In addition to "normal" direct-initialization constructions, 
+operands of logical operations as well as <tt>if</tt> or <tt>switch</tt> conditions also 
+belong to this special context).
+<p/>
+One example for these new requirements is input iterator, which imposes that <tt>X</tt> shall be 
+<tt>EqualityComparable</tt> but specifies that the expression
+</p>
+<blockquote><pre>
+a != b
+</pre></blockquote>
+<p>
+shall be just "contextually convertible to <tt>bool</tt>". The same discrepancy exists for requirement 
+set <tt>NullablePointer</tt> in regard to inequality expressions.
+<p/>
+For random access iterators we have
+</p>
+<blockquote><p>
+<tt>a &lt; b</tt>      contextually convertible to <tt>bool</tt>
+</p></blockquote>
+<p>
+(and all derived comparison functions), so strictly speaking we could have a random access 
+iterator that does not satisfy the <tt>LessThanComparable</tt> requirements, which looks like an
+artifact to me.
+<p/>
+Even if we keep all existing requirements based on <tt>LessThanComparable</tt> or
+<tt>EqualityComparable</tt> we still have the problem that some current specifications are actually
+based on the assumption of implicit convertibility instead of "explicit convertibility", e.g. 
+<sref ref="[unique.ptr.special]"/> p3:
+</p>
+<blockquote><pre>
+template &lt;class T1, class D1, class T2, class D2&gt;
+bool operator!=(const unique_ptr&lt;T1, D1&gt;&amp; x, const unique_ptr&lt;T2, D2&gt;&amp; y);
+</pre>
+<blockquote>
+<p>
+-3- <i>Returns</i>: <tt>x.get() != y.get()</tt>.
+</p>
+</blockquote></blockquote>
+<p>
+Similar omissions exist in <sref ref="[unique.ptr.single.dtor]"/> p2, <sref ref="[unique.ptr.single.asgn]"/> p9,
+<sref ref="[unique.ptr.single.observers]"/> p1+3+8, etc.
+<p/>
+In all these places the right fix seems to be to replace the current requirement on the return type
+of comparison functions (but <em>not</em> of the conversion of a <tt>NullablePointer</tt> to <tt>bool</tt>!)
+to "convertible to <tt>bool</tt>".
+<p/>
+The actual reason for using the newer terminology can be rooted back to LWG <iref ref="556"/>. My working hypotheses 
+is that the resolution of that issue also needs a slight correction. Why so?
+<p/>
+The reason for opening that issue were worries based on the previous "convertible to <tt>bool</tt>"
+wording that expressions like "<tt>!pred(a, b)</tt>" might not be well-formed in those situations, because
+<tt>operator!</tt> might not be accessible or might have an unusual semantics (and similarly for other logical
+operations). Because this can indeed happen with unusual proxy types, the idea was that the evaluation of 
+<tt>Predicate</tt>, <tt>BinaryPredicate</tt> (<sref ref="[algorithms.general]"/> p8+9), and <tt>Compare</tt> 
+(<sref ref="[alg.sorting]"/> p2) should be defined based on contextual conversion to <tt>bool</tt>. 
+Unfortunately this alone <em>only</em> is insufficient: In addition, we <em>also</em> want the predicates 
+to be (implicitly) convertible to <tt>bool</tt>! Without this wording, several conditions are plain wrong, 
+e.g. <sref ref="[alg.find]"/> p2, which talks about "<tt>pred(*i) != false</tt>" (<tt>find_if</tt>) and 
+"<tt>pred(*i) == false</tt>" (<tt>find_if_not</tt>). These expressions are not within a boolean context! 
+<p/>
+A final observation is that we have a <em>second</em> definition for a <tt>Predicate</tt> in 
+<sref ref="[thread.req.paramname]"/> p2:
+</p>
+<blockquote><p>
+If a parameter is <tt>Predicate</tt>, <tt>operator()</tt> applied to the actual template argument shall return a value that
+is convertible to <tt>bool</tt>.
+</p></blockquote>
+<p>
+The problem here is not so much that we have two different definitions of <tt>Predicate</tt> in the standard - this 
+is confusing, but this fact alone is not a defect. The first (minor) problem is that this definition does not properly 
+apply to function objects that are function pointers, because <tt>operator()</tt> is not defined in a strict sense. 
+But the actually worse second problem is that this wording has the very <tt>same</tt> problem that has originally lead to
+LWG <iref ref="556"/>! We only need to look at <sref ref="[thread.condition.condvar]"/> p15 to recognice this:
+</p>
+<blockquote><pre>
+while (!pred())
+  wait(lock);
+</pre></blockquote>
+<p>
+The negation expression here looks very familiar to the example provided in LWG <iref ref="556"/>.
+<p/>
+To summarize: I believe that LWG <iref ref="556"/> was not completely resolved. A pessimistic interpretation is,
+that even with the current wording based on "contextually convertible to <tt>bool</tt>" the actual problem of that 
+issue has <em>not</em> been fixed. What actually needs to be required here is some normative wording that basically
+expresses something along the lines of:
+</p>
+<blockquote><p>
+The semantics of <em>any</em> contextual conversion to <tt>bool</tt> shall be equivalent to the semantics of 
+any implicit conversion to <tt>bool</tt>.
+</p></blockquote>
+<p>
+This is still not complete without having concepts, but it seems to be a better approximation. Another way of solving
+this issue would be to define a minimum requirements table with equivalent semantics. The proposed wording is a bit
+simpler but attempts to express the same thing.
+</p>
+
+</discussion>
+
+<resolution>
+<p>This wording is relative to the FDIS.</p>
+
+<ol>
+<li><p>Change Table 25 &mdash; "<tt>NullablePointer</tt> requirements" in <sref ref="[nullablepointer.requirements]"/>
+as indicated:</p>
+
+<table border="1">
+<caption>Table 25 &mdash; <tt>NullablePointer</tt> requirements</caption>
+<tr>
+<th>Expression</th>
+<th>Return type</th>
+<th>Operational semantics</th>
+</tr> 
+
+<tr>
+<td colspan="3" align="center">
+<tt>[&hellip;]</tt>
+</td>
+</tr>
+
+<tr>
+<td>
+<tt>a != b</tt>
+</td>
+<td>
+<del>contextually</del> convertible to <tt>bool</tt>
+</td>
+<td>
+<tt>!(a == b)</tt>
+</td>
+</tr>
+
+<tr>
+<td>
+<tt>a == np<br/>
+np == a</tt>
+</td>
+<td>
+<del>contextually</del> convertible to <tt>bool</tt>
+</td>
+<td>
+<tt>a == P()</tt>
+</td>
+</tr>
+
+<tr>
+<td>
+<tt>a != np<br/>
+np != a</tt>
+</td>
+<td>
+<del>contextually</del> convertible to <tt>bool</tt>
+</td>
+<td>
+<tt>!(a == np)</tt>
+</td>
+</tr>
+
+</table>
+ 
+</li>
+
+<li><p>Change Table 107 &mdash; "Input iterator requirements" in <sref ref="[input.iterators]"/>
+as indicated:</p>
+
+<table border="1">
+<caption>Table 107 &mdash; Input iterator requirements (in addition to Iterator)</caption>
+<tr>
+<th>Expression</th>
+<th>Return type</th>
+<th>Operational semantics</th>
+<th>Assertion&#47;note<br/>pre-&#47;post-condition</th>
+</tr> 
+
+<tr>
+<td>
+<tt>a != b</tt>
+</td>
+<td>
+<del>contextually</del> convertible to <tt>bool</tt>
+</td>
+<td>
+<tt>!(a == b)</tt>
+</td>
+<td>
+pre: <tt>(a, b)</tt> is in the domain of <tt>==</tt>.
+</td>
+</tr>
+
+<tr>
+<td colspan="4" align="center">
+<tt>[&hellip;]</tt>
+</td>
+</tr>
+
+</table>
+ 
+</li>
+
+<li><p>Change Table 111 &mdash; "Random access iterator requirements" in <sref ref="[random.access.iterators]"/>
+as indicated:</p>
+
+<table border="1">
+<caption>Table 111 &mdash; Random access iterator requirements (in addition to bidirectional iterator)</caption>
+<tr>
+<th>Expression</th>
+<th>Return type</th>
+<th>Operational semantics</th>
+<th>Assertion&#47;note<br/>pre-&#47;post-condition</th>
+</tr> 
+
+<tr>
+<td colspan="4" align="center">
+<tt>[&hellip;]</tt>
+</td>
+</tr>
+
+<tr>
+<td>
+<tt>a &lt; b</tt>
+</td>
+<td>
+<del>contextually</del> convertible to <tt>bool</tt>
+</td>
+<td>
+<tt>b - a &gt; 0</tt>
+</td>
+<td>
+<tt>&lt;</tt> is a total ordering relation
+</td>
+</tr>
+
+<tr>
+<td>
+<tt>a &gt; b</tt>
+</td>
+<td>
+<del>contextually</del> convertible to <tt>bool</tt>
+</td>
+<td>
+<tt>b &lt; a</tt>
+</td>
+<td>
+<tt>&gt;</tt> is a total ordering relation opposite to <tt>&lt;</tt>.
+</td>
+</tr>
+
+<tr>
+<td>
+<tt>a &gt;= b</tt>
+</td>
+<td>
+<del>contextually</del> convertible to <tt>bool</tt>
+</td>
+<td>
+<tt>!(a &lt; b)</tt>
+</td>
+<td>
+</td>
+</tr>
+
+<tr>
+<td>
+<tt>a &lt;= b</tt>
+</td>
+<td>
+<del>contextually</del> convertible to <tt>bool</tt>
+</td>
+<td>
+<tt>!(a &gt; b)</tt>
+</td>
+<td>
+</td>
+</tr>
+
+</table>
+ 
+</li>
+
+<li><p>Change <sref ref="[algorithms.general]"/> p8+9 as indicated:</p>
+
+<blockquote>
+<p>
+-8- The <tt>Predicate</tt> parameter is used whenever an algorithm expects a function object 
+(<sref ref="[function.objects]"/>) that, when applied to the result of dereferencing the corresponding iterator, 
+returns a value testable as <tt>true</tt>. In other words, if an algorithm takes <tt>Predicate pred</tt> 
+as its argument and first as its iterator argument, it should work correctly in the construct 
+<tt>pred(*first)</tt> <ins>implicitly or</ins> contextually converted to <tt>bool</tt> (Clause <sref ref="[conv]"/>). 
+The function object <tt>pred</tt> shall not apply any non-constant function through the dereferenced iterator.
+<p/>
+-9- The <tt>BinaryPredicate</tt> parameter is used whenever an algorithm expects a function object that when applied
+to the result of dereferencing two corresponding iterators or to dereferencing an iterator and type
+<tt>T</tt> when <tt>T</tt> is part of the signature returns a value testable as <tt>true</tt>. In other words, if an algorithm takes
+<tt>BinaryPredicate binary_pred</tt> as its argument and <tt>first1</tt> and <tt>first2</tt> as its iterator arguments, it should
+work correctly in the construct <tt>binary_pred(*first1, *first2)</tt> <ins>implicitly or</ins> contextually converted to 
+<tt>bool</tt> (Clause <sref ref="[conv]"/>).
+<tt>BinaryPredicate</tt> always takes the first iterator's <tt>value_type</tt> as its first argument, that is, in those cases
+when <tt>T</tt> value is part of the signature, it should work correctly in the construct <tt>binary_pred(*first1, value)</tt> 
+<ins>implicitly or</ins> contextually converted to <tt>bool</tt> (Clause <sref ref="[conv]"/>). <tt>binary_pred</tt> shall 
+not apply any non-constant function through the dereferenced iterators.
+</p>
+</blockquote>
+</li>
+
+<li><p>Change <sref ref="[alg.sorting]"/> p2 as indicated:</p>
+
+<blockquote>
+<p>
+-2- <tt>Compare</tt> is a function object type (<sref ref="[function.objects]"/>). The return value of the function 
+call operation applied to an object of type <tt>Compare</tt>, when <ins>implicitly or</ins> contextually converted 
+to <tt>bool</tt> (<sref ref="[conv]"/>), yields <tt>true</tt> if the first argument of the call is less than the second, and 
+<tt>false</tt> otherwise. <tt>Compare comp</tt> is used throughout for algorithms assuming an ordering relation. It is assumed 
+that <tt>comp</tt> will not apply any non-constant function through the dereferenced iterator.
+</p>
+</blockquote>
+</li>
+
+<li><p>Change <sref ref="[thread.req.paramname]"/> p2 as indicated:</p>
+
+<blockquote>
+<p>
+-2- <del>If a parameter is <tt>Predicate</tt>, operator() applied to the actual template argument shall return a value that
+is convertible to <tt>bool</tt></del><ins><tt>Predicate</tt> is a function object type (<sref ref="[function.objects]"/>).
+The return value of the function call operation applied to an object of type <tt>Predicate</tt>, when implicitly or 
+contextually converted to <tt>bool</tt> (<sref ref="[conv]"/>), yields <tt>true</tt> if the corresponding test condition is
+satisfied, and <tt>false</tt> otherwise</ins>.
+</p>
+</blockquote>
+</li>
+
+</ol>
+</resolution>
+
+</issue>
