@@ -50,6 +50,68 @@ fmtflags showbase = (flags &amp; (ios_base::showbase));
 </blockquote>
 </li>
 
+<li><p>Change class <tt>ios_base</tt> synopsis, <sref ref="[ios.base]"/> as indicated:</p>
+
+<blockquote><pre>
+namespace std {
+  class ios_base {
+  public:
+  class failure;
+    <i>// 27.5.3.1.2 fmtflags</i>
+    typedef <i>T1</i> fmtflags;
+    [&hellip;]
+    static constexpr fmtflags showpoint = <i>unspecified</i> ;
+    <ins>static constexpr fmtflags showgrouping = <i>unspecified</i> ;</ins>
+    static constexpr fmtflags showpos = <i>unspecified</i> ;
+    [&hellip;]
+  };
+}
+</pre></blockquote>
+</li>
+
+<li><p>Add a new entry to Table 122 &mdash; "<tt>fmtflags</tt> effects" as indicated:</p>
+
+<table border="1">
+<caption>Table 122 &mdash; <tt>fmtflags</tt> effects</caption>
+<tr align="center">
+<th>Element</th>
+<th>Effect(s) if set</th>
+</tr> 
+
+<tr>
+<td colspan="2" align="center">
+<tt>[&hellip;]</tt>
+</td>
+</tr>
+
+<tr>
+<td>
+<tt>showpoint</tt>
+</td>
+<td>
+generates a decimal-point character unconditionally in generated floatingpoint output
+</td>
+</tr>
+
+<tr>
+<td>
+<ins><tt>showgrouping</tt></ins>
+</td>
+<td>
+<ins>generates grouping characters unconditionally in generated output</ins>
+</td>
+</tr>
+
+<tr>
+<td colspan="2" align="center">
+<tt>[&hellip;]</tt>
+</td>
+</tr>
+
+</table>
+ 
+</li>
+
 <li><p>After <sref ref="[ios::fmtflags]"/> p12 insert the following:</p>
 <blockquote><pre>
 <ins>ios_base&amp; showgrouping(ios_base&amp; str);</ins>
