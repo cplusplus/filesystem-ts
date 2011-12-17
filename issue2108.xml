@@ -217,12 +217,12 @@ from <tt>true_type</tt> or<br/>
 <ins><tt>true_type</tt> if the expression <tt>x1 == x2</tt> is<br/>
 guaranteed to be <tt>true</tt> for any two (possibly<br/>
 <tt>const</tt>) values <tt>x1, x2</tt> of type <tt>X</tt>, when<br/>
-implicitly converted to <tt>bool</tt></ins>
+implicitly converted to <tt>bool</tt>. See Note B, below.</ins>
 </td>
 <td>
 <ins><tt>true_type</tt>, if <tt>is_empty&lt;X&gt;::value</tt> is <tt>true</tt> or if<br/>
 <tt>decltype(declval&lt;const X&amp;&gt;() == declval&lt;const X&amp;&gt;())</tt><br/> 
-is convertible to <tt>true_type</tt>, otherwise <tt>false_type</tt></ins>
+is convertible to <tt>true_type</tt>, otherwise <tt>false_type</tt>.</ins>
 </td>
 </tr>
 
@@ -233,6 +233,14 @@ is convertible to <tt>true_type</tt>, otherwise <tt>false_type</tt></ins>
 </tr>
 
 </table>
+<p>
+Note A: [&hellip;]
+<p/>
+<ins>Note B: If <tt>X::always_compares_equal::value</tt> or <tt>XX::always_compares_equal::value</tt> evaluate 
+to <tt>true</tt> and an expression equivalent to <tt>x1 == x2</tt> or <tt>x1 != x2</tt> for any two values 
+<tt>x1, x2</tt> of type <tt>X</tt> evaluates to <tt>false</tt> or <tt>true</tt>, respectively, the behaviour 
+is undefined.</ins>
+</p>
 
 </li>
 
