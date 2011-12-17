@@ -1,0 +1,79 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="2117" status="New">
+<title><tt>ios_base</tt> manipulators should have <tt>showgrouping&#47;noshowgrouping</tt></title>
+<section><sref ref="[facet.num.put.virtuals]"/>,<sref ref="[ios::fmtflags]"/>,<sref ref="[fmtflags.manip]"/></section>
+<submitter>Benjamin Kosnik</submitter>
+<date>15 Dec 2011</date>
+
+<discussion>
+
+<p>
+Iostreams should include a manipulator to toggle grouping on&#47;off for
+locales that support grouped digits. This has come up repeatedly and
+been deferred. See LWG <iref ref="826"/> for the previous attempt.
+<p/>
+If one is using a locale that supports grouped digits, then output
+will always include the generated grouping characters. However, very
+plausible scenarios exist where one might want to output the number,
+un-grouped. This is similar to existing manipulators that toggle
+on&#47;off the decimal point, numeric base, or positive sign.
+<p/>
+See some user commentary <a href="http://www.tablix.org/~avian/blog/archives/2008/01/c_streams_suck/">here</a>.
+</p>
+
+</discussion>
+
+<resolution>
+<p>This wording is relative to the FDIS.</p>
+
+<ol>
+<li>
+<p>Insert in <sref ref="[facet.num.put.virtuals]"/> paragraph 5:</p>
+
+<blockquote><p>
+<strong>Stage 1</strong>: The first action of stage 1 is to determine a conversion specifier. The tables that describe
+this determination use the following local variables
+</p>
+<pre>
+fmtflags flags = str.flags() ;
+fmtflags basefield = (flags &amp; (ios_base::basefield));
+fmtflags uppercase = (flags &amp; (ios_base::uppercase));
+fmtflags floatfield = (flags &amp; (ios_base::floatfield));
+fmtflags showpos = (flags &amp; (ios_base::showpos));
+fmtflags showbase = (flags &amp; (ios_base::showbase));
+<ins>fmtflags showgrouping = (flags &amp; (ios_base::showgrouping));</ins>
+</pre>
+</blockquote>
+</li>
+
+<li><p>After <sref ref="[ios::fmtflags]"/> p12 insert the following:</p>
+<blockquote><pre>
+<ins>ios_base&amp; showgrouping(ios_base&amp; str);</ins>
+</pre><blockquote>
+<p>
+<ins>-?- <i>Effects</i>: Calls <tt>str.setf(ios_base::showgrouping)</tt>.</ins>
+<p/>
+<ins>-?- <i>Returns</i>: <tt>str</tt>.</ins>
+</p>
+</blockquote>
+<pre>
+<ins>ios_base&amp; noshowgrouping(ios_base&amp; str);</ins>
+</pre><blockquote>
+<p>
+<ins>-?- <i>Effects</i>: Calls <tt>str.unsetf(ios_base::showgrouping)</tt>.</ins>
+<p/>
+<ins>-?- <i>Returns</i>: <tt>str</tt>.</ins>
+</p>
+</blockquote>
+</blockquote>
+</li>
+
+</ol>
+
+</resolution>
+
+</issue>
