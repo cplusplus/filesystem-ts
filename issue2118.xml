@@ -1,0 +1,90 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="2118" status="New">
+<title><tt>unique_ptr</tt> for array does not support <i>cv</i> qualification conversion of actual argument</title>
+<section><sref ref="[unique.ptr.runtime]"/></section>
+<submitter>Alf P. Steinbach</submitter>
+<date>16 Dec 2011</date>
+
+<discussion>
+
+<p>
+N3290 <sref ref="[unique.ptr.runtime.ctor]"/> "<tt>unique_ptr</tt> constructors":
+</p>
+<blockquote><p>
+These constructors behave the same as in the primary template except that they do not accept pointer types 
+which are convertible to <tt>pointer</tt>. [<i>Note:</i> One implementation technique is to create private 
+templated overloads of these members. &mdash; <i>end note</i>]
+</p></blockquote>
+<p>
+This language excludes even <tt>pointer</tt> itself as type for the actual argument.
+<p/>
+But of more practical concern is that both Visual C++ 10.0 and MinGW g++ 4.1.1 reject the code below, where 
+only an implicit <i>cv</i> qualification is needed, which <i>cv</i> qualification is supported by the non-array 
+version:
+</p>
+<blockquote><pre>
+#include &lt;memory&gt;
+using namespace std;
+
+struct T {};
+
+T* foo() { return new T; }
+T const* bar() { return foo(); }
+
+int main()
+{
+   unique_ptr&lt; T const &gt;       p1( bar() );        // OK
+   unique_ptr&lt; T const [] &gt;    a1( bar() );        // OK
+
+   unique_ptr&lt; T const &gt;       p2( foo() );        // OK
+   unique_ptr&lt; T const [] &gt;    a2( foo() );        // <span style="color:#C80000;font-weight:bold">? this is line #15</span>
+}
+</pre></blockquote>
+<p>
+The <em>intent</em> seems to be clearly specified in <sref ref="[unique.ptr.runtime]"/>&#47;1 second bullet:
+</p>
+<blockquote><p>
+&mdash; Pointers to types derived from <tt>T</tt> are rejected by the constructors, and by <tt>reset</tt>.
+</p></blockquote>
+
+<p>
+But the following language in <sref ref="[unique.ptr.runtime.ctor]"/> then rejects far too much...
+<p/>
+Proposed new wording of N3290 <sref ref="[unique.ptr.runtime.ctor]"/> "<tt>unique_ptr</tt> constructors":
+</p>
+<blockquote><p>
+These constructors behave the same as in the primary template except that actual argument pointers <tt>p</tt> 
+to types derived from <tt>T</tt> are rejected by the constructors. [<i>Note:</i> One implementation technique 
+is to create private templated overloads of these members. &mdash; <i>end note</i>]
+</p></blockquote>
+<p>
+This will possibly capture the intent better, and avoid the inconsistency between the non-array and array 
+versions of <tt>unique_ptr</tt>, by using nearly the exact same phrasing as for the paragraph explaining 
+the intent.
+</p>
+
+</discussion>
+
+<resolution>
+<p>This wording is relative to the FDIS.</p>
+
+<p>Change <sref ref="[unique.ptr.runtime.ctor]"/> as indicated:</p>
+
+<blockquote><pre>
+explicit unique_ptr(pointer p) noexcept;
+unique_ptr(pointer p, <i>see below</i> d) noexcept;
+unique_ptr(pointer p, <i>see below</i> d) noexcept;
+</pre>
+<blockquote><p>
+These constructors behave the same as in the primary template except that <del>they do not accept pointer
+types which are convertible to <tt>pointer</tt></del><ins>argument pointers <tt>p</tt> to types derived 
+from <tt>T</tt> are rejected by the constructors</ins>. [<i>Note:</i> One implementation technique is to 
+create private templated overloads of these members. &mdash; <i>end note</i>]
+</p></blockquote></blockquote>
+</resolution>
+
+</issue>
