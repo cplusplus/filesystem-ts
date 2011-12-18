@@ -1,0 +1,62 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="2119" status="New">
+<title>Missing <tt>hash</tt> specializations for extended integer types</title>
+<section><sref ref="[unord.hash]"/></section>
+<submitter>Daniel Kr&uuml;gler</submitter>
+<date>16 Dec 2011</date>
+
+<discussion>
+
+<p>
+According to the header <tt>&lt;functional&gt;</tt> synopsis <sref ref="[function.objects]"/> 
+and to the explicit description in <sref ref="[unord.hash]"/> class template 
+<tt>hash</tt> specializations shall be provided for all arithmetic types that are 
+not extended integer types. This is not explicitly mentioned, but neither the list 
+nor any normative wording does include them, so it follows by implication.
+<p/>
+What are the reasons that extended integer types are excluded? E.g. for 
+<tt>numeric_limits</tt> corresponding specializations are required. I would 
+expect that an <tt>unordered_map</tt> with key type <tt>std::uintmax_t</tt> would 
+just work, but that depends now on whether this type is an extended integer type 
+or not.
+<p/>
+This issue is <em>not</em> asking for also providing specializations for the
+<i>cv</i>-qualified arithmetic types. While this is surely a nice-to-have feature,
+I consider that restriction as a more secondary problem in practice.
+<p/>
+The proposed resolution also fixes a problem mentioned in <iref ref="2109"/> in regard
+to confusing requirements on user-defined types and those on implementations.
+</p>
+
+</discussion>
+
+<resolution>
+<p>This wording is relative to the FDIS.</p>
+
+<p>Change <sref ref="[unord.hash]"/> p2 as indicated:</p>
+
+<blockquote><pre>
+template &lt;&gt; struct hash&lt;bool&gt;;
+template &lt;&gt; struct hash&lt;char&gt;;
+[&hellip;]
+template &lt;&gt; struct hash&lt;long double&gt;;
+template &lt;class T&gt; struct hash&lt;T*&gt;;
+</pre><blockquote>
+<p>
+-2- <del><i>Requires</i>: the template specializations shall meet the requirements 
+of class template <tt>hash</tt> (<sref ref="[unord.hash]"/>)</del><ins>The header 
+<tt>&lt;functional&gt;</tt> provides definitions for specializations of the 
+<tt>hash</tt> class template for each <i>cv</i>-unqualified arithmetic type. This 
+header also provides a definition for a partial specialization of the <tt>hash</tt> 
+class template for any pointer type. The requirements for the members of these 
+specializations are given in sub-clause <sref ref="[unord.hash]"/></ins>.
+</p>
+</blockquote></blockquote>
+
+</resolution>
+
+</issue>

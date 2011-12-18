@@ -18,7 +18,8 @@
 </p>
 
 <blockquote><p>
-<i>Requires</i>: the template specializations shall meet the requirements of class template <tt>hash</tt> (20.8.12).
+<i>Requires</i>: the template specializations shall meet the requirements of class template 
+<tt>hash</tt> (20.8.12).
 </p></blockquote>
 
 <p>
@@ -114,7 +115,8 @@ shall evaluate to the same value as <tt>hash&lt;T*&gt;()(p.get())</tt>.
 
 <li><p>Change <sref ref="[unord.hash]"/> p2 as indicated: [<i>Comment</i>: For unknown
 reasons the extended integer types are not mentioned here, which looks like an oversight to
-me and makes also the wording more complicated &mdash; <i>end comment</i>]</p>
+me and makes also the wording more complicated. See <iref ref="2119"/> for this part
+of the problem. &mdash; <i>end comment</i>]</p>
 
 <blockquote><pre>
 template &lt;&gt; struct hash&lt;bool&gt;;
@@ -127,10 +129,11 @@ template &lt;class T&gt; struct hash&lt;T*&gt;;
 -2- <del><i>Requires</i>: the template specializations shall meet the requirements 
 of class template <tt>hash</tt> (<sref ref="[unord.hash]"/>)</del><ins>The header 
 <tt>&lt;functional&gt;</tt> provides definitions for specializations of the 
-<tt>hash</tt> class template for each arithmetic type except for the extended integer
-types. This header also provides a definition for a partial specialization of the 
-<tt>hash</tt> class template for any pointer type. The requirements for the members 
-of these specializations are given in sub-clause <sref ref="[unord.hash]"/></ins>.
+<tt>hash</tt> class template for each <i>cv</i>-unqualified arithmetic type except 
+for the extended integer types. This header also provides a definition for a partial 
+specialization of the <tt>hash</tt> class template for any pointer type. The 
+requirements for the members of these specializations are given in sub-clause 
+<sref ref="[unord.hash]"/></ins>.
 </p>
 </blockquote></blockquote>
 </li>
