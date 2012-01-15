@@ -1,0 +1,61 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="2121" status="New">
+<title><tt>app</tt> for string streams</title>
+<section><sref ref="[futures.async]"/></section>
+<submitter>Nicolai Josuttis</submitter>
+<date>15 Jan 2012</date>
+
+<discussion>
+
+<p>
+This issue was raised while discussing issue <iref ref="1448"/>.
+<p/>
+Note the following program:
+</p>
+<blockquote><pre>
+string s("s1: 123456789");
+ostringstream s1(s, ios_base::out|ios_base::app);
+s1 &lt;&lt; "hello";
+cout &lt;&lt; s1.str() &lt;&lt; endl;
+</pre></blockquote>
+<p>
+With g++4.x it prints:
+</p>
+<blockquote><pre>
+s1: 123456789hello
+</pre></blockquote>
+<p>
+With VisualC++10 it prints:
+</p>
+<blockquote><pre>
+hello23456789
+</pre></blockquote>
+<p>
+From my intuitive understanding the flag "app" should result in the output of g++4.x.
+I also would read that from <sref ref="[ios::openmode]"/> claiming:
+</p>
+<blockquote><p>
+<tt>app</tt>&nbsp;&nbsp;&nbsp;seek to end before each write
+</p></blockquote>
+<p>
+However in issue <iref ref="1448"/> P.J.Plauger comments:
+</p>
+<blockquote><p>
+I think we should say nothing special about <tt>app</tt> at construction time (thus leaving the write pointer at the beginning of the buffer).
+Leave implementers wiggle room to ensure subsequent append writes as they see fit, but don't change existing rules for initial seek
+position.
+</p></blockquote>
+<p>
+Note that the flag <tt>ate</tt> on both platforms appends "hello" to <tt>s</tt>.
+</p>
+
+</discussion>
+
+<resolution>
+</resolution>
+
+</issue>
