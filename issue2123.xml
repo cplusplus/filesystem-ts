@@ -1,0 +1,51 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="2123" status="New">
+<title><tt>merge()</tt> allocator requirements for lists versus forward lists</title>
+<section><sref ref="[forwardlist.ops]"/></section>
+<submitter>Nicolai Josuttis</submitter>
+<date>15 Jan 2012</date>
+
+<discussion>
+
+<p>
+Sub-clause <sref ref="[list.ops]"/>, p24 states for lists:
+</p>
+<blockquote><p>
+The behavior is undefined if <tt>this-&gt;get_allocator() != x.get_allocator()</tt>.
+</p></blockquote>
+<p>
+But there is nothing like that for forward lists in <sref ref="[forwardlist.ops]"/>,
+although I would expect the same undefined behavior there.
+</p>
+
+</discussion>
+
+<resolution>
+<p>This wording is relative to the FDIS.</p>
+
+<ol>
+<li>
+<p>Add a new paragraph after <sref ref="[forwardlist.ops]"/> p19 as indicated:</p>
+
+<blockquote><pre>
+void merge(forward_list&lt;T,Allocator&gt;&amp; x);
+void merge(forward_list&lt;T,Allocator&gt;&amp;&amp; x);
+template &lt;class Compare&gt; void merge(forward_list&lt;T,Allocator&gt;&amp; x, Compare comp);
+template &lt;class Compare&gt; void merge(forward_list&lt;T,Allocator&gt;&amp;&amp; x, Compare comp);</pre>
+<blockquote><p>
+[&hellip;]
+<p/>
+-19- <i>Effects</i>: [&hellip;]
+<p/>
+<ins>-?- <i>Remarks</i>: The behavior is undefined if <tt>this-&gt;get_allocator() != x.get_allocator()</tt>.</ins>
+</p></blockquote></blockquote>
+</li>
+</ol>
+
+</resolution>
+
+</issue>
