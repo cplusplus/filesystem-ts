@@ -24,6 +24,11 @@ void move_to_raw_buffer(InputIterator first, InputIterator last, T *raw_buffer)
 </pre></blockquote>
 <p>
 This could easily be solved by overloading <tt>operator=</tt> for rvalues.
+<p/>
+Dave Abrahams:
+<p/>
+<tt>raw_storage_iterator</tt> causes exception-safety problems when used with any
+generic algorithm. I suggest leaving it alone and not encouraging its use.
 </p>
 
 </discussion>
