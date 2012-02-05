@@ -1,0 +1,75 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="2127" status="New">
+<title>Move-construction with <tt>raw_storage_iterator</tt></title>
+<section><sref ref="[storage.iterator]"/></section>
+<submitter>Jonathan Wakely</submitter>
+<date>23 Jan 2012</date>
+
+<discussion>
+
+<p>
+Aliaksandr Valialkin pointed out that <tt>raw_storage_iterator</tt> only supports constructing 
+a new object from lvalues so cannot be used to construct move-only types:
+</p>
+<blockquote><pre>
+template &lt;typename InputIterator, typename T&gt;
+void move_to_raw_buffer(InputIterator first, InputIterator last, T *raw_buffer)
+{
+  std::move(first, last, std::raw_storage_iterator&lt;T *, T&gt;(raw_buffer));
+}
+</pre></blockquote>
+<p>
+This could easily be solved by overloading <tt>operator=</tt> for rvalues.
+</p>
+
+</discussion>
+
+<resolution>
+<p>This wording is relative to <a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2012/n3337.pdf">N3337</a>.</p>
+
+<ol>
+<li><p>Add a new signature to the synopsis in <sref ref="[storage.iterator]"/> p1:</p>
+
+<blockquote><pre>
+namespace std {
+  template &lt;class OutputIterator, class T&gt;
+  class raw_storage_iterator
+    : public iterator&lt;output_iterator_tag,void,void,void,void&gt; {
+  public:
+    explicit raw_storage_iterator(OutputIterator x);
+
+    raw_storage_iterator&lt;OutputIterator,T&gt;&amp; operator*();
+    raw_storage_iterator&lt;OutputIterator,T&gt;&amp; operator=(const T&amp; element);
+    <ins>raw_storage_iterator&lt;OutputIterator,T&gt;&amp; operator=(T&amp;&amp; element);</ins>
+    raw_storage_iterator&lt;OutputIterator,T&gt;&amp; operator++();
+    raw_storage_iterator&lt;OutputIterator,T&gt; operator++(int);
+};
+}
+</pre></blockquote>
+</li>
+
+<li><p>Insert the new signature and a new paragraph before p4:</p>
+
+<blockquote><pre>
+raw_storage_iterator&lt;OutputIterator,T&gt;&amp; operator=(const T&amp; element);
+<ins>raw_storage_iterator&lt;OutputIterator,T&gt;&amp; operator=(T&amp;&amp; element);</ins>
+</pre><blockquote>
+<p>
+<ins>-?- <i>Requires</i>: For the first signature <tt>T</tt> shall be <tt>CopyConstructible</tt>. For
+the second signature <tt>T</tt> shall be <tt>MoveConstructible</tt>.</ins>
+<p/>
+-4- <i>Effects</i>: Constructs a value from <tt>element</tt> at the location to which the iterator points.
+<p/>
+-5- <i>Returns</i>: A reference to the iterator.
+</p>
+</blockquote></blockquote>
+</li>
+</ol>
+
+</resolution>
+
+</issue>
