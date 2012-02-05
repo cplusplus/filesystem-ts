@@ -67,6 +67,40 @@ responsibilities in the previous wording.
 A related issue is <iref ref="2088"/>.
 </p>
 
+<note>2012-01-30: Howard comments</note>
+
+<p>
+The C++98&#47;03 wording is somewhat ambiguous:
+</p>
+<blockquote><p>
+Calls the terminate_handler function in effect immediately after evaluating the throw-expression...
+</p></blockquote>
+<p>
+There are potentially two throw-expressions being referred to here, and it is not clear if this sentence is referring to just the first or both:
+</p>
+<ol>
+<li><tt>throw <i>assignment-expression</i>;</tt></li>
+<li><tt>throw;</tt></li>
+</ol>
+<p>
+There is ample evidence in current implementations that it is understood that <i>only</i> 
+1. was meant. But clearly both 1 and 2 could have been meant. We need a clarification. Does an execution 
+of a rethrow (throw;) update which handlers can potentially be called?
+</p>
+<ol>
+<li value="2"><tt>throw;</tt> // update handlers to get_xxx()?</li>
+</ol>
+<p>
+My opinion: Go with existing practice, and clarify what that practice is, if surveys find that everyone 
+does the same thing. Gcc 4.2 and Apple do 1. only, and do not reset the handlers to the current handlers 
+on throw;.
+<p/>
+If current practice is not unanimously one way or the other, I have no strong opinion. I have not found 
+a motivating use case for the use of any particular handler. Most applications set the handlers once at 
+the beginning of the program and then do not change them, and so will not be impacted by whatever decision 
+is made here.
+</p>
+
 </discussion>
 
 <resolution>
