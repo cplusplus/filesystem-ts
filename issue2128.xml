@@ -1,0 +1,90 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="2128" status="New">
+<title>Absence of global functions <tt>cbegin&#47;cend</tt></title>
+<section><sref ref="[iterator.synopsis]"/>, <sref ref="[iterator.range]"/></section>
+<submitter>Dmitry Polukhin</submitter>
+<date>23 Jan 2012</date>
+
+<discussion>
+
+<p>
+All standard containers support <tt>cbegin&#47;cend</tt> member functions but corresponding global functions are 
+missing. Proposed resolution it to add global <tt>cbegin&#47;cend</tt> functions by analogy with global <tt>begin&#47;end</tt> 
+functions. This addition will unify things for users.
+</p>
+
+</discussion>
+
+<resolution>
+<p>This wording is relative to <a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2012/n3337.pdf">N3337</a>.</p>
+
+<ol>
+<li><p>In <sref ref="[iterator.synopsis]"/>, header iterator synopsis, add the following declarations::</p>
+
+<blockquote><pre>
+namespace std {
+  [&hellip;]
+  <i>// 24.6.5, range access:</i>
+  template &lt;class C&gt; auto begin(C&amp; c) -> decltype(c.begin());
+  template &lt;class C&gt; auto begin(const C&amp; c) -> decltype(c.begin());
+  template &lt;class C&gt; auto end(C&amp; c) -> decltype(c.end());
+  template &lt;class C&gt; auto end(const C&amp; c) -> decltype(c.end());
+  <ins>template &lt;class C&gt; auto cbegin(const C&amp; c) -> decltype(c.cbegin());</ins>
+  <ins>template &lt;class C&gt; auto cend(const C&amp; c) -> decltype(c.cend());</ins>
+  template &lt;class T, size_t N&gt; T* begin(T (&amp;array)[N]);
+  template &lt;class T, size_t N&gt; T* end(T (&amp;array)[N]);
+  <ins>template &lt;class T, size_t N&gt; const T* cbegin(T (&amp;array)[N]);</ins>
+  <ins>template &lt;class T, size_t N&gt; const T* cend(T (&amp;array)[N]);</ins>
+}
+</pre></blockquote>
+</li>
+
+<li><p>In <sref ref="[iterator.range]"/> after p5 add the following series of paragraphs:</p>
+
+<blockquote>
+<pre>
+<ins>template &lt;class C&gt; auto cbegin(const C&amp; c) -> decltype(c.cbegin());</ins>
+</pre>
+<blockquote>
+<p>
+<ins>-?- <i>Returns</i>: <tt>c.cbegin()</tt>.</ins>
+</p>
+</blockquote>
+
+<pre>
+<ins>template &lt;class C&gt; auto cend(const C&amp; c) -> decltype(c.cend());</ins>
+</pre>
+<blockquote>
+<p>
+<ins>-?- <i>Returns</i>: <tt>c.cend()</tt>.</ins>
+</p>
+</blockquote>
+
+<pre>
+<ins>template &lt;class T, size_t N&gt; const T* cbegin(T (&amp;array)[N]);</ins>
+</pre>
+<blockquote>
+<p>
+<ins>-?- <i>Returns</i>: <tt>array</tt>.</ins>
+</p>
+</blockquote>
+
+<pre>
+<ins>template &lt;class T, size_t N&gt; const T* cend(T (&amp;array)[N]);</ins>
+</pre>
+<blockquote>
+<p>
+<ins>-?- <i>Returns</i>: <tt>array + N</tt>.</ins>
+</p>
+</blockquote>
+</blockquote>
+</li>
+</ol>
+
+</resolution>
+
+</issue>
