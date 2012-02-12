@@ -3,7 +3,7 @@
   <!ENTITY nbsp "&#160;">
 ] >
 
-<issue num="2124" status="New">
+<issue num="2124" status="Tentatively NAD">
 <title>Seed sequence over-specified</title>
 <section><sref ref="[rand.req.seedseq]"/></section>
 <submitter>Alberto Ganesh Barbati</submitter>
@@ -45,6 +45,31 @@ those requirements in the future.
 <p/>
 I therefore propose to remove all requirements from <sref ref="[rand.req.seedseq]"/> except for the presence of the 
 <tt>generate()</tt> function.
+</p>
+
+<note>2012, Kona</note>
+<p>
+Move to Tenatively NAD.  (Tentative as issue was not in pre-meeting mailing)
+</p>
+<p>
+The 'overspecification', as such, was a deliberate intent to provide guarantees consumers of the whole
+random number framework may rely upon, especially in generic code.  While the standard engines may be
+built without relying on these guarantees, this specification is part of a commitment to a broader
+framework, and Walter indicated future proposals in preparation for parallel generation of random
+numbers that may depend more inimately on these existing requirements.
+</p>
+<p>
+Alisdair noted that the <tt>result_type</tt> typedef was a call-back to how we used to specify
+adaptable functors before TR1 <tt>result_of</tt> and the addition of <tt>std::bind</tt> and is
+probably not something we should be actively promoting in future libraries.  However, it is too
+late to remove this requirement from seed sequences unless we are doing further surgery, as
+recommended by this issue.
+</p>
+<p>
+Walter notes that the <tt>result_type</tt> protocol has not been formally deprecated by the
+standard.  Alisdair replies that was the intent of deprecating the <tt>bind_1st</tt>/
+<tt>unary_function</tt> set of templates in C++11, although we did not say anything about
+<tt>result_type</tt> in general.
 </p>
 
 </discussion>
