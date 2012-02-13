@@ -3,7 +3,7 @@
   <!ENTITY nbsp "&#160;">
 ] >
 
-<issue num="2080" status="New">
+<issue num="2080" status="Review">
 <title>Specify when <tt>once_flag</tt> becomes invalid</title>
 <section><sref ref="[thread.once]"/></section>
 <submitter>Nicolai Josuttis</submitter>
@@ -98,9 +98,36 @@ Pete Becker:
 Yes, probably. We had to clean up several UNIXisms that were in the original design.
 </p></blockquote>
 
+<note>2012, Kona</note>
+<p>
+Remove error conditions, move to Review.
+</p>
+
 </discussion>
 
 <resolution>
+
+<p>This wording is relative to the N3337.</p>
+
+<ol>
+<li><p>Change <sref ref="[thread.once.callonce]"/> as indicated:</p>
+<blockquote><pre>
+template&lt;class Callable, class ...Args&gt;
+void call_once(once_flag&amp; flag, Callable&amp;&amp; func, Args&amp;&amp;... args);
+</pre><blockquote>
+<p>
+[&hellip;]
+<p/>
+-4- <i>Throws</i>: <tt>system_error</tt> when an exception is required (30.2.2), or any exception thrown by <tt>func</tt>.
+<p/>
+<del>-5- Error conditions:</del>
+</p>
+<ul>
+<li><del><tt>invalid_argument</tt> &mdash; if the <tt>once_flag</tt> object is no longer valid.</del></li>
+</ul>
+</blockquote></blockquote>
+</li>
+</ol>
 </resolution>
 
 </issue>

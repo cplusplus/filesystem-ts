@@ -3,7 +3,7 @@
   <!ENTITY nbsp "&#160;">
 ] >
 
-<issue num="2093" status="New">
+<issue num="2093" status="Review">
 <title>Throws clause of <tt>condition_variable::wait</tt> with predicate</title>
 <section><sref ref="[thread.condition.condvar]"/></section>
 <submitter>Alberto Ganesh Barbati</submitter>
@@ -73,10 +73,23 @@ with changes similar to the one above, or remove paragraphs 29 to 34 entirely. B
 even paragraph 26 could be removed IMHO.
 </p>
 
+<note>2012, Kona</note>
+<p>
+We like the idea behind the proposed resolution.
+<p/>
+Modify the first addition to read instead: "Functions that specify a timeout, will throw if an operation 
+on a clock, time point, or time duration throws an exception." 
+<p/>
+In the note near the bottom change "even if the timeout has already expired" to "or if the timeout has 
+already expired". (This is independent, but the original doesn't seem to make sense.) 
+<p/>
+Move to Review.
+</p>
+
 </discussion>
 
 <resolution>
-<p>This wording is relative to the FDIS.</p>
+<p>This wording is relative to the N3337.</p>
 
 <ol>
 <li><p>Add a new paragraph at the end of <sref ref="[thread.req.timing]"/>:</p>
@@ -86,13 +99,13 @@ even paragraph 26 could be removed IMHO.
 [&hellip;]
 <p/>
 -6- The resolution of timing provided by an implementation depends on both operating system and hardware.
-The finest resolution provided by an implementation is called the native resolution.
+The finest resolution provided by an implementation is called the <i>native resolution</i>.
 <p/>
 -7- Implementation-provided clocks that are used for these functions shall meet the <tt>TrivialClock</tt> 
 requirements (<sref ref="[time.clock.req]"/>).
 <p/>
-<ins>-?- For all functions that specify a timeout, operations on clocks, time points and time duration 
-types may throw exceptions. [ <i>Note</i>: instantiations of clock, time point and duration types supplied 
+<ins>-?- Functions that specify a timeout, will throw if an operation on a clock, time point, or time 
+duration throws an exception. [ <i>Note</i>: instantiations of clock, time point and duration types supplied 
 by the implementation as specified in <sref ref="[time.clock]"/> do not throw exceptions. &mdash; 
 <i>end note</i>]</ins>
 </p>
@@ -210,7 +223,7 @@ template &lt;class Clock, class Duration&gt;
 <p>
 [&hellip;]
 <p/>
--23- <i>Throws</i>: <tt>std::system_error</tt> when an exception is required (<sref ref="[thread.req.exception]"/>)
+-23- <i>Throws</i>: <tt>system_error</tt> when an exception is required (<sref ref="[thread.req.exception]"/>)
 <ins>or timeout-related exceptions (<sref ref="[thread.req.timing]"/>)</ins>.
 <p/>
 [&hellip;]
@@ -233,7 +246,7 @@ return wait_until(lock, chrono::steady_clock::now() + rel_time);
 <p>
 [&hellip;]
 <p/>
--29- <i>Throws</i>: <tt>std::system_error</tt> when an exception is required (<sref ref="[thread.req.exception]"/>)
+-29- <i>Throws</i>: <tt>system_error</tt> when an exception is required (<sref ref="[thread.req.exception]"/>)
 <ins>or timeout-related exceptions (<sref ref="[thread.req.timing]"/>)</ins>.
 <p/>
 [&hellip;]
@@ -290,7 +303,7 @@ return wait_until(lock, chrono::steady_clock::now() + rel_time, std::move(pred))
 <p/>
 [&hellip;]
 <p/>
--44- <i>Throws</i>: <tt>std::system_error</tt> when an exception is required (<sref ref="[thread.req.exception]"/>)<ins>, 
+-44- <i>Throws</i>: <tt>system_error</tt> when an exception is required (<sref ref="[thread.req.exception]"/>)<ins>, 
 timeout-related exceptions (<sref ref="[thread.req.timing]"/>), or any exception thrown by <tt>pred</tt></ins>.
 <p/>
 [&hellip;]
@@ -365,7 +378,7 @@ return true;
 </pre></blockquote>
 <p>
 -26- <del><i>Returns</i>: <tt>pred()</tt></del><ins>[<i>Note</i>: There is no blocking if <tt>pred()</tt> is initially <tt>true</tt>, 
-even if the timeout has already expired. &mdash; <i>end note</i>]</ins>
+or if the timeout has already expired. &mdash; <i>end note</i>]</ins>
 <p/>
 -27- [<i>Note</i>: The returned value indicates whether the predicate evaluates to <tt>true</tt> regardless of whether the
 timeout was triggered. <i>end note</i>]

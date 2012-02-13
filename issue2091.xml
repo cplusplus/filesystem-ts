@@ -3,7 +3,7 @@
   <!ENTITY nbsp "&#160;">
 ] >
 
-<issue num="2091" status="New">
+<issue num="2091" status="Review">
 <title>Misplaced effect in <tt>m.try_lock_for()</tt></title>
 <section><sref ref="[thread.timedmutex.requirements]"/></section>
 <submitter>Pete Becker</submitter>
@@ -32,9 +32,34 @@ the mutex has entered the standard, after all. Oh well. Let's hope that the real
 continues to ignore it.
 </p>
 
+<note>2012, Kona</note>
+<p>
+Remove the offending sentence from the requirements clause. Do <em>not</em> add it back 
+anywhere else. The implementation already must have license to wake up late, so the 
+rounding is invisible.
+<p/>
+Move to Review.
+</p>
+
 </discussion>
 
 <resolution>
+<p>This wording is relative to the N3337.</p>
+
+<ol>
+<li><p>Change <sref ref="[thread.timedmutex.requirements]"/>&#47;4 as indicated:</p>
+
+<blockquote><p>
+-3- The expression <tt>m.try_lock_for(rel_time)</tt> shall be well-formed and have the following semantics:
+<p/>
+-4- <i>Requires</i>: <del>If the tick period of <tt>rel_time</tt> is not exactly convertible to the native tick period, the
+duration shall be rounded up to the nearest native tick period.</del> If <tt>m</tt> is of type <tt>std::timed_mutex</tt>,
+the calling thread does not own the mutex.
+</p></blockquote>
+
+</li>
+</ol>
+
 </resolution>
 
 </issue>

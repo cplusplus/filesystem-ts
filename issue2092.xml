@@ -3,7 +3,7 @@
   <!ENTITY nbsp "&#160;">
 ] >
 
-<issue num="2092" status="New">
+<issue num="2092" status="Review">
 <title>Vague Wording for <tt>condition_variable_any</tt></title>
 <section><sref ref="[thread.condition.condvarany]"/></section>
 <submitter>Pete Becker</submitter>
@@ -22,9 +22,39 @@ from the analogous words for <tt>condition_variable()</tt> [<sref ref="[thread.c
 it should be worded the same way.
 </p>
 
+<note>2012, Kona</note>
+<p>
+Copy the corresponding wording from the <tt>condition_variable</tt> constructor in <sref ref="[thread.condition.condvar]"/> p4.
+<p/>
+Move to Review.
+</p>
+
 </discussion>
 
 <resolution>
+<p>This wording is relative to the N3337.</p>
+
+<ol>
+<li><p>Change <sref ref="[thread.timedmutex.requirements]"/>&#47;4 as indicated:</p>
+
+<blockquote><pre>
+condition_variable_any();
+</pre><blockquote>
+<p>
+[&hellip;]
+<p/>
+-4- <i>Error conditions</i>:
+</p>
+<ul>
+<li><tt>resource_unavailable_try_again</tt> &mdash; <del>if any native handle type manipulated is not available</del>
+<ins>if some non-memory resource limitation prevents initialization</ins>.</li>
+<li><tt>operation_not_permitted</tt> &mdash; if the thread does not have the privilege to perform the operation.</li>
+</ul>
+</blockquote></blockquote>
+
+</li>
+</ol>
+
 </resolution>
 
 </issue>
