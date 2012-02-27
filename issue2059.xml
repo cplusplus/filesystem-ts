@@ -3,7 +3,7 @@
   <!ENTITY nbsp "&#160;">
 ] >
 
-<issue num="2059" status="Review">
+<issue num="2059" status="Open">
 <title>C++0x ambiguity problem with <tt>map::erase</tt></title>
 <section><sref ref="[map]"/></section>
 <submitter>Christopher Jefferson</submitter>
@@ -47,6 +47,40 @@ by key method.  The complete resolution should simply restore the <tt>iterator</
 
 <p>
 Proposed wording supplied by Alan Talbot, and moved to Review.
+</p>
+
+
+<note>2012, Kona</note>
+<p>
+Moved back to Open by post-meeting issues processing group.
+</p>
+<p>
+Pablo very unhappy about case of breaking code with ambiguous conversion between both iterator types.
+</p>
+<p>
+Alisdair strongly in favor of proposed resolution, this change from C++11 bit Chris in real code,
+and it took a while to track down the cause.
+</p>
+<p>
+Move to open, bring in front of a larger group
+</p>
+<p>
+Proposed wording from Jeremiah:
+
+<tt>erase(key)</tt> shall not participate in overload resolution if <tt>iterator</tt> is
+convertible to <tt>key</tt>.
+
+Note that this means making <tt>erase(key)</tt> a template-method
+</p>
+<p>
+Poll Chris to find out if he already fixed his code, or fixed his library
+</p>
+<p>
+Jeremiah - allow both overloads, but <tt>enable_if</tt> the <tt>const_iterator</tt> form as
+a template, requiring <tt>is_same</tt> to match only <tt>const_iterator</tt>.
+</p>
+<p>
+Poll PJ to see if he has already applied this fix?
 </p>
 </discussion>
 

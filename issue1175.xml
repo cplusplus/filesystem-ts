@@ -82,6 +82,28 @@ has a complexity of <tt>n</tt> bucket allocations, but this part of the work is 
 The proposed wording looks good.  Move to Review.
 </p>
 
+
+<note>2012, Kona</note>
+<p>
+Fix up some presentation issues with the wording, combining the big-O expressions into single
+expressions rather than the sum of two separate big-Os.
+</p>
+<p>
+Strike "constant or linear", prefer "linear in the number of buckets".
+This allows for number of buckets being larger than requested <tt>n</tt> as well.
+</p>
+<p>
+Default <tt>n</tt> to "unspecified" rather than "implementation-defined".  It seems an un-necessary
+burden asking vendors to document a quantity that is easily determined through the public API of
+these classes.
+</p>
+<p>
+Replace <tt>distance(f,l)</tt> with "number of elements in the range <tt>[f,l)</tt>"
+</p>
+<p>
+Retain in Review with the updated wording
+</p>
+
 </discussion>
 
 <resolution>
@@ -116,7 +138,7 @@ suggested <em>not</em> to shorten the sum <tt>&#x1d4aa;(n) + &#x1d4aa;(<em>N</em
 buckets, using <tt>hf</tt> as the hash function and <tt>eq</tt> as the key<br/>
 equality predicate, and inserts elements from <tt>[i, j)</tt> into it.
 </td>
-<td>Average case <ins>&#x1d4aa;(<tt>n</tt>) +</ins> &#x1d4aa;(<tt><i>N</i></tt>) (<tt><i>N</i></tt> is <tt>distance(i, j)</tt>),<br/>
+<td>Average case &#x1d4aa;(<tt><i><ins>n + </ins>N</i></tt>) (<tt><i>N</i></tt> is <tt>distance(i, j)</tt>),<br/>
 worst case <ins>&#x1d4aa;(<tt>n</tt>) +</ins> &#x1d4aa;(<tt><i>N</i><sup>2</sup></tt>)</td>
 </tr>
 
@@ -130,8 +152,8 @@ worst case <ins>&#x1d4aa;(<tt>n</tt>) +</ins> &#x1d4aa;(<tt><i>N</i><sup>2</sup>
 buckets, using <tt>hf</tt> as the hash function and <tt>key_equal()</tt> as the key<br/>
 equality predicate, and inserts elements from <tt>[i, j)</tt> into it.
 </td>
-<td>Average case <ins>&#x1d4aa;(<tt>n</tt>) +</ins> &#x1d4aa;(<tt><i>N</i></tt>) (<tt><i>N</i></tt> is <tt>distance(i, j)</tt>),<br/>
-worst case <ins>&#x1d4aa;(<tt>n</tt>) +</ins> &#x1d4aa;(<tt><i>N</i><sup>2</sup></tt>)</td>
+<td>Average case &#x1d4aa;(<tt><i><ins>n + </ins>N</i></tt>) (<tt><i>N</i></tt> is <tt>distance(i, j)</tt>),<br/>
+worst case &#x1d4aa;(<tt><i><ins>n + </ins>N</i><sup>2</sup></tt>)</td>
 </tr>
 
 <tr>
@@ -144,8 +166,8 @@ worst case <ins>&#x1d4aa;(<tt>n</tt>) +</ins> &#x1d4aa;(<tt><i>N</i><sup>2</sup>
 buckets, using <tt>hasher()</tt> as the hash function and <tt>key_equal()</tt> as the key<br/>
 equality predicate, and inserts elements from <tt>[i, j)</tt> into it.
 </td>
-<td>Average case <ins>&#x1d4aa;(<tt>n</tt>) +</ins> &#x1d4aa;(<tt><i>N</i></tt>) (<tt><i>N</i></tt> is <tt>distance(i, j)</tt>),<br/>
-worst case <ins>&#x1d4aa;(<tt>n</tt>) +</ins> &#x1d4aa;(<tt><i>N</i><sup>2</sup></tt>)</td>
+<td>Average case &#x1d4aa;(<tt><i><ins>n + </ins>N</i></tt>) (<tt><i>N</i></tt> is <tt>distance(i, j)</tt>),<br/>
+worst case &#x1d4aa;(<tt><i><ins>n + </ins>N</i><sup>2</sup></tt>)</td>
 </tr>
 
 <tr>
@@ -168,11 +190,11 @@ explicit unordered_map(size_type n = <i>see below</i>,
 </pre><blockquote><p>
 1 <i>Effects</i>: Constructs an empty <tt>unordered_map</tt> using the specified hash function, key equality function,
 and allocator, and using at least <tt>n</tt> buckets. If <tt>n</tt> is not provided, the number of buckets is 
-<ins>implementation-defined</ins><del>impldefdefault number of buckets in <tt>unordered_map</tt></del>. 
+<ins>unspecied</ins><del>impldefdefault number of buckets in <tt>unordered_map</tt></del>. 
 <tt>max_load_factor()</tt> returns <tt>1.0</tt>.
 </p></blockquote>
 <blockquote><p>
-2 <i>Complexity</i>: Constant <ins>if <tt>n</tt> is not provided, otherwise linear in <tt>n</tt> to construct the buckets</ins>.
+2 <i>Complexity</i>: <del>Constant</del><ins>Linear in the number of buckets</ins>.
 </p></blockquote>
 </blockquote>
 
@@ -186,14 +208,13 @@ unordered_map(InputIterator f, InputIterator l,
 </pre><blockquote><p>
 3 <i>Effects</i>: Constructs an empty <tt>unordered_map</tt> using the specified hash function, key equality function,
 and allocator, and using at least <tt>n</tt> buckets. If <tt>n</tt> is not provided, the number of buckets is 
-<ins>implementation-defined</ins><del>impldefdefault number of buckets in <tt>unordered_map</tt></del>.
+<ins>unspecified</ins><del>impldefdefault number of buckets in <tt>unordered_map</tt></del>.
 Then inserts elements from the range <tt>[f, l)</tt>. <tt>max_load_factor()</tt> returns <tt>1.0</tt>.
 </p></blockquote>
 <blockquote><p>
-4 <i>Complexity</i>: <del>Average case linear, worst case quadratic</del><ins>Constant if <tt>n</tt> is not 
-provided, else linear in <tt>n</tt> to construct the buckets. In the average case linear in <tt><i>N</i></tt> 
-and in the worst case quadratic in <tt><i>N</i></tt> to insert the elements, where <tt><i>N</i></tt> is equal to 
-<tt>distance(f, l)</tt></ins>.
+4 <i>Complexity</i>: <del>Average case linear, worst case quadratic</del><ins>Linear in the number of buckets.
+In the average case linear in <tt><i>N</i></tt> and in the worst case quadratic in <tt><i>N</i></tt> to insert
+the elements, where <tt><i>N</i></tt> is equal to number of elements in the range <tt>[f,l)</tt></ins>.
 </p></blockquote>
 </blockquote>
 </li>
@@ -209,11 +230,11 @@ explicit unordered_multimap(size_type n = <i>see below</i>,
 </pre><blockquote><p>
 1 <i>Effects</i>: Constructs an empty <tt>unordered_multimap</tt> using the specified hash function, key equality function,
 and allocator, and using at least <tt>n</tt> buckets. If <tt>n</tt> is not provided, the number of buckets is 
-<ins>implementation-defined</ins><del>impldefdefault number of buckets in <tt>unordered_multimap</tt></del>. 
+<ins>unspecified</ins><del>impldefdefault number of buckets in <tt>unordered_multimap</tt></del>. 
 <tt>max_load_factor()</tt> returns <tt>1.0</tt>.
 </p></blockquote>
 <blockquote><p>
-2 <i>Complexity</i>: Constant <ins>if <tt>n</tt> is not provided, otherwise linear in <tt>n</tt> to construct the buckets</ins>.
+2 <i>Complexity</i>: <del>Constant</del><ins>Linear in the number of buckets</ins>.
 </p></blockquote>
 </blockquote>
 
@@ -227,14 +248,13 @@ unordered_multimap(InputIterator f, InputIterator l,
 </pre><blockquote><p>
 3 <i>Effects</i>: Constructs an empty <tt>unordered_multimap</tt> using the specified hash function, key equality function,
 and allocator, and using at least <tt>n</tt> buckets. If <tt>n</tt> is not provided, the number of buckets is 
-<ins>implementation-defined</ins><del>impldefdefault number of buckets in <tt>unordered_multimap</tt></del>.
+<ins>unspecified</ins><del>impldefdefault number of buckets in <tt>unordered_multimap</tt></del>.
 Then inserts elements from the range <tt>[f, l)</tt>. <tt>max_load_factor()</tt> returns <tt>1.0</tt>.
 </p></blockquote>
 <blockquote><p>
-4 <i>Complexity</i>: <del>Average case linear, worst case quadratic</del><ins>Constant if <tt>n</tt> is not 
-provided, else linear in <tt>n</tt> to construct the buckets. In the average case linear in <tt><i>N</i></tt> 
-and in the worst case quadratic in <tt><i>N</i></tt> to insert the elements, where <tt><i>N</i></tt> is equal to 
-<tt>distance(f, l)</tt></ins>.
+4 <i>Complexity</i>: <del>Average case linear, worst case quadratic</del><ins>Linear in the number of buckets.
+In the average case linear in <tt><i>N</i></tt> and in the worst case quadratic in <tt><i>N</i></tt> to insert
+the elements, where <tt><i>N</i></tt> is equal to number of elements in the range <tt>[f,l)</tt></ins>.
 </p></blockquote>
 </blockquote>
 </li>
@@ -250,11 +270,11 @@ explicit unordered_set(size_type n = <i>see below</i>,
 </pre><blockquote><p>
 1 <i>Effects</i>: Constructs an empty <tt>unordered_set</tt> using the specified hash function, key equality function,
 and allocator, and using at least <tt>n</tt> buckets. If <tt>n</tt> is not provided, the number of buckets is 
-<ins>implementation-defined</ins><del>impldefdefault number of buckets in <tt>unordered_set</tt></del>. 
+<ins>unspecified</ins><del>impldefdefault number of buckets in <tt>unordered_set</tt></del>. 
 <tt>max_load_factor()</tt> returns <tt>1.0</tt>.
 </p></blockquote>
 <blockquote><p>
-2 <i>Complexity</i>: Constant <ins>if <tt>n</tt> is not provided, otherwise linear in <tt>n</tt> to construct the buckets</ins>.
+2 <i>Complexity</i>: <del>Constant</del><ins>Linear in the number of buckets</ins>.
 </p></blockquote>
 </blockquote>
 
@@ -268,14 +288,13 @@ unordered_set(InputIterator f, InputIterator l,
 </pre><blockquote><p>
 3 <i>Effects</i>: Constructs an empty <tt>unordered_set</tt> using the specified hash function, key equality function,
 and allocator, and using at least <tt>n</tt> buckets. If <tt>n</tt> is not provided, the number of buckets is 
-<ins>implementation-defined</ins><del>impldefdefault number of buckets in <tt>unordered_set</tt></del>.
+<ins>unspecified</ins><del>impldefdefault number of buckets in <tt>unordered_set</tt></del>.
 Then inserts elements from the range <tt>[f, l)</tt>. <tt>max_load_factor()</tt> returns <tt>1.0</tt>.
 </p></blockquote>
 <blockquote><p>
-4 <i>Complexity</i>: <del>Average case linear, worst case quadratic</del><ins>Constant if <tt>n</tt> is not 
-provided, else linear in <tt>n</tt> to construct the buckets. In the average case linear in <tt><i>N</i></tt> 
-and in the worst case quadratic in <tt><i>N</i></tt> to insert the elements, where <tt><i>N</i></tt> is equal to 
-<tt>distance(f, l)</tt></ins>.
+4 <i>Complexity</i>: <del>Average case linear, worst case quadratic</del><ins>Linear in the number of buckets.
+In the average case linear in <tt><i>N</i></tt> and in the worst case quadratic in <tt><i>N</i></tt> to insert
+the elements, where <tt><i>N</i></tt> is equal to number of elements in the range <tt>[f,l)</tt></ins>.
 </p></blockquote>
 </blockquote>
 </li>
@@ -291,11 +310,11 @@ explicit unordered_multiset(size_type n = <i>see below</i>,
 </pre><blockquote><p>
 1 <i>Effects</i>: Constructs an empty <tt>unordered_multiset</tt> using the specified hash function, key equality function,
 and allocator, and using at least <tt>n</tt> buckets. If <tt>n</tt> is not provided, the number of buckets is 
-<ins>implementation-defined</ins><del>impldefdefault number of buckets in <tt>unordered_multiset</tt></del>. 
+<ins>unspecified</ins><del>impldefdefault number of buckets in <tt>unordered_multiset</tt></del>. 
 <tt>max_load_factor()</tt> returns <tt>1.0</tt>.
 </p></blockquote>
 <blockquote><p>
-2 <i>Complexity</i>: Constant <ins>if <tt>n</tt> is not provided, otherwise linear in <tt>n</tt> to construct the buckets</ins>.
+2 <i>Complexity</i>: <del>Constant</del><ins>Linear in the number of buckets</ins>.
 </p></blockquote>
 </blockquote>
 
@@ -309,14 +328,13 @@ unordered_multiset(InputIterator f, InputIterator l,
 </pre><blockquote><p>
 3 <i>Effects</i>: Constructs an empty <tt>unordered_multiset</tt> using the specified hash function, key equality function,
 and allocator, and using at least <tt>n</tt> buckets. If <tt>n</tt> is not provided, the number of buckets is 
-<ins>implementation-defined</ins><del>impldefdefault number of buckets in <tt>unordered_multiset</tt></del>.
+<ins>unspecified</ins><del>impldefdefault number of buckets in <tt>unordered_multiset</tt></del>.
 Then inserts elements from the range <tt>[f, l)</tt>. <tt>max_load_factor()</tt> returns <tt>1.0</tt>.
 </p></blockquote>
 <blockquote><p>
-4 <i>Complexity</i>: <del>Average case linear, worst case quadratic</del><ins>Constant if <tt>n</tt> is not 
-provided, else linear in <tt>n</tt> to construct the buckets. In the average case linear in <tt><i>N</i></tt> 
-and in the worst case quadratic in <tt><i>N</i></tt> to insert the elements, where <tt><i>N</i></tt> is equal to 
-<tt>distance(f, l)</tt></ins>.
+4 <i>Complexity</i>: <del>Average case linear, worst case quadratic</del><ins>Linear in the number of buckets.
+In the average case linear in <tt><i>N</i></tt> and in the worst case quadratic in <tt><i>N</i></tt> to insert
+the elements, where <tt><i>N</i></tt> is equal to number of elements in the range <tt>[f,l)</tt></ins>.
 </p></blockquote>
 </blockquote>
 </li>

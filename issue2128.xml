@@ -3,7 +3,7 @@
   <!ENTITY nbsp "&#160;">
 ] >
 
-<issue num="2128" status="New">
+<issue num="2128" status="Open">
 <title>Absence of global functions <tt>cbegin&#47;cend</tt></title>
 <section><sref ref="[iterator.synopsis]"/>, <sref ref="[iterator.range]"/></section>
 <submitter>Dmitry Polukhin</submitter>
@@ -15,6 +15,28 @@
 All standard containers support <tt>cbegin&#47;cend</tt> member functions but corresponding global functions are 
 missing. Proposed resolution it to add global <tt>cbegin&#47;cend</tt> functions by analogy with global <tt>begin&#47;end</tt> 
 functions. This addition will unify things for users.
+</p>
+
+<note>2012, Kona</note>
+
+<p>STL: Range-based for loops do not use global <tt>begin</tt>/<tt>end</tt> (anymore).</p>
+<p>Alisdair: We will have to make sure these will be available through many headers.</p>
+<p>STL: Do this, including <tt>r</tt> and <tt>cr</tt>. This won't add any additional work.</p>
+<p>Matt: Users will find it strange if these are not all available.</p>
+<p>Alisdair: Should we have these available everywhere begin/end are available?</p>
+<p>Marshall: Yes. Not any extra work.</p>
+<p>Howard: Adding all of these means we need all of <tt>&lt;iterator></tt>.</p>
+<p>STL: We already need it all.</p>
+<p>Matt: We have to be careful what we are requiring if we include the <tt>r</tt> versions.</p>
+<p>Jeffrey: If we include <tt>r</tt>, should they adapt if the container does not define reverse iteration?</p>
+<p>STL: No. No special behavior. Should fail to compile. Up to user to add the reverse code--it's easy.</p>
+<p>Howard: Anyway it will SFINAE out.</p>
+<p>Alisdair: Error messages due to SFINAE are harder to understand than simple failure to compile.</p>
+<p>STL: Agrees that SFINAE makes error messages much worse.</p>
+
+<p>
+Action: STL to provide additional wording for the <tt>r</tt> variants.
+Move to Review once that wording is availalbe.
 </p>
 
 </discussion>

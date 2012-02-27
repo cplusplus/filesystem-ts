@@ -3,7 +3,7 @@
   <!ENTITY nbsp "&#160;">
 ] >
 
-<issue num="2106" status="New">
+<issue num="2106" status="Review">
 <title><tt>move_iterator</tt> wrapping iterators returning prvalues</title>
 <section><sref ref="[move.iterators]"/></section>
 <submitter>Dave Abrahams</submitter>
@@ -105,17 +105,74 @@ require thinking about reference related types).
 The currently proposed resolution has been split into two alternatives.
 </p>
 
-</discussion>
 
-<resolution>
-<p>This wording is relative to the FDIS.</p>
+<note>2012, Kona</note>
+<p>
+Move to Review.
+</p>
+<p>
+Alisdair: This only applies to input iterators, so keep that in mind when thinking about this.
+</p>
+<p>
+STL: I see what B is doing, but not A.
+</p>
+<p>
+Howard: I agree.
+</p>
+<p>
+Alisdair: Should we use <tt>add_rvalue_reference</tt>?
+</p>
+<p>
+STL: No, we do not want reference collapsing.
+</p>
+<p>
+STL: Re A, messing with the CV qualification scares me.
+</p>
+<p>
+Alisdair: Agree. That would break my intent.
+</p>
+<p>
+STL: Actually I don't think it's actually wrong, but I still don't see what it's doing.
+</p>
+<p>
+Alisdair: A is picking the value type, B is picking the proxy type.
+</p>
+<p>
+Howard: I like returning the proxy type.
+</p>
+<p>
+STL: Returning a reference (B) seems right, because the requirements say "reference".
+I suspect that B works correctly if you have a move iterator wrapping a move iterator
+wrapping a thing.  I think that A would mess up the type in the middle.
+</p>
+<p>
+Considerable discussion about which version is correct, checking various examples.
+</p>
+<p>
+STL: Still think B is right. Still don't understand A. In A we are losing the proxyness.
+</p>
+<p>
+Howard: Agree 100%. We don't want to lose the proxy. If it's const, so be it.
+</p>
+<p>
+STL: B is also understandable by mortals.
+</p>
+<p>
+Howard: Remove to review, keep A but move it out of the proposed resolution area
+(but keep it for rational).
+</p>
+<p>
+Alisdair: Adding an explanatory note might be a good idea, if someone wants to write one.
+</p>
+<p>
+Walter: Concerned about losing the word "reference" in p.1.
+</p>
+<p>
+Howard: <tt>move_iterator</tt> will return an xvalue or a prvalue, both of which are rvalues.
+</p>
 
-<p><strong>This section shows two mutually exclusive resolutions &mdash; only one can
-be picked!</strong></p>
+<note>Proposed resolution A, rejected in preference to the currently proposed resolution (B)
 
-<ol style="list-style-type:upper-alpha">
-
-<li>
 <ol>
 <li><p>Change <sref ref="[move.iterators]"/> p1 as indicated:</p>
 
@@ -161,9 +218,17 @@ otherwise as a synonym for <tt><i>V</i></tt>.</ins>
 </p></blockquote>
 </li>
 </ol>
-</li>
 
-<li>
+</note>
+
+</discussion>
+
+<resolution>
+<p>This wording is relative to the FDIS.</p>
+
+<p><strong>This section shows two mutually exclusive resolutions &mdash; only one can
+be picked!</strong></p>
+
 <ol>
 <li><p>Change <sref ref="[move.iterators]"/> p1 as indicated:</p>
 
@@ -208,8 +273,6 @@ otherwise as a synonym for <tt><i>R</i></tt>.</ins>
 </li>
 </ol>
 
-</li>
-</ol>
 </resolution>
 
 </issue>
