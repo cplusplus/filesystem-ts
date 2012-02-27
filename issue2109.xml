@@ -36,11 +36,17 @@ the specification needs to separate the requirements on these specializations an
 that are imposed on the implementation.
 </p>
 
-</discussion>
 
-<resolution>
-<p>This wording is relative to the FDIS.</p>
+<note>2012, Kona</note>
+<p>
+Update wording and move to Review.
+</p>
+<p>
+Believe a simpler formulation is to simply string the term <i>Requires:</i> and leave the
+current wording intact, rather than strike the whole clause and replace it.
+</p>
 
+<note>Originally proposed wording for reference
 <ol>
 <li><p>Change <sref ref="[syserr.hash]"/> as indicated:</p>
 
@@ -201,6 +207,141 @@ of class template <tt>hash</tt> (<sref ref="[unord.hash]"/>)</del><ins>The heade
 <tt>&lt;thread&gt;</tt> provides a definition for a specialization of the 
 template <tt>hash&lt;thread::id&gt;</tt>. The requirements for the members of this 
 specialization are given in sub-clause <sref ref="[unord.hash]"/></ins>.
+</p>
+</blockquote></blockquote>
+</li>
+
+</ol>
+</note>
+
+</discussion>
+
+<resolution>
+
+<ol>
+<li><p>Change <sref ref="[syserr.hash]"/> as indicated:</p>
+
+<blockquote><pre>
+template &lt;&gt; struct hash&lt;error_code&gt;;
+</pre><blockquote>
+<p>
+-1- <del><i>Requires</i>: t</del><ins>T</ins>he template specialization shall meet the requirements 
+of class template <tt>hash</tt> (<sref ref="[unord.hash]"/>.
+</p>
+</blockquote></blockquote>
+</li>
+
+<li><p>Change <sref ref="[bitset.hash]"/> as indicated:</p>
+
+<blockquote><pre>
+template &lt;size_t N&gt; struct hash&lt;bitset&lt;N&gt; &gt;;
+</pre><blockquote>
+<p>
+-1- <del><i>Requires</i>: t</del><ins>T</ins>he template specialization shall meet the requirements 
+of class template <tt>hash</tt> (<sref ref="[unord.hash]"/>).
+</p>
+</blockquote></blockquote>
+</li>
+
+<li><p>Change <sref ref="[util.smartptr.hash]"/> as indicated:</p>
+
+<blockquote><pre>
+template &lt;class T, class D&gt; struct hash&lt;unique_ptr&lt;T, D&gt; &gt;;
+</pre><blockquote>
+<p>
+-1- <del><i>Requires</i>: t</del><ins>T</ins>he template specialization shall meet the requirements 
+of class template <tt>hash</tt> (<sref ref="[unord.hash]"/>). For an object <tt>p</tt> of type 
+<tt>UP</tt>, where <tt>UP</tt> is <tt>unique_ptr&lt;T, D&gt;</tt>, 
+<tt>hash&lt;UP&gt;()(p)</tt> shall evaluate to the same value as 
+<tt>hash&lt;typename UP::pointer&gt;()(p.get())</tt>.  <del>The specialization 
+<tt>hash&lt;typename UP::pointer&gt;</tt> shall be well-formed.</del>
+<p/>
+<ins>-?- <i>Requires</i>: The specialization <tt>hash&lt;typename UP::pointer&gt;</tt> 
+shall be well-formed and well-defined, and shall meet the requirements of class template
+<tt>hash</tt> (<sref ref="[unord.hash]"/>).</ins>
+</p>
+</blockquote></blockquote>
+
+<blockquote><pre>
+template &lt;class T&gt; struct hash&lt;shared_ptr&lt;T&gt; &gt;;
+</pre><blockquote>
+<p>
+-2- <del><i>Requires</i>: t</del><ins>T</ins>he template specialization shall meet the requirements 
+of class template <tt>hash</tt> (<sref ref="[unord.hash]"/>). For an object <tt>p</tt> of type 
+<tt>shared_ptr&lt;T&gt;</tt>, <tt>hash&lt;shared_ptr&lt;T&gt; &gt;()(p)</tt> 
+shall evaluate to the same value as <tt>hash&lt;T*&gt;()(p.get())</tt>.
+</p>
+</blockquote></blockquote>
+</li>
+
+<li><p>Change <sref ref="[unord.hash]"/> p2 as indicated: [<i>Comment</i>: For unknown
+reasons the extended integer types are not mentioned here, which looks like an oversight to
+me and makes also the wording more complicated. See <iref ref="2119"/> for this part
+of the problem. &mdash; <i>end comment</i>]</p>
+
+<blockquote><pre>
+template &lt;&gt; struct hash&lt;bool&gt;;
+template &lt;&gt; struct hash&lt;char&gt;;
+[&hellip;]
+template &lt;&gt; struct hash&lt;long double&gt;;
+template &lt;class T&gt; struct hash&lt;T*&gt;;
+</pre><blockquote>
+<p>
+-2- <del><i>Requires</i>: t</del><ins>T</ins>he template specializations shall meet the requirements 
+of class template <tt>hash</tt> (<sref ref="[unord.hash]"/>).
+</p>
+</blockquote></blockquote>
+</li>
+
+<li><p>Change <sref ref="[type.index.hash]"/> p1 as indicated:</p>
+
+<blockquote><pre>
+template &lt;&gt; struct hash&lt;type_index&gt;;
+</pre><blockquote>
+<p>
+-1- <del><i>Requires</i>: t</del><ins>T</ins>he template specialization shall meet the requirements 
+of class template <tt>hash</tt> (<sref ref="[unord.hash]"/>). For 
+an object <tt>index</tt> of type <tt>type_index</tt>, <tt>hash&lt;type_index&gt;()(index)</tt> 
+shall evaluate to the same result as <tt>index.hash_code()</tt>.
+</p>
+</blockquote></blockquote>
+</li>
+
+<li><p>Change <sref ref="[basic.string.hash]"/> p1 as indicated:</p>
+
+<blockquote><pre>
+template &lt;&gt; struct hash&lt;string&gt;;
+template &lt;&gt; struct hash&lt;u16string&gt;;
+template &lt;&gt; struct hash&lt;u32string&gt;;
+template &lt;&gt; struct hash&lt;wstring&gt;;
+</pre><blockquote>
+<p>
+-1- <del><i>Requires</i>: t</del><ins>T</ins>he template specializations shall meet the requirements 
+of class template <tt>hash</tt> (<sref ref="[unord.hash]"/>).
+</p>
+</blockquote></blockquote>
+</li>
+
+<li><p>Change <sref ref="[vector.bool]"/> p7 as indicated:</p>
+
+<blockquote><pre>
+template &lt;class Allocator&gt; struct hash&lt;vector&lt;bool, Allocator&gt; &gt;;
+</pre><blockquote>
+<p>
+-7- <del><i>Requires</i>: t</del><ins>T</ins>he template specialization shall meet the requirements 
+of class template <tt>hash</tt> (<sref ref="[unord.hash]"/>).
+</p>
+</blockquote></blockquote>
+</li>
+
+<li><p>Change <sref ref="[thread.thread.id]"/> p14 as indicated:</p>
+
+<blockquote><pre>
+template &lt;&gt; struct hash&lt;thread::id&gt;;
+</pre><blockquote>
+<p>
+-14- <del><i>Requires</i>: t</del><ins>T</ins>he template specialization shall meet the requirements 
+of class template <tt>hash</tt> (<sref ref="[unord.hash]"/>).
 </p>
 </blockquote></blockquote>
 </li>

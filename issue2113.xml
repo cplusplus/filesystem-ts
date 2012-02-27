@@ -50,6 +50,21 @@ If such freedom should not exist, it seems better to clarify this as well, e.g. 
 An implementation shall not declare any class or any member function signature as <tt>final</tt>.
 </p></blockquote>
 
+
+<note>2012, Kona</note>
+<p>
+Move to NAD.
+</p>
+<p>
+Unless the library uses the keyword <tt>final</tt> in a specification, the user clearly has
+freedom to derive from such a class, and so equally clearly, the library vendor does not have
+freedom to add a <tt>final</tt> overrider or class attribute.  Howard observed there may be
+some wiggle-room with 'unspecified types' such as those returned from <tt>bind</tt> expressions,
+or iterators, but we did not see a need to further clarify the issue.  Note that, for example,
+a <tt>vector::iterator</tt> may be implemented as a raw pointer, so users cannot generally
+assume the ability to derive from unspecified library types.
+</p>
+
 </discussion>
 
 <resolution>

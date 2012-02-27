@@ -17,6 +17,22 @@ This is an extension issue for LWG to add constructor overloads that take a
 exception.
 </p>
 
+
+<note>2012, Kona</note>
+<p>
+Move to NAD.
+</p>
+<p>
+This was discussed during C++11 standardization, and deemed (at the time) to be a conforming
+extension that vendors are free to add, but there seemed no need to call it out in the standard.
+Since then it has been noted that the rvalue-reference overloads do not give you the move-semantic
+guarantee the proposer is thought to be looking for, as in order to meet the requirements that
+copy constructors do not throw (for standard exceptions) the exceptions that store strings must
+actually store a reference-counted immutable string, rather than an <tt>std::string</tt> internally.
+Therefore, an rvalue-reference overload is going to have to allocate memory in exactly the same
+way as copying from a <tt>const string&amp;</tt> argument.
+</p>
+
 </discussion>
 
 <resolution>

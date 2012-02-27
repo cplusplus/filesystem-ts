@@ -3,7 +3,7 @@
   <!ENTITY nbsp "&#160;">
 ] >
 
-<issue num="2101" status="New">
+<issue num="2101" status="Open">
 <title>Some transformation types can produce impossible types</title>
 <section><sref ref="[meta.trans]"/></section>
 <submitter>Daniel Kr&uuml;gler</submitter>
@@ -62,6 +62,47 @@ starting from c++std-core-20740), it seems also clear that the library should fi
 specification. The suggested resolution follows the style of the specification of the
 support concepts <tt>PointeeType</tt> and <tt>ReferentType</tt> defined in 
 <a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2009/n2914.pdf">N2914</a>.
+</p>
+
+
+<note>21012, Kona</note>
+<p>
+Move to NAD.
+</p>
+<p>
+These cv- and ref-qualified function types are abberations in the type system, and do
+not represent any actual entity defined by the language.  The notion of cv- and ref-
+qualification applies only to the implicit <tt>*this</tt> reference in a member function.
+</p>
+<p>
+However, these types can be produced by quirks of template metaprogramming, the question
+remains what the library should do about it.  For exmaple, <tt>add_reference</tt> returns
+the original type if passed a reference type, or a <tt>void</tt> type.  Conversely,
+<tt>add_pointer</tt> will refurn a pointer to the referenced type when passed a reference.
+</p>
+<p>
+It is most likely that the 'right' answer in any case will depend on the context that the
+question is being asked, in terms of forming these obscure types.  The best the LWG can
+do is allow an error to propogate back to the user, so they can provide their own meaningful
+answer in their context - with additional metaprogramming on their part.  The consensus is
+that if anyone is dangerous enough with templates to get themselves into this problem, they
+will also have the skills to resolve the problem themselves.  This is not going to trip up
+the non-expert developer.
+</p>
+<p>
+Lastly, it was noted that this problem arises only because the language is inconsistent in
+providing us these nonesense types that do no really represent anything in the language.
+There may be some way Core or Evolution could give us a more consistent type system so that
+the LWG does not need to invent an answer at all, should this question need resolving.  This
+is another reason to not specify anything at the LWG trait level at this time, leaving the
+other working groups free to produce the 'right' answer that we can then follow without
+changing the meaning of exisitng, well-defined programs.
+</p>
+
+<note>21012, post-Kona</note>
+<p>
+Move back to Open.  Daniel is concerned that this is not an issue we can simply ignore,
+further details to follow.
 </p>
 
 </discussion>

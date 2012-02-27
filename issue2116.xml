@@ -55,6 +55,40 @@ This is about <tt>is_nothrow_constructible</tt> in particular. The fact that it 
 foiled by not having a <tt>noexcept</tt> dtor is a defect.
 </p>
 
+<note>2012, Kona</note>
+<p>
+Move to Open.
+</p>
+<p>
+<tt>is_nothrow_constructible</tt> is defined in terms of <tt>is_constructible</tt>, which is defined
+by looking at a hypothetical variable and asking whether the variable definition is known not to
+throw exceptions. The issue claims that this also examines the type's destructor, given the context,
+and thus will return <tt>false</tt> if the destructor can potentially throw. At least one
+implementation (Howard's) does return <tt>false</tt> if the constructor is <tt>noexcept(true)</tt>
+and the destructor is <tt>noexcept(false)</tt>. So that's not a strained interpretation.
+The issue is asking for this to be defined in terms of placement <tt>new</tt>, instead of in terms
+of a temporary object, to make it clearer that <tt>is_nothrow_constructible</tt> looks at the
+<tt>noexcept</tt> status of only the constructor, and not the destructor.
+</p>
+<p>
+Sketch of what the wording would look like:
+</p>
+<p>
+require <tt>is_constructible</tt>, and then also require that a placement <tt>new</tt> operation
+does not throw. (Remembering the title of this issue... What does this imply for <tt>swap</tt>?
+</p>
+<p>
+If we accept this resolution, do we need any changes to <tt>swap</tt>?
+</p>
+<p> STL argues: no, because you are already forbidden from passing anything with a throwing
+desturctor to <tt>swap</tt>.
+</p>
+<p>
+Dietmar argues: no, not true. Maybe statically the destructor can conceivably throw for some
+values, but maybe there are some values known not to throw. In that case, it's correct to
+pass those values to <tt>swap</tt>.
+</p>
+
 </discussion>
 
 <resolution>

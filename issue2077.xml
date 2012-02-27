@@ -24,6 +24,37 @@ when we have array-to-pointer conversions or pointer conversions of
 incomplete pointees in effect.
 </p>
 
+<note>2012, Kona</note>
+<p>
+The issue is that in three type traits, we are accidentally saying that in certain
+circumstances the type must give a specified answer when given an incomplete type.
+(Specifically: an array of unknown bound of incomplete type.)  The issue asserts
+that there's an ODR violation, since the trait returns false in that case but might
+return a different version when the trait is completed.
+</p>
+<p>
+Howard argues: no, there is no risk of an ODR violation.
+<tt>is_constructible&lt;A[]></tt> must return <tt>false</tt> regardless of whether
+<tt>A</tt> is complete, so there's no reason to forbid an array of unknown bound of
+incomplete types. Same argument applies to <tt>is_assignable</tt>. General agreement
+with Howard's reasoning.
+</p>
+<p>
+There may be a real issue for <tt>is_destructible</tt>. None of us are sure what
+<tt>is_destructible</tt> is supposed to mean for an array of unknown bound
+(regardless of whether its type is complete), and the standard doesn't make it clear.
+The middle column doesn't say what it's supposed to do for incomplete types.
+</p>
+<p>
+In at least one implementation, <tt>is_destructible&lt;A[]></tt> does return <tt>true</tt>
+if <tt>A</tt> is complete, which would result in ODR violation unless we forbid it for
+incomplete types.
+</p>
+<p>
+Move to open. We believe there is no issue for <tt>is_constructible</tt> or
+<tt>is_assignable</tt>, but that there is a real issue for <tt>is_destructible</tt>.
+</p>
+
 </discussion>
 
 <resolution>
