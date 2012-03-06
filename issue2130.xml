@@ -6,27 +6,28 @@
 <issue num="2130" status="New">
 <title>Missing ordering constraints</title>
 <section><sref ref="[atomics.order]"/></section>
-<submitter>Clark Nelson</submitter>
+<submitter>Mark Batty</submitter>
 <date>22 Feb 2012</date>
 
 <discussion>
 <p><b>C11 issue 407</b></p>
 
 <p>
-It seems that both C11 and C++11 are missing the following two derivatives of this rule:
+It seems that both C11 and C++11 are missing the following two derivatives of this 
+rule:
 </p>
-<blockquote>
+<blockquote><p>
   For atomic modifications <tt>A</tt> and <tt>B</tt> of an atomic object <tt>M</tt>, if there is
-  a <tt>memory_order_seq_cst fence</tt> <tt>X</tt> such that <tt>A</tt> is sequenced before <tt>X</tt>,
+  a <tt>memory_order_seq_cst</tt> fence <tt>X</tt> such that <tt>A</tt> is sequenced before <tt>X</tt>,
   and <tt>X</tt> precedes <tt>B</tt> in <tt>S</tt>, then <tt>B</tt> occurs later than <tt>A</tt> in the
   modification order of <tt>M</tt>.
-</blockquote>
-<blockquote>
+</p></blockquote>
+<blockquote><p>
   For atomic modifications <tt>A</tt> and <tt>B</tt> of an atomic object <tt>M</tt>, if there is
   a <tt>memory_order_seq_cst</tt> fence <tt>Y</tt> such that <tt>Y</tt> is sequenced before <tt>B</tt>,
-  and <tt></tt>A precedes <tt>Y</tt> in <tt>S</tt>, then <tt>B</tt> occurs later than <tt>A</tt> in the
+  and <tt>A</tt> precedes <tt>Y</tt> in <tt>S</tt>, then <tt>B</tt> occurs later than <tt>A</tt> in the
   modification order of <tt>M</tt>.
-</blockquote>
+</p></blockquote>
 <p>
 Above wording has been added to the Technical Corrigendum of C11 via issue 407, details can be found 
 <a href="http://www.open-std.org/jtc1/sc22/wg14/www/docs/n1584.pdf">here</a>.
