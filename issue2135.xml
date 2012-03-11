@@ -1,0 +1,42 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="2135" status="New">
+<title>Unclear requirement for exceptions thrown in <tt>condition_variable::wait()</tt></title>
+<section><sref ref="[thread.condition.condvar]"/>, <sref ref="[thread.condition.condvarany]"/></section>
+<submitter>Pete Becker</submitter>
+<date>6 Mar 2012</date>
+
+<discussion>
+
+<p>
+<tt>condition_varible::wait()</tt> (and, presumably, <tt>condition_variable_any::wait()</tt>, although 
+I haven't looked at it) says that it calls <tt>lock.unlock()</tt>, and if <tt>condition_variable::wait()</tt> 
+exits by an exception it calls <tt>lock.lock()</tt> on the way out. But if the initial call to 
+<tt>lock.unlock()</tt> threw an exception, does it make sense to call <tt>lock.lock()</tt>? We simply 
+don't know the state of that lock object, and it's probably better not to touch it.
+<p/>
+That aside, once the <tt>wait()</tt> call has been unblocked, it calls <tt>lock.lock()</tt>. If <tt>lock.lock()</tt> 
+throws an exception, what happens? The requirement is:
+</p>
+<blockquote><p>
+If the function exits via an exception, <tt>lock.lock()</tt> shall be called prior to exiting the function scope.
+</p></blockquote>
+<p>
+That can be read in two different ways. One way is as if it said "<tt>lock.lock()</tt> shall have been called …", 
+i.e. the original, failed, call to <tt>lock.lock()</tt> is all that's required. But a more natural reading is 
+that wait has to call <tt>lock.lock()</tt> again, even though it already failed.
+<p/>
+I think this wording suffers from being too general. There are two possible exception sources: the initial call 
+to <tt>lock.unlock()</tt> and the final call to <tt>lock.lock()</tt>. Each one should have its own requirement. 
+Lumping them together muddles things.
+</p>
+
+</discussion>
+
+<resolution>
+</resolution>
+
+</issue>
