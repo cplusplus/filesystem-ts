@@ -1,0 +1,71 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="2133" status="New">
+<title>Attitude to overloaded comma for iterators</title>
+<section><sref ref="[global.functions]"/></section>
+<submitter>Yakov Galka</submitter>
+<date>25 Jan 2012</date>
+
+<discussion>
+<p>
+<sref ref="[global.functions]"/> says
+</p>
+<blockquote><p>
+Unless otherwise specified, global and non-member functions in the standard library 
+shall not use functions from another namespace which are found through argument-dependent 
+name lookup (3.4.2).
+</p></blockquote>
+<p>
+This sounds clear enough. There are just two problems:
+</p>
+<ol>
+<li><p>
+Both implementations I tested (VS2005 and GCC 3.4.3) do unqualified
+calls to the comma operator in some parts of the library with operands
+of user-defined types.
+</p></li>
+<li>
+<p>
+The standard itself does this in the description of some algorithms. E.g. <tt>uninitialized_copy</tt> 
+is defined as:
+</p>
+<blockquote><p>
+<i>Effects</i>:
+</p><blockquote>
+<pre>
+for (; first != last; <span style="color:#C80000;font-weight:bold">++result, ++first</span>)
+  ::new (static_cast&lt;void*&gt;(&amp;*result))
+    typename iterator_traits&lt;ForwardIterator&gt;::value_type(*first);
+</pre>
+</blockquote>
+</blockquote>
+</li>
+</ol>
+<p>
+If understood literally, it is required to call <tt>operator,(ForwardIterator, InputIterator)</tt>.
+<p/>
+For detailed discussion with code samples see 
+<a href="http://stackoverflow.com/questions/8719829/should-the-implementation-guard-itself-against-comma-overloading">here</a>.
+<p/>
+Proposal:
+</p>
+<ol>
+<li>
+Add an exception to the rule in <sref ref="[global.functions]"/> by permitting
+the implementation to call the comma operator as much as it wants to. I doubt we want this. or
+</li>
+<li>
+Fix the description of the said algorithms and perhaps add a note to <sref ref="[global.functions]"/> 
+that brings attention of the implementers to avoid this pitfall.
+</li>
+</ol>
+
+</discussion>
+
+<resolution>
+</resolution>
+
+</issue>
