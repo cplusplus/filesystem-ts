@@ -1,0 +1,31 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="2134" status="New">
+<title>Redundant Mutex requirement?</title>
+<section><sref ref="[thread.mutex.requirements.mutex]"/></section>
+<submitter>Pete Becker</submitter>
+<date>5 Mar 2012</date>
+
+<discussion>
+
+<p>
+<sref ref="[thread.mutex.requirements.mutex]"/>&#47;11 says that prior unlock operations <em>synchronize with</em> <tt>m.lock()</tt>.
+<p/>
+<sref ref="[thread.mutex.requirements.mutex]"/>&#47;19 says that if <tt>m.try_lock()</tt> succeeds, prior unlock operations 
+<em>synchronize with</em> the operation. 
+<p/>
+<sref ref="[thread.mutex.requirements.mutex]"/>&#47;25 says that <tt>m.unlock()</tt> <em>synchronizes with</em> subsequent 
+successful lock operations. 
+<p/>
+Does the third requirement add anything to the first two? If not, it should probably be a non-normative note.
+</p>
+
+</discussion>
+
+<resolution>
+</resolution>
+
+</issue>
