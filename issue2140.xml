@@ -1,0 +1,36 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="2140" status="New">
+<title>Meaning of <tt>notify_all_at_thread_exit</tt> synchronization requirement?</title>
+<section><sref ref="[thread.condition]"/></section>
+<submitter>Pete Becker</submitter>
+<date>6 Mar 2012</date>
+
+<discussion>
+
+<p>
+<tt>notify_all_at_thread_exit</tt> has the following synchronization requirement:
+</p>
+<blockquote><p>
+<i>Synchronization</i>: The call to <tt>notify_all_at_thread_exit</tt> and the completion of the destructors 
+for all the current thread's variables of thread storage duration <em>synchronize with</em> (<sref ref="[intro.multithread]"/>) 
+calls to functions waiting on <tt>cond</tt>.
+</p></blockquote>
+<p>
+The functions waiting on <tt>cond</tt> have already been called, otherwise they wouldn't be waiting. So how can a subsequent 
+call to <tt>notify_all_at_thread_exit</tt> synchronize with them?
+<p/>
+Also, "synchronizes with" is a relationship between library calls (<sref ref="[intro.multithread]"/>&#47;8), so it's not 
+meaningful for completion of destructors for non-library objects. Presumably the intention wasn't so make library 
+destructors special here.
+</p>
+
+</discussion>
+
+<resolution>
+</resolution>
+
+</issue>
