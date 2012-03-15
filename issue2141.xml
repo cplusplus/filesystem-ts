@@ -27,7 +27,7 @@ This means that <tt>common_type&lt;int, int&gt;::type</tt> is <tt>int&amp;&amp;<
 <li><tt>declval&lt;int&gt;()</tt> returns <tt>int&amp;&amp;</tt></li>
 <li>The conditional operator returns an xvalue when its second and third operands have the same type 
 and are both xvalues (<sref ref="[expr.cond]"/> p4)</li>
-<li>decltype returns <tt>T&amp;&amp;</tt> when its expression is an xvalue (<sref ref="[dcl.type.simple]"/> p4)</li>
+<li><tt>decltype</tt> returns <tt>T&amp;&amp;</tt> when its expression is an xvalue (<sref ref="[dcl.type.simple]"/> p4)</li>
 </ul>
 <p>
 Users of <tt>common_type</tt> do not expect to get a reference type as the result; the expectation is that 
@@ -36,7 +36,7 @@ Users of <tt>common_type</tt> do not expect to get a reference type as the resul
 Daniel: In addition to that it should be noted that without such a fix the definition of <tt>std::unique_ptr</tt>'s
 <tt>operator&lt;</tt> in <sref ref="[unique.ptr.special]"/> (around p4) is also broken: In the most typical case 
 (with default deleter), the determination of the common pointer type <em>CT</em> will instantiate 
-<tt>std::less&lt;<em>CT</em>&gt;</tt> which will now be <tt>std::less&lt;T*&amp;&amp;&gt;</tt>, which will
+<tt>std::less&lt;<em>CT</em>&gt;</tt> which can now be <tt>std::less&lt;T*&amp;&amp;&gt;</tt>, which will
 <em>not</em> be the specialization of pointer types that guarantess a total order.
 <p/>
 Given the historic constext of <tt>common_type</tt> original specification, the proper resolution to me
