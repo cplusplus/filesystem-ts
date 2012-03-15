@@ -1,0 +1,81 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="2141" status="New">
+<title><tt>common_type</tt> trait produces reference types</title>
+<section><sref ref="[meta.trans.other]"/></section>
+<submitter>Doug Gregor</submitter>
+<date>11 Mar 2012</date>
+
+<discussion>
+
+<p>
+The type computation of the <tt>common_type</tt> type trait is defined as
+</p>
+<blockquote><pre>
+template &lt;class T, class U&gt;
+ struct common_type&lt;T, U&gt; {
+   typedef decltype(true ? declval&lt;T&gt;() : declval&lt;U&gt;()) type;
+ };
+</pre></blockquote>
+<p>
+This means that <tt>common_type&lt;int, int&gt;::type</tt> is <tt>int&amp;&amp;</tt>, because
+</p>
+<ul>
+<li><tt>declval&lt;int&gt;()</tt> returns <tt>int&amp;&amp;</tt></li>
+<li>The conditional operator returns an xvalue when its second and third operands have the same type 
+and are both xvalues (<sref ref="[expr.cond]"/> p4)</li>
+<li>decltype returns <tt>T&amp;&amp;</tt> when its expression is an xvalue (<sref ref="[dcl.type.simple]"/> p4)</li>
+</ul>
+<p>
+Users of <tt>common_type</tt> do not expect to get a reference type as the result; the expectation is that 
+<tt>common_type</tt> will return a non-reference type to which all of the types can be converted.
+<p/>
+Daniel: In addition to that it should be noted that without such a fix the definition of <tt>std::unique_ptr</tt>'s
+<tt>operator&lt;</tt> in <sref ref="[unique.ptr.special]"/> (around p4) is also broken: In the most typical case 
+(with default deleter), the determination of the common pointer type <em>CT</em> will instantiate 
+<tt>std::less&lt;<em>CT</em>&gt;</tt> which will now be <tt>std::less&lt;T*&amp;&amp;&gt;</tt>, which will
+<em>not</em> be the specialization of pointer types that guarantess a total order.
+<p/>
+Given the historic constext of <tt>common_type</tt> original specification, the proper resolution to me
+seems to be using <tt>std::decay</tt> instead of <tt>std::remove_reference</tt>: 
+</p>
+<blockquote><pre>
+template &lt;class T, class U&gt;
+struct common_type&lt;T, U&gt; {
+  typedef <ins>typename decay&lt;</ins>decltype(true ? declval&lt;T&gt;() : declval&lt;U&gt;())<ins>&gt;::type</ins> type;
+};
+</pre></blockquote>
+<p>
+At that time rvalues had no identity in this construct and rvalues of non-class types have no cv-qualification.
+With this change we would ensure that
+</p>
+<blockquote><pre>
+common_type&lt;int, int&gt;::type == common_type&lt;const int, const int&gt;::type == int
+</pre></blockquote>
+<p>
+Note that this harmonizes with the corresponding heterogenous case, which has already the exact same effect:
+</p>
+<blockquote><pre>
+common_type&lt;int, long&gt;::type == common_type&lt;const int, const long&gt;::type == long
+</pre></blockquote>
+
+</discussion>
+
+<resolution>
+<p>This wording is relative to the N3376.</p>
+
+<ol><li><p>In <sref ref="[meta.trans.other]"/> p3, change the <tt>common_type</tt> definition to</p>
+<blockquote><pre>
+template &lt;class T, class U&gt;
+struct common_type&lt;T, U&gt; {
+  typedef <ins>typename remove_reference&lt;</ins>decltype(true ? declval&lt;T&gt;() : declval&lt;U&gt;())<ins>&gt;::type</ins> type;
+};
+</pre></blockquote>
+</li>
+</ol>
+</resolution>
+
+</issue>
