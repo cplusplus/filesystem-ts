@@ -1,0 +1,33 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="2142" status="New">
+<title><tt>packaged_task::operator()</tt> synchronization too broad?</title>
+<section><sref ref="[futures.task.members]"/></section>
+<submitter>Pete Becker</submitter>
+<date>12 Mar 2012</date>
+
+<discussion>
+
+<p>
+According to <sref ref="[futures.task.members]"/> p.18:
+</p>
+<blockquote><p>
+[A] successful call to [<tt>packaged_task::</tt>]<tt>operator()</tt> <em>synchronizes with</em> 
+a call to any member function of a <tt>future</tt> or <tt>shared_future</tt> object that shares 
+the shared state of <tt>*this</tt>.
+</p></blockquote>
+<p>
+This requires that the call to <tt>operator()</tt> synchronizes with calls to <tt>future::wait_for</tt>, 
+<tt>future::wait_until</tt>, <tt>shared_future::wait_for</tt>, and <tt>shared_future::wait_until</tt>, 
+even when these functions return because of a timeout.
+</p>
+
+</discussion>
+
+<resolution>
+</resolution>
+
+</issue>
