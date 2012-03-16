@@ -71,7 +71,7 @@ common_type&lt;int, long&gt;::type == common_type&lt;const int, const long&gt;::
 <blockquote><pre>
 template &lt;class T, class U&gt;
 struct common_type&lt;T, U&gt; {
-  typedef <ins>typename remove_reference&lt;</ins>decltype(true ? declval&lt;T&gt;() : declval&lt;U&gt;())<ins>&gt;::type</ins> type;
+  typedef <ins>typename decay&lt;</ins>decltype(true ? declval&lt;T&gt;() : declval&lt;U&gt;())<ins>&gt;::type</ins> type;
 };
 </pre></blockquote>
 </li>
