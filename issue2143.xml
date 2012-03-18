@@ -1,0 +1,44 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="2143" status="New">
+<title><tt>ios_base::xalloc</tt> should be thread-safe</title>
+<section><sref ref="[ios.base]"/></section>
+<submitter>Alberto Ganesh Barbati</submitter>
+<date>14 Mar 2012</date>
+
+<discussion>
+
+<p>
+The static function <tt>ios_base::xalloc()</tt> could be called from multiple threads and is not covered by 
+<sref ref="[res.on.objects]"/> and <sref ref="[res.on.data.races]"/>. Adding a thread-safety requirement 
+should not impose a significant burden on implementations, as the function can easily implemented with 
+hopefully lock-free atomics.
+</p>
+
+</discussion>
+
+<resolution>
+<p>This wording is relative to the N3376.</p>
+
+<ol>
+<li><p>In <sref ref="[ios.base.storage]"/> add a new paragraph after paragraph 1:</p>
+
+<blockquote><pre>
+static int xalloc();
+</pre><blockquote>
+<p>
+-1- <i>Returns</i>: <tt>index ++</tt>.
+<p/>
+<ins>-?- <i>Remarks</i>: Concurrent access to this function by multiple threads shall not result in a data 
+race (<sref ref="[intro.multithread]"/>).</ins>
+</p>
+</blockquote></blockquote>
+</li>
+</ol>
+
+</resolution>
+
+</issue>
