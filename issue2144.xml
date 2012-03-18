@@ -1,0 +1,88 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="2144" status="New">
+<title>Missing <tt>noexcept</tt> specification in <tt>type_index</tt></title>
+<section><sref ref="[type.index]"/></section>
+<submitter>Daniel Kr&uuml;gler</submitter>
+<date>18 Mar 2012</date>
+
+<discussion>
+
+<p>
+The class type <tt>type_index</tt> is a thin wrapper of <tt>type_info</tt> to
+adapt it as a valid associative container element. Similar to <tt>type_info</tt>, 
+all member functions have an effective <tt>noexcept(true)</tt> specification, with the 
+exception of <tt>hash_code()</tt> and <tt>name()</tt>. The actual effects of these
+functions is a direct call to <tt>type_info</tt>'s <tt>hash_code()</tt> and <tt>name</tt> 
+function, but according to <sref ref="[support.rtti]"/> these are both <tt>noexcept</tt>
+functions, so there is no reason for not declaring them as <tt>noexcept</tt>, too. In fact,
+one of the suggested changes of the original proposing paper 
+<a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2008/n2530.html">N2530</a>
+specifically was to ensure that <tt>type_info</tt> would get a <tt>hash_code()</tt>
+function that guarantees not to throw exceptions (during that time the <tt>hash</tt>
+requirements did not allow to exit with an exception). From this we can conclude that
+<tt>type_index::hash_code()</tt> was intended to be nothrow.
+<p/>
+It seems both consistent and technically simply to require these functions to be <tt>noexcept</tt>.
+</p>
+
+</discussion>
+
+<resolution>
+<p>This wording is relative to the N3376.</p>
+
+<ol>
+<li><p>Modify the class <tt>type_index</tt> synopsis, <sref ref="[type.index.overview]"/> as indicated:</p>
+
+<blockquote><pre>
+namespace std {
+  class type_index {
+  public:
+    type_index(const type_info&amp; rhs) noexcept;
+    bool operator==(const type_index&amp; rhs) const noexcept;
+    bool operator!=(const type_index&amp; rhs) const noexcept;
+    bool operator&lt; (const type_index&amp; rhs) const noexcept;
+    bool operator&lt;= (const type_index&amp; rhs) const noexcept;
+    bool operator&gt; (const type_index&amp; rhs) const noexcept;
+    bool operator&gt;= (const type_index&amp; rhs) const noexcept;
+    size_t hash_code() const <ins>noexcept</ins>;
+    const char* name() const <ins>noexcept</ins>;
+  private:
+    const type_info* target; <i>// exposition only</i>
+    <i>// Note that the use of a pointer here, rather than a reference,</i>
+    <i>// means that the default copy&#47;move constructor and assignment</i>
+    <i>// operators will be provided and work as expected.</i>
+  };
+}
+</pre></blockquote>
+</li>
+</ol>
+
+<ol>
+<li><p>Modify the prototype definitions in <sref ref="[type.index.members]"/> as indicated:</p>
+
+<blockquote><pre>
+size_t hash_code() const <ins>noexcept</ins>;
+</pre><blockquote>
+<p>
+-8- <i>Returns</i>: <tt>target->hash_code()</tt>
+</p>
+</blockquote>
+<pre>
+const char* name() const <ins>noexcept</ins>;
+</pre><blockquote>
+<p>
+-9- <i>Returns</i>: <tt>target->name()</tt>
+</p>
+</blockquote>
+</blockquote>
+
+</li>
+</ol>
+
+</resolution>
+
+</issue>
