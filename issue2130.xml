@@ -29,9 +29,11 @@ rule:
   modification order of <tt>M</tt>.
 </p></blockquote>
 <p>
-Above wording has been added to the Technical Corrigendum of C11 via issue 407, details can be found 
+Above wording has been suggested for the Technical Corrigendum of C11 via issue 407, details can be found 
 <a href="http://www.open-std.org/jtc1/sc22/wg14/www/docs/n1584.pdf">here</a>.
 </p>
+
+<note>2012-03-19: Daniel proposes a slightly condensed form to reduce wording duplications</note>
 
 </discussion>
 
@@ -39,28 +41,30 @@ Above wording has been added to the Technical Corrigendum of C11 via issue 407, 
 <p>This wording is relative to N3376.</p>
 
 <ol>
-<li><p>Following <sref ref="[atomics.order]"/> paragraph 8 insert the following two new paragraphs:</p>
+<li><p>Following <sref ref="[atomics.order]"/> paragraph 7 insert a new paragraph:</p>
 
 <p>
--7- For atomic operations <i>A</i> and <i>B</i> on an atomic object <i>M</i>, if there are <tt>memory_order_seq_cst</tt> 
-fences <i>X</i> and <i>Y</i> such that <i>A</i> is sequenced before <i>X</i>, <i>Y</i> is sequenced before <i>B</i>, 
-and <i>X</i> precedes <i>Y</i> in <i>S</i>, then <i>B</i> occurs later than <i>A</i> in the modification order of <i>M</i>.
+-7- For atomic operations <i>A</i> and <i>B</i> on an atomic object <i>M</i>, <ins><i>B</i> occurs later than <i>A</i> 
+in the modification order of <i>M</i></ins> if there are <tt>memory_order_seq_cst</tt> fences <i>X</i> and <i>Y</i> 
+such that <i>A</i> is sequenced before <i>X</i>, <i>Y</i> is sequenced before <i>B</i>, and <i>X</i> precedes <i>Y</i> 
+in <i>S</i><del>, then <i>B</i> occurs later than <i>A</i> in the modification order of <i>M</i></del>.
+<p/>
+<ins>-?- For atomic modifications <i>A</i> and <i>B</i> of an atomic object <i>M</i>, <i>B</i> occurs
+later than <i>A</i> in the modification order of <i>M</i> if:</ins>
+<ul>
+<li><ins>there is a <tt>memory_order_seq_cst</tt> fence <i>X</i> such that <i>A</i> is sequenced before <i>X</i>, 
+and <i>X</i> precedes <i>B</i> in <i>S</i>, or</ins>
+</li>
+<li><ins>there is a <tt>memory_order_seq_cst</tt> fence <i>Y</i> such that <i>Y</i> is sequenced before <i>B</i>,
+and <i>A</i> precedes <i>Y</i> in <i>S</i>.</ins>
+</li>
+</ul>
 <p/>
 -8- [ <i>Note</i>: <tt>memory_order_seq_cst</tt> ensures sequential consistency only for a program that is free of data races
 and uses exclusively <tt>memory_order_seq_cst</tt> operations. Any use of weaker ordering will invalidate this
 guarantee unless extreme care is used. In particular, <tt>memory_order_seq_cst</tt> fences ensure a total order
 only for the fences themselves. Fences cannot, in general, be used to restore sequential consistency for atomic
 operations with weaker ordering specifications. &mdash; <i>end note</i> ]
-<p/>
-<ins>-?- For atomic modifications <i>A</i> and <i>B</i> of an atomic object <i>M</i>, if there is
-  a <tt>memory_order_seq_cst</tt> fence <i>X</i> such that <i>A</i> is sequenced before <i>X</i>,
-  and <i>X</i> precedes <i>B</i> in <i>S</i>, then <i>B</i> occurs later than <i>A</i> in the
-  modification order of <i>M</i>.</ins>
-<p/>
-<ins>-?- For atomic modifications <i>A</i> and <i>B</i> of an atomic object <i>M</i>, if there is
-  a <tt>memory_order_seq_cst</tt> fence <i>Y</i> such that <i>Y</i> is sequenced before <i>B</i>,
-  and <i>A</i> precedes <i>Y</i> in <i>S</i>, then <i>B</i> occurs later than <i>A</i> in the
-  modification order of <i>M</i>.</ins>
 </p>
 </li>
 </ol>
