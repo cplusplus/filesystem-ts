@@ -28,9 +28,52 @@ meaningful for completion of destructors for non-library objects. Presumably the
 destructors special here.
 </p>
 
+<note>2012-03-09 Jeffrey Yasskin comments:</note>
+
+<p>
+I think the text should say that "<tt>notify_all_at_thread_exit</tt> and destructor calls are sequenced before
+the <tt>lk.unlock()</tt>", and leave it at that, unless there's a funny implementation I haven't thought of.
+</p>
+
+<note>2012-03-19 Hans Boehm comments:</note>
+
+<p>
+I think the synchronization clause should just be replaced with (modulo wording tweaks):
+<p/>
+"The implied <tt>lk.unlock()</tt> call is sequenced after the destruction of all objects with thread storage duration 
+associated with the current thread."
+<p/>
+as Jeffrey suggested.
+<p/>
+To use this correctly, the notifying thread has to essentially acquire the lock, set a variable indicating it's done, 
+call <tt>notify_all_at_thread_exit()</tt>, while the waiting thread acquires the lock, and repeatedly waits on the 
+cv until the variable is set, and then releases the lock.  That ensures that we have the proper synchronizes with 
+relationship as a result of the lock.
+</p>
+
 </discussion>
 
 <resolution>
+<p>This wording is relative to N3376.</p>
+
+<ol><li><p>Modify <sref ref="[thread.condition]"/> p8 as indicated:</p>
+
+<blockquote>
+<pre>
+void notify_all_at_thread_exit(condition_variable&amp; cond, unique_lock&lt;mutex&gt; lk);
+</pre><blockquote>
+<p>
+[&hellip;]
+<p/>
+-8- <i>Synchronization</i>: <del>The call to <tt>notify_all_at_thread_exit</tt> and the completion of the destructors for
+all the current thread's variables of thread storage duration synchronize with (<sref ref="[intro.multithread]"/>) 
+calls to functions waiting on <tt>cond</tt></del> <ins>The implied <tt>lk.unlock()</tt> call is sequenced after the 
+destruction of all objects with thread storage duration associated with the current thread</ins>.
+</p>
+</blockquote></blockquote>
+</li>
+</ol>
+
 </resolution>
 
 </issue>
