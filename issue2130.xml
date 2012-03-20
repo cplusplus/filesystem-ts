@@ -35,28 +35,45 @@ Above wording has been suggested for the Technical Corrigendum of C11 via issue 
 
 <note>2012-03-19: Daniel proposes a slightly condensed form to reduce wording duplications</note>
 
+<note>2012-03-20: Hans comments</note>
+<p>
+The usage of the term <em>atomic operations</em> in <sref ref="[atomics.order]"/> p7 is actually
+incorrect and should better be replaced by <em>atomic modifications</em> as used in the C11
+407 wording.
+<p/>
+There seems to be a similar wording incorrectness used in <sref ref="[intro.multithread]"/> p17
+which should be corrected as well.
+</p>
+
 </discussion>
 
 <resolution>
 <p>This wording is relative to N3376.</p>
 
 <ol>
-<li><p>Following <sref ref="[atomics.order]"/> paragraph 7 insert a new paragraph:</p>
+<li><p><em>[Drafting note: The project editor is kindly asked to consider to replace in <sref ref="[intro.multithread]"/> p17
+the phrase <em>"before an operation <i>B</i> on <i>M</i>"</em> by <em>"before a modification <i>B</i> of <i>M</i>"</em>.]</em></p>
+</li>
+<li><p>Change <sref ref="[atomics.order]"/> paragraph 7 as indicated: <em>[Drafting note: Note that the
+wording change intentionally does also replace the term <em>atomic operation</em> by <em>atomic modification</em>]</em>
+</p>
 
 <p>
--7- For atomic operations <i>A</i> and <i>B</i> on an atomic object <i>M</i>, <ins><i>B</i> occurs later than <i>A</i> 
-in the modification order of <i>M</i></ins> if there are <tt>memory_order_seq_cst</tt> fences <i>X</i> and <i>Y</i> 
-such that <i>A</i> is sequenced before <i>X</i>, <i>Y</i> is sequenced before <i>B</i>, and <i>X</i> precedes <i>Y</i> 
-in <i>S</i><del>, then <i>B</i> occurs later than <i>A</i> in the modification order of <i>M</i></del>.
-<p/>
-<ins>-?- For atomic modifications <i>A</i> and <i>B</i> of an atomic object <i>M</i>, <i>B</i> occurs
+-7- <del>For atomic operations <i>A</i> and <i>B</i> on an atomic object <i>M</i>, if there are 
+<tt>memory_order_seq_cst</tt> fences <i>X</i> and <i>Y</i> such that <i>A</i> is sequenced before <i>X</i>, 
+<i>Y</i> is sequenced before <i>B</i>, and <i>X</i> precedes <i>Y</i> in <i>S</i>, then <i>B</i> 
+occurs later than <i>A</i> in the modification order of <i>M</i>.</del>
+<ins>For atomic modifications <i>A</i> and <i>B</i> of an atomic object <i>M</i>, <i>B</i> occurs
 later than <i>A</i> in the modification order of <i>M</i> if:</ins>
 <ul>
 <li><ins>there is a <tt>memory_order_seq_cst</tt> fence <i>X</i> such that <i>A</i> is sequenced before <i>X</i>, 
 and <i>X</i> precedes <i>B</i> in <i>S</i>, or</ins>
 </li>
 <li><ins>there is a <tt>memory_order_seq_cst</tt> fence <i>Y</i> such that <i>Y</i> is sequenced before <i>B</i>,
-and <i>A</i> precedes <i>Y</i> in <i>S</i>.</ins>
+and <i>A</i> precedes <i>Y</i> in <i>S</i>, or</ins>
+</li>
+<li><ins>there are <tt>memory_order_seq_cst</tt> fences <i>X</i> and <i>Y</i> such that <i>A</i> is sequenced 
+before <i>X</i>, <i>Y</i> is sequenced before <i>B</i>, and <i>X</i> precedes <i>Y</i> in <i>S</i>.</ins>
 </li>
 </ul>
 <p/>
