@@ -1,0 +1,114 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="2145" status="New">
+<title><tt>error_category</tt> default constructor</title>
+<section><sref ref="[syserr.errcat]"/></section>
+<submitter>Howard Hinnant</submitter>
+<date>21 Mar 2012</date>
+
+<discussion>
+
+<p>
+Should <tt>error_category</tt> have a default constructor?
+<p/>
+If you look at the synopsis in <sref ref="[syserr.errcat.overview]"/>, it appears the answer is no. There 
+is no default constructor declared and there is another constructor declared (which should inhibit a default 
+constructor).
+<p/>
+However in paragraph 1 of the same section, descriptive text says:
+</p>
+<blockquote><p>
+Classes may be derived from <tt>error_category</tt> to support categories of errors in addition to those 
+defined in this International Standard.
+</p></blockquote>
+<p>
+How shall classes derived from <tt>error_category</tt> construct their base?
+<p/>
+Jonathan Wakely: In <a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2006/n2066.html">N2066</a> 
+<tt>error_category</tt> was default-constructible. That is still the case in 
+<a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2007/n2241.html">N2241</a>, because no other 
+constructor is declared. Then later <a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2007/n2422.htm">N2422</a> 
+(<a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2007/n2422.htm#Issue6">issue 6</a>) declares 
+the copy constructor as deleted, but doesn't add a default constructor, causing it to be no longer
+default-constructible. That looks like an oversight to me, and I think there should be a public default 
+constructor.
+<p/>
+Daniel: A default-constructor indeed should be provided to allow user-derived classes as described by the
+standard. I suggest this one to be both <tt>noexcept</tt> and <tt>constexpr</tt>. The latter allows
+user-derived non-abstract classes to take advantage of the special <em>constant initialization</em> rule
+of <sref ref="[basic.start.init]"/> p2 b2 for objects with static (or thread) storage duration in namespace 
+scope. Note that a <tt>constexpr</tt> constructor is feasible here, even though there exists a non-trivial
+destructor and even though <tt>error_category</tt> is not a literal type (see <tt>std::mutex</tt> for a similar
+design choice).
+<p/>
+In addition to that the proposed resolution fixes another minor glitch: According to <sref ref="[functions.within.classes]"/>
+virtual destructors require a semantics description. 
+</p>
+
+</discussion>
+
+<resolution>
+<p>This wording is relative to N3376.</p>
+
+<ol>
+<li><p>Modify the class <tt>error_category</tt> synopsis, <sref ref="[syserr.errcat.overview]"/> as indicated:
+<em>[Drafting note: According to the general 
+<a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2011/n3279.pdf"><tt>noexcept</tt> library guidelines</a> 
+destructors should not have any explicit exception specification. This destructor was overlooked during the paper
+analysis &mdash; end note]</em>
+</p>
+
+<blockquote><pre>
+namespace std {
+  class error_category {
+  public:
+    <ins>constexpr error_category() noexcept = default;</ins>
+    virtual ~error_category() <del>noexcept</del>;
+    error_category(const error_category&amp;) = delete;
+    error_category&amp; operator=(const error_category&amp;) = delete;
+    virtual const char* name() const noexcept = 0;
+    virtual error_condition default_error_condition(int ev) const noexcept;
+    virtual bool equivalent(int code, const error_condition&amp; condition) const noexcept;
+    virtual bool equivalent(const error_code&amp; code, int condition) const noexcept;
+    virtual string message(int ev) const = 0;
+    bool operator==(const error_category&amp; rhs) const noexcept;
+    bool operator!=(const error_category&amp; rhs) const noexcept;
+    bool operator&lt;(const error_category&amp; rhs) const noexcept;
+  };
+}
+</pre></blockquote>
+</li>
+
+<li><p>Before <sref ref="[syserr.errcat.virtuals]"/> p1 insert a new prototype description as indicated:</p>
+
+<blockquote><pre>
+<ins>virtual ~error_category();</ins>
+</pre><blockquote>
+<p>
+<ins>-?- <i>Effects</i>: Destroys an object of class <tt>error_category</tt>.</ins>
+</p>
+</blockquote>
+</blockquote>
+
+</li>
+
+<li><p>Before <sref ref="[syserr.errcat.nonvirtuals]"/> p1 insert a new prototype description as indicated:</p>
+
+<blockquote><pre>
+<ins>constexpr error_category() noexcept = default;</ins>
+</pre><blockquote>
+<p>
+<ins>-?- <i>Effects</i>: Constructs an object of class <tt>error_category</tt>.</ins>
+</p>
+</blockquote>
+</blockquote>
+
+</li>
+</ol>
+
+</resolution>
+
+</issue>
