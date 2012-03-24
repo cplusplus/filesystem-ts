@@ -46,6 +46,11 @@ design choice).
 <p/>
 In addition to that the proposed resolution fixes another minor glitch: According to <sref ref="[functions.within.classes]"/>
 virtual destructors require a semantics description. 
+<p/>
+Alberto Ganesh Barbati: I would suggest to remove <tt>=default</tt> from the constructor instead. 
+Please consider that defaulting a constructor or destructor may actually define them as deleted under certain 
+conditions (see <sref ref="[class.ctor]"/>&#47;5 and <sref ref="[class.dtor]"/>&#47;5). Removing <tt>=default</tt> 
+is easier than providing wording to ensures that such conditions do not occur.
 </p>
 
 </discussion>
@@ -65,7 +70,7 @@ analysis &mdash; end note]</em>
 namespace std {
   class error_category {
   public:
-    <ins>constexpr error_category() noexcept = default;</ins>
+    <ins>constexpr error_category() noexcept;</ins>
     virtual ~error_category() <del>noexcept</del>;
     error_category(const error_category&amp;) = delete;
     error_category&amp; operator=(const error_category&amp;) = delete;
@@ -98,7 +103,7 @@ namespace std {
 <li><p>Before <sref ref="[syserr.errcat.nonvirtuals]"/> p1 insert a new prototype description as indicated:</p>
 
 <blockquote><pre>
-<ins>constexpr error_category() noexcept = default;</ins>
+<ins>constexpr error_category() noexcept;</ins>
 </pre><blockquote>
 <p>
 <ins>-?- <i>Effects</i>: Constructs an object of class <tt>error_category</tt>.</ins>
