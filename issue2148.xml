@@ -1,0 +1,31 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="2148" status="New">
+<title>Hashing enums should be supported directly by <tt>std::hash</tt></title>
+<section><sref ref="[unord.hash]"/></section>
+<submitter>Ville Voutilainen</submitter>
+<date>10 Apr 2012</date>
+
+<discussion>
+
+<p>
+The <a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2012/n3333.html">paper</a> 
+proposes various hashing improvements. What it doesn't mention is hashing of
+enums; enums are integral types, and users expect them to have built-in hashing
+support, rather than having to convert enums to ints for uses with
+unordered containers and other uses of hashes. Daniel Kr&uuml;gler explains in c++std-lib-32412
+that this is not achievable with a SFINAEd hash specialization because it would require
+a partial specialization with a type parameter and a non-type parameter with a
+default argument, which is currently not allowed, and hence the fixes in N3333 should be
+adopted instead.
+</p>
+
+</discussion>
+
+<resolution>
+</resolution>
+
+</issue>
