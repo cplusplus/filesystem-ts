@@ -1,0 +1,31 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="2156" status="New">
+<title>Unordered containers' <tt>reserve(n)</tt> reserves for <tt>n-1</tt> elements</title>
+<section><sref ref="[unord.req]"/></section>
+<submitter>Daniel James</submitter>
+<date>7 May 2012</date>
+
+<discussion>
+
+<p>
+I think that unordered containers' <tt>reserve</tt> doesn't quite do what it should. I'd expect after calling 
+<tt>x.reserve(n)</tt> to be able to insert <tt>n</tt> elements without invalidating iterators. But as 
+the standard is written (I'm looking at n3376), I think the guarantee only holds for <tt>n-1</tt> elements.
+<p/>
+For a container with <tt>max_load_factor</tt> of <tt>1</tt>, <tt>reserve(n)</tt> is equivalent to
+<tt>rehash(ceil(n/1))</tt>, ie. <tt>rehash(n)</tt>. <tt>rehash(n)</tt> requires that the bucket
+count is <tt>&gt;= n</tt>, so it can be <tt>n</tt> (Table 103). The rule is that <tt>insert</tt>
+shall not affect the validity of iterators if <tt>(N + n) &lt; z * B</tt> (<sref ref="[unord.req]"/> p15). 
+But for this case the two sides of the equation are equal, so <tt>insert</tt> can affect the validity of iterators.
+</p>
+
+</discussion>
+
+<resolution>
+</resolution>
+
+</issue>
