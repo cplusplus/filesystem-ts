@@ -1,0 +1,57 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="2150" status="New">
+<title>Unclear specification of <tt>find_end</tt></title>
+<section><sref ref="[alg.find.end]"/></section>
+<submitter>Andrew Koenig</submitter>
+<date>28 Mar 2012</date>
+
+<discussion>
+
+<p>
+<sref ref="[alg.find.end]"/> describes the behavior of find_end as returning:
+</p>
+<blockquote><p>
+The last iterator <tt>i</tt> in the range <tt>[first1,last1 - (last2 - first2))</tt> such that for any 
+nonnegative integer <tt>n &lt; (last2 - first2)</tt>, the following corresponding conditions hold: 
+<tt>*(i + n) == *(first2 + n), pred(*(i + n), *(first2 + n)) != false</tt>.
+</p></blockquote>
+<p>
+Does "for any" here mean "for every" or "there exists a"?  I think it means the former, but it could be 
+interpreted either way.
+<p/>
+</p>
+
+</discussion>
+
+<resolution>
+<p>This wording is relative to N3376.</p>
+
+<p>Change <sref ref="[alg.find.end]"/> p2 as indicated:</p>
+
+<blockquote><pre>
+template&lt;class ForwardIterator1, class ForwardIterator2&gt;
+ForwardIterator1 
+find_end(ForwardIterator1 first1, ForwardIterator1 last1,
+         ForwardIterator2 first2, ForwardIterator2 last2);
+template&lt;class ForwardIterator1, class ForwardIterator2,
+         class BinaryPredicate&gt;
+ForwardIterator1
+find_end(ForwardIterator1 first1, ForwardIterator1 last1,
+         ForwardIterator2 first2, ForwardIterator2 last2,
+         BinaryPredicate pred);
+</pre><blockquote><p>
+[&hellip;]
+<p/>
+-2- <i>Returns</i>: The last iterator <tt>i</tt> in the range <tt>[first1,last1 - (last2 - first2))</tt> such 
+that for <del>any</del><ins>every</ins> nonnegative integer <tt>n &lt; (last2 - first2)</tt>, the following 
+corresponding conditions hold: <tt>*(i + n) == *(first2 + n), pred(*(i + n), *(first2 + n)) != false</tt>.
+Returns <tt>last1</tt> if <tt>[first2,last2)</tt> is empty or if no such iterator is found.
+</p></blockquote></blockquote>
+
+</resolution>
+
+</issue>
