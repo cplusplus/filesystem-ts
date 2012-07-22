@@ -1,0 +1,92 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="2159" status="New">
+<title><tt>atomic_flag</tt> initialization</title>
+<section><sref ref="[atomics.flag]"/></section>
+<submitter>Alberto Ganesh Barbati</submitter>
+<date>24 May 2012</date>
+
+<discussion>
+
+<p>
+<sref ref="[atomics.flag]"/>&#47;4 describes the <tt>ATOMIC_FLAG_INIT</tt>, but it's not quite clear about a 
+couple of points:
+</p>
+<ol>
+<li><p>
+it's said that <tt>ATOMIC_FLAG_INIT</tt> "can be used to initialize an object of type <tt>atomic_flag</tt>" 
+and the following example:
+</p>
+<blockquote><pre>
+atomic_flag guard = ATOMIC_FLAG_INIT;
+</pre></blockquote>
+<p>
+is presented. It's not clear whether the macro can also be used in the other initialization contexts:
+</p>
+<blockquote><pre>
+atomic_flag guard ATOMIC_FLAG_INIT; 
+atomic_flag guard {ATOMIC_FLAG_INIT};
+
+struct A { atomic_flag flag; A(); };
+A::A() : flag (ATOMIC_FLAG_INIT); 
+A::A() : flag {ATOMIC_FLAG_INIT};
+</pre></blockquote>
+<p>
+Please also note that examples are non-normative, according to the ISO directives, meaning that the wording 
+presents no normative way to use the macro.
+</p>
+</li>
+
+<li><p>
+it's said that "It is unspecified whether an uninitialized <tt>atomic_flag</tt> object has an initial state 
+of set or clear.". I believe the use of "uninitialized" is inappropriate. First of all, if an object is 
+uninitialized it is obvious that we cannot assert anything about its state. Secondly, it doesn't address the 
+following cases:
+</p>
+<blockquote><pre>
+atomic_flag a; // object is "initialized" by trivial default constructor
+atomic_flag a {}; // object is value-initialized
+static atomic_flag a; // object is zero-initialized
+</pre></blockquote>
+<p>
+strictly speaking a trivial constructor "initializes" the object, although it doesn't actually initialize the 
+sub-objects.
+</p></li>
+</ol>
+<p>
+</p>
+
+</discussion>
+
+<resolution>
+<p>This wording is relative to N3376.</p>
+
+<p>Change <sref ref="[atomics.flag]"/>&#47;4 as follows:</p>
+
+<blockquote><p>
+The macro <tt>ATOMIC_FLAG_INIT</tt> shall be defined in such a way that it can be used to initialize an object of
+type <tt>atomic_flag</tt> to the clear state.  <ins>The macro can be used in the form:</ins>
+</p>
+<blockquote><pre>
+<ins>atomic_flag guard = ATOMIC_FLAG_INIT;</ins>
+</pre></blockquote>
+<p>
+<ins>It's unspecified whether the macro can be used in other initialization contexts.</ins> For a static-duration object, 
+that initialization shall be static. <del>It is unspecified whether an uninitialized</del> <ins>Unless initialized 
+with <tt>ATOMIC_FLAG_INIT</tt>, it is unspecified whether an</ins> <tt>atomic_flag</tt> object has an initial state 
+of set or clear. <del><i>[ Example:</i></del>
+</p>
+<blockquote><pre>
+<del>atomic_flag guard = ATOMIC_FLAG_INIT;</del>
+</pre></blockquote>
+<p>
+<del>&mdash; <i>end example ]</i></del>
+</p>
+</blockquote>
+
+</resolution>
+
+</issue>
