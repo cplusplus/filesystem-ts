@@ -1,0 +1,56 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="2166" status="New">
+<title>Heap property underspecified?</title>
+<section><sref ref="[alg.heap.operations]"/></section>
+<submitter>Peter Sommerlad</submitter>
+<date>9 Jul 2012</date>
+
+<discussion>
+
+<p>
+Another similar issue to the <tt>operator&lt;</tt> vs greater in <tt>nth_element</tt> but not as direct occurs 
+in <sref ref="[alg.heap.operations]"/>:
+</p>
+<blockquote><p>
+-1- A <em>heap</em> is a particular organization of elements in a range between two random access iterators 
+<tt>[a,b)</tt>. Its two key properties are:
+</p>
+<ol>
+<li>There is no element greater than <tt>*a</tt> in the range and
+</li>
+<li><tt>*a</tt> may be removed by <tt>pop_heap()</tt>, or a new element added by <tt>push_heap()</tt>, in 
+O(log(<tt>N</tt>)) time.
+</li>
+</ol>
+</blockquote>
+<p>
+As noted by Richard Smith, it seems that the first bullet should read:
+</p>
+<blockquote><p>
+<tt>*a</tt> is not less than any element in the range
+</p></blockquote>
+<p>
+Even better the heap condition could be stated here directly, instead of leaving it unspecified, i.e.,
+</p>
+<blockquote><p>
+Each element at <tt>(a+2*i+1)</tt> and <tt>(a+2*i+2)</tt> is less than the element at <tt>(a+i)</tt>, 
+if those elements exist, for <tt>i&gt;=0</tt>.
+</p></blockquote>
+<p>
+But may be that was may be intentional to allow other heap organizations?
+<p/>
+See also follow-up discussion of c++std-lib-32780.
+<p/>
+
+</p>
+
+</discussion>
+
+<resolution>
+</resolution>
+
+</issue>
