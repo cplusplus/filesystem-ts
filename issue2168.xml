@@ -1,0 +1,44 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="2168" status="New">
+<title>Inconsistent specification of <tt>uniform_real_distribution</tt> constructor</title>
+<section><sref ref="[rand.dist.uni.real]"/></section>
+<submitter>Marshall Clow</submitter>
+<date>14 Jul 2012</date>
+
+<discussion>
+
+<p>
+uniform_real says in <sref ref="[rand.dist.uni.real]"/> p1:
+</p>
+<blockquote><p>
+A <tt>uniform_real_distribution</tt> random number distribution produces random numbers <tt>x</tt>, <tt>a &le; x &lt; b</tt>,
+</p></blockquote>
+<p>
+but also that (<sref ref="[rand.dist.uni.real]"/> p2):
+</p>
+<blockquote><pre>
+explicit uniform_real_distribution(RealType a = 0.0, RealType b = 1.0);
+</pre><blockquote><p>
+-2- <i>Requires</i>: <tt>a &le; b</tt> and <tt>b - a &le; numeric_limits&lt;RealType&gt;::max()</tt>.
+</p>
+</blockquote></blockquote>
+<p>
+If you construct a <tt>uniform_real_distribution&lt;RealType&gt;(a, b)</tt> where there are no representable 
+numbers between 'a' and 'b' (using <tt>RealType</tt>'s representation) then you cannot satisfy 
+<sref ref="[rand.dist.uni.real]"/>.
+<p/>
+An obvious example is when <tt>a == b</tt>.
+<p/>
+A less obvious example is when <tt>b = a + std::numeric_limits&lt;RealType&gt;::epsilon()</tt>.
+</p>
+
+</discussion>
+
+<resolution>
+</resolution>
+
+</issue>
