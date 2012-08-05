@@ -12,6 +12,40 @@
 <discussion>
 
 <p>
+Sub-clause <sref ref="[swappable.requirements]"/> defines two notions of swappability: a binary version defining
+when two objects are <em>swappable with</em> one another, and a unary notion defining whether an object is 
+<em>swappable</em> (without qualification), with the latter definition requiring that the object satisfy the 
+former with respect to all values of the same type.
+<p/>
+Let <tt>T</tt> be a container type based on a non-propagating allocator whose instances do not necessarily 
+compare equal. Then sub-clause <sref ref="[container.requirements.general]"/> p7 implies that no object <tt>t</tt> 
+of type <tt>T</tt> is swappable (by the unary definition).
+<p/>
+Throughout the standard it is the unary definition of "swappable" that is listed as a requirement (with the 
+exceptions of <sref ref="[utility.swap]"/> p4, <sref ref="[pairs.pair]"/> p31, <sref ref="[tuple.swap]"/> p2, 
+<sref ref="[alg.swap]"/> p2, and <sref ref="[alg.swap]"/> p6, which use the binary definition). This renders 
+many of the mutating sequence algorithms of sub-clause <sref ref="[alg.modifying.operations]"/>, for example, 
+inapplicable to sequences of standard container types, even where every element of the sequence is swappable 
+with every other.
+<p/>
+Note that this concern extends beyond standard containers to all future allocator-based types.
+<p/>
+Resolution proposal:
+<p/>
+I see two distinct straightforward solutions:
+</p>
+<ol style="list-style-type:lower-roman">
+<li>Modify the requirements of algorithms from sub-clause <sref ref="[alg.modifying.operations]"/>, and all other
+places that reference the unary "swappable" definition, to instead use the binary "swappable with" definition 
+(over a domain appropriate to the context). The unary definition of "swappable" could then be removed from the 
+standard.
+</li>
+<li>Modify sub-clause <sref ref="[container.requirements.general]"/> such that objects of standard container types 
+are "swappable" by the unary definition.
+</li>
+</ol>
+<p>
+I favor the latter solution, for reasons detailed in the following issue.
 </p>
 
 </discussion>

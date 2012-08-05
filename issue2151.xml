@@ -4,7 +4,7 @@
 ] >
 
 <issue num="2151" status="New">
-<title><tt>basic_string::swap</tt> semantics ignore allocators</title>
+<title><tt>basic_string&lt;&gt;::swap</tt> semantics ignore allocators</title>
 <section><sref ref="[string.require]"/></section>
 <submitter>Robert Shearer</submitter>
 <date>13 Apr 2012</date>
@@ -12,6 +12,23 @@
 <discussion>
 
 <p>
+In C++11, <tt>basic_string</tt> is not described as a "container", and is not governed by the allocator-aware 
+container semantics described in sub-clause <sref ref="[container.requirements]"/>; as a result, and 
+requirements or contracts for the <tt>basic_string</tt> interface must be documented in Clause 
+<sref ref="[strings]"/>.
+<p/>
+Sub-clause <sref ref="[string::swap]"/> defines the <tt>swap</tt> member function with no requirements, and
+with guarantees to execute in constant time without throwing. Fulfilling such a contract is not reasonable 
+in the presence of unequal non-propagating allocators.
+<p/>
+In contrast, <sref ref="[container.requirements.general]"/> p7 declares the behavior of member <tt>swap</tt> 
+for containers with unequal non-propagating allocators to be undefined.
+<p/>
+Resolution proposal:
+<p/>
+Additional language from Clause <sref ref="[containers]"/> should probably be copied to Clause 
+<sref ref="[strings]"/>. I will refrain from an exactly recommendation, however, as I am raising further
+issues related to the language in Clause <sref ref="[containers]"/>.
 </p>
 
 </discussion>
