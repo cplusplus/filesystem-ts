@@ -5,7 +5,7 @@
 
 <issue num="2164" status="New">
 <title>What are the semantics of <tt>vector.emplace(vector.begin(), vector.back())</tt>?</title>
-<section><sref ref="[alg.nth.element]"/></section>
+<section><sref ref="[vector.modifiers]"/>, <sref ref="[container.requirements]"/></section>
 <submitter>Howard Hinnant</submitter>
 <date>7 Jul 2012</date>
 
@@ -56,37 +56,23 @@ GNU C++ 4.7.1 and GNU C++ 4.8.0 produce other results:
 <p>
 Howard Hinnant:
 <p/>
-LWG issue <iref ref="760"/> currently has status NAD Future. The future is now. Lack of us moving on this 
-issue has created confusion as evidenced by the example presented above.
+I believe Nikolay is correct that vector should initialize an intermediate object with <tt>v.back()</tt> 
+before any shifts take place. As Nikolay pointed out in another email, this appears to be the only way to 
+satisfy the strong exception guarantee when an exception is not thrown by <tt>T</tt>'s copy constructor, 
+move constructor, copy assignment operator, or move assignment operator as specified by 
+<sref ref="[vector.modifiers]"/>/p1. I.e. the emplace construction throws, the vector must remain unaltered.
+<p/>
+That leads to an implementation that tolerates objects bound to the function parameter pack of the <tt>emplace</tt> 
+member function may be elements or sub-objects of elements of the container.
+<p/>
+My position is that the standard is correct as written, but needs a clarification in this area. Self-referencing 
+<tt>emplace</tt> should be legal and give the result Nikolay expects. The proposed resolution of LWG <iref ref="760"/> 
+is not correct.
 </p>
 
 </discussion>
 
 <resolution>
-<p>
-Add after <sref ref="[container.requirements]"/>/10:
-</p>
-
-<blockquote>
-<p>This wording is relative to N3376.</p>
-
-<p>
--10- Unless otherwise specified (see <sref ref="[associative.reqmts.except]"/>, <sref ref="[unord.req.except]"/>, 
-<sref ref="[deque.modifiers]"/>, and <sref ref="[vector.modifiers]"/> all container types defined in this
-Clause meet the following additional requirements:
-<p/>
-[&hellip;]
-</p>
-<p>
-<ins>
--?- Objects bound to the function parameter pack of the <tt>emplace</tt> member function shall not be elements or 
-sub-objects of elements of the container. No diagnostic required.
-</ins>
-</p>
-
-</blockquote>
-
-
 </resolution>
 
 </issue>
