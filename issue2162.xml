@@ -1,0 +1,98 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="2162" status="New">
+<title><tt>allocator_traits::max_size</tt> missing <tt>noexcept</tt></title>
+<section><sref ref="[allocator.requirements]"/>, <sref ref="[allocator.traits.members]"/>, <sref ref="[allocator.traits]"/></section>
+<submitter>Bo Persson</submitter>
+<date>3 Jul 2012</date>
+
+<discussion>
+
+<p>
+N3376 describes in <sref ref="[allocator.traits.members]"/>/7
+</p>
+<blockquote><pre>
+static size_type max_size(Alloc&amp; a);
+</pre>
+<p>
+<i>Returns</i>: <tt>a.max_size()</tt> if that expression is well-formed; otherwise, <tt>numeric_limits&lt;size_type&gt;::max()</tt>.
+</p>
+</blockquote>
+<p>
+The <tt>max_size</tt> function is supposed to call one of two functions that are both <tt>noexcept</tt>. 
+To make this intermediate function useful for containers, it should preserve the <tt>noexcept</tt> attribute.
+<p/>
+Proposed changes:
+<p/>
+In <sref ref="[allocator.traits]"/> and <sref ref="[allocator.traits.members]"/>/7, change the function signature to
+</p>
+<blockquote><pre>
+static size_type max_size(Alloc&amp; a) noexcept;
+</pre></blockquote>
+
+<note>2012-08-05 Daniel comments</note>
+<p>
+On the first sight this does not seem like a defect of the specification, because the Allocator requirements in 
+<sref ref="[allocator.requirements]"/> (Table 28) do not impose a no-throw requirement onto <tt>max_size()</tt>; 
+the table just describes the fall-back implementation for <tt>max_size()</tt> if a given allocator does 
+not provide such a function.
+<p/>
+<tt>std::allocator</tt> as a special model of this concept and is allowed to increase the exception-guarantees 
+for <tt>max_size()</tt>, but this does not imply a corresponding rules for other allocators.
+<p/>
+Furthermore, <tt>max_size()</tt> of Containers is <em>not</em> specified in terms of 
+<tt>Allocator::max_size()</tt>, so again this is not a real contradiction.
+<p/>
+Nonetheless I think that the following stronger decision should be considered:
+</p>
+<ol>
+<li><p>
+Require that for all Allocators (as specified in <sref ref="[allocator.requirements]"/>) <tt>max_size()</tt> 
+never throws an exception. This would it make much more useful to call this function in situations where no 
+exception should leave the context.
+</p></li>
+<li><p>
+Require that for all Allocators (as specified in <sref ref="[allocator.requirements]"/>) <tt>max_size()</tt>
+can be called on const allocator object. Together with the previous item this would allow an implementation 
+of a container's <tt>max_size()</tt> function to delegate to the allocator's <tt>max_size()</tt> function.
+</p></li>
+</ol>
+<p>
+In regard to the second statement it should be mentioned that there are two current specification
+deviations from that in the draft:
+</p>
+<ol>
+<li><p>
+The synopsis of <sref ref="[allocator.traits]"/> uses a const allocator argument as part of the signature
+of the <tt>max_size</tt> function.
+</p></li>
+
+<li><p>
+Both the synopsis of <sref ref="[allocator.adaptor.syn]"/> and the member specification in
+<sref ref="[allocator.adaptor.members]"/> p8 declare <tt>scoped_allocator_adaptor::max_size</tt>
+as const member function, but this function delegates to 
+</p>
+<blockquote><pre>
+allocator_traits&lt;OuterAlloc&gt;::max_size(outer_allocator())
+</pre></blockquote>
+<p>
+where <tt>outer_allocator()</tt> resolves to the member function overload returning a
+<tt>const outer_allocator_type&amp;</tt>.
+</p>
+</li>
+</ol>
+
+<p>
+The question arises whether these current defects actually point to a defect in the Allocator
+requirements and should be fixed there.
+</p>
+
+</discussion>
+
+<resolution>
+</resolution>
+
+</issue>
