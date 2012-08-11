@@ -1,0 +1,43 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="2174" status="New">
+<title><tt>wstring_convert::converted()</tt> should be <tt>noexcept</tt></title>
+<section><sref ref="[conversions.string]"/></section>
+<submitter>Jonathan Wakely</submitter>
+<date>2 Aug 2012</date>
+
+<discussion>
+
+<p>
+There is no reason <tt>wstring_convert::converted()</tt> shouldn't be noexcept.
+<p/>
+It might be possible for <tt>wstring_convert::state()</tt> and <tt>wbuffer_convert::state()</tt> 
+to be <tt>noexcept</tt> too, depending on the requirements on <tt>mbstate_t</tt>.
+</p>
+
+</discussion>
+
+<resolution>
+<p>This wording is relative to N3376.</p>
+
+<ol>
+<li><p>Edit in the class template <tt>wstring_convert</tt> synopsis <sref ref="[conversions.string]"/> p2:</p>
+
+<blockquote><pre>
+size_t converted() const <ins>noexcept</ins>;
+</pre></blockquote>
+</li>
+
+<li><p>Edit the signature before <sref ref="[conversions.string]"/> p6:</p>
+
+<blockquote><pre>
+size_t converted() const <ins>noexcept</ins>;
+</pre></blockquote>
+</li>
+</ol>
+</resolution>
+
+</issue>
