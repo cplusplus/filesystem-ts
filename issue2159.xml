@@ -21,16 +21,16 @@ it's said that <tt>ATOMIC_FLAG_INIT</tt> "can be used to initialize an object of
 and the following example:
 </p>
 <blockquote><pre>
-atomic_flag guard = ATOMIC_FLAG_INIT;
+std::atomic_flag guard = ATOMIC_FLAG_INIT;
 </pre></blockquote>
 <p>
 is presented. It's not clear whether the macro can also be used in the other initialization contexts:
 </p>
 <blockquote><pre>
-atomic_flag guard ATOMIC_FLAG_INIT; 
-atomic_flag guard {ATOMIC_FLAG_INIT};
+std::atomic_flag guard ATOMIC_FLAG_INIT; 
+std::atomic_flag guard {ATOMIC_FLAG_INIT};
 
-struct A { atomic_flag flag; A(); };
+struct A { std::atomic_flag flag; A(); };
 A::A() : flag (ATOMIC_FLAG_INIT); 
 A::A() : flag {ATOMIC_FLAG_INIT};
 </pre></blockquote>
@@ -47,14 +47,34 @@ uninitialized it is obvious that we cannot assert anything about its state. Seco
 following cases:
 </p>
 <blockquote><pre>
-atomic_flag a; // object is "initialized" by trivial default constructor
-atomic_flag a {}; // object is value-initialized
-static atomic_flag a; // object is zero-initialized
+std::atomic_flag a; <i>// object is "initialized" by trivial default constructor</i>
+std::atomic_flag a {}; <i>// object is value-initialized</i>
+static std::atomic_flag a; <i>// object is zero-initialized</i>
 </pre></blockquote>
 <p>
 strictly speaking a trivial constructor "initializes" the object, although it doesn't actually initialize the 
 sub-objects.
 </p></li>
+
+<li><p>it's said that "For a static-duration object, that initialization shall be static.". Considering 
+the following example:</p>
+<blockquote><pre>
+struct A
+{
+  A(); <i>// user-provided, not constexpr</i>
+
+  std::atomic_flag flag = ATOMIC_FLAG_INIT;
+  <i>// possibly other non-static data members</i>
+};
+
+static A a;
+</pre></blockquote>
+<p>
+The object <tt>a.flag</tt> (as a sub-object of the object <tt>a</tt>) has static-duration, yet the initialization 
+has to be dynamic because <tt>A::A</tt> is not <tt>constexpr</tt>.
+</p>
+
+</li>
 </ol>
 <p>
 </p>
@@ -74,10 +94,10 @@ type <tt>atomic_flag</tt> to the clear state.  <ins>The macro can be used in the
 <ins>atomic_flag guard = ATOMIC_FLAG_INIT;</ins>
 </pre></blockquote>
 <p>
-<ins>It's unspecified whether the macro can be used in other initialization contexts.</ins> For a static-duration object, 
-that initialization shall be static. <del>It is unspecified whether an uninitialized</del> <ins>Unless initialized 
-with <tt>ATOMIC_FLAG_INIT</tt>, it is unspecified whether an</ins> <tt>atomic_flag</tt> object has an initial state 
-of set or clear. <del><i>[ Example:</i></del>
+<ins>It's unspecified whether the macro can be used in other initialization contexts.</ins> For a <ins>complete</ins>
+static-duration object, that initialization shall be static. <del>It is unspecified whether an uninitialized</del> 
+<ins>Unless initialized with <tt>ATOMIC_FLAG_INIT</tt>, it is unspecified whether an</ins> <tt>atomic_flag</tt> 
+object has an initial state of set or clear. <del><i>[ Example:</i></del>
 </p>
 <blockquote><pre>
 <del>atomic_flag guard = ATOMIC_FLAG_INIT;</del>
