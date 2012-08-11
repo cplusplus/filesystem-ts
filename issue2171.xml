@@ -1,0 +1,44 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="2171" status="New">
+<title>"swappable" undefined for swapping lvalue and rvalue</title>
+<section><sref ref="[swappable.requirements]"/></section>
+<submitter>Robert Shearer</submitter>
+<date>24 Jul 2012</date>
+
+<discussion>
+
+<p>
+Paragraph <sref ref="[swappable.requirements]"/> p4 states:
+</p>
+<blockquote><p>
+An rvalue or lvalue <tt>t</tt> is <em>swappable</em> if and only if <tt>t</tt> is swappable with any rvalue or lvalue, 
+respectively, of type <tt>T</tt>.
+</p></blockquote>
+<p>
+This paragraph seems to establish two disjoint definitions of "swappable" &mdash; one for lvalues and one 
+for rvalues &mdash; with neither definition including the case of swapping an rvalue with an lvalue.
+<p/>
+Resolution proposal:
+<p/>
+Delete the word "respectively".
+</p>
+
+</discussion>
+
+<resolution>
+<p>This wording is relative to N3376.</p>
+
+<p>Change <sref ref="[swappable.requirements]"/> p4 as indicated:</p>
+
+<blockquote><p>
+An rvalue or lvalue <tt>t</tt> is <em>swappable</em> if and only if <tt>t</tt> is swappable with any rvalue or 
+lvalue <del>, respectively,</del> of type <tt>T</tt>.
+</p></blockquote>
+
+</resolution>
+
+</issue>
