@@ -1,0 +1,52 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="2173" status="New">
+<title>The meaning of operator + in the description of the algorithms</title>
+<section><sref ref="[algorithms]"/></section>
+<submitter>Nikolay Ivchenkov</submitter>
+<date>1 Aug 2012</date>
+
+<discussion>
+
+<p>
+According to <sref ref="[algorithms.general]"/>/12,
+</p>
+<blockquote><p>
+In the description of the algorithms operators <tt>+</tt> and <tt>-</tt> are used for some of the iterator categories 
+for which they do not have to be defined. In these cases the semantics of <tt>a+n</tt> is the same as that of
+</p>
+<blockquote><pre>
+X tmp = a;
+advance(tmp, n);
+return tmp;
+</pre></blockquote>
+</blockquote>
+<p>
+There are several places where such operator <tt>+</tt> is applied to an output iterator &mdash; for example, see the 
+description of <tt>std::copy</tt>:
+</p>
+<blockquote><pre>
+template&lt;class InputIterator, class OutputIterator&gt;
+OutputIterator copy(InputIterator first, InputIterator last,
+                    OutputIterator result);
+</pre>
+<blockquote><p>
+-1- <i>Effects</i>: Copies elements in the range <tt>[first,last)</tt> into the range <tt>[result,result + (last -
+first))</tt> starting from <tt>first</tt> and proceeding to <tt>last</tt>. For each non-negative integer 
+<tt>n &lt; (last - first)</tt>, performs <tt>*(result + n) = *(first + n)</tt>.
+</p></blockquote></blockquote>
+<p>
+<tt>std::advance</tt> is not supposed to be applicable to output iterators, so we need a different method of description.
+<p/>
+See also message <a href="http://accu.org/cgi-bin/wg21/message?wg=lib&amp;msg=32908">c++std-lib-32908</a>.
+</p>
+
+</discussion>
+
+<resolution>
+</resolution>
+
+</issue>
