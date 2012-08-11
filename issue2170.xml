@@ -1,0 +1,83 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="2170" status="New">
+<title>Aggregates cannot be <tt>DefaultConstructible</tt></title>
+<section><sref ref="[utility.arg.requirements]"/></section>
+<submitter>Daniel Kr&uuml;gler</submitter>
+<date>19 Jul 2012</date>
+
+<discussion>
+
+<p>
+The lack of the definition of the <tt>DefaultConstructible</tt> requirements in C++03 was fixed 
+by LWG <iref ref="724"/> at a time where the core rules of list-initialization were slightly
+different than today, at that time value-initialization (shortly) was the primary rule for
+class types, i.e. just before applying <a href="http://www.open-std.org/jtc1/sc22/wg21/docs/cwg_defects.html#1301">CWG 1301</a>, 
+<a href="http://www.open-std.org/jtc1/sc22/wg21/docs/cwg_defects.html#1324">CWG 1324</a>, and 
+<a href="http://www.open-std.org/jtc1/sc22/wg21/docs/cwg_defects.html#1368">CWG 1368</a>.
+<p/>
+The order in <sref ref="[dcl.init.list]"/> p3 was changed to respect aggregate initialization, but that
+had the side-effect that formally aggregate types cannot satisfy the <tt>DefaultConstructible</tt>
+requirements anymore, because we require that
+</p>
+<blockquote><pre>
+T u{};
+</pre></blockquote>
+<p>
+<em>value-initializes</em> the object <tt>u</tt>.
+<p/>
+Of-course exclusion of aggregates was not intended, therefore I suggest to extend the requirements
+in Table 19 (<sref ref="[utility.arg.requirements]"/>) for empty aggregate-initialization as well.
+</p>
+
+</discussion>
+
+<resolution>
+<p>This wording is relative to N3376.</p>
+
+<p>Change <sref ref=""/> as indicated:</p>
+
+<table border="1">
+<caption>Table 19 &mdash; <tt>DefaultConstructible</tt> requirements [defaultconstructible]</caption>
+
+<tr>
+<th>Expression</th>
+<th>Post-condition</th>
+</tr> 
+
+<tr>
+<td>
+<tt>T t;</tt>
+</td>
+<td>
+object <tt>t</tt> is default-initialized
+</td>
+</tr>
+
+<tr>
+<td>
+<tt>T u{};</tt>
+</td>
+<td>
+object <tt>u</tt> is value-initialized <ins>or aggregate-initialized</ins>
+</td>
+</tr>
+
+<tr>
+<td>
+<tt>T()</tt><br/>
+<tt>T{}</tt>
+</td>
+<td>
+a temporary object of type <tt>T</tt> is value-initialized <ins>or aggregate-initialized</ins>
+</td>
+</tr>
+
+</table>
+
+</resolution>
+
+</issue>
