@@ -75,7 +75,7 @@ Kyle: Is it possible to test for noexcept.
 Alisdair: Yes, query the noexcept operator.
 </p>
 <p>
-Alisdair: Agreed there is a problem that we cannot unconditionally mark these operations as noexcpet.
+Alisdair: Agreed there is a problem that we cannot unconditionally mark these operations as noexcept.
 </p>
 <p>
 Pablo: How come swap is not defined in alloc
@@ -225,6 +225,78 @@ basic_string&amp; assign(basic_string&amp;&amp; str) <del>noexcept</del>;
 
 </li>
 </ol>
+
+<note>
+2012-08-11 Joe Gottman observes:
+</note>
+
+<blockquote>
+<p>
+One of the effects of <tt>basic_string</tt>'s move-assignment operator (<sref ref="[string.cons]"/>, Table 71) is
+</p>
+<blockquote>
+
+<table border="1">
+
+<tr>
+<th>Element</th>
+<th>Value</th>
+</tr>
+
+<tr>
+<td><tt>data()</tt></td>
+<td>points at the array whose first element was pointed at by <tt>str.data()</tt></td>
+</tr>
+
+</table> 
+
+</blockquote>
+<p>
+If a string implementation uses the small-string optimization and the input string <tt>str</tt> is small enough 
+to make use of it, this effect is impossible to achieve. To use the small string optimization, a string has to 
+be implemented using something like
+</p>
+<blockquote><pre>
+union
+{
+   char buffer[SMALL_STRING_SIZE];
+   char *pdata;
+};
+</pre></blockquote>
+<p>
+When the string is small enough to fit inside <tt>buffer</tt>, the <tt>data()</tt> member function returns 
+<tt>static_cast&lt;const char *&gt;(buffer)</tt>, and since <tt>buffer</tt> is an array variable, there 
+is no way to implement move so that the moved-to string's <tt>buffer</tt> member variable is equal to 
+<tt>this->buffer</tt>.
+<p/>
+Resolution proposal:
+<p/>
+Change Table 71 to read:
+</p>
+<blockquote>
+
+<table border="1">
+
+<tr>
+<th>Element</th>
+<th>Value</th>
+</tr>
+
+<tr>
+<td><tt>data()</tt></td>
+<td>points at the array <del>whose first element was pointed at by <tt>str.data()</tt></del>
+<ins>that contains the same characters in the same order as <tt>str.data()</tt> contained before 
+<tt>operator=()</tt> was called</ins></td>
+</tr>
+
+</table> 
+
+</blockquote>
+<blockquote>
+</blockquote>
+</blockquote>
+
+
 </discussion>
 
 <resolution>
