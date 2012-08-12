@@ -1,0 +1,91 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="2176" status="New">
+<title>Special members for <tt>wstring_convert</tt> and <tt>wbuffer_convert</tt></title>
+<section><sref ref="[conversions.string]"/>, <sref ref="[conversions.buffer]"/></section>
+<submitter>Jonathan Wakely</submitter>
+<date>2 Aug 2012</date>
+
+<discussion>
+
+<p>
+See discussion following <a href="http://accu.org/cgi-bin/wg21/message?wg=lib&amp;msg=32699">c++std-lib-32699</a>.
+<p/>
+The constructors for <tt>wstring_convert</tt> and <tt>wbuffer_convert</tt> should be explicit, to avoid 
+implicit conversions which take ownership of a <tt>Codecvt</tt> pointer and delete it unexpectedly.
+<p/>
+Secondly, <sref ref="[conversions.buffer]"/> p11 describes a destructor which is not declared in the class 
+synopsis in p2.
+<p/>
+Finally, and most importantly, the definitions in <sref ref="[conversions.string]"/> and 
+<sref ref="[conversions.buffer]"/> imply implicitly-defined copy constructors and assignment operators, which 
+would do shallow copies of the owned <tt>Codecvt</tt> objects and result in undefined behaviour in the 
+destructors.
+<p/>
+<tt>Codecvt</tt> is not required to be <tt>CopyConstructible</tt>, so deep copies are not possible.  
+The <tt>wstring_convert</tt> and <tt>wstring_buffer</tt> types could be made move-only, but the proposed 
+resolution below doesn't do so because of the lack of preconditions regarding null <tt>Codecvt</tt> pointers
+and the absence of observer functions that would allow users to check preconditions (see also LWG <iref ref="2175"/>).
+</p>
+
+</discussion>
+
+<resolution>
+<p>This wording is relative to N3376.</p>
+
+<ol>
+<li><p>Edit the class template <tt>wstring_convert</tt> synopsis in <sref ref="[conversions.string]"/> p2:</p>
+
+<blockquote><pre>
+<ins>explicit</ins> wstring_convert(Codecvt *pcvt = new Codecvt);
+wstring_convert(Codecvt *pcvt, state_type state);
+<ins>explicit</ins> wstring_convert(const byte_string&amp; byte_err,
+                         const wide_string&amp; wide_err = wide_string());
+~wstring_convert();
+<ins>
+wstring_convert(const wstring_convert&amp;) = delete;
+wstring_convert&amp; operator=(const wstring_convert&amp;) = delete;
+</ins>				 
+</pre></blockquote>
+</li>
+
+<li><p>Edit the signatures before <sref ref="[conversions.string]"/> p16:</p>
+
+<blockquote><pre>
+<ins>explicit</ins> wstring_convert(Codecvt *pcvt = new Codecvt);
+wstring_convert(Codecvt *pcvt, state_type state);
+<ins>explicit</ins> wstring_convert(const byte_string&amp; byte_err,
+    const wide_string&amp; wide_err = wide_string());
+</pre></blockquote>
+</li>
+
+<li><p>Edit the class template <tt>wbuffer_convert</tt> synopsis in <sref ref="[conversions.buffer]"/> p2:</p>
+
+<blockquote><pre>
+<ins>explicit</ins> wbuffer_convert(std::streambuf *bytebuf = 0,
+                         Codecvt *pcvt = new Codecvt,
+                         state_type state = state_type());
+<ins>
+~wbuffer_convert();
+
+wbuffer_convert(const wbuffer_convert&amp;) = delete;
+wbuffer_convert&amp; operator=(const wbuffer_convert&amp;) = delete;
+</ins>						 
+</pre></blockquote>
+</li>
+
+<li><p>Edit the signature before <sref ref="[conversions.buffer]"/> p10:</p>
+
+<blockquote><pre>
+<ins>explicit</ins> wbuffer_convert(std::streambuf *bytebuf = 0,
+    Codecvt *pcvt = new Codecvt, state_type state = state_type());
+</pre></blockquote>
+</li>
+
+</ol>
+</resolution>
+
+</issue>
