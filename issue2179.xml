@@ -1,0 +1,107 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="2179" status="New">
+<title><tt>enable_shared_from_this</tt> and construction from raw pointers</title>
+<section><sref ref="[util.smartptr.enab]"/>, <sref ref="[util.smartptr.shared.const]"/></section>
+<submitter>Daniel Kr&uuml;gler</submitter>
+<date>16 Aug 2012</date>
+
+<discussion>
+
+<p>
+On reflector message <a href="http://accu.org/cgi-bin/wg21/message?wg=lib&amp;msg=32927">c++std-lib-32927</a>, 
+Matt Austern asked whether the following example should be well-defined or not
+</p>
+<blockquote><pre>
+struct X : public enable_shared_from_this&lt;X&gt; { };
+auto xraw = new X;
+shared_ptr&lt;X&gt; xp1(xraw);
+shared_ptr&lt;X&gt; xp2(xraw);
+</pre></blockquote>
+<p>
+pointing out that <sref ref="[util.smartptr.shared.const]"/> does not seem to allow it, since
+<tt>xp1</tt> and <tt>xp2</tt> aren't allowed to share ownership, because each of them is required to have 
+<tt>use_count() == 1</tt>. Despite this wording it might be reasonable (and technical possible)
+to implement that request.
+<p/>
+On the other hand, it seems that the current specification already seems to intend to support similar use-cases,
+because the non-normative note in <sref ref="[util.smartptr.enab]"/> p11 says (already part of TR1):
+</p>
+<blockquote><p>
+The <tt>shared_ptr</tt> constructors that <span style="color:#C80000;font-weight:bold">create unique pointers</span> 
+can detect the presence of an <tt>enable_shared_from_this</tt> base and assign the newly created <tt>shared_ptr</tt> 
+to its <tt>__weak_this member</tt>.
+</p></blockquote>
+<p>
+Now according to the specification in <sref ref="[util.smartptr.shared.const]"/> p3-7:
+</p>
+<blockquote><pre>
+template&lt;class Y&gt; explicit shared_ptr(Y* p);
+</pre></blockquote>
+<p>
+the notion of <em>creating unique pointers</em> can be read to be included by this note, because the post-condition
+of this constructor is <tt>unique() == true</tt>.
+<p/>
+Howard Hinnant presented the counter argument, that actually the following is an "anti-idiom" and
+it seems questionable to teach it to be well-defined in any case:
+</p>
+<blockquote><pre>
+auto xraw = new X;
+shared_ptr&lt;X&gt; xp1(xraw);
+shared_ptr&lt;X&gt; xp2(xraw);
+</pre></blockquote>
+<p>
+He also pointed out that the current post-conditions of the affected <tt>shared_ptr</tt> constructor
+would need to be reworded.
+<p/>
+It needs to be decided, which direction to follow. If this idiom seems too much broken to be supported,
+the note should be removed. If it should be supported, the constructors in
+<sref ref="[util.smartptr.shared.const]"/> need a careful analysis to ensure that post-conditions
+are correct.
+<p/>
+Several Library implementations currently do not support this example and it seems to me that the
+advantages do not outweight the disadvantages of such an extension. I suggest to strike the note 
+instead to make the standard clearer.
+</p>
+
+</discussion>
+
+<resolution>
+
+<p>This wording is relative to N3376.</p>
+
+<ol>
+<li><p>Remove the note in <sref ref="[util.smartptr.enab]"/> p11 as indicated:</p>
+
+<blockquote>
+<p>
+-10- [<i>Note</i>: A possible implementation is shown below:
+</p><blockquote><pre>
+template&lt;class T&gt; class enable_shared_from_this {
+private:
+  weak_ptr&lt;T&gt; __weak_this;
+protected:
+  constexpr enable_shared_from_this() : __weak_this() { }
+  enable_shared_from_this(enable_shared_from_this const &amp;) { }
+  enable_shared_from_this&amp; operator=(enable_shared_from_this const &amp;) { return *this; }
+  ~enable_shared_from_this() { }
+public:
+  shared_ptr&lt;T&gt; shared_from_this() { return shared_ptr&lt;T&gt;(__weak_this); }
+  shared_ptr&lt;T const&gt; shared_from_this() const { return shared_ptr&lt;T const&gt;(__weak_this); }
+};
+</pre></blockquote>
+<p>
+<del>-11- The shared_ptr constructors that create unique pointers can detect the presence of an enable_shared_-
+from_this base and assign the newly created shared_ptr to its __weak_this member.</del> &mdash; <i>end note</i>]
+</p>
+</blockquote>
+
+</li>
+</ol>
+
+</resolution>
+
+</issue>
