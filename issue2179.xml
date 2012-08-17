@@ -27,8 +27,7 @@ pointing out that <sref ref="[util.smartptr.shared.const]"/> does not seem to al
 <tt>use_count() == 1</tt>. Despite this wording it might be reasonable (and technical possible)
 to implement that request.
 <p/>
-On the other hand, it seems that the current specification already seems to intend to support similar use-cases,
-because the non-normative note in <sref ref="[util.smartptr.enab]"/> p11 says (already part of TR1):
+On the other hand, there is the non-normative note in <sref ref="[util.smartptr.enab]"/> p11 (already part of TR1):
 </p>
 <blockquote><p>
 The <tt>shared_ptr</tt> constructors that <span style="color:#C80000;font-weight:bold">create unique pointers</span> 
@@ -43,7 +42,7 @@ template&lt;class Y&gt; explicit shared_ptr(Y* p);
 </pre></blockquote>
 <p>
 the notion of <em>creating unique pointers</em> can be read to be included by this note, because the post-condition
-of this constructor is <tt>unique() == true</tt>.
+of this constructor is <tt>unique() == true</tt>. Evidence for this interpretation seems to be weak, though.
 <p/>
 Howard Hinnant presented the counter argument, that actually the following is an "anti-idiom" and
 it seems questionable to teach it to be well-defined in any case:
@@ -58,50 +57,19 @@ He also pointed out that the current post-conditions of the affected <tt>shared_
 would need to be reworded.
 <p/>
 It needs to be decided, which direction to follow. If this idiom seems too much broken to be supported,
-the note should be removed. If it should be supported, the constructors in
+the note could be improved. If it should be supported, the constructors in
 <sref ref="[util.smartptr.shared.const]"/> need a careful analysis to ensure that post-conditions
 are correct.
 <p/>
-Several Library implementations currently do not support this example and it seems to me that the
-advantages do not outweight the disadvantages of such an extension. I suggest to strike the note 
-instead to make the standard clearer.
+Several library implementations currently do not support this example, instead they typically
+cause a crash. Matt points out that there are currently no explicit requirements imposed on
+<tt>shared_ptr</tt> objects to own the same underlying object without sharing the ownership. It
+might be useful to add such a requirement.
 </p>
 
 </discussion>
 
 <resolution>
-
-<p>This wording is relative to N3376.</p>
-
-<ol>
-<li><p>Remove the note in <sref ref="[util.smartptr.enab]"/> p11 as indicated:</p>
-
-<blockquote>
-<p>
--10- [<i>Note</i>: A possible implementation is shown below:
-</p><blockquote><pre>
-template&lt;class T&gt; class enable_shared_from_this {
-private:
-  weak_ptr&lt;T&gt; __weak_this;
-protected:
-  constexpr enable_shared_from_this() : __weak_this() { }
-  enable_shared_from_this(enable_shared_from_this const &amp;) { }
-  enable_shared_from_this&amp; operator=(enable_shared_from_this const &amp;) { return *this; }
-  ~enable_shared_from_this() { }
-public:
-  shared_ptr&lt;T&gt; shared_from_this() { return shared_ptr&lt;T&gt;(__weak_this); }
-  shared_ptr&lt;T const&gt; shared_from_this() const { return shared_ptr&lt;T const&gt;(__weak_this); }
-};
-</pre></blockquote>
-<p>
-<del>-11- The shared_ptr constructors that create unique pointers can detect the presence of an enable_shared_-
-from_this base and assign the newly created shared_ptr to its __weak_this member.</del> &mdash; <i>end note</i>]
-</p>
-</blockquote>
-
-</li>
-</ol>
-
 </resolution>
 
 </issue>
