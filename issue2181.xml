@@ -5,7 +5,7 @@
 
 <issue num="2181" status="New">
 <title>Exceptions from <em>seed sequence</em> operations</title>
-<section><sref ref="[rand.req.seedseq]"/>, <sref ref="[rand.eng]"/>, <sref ref="[rand.req.adapt]"/>, <sref ref="[rand.util.seedseq]"/></section>
+<section><sref ref="[rand.req.seedseq]"/>, <sref ref="[rand.eng]"/>, <sref ref="[rand.adapt]"/></section>
 <submitter>Daniel Kr&uuml;gler</submitter>
 <date>18 Aug 2012</date>
 
@@ -17,16 +17,16 @@ type <tt>std::seed_seq</tt> regarding exceptions, but there is another specifica
 in regard to general types satisfying the <em>seed sequence</em> constraints (named <tt>SSeq</tt>) as described in 
 <sref ref="[rand.req.seedseq]"/>.
 <p/>
-<sref ref="[rand.eng]"/> p3 and <sref ref="[rand.req.adapt]"/> p3 say upfront:
+<sref ref="[rand.eng]"/> p3 and <sref ref="[rand.adapt.general]"/> p3 say upfront:
 </p>
 <blockquote><p>
 Except where specified otherwise, no function described in this section 
-<sref ref="[rand.eng]"/>/<sref ref="[rand.req.adapt]"/> throws an exception.
+<sref ref="[rand.eng]"/>/<sref ref="[rand.adapt]"/> throws an exception.
 </p></blockquote>
 <p>
 This constraint causes problems, because the described templates in these sub-clauses depend on operations of 
 <tt>SSeq::generate()</tt> which is a function template, that depends both on operations provided by the 
-implementor of <tt>SSeq</tt> (e.g. of <tt>seed_seq</tt>), and those of the random access iterator type 
+implementor of <tt>SSeq</tt> (e.g. of <tt>std::seed_seq</tt>), and those of the random access iterator type 
 provided by the caller. With class template <tt>linear_congruential_engine</tt> we have just one example for a user 
 of <tt>SSeq::generate()</tt> via:
 </p>
@@ -49,34 +49,170 @@ does not impose no-throw requirements onto operations of <em>seed sequences</em>
 <ol style="list-style-type:upper-roman">
 
 <li><p>
-A quite aggressive approach to fix this problem would be to impose general no-throw requirements on the expression
+A quite radical step to fix this problem would be to impose general no-throw requirements on the expression
 <tt>q.generate(rb,re)</tt> from Table 115, but this is not as simple as it looks initially, because this
 function again depends on general types that are mutable random access iterators. Typically, we do not
 impose no-throw requirements on iterator operations and this would restrict general seed sequences where
-exceptions are not a problem.
+exceptions are not a problem. Furthermore, we do not impose comparable constraints for other expressions,
+like that of the expression <tt>g()</tt> in Table 116 for good reasons, e.g. <tt>random_device::operator()</tt>
+explicitly states when it throws exceptions.
+</p></li>
+
+<li><p>
+A less radical variant of the previous suggestion would be to add a normative requirement on the expression
+<tt>q.generate(rb,re)</tt> from Table 115 that says: "Throws nothing if operations of <tt>rb</tt> and <tt>re</tt> 
+do not throw exceptions". Nevertheless we typically do not describe <em>conditional</em> Throws elements in proper
+requirement sets elsewhere (Container requirements excluded, they just describe the containers from Clause 23)
+and this may exclude resonable implementations of seed sequences that could throw exceptions under rare
+situations. 
 </p></li>
 
 <li><p>
 The iterator arguments provided to <tt>SSeq::generate()</tt> for operations in templates of <sref ref="[rand.eng]"/> and 
-<sref ref="[rand.req.adapt]"/> are under control of implementations, so we could impose stricter exceptions requirements
+<sref ref="[rand.adapt]"/> are under control of implementations, so we could impose stricter exceptions requirements
 on <tt>SSeq::generate()</tt> for <tt>SSeq</tt> types that are used to instantiate member templates in <sref ref="[rand.eng]"/> 
-and <sref ref="[rand.req.adapt]"/> solely.
+and <sref ref="[rand.adapt]"/> solely.
 </p></li>
 
 <li><p>
-We simply add extra wording to the introductive parts of <sref ref="[rand.eng]"/> and <sref ref="[rand.req.adapt]"/>
+We simply add extra wording to the introductive parts of <sref ref="[rand.eng]"/> and <sref ref="[rand.adapt]"/>
 that specify that operations of the engine (adaptor) templates that depend on a template parameter <tt>SSeq</tt>
 throw no exception unless <tt>SSeq::generate()</tt> throws an exception.
 </p></li>
 </ol>
 
 <p>
-Given these options I suggest to apply the third one.
+Given these options I would suggest to apply the variant described in the fourth bullet.
+<p/>
+The proposed resolution attempts to reduce a lot of the redundancies of requirements in the introductory paragraphs of 
+<sref ref="[rand.eng]"/> and <sref ref="[rand.adapt]"/> by introducing a new intermediate sub-clause 
+"Engine and engine adaptor class templates" following sub-clause <sref ref="[rand.synopsis]"/>. This approach also
+solves the problem that currently <sref ref="[rand.eng]"/> also describes requirements that apply for
+<sref ref="[rand.adapt]"/> (Constrained templates involving the <tt>Sseq</tt> parameters).
 </p>
 
 </discussion>
 
 <resolution>
+<p>This wording is relative to N3376.</p>
+
+<ol>
+<li><p>Add a new sub-clause titled "Engine and engine adaptor class templates" following sub-clause 
+<sref ref="[rand.synopsis]"/> (but at the same level) and add one further sub-clause "General" as
+child of the new sub-clause as follows:
+<p/>
+<ins>Engine and engine adaptor class templates [rand.engadapt]</ins>
+<p/>
+<ins>General [rand.engadapt.general]</ins>
+</p>
+<blockquote><p>
+<ins>-?- Throught this sub-clause general requirements and conventions are described that apply to every class 
+template specified in sub-clause <sref ref="[rand.eng]"/> and <sref ref="[rand.adapt]"/>. Phrases of the 
+form "in those sub-clauses" shall be interpreted as equivalent to "in sub-clauses <sref ref="[rand.eng]"/> and 
+<sref ref="[rand.adapt]"/>".
+</ins>
+<p/>
+<ins>-?- Except where specified otherwise, the complexity of each function specified in those sub-clauses is constant.</ins>
+<p/>
+<ins>-?- Except where specified otherwise, no function described in those sub-clauses throws an exception.</ins>
+<p/>
+<ins>-?- Every function described in those sub-clauses that has a function parameter <tt>q</tt> of type
+<tt>SSeq&amp;</tt> for a template type parameter named <tt>SSeq</tt> throws when and what the invokation 
+of <tt>q.generate</tt> throws.</ins>
+<p/>
+<ins>-?- Descriptions are provided in those sub-clauses only for engine operations that are not described in 
+<sref ref="[rand.req.eng]"/>, for adaptor operations that are not described in <sref ref="[rand.req.adapt]"/>,
+or for operations where there is additional semantic information. In particular, declarations for copy constructors,
+for copy assignment operators, for streaming operators, and for equality and inequality operators
+are not shown in the synopses.</ins>
+<p/>
+<ins>-?- Each template specified in those sub-clauses requires one or more relationships, involving the value(s) of
+its non-type template parameter(s), to hold. A program instantiating any of these templates is ill-formed if
+any such required relationship fails to hold.</ins>
+<p/>
+<ins>-?- For every random number engine and for every random number engine adaptor <tt>X</tt> defined in those 
+sub-clauses:</ins>
+</p>
+<ul>
+<li><p>
+<ins>if the constructor</ins>
+</p>
+<blockquote><pre>
+<ins>template &lt;class Sseq&gt; explicit X(Sseq&amp; q);</ins>
+</pre></blockquote>
+<p>
+<ins>is called with a type <tt>Sseq</tt> that does not qualify as a seed sequence, then this constructor shall not
+participate in overload resolution;</ins>
+</p>
+</li>
+
+<li><p>
+<ins>if the member function</ins>
+</p>
+<blockquote><pre>
+<ins>template &lt;class Sseq&gt; void seed(Sseq&amp; q);</ins>
+</pre></blockquote>
+<p>
+<ins>is called with a type <tt>Sseq</tt> that does not qualify as a seed sequence, then this function shall not
+participate in overload resolution;</ins>
+</p>
+</li>
+</ul>
+<p>
+<ins>The extent to which an implementation determines that a type cannot be a seed sequence is unspecified,
+except that as a minimum a type shall not qualify as a seed sequence if it is implicitly convertible to
+<tt>X::result_type</tt>.</ins>
+</p>
+</blockquote>
+
+</li>
+
+<li><p>Edit the contents of sub-clause <sref ref="[rand.eng]"/> as indicated:</p>
+
+<blockquote><p>
+-1- Each type instantiated from a class template specified in this section <sref ref="[rand.eng]"/> satisfies the 
+requirements of a random number engine (<sref ref="[rand.req.eng]"/>) type <ins>and the general implementation 
+requirements specified in sub-clause [rand.engadapt.general]</ins>.
+<p/>
+<del>-2- Except where specified otherwise, the complexity of each function specified in this section <sref ref="[rand.eng]"/> 
+is constant.</del>
+<p/>
+<del>-3- Except where specified otherwise, no function described in this section <sref ref="[rand.eng]"/> throws an exception.</del>
+<p/>
+<del>-4- Descriptions are provided in this section <sref ref="[rand.eng]"/> only for engine operations that are not 
+described in <sref ref="[rand.req.eng]"/> [&hellip;]</del>
+<p/>
+<del>-5- Each template specified in this section <sref ref="[rand.eng]"/> requires one or more relationships, 
+involving the value(s) of its non-type template parameter(s), to hold. [&hellip;]</del>
+<p/>
+<del>-6- For every random number engine and for every random number engine adaptor <tt>X</tt> defined in this subclause
+(<sref ref="[rand.eng]"/>) and in sub-clause <sref ref="[rand.eng]"/>:</del>
+</p></blockquote>
+
+</li>
+
+<li><p>Edit the contents of sub-clause <sref ref="[rand.adapt.general]"/> as indicated:</p>
+
+<blockquote><p>
+-1- Each type instantiated from a class template specified in this section <sref ref="[rand.adapt]"/> satisfies the 
+requirements of a random number engine adaptor (<sref ref="[rand.req.adapt]"/>) type <ins>and the general 
+implementation requirements specified in sub-clause [rand.engadapt.general]</ins>.
+<p/>
+<del>-2- Except where specified otherwise, the complexity of each function specified in this section <sref ref="[rand.adapt]"/> 
+is constant.</del>
+<p/>
+<del>-3- Except where specified otherwise, no function described in this section <sref ref="[rand.adapt]"/> throws an exception.</del>
+<p/>
+<del>-4- Descriptions are provided in this section <sref ref="[rand.adapt]"/> only for engine operations that are not 
+described in <sref ref="[rand.req.adapt]"/> [&hellip;]</del>
+<p/>
+<del>-5- Each template specified in this section <sref ref="[rand.adapt]"/> requires one or more relationships, involving 
+the value(s) of its non-type template parameter(s), to hold. [&hellip;]</del>
+</p></blockquote>
+
+</li>
+
+</ol>
 </resolution>
 
 </issue>
