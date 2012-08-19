@@ -72,10 +72,6 @@ member <tt>size()</tt> and the default constructor and to provide specific wordi
 <tt>generate()</tt> important, because the templates specified in <sref ref="[rand.eng]"/> and 
 <sref ref="[rand.adapt]"/> also depend on this property indirectly, which is further discussed in LWG 
 <iref ref="2181"/>.
-<p/>
-The proposed resolution suggestion goes slightly beyond what is minimally needed to solve this issue, namely
-to require <tt>noexcept</tt> for two members. The alternative would be to add wording of the form
-"<i>Throws</i>: Nothing" to the two affected member functions instead.
 </p>
 
 </discussion>
@@ -86,36 +82,22 @@ to require <tt>noexcept</tt> for two members. The alternative would be to add wo
 <ol>
 <li><p>Edit <sref ref="[rand.util.seedseq]"/> p1 as indicated:</p>
 
-<blockquote><p>
+<blockquote>
+<p>
 <del>-1- No function described in this section <sref ref="[rand.util.seedseq]"/> throws an exception.</del>
 </p>
-<blockquote><pre>
-class seed_seq
-{
-public:
-  <i>// types</i>
-  typedef uint_least32_t result_type;
-
-  <i>// constructors</i>
-  seed_seq() <ins>noexcept</ins>;
-  [&hellip;]
-
-  <i>// property functions</i>
-  size_t size() const <ins>noexcept</ins>;
-  [&hellip;]
-
-};
-</pre></blockquote>
 </blockquote>
 </li>
 
-<li><p>Edit <sref ref="[rand.util.seedseq]"/> before p2 as indicated:</p>
+<li><p>Edit <sref ref="[rand.util.seedseq]"/> around p2 as indicated:</p>
 
 <blockquote><pre>
-seed_seq() <ins>noexcept</ins>;
+seed_seq();
 </pre><blockquote>
 <p>
 -2- <i>Effects</i>: Constructs a <tt>seed_seq</tt> object as if by default-constructing its member <tt>v</tt>.
+<p/>
+<ins>-?- <i>Throws</i>: Nothing.</ins>
 </p>
 </blockquote></blockquote>
 </li>
@@ -139,13 +121,17 @@ an unsigned integer type capable of accommodating 32-bit quantities.
 </blockquote></blockquote>
 </li>
 
-<li><p>Edit <sref ref="[rand.util.seedseq]"/> before p9 as indicated:</p>
+<li><p>Edit <sref ref="[rand.util.seedseq]"/> around p9 as indicated:</p>
 
 <blockquote><pre>
-size_t size() const <ins>noexcept</ins>;
+size_t size() const;
 </pre><blockquote>
 <p>
 -9- <i>Returns</i>: The number of 32-bit units that would be returned by a call to <tt>param()</tt>.
+<p/>
+<ins>-??- <i>Throws</i>: Nothing.</ins>
+<p/>
+-10- <i>Complexity</i>: constant time.
 </p>
 </blockquote></blockquote>
 </li>
