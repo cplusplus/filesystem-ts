@@ -1,0 +1,82 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="2181" status="New">
+<title>Exceptions from <em>seed sequence</em> operations</title>
+<section><sref ref="[rand.req.seedseq]"/>, <sref ref="[rand.eng]"/>, <sref ref="[rand.req.adapt]"/>, <sref ref="[rand.util.seedseq]"/></section>
+<submitter>Daniel Kr&uuml;gler</submitter>
+<date>18 Aug 2012</date>
+
+<discussion>
+
+<p>
+LWG issue <iref ref="2180"/> points out some deficiences in regard to the specification of the library-provided
+type <tt>std::seed_seq</tt> regarding exceptions, but there is another specification problem 
+in regard to general types satisfying the <em>seed sequence</em> constraints (named <tt>SSeq</tt>) as described in 
+<sref ref="[rand.req.seedseq]"/>.
+<p/>
+<sref ref="[rand.eng]"/> p3 and <sref ref="[rand.req.adapt]"/> p3 say upfront:
+</p>
+<blockquote><p>
+Except where specified otherwise, no function described in this section 
+<sref ref="[rand.eng]"/>/<sref ref="[rand.req.adapt]"/> throws an exception.
+</p></blockquote>
+<p>
+This constraint causes problems, because the described templates in these sub-clauses depend on operations of 
+<tt>SSeq::generate()</tt> which is a function template, that depends both on operations provided by the 
+implementor of <tt>SSeq</tt> (e.g. of <tt>seed_seq</tt>), and those of the random access iterator type 
+provided by the caller. With class template <tt>linear_congruential_engine</tt> we have just one example for a user 
+of <tt>SSeq::generate()</tt> via:
+</p>
+<blockquote><pre>
+template&lt;class Sseq&gt; 
+linear_congruential_engine&lt;&gt;::linear_congruential_engine(Sseq&amp; q);
+
+template&lt;class Sseq&gt; 
+void linear_congruential_engine&lt;&gt;::seed(Sseq&amp; q);
+</pre></blockquote>
+<p>
+None of these operations has an exclusion rule for exceptions.
+<p/>
+As described in <iref ref="2180"/> the wording for <tt>std::seed_seq</tt> should and can be fixed to ensure that 
+operations of <tt>seed_seq::generate()</tt> won't throw except from operations of the provided iterator range, 
+but there is no corresponding "safety belt" for user-provided <tt>SSeq</tt> types, since <sref ref="[rand.req.seedseq]"/>
+does not impose no-throw requirements onto operations of <em>seed sequences</em>.
+</p>
+
+<ol style="list-style-type:upper-roman">
+
+<li><p>
+A quite aggressive approach to fix this problem would be to impose general no-throw requirements on the expression
+<tt>q.generate(rb,re)</tt> from Table 115, but this is not as simple as it looks initially, because this
+function again depends on general types that are mutable random access iterators. Typically, we do not
+impose no-throw requirements on iterator operations and this would restrict general seed sequences where
+exceptions are not a problem.
+</p></li>
+
+<li><p>
+The iterator arguments provided to <tt>SSeq::generate()</tt> for operations in templates of <sref ref="[rand.eng]"/> and 
+<sref ref="[rand.req.adapt]"/> are under control of implementations, so we could impose stricter exceptions requirements
+on <tt>SSeq::generate()</tt> for <tt>SSeq</tt> types that are used to instantiate member templates in <sref ref="[rand.eng]"/> 
+and <sref ref="[rand.req.adapt]"/> solely.
+</p></li>
+
+<li><p>
+We simply add extra wording to the introductive parts of <sref ref="[rand.eng]"/> and <sref ref="[rand.req.adapt]"/>
+that specify that operations of the engine (adaptor) templates that depend on a template parameter <tt>SSeq</tt>
+throw no exception unless <tt>SSeq::generate()</tt> throws an exception.
+</p></li>
+</ol>
+
+<p>
+Given these options I suggest to apply the third one.
+</p>
+
+</discussion>
+
+<resolution>
+</resolution>
+
+</issue>
