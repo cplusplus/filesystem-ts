@@ -4,7 +4,7 @@
 ] >
 
 <issue num="2180" status="New">
-<title>Exceptions from <tt>seed_seq</tt> operations</title>
+<title>Exceptions from <tt>std::seed_seq</tt> operations</title>
 <section><sref ref="[rand.util.seedseq]"/></section>
 <submitter>Daniel Kr&uuml;gler</submitter>
 <date>18 Aug 2012</date>
@@ -62,11 +62,11 @@ could also throw exceptions. In this particular example we can just think of a <
 applied to a container that needs to allocate its elements used as the type for <tt>OutputIterator</tt>.
 <p/>
 Even though Clause <sref ref="[numerics]"/> has mostly stronger exception constraints than other parts of the
-library the here discussed restrictions are unnecessary, especially since no operation of <tt>seed_seq</tt> 
-except the template <tt>generate</tt> is actually needed within the library implementation, as became clear 
-during the discussion of LWG <iref ref="2124"/>.
+library the here discussed are overrestrictive, especially since no operation of <tt>std::seed_seq</tt> 
+except the template <tt>generate</tt> is actually needed within the library implementation, as mentioned in the 
+discussion of LWG <iref ref="2124"/>.
 <p/>
-I suggest to remove the general no-exception constraints for operations of <tt>seed_seq</tt> except for
+I suggest to remove the general no-exception constraints for operations of <tt>std::seed_seq</tt> except for
 member <tt>size()</tt> and the default constructor and to provide specific wording for <tt>generate()</tt> and
 <tt>param()</tt> to ensure that the algorithm itself is a nothrow operation, which is especially for
 <tt>generate()</tt> important, because the templates specified in <sref ref="[rand.eng]"/> and 
@@ -98,8 +98,8 @@ public:
 
   <i>// property functions</i>
   size_t size() const <ins>noexcept</ins>;
-
   [&hellip;]
+
 };
 </pre></blockquote>
 </blockquote>
