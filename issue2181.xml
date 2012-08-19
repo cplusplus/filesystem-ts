@@ -89,6 +89,20 @@ The proposed resolution attempts to reduce a lot of the redundancies of requirem
 "Engine and engine adaptor class templates" following sub-clause <sref ref="[rand.synopsis]"/>. This approach also
 solves the problem that currently <sref ref="[rand.eng]"/> also describes requirements that apply for
 <sref ref="[rand.adapt]"/> (Constrained templates involving the <tt>Sseq</tt> parameters).
+<p/>
+<u>Howard</u>:
+<p/>
+I suggest to use a different form for the exception specification, something similar to 
+<sref ref="[func.bind.bind]"/> p4:
+</p>
+<blockquote><p>
+<i>Throws</i>: Nothing unless an operation on <tt>RandomAccessIterator</tt> throws an exception.
+</p></blockquote>
+<p>
+<u>Daniel</u>:
+<p/>
+The currently suggested "what and when" form seems a bit more specific and harmonizes with the form used for
+function template <tt>generate_canonical</tt> from <sref ref="[rand.util.canonical]"/>.
 </p>
 
 </discussion>
@@ -117,7 +131,7 @@ form "in those sub-clauses" shall be interpreted as equivalent to "in sub-clause
 <ins>-?- Except where specified otherwise, no function described in those sub-clauses throws an exception.</ins>
 <p/>
 <ins>-?- Every function described in those sub-clauses that has a function parameter <tt>q</tt> of type
-<tt>SSeq&amp;</tt> for a template type parameter named <tt>SSeq</tt> throws when and what the invokation 
+<tt>SSeq&amp;</tt> for a template type parameter named <tt>SSeq</tt> throws what and when the invokation 
 of <tt>q.generate</tt> throws.</ins>
 <p/>
 <ins>-?- Descriptions are provided in those sub-clauses only for engine operations that are not described in 
