@@ -1,0 +1,87 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="2185" status="New">
+<title>Missing throws clause for <tt>future/shared_future::wait_for/wait_until</tt></title>
+<section><sref ref="[futures.unique_future]"/>, <sref ref="[futures.shared_future]"/></section>
+<submitter>Vicente J. Botet Escriba</submitter>
+<date>20 Sep 2012</date>
+
+<discussion>
+
+<p>
+The functions <tt>future::wait_for</tt>, <tt>future::wait_until</tt>, <tt>shared_future::wait_for</tt>, and 
+<tt>shared_future::wait_for</tt> can throw any timeout-related exceptions. It would be better if the wording 
+could be more explicit. This is in line with the changes proposed in LWG <iref ref="2093"/>'s <em>Throws</em> element 
+of <tt>condition_variable::wait</tt> with predicate.
+</p>
+
+</discussion>
+
+<resolution>
+<p>This wording is relative to N3376.</p>
+
+<ol>
+<li><p>Change <sref ref="[futures.unique_future]"/> as indicated:</p>
+<blockquote><pre>
+template &lt;class Rep, class Period&gt;
+future_status wait_for(const chrono::duration&lt;Rep, Period&gt;&amp; rel_time) const;
+</pre><blockquote><p>
+-21- <i>Effects</i>: none if the shared state contains a deferred function (<sref ref="[futures.async]"/>), otherwise 
+blocks until the shared state is ready or until the relative timeout (<sref ref="[thread.req.timing]"/>) specified by 
+<tt>rel_time</tt> has expired.
+<p/>
+-22- <i>Returns</i>: [&hellip;]
+<p/>
+<ins>-??- <i>Throws</i>: timeout-related exceptions (<sref ref="[thread.req.timing]"/>).</ins>
+</p>
+</blockquote><pre>
+template &lt;class Clock, class Duration&gt;
+future_status wait_until(const chrono::time_point&lt;Clock, Duration&gt;&amp; abs_time) const;
+</pre><blockquote><p>
+-23- <i>Effects</i>: none if the shared state contains a deferred function (<sref ref="[futures.async]"/>), otherwise 
+blocks until the shared state is ready or until the absolute timeout (<sref ref="[thread.req.timing]"/>) specified by 
+<tt>abs_time</tt> has expired.
+<p/>
+-24- <i>Returns</i>: [&hellip;]
+<p/>
+<ins>-??- <i>Throws</i>: timeout-related exceptions (<sref ref="[thread.req.timing]"/>).</ins>
+</p>
+</blockquote></blockquote>
+</li>
+
+<li><p>Change <sref ref="[futures.shared_future]"/> as indicated:</p>
+<blockquote><pre>
+template &lt;class Rep, class Period&gt;
+future_status wait_for(const chrono::duration&lt;Rep, Period&gt;&amp; rel_time) const;
+</pre><blockquote><p>
+-23- <i>Effects</i>: none if the shared state contains a deferred function (<sref ref="[futures.async]"/>), otherwise 
+blocks until the shared state is ready or until the relative timeout (<sref ref="[thread.req.timing]"/>) specified by 
+<tt>rel_time</tt> has expired.
+<p/>
+-24- <i>Returns</i>: [&hellip;]
+<p/>
+<ins>-??- <i>Throws</i>: timeout-related exceptions (<sref ref="[thread.req.timing]"/>).</ins>
+</p>
+</blockquote><pre>
+template &lt;class Clock, class Duration&gt;
+future_status wait_until(const chrono::time_point&lt;Clock, Duration&gt;&amp; abs_time) const;
+</pre><blockquote><p>
+-25- <i>Effects</i>: none if the shared state contains a deferred function (<sref ref="[futures.async]"/>), otherwise 
+blocks until the shared state is ready or until the absolute timeout (<sref ref="[thread.req.timing]"/>) specified by 
+<tt>abs_time</tt> has expired.
+<p/>
+-26- <i>Returns</i>: [&hellip;]
+<p/>
+<ins>-??- <i>Throws</i>: timeout-related exceptions (<sref ref="[thread.req.timing]"/>).</ins>
+</p>
+</blockquote></blockquote>
+</li>
+
+</ol>
+
+</resolution>
+
+</issue>
