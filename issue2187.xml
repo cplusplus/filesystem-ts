@@ -1,0 +1,46 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="2187" status="New">
+<title><tt>vector&lt;bool&gt;</tt> is missing <tt>emplace</tt> and <tt>emplace_back</tt> member functions</title>
+<section><sref ref="[vector.bool]"/></section>
+<submitter>Nevin Liber</submitter>
+<date>21 Sep 2012</date>
+
+<discussion>
+
+<p>
+It should have them so that it more closely matches the <tt>vector&lt;T&gt;</tt> interface, as this helps when 
+writing generic code.
+</p>
+
+</discussion>
+
+<resolution>
+<p>This wording is relative to N3376.</p>
+
+<ol>
+<li><p>Change the class template <tt>vector&lt;bool&gt;</tt> synopsis, <sref ref="[vector.bool]"/> p1, as indicated:</p>
+<blockquote><pre>
+namespace std {
+  template &lt;class Allocator&gt; class vector&lt;bool, Allocator&gt; {
+  public:
+    [&hellip;]
+    <i>// modifiers:</i>
+    <ins>template &lt;class... Args&gt; void emplace_back(Args&amp;&amp;... args);</ins>
+    void push_back(const bool&amp; x);
+    void pop_back();
+    <ins>template &lt;class... Args&gt; iterator emplace(const_iterator position, Args&amp;&amp;... args);</ins>
+    iterator insert(const_iterator position, const bool&amp; x);
+    [&hellip;]
+  };
+}
+</pre></blockquote>
+</li>
+</ol>
+
+</resolution>
+
+</issue>
