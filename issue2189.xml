@@ -1,0 +1,92 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="2189" status="New">
+<title>Throwing <tt>swap</tt> breaks unordered containers' state</title>
+<section><sref ref="[unord.req.except]"/></section>
+<submitter>Alisdair Meredith</submitter>
+<date>23 Sep 2012</date>
+
+<discussion>
+
+<p>
+The hash functor and key-comparison functor of unordered containers are allowed to throw on <tt>swap</tt>.
+</p>
+<p>
+<sref ref="[unord.req.except]"/>p3 "For unordered associative containers, no <tt>swap</tt> function throws
+an exception unless that exception is thrown by the swap of the container's Hash or Pred object (if any)."
+</p>
+<p>
+In such a case we must offer the basic exception safety guarantee, where both objects are left in valid
+but unspecified states, and no resources are leaked.  This yields a corrupt, un-usable container if the
+first <tt>swap</tt> succeeds, but the second fails by throwing, as the functors form a matched pair.
+</p>
+<p>
+So our basic scenario is first, swap the allocators if the allocators propagate on swap, according to
+<tt>allocator_traits</tt>.  Next we swap the pointers to our internal hash table data structures, so that
+they match the allocators that allocated them.  (Typically, this operation cannot throw).  Now our containers
+are back in a safely destructible state if an exception follows.
+</p>
+<p>
+Next, let's say we swap the hash functor, and that throws.  We have a corrupt data structure, in that the
+buckets are not correctly indexed by the correct functors, lookups will give unpredicatable results etc.
+We can safely restore a usable state by forcibly clearing each container - which does not leak resources
+and leaves us with two (empty but) usable containers.
+</p>
+<p>
+Now let us assume that the hasher swap succeeds.  Next we swap the equality comparator functor, and this
+too could throw. The important point to bear in mind is that these two functors form an important pairing
+- two objects that compare equal by the equality functor must also hash to the same value.  If we swap
+one without the other, we most likely leave the container in an unusable state, even if we clear out all
+elements.
+</p>
+<p>
+1. A colleague pointed out that the solution for this is to dynamically allocate the two functors, and then
+we need only swap pointers, which is not a throwing operation.  And if we don't want to allocate on default
+construction (a common QoI request), we might consider moving to a dynamically allocated functors whenever
+<tt>swap</tt> is called, or on first insertion.  Of course, allocating memory in <tt>swap</tt> is a whole
+new can of worms, but this does not really sound like the design we had intended.
+</p>
+
+<p>
+2. The simplest option is to say that we do not support hasher or equality functors that throw on ADL
+<tt>swap</tt>.  Note that the requirement is simply to not throw, rather than to be explicitly
+marked as <tt>noexcept</tt>.  Throwing functors are allowed, so long as we never use values that
+would actually manifest a throw when used in an unordered container.
+</p>
+
+<p>
+Pablo went on to give me several more options, to be sure we have a full set to consider:
+</p>
+<p>
+3. Disallow one or the other functor from throwing.  In that case, the 
+possibly-throwing functor must be swapped first, then the other functor, 
+the allocator, and the data pointer(s) afterwards (in any order -- there 
+was a TC that allocator assignment and swap may not throw if the 
+corresponding propagation trait is true.). Of course, the question 
+becomes: which functor is allowed to throw and which one is not?
+</p>
+<p>
+4. Require that any successful functor <tt>swap</tt> be reliably reversible.  
+This is very inventive.  I know of no other place in the standard where 
+such a requirement is stated, though I have occasionally wanted such a 
+guarantee.
+</p>
+<p>
+5. Allow a failed swap to leave the containers in a state where future 
+insertions may fail for reasons other than is currently allowed.  
+Specifically, if the hash and equality functors are out of sync, all 
+insertions will fail.  Presumably some "incompletely swapped" exception 
+would be thrown.  This is "slightly" inventive, although people have been 
+discussing "radioactive" states for a while.
+</p>
+
+</discussion>
+
+<resolution>
+
+</resolution>
+
+</issue>
