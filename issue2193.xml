@@ -1,0 +1,39 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="2193" status="New">
+<title>Default constructors for standard library containers are explicit</title>
+<section><sref ref="[containers]"/></section>
+<submitter>Richard Smith</submitter>
+<date>4 Oct 2012</date>
+
+<discussion>
+
+<p>
+Most (all?) of the standard library containers have explicit default constructors. Consequently:
+</p>
+<blockquote><pre>
+std::set&lt;int&gt; s1 = { 1, 2 }; // ok
+std::set&lt;int&gt; s2 = { 1 }; // ok
+std::set&lt;int&gt; s3 = {}; // ill-formed, copy-list-initialization selected an explicit constructor
+</pre></blockquote>
+<p>
+Note that Clang + libc++ rejects the declaration of <tt>s3</tt> for this reason. This cannot possibly match the intent.
+</p>
+<p>
+Suggested fix: apply this transformation throughout the standard library:
+</p>
+<blockquote><pre>
+<ins>set() : set(Compare()) {}</ins>
+explicit set(const Compare&amp; comp<del> = Compare()</del>,
+             const Allocator&amp; = Allocator());
+</pre></blockquote>
+
+</discussion>
+
+<resolution>
+</resolution>
+
+</issue>
