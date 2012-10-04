@@ -1,0 +1,38 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="2191" status="New">
+<title>Incorrect specification of <tt>match_results(match_results&amp;&amp;)</tt></title>
+<section><sref ref="[re.results.const]"/></section>
+<submitter>Pete Becker</submitter>
+<date>2 Oct 2012</date>
+
+<discussion>
+
+<p>
+<sref ref="[re.results.const]"/>/3: "Move-constructs an object of class <tt>match_results</tt> satisfying the same 
+postconditions as Table 141."
+</p>
+<p>
+Table 141 lists various member functions and says that their results should be the results of the corresponding member 
+function calls on <tt>m</tt>. But <tt>m</tt> has been moved from, so the actual requirement ought to be based on the 
+value that <tt>m</tt> had <em>before</em> the move construction, not on <tt>m</tt> itself.
+</p>
+<p>
+In addition to that, the requirements for the copy constructor should refer to Table 141.
+<p/>
+<u>Ganesh</u>:
+<p/>
+Also, the requirements for move-assignment should refer to Table 141. Further it seems as if in Table 141 all phrases of
+"for all integers <tt>n &lt; m.size()</tt>" should be replaced by "for all <em>unsigned</em> integers 
+<tt>n &lt; m.size()</tt>".
+</p>
+
+</discussion>
+
+<resolution>
+</resolution>
+
+</issue>
