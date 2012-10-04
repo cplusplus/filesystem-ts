@@ -1,0 +1,110 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="2192" status="New">
+<title>Validity and return type of <tt>std::abs(0u)</tt> is unclear</title>
+<section><sref ref="[c.math]"/></section>
+<submitter>Daniel Kr&uuml;gler</submitter>
+<date>2 Oct 2012</date>
+
+<discussion>
+
+<p>
+In C++03 the following two programs are invalid:
+</p>
+<ol style="list-style-type:upper-alpha"><li>
+<blockquote><pre>
+#include &lt;cmath&gt;
+
+int main() {
+  std::abs(0u);
+}
+</pre></blockquote>
+</li>
+<li>
+<blockquote><pre>
+#include &lt;cstdlib&gt;
+
+int main() {
+  std::abs(0u);
+}
+</pre></blockquote>
+</li>
+</ol>
+<p>
+because none of the <tt>std::abs()</tt> overloads is a best match.
+</p>
+<p>
+In C++11 the additional "sufficient overload" rule from <sref ref="[c.math]"/> p11 (see also LWG
+<iref ref="2086"/>) can be read to be applicable to the <tt>std::abs()</tt> overloads as well, which
+can lead to the following possible conclusions:
+<p/>
+<ol>
+<li><p>The program</p>
+<blockquote><pre>
+#include &lt;type_traits&gt;
+#include &lt;cmath&gt;
+
+static_assert(std::is_same&lt;decltype(std::abs(0u)), double&gt;(), "Oops");
+
+int main() {
+  std::abs(0u);
+}
+</pre></blockquote>
+<p>
+is required to be well-formed, because of sub-bullet 2 ("[..] or an integer type [..]") of 
+<sref ref="[c.math]"/> p11 (Note that the current resolution of LWG <iref ref="2086"/> doesn't
+fix this problem).
+</p>
+</li>
+<li><p>Any translation unit including both <tt>&lt;cmath&gt;</tt> and <tt>&lt;cstdlib&gt;</tt>
+might be ill-formed because of two conflicting requirements for the return type of the overload
+<tt>std::abs(int)</tt>.
+</p>
+</li>
+</ol>
+</p>
+
+<p>
+It seems to me that at least one of these outcomes is not intended, personally I think that both
+are unfortunate: In contrast to all other floating-point functions explicitly listed in sub-clause 
+<sref ref="[c.math]"/>, the <tt>abs</tt> overloads have a special and well-defined meaning for 
+signed integers and thus have explicit overloads returning a signed integral type. I also believe that 
+there is no problem accepting that <tt>std::fabs(0u)</tt> is well-defined with return type double, 
+because the leading 'f' clearly signals that we have a floating point function here. But the expected 
+return type of <tt>std::abs(0u)</tt> seems less than clear to me. A very reasonable answer could be that 
+this has the same type as it's argument type, alternatively it could be a "reasonably" chosen signed 
+integer type, or - finally - a floating point type. It should also be noted, that the corresponding
+"generic type function" rule set from C99/C1x in 7.25 p2+3 is restricted to the floating-point functions
+from <tt>&lt;math.h&gt;</tt> and <tt>&lt;complex.h&gt;</tt>, so cannot be applied to the <tt>abs</tt>
+functions (but to the <tt>fabs</tt> functions!).
+<p/>
+Selecting a signed integer return type for unsigned input values is also problematic: The directly
+corresponding signed integer type would give half of the possible argument values an implementation-defined
+result value. Choosing the first signed integer value that can represent all positive values would solve this
+problem for <tt>unsigned int</tt>, but there would be no clear answer for the input type <tt>unsigned long long</tt>.
+</p>
+<p>
+Based on this it seems to me that the C++03 state in regard to unsigned integer values was the better
+situation, alerting the user that this code is ambigious. 
+</p>
+
+</discussion>
+
+<resolution>
+<p>This wording is relative to N3376.</p>
+
+<ol>
+<li><p>Change <sref ref="[c.math]"/> p11 as indicated:</p>
+<blockquote><p>
+-11- Moreover<ins>, except for the <tt>abs</tt> functions</ins>, there shall be additional overloads sufficient to ensure:
+<p/>
+[&hellip;]
+</p></blockquote>
+</li>
+</ol>
+</resolution>
+
+</issue>
