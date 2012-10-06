@@ -31,9 +31,232 @@ explicit set(const Compare&amp; comp<del> = Compare()</del>,
              const Allocator&amp; = Allocator());
 </pre></blockquote>
 
+<note>
+2012-10-06: Daniel adds concrete wording.
+</note>
+
 </discussion>
 
 <resolution>
+<p>This wording is relative to N3376.</p>
+
+<p>The more general criterion for performing the suggested transformation was: Any type with an initializer-list 
+constructor that also has an explicit default constructor.</p>
+
+<ol>
+<li><p>Change class template <tt>basic_string</tt> synopsis, <sref ref="[basic.string]"/> p5 as indicated:</p>
+<blockquote><pre>
+<ins>basic_string() : basic_string(Allocator()) {}</ins>
+explicit basic_string(const Allocator&amp; a<del> = Allocator()</del>);
+</pre></blockquote>
+</li>
+
+<li><p>Change <sref ref="[string.cons]"/> before p1 as indicated:</p>
+<blockquote><pre>
+explicit basic_string(const Allocator&amp; a<del> = Allocator()</del>);
+</pre></blockquote>
+</li>
+
+<li><p>Change class template <tt>deque</tt> synopsis, <sref ref="[deque.overview]"/> p2 as indicated:</p>
+<blockquote><pre>
+<ins>deque() : deque(Allocator()) {}</ins>
+explicit deque(const Allocator&amp;<del> = Allocator()</del>);
+</pre></blockquote>
+</li>
+
+<li><p>Change <sref ref="[deque.cons]"/> before p1 as indicated:</p>
+<blockquote><pre>
+explicit deque(const Allocator&amp;<del> = Allocator()</del>);
+</pre></blockquote>
+</li>
+
+<li><p>Change class template <tt>forward_list</tt> synopsis, <sref ref="[forwardlist.overview]"/> p3 as indicated:</p>
+<blockquote><pre>
+<ins>forward_list() : forward_list(Allocator()) {}</ins>
+explicit forward_list(const Allocator&amp;<del> = Allocator()</del>);
+</pre></blockquote>
+</li>
+
+<li><p>Change <sref ref="[forwardlist.cons]"/> before p1 as indicated:</p>
+<blockquote><pre>
+explicit forward_list(const Allocator&amp;<del> = Allocator()</del>);
+</pre></blockquote>
+</li>
+
+<li><p>Change class template <tt>list</tt> synopsis, <sref ref="[list.overview]"/> p2 as indicated:</p>
+<blockquote><pre>
+<ins>list() : list(Allocator()) {}</ins>
+explicit list(const Allocator&amp;<del> = Allocator()</del>);
+</pre></blockquote>
+</li>
+
+<li><p>Change <sref ref="[list.cons]"/> before p1 as indicated:</p>
+<blockquote><pre>
+explicit list(const Allocator&amp;<del> = Allocator()</del>);
+</pre></blockquote>
+</li>
+
+<li><p>Change class template <tt>vector</tt> synopsis, <sref ref="[vector.overview]"/> p2 as indicated:</p>
+<blockquote><pre>
+<ins>vector() : vector(Allocator()) {}</ins>
+explicit vector(const Allocator&amp;<del> = Allocator()</del>);
+</pre></blockquote>
+</li>
+
+<li><p>Change <sref ref="[vector.cons]"/> before p1 as indicated:</p>
+<blockquote><pre>
+explicit vector(const Allocator&amp;<del> = Allocator()</del>);
+</pre></blockquote>
+</li>
+
+<li><p>Change class template specialization <tt>vector&lt;bool&gt;</tt> synopsis, <sref ref="[vector.bool]"/> p1 as indicated:</p>
+<blockquote><pre>
+<ins>vector() : vector(Allocator()) {}</ins>
+explicit vector(const Allocator&amp;<del> = Allocator()</del>);
+</pre></blockquote>
+</li>
+
+<li><p>Change class template <tt>map</tt> synopsis, <sref ref="[map.overview]"/> p2 as indicated:</p>
+<blockquote><pre>
+<ins>map() : map(Compare()) {}</ins>
+explicit map(const Compare&amp; comp<del> = Compare()</del>,
+             const Allocator&amp; = Allocator());
+</pre></blockquote>
+</li>
+
+<li><p>Change <sref ref="[map.cons]"/> before p1 as indicated:</p>
+<blockquote><pre>
+explicit map(const Compare&amp; comp<del> = Compare()</del>,
+             const Allocator&amp; = Allocator());
+</pre></blockquote>
+</li>
+
+<li><p>Change class template <tt>multimap</tt> synopsis, <sref ref="[multimap.overview]"/> p2 as indicated:</p>
+<blockquote><pre>
+<ins>multimap() : multimap(Compare()) {}</ins>
+explicit multimap(const Compare&amp; comp<del> = Compare()</del>,
+                  const Allocator&amp; = Allocator());
+</pre></blockquote>
+</li>
+
+<li><p>Change <sref ref="[multimap.cons]"/> before p1 as indicated:</p>
+<blockquote><pre>
+explicit multimap(const Compare&amp; comp<del> = Compare()</del>,
+                  const Allocator&amp; = Allocator());
+</pre></blockquote>
+</li>
+
+<li><p>Change class template <tt>set</tt> synopsis, <sref ref="[set.overview]"/> p2 as indicated:</p>
+<blockquote><pre>
+<ins>set() : set(Compare()) {}</ins>
+explicit set(const Compare&amp; comp<del> = Compare()</del>,
+             const Allocator&amp; = Allocator());
+</pre></blockquote>
+</li>
+
+<li><p>Change <sref ref="[set.cons]"/> before p1 as indicated:</p>
+<blockquote><pre>
+explicit set(const Compare&amp; comp<del> = Compare()</del>,
+             const Allocator&amp; = Allocator());
+</pre></blockquote>
+</li>
+
+<li><p>Change class template <tt>multiset</tt> synopsis, <sref ref="[multiset.overview]"/> p2 as indicated:</p>
+<blockquote><pre>
+<ins>multiset() : multiset(Compare()) {}</ins>
+explicit multiset(const Compare&amp; comp<del> = Compare()</del>,
+                  const Allocator&amp; = Allocator());
+</pre></blockquote>
+</li>
+
+<li><p>Change <sref ref="[multiset.cons]"/> before p1 as indicated:</p>
+<blockquote><pre>
+explicit multiset(const Compare&amp; comp<del> = Compare()</del>,
+                  const Allocator&amp; = Allocator());
+</pre></blockquote>
+</li>
+
+<li><p>Change class template <tt>unordered_map</tt> synopsis, <sref ref="[unord.map.overview]"/> p3 as indicated:</p>
+<blockquote><pre>
+<ins>unordered_map() : unordered_map(<i>see below</i>) {}</ins>
+explicit unordered_map(size_type n<del> = <i>see below</i></del>,
+                       const hasher&amp; hf = hasher(),
+                       const key_equal&amp; eql = key_equal(),
+                       const allocator_type&amp; a = allocator_type());
+</pre></blockquote>
+</li>
+
+<li><p>Change <sref ref="[unord.map.cnstr]"/> before p1 as indicated:</p>
+<blockquote><pre>
+<ins>unordered_map() : unordered_map(<i>see below</i>) {}</ins>
+explicit unordered_map(size_type n<del> = <i>see below</i></del>,
+                       const hasher&amp; hf = hasher(),
+                       const key_equal&amp; eql = key_equal(),
+                       const allocator_type&amp; a = allocator_type());
+</pre></blockquote>
+</li>
+
+<li><p>Change class template <tt>unordered_multimap</tt> synopsis, <sref ref="[unord.multimap.overview]"/> p3 as indicated:</p>
+<blockquote><pre>
+<ins>unordered_multimap() : unordered_multimap(<i>see below</i>) {}</ins>
+explicit unordered_multimap(size_type n<del> = <i>see below</i></del>,
+                            const hasher&amp; hf = hasher(),
+                            const key_equal&amp; eql = key_equal(),
+                            const allocator_type&amp; a = allocator_type());
+</pre></blockquote>
+</li>
+
+<li><p>Change <sref ref="[unord.multimap.cnstr]"/> before p1 as indicated:</p>
+<blockquote><pre>
+<ins>unordered_multimap() : unordered_multimap(<i>see below</i>) {}</ins>
+explicit unordered_multimap(size_type n<del> = <i>see below</i></del>,
+                            const hasher&amp; hf = hasher(),
+                            const key_equal&amp; eql = key_equal(),
+                            const allocator_type&amp; a = allocator_type());
+</pre></blockquote>
+</li>
+
+<li><p>Change class template <tt>unordered_set</tt> synopsis, <sref ref="[unord.set.overview]"/> p3 as indicated:</p>
+<blockquote><pre>
+<ins>unordered_set() : unordered_set(<i>see below</i>) {}</ins>
+explicit unordered_set(size_type n<del> = <i>see below</i></del>,
+                       const hasher&amp; hf = hasher(),
+                       const key_equal&amp; eql = key_equal(),
+                       const allocator_type&amp; a = allocator_type());
+</pre></blockquote>
+</li>
+
+<li><p>Change <sref ref="[unord.set.cnstr]"/> before p1 as indicated:</p>
+<blockquote><pre>
+<ins>unordered_set() : unordered_set(<i>see below</i>) {}</ins>
+explicit unordered_set(size_type n<del> = <i>see below</i></del>,
+                       const hasher&amp; hf = hasher(),
+                       const key_equal&amp; eql = key_equal(),
+                       const allocator_type&amp; a = allocator_type());
+</pre></blockquote>
+</li>
+
+<li><p>Change class template <tt>unordered_multiset</tt> synopsis, <sref ref="[unord.multiset.overview]"/> p3 as indicated:</p>
+<blockquote><pre>
+<ins>unordered_multiset() : unordered_multiset(<i>see below</i>) {}</ins>
+explicit unordered_multiset(size_type n<del> = <i>see below</i></del>,
+                            const hasher&amp; hf = hasher(),
+                            const key_equal&amp; eql = key_equal(),
+                            const allocator_type&amp; a = allocator_type());
+</pre></blockquote>
+</li>
+
+<li><p>Change <sref ref="[unord.multiset.cnstr]"/> before p1 as indicated:</p>
+<blockquote><pre>
+<ins>unordered_multiset() : unordered_multiset(<i>see below</i>) {}</ins>
+explicit unordered_multiset(size_type n<del> = <i>see below</i></del>,
+                            const hasher&amp; hf = hasher(),
+                            const key_equal&amp; eql = key_equal(),
+                            const allocator_type&amp; a = allocator_type());
+</pre></blockquote>
+</li>
+</ol>
+
 </resolution>
 
 </issue>

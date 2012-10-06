@@ -50,7 +50,7 @@ can lead to the following possible conclusions:
 static_assert(std::is_same&lt;decltype(std::abs(0u)), double&gt;(), "Oops");
 
 int main() {
-  std::abs(0u);
+  std::abs(0u); // Calls std::abs(double)
 }
 </pre></blockquote>
 <p>
@@ -68,27 +68,28 @@ might be ill-formed because of two conflicting requirements for the return type 
 </p>
 
 <p>
-It seems to me that at least one of these outcomes is not intended, personally I think that both
+It seems to me that at least the second outcome is not intended, personally I think that both
 are unfortunate: In contrast to all other floating-point functions explicitly listed in sub-clause 
 <sref ref="[c.math]"/>, the <tt>abs</tt> overloads have a special and well-defined meaning for 
 signed integers and thus have explicit overloads returning a signed integral type. I also believe that 
-there is no problem accepting that <tt>std::fabs(0u)</tt> is well-defined with return type double, 
+there is no problem accepting that <tt>std::fabs(0u)</tt> is well-defined with return type <tt>double</tt>, 
 because the leading 'f' clearly signals that we have a floating point function here. But the expected 
 return type of <tt>std::abs(0u)</tt> seems less than clear to me. A very reasonable answer could be that 
-this has the same type as it's argument type, alternatively it could be a "reasonably" chosen signed 
-integer type, or - finally - a floating point type. It should also be noted, that the corresponding
+this has the same type as its argument type, alternatively it could be a reasonably chosen signed 
+integer type, or a floating point type. It should also be noted, that the corresponding
 "generic type function" rule set from C99/C1x in 7.25 p2+3 is restricted to the floating-point functions
 from <tt>&lt;math.h&gt;</tt> and <tt>&lt;complex.h&gt;</tt>, so cannot be applied to the <tt>abs</tt>
 functions (but to the <tt>fabs</tt> functions!).
 <p/>
-Selecting a signed integer return type for unsigned input values is also problematic: The directly
+Selecting a signed integer return type for unsigned input values can also problematic: The directly
 corresponding signed integer type would give half of the possible argument values an implementation-defined
 result value. Choosing the first signed integer value that can represent all positive values would solve this
-problem for <tt>unsigned int</tt>, but there would be no clear answer for the input type <tt>unsigned long long</tt>.
+problem for <tt>unsigned int</tt>, but there would be no clear answer for the input type <tt>std::uintmax_t</tt>.
 </p>
 <p>
 Based on this it seems to me that the C++03 state in regard to unsigned integer values was the better
-situation, alerting the user that this code is ambigious. 
+situation, alerting the user that this code is ambigious at the moment (This might be change with different core-language
+rules as described in N3387).
 </p>
 
 </discussion>
