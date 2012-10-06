@@ -65,7 +65,7 @@ support concepts <tt>PointeeType</tt> and <tt>ReferentType</tt> defined in
 </p>
 
 
-<note>21012, Kona</note>
+<note>2012-02-10, Kona</note>
 <p>
 Move to NAD.
 </p>
@@ -99,17 +99,75 @@ other working groups free to produce the 'right' answer that we can then follow 
 changing the meaning of exisitng, well-defined programs.
 </p>
 
-<note>21012, post-Kona</note>
+<note>2012-02-10, post-Kona</note>
 <p>
-Move back to Open.  Daniel is concerned that this is not an issue we can simply ignore,
+Move back to Open. Daniel is concerned that this is not an issue we can simply ignore,
 further details to follow.
 </p>
 
-</discussion>
+<note>2012-10-06, Daniel comments</note>
+<p>
+This issue really should be resolved as a defect: First, the argument that "forming these obscure types"
+should "allow an error to propagate" is inconsistent with the exact same "obscure type" that would be formed
+when <tt>std::add_lvalue_reference&lt;void&gt;</tt> wouldn't have an extra rules for <tt>void</tt> types, which
+also cannot form references. The originally proposed resolution attempts to apply the same solution for the same 
+common property of <tt>void</tt> types and function types with <em>cv</em>-qualifiers or <em>ref</em>-qualifier.
+These functions had the property of <tt>ReferentType</tt> during concept time (see 
+<a href="http://www.open-std.org/jtc1/sc22/wg21/docs/cwg_defects.html#749">CWG 749</a> bullet three for the final 
+wording).
+<p/>
+I also would like to warn about so-called "obscure" types: The problem is that these can occur as the side effect
+of finding a best match overload of function templates, where this type is exactly correct for one of these
+overloads, but causes a deep (not-sfinae-friendly) error for others where one of these traits are part of the 
+signature.
+<p/>
+Existing experience with <tt>void</tt> types shows, that this extra rule is not so unexpected. Further, any usage 
+of the result types of these traits as argument types or return types of functions would make these ill-formed 
+(and in a template context would be sfinaed away), so the expected effects are rarely unnoticed. Checking
+all existing explicit usages of the traits <tt>add_rvalue_reference</tt>, <tt>add_lvalue_reference</tt>, and
+<tt>add_pointer</tt> didn't show any example where the error would be silent: <tt>add_rvalue_reference</tt>
+is used to specify the return value of <tt>declval()</tt> and the instantiation of <tt>declval&lt;void() const&gt;()</tt>
+would be invalid, because of the attempt to return a function type. Similarly, <tt>add_lvalue_reference</tt>
+is used to specify the return type of <tt>unique_ptr&lt;T&gt;::operator*()</tt>. Again, any instantiation with 
+<tt>void() const</tt> wouldn't remain unnoticed. The trait <tt>add_pointer</tt> is used to specify the trait
+<tt>std::decay</tt> and this is an interesting example, because it is well-formed when instantiated with <tt>void</tt> 
+types, too, and is heavily used throughout the library specification. All use-cases would not be negatively affected 
+by the suggested acceptance of function types with <em>cv</em>-qualifiers or <em>ref</em>-qualifier, because they involve 
+types that are either function arguments, function parameters or types were references are formed from.
+<p/>
+The alternative would be to add an additional extra rule that doesn't define a type member 'type' when
+we have a function type with <em>cv</em>-qualifiers or <em>ref</em>-qualifier. This is better than the
+current state but it is not superior than the proposal to specify the result as the original type, because
+both variants are sfinae-friendly. A further disadvantage of the "non-type" approach here would be that any
+usage of <tt>std::decay</tt> would require special protection against these function types, because 
+instantiating <tt>std::decay&lt;void() const&gt;</tt> again would lead to a deep, sfinae-unfriendly error.
+<p/>
+The following example demonstrates the problem: Even though the second <tt>f</tt> template is the best final
+match here, the first one will be instantiated. During that process <tt>std::decay&lt;T&gt;::type</tt>
+becomes instantiated as well and will raise a deep error, because as part of the implementation the trait
+<tt>std::add_pointer&lt;void() const&gt;</tt> becomes instantiated:
+</p>
+<blockquote><pre>
+#include &lt;type_traits&gt;
 
-<resolution>
-<p>This wording is relative to the FDIS.</p>
+template&lt;class T&gt;
+typename std::decay&lt;T&gt;::type f(T&amp;&amp; t);
 
+template&lt;class T, class U&gt;
+U f(U u);
+
+int main() {
+  f&lt;void() const&gt;(0);
+}
+</pre></blockquote>
+<p>
+When the here proposed resolution would be applied this program would be well-formed and selects the expected function.
+</p>
+
+<p>
+Previous resolution:
+</p>
+<blockquote class="note">
 <ol>
 <li><p>Change Table 53 &mdash; "Reference modifications" in <sref ref="[meta.trans.ref]"/> as indicated:</p>
 
@@ -184,6 +242,109 @@ struct add_pointer;</tt>
 <ins>If <tt>T</tt> names a function type that has <i>cv</i>-qualifiers or a <i>ref</i>-qualifier<br/>
 then the member typedef <tt>type</tt> shall name <tt>T</tt>; otherwise, it<br/> 
 shall name the same type as</ins> <tt>remove_reference&lt;T&gt;::type*</tt>.
+</td>
+</tr>
+
+</table>
+
+</li>
+</ol>
+</blockquote>
+
+<p>
+The following revised proposed resolution defines - in the absense of a proper core language definition - a new
+term <em>referencable type</em> as also suggested by the resolution for LWG <iref ref="2196"/> as an
+umbrella for void types and function types with <em>cv</em>-qualifiers or <em>ref</em>-qualifier. This simplifies
+and minimizes the requires wording changes.
+</p>
+
+</discussion>
+
+<resolution>
+<p>This wording is relative to the FDIS.</p>
+
+<ol>
+<li><p>Add the following new definition to <sref ref="[definitions]"/> as indicated:</p>
+<p><b>referencable type</b></p>
+<blockquote><p>
+An object type, a function type that does not have <em>cv</em>-qualifiers or a <em>ref</em>-qualifier, or a reference type.
+[<i>Note</i>: The term describes a type to which a reference can be created, including reference types. &mdash; <i>end note</i>]
+</p></blockquote>
+</li>
+
+<li><p>Change Table 53 &mdash; "Reference modifications" in <sref ref="[meta.trans.ref]"/> as indicated:</p>
+
+<table border="1">
+<caption>Table 53 &mdash; Reference modifications</caption>
+<tr>
+<th>Template</th>
+<th>Comments</th>
+</tr> 
+
+<tr>
+<td colspan="2" align="center">
+<tt>&hellip;</tt>
+</td>
+</tr>
+
+<tr>
+<td>
+<tt>template &lt;class T&gt;<br/>
+struct<br/>
+add_lvalue_reference;</tt>
+</td>
+<td>
+If <tt>T</tt> names <del>an object <tt>type</tt> or function type</del><ins>a referencable type</ins><br/>
+then the member typedef <tt>type</tt><br/>
+shall name <tt>T&amp;</tt>; otherwise, <del>if <tt>T</tt> names a type “rvalue reference to <tt>T1</tt>” then<br/>
+the member typedef <tt>type</tt> shall name <tt>T1&amp;</tt>; otherwise,</del> <tt>type</tt> shall name <tt>T</tt>.<br/>
+<ins>[ <i>Note</i>: This rule reflects the semantics of reference collapsing (<sref ref="[dcl.ref]"/>). &mdash; <i>end note</i> ]</ins>
+</td>
+</tr>
+
+<tr>
+<td>
+<tt>template &lt;class T&gt;<br/>
+struct<br/>
+add_rvalue_reference;</tt>
+</td>
+<td>
+If <tt>T</tt> names <del>an object <tt>type</tt> or function type</del><ins>a referencable type</ins><br/>
+then the member typedef <tt>type</tt><br/>
+shall name <tt>T&amp;&amp;</tt>; otherwise, <tt>type</tt> shall name <tt>T</tt>. [ <i>Note</i>: This rule reflects<br/>
+the semantics of reference collapsing (<sref ref="[dcl.ref]"/>). For example, when a type <tt>T</tt><br/>
+names a type <tt>T1&amp;</tt>, the type <tt>add_rvalue_reference&lt;T&gt;::type</tt> is not an<br/>
+rvalue reference. &mdash; <i>end note</i> ]
+</td>
+</tr>
+</table>
+
+</li>
+
+<li><p>Change Table 56 &mdash; "Pointer modifications" in <sref ref="[meta.trans.ptr]"/> as indicated:</p>
+
+<table border="1">
+<caption>Table 56 &mdash; Pointer modifications</caption>
+<tr>
+<th>Template</th>
+<th>Comments</th>
+</tr> 
+
+<tr>
+<td colspan="2" align="center">
+<tt>&hellip;</tt>
+</td>
+</tr>
+
+<tr>
+<td>
+<tt>template &lt;class T&gt;<br/>
+struct add_pointer;</tt>
+</td>
+<td>
+<ins>If <tt>T</tt> names a referencable type or a (possibly <i>cv</i>-qualified) <tt>void</tt> type then<br/></ins>
+<del>T</del><ins>t</ins>he member typedef <tt>type</tt> shall name the same type as<br/>
+<tt>remove_reference&lt;T&gt;::type*</tt><ins>; otherwise, <tt>type</tt> shall name <tt>T</tt></ins>.
 </td>
 </tr>
 
