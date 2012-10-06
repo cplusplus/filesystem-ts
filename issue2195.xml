@@ -1,0 +1,68 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="2195" status="New">
+<title>Missing constructors for <tt>match_results</tt></title>
+<section><sref ref="[re.results]"/></section>
+<submitter>Daniel Kr&uuml;gler</submitter>
+<date>6 Oct 2012</date>
+
+<discussion>
+
+<p>
+The requirement expressed in <sref ref="[re.results]"/> p2
+</p>
+<blockquote><p>
+The class template <tt>match_results</tt> shall satisfy the requirements of an allocator-aware container and of a
+sequence container, as specified in <sref ref="[sequence.reqmts]"/>, except that only operations defined for 
+const-qualified sequence containers are supported.
+</p></blockquote>
+<p>
+can be read to require the existence of the described constructors from as well, but they do not exist in the
+synopsis. 
+<p/>
+The missing sequence constructors are: 
+</p>
+<blockquote><pre>
+match_results(initializer_list&lt;value_type&gt;);
+match_results(size_type, const value_type&amp;);
+template&lt;class InputIterator&gt; match_results(InputIterator, InputIterator);
+</pre></blockquote>
+<p>
+The missing allocator-aware container constructors are:
+</p>
+<blockquote><pre>
+match_results(const match_results&amp;, const Allocator&amp;);
+match_results(match_results&amp;&amp;, const Allocator&amp;);
+</pre></blockquote>
+<p>
+It should be clarified, whether (a) constructors are an exception of above mentioned operations or (b) whether
+at least some of them (like those accepting a <tt>match_results</tt> value and an allocator) should be added.
+<p/>
+As visible in several places of the standard (including the core language), constructors seem usually to be considered 
+as "operations" and they certainly can be invoked for const-qualified objects.
+<p/>
+The below given proposed resolution applies only the minimum necessary fix, i.e. it excludes constructors from
+above requirement. 
+</p>
+
+</discussion>
+
+<resolution>
+<p>This wording is relative to N3376.</p>
+
+<ol>
+<li><p>Change <sref ref="[re.results]"/> p2 as indicated:</p>
+<blockquote><p>
+The class template <tt>match_results</tt> shall satisfy the requirements of an allocator-aware container and of a
+sequence container, as specified in <sref ref="[sequence.reqmts]"/>, except that only operations defined for 
+const-qualified sequence containers <ins>that are not constructors</ins> are supported.
+</p></blockquote>
+</li>
+</ol>
+
+</resolution>
+
+</issue>
