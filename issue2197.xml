@@ -29,8 +29,9 @@ instantiation error for a non-arithmetic type like e.g.
 struct S {};
 </pre></blockquote>
 <p>
-I would suggest that the wording clarifies that the instantiation would be valid for such types as well
-by a specification that is not an exact code pattern.
+I would suggest that the wording clarifies that the instantiation would be valid for such types as well,
+by means of a specification that is not an exact code pattern. This also reflects how existing 
+implementations behave.
 </p>
 
 </discussion>
@@ -55,9 +56,9 @@ by a specification that is not an exact code pattern.
 <tt>struct is_signed;</tt>
 </td>
 <td>
-<ins>For </ins><tt>is_arithmetic&lt;T&gt;::value<ins> == true</ins></tt><ins>, the same result as</ins><br/>
-<tt><del>&amp;&amp; </del><ins>integral_constant&lt;bool, </ins>T(-1) &lt; T(0)&gt;<ins>::value</ins></tt><ins>,<br/>
-otherwise false.</ins>
+<ins>If </ins><tt>is_arithmetic&lt;T&gt;::value<del> &amp;&amp;</del></tt><ins> is true, the same result as</ins><br/>
+<tt><ins>integral_constant&lt;bool,</ins> T(-1) &lt; T(0)<ins>&gt;::value</ins></tt><ins>;<br/>
+otherwise, false.</ins>
 </td>
 <td>
 &nbsp;
@@ -70,9 +71,9 @@ otherwise false.</ins>
 <tt>struct is_unsigned;</tt>
 </td>
 <td>
-<ins>For </ins><tt>is_arithmetic&lt;T&gt;::value<ins> == true</ins></tt><ins>, the same result as</ins><br/>
-<tt><del>&amp;&amp; </del><ins>integral_constant&lt;bool, </ins>T(0) &lt; T(-1)&gt;<ins>::value</ins></tt><ins>,<br/>
-otherwise false.</ins>
+<ins>If </ins><tt>is_arithmetic&lt;T&gt;::value<del> &amp;&amp;</del></tt><ins> is true, the same result as</ins><br/>
+<tt><ins>integral_constant&lt;bool,</ins> T(0) &lt; T(-1)<ins>&gt;::value</ins></tt><ins>;<br/>
+otherwise, false.</ins>
 </td>
 <td>
 &nbsp;
