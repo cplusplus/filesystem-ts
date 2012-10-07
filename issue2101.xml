@@ -116,6 +116,10 @@ These functions had the property of <tt>ReferentType</tt> during concept time (s
 <a href="http://www.open-std.org/jtc1/sc22/wg21/docs/cwg_defects.html#749">CWG 749</a> bullet three for the final 
 wording).
 <p/>
+Core issue <a href="http://www.open-std.org/jtc1/sc22/wg21/docs/cwg_active.html#1417">CWG 1417</a> has clarified
+that any attempt to form a reference of a pointer to a function type with <em>cv</em>-qualifiers or 
+<em>ref</em>-qualifier is ill-formed. Unfortunately, many compilers don't implement this yet.
+<p/>
 I also would like to warn about so-called "obscure" types: The problem is that these can occur as the side effect
 of finding a best match overload of function templates, where this type is exactly correct for one of these
 overloads, but causes a deep (not-sfinae-friendly) error for others where one of these traits are part of the 
@@ -253,9 +257,9 @@ shall name the same type as</ins> <tt>remove_reference&lt;T&gt;::type*</tt>.
 
 <p>
 The following revised proposed resolution defines - in the absense of a proper core language definition - a new
-term <em>referencable type</em> as also suggested by the resolution for LWG <iref ref="2196"/> as an
-umbrella for void types and function types with <em>cv</em>-qualifiers or <em>ref</em>-qualifier. This simplifies
-and minimizes the requires wording changes.
+term <em>referenceable type</em> as also suggested by the resolution for LWG <iref ref="2196"/> as an
+umbrella of the negation of void types and function types with <em>cv</em>-qualifiers or <em>ref</em>-qualifier. 
+This simplifies and minimizes the requires wording changes.
 </p>
 
 </discussion>
@@ -265,7 +269,7 @@ and minimizes the requires wording changes.
 
 <ol>
 <li><p>Add the following new definition to <sref ref="[definitions]"/> as indicated:</p>
-<p><b>referencable type</b></p>
+<p><b>referenceable type</b></p>
 <blockquote><p>
 An object type, a function type that does not have <em>cv</em>-qualifiers or a <em>ref</em>-qualifier, or a reference type.
 [<i>Note</i>: The term describes a type to which a reference can be created, including reference types. &mdash; <i>end note</i>]
@@ -294,7 +298,7 @@ struct<br/>
 add_lvalue_reference;</tt>
 </td>
 <td>
-If <tt>T</tt> names <del>an object <tt>type</tt> or function type</del><ins>a referencable type</ins><br/>
+If <tt>T</tt> names <del>an object <tt>type</tt> or function type</del><ins>a referenceable type</ins><br/>
 then the member typedef <tt>type</tt><br/>
 shall name <tt>T&amp;</tt>; otherwise, <del>if <tt>T</tt> names a type “rvalue reference to <tt>T1</tt>” then<br/>
 the member typedef <tt>type</tt> shall name <tt>T1&amp;</tt>; otherwise,</del> <tt>type</tt> shall name <tt>T</tt>.<br/>
@@ -309,7 +313,7 @@ struct<br/>
 add_rvalue_reference;</tt>
 </td>
 <td>
-If <tt>T</tt> names <del>an object <tt>type</tt> or function type</del><ins>a referencable type</ins><br/>
+If <tt>T</tt> names <del>an object <tt>type</tt> or function type</del><ins>a referenceable type</ins><br/>
 then the member typedef <tt>type</tt><br/>
 shall name <tt>T&amp;&amp;</tt>; otherwise, <tt>type</tt> shall name <tt>T</tt>. [ <i>Note</i>: This rule reflects<br/>
 the semantics of reference collapsing (<sref ref="[dcl.ref]"/>). For example, when a type <tt>T</tt><br/>
@@ -342,7 +346,7 @@ rvalue reference. &mdash; <i>end note</i> ]
 struct add_pointer;</tt>
 </td>
 <td>
-<ins>If <tt>T</tt> names a referencable type or a (possibly <i>cv</i>-qualified) <tt>void</tt> type then<br/></ins>
+<ins>If <tt>T</tt> names a referenceable type or a (possibly <i>cv</i>-qualified) <tt>void</tt> type then<br/></ins>
 <del>T</del><ins>t</ins>he member typedef <tt>type</tt> shall name the same type as<br/>
 <tt>remove_reference&lt;T&gt;::type*</tt><ins>; otherwise, <tt>type</tt> shall name <tt>T</tt></ins>.
 </td>
