@@ -39,7 +39,8 @@ It seems that at least <tt>X::reference</tt> needs to be convertible to <tt>X::c
 <p/>
 A related question is whether <tt>X::reference</tt> is supposed to be a mutable reference-like type,
 irrespective of whether the container is an immutable container or not. The way, type <tt>match_results</tt>
-defines <tt>reference</tt> identical to <tt>const_reference</tt> indicates one specific interpretation.
+defines <tt>reference</tt> identical to <tt>const_reference</tt> indicates one specific interpretation (similarly,
+the <tt>initializer_list</tt> template also defines member type <tt>reference</tt> equal to <tt>const value_type&amp;</tt>).
 Note that this can be a different decision as that for <tt>iterator</tt> and <tt>const_iterator</tt>,
 e.g. for sets the type <tt>X::reference</tt> still is a mutable reference, even though <tt>iterator</tt>
 is described as constant iterator.
