@@ -144,6 +144,39 @@ and not only <em>after</em>. So if I specialize <tt>common_type&lt;mytype, doubl
 <tt>common_type&lt;const mytype, volatile double&amp;&gt;</tt> would automatically work.
 </p>
 
+<note>2012-10-11 Daniel provides wording for two preferrable (but mutually exclusive) proposals:</note>
+
+<ol style="list-style-type:upper-alpha">
+<li><p>Change <sref ref="[meta.trans.other]"/> p3 as indicated:</p>
+<blockquote><pre>
+template &lt;class T&gt;
+struct common_type&lt;T&gt; {
+  typedef <ins>typename decay&lt;</ins>T<ins>&gt;::type</ins> type;
+};
+
+template &lt;class T, class U&gt;
+struct common_type&lt;T, U&gt; {
+  typedef <ins>typename decay&lt;</ins>decltype(true ? declval&lt;T&gt;() : declval&lt;U&gt;())<ins>&gt;::type</ins> type;
+};
+</pre></blockquote>
+</li>
+
+<li><p>Change <sref ref="[meta.trans.other]"/> p3 as indicated:</p>
+<blockquote><pre>
+template &lt;class T&gt;
+struct common_type&lt;T&gt; {
+  typedef <ins>typename decay&lt;</ins>T<ins>&gt;::type</ins> type;
+};
+
+template &lt;class T, class U&gt;
+struct common_type&lt;T, U&gt; {
+  typedef <ins>typename decay&lt;</ins>decltype(true ? declval&lt;<ins>typename decay&lt;</ins>T<ins>&gt;::type</ins>&gt;() : 
+	declval&lt;<ins>typename decay&lt;</ins>U<ins>&gt;::type</ins>&gt;())<ins>&gt;::type</ins> type;
+};
+</pre></blockquote>
+</li>
+</ol>
+
 </discussion>
 
 <resolution>
