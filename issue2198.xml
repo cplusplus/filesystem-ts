@@ -1,0 +1,48 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="2198" status="New">
+<title><tt>max_load_factor(z)</tt> makes no strong guatantees, but bans useful behavior</title>
+<section><sref ref="[unord.req]"/></section>
+<submitter>Alisdair Meredith</submitter>
+<date>09 Oct 2012</date>
+
+<discussion>
+
+<p>
+The user cannot specify a <tt>max_load_factor</tt> for their unordered container
+at construction, it must be supplied after the event, when the container is
+potentially not empty.  The contract for this method is deliberately vague, not
+guaranteeing to use the value supplied by the user, and any value actually used
+will be used as a ceiling that the container will <i>attempt</i> to respect.
+</p>
+<p>
+The only guarantee we have is that, if user requests a <tt>max_load_factor</tt>
+that is less than the current <tt>load_factor</tt>, then the operation will take
+constant time, thus outlawing an implementation that chooses to rehash and so
+preserve as a class invariant that <tt>load_factor &lt; max_load_factor</tt>.
+</p>
+<p>
+Reasonable options conforming to the standard include ignoring the user's request
+if the requested value is too low, or deferring the rehash to the next <tt>insert</tt>
+operation and allowing the container to have a strange state (wrt <tt>max_load_factor</tt>)
+until then - and there is still the question of rehashing if the next <tt>insert</tt>
+is for a duplicate key in a unique container.
+</p>
+<p>
+Given the deliberate vagueness of the current wording, to support a range of reasonable
+(but not <i>perfect</i>) behaviors, it is not clear why the equally reasonable rehash
+to restore the constraint should be outlawed.  It is not thought that this is a performance
+critical operation, where users will be repeatedly setting low load factors on populated
+containers, in a tight or (less unlikely) an instant response scenario.
+</p>
+
+</discussion>
+
+<resolution>
+
+</resolution>
+
+</issue>

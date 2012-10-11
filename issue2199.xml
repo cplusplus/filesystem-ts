@@ -1,0 +1,36 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="2199" status="New">
+<title>unordered containers are required to have an initial max load factor of 1.0</title>
+<section><sref ref="[unord.req]"/></section>
+<submitter>Alisdair Meredith</submitter>
+<date>09 Oct 2012</date>
+
+<discussion>
+
+<p>
+The default constructor, allocator-aware constructor, and range-based constructors
+for the unordered containers do not offer a means to control the initial
+<tt>max_load_factor</tt>, so the standard mandates the value 1.0.  This seems overly
+restrictive, as there is plenty of research suggesting a value between 0.5 and 1.0
+is more often optimal for unique-key containers, and perhaps a slightly higher
+value might be appropriate for multi-containers.
+</p>
+<p>
+Rather than guess at the appropriate <tt>max_load_factor</tt>, it seems reasonable
+that the standard should allow vendors to pick a value at their disgression, with
+perhaps a note of advice.  It is less clear whether the default value should be
+implementation-defined or unspecified, given the ease of a user determining this
+by querying this attribute immediately after construction.
+</p>
+
+</discussion>
+
+<resolution>
+
+</resolution>
+
+</issue>
