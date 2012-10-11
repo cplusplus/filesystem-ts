@@ -62,6 +62,88 @@ Note that this harmonizes with the corresponding heterogenous case, which has al
 common_type&lt;int, long&gt;::type == common_type&lt;const int, const long&gt;::type == long
 </pre></blockquote>
 
+<note>2012-10-11 Daniel comments</note>
+<p>
+While testing the effects of applying the proposed resolution I noticed that this will have the effect that the unary 
+form of <tt>common_type</tt>, like
+</p>
+<blockquote><pre>
+common_type&lt;int&gt;
+</pre></blockquote>
+<p>
+is not symmetric to the n-ary form (n &gt; 1). This is unfortunate, because this difference comes especially to effect when 
+<tt>common_type</tt> is used with variadic templates. As an example consider the following <tt>make_array</tt> template:
+</p>
+<blockquote><pre>
+#include &lt;array>
+#include &lt;type_traits>
+#include &lt;utility>
+
+template&lt;class... Args&gt;
+std::array&lt;typename std::common_type&lt;Args...&gt;::type, sizeof...(Args)&gt;
+make_array(Args&amp;&amp;... args)
+{
+  typedef typename std::common_type&lt;Args...&gt;::type CT;
+  return std::array&lt;CT, sizeof...(Args)&gt;{static_cast&lt;CT&gt;(std::forward&lt;Args&gt;(args))...};
+}
+
+int main()
+{
+  auto a1 = make_array(0); // OK: std::array&lt;int, 1&gt;
+  auto a2 = make_array(0, 1.2); // OK: std::array&lt;double, 2&gt;
+  auto a3 = make_array(5, true, 3.1415f, 'c'); // OK: std::array&lt;float, 4&gt;
+
+  int i = 0;
+  auto a1b = make_array(i); // <span style="color:#C80000;font-weight:bold">Error, attempt to form std::array&lt;int&amp;, 1&gt;</span>
+
+  auto a2b = make_array(i, 1.2); // OK: std::array&lt;double, 2&gt;
+  auto a2c = make_array(i, 0); // OK: std::array&lt;int, 2&gt;
+}
+</pre></blockquote>
+<p>
+The error for <tt>a1b</tt> <em>only</em> happens in the unary case and it is easy that it remains unnoticed
+during tests. You cannot explain that reasonably to the user here.
+<p/>
+Of-course it is possible to fix that in this example by applying <tt>std::decay</tt> to the result of the 
+<tt>std::common_type</tt> deduction. But if this is necessary here, I wonder why it should also be applied to 
+the binary case, where it gives the wrong illusion of a complete type decay? The other way around: Why is 
+<tt>std::decay</tt> not also applied to the unary case as well?
+<p/>
+This problem is not completely new and was already observed for the original <tt>std::common_type</tt> specification. 
+At this time the <tt>decltype</tt> rules had a similar asymmetric effect when comparing
+</p>
+<blockquote><p>
+<tt>std::common_type&lt;const int, const int&gt;::type</tt> (equal to '<tt>int</tt>' at this time)
+</p></blockquote>
+<p>
+with:
+</p>
+<blockquote><p>
+<tt>std::common_type&lt;const int&gt;::type</tt> (equal to '<tt>const int</tt>')
+</p></blockquote>
+<p>
+and I wondered whether the unary form shouldn't also perform the same "decay" as the n-ary form.
+<p/>
+This problem makes me think that the current resolution proposal might not be ideal and I expect
+differences in implementations (for those who consider to apply this proposed resolution already). I
+see at least three reasonable options:
+</p>
+<ol>
+<li><p>Accept the current wording suggestion for LWG 2141 as it is and explain that to users.</p></li>
+<li><p>Keep <tt>std::common_type</tt> as currently specified in the Standard and tell users to use
+<tt>std::decay</tt> where needed. Also fix other places in the library, e.g. the comparison
+functions of <tt>std::unique_ptr</tt> or a most of the time library functions.</p></li>
+<li><p>Apply <tt>std::decay</tt> also in the unary specialization of <tt>std::common_type</tt> with
+the effect that <tt>std::common_type&lt;const int&amp;&gt;::type</tt> returns <tt>int</tt>.</p></li>
+</ol>
+
+<note>2012-10-11 Marc Glisse comments</note>
+<p>
+If we are going with decay everywhere, I wonder whether we should also decay in the 2-argument version <em>before</em> 
+and not only <em>after</em>. So if I specialize <tt>common_type&lt;mytype, double&gt;</tt>, 
+<tt>common_type&lt;const mytype, volatile double&amp;&gt;</tt> would automatically work.
+</p>
+
 </discussion>
 
 <resolution>
