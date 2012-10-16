@@ -3,7 +3,7 @@
   <!ENTITY nbsp "&#160;">
 ] >
 
-<issue num="2162" status="New">
+<issue num="2162" status="Review">
 <title><tt>allocator_traits::max_size</tt> missing <tt>noexcept</tt></title>
 <section><sref ref="[allocator.requirements]"/>, <sref ref="[allocator.traits.members]"/>, <sref ref="[allocator.traits]"/></section>
 <submitter>Bo Persson</submitter>
@@ -90,9 +90,47 @@ The question arises whether these current defects actually point to a defect in 
 requirements and should be fixed there.
 </p>
 
+<note>
+2012-10 Portland: Move to Review 
+</note>
+
+<p>
+Consensus that the change seems reasonable, and that for any given type the template is intantiated
+with the contract should be 'wide' so this meets the guidelines we agreed in Madrid for C++11.
+</p>
+
+<p>
+Some mild concern that while we don't imagine many allocator implementations throwing on this method,
+it is technically permited by current code that we would not be breaking, by turning <tt>throw</tt>
+expressions into disguised <tt>terminate</tt> calls.  In this case, an example might be an
+instrumented 'logging' allocator that writes every function call to a log file or database, and might
+throw if that connection/file were no longer available.
+</p>
+
+<p>
+Another option would be to make exception spefication a conditional no-except, much like we do for
+some <tt>swap</tt> functions and assignment operators.  However, this goes against the intent of the
+Madrid adoption of <tt>noexcept</tt> which is that vendors are free to add such extensions, but we
+look for a clear line in the library specification, and do not want to introduce conditional-noexcept
+piecemeal.  A change in our conventions here would require a paper addressing the library specification
+as a whole.
+</p>
+
+<p>
+Consensus was to move forward, but move the issue only to Review rather than Ready to allow time
+for further comments.  This issue should be considered 'Ready' next time it is reviewed unless
+we get such comments in the meantime.
+</p>
+
 </discussion>
 
 <resolution>
+<p>
+In <sref ref="[allocator.traits]"/> and <sref ref="[allocator.traits.members]"/>/7, change the function signature to
+</p>
+<blockquote><pre>
+static size_type max_size(Alloc&amp; a) <ins>noexcept</ins>;
+</pre></blockquote>
 </resolution>
 
 </issue>

@@ -3,7 +3,7 @@
   <!ENTITY nbsp "&#160;">
 ] >
 
-<issue num="2137" status="New">
+<issue num="2137" status="Open">
 <title>Misleadingly constrained post-condition in the presence of exceptions</title>
 <section><sref ref="[re.regex.assign]"/></section>
 <submitter>Jonathan Wakely</submitter>
@@ -22,6 +22,20 @@ The post-conditions of <tt>basic_regex&lt;&gt;::assign</tt> <sref ref="[re.regex
 The default expectation in the library is that post-conditions only hold, if there is no failure 
 (see also <iref ref="2136"/>), therefore the initial condition should be removed to prevent any
 misunderstanding.
+</p>
+
+<note>
+2012-10 Portland: Move to Open
+</note>
+
+<p>
+A favorable resolution clearly depends on a favorable resolution to <iref ref="2136"/>.
+There is also a concern that this is just one example of where we would want to apply
+such a wording clean-up, and which is really needed to resolve both this issue and
+<iref ref="2136"/> is a paper providing the clause 17 wording that gives the guarantee
+for <i>postcondition</i> paragaraphs, and then reviews clauses 18-30 to apply that
+guarantee consistently.  We do not want to pick up these issues piecemeal, as we risk
+openning many issues in an ongoing process.
 </p>
 
 </discussion>

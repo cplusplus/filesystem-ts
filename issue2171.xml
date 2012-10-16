@@ -3,7 +3,7 @@
   <!ENTITY nbsp "&#160;">
 ] >
 
-<issue num="2171" status="New">
+<issue num="2171" status="NAD">
 <title>"swappable" undefined for swapping lvalue and rvalue</title>
 <section><sref ref="[swappable.requirements]"/></section>
 <submitter>Robert Shearer</submitter>
@@ -25,6 +25,23 @@ for rvalues &mdash; with neither definition including the case of swapping an rv
 Resolution proposal:
 <p/>
 Delete the word "respectively".
+</p>
+
+<note>
+2012-10 Portland: Close as NAD
+</note>
+
+<p>
+The current wording does intentionally specify two families of 'swappable' behaviors, for lvalues
+and for rvalues, and not for mixed behavior.  The need to support rvalues is for types like
+<tt>vector&lt;bool>::reference</tt>.  Likewise, library types like <tt>string</tt> provide a
+<tt>swap</tt> for values, but not a mixed-mode <tt>swap</tt> between lvalues and rvalues, which
+were deliberately removed from C++11 after initally being part of the standard.
+</p>
+
+<p>
+Accepting this resolution would break the library specification, as no current library type would
+meet the new requirements.
 </p>
 
 </discussion>
