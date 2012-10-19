@@ -3,7 +3,7 @@
   <!ENTITY nbsp "&#160;">
 ] >
 
-<issue num="2169" status="New">
+<issue num="2169" status="Ready">
 <title>Missing <tt>reset()</tt> requirements in <tt>unique_ptr</tt> specialization</title>
 <section><sref ref="[unique.ptr.runtime.modifiers]"/></section>
 <submitter>Geoffrey Romer</submitter>
@@ -31,6 +31,28 @@ there is no need to explicitly specify the semantics of <tt>reset(pointer p)</tt
 have behavior different from the primary template."), and <tt>reset(nullptr_t p)</tt> can be specified by 
 reference to the 'pointer' overload. This is more concise, and eliminates any ambiguity about intentional vs. 
 accidental discrepancies.
+</p>
+
+<note>2012-10 Portland: Move to Ready</note>
+<p>
+<del>This resolution looks blatantly wrong, as it seems to do nothing but defer to primary template
+where we should describe the contract here.</del>
+</p>
+
+<p>
+Ongoing discussion points out that the primary template has a far more carefully worded semantic
+for <tt>reset(p)</tt> that we would want to copy here.
+</p>
+
+<p>
+STL points out that we need the <tt>nullptr</tt> overload for this dynamic-array form, as there is
+a deleted member function template that exists to steal overloads of pointer-to-derived, avoiding
+undifined behavior, so we need the extra overload.
+</p>
+
+<p>
+Finally notice that there is blanket wording further up the clause saying we describe only changes
+from the primary template, so the proposed wording is in fact exactly correct.  Move to Ready.
 </p>
 
 </discussion>

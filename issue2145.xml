@@ -3,7 +3,7 @@
   <!ENTITY nbsp "&#160;">
 ] >
 
-<issue num="2145" status="New">
+<issue num="2145" status="Ready">
 <title><tt>error_category</tt> default constructor</title>
 <section><sref ref="[syserr.errcat]"/></section>
 <submitter>Howard Hinnant</submitter>
@@ -51,6 +51,19 @@ Alberto Ganesh Barbati: I would suggest to remove <tt>=default</tt> from the con
 Please consider that defaulting a constructor or destructor may actually define them as deleted under certain 
 conditions (see <sref ref="[class.ctor]"/>&#47;5 and <sref ref="[class.dtor]"/>&#47;5). Removing <tt>=default</tt> 
 is easier than providing wording to ensures that such conditions do not occur.
+</p>
+
+<note>2012-10 Portland: move to Ready</note>
+<p>
+The issue is real and the resolution looks good.
+</p>
+
+<p>
+Are there similar issues elsewhere in this clause?
+</p>
+
+<p>
+Potential to add <tt>constexpr</tt> to more constructors, but clearly a separable issue.
 </p>
 
 </discussion>

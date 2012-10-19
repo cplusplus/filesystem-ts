@@ -86,6 +86,11 @@ already expired". (This is independent, but the original doesn't seem to make se
 Move to Review.
 </p>
 
+<note>2012, Portland</note>
+<p>
+Concurrency move to Review with slightly ammended wording.
+</p>
+
 </discussion>
 
 <resolution>
@@ -104,13 +109,20 @@ The finest resolution provided by an implementation is called the <i>native reso
 -7- Implementation-provided clocks that are used for these functions shall meet the <tt>TrivialClock</tt> 
 requirements (<sref ref="[time.clock.req]"/>).
 <p/>
+<!-- Original wording
 <ins>-?- Functions that specify a timeout, will throw if an operation on a clock, time point, or time 
 duration throws an exception. [ <i>Note</i>: instantiations of clock, time point and duration types supplied 
 by the implementation as specified in <sref ref="[time.clock]"/> do not throw exceptions. &mdash; 
 <i>end note</i>]</ins>
+     End of original wording -->
+<ins>-?- Functions that specify a timeout, will throw if, during the execution of this function,
+a clock, time point, or time duration throws an exception. [ <i>Note</i>: instantiations of clock,
+time point and duration types supplied by the implementation as specified in <sref ref="[time.clock]"/>
+do not throw exceptions. &mdash; <i>end note</i>]</ins>
 </p>
 </blockquote>
 </li>
+
 
 <li><p>Change <sref ref="[thread.thread.this]"/> as indicated:</p>
 

@@ -3,7 +3,7 @@
   <!ENTITY nbsp "&#160;">
 ] >
 
-<issue num="2132" status="New">
+<issue num="2132" status="Review">
 <title><tt>std::function</tt> ambiguity</title>
 <section><sref ref="[func.wrap.func.con]"/></section>
 <submitter>Ville Voutilainen</submitter>
@@ -65,6 +65,43 @@ template&lt;class F, class A&gt; void assign(F&amp;&amp;, const A&amp;);
 as well. At this point there does not seem to be a pestering reason to do so.
 </p>
 
+<note>2012-10 Portland: Move to Review</note>
+<p>
+STL: This is a real issue, but does not like a resolution relying on a SFINAEable metafunction
+that is not specified and available to the users.
+</p>
+
+<p>
+<tt>packaged_task</tt> has the same issue.
+</p>
+
+<p>
+STL strongly wants to see an <tt>is_callable</tt> type trait to clarify the proposed wording.
+</p>
+
+<p>
+Jeremiah concerned about holding up what appears to be a correct resolution for a hypothetical
+better one later - the issue is real.
+</p>
+
+<p>
+Why must <tt>f</tt> by CopyConstructible?  Surely MoveConstructible would be sufficient?
+</p>
+
+<p>
+Answer: because <tt>function</tt> is CopyConstructible, and the bound functor is type-erased
+so must support all the properties of <tt>function</tt> itself.
+</p>
+
+<p>
+Replace various applications of <tt>declval</tt> in the proposed resolution with simply using
+the passed functor object, <tt>f</tt>.
+</p>
+
+<p>
+Alisdair to apply similar changes to <tt>packaged_task</tt>.
+</p>
+
 </discussion>
 
 <resolution>
@@ -89,8 +126,8 @@ template&lt;class F, class A&gt; function(allocator_arg_t, const A&amp; a, F f);
 The copy constructor and destructor of <tt>A</tt> shall not throw exceptions.</del>
 <p/>
 <ins>-?- <i>Remarks</i>: These constructors shall not participate in overload resolution unless
-<tt>declval&lt;F&amp;&gt;()</tt> is Callable (<sref ref="[func.wrap.func]"/>) for argument types <tt>ArgTypes</tt> 
-and return type <tt>R</tt>.</ins>
+<tt>f</tt> is Callable (<sref ref="[func.wrap.func]"/>) for argument types
+<tt>ArgTypes...</tt> and return type <tt>R</tt>.</ins>
 </p>
 </blockquote>
 <p>
@@ -106,8 +143,8 @@ template&lt;class F> function&amp; operator=(F&amp;&amp; f);
 -19- <i>Returns</i>: <tt>*this</tt>
 <p/>
 <ins>-?- <i>Remarks</i>: This assignment operator shall not participate in overload resolution unless
-<tt>declval&lt;decay&lt;F&gt;::type&amp;&gt;()</tt> is Callable (<sref ref="[func.wrap.func]"/>) 
-for argument types <tt>ArgTypes</tt> and return type <tt>R</tt>.</ins>
+<tt>declval&lt;typename decay&lt;F&gt;::type&amp;&gt;()</tt> is Callable (<sref ref="[func.wrap.func]"/>) 
+for argument types <tt>ArgTypes...</tt> and return type <tt>R</tt>.</ins>
 </p>
 </blockquote>
 </blockquote>
