@@ -3,7 +3,7 @@
   <!ENTITY nbsp "&#160;">
 ] >
 
-<issue num="2106" status="Review">
+<issue num="2106" status="Tentatively Ready">
 <title><tt>move_iterator</tt> wrapping iterators returning prvalues</title>
 <section><sref ref="[move.iterators]"/></section>
 <submitter>Dave Abrahams</submitter>
@@ -221,6 +221,22 @@ otherwise as a synonym for <tt><i>V</i></tt>.</ins>
 
 </note>
 
+<note>2012, Portland: Move to Tentatively Ready</note>
+<p>
+AJM wonders if the implied trait might be useful elsewhere, and worth adding to type traits as a
+transformation type trait.
+</p>
+
+<p>
+Suspicion that the Range SG might find such a trait useful, but wait until there is clear additional
+use of such a trait before standardizing.
+</p>
+
+<p>
+Minor wording tweak to use <tt>add_rvalue_reference</tt> rather than manually adding the <tt>&amp;&amp;</tt>,
+then move to Tentatively Ready.
+</p>
+
 </discussion>
 
 <resolution>
@@ -267,8 +283,8 @@ namespace std {
 <ins>-?- Let <tt><i>R</i></tt> be <tt>iterator_traits&lt;Iterator&gt;::reference</tt>. If 
 <tt>is_reference&lt;<i>R</i>&gt;::value</tt> is <tt>true</tt>, the template instantiation 
 <tt>move_iterator&lt;Iterator&gt;</tt> shall define the nested type named <tt>reference</tt> 
-as a synonym for <tt>remove_reference&lt;<i>R</i>&gt;::type&amp;&amp;</tt>, 
-otherwise as a synonym for <tt><i>R</i></tt>.</ins>
+as a synonym for <tt>add_rvalue_reference&lt;<i>R</i>&gt;::type</tt>, otherwise as a synonym
+for <tt><i>R</i></tt>.</ins>
 </p></blockquote>
 </li>
 </ol>

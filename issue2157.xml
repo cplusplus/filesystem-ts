@@ -3,7 +3,7 @@
   <!ENTITY nbsp "&#160;">
 ] >
 
-<issue num="2157" status="New">
+<issue num="2157" status="Open">
 <title>How does <tt>std::array&lt;T,0&gt;</tt> initialization work when <tt>T</tt> is not default-constructible?</title>
 <section><sref ref="[array.zero]"/></section>
 <submitter>Daryle Walker</submitter>
@@ -28,6 +28,32 @@ array&lt;T, 0&gt; a = { };
 <p>
 and said initializations must be valid even when <tt>T</tt> is not default-constructible.
 </p></blockquote>
+
+<note>2012, Portland: Move to Open</note>
+<p>
+Some discussion to understand the issue, which is that implementations currently have freedom to implement
+an empty <tt>array</tt> by holding a dummy element, and so might not support value initialization, which is
+surprising when trying to construct an empty container.  However, this is not mandated, it is an unspecified
+implementation detail.
+</p>
+
+<p>
+Jeffrey points out that the implication of <sref ref="[array.overview]"/> is that this initialization syntax
+must be supported by empty <tt>array</tt> objects already.  This is a surprising inference that was not
+obvious to the room, but consensus is that the reading is accurate, so the proposed resolution is not necessary,
+although the increased clarity may be useful.
+</p>
+
+<p>
+Further observation is that the same clause effectively implies that <tt>T</tt> must always be DefaultConstructible,
+regardless of <tt>N</tt> for the same reasons - as an <i>initializer-list</i> may not supply enough values, and the
+remaining elements must all be value initialized.
+</p>
+
+<p>
+Concern that we are dancing angels on the head of pin, and that relying on such subtle implications in wording is
+not helpful.  We need a clarification of the text in this area, and await wording.
+</p>
 
 </discussion>
 

@@ -3,7 +3,7 @@
   <!ENTITY nbsp "&#160;">
 ] >
 
-<issue num="1175" status="Review">
+<issue num="1175" status="Open">
 <title><tt>unordered</tt> complexity</title>
 <section><sref ref="[unord.req]"/></section>
 <submitter>Pablo Halpern</submitter>
@@ -104,6 +104,41 @@ Replace <tt>distance(f,l)</tt> with "number of elements in the range <tt>[f,l)</
 Retain in Review with the updated wording
 </p>
 
+
+<note>2012, Portland: Move to Open</note>
+<p>
+The wording still does not call out Pablo's original concern, that the element constructor is called
+no more than <tt>N</tt> times, and that the <tt>N</tt> squared term applies to moves during rehash.
+</p>
+
+<p>
+Inconsistent use of O(n)+O(N) vs. O(n+N), with a preference for the former.
+</p>
+
+<p>
+AJM to update wording with a reference to "no more than <tt>N</tt> element constructor calls".
+</p>
+
+<p>
+Matt concerned that calling out the O(n) requirements is noise, and dangerous noise in suggesting a precision
+we do not mean.  The cost of constructing a bucket is very different to constructing an element of user-supplied
+type.
+</p>
+
+<p>
+AJM notes that if there are multiple rehashes, the 'n' complexity is probably not linear.
+</p>
+
+<p>
+Matt suggests back to Open, Pablo suggests potentially NAD if we keep revisitting without achieving a resolution.
+</p>
+
+<p>
+Matt suggests complexity we are concerned with is the number of operations, such as constructing elements, moving
+nodes, and comparing/hashing keys.  We are less concerned with constructing buckets, which are generally noise in
+this bigger picture.
+</p>
+
 </discussion>
 
 <resolution>
@@ -190,7 +225,7 @@ explicit unordered_map(size_type n = <i>see below</i>,
 </pre><blockquote><p>
 1 <i>Effects</i>: Constructs an empty <tt>unordered_map</tt> using the specified hash function, key equality function,
 and allocator, and using at least <tt>n</tt> buckets. If <tt>n</tt> is not provided, the number of buckets is 
-<ins>unspecied</ins><del>impldefdefault number of buckets in <tt>unordered_map</tt></del>. 
+<ins>unspecified</ins><del>impldefdefault number of buckets in <tt>unordered_map</tt></del>. 
 <tt>max_load_factor()</tt> returns <tt>1.0</tt>.
 </p></blockquote>
 <blockquote><p>
