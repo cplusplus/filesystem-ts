@@ -4,7 +4,7 @@
 ] >
 
 <issue num="1401" status="C++11">
-<title>[FCD] <tt>unique_ptr&lt;T&gt; == nullptr</tt></title>
+<title>Provide support for <tt>unique_ptr&lt;T&gt; == nullptr</tt></title>
 <section><sref ref="[memory]"/></section>
 <submitter>BSI</submitter>
 <date>25 Aug 2010</date>
@@ -277,7 +277,7 @@ template &lt;class T1, class D1, class T2, class D2&gt;
 <p>
 <ins>? <i>Requires:</i> Let <tt>CT</tt> be <tt>common_type&lt;unique_ptr&lt;T1,
 D1&gt;::pointer, unique_ptr&lt;T2, D2&gt;::pointer&gt;::type</tt>. Then
-the specialization <tt>less&lt;CT&gt</tt> shall be a function object type ([function.objects]) 
+the specialization <tt>less&lt;CT&gt;</tt> shall be a function object type ([function.objects]) 
 that induces a strict weak ordering ([alg.sorting]) on the pointer values.</ins>
 </p>
 
@@ -347,7 +347,7 @@ template &lt;class T1, class D1, class T2, class D2&gt;
 <ins>bool operator&gt;(nullptr_t, const unique_ptr&lt;T, D&gt;&amp; x);</ins>
 </pre>
 <blockquote><p>
-<ins>? <i>Requires:</i> The specialization <tt>less&lt;unique_ptr&lt;T, D&gt;::pointer&gt</tt> 
+<ins>? <i>Requires:</i> The specialization <tt>less&lt;unique_ptr&lt;T, D&gt;::pointer&gt;</tt> 
 shall be a function object type ([function.objects]) that induces a strict weak ordering ([alg.sorting])
 on the pointer values.</ins>
 </p></blockquote>
@@ -362,7 +362,7 @@ on the pointer values.</ins>
 <ins>bool operator&gt;(const unique_ptr&lt;T, D&gt;&amp; x, nullptr_t);</ins>
 </pre>
 <blockquote><p>
-<ins>? <i>Requires:</i> The specialization <tt>less&lt;unique_ptr&lt;T, D&gt;::pointer&gt</tt> 
+<ins>? <i>Requires:</i> The specialization <tt>less&lt;unique_ptr&lt;T, D&gt;::pointer&gt;</tt> 
 shall be a function object type ([function.objects]) that induces a strict weak ordering ([alg.sorting])
 on the pointer values.</ins>
 </p></blockquote>
@@ -470,9 +470,10 @@ from <tt>x.get() &lt; nullptr</tt> follows the relation <tt>nullptr &gt; x.get()
 </ol>
 -->
 </li>
-<li>Change <sref ref="[util.smartptr.shared]"/> p. 1, class template <tt>shared_ptr</tt>
+<li><p>Change <sref ref="[util.smartptr.shared]"/> p. 1, class template <tt>shared_ptr</tt>
 synopsis as indicated. For consistency reasons the remaining normal relation
 operators are added as well:
+</p>
 <blockquote><pre>
 namespace std {
 
