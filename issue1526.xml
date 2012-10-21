@@ -84,11 +84,42 @@ Re-opened at the request of the concurrency subgroup, who feel there is an issue
 clarifying for the (planned) 2017 standard.
 </p>
 
-</discussion>
-
 <rationale><p>No consensus to make a change at this time</p></rationale>
 
+<note>2012, Portland</note>
+<p>
+The concurrency subgroup decided to encourage the LWG to consider a change to <sref ref="[library.c]"/> or thereabouts 
+to clarify that we are requiring C++-like thread-safety for <tt>setlocale</tt>, so that races are not introduced 
+by C locale accesses, even when the C library allows it. This would require e.g. adding "and data race avoidance" 
+at the end of <sref ref="[library.c]"/> p1:
+</p>
+<p>
+"The C++ standard library also makes available the facilities of the C standard library, suitably adjusted to 
+ensure static type safety <ins>and data race avoidance</ins>.",
+</p>
+<p>
+with some further clarifications in the sections mentioned in <iref ref="1526"/>.
+</p>
+<p>
+This seems to be consistent with existing implementations. This would technically not be constraining C implementation, 
+but it would be further constraining C libraries used for both C and C++.
+</p>
+
+</discussion>
+
 <resolution>
+<p>This wording is relative to N3376.</p>
+
+<ol>
+<li><p>Change <sref ref="[library.c]"/> p1 as indicated:</p>
+
+<blockquote><p>
+-1- The C++ standard library also makes available the facilities of the C standard library, suitably adjusted to
+ensure static type safety <ins>and data race avoidance</ins>.
+</p></blockquote>
+</li>
+</ol>
+
 </resolution>
 
 </issue>
