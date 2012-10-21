@@ -4,14 +4,14 @@
 ] >
 
 <issue num="1052" status="NAD Future">
-<title>Response to UK 281</title>
+<title><tt>reverse_iterator::operator-&gt;</tt> should also support smart pointers</title>
 <section><sref ref="[reverse.iter.opref]"/></section>
 <submitter>Alisdair Meredith</submitter>
 <date>12 Mar 2009</date>
 
 <discussion>
 
-<p><b>Addresses UK 281</b></p>
+<p><b>Addresses UK 281 [CD1]</b></p>
 
 <p>
 The current specification for return value for <tt>reverse_iterator::operator-&gt;</tt>
@@ -83,6 +83,7 @@ pointer operator-&gt;() const;
 </pre></blockquote>
 </blockquote>
 </blockquote>
+
 </blockquote>
 
 <note>
@@ -185,8 +186,8 @@ Suggested resolution:
 
 <li>
 <p>
-In the class template <tt>reverse_iterator</tt> synopsis of <sref
-ref="[reverse.iterator]"/> change as indicated:
+In the class template <tt>reverse_iterator</tt> synopsis of <sref ref="[reverse.iterator]"/> 
+change as indicated:
 </p>
 
 <blockquote><pre>
@@ -466,7 +467,7 @@ pointer operator-&gt;() const;
 <blockquote><pre>
 <del>&amp;(operator*());</del>
 <ins>this-&gt;tmp = current;</ins>
-<ins>--this-&gt;tmp;</ins>
+<ins>- -this-&gt;tmp;</ins>
 <ins>return this-&gt;tmp;</ins>
 </pre></blockquote>
 </blockquote>
