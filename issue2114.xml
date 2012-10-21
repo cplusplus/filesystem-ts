@@ -147,6 +147,159 @@ changes to section 30.
 Move to open, and then to Review when updated wording from Stefan is available.
 </p>
 
+<note>2012-10-12, STL comments</note>
+
+<ol>
+<li>
+<p>
+The current proposed resolution still isn't completely satisfying. It would certainly be possible for the Standard to 
+require these various expressions to be implicitly and contextually convertible to <tt>bool</tt>, but that would have 
+a subtle consequence (which, I will argue, is undesirable - regardless of the fact that it dates all the way back to 
+C++98/03). It would allow users to provide really wacky types to the Standard Library, with one of two effects:
+</p>
+<ol style="list-style-type:upper-alpha">
+<li>
+<p>Standard Library implementations would have to go to great lengths to respect such wacky types, essentially using 
+<tt>static_cast&lt;bool&gt;</tt> when invoking any predicates or comparators.
+</p>
+</li>
+
+<li>
+<p>
+Otherwise, such wacky types would be de facto nonportable, because they would make Standard Library implementations 
+explode.
+</p>
+</li>
+</ol>
+
+<p>
+Effect B is the status quo we're living with today. What Standard Library implementations want to do with <tt>pred(args)</tt> 
+goes beyond "<tt>if (pred(args))</tt>" (C++03), contextually converting <tt>pred(args)</tt> to <tt>bool</tt> (C++11), or 
+implicitly and contextually converting <tt>pred(args)</tt> to <tt>bool</tt> (the current proposed resolution). 
+Implementations want to say things like:
+</p>
+
+<blockquote><pre>
+if (pred(args))
+if (!pred(args))
+if (cond &amp;&amp; pred(args))
+if (cond &amp;&amp; !pred(args))
+</pre></blockquote>
+
+<p>
+These are real examples taken from Dinkumware's implementation. There are others that would be realistic 
+("<tt>pred(args) &amp;&amp; cond</tt>", "<tt>cond || pred(args)</tt>", etc.)
+<p/>
+Although negation was mentioned in this issue's Discussion section, and in LWG <iref ref="556"/>'s, the current proposed 
+resolution doesn't fix this problem. Requiring <tt>pred(args)</tt> to be implicitly and contextually convertible to <tt>bool</tt> 
+doesn't prevent <tt>operator!()</tt> from being overloaded and returning <tt>std::string</tt> (as a wacky example). More 
+ominously, it doesn't prevent <tt>operator&amp;&amp;()</tt> and <tt>operator||()</tt> from being overloaded and destroying 
+short-circuiting.
+</p>
+
+</li>
+
+<li>
+<p>
+I would like LWG input before working on Standardese for a new proposed resolution. Here's an outline of what I'd like to 
+do:
+</p>
+<ol style="list-style-type:upper-alpha">
+<li>
+<p>
+Introduce a new "concept" in <sref ref="[utility.requirements]"/>, which I would call <tt>BooleanTestable</tt> in the 
+absence of better ideas.
+</p>
+</li>
+
+<li>
+<p>
+Centralize things and reduce verbosity by having everything simply refer to <tt>BooleanTestable</tt> when necessary. 
+I believe that the tables could say "Return type: <tt>BooleanTestable</tt>", while Predicate/BinaryPredicate/Compare 
+would need the incantation "shall satisfy the requirements of BooleanTestable".
+</p>
+</li>
+
+<li>
+<p>
+Resolve the tug-of-war between users (who occasionally want to do weird things) and implementers (who don't want to have 
+to contort their code) by requiring that:
+</p>
+<ol style="list-style-type:upper-roman">
+<li>
+<p>
+Given a <tt>BooleanTestable x</tt>, <tt>x</tt> is both implicitly and contextually convertible to <tt>bool</tt>.
+</p>
+</li>
+
+<li>
+<p>
+Given a <tt>BooleanTestable x</tt>, <tt>!x</tt> is <tt>BooleanTestable</tt>. (This is intentionally "recursive".)
+</p>
+</li>
+
+<li>
+<p>
+Given a <tt>BooleanTestable x</tt>, <tt>bool t = x, t2(x), f = !x;</tt> has the postcondition <tt>t == t2 &amp;&amp; t != f</tt>.
+</p>
+</li>
+
+<li>
+<p>
+Given a <tt>BooleanTestable x</tt> and a <tt>BooleanTestable y</tt> of possibly different types, "<tt>x &amp;&amp; y</tt>" 
+and "<tt>x || y</tt>" invoke the built-in <tt>operator&amp;&amp;()</tt> and <tt>operator||()</tt>, triggering short-circuiting.
+</p>
+</li>
+
+<li>
+<p>
+<tt>bool</tt> is <tt>BooleanTestable</tt>.
+</p>
+</li>
+</ol>
+
+</li>
+
+</ol>
+
+<p>
+ I believe that this simultaneously gives users great latitude to use types other than <tt>bool</tt>, while allowing 
+ implementers to write reasonable code in order to get their jobs done. (If I'm forgetting anything that implementers 
+ would want to say, please let me know.)
+</p>
+
+</li>
+
+<li>
+<p>
+About requirement (I): As Daniel patiently explained to me, we need to talk about both implicit conversions and 
+contextual conversions, because it's possible for a devious type to have both "<tt>explicit operator bool()</tt>" 
+and "<tt>operator int()</tt>", which might behave differently (or be deleted, etc.).
+</p>
+</li>
+
+<li>
+<p>
+About requirement (IV): This is kind of tricky. What we'd like to say is, "<tt>BooleanTestable</tt> can't ever trigger 
+an overloaded logical operator". However, given a perfectly reasonable type Nice - perhaps even <tt>bool</tt> itself! - 
+other code (perhaps a third-party library) could overload <tt>operator&amp;&amp;(Nice, Evil)</tt>. Therefore, I believe 
+that the requirement should be "no first use" - the Standard Library will ask for various <tt>BooleanTestable</tt> types 
+from users (for example, the result of "<tt>first != last</tt>" and the result of "<tt>pred(args)</tt>"), and as long 
+as they don't trigger overloaded logical operators with each other, everything is awesome.
+</p>
+</li>
+
+
+<li>
+<p>
+About requirement (V): This is possibly redundant, but it's trivial to specify, makes it easier for users to understand 
+what they need to do ("oh, I can always achieve this with <tt>bool</tt>"), and provides a "base case" for requirement 
+(IV) that may or may not be necessary.  Since <tt>bool</tt> is <tt>BooleanTestable</tt>, overloading 
+<tt>operator&amp;&amp;(bool, Other)</tt> (etc.) clearly makes the <tt>Other</tt> type non-<tt>BooleanTestable</tt>.
+</p>
+</li>
+</ol>
+
 </discussion>
 
 <resolution>
