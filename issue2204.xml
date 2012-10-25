@@ -1,0 +1,92 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="2204" status="New">
+<title><tt>basic_string</tt> move-assingment is declared <tt>noexcept</tt> but may throw</title>
+<section><sref ref="[basic.string]"/></section>
+<submitter>Alisdair Meredith</submitter>
+<date>25 Oct 2012</date>
+
+<discussion>
+
+<p>
+For C++11, we added a non-throwing exception specification to the move-assignment operator
+in the primary template for <tt>basic_string</tt>, but this cannot be honored when assigning
+to an object using a stateful allocator that does not compare equal to the source object's
+allocator, and when the allocators do not propagate (the default).  Such a 'move' turns into
+a 'copy' using the destination object's allocator, and allocating the new string can clearly
+throw.  This is still a well-defined 'terminate' call, but probably not what was intended.
+</p>
+
+<p>
+Likewise - we <i>do</i> want to retain this property for at least the 4 basic string alias types,
+and possibly for any container with a stateless always-equal allocator, such as the default
+<tt>std::allocator</tt>, or for any allocator that does propagate on move-assignment, as there
+should be no allocations or (potentially throwing) copy operations in such cases.  (Hence, the
+initially proposed resolution is probably incomplete.)
+</p>
+
+<p>
+It seems we were more aware of this risk when specifying the move-assignment operator of
+the other standard containers in clause 23, none of which have an exception specification
+on their move-assignment operator.
+</p>
+
+</discussion>
+
+<resolution>
+<p>
+Ammend the member function declaration in the class template definition, <sref ref="[basic.string]"/>:
+</p>
+
+<blockquote><pre>
+<tt>
+namespace std {
+  template&lt;class charT, class traits = char_traits&lt;charT>,
+    class Allocator = allocator&lt;charT> >
+  class basic_string {
+  public:
+    // ...
+
+    ~basic_string();
+    basic_string&amp; operator=(const basic_string&amp; str);
+    basic_string&amp; operator=(basic_string&amp;&amp; str) <del>noexcept</del>;
+    basic_string&amp; operator=(const charT* s);
+    basic_string&amp; operator=(charT c);
+    basic_string&amp; operator=(initializer_list&lt;charT>);
+
+    // ...
+  };
+}
+</tt>
+</pre></blockquote>
+
+<p>
+Ammend the function signature in <sref ref="[string.cons]"/>, p21:
+</p>
+
+<blockquote>
+<pre>
+<tt>
+basic_string&lt;charT,traits,Allocator>&amp;
+  operator=(basic_string&lt;charT,traits,Allocator>&amp;&amp; str)<del> noexcept</del>;
+</tt>
+</pre>
+<p>
+-21- <i>Effects</i>: If <tt>*this</tt> and <tt>str</tt> are not the same object, modifies
+<tt>*this</tt> as shown in Table 71.<del> [Note: A valid implementation is <tt>swap(str)</tt>.
+— end note ]</del>
+</p>
+<p>
+-22- If <tt>*this</tt> and <tt>str</tt> are the same object, the member has no effect.
+</p>
+<p>
+-23- <i>Returns</i>: <tt>*this</tt>
+</p>
+</blockquote>
+
+</resolution>
+
+</issue>
