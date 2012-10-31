@@ -1,0 +1,40 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="2206" status="New">
+<title>Inaccuracy in <tt>initializer_list</tt> constructor requirements</title>
+<section><sref ref="[sequence.reqmts]"/>, <sref ref="[associative.reqmts]"/>, 
+<sref ref="[unord.req]"/>, <sref ref="[rand.req.seedseq]"/></section>
+<submitter>Jeffrey Yasskin</submitter>
+<date>21 Oct 2012</date>
+
+<discussion>
+
+<p>
+In <sref ref="[sequence.reqmts]"/> p3, we have "<tt>il</tt> designates an object of type
+<tt>initializer_list&lt;value_type&gt;</tt>", and then several functions that take
+'<tt>il</tt>' as an argument. However, an expression like <tt>{1, 2, 'a'}</tt> is <em>not</em>
+an object of type <tt>initializer_list&lt;int&gt;</tt> unless it's used to initialize
+an explicitly-typed variable of that type. I believe we want:
+</p>
+<blockquote><pre>
+std::vector&lt;int&gt; v;
+v = {1, 2, 'a'};
+</pre></blockquote>
+<p>
+to compile portably, so we should say something different when defining '<tt>il</tt>'. The 
+same phrasing happens in , <sref ref="[associative.reqmts]"/>, <sref ref="[unord.req]"/>, and 
+<sref ref="[rand.req.seedseq]"/>.
+<p/>
+This may just be an editorial issue because the actual class synopses
+declare the functions to take <tt>initializer_list&lt;exact_type&gt;</tt>.
+</p>
+
+</discussion>
+
+<resolution>
+</resolution>
+
+</issue>
