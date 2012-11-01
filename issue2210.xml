@@ -1,0 +1,76 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="2210" status="New">
+<title>Missing allocator-extended constructor for <tt>forward_list</tt></title>
+<section><sref ref="[forwardlist]"/></section>
+<submitter>Jonathan Wakely</submitter>
+<date>1 Nov 2012</date>
+
+<discussion>
+
+<p>
+The <tt>forward_list(size_type)</tt> constructor has no allocator-extended
+equivalent, preventing the following code from compiling:
+</p>
+<blockquote><pre>
+#include &lt;forward_list&gt;
+#include &lt;vector&gt;
+#include &lt;scoped_allocator&gt;
+
+using namespace std;
+
+int main()
+{
+  using list = forward_list&lt;int&gt;;
+  vector&lt;list, scoped_allocator_adaptor&lt;list::allocator_type&gt;&gt; v;
+  v.emplace_back(1u);
+}
+</pre></blockquote>
+
+</discussion>
+
+<resolution>
+<p>This wording is relative to N3376.</p>
+
+<ol>
+<li><p>Edit the synopsis in <sref ref="[forwardlist.overview]"/>/3:</p>
+
+<blockquote>
+<pre>
+namespace std {
+  template &lt;class T, class Allocator = allocator&lt;T&gt; &gt;
+  class forward_list {
+  public:
+    [&hellip;]
+    explicit forward_list(const Allocator&amp; = Allocator());
+    explicit forward_list(size_type n<ins>, const Allocator&amp; = Allocator()</ins>);
+    [&hellip;]
+  };
+}
+</pre>
+</blockquote>
+</li>
+
+<li><p>Edit <sref ref="[forwardlist.cons]"/>/3:</p>
+
+<blockquote>
+<pre>
+explicit forward_list(size_type n<ins>, const Allocator&amp; = Allocator()</ins>);
+</pre>
+<blockquote>
+<p>
+-3- <i>Effects</i>: Constructs a <tt>forward_list</tt> object with <tt>n</tt> default-inserted elements
+<ins>using the specified allocator</ins>.
+</p>
+</blockquote>
+</blockquote>
+
+</li>
+</ol>
+
+</resolution>
+
+</issue>
