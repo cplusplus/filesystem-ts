@@ -1,0 +1,44 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="2207" status="New">
+<title><tt>basic_string::at</tt> should not have a Requires clause</title>
+<section><sref ref="[string.access]"/></section>
+<submitter>Nevin Liber</submitter>
+<date>26 Oct 2012</date>
+
+<discussion>
+
+<p>
+<tt>basic_string::at()</tt> has a wide contract and should not have a "Requires" clause on it.
+</p>
+
+</discussion>
+
+<resolution>
+<p>This wording is relative to N3376.</p>
+
+<ol>
+<li><p>Remove <sref ref="[string.access]"/> p5:</p>
+
+<blockquote><pre>
+const_reference at(size_type pos) const;
+reference at(size_type pos);
+</pre><blockquote>
+<p>
+<del>-5- <i>Requires</i>: <tt>pos &lt; size()</tt></del>
+<p/>
+-6- <i>Throws</i>: <tt>out_of_range</tt> if <tt>pos &gt;= size()</tt>.
+<p/>
+-7- <i>Returns</i>: <tt>operator[](pos)</tt>.
+</p>
+</blockquote></blockquote>
+
+</li>
+</ol>
+
+</resolution>
+
+</issue>
