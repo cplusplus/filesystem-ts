@@ -1,0 +1,32 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="2208" status="New">
+<title><tt>std::reverse_iterator</tt> should be a literal type</title>
+<section><sref ref="[reverse.iterator]"/></section>
+<submitter>Jeffrey Yasskin</submitter>
+<date>30 Oct 2012</date>
+
+<discussion>
+
+<p>
+<tt>std::reverse_iterator::reverse_iterator(Iterator)</tt> should be constexpr
+so that other constexpr functions can return <tt>reverse_iterator</tt>s. Of the
+other methods, the other constructors, <tt>base()</tt>, <tt>operator+</tt>, <tt>operator-</tt>,
+<tt>operator[]</tt>, and the non-member operators can probably also be
+<tt>constexpr</tt>.
+<p/>
+<tt>operator*</tt> cannot be constexpr because it involves an assignment to a
+member variable. Discussion starting with c++std-lib-33282 indicated
+that it would be useful to make reverse_iterator a literal type
+despite this restriction on its use at compile time.
+</p>
+
+</discussion>
+
+<resolution>
+</resolution>
+
+</issue>
