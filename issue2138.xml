@@ -3,7 +3,7 @@
   <!ENTITY nbsp "&#160;">
 ] >
 
-<issue num="2138" status="New">
+<issue num="2138" status="Review">
 <title><tt>atomic_flag::clear</tt> should not accept <tt>memory_order_consume</tt></title>
 <section><sref ref="[atomics.flag]"/></section>
 <submitter>Ben Viglietta</submitter>
@@ -27,10 +27,18 @@ It's already disallowed on the analogous <tt>atomic&lt;T&gt;::store</tt>. The pr
 <tt>memory_order_acquire</tt><ins>,</ins> or <tt>memory_order_acq_rel</tt>.
 </p></blockquote>
 
+<note>2012, Portland: move to Review</note>
+<p>
+Hans: this is a clear oversight.
+</p>
+<p>
+Moved to review
+</p>
+
 </discussion>
 
 <resolution>
-<p>This wording is relative to N3376.</p>
+<note>This wording is relative to N3376.</note>
 
 <blockquote><pre>
 void atomic_flag_clear(volatile atomic_flag *object) noexcept;

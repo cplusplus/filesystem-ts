@@ -3,7 +3,7 @@
   <!ENTITY nbsp "&#160;">
 ] >
 
-<issue num="2190" status="New">
+<issue num="2190" status="Review">
 <title>Condition variable specification</title>
 <section><sref ref="[thread.condition]"/></section>
 <submitter>Hans Boehm</submitter>
@@ -31,6 +31,21 @@ sequenced one after the other.
 Another uncertainty with the current phrasing is whether there is a single total order that includes all c.v. 
 accesses, or one total order per c.v.  We believe it actually doesn't matter, because there is no way to tell the 
 difference, but this requires a bit more thought.  We resolved it one way, just to remove the potential ambiguity.
+</p>
+
+<note>2012, Portland: Move to Review</note>
+<p>
+This is linked to a <a href="http://sourceware.org/bugzilla/show_bug.cgi?id=13165">glibc issue</a>, and
+a <a href="http://austingroupbugs.net/view.php?id=609">POSIX specification issue</a>.
+</p>
+
+<p>
+We believe the proposed wording fixes the ambiguity in C++ and is compatible with the proposed resolution
+for Posix (which confirms the glibc behaviour as illegal).
+</p>
+
+<p>
+Moved to review (Detlef hopes to send some improved wording to the reflector).
 </p>
 
 </discussion>

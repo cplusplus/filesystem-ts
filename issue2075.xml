@@ -3,7 +3,7 @@
   <!ENTITY nbsp "&#160;">
 ] >
 
-<issue num="2075" status="New">
+<issue num="2075" status="Open">
 <title>Progress guarantees, lock-free property, and scheduling assumptions</title>
 <section><sref ref="[intro.multithread]"/>,<sref ref="[atomics.lockfree]"/>,<sref ref="[atomics.types.operations.req]"/></section>
 <submitter>Torvald Riegel</submitter>
@@ -156,6 +156,40 @@ promising question to focus on.
 <p>
 General direction: lock-free means obstruction-free. Leave the current "should" recommendation 
 for progress. It would take a lot of effort to try to do better. 
+</p>
+
+
+<note>2012, Portland: move to Open</note>
+<p>
+The current wording of <sref ref="[intro.multithread]"/> p2 doesn't really say very much.
+As far as we can tell the term <i>lock-free</i> is nowhere defined in the standard.
+</p>
+<p>
+James: we would prefer a different way to phrase it.
+</p>
+<p>
+Hans: the research literature includes the term <i>abstraction-free</i> which might be a better fit.
+</p>
+<p>
+Detlef: does Posix define a meaning for blocking (or locking) that we could use?
+</p>
+<p>
+Hans: things like compare-exchange-strong can wait indefinitely.
+</p>
+<p>
+Niklas: what about spin-locks -- still making no progress.
+</p>
+<p>
+Hans: suspect we can only give guidance, at best. The lock-free meaning from the theoretical commmunity (forard progress will be made) is probably too strong here.
+</p>
+<p>
+Atrur: what about livelocks?
+</p>
+<p>
+Hans: each atomic <i>modification</i> completes, even if the whole thing is blocked.
+</p>
+<p>
+Moved to open.
 </p>
 
 </discussion>

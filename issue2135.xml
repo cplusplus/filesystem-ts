@@ -3,7 +3,7 @@
   <!ENTITY nbsp "&#160;">
 ] >
 
-<issue num="2135" status="New">
+<issue num="2135" status="Open">
 <title>Unclear requirement for exceptions thrown in <tt>condition_variable::wait()</tt></title>
 <section><sref ref="[thread.condition.condvar]"/>, <sref ref="[thread.condition.condvarany]"/></section>
 <submitter>Pete Becker</submitter>
@@ -32,6 +32,38 @@ that wait has to call <tt>lock.lock()</tt> again, even though it already failed.
 I think this wording suffers from being too general. There are two possible exception sources: the initial call 
 to <tt>lock.unlock()</tt> and the final call to <tt>lock.lock()</tt>. Each one should have its own requirement. 
 Lumping them together muddles things.
+</p>
+
+<note>2012, Portland: move to Open</note>
+<p>
+Pablo: <tt>unlock</tt> failing is easy -- the call leaves it locked.
+       The second case, trying to <tt>lock</tt> fails -- what can you do?
+       This is an odd state as we <em>had</em> it locked before was called wait.
+       Maybe we should call <tt>terminate</tt> as we cannot meet the post-conditions.
+       We could throw a different exception.
+</p>
+<p>
+Hans: calling <tt>terminate</tt> makes sense as we're likely to call it soon anyway
+      and at least we have some context.
+</p>
+<p>
+Detlef: what kind of locks might be being used?
+</p>
+<p>
+Pablo: condition variables are 'our' locks so this is less of a problem.
+       <tt>condition_variable_any</tt> might be more problematic.
+</p>
+<p>
+The general direction is to call <tt>terminate</tt> if the lock cannot be reacquired.
+</p>
+<p>
+Pablo: Can we change the wording to 'leaves the mutex locked' ?
+</p>
+<p>
+Hans: so if the <tt>unlock</tt> throws we simply propagate the exception.
+</p>
+<p>
+Move the issue to open and add some formal wording at a later time.
 </p>
 
 </discussion>

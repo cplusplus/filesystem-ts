@@ -3,7 +3,7 @@
   <!ENTITY nbsp "&#160;">
 ] >
 
-<issue num="2120" status="New">
+<issue num="2120" status="Review">
 <title>What should <tt>async</tt> do if neither '<tt>async</tt>' nor '<tt>deferred</tt>' is set in policy?</title>
 <section><sref ref="[futures.async]"/></section>
 <submitter>Jonathan Wakely</submitter>
@@ -16,18 +16,55 @@ Implementations already disagree, one returns an invalid future with
 no shared state, one chooses <tt>policy == async</tt> and one chooses <tt>policy ==
 deferred</tt>, see c++std-lib-30839, c++std-lib-30840 and c++std-lib-30844.
 It's not clear if returning an invalid future is allowed by the current wording.
-<p/>
+</p>
+<p>
 If the intention is to allow an empty future to be returned, then
 <sref ref="[futures.async]"/> p3 and p4 should be adjusted to clarify that a
 shared state might not be created and an invalid future might be returned.
-<p/>
+</p>
+<p>
 If the intention is that a valid future is always returned, p3 should
 say something about the case where none of the conditions applies.
+</p>
+
+<note>2012, Portland: move to Review</note>
+<p>
+We could make it undefined if no launch policy is defined.
+</p>
+<p>
+Hans: If no launch policy is specified the behaviour is undefined
+</p>
+<p>
+Artur: or implementation defined?
+</p>
+<p>
+Hans: no: we don't want people to do this
+</p>
+<note>Proposed wording</note>
+<p>
+This wording is relative to N3376
+</p>
+<p>
+Add a third bullet to the end of the list in 30.6.8p3
+</p>
+<blockquote>
+"if no valid launch policy is provided the behaviour is undefined"
+</blockquote>
+<p>
+Moved to review
 </p>
 
 </discussion>
 
 <resolution>
+<note>This wording is relative to N3376</note>
+<p>
+Add a third bullet to the end of the list in <sref ref="[futures.async]"/>p3
+</p>
+<blockquote>
+<ins>&ndash; if no valid launch policy is provided the behaviour is undefined</ins>
+</blockquote>
+
 </resolution>
 
 </issue>

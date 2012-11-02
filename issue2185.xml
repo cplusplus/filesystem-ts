@@ -3,7 +3,7 @@
   <!ENTITY nbsp "&#160;">
 ] >
 
-<issue num="2185" status="New">
+<issue num="2185" status="Review">
 <title>Missing throws clause for <tt>future/shared_future::wait_for/wait_until</tt></title>
 <section><sref ref="[futures.unique_future]"/>, <sref ref="[futures.shared_future]"/></section>
 <submitter>Vicente J. Botet Escriba</submitter>
@@ -18,10 +18,24 @@ could be more explicit. This is in line with the changes proposed in LWG <iref r
 of <tt>condition_variable::wait</tt> with predicate.
 </p>
 
+<note>2012, Portland: move to Review</note>
+<p>
+The phrase timeout-related exception does not exist.
+</p>
+<p><iref ref="2093"/> was put in review, and there is some dependency here with this issue.
+</p>
+<p>If you provide a user-defined clock that throws, we need to put back an exception to allow that to be done.
+</p>
+<p>
+We will put this in review and say that this cannot go in before <iref ref="2093"/>.
+</p>
+
 </discussion>
 
 <resolution>
-<p>This wording is relative to N3376.</p>
+<note>This resolution should not be adopted before resolving <iref ref="2093"/></note>
+
+<note>This wording is relative to N3376.</note>
 
 <ol>
 <li><p>Change <sref ref="[futures.unique_future]"/> as indicated:</p>

@@ -3,7 +3,7 @@
   <!ENTITY nbsp "&#160;">
 ] >
 
-<issue num="2140" status="New">
+<issue num="2140" status="Review">
 <title>Meaning of <tt>notify_all_at_thread_exit</tt> synchronization requirement?</title>
 <section><sref ref="[thread.condition]"/></section>
 <submitter>Pete Becker</submitter>
@@ -49,6 +49,14 @@ To use this correctly, the notifying thread has to essentially acquire the lock,
 call <tt>notify_all_at_thread_exit()</tt>, while the waiting thread acquires the lock, and repeatedly waits on the 
 cv until the variable is set, and then releases the lock.  That ensures that we have the proper synchronizes with 
 relationship as a result of the lock.
+</p>
+
+<note>2012, Portland: move to Review</note>
+<p>
+The <tt>lk.unlock()</tt> refers back to the wording the previous paragraph.
+</p>
+<p>
+Moved to review
 </p>
 
 </discussion>

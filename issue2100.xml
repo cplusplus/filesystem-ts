@@ -3,7 +3,7 @@
   <!ENTITY nbsp "&#160;">
 ] >
 
-<issue num="2100" status="New">
+<issue num="2100" status="Review">
 <title>timed waiting functions cannot timeout if <tt>launch::async</tt> policy used</title>
 <section><sref ref="[futures.async]"/></section>
 <submitter>Jonathan Wakely</submitter>
@@ -38,10 +38,48 @@ to block until the thread is joined.  In order to allow timed waiting functions 
 timeout the requirement should only apply to non-timed waiting functions.
 </p>
 
+<note>2012, Portland: move to Review</note>
+<p>
+Detlef: Do we actually need this fix -- is it detectable?
+</p>
+<p>
+Yes - you will never get a timeout. Should we strike the whole paragraph?
+</p>
+<p>
+Hans: issue with thread local destruction. 
+</p>
+<p>
+Niklas: I have a strong expectation that a timed wait will respect the timeout
+</p>
+<p>
+_agreed_
+</p>
+<p>
+Detlef: we want a timed wait that does not time out to reurn like a non-timed wait; but is this implementable?
+</p>
+<p>
+Pablo: Could we simply append ", or else time out"
+</p>
+<p>
+Detlef: the time out on the shared state needs implementing anyway, even if the underlying O/S does not support a timed join.
+</p>
+<p>
+Hans. the net effect is the timeout does not cover the thread local destruction... ah, I see what yuo're doing
+</p>
+<p>
+Detlef: happy with Pablo's proposal
+</p>
+<p>
+Wording proposed is to append after the word "joined" add ", or else time out"
+</p>
+<p>
+Moved to review with this wording.
+</p>
+
 </discussion>
 
 <resolution>
-<p>This wording is relative to the FDIS.</p>
+<note>This wording is relative to the FDIS.</note>
 
 <p>Change <sref ref="[futures.async]"/> p5 as indicated:</p>
 
@@ -51,7 +89,8 @@ If the implementation chooses the <tt>launch::async</tt> policy,
 </p>
 <ul><li>a call to a <ins>non-timed</ins> waiting function on an asynchronous return object 
 that shares the shared state created by this <tt>async</tt> call shall block until the 
-associated thread has completed, as if joined (<sref ref="[thread.thread.member]"/>);</li>
+associated thread has completed, as if joined<ins>, or else time out</ins>
+(<sref ref="[thread.thread.member]"/>);</li>
 </ul>
 </blockquote>
 
