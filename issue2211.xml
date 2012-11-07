@@ -15,24 +15,24 @@
 <sref ref="[container.requirements.general]"/>/7 says:
 </p>
 <blockquote><p>
-All other constructors for these container types take an <tt>Allocator&amp;</tt>
-argument (<sref ref="[allocator.requirements]"/>), an allocator whose value type is the same as the
+All other constructors for these container types take an <tt>Allocator&amp;</tt> argument 
+(<sref ref="[allocator.requirements]"/>), an allocator whose value type is the same as the
 container's value type.
 </p></blockquote>
 <p>
 This is a strange place to state the requirement on the allocator's
 <tt>value_type</tt>, because the allocator is a property (and template
 parameter) of the container type not of some of its constructors.
-It's also unclear whether "Allocator&amp;" refers to the concept (as
-implied by the cross-reference to the allocator requirements in Clause
-17) or to the container's template parameter (as implied by the fact
+It's also unclear whether "<tt>Allocator&amp;</tt>" refers to the concept (as
+implied by the cross-reference to the allocator requirements in Clause 17) 
+or to the container's template parameter (as implied by the fact
 it's shown as an lvalue-reference type.) I believe the latter is
 intended, because those constructors can't take any model of the
 allocator concept, they can only take the container's <tt>allocator_type</tt>.
 <p/>
 I think it would be clearer to move the value type requirement earlier
 in the paragraph and to make it clear the constructor arguments are
-the container's <tt>allocator_type</tt>.  There is already a cross-reference to
+the container's <tt>allocator_type</tt>. There is already a cross-reference to
 the allocator requirements earlier in the paragraph, so it doesn't
 need to be repeated in another place where it causes confusion.
 </p>
