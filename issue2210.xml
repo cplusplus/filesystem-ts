@@ -4,8 +4,8 @@
 ] >
 
 <issue num="2210" status="New">
-<title>Missing allocator-extended constructor for <tt>forward_list</tt></title>
-<section><sref ref="[forwardlist]"/></section>
+<title>Missing allocator-extended constructor for allocator-aware sequence containers</title>
+<section><sref ref="[sequences]"/></section>
 <submitter>Jonathan Wakely</submitter>
 <date>1 Nov 2012</date>
 
@@ -29,13 +29,49 @@ int main()
   v.emplace_back(1u);
 }
 </pre></blockquote>
+<p>
+The very same problem exists for all allocator-aware sequence containers.
+</p>
 
 </discussion>
 
 <resolution>
-<p>This wording is relative to N3376.</p>
+<p>This wording is relative to N3485.</p>
 
 <ol>
+<li><p>Edit the synopsis in <sref ref="[deque.overview]"/>/2:</p>
+
+<blockquote>
+<pre>
+namespace std {
+  template &lt;class T, class Allocator = allocator&lt;T&gt; &gt;
+  class deque {
+  public:
+    [&hellip;]
+    explicit deque(const Allocator&amp; = Allocator());
+    explicit deque(size_type n<ins>, const Allocator&amp; = Allocator()</ins>);
+    [&hellip;]
+  };
+}
+</pre>
+</blockquote>
+</li>
+
+<li><p>Edit <sref ref="[deque.cons]"/>/2:</p>
+
+<blockquote>
+<pre>
+explicit deque(size_type n<ins>, const Allocator&amp; = Allocator()</ins>);
+</pre>
+<blockquote>
+<p>
+-3- <i>Effects</i>: Constructs a <tt>deque</tt> with <tt>n</tt> default-inserted elements
+<ins>using the specified allocator</ins>.
+</p>
+</blockquote>
+</blockquote>
+</li>
+
 <li><p>Edit the synopsis in <sref ref="[forwardlist.overview]"/>/3:</p>
 
 <blockquote>
@@ -67,7 +103,92 @@ explicit forward_list(size_type n<ins>, const Allocator&amp; = Allocator()</ins>
 </p>
 </blockquote>
 </blockquote>
+</li>
 
+<li><p>Edit the synopsis in <sref ref="[list.overview]"/>/2:</p>
+
+<blockquote>
+<pre>
+namespace std {
+  template &lt;class T, class Allocator = allocator&lt;T&gt; &gt;
+  class list {
+  public:
+    [&hellip;]
+    explicit list(const Allocator&amp; = Allocator());
+    explicit list(size_type n<ins>, const Allocator&amp; = Allocator()</ins>);
+    [&hellip;]
+  };
+}
+</pre>
+</blockquote>
+</li>
+
+<li><p>Edit <sref ref="[list.cons]"/>/3:</p>
+
+<blockquote>
+<pre>
+explicit list(size_type n<ins>, const Allocator&amp; = Allocator()</ins>);
+</pre>
+<blockquote>
+<p>
+-3- <i>Effects</i>: Constructs a <tt>list</tt> with <tt>n</tt> default-inserted elements
+<ins>using the specified allocator</ins>.
+</p>
+</blockquote>
+</blockquote>
+</li>
+
+<li><p>Edit the synopsis in <sref ref="[vector.overview]"/>/2:</p>
+
+<blockquote>
+<pre>
+namespace std {
+  template &lt;class T, class Allocator = allocator&lt;T&gt; &gt;
+  class vector {
+  public:
+    [&hellip;]
+    explicit vector(const Allocator&amp; = Allocator());
+    explicit vector(size_type n<ins>, const Allocator&amp; = Allocator()</ins>);
+    [&hellip;]
+  };
+}
+</pre>
+</blockquote>
+</li>
+
+<li><p>Edit <sref ref="[vector.cons]"/>/3:</p>
+
+<blockquote>
+<pre>
+explicit vector(size_type n<ins>, const Allocator&amp; = Allocator()</ins>);
+</pre>
+<blockquote>
+<p>
+-3- <i>Effects</i>: Constructs a <tt>vector</tt> with <tt>n</tt> default-inserted elements
+<ins>using the specified allocator</ins>.
+</p>
+</blockquote>
+</blockquote>
+</li>
+
+<li><p>Edit the synopsis in <sref ref="[vector.bool]"/>/1:</p>
+
+<blockquote>
+<pre>
+namespace std {
+  template &lt;class Allocator&gt; class vector&lt;bool, Allocator&gt; {
+  class vector {
+  public:
+    [&hellip;]
+    explicit vector(const Allocator&amp; = Allocator());
+    <ins>explicit vector(size_type n, const Allocator&amp; = Allocator());</ins>
+    <del>explicit</del> vector(size_type n, const bool&amp; value<del> = bool()</del>,
+                    const Allocator&amp; = Allocator());
+    [&hellip;]
+  };
+}
+</pre>
+</blockquote>
 </li>
 </ol>
 
