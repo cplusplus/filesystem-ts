@@ -1,0 +1,44 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="2212" status="New">
+<title><tt>tuple_size</tt> for <tt>const pair</tt> requrest <tt>&lt;tuple></tt> header</title>
+<section><sref ref="[utility]"/></section>
+<submitter>Alisdair Meredith</submitter>
+<date>09 Nov 2012</date>
+
+<discussion>
+<p>
+The <tt>&ltutility></tt> header declares sufficient of the tuple API to specialize
+the necessary templates for <tt>pair</tt>, notably <tt>tuple_size</tt> and
+<tt>tuple_element</tt>.  However, it does not make available the partial specializations
+that support cv-qualified template arguments, so while I can write the following after
+including only <tt>&lt;utility</tt>: 
+</p>
+<blockquote><pre>
+   #include &lt;utility>
+
+   using TestType = std::pair&int, int>
+   static_assert(2 == std::tuple_size&;lt;TestType>, "Pairs have two elements");
+   std::tuple_element&lt;0, TestType> var{1};
+</pre></blockquote>
+<p>
+the following will fail to compile unless I also include <tt>&lt;tuple></tt>:
+</p>
+<blockquote><pre>
+   #include &lt;utility>
+
+   using TestType = std::pair&int, int>
+   static_assert(2 == std::tuple_size&;lt;TestType>, "Pairs have two elements");
+   std::tuple_element&lt;0, TestType> var{1};
+</pre></blockquote>
+
+</discussion>
+
+<resolution>
+
+</resolution>
+
+</issue>
