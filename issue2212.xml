@@ -11,30 +11,33 @@
 
 <discussion>
 <p>
-The <tt>&ltutility></tt> header declares sufficient of the tuple API to specialize
+The <tt>&lt;utility></tt> header declares sufficient of the tuple API to specialize
 the necessary templates for <tt>pair</tt>, notably <tt>tuple_size</tt> and
 <tt>tuple_element</tt>.  However, it does not make available the partial specializations
 that support cv-qualified template arguments, so while I can write the following after
-including only <tt>&lt;utility</tt>: 
+including only <tt>&lt;utility></tt>: 
 </p>
 <blockquote><pre>
    #include &lt;utility>
 
-   using TestType = std::pair&int, int>;
-   static_assert(2 == std::tuple_size&;lt;TestType>, "Pairs have two elements");
-   std::tuple_element&lt;0, TestType> var{1};
+   using TestType = std::pair&lt;int, int>;
+   static_assert(2 == std::tuple_size&lt;TestType>(), "Pairs have two elements");
+   std::tuple_element&lt;0, TestType>::type var{1};
 </pre></blockquote>
 <p>
-the following will fail to compile unless I also include <tt>&lt;tuple></tt>:
+the following may fail to compile unless I also include <tt>&lt;tuple></tt>:
 </p>
 <blockquote><pre>
    #include &lt;utility>
 
-   using TestType = const std::pair&int, int>;
-   static_assert(2 == std::tuple_size&;lt;TestType>, "Pairs have two elements");
-   std::tuple_element&lt;0, TestType> var{1};
+   using TestType = const std::pair&lt;int, int>;
+   static_assert(2 == std::tuple_size&lt;TestType>(), "Pairs have two elements");
+   std::tuple_element&lt;0, TestType>::type var{1};
 </pre></blockquote>
-
+<p>
+Note, however, that the latter <i>may</i> compile with some standard library implementations
+but not others, leading to subtle portability issues.
+</p>
 </discussion>
 
 <resolution>
