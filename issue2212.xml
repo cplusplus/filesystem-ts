@@ -20,7 +20,7 @@ including only <tt>&lt;utility</tt>:
 <blockquote><pre>
    #include &lt;utility>
 
-   using TestType = std::pair&int, int>
+   using TestType = std::pair&int, int>;
    static_assert(2 == std::tuple_size&;lt;TestType>, "Pairs have two elements");
    std::tuple_element&lt;0, TestType> var{1};
 </pre></blockquote>
@@ -30,7 +30,7 @@ the following will fail to compile unless I also include <tt>&lt;tuple></tt>:
 <blockquote><pre>
    #include &lt;utility>
 
-   using TestType = std::pair&int, int>
+   using TestType = const std::pair&int, int>;
    static_assert(2 == std::tuple_size&;lt;TestType>, "Pairs have two elements");
    std::tuple_element&lt;0, TestType> var{1};
 </pre></blockquote>
