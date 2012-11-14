@@ -1,0 +1,137 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="2214" status="New">
+<title>Clarify <tt>basic_ios::init</tt> call restrictions</title>
+<section><sref ref="[basic.ios.cons]"/></section>
+<submitter>Andrey Semashev</submitter>
+<date>09 Nov 2012</date>
+
+<discussion>
+<p>
+There is an ambiguity in how <tt>std::basic_ios::init</tt> method (<sref ref="[basic.ios.cons]"/>) 
+can be used in the derived class. The Standard only specify the state of the <tt>basic_ios</tt> 
+object after the call completes. However, in <tt>basic_ios</tt> default constructor description 
+(<sref ref="[basic.ios.cons]"/>) there is this sentence:
+</p>
+<blockquote><p>
+<i>Effects</i>: Constructs an object of class <tt>basic_ios</tt> (<sref ref="[ios.base.cons]"/>) 
+leaving its member objects uninitialized. The object shall be initialized by calling <tt>basic_ios::init</tt> 
+before its first use or before it is destroyed, whichever comes first; otherwise the behavior is undefined.
+</p></blockquote>
+<p>
+This restriction hints that <tt>basic_ios::init</tt> should be called exactly
+once before the object can be used or destroyed, because <tt>basic_ios::init</tt> 
+may not know whether it was called before or not (i.e. whether its members are actually 
+uninitialized or are initialized by the previous call to <tt>basic_ios::init</tt>). There 
+is no such restriction in the <tt>basic_ios::init</tt> preconditions so it is not clear whether it is
+allowed to call <tt>basic_ios::init</tt> multiple times or not.
+<p/>
+This problem has already affected publicly available implementations.
+For example, Microsoft Visual C++ STL introduces a memory leak if
+<tt>basic_ios::init</tt> is called multiple times, while GCC 4.7 and STLPort
+reinitialize the <tt>basic_ios</tt> object correctly without memory leak or any
+other undesired effects. There was a discussion of this issue on Boost
+<a href="http://article.gmane.org/gmane.comp.lib.boost.devel/235659">developers mailing list</a>, 
+and there is a <a href="https://sourceforge.net/apps/trac/boost-log/ticket/2#comment:4">test case 
+that reproduces the problem</a>. The test case is actually a bug report for my Boost.Log library, 
+which attempts to cache <tt>basic_ostream</tt>-derived objects internally to avoid expensive construction 
+and destruction. My stream objects allowed resetting the stream buffer pointers the stream
+is attached to, without requiring to destroy and construct the stream.
+<p/>
+My personal view of the problem and proposed resolution follows.
+<p/>
+While apparently the intent of <tt>basic_ios::init</tt> is to provide a way to
+initialize <tt>basic_ios</tt> after default construction, I see no reason to
+forbid it from being called multiple times to reinitialize the stream.
+Furthermore, it is possible to implement a conforming <tt>basic_ios</tt> that
+does not have this restriction.
+<p/>
+The quoted above section of the Standard that describes the effects of
+the default constructor is misleading. The Standard does not mandate
+any data members of <tt>basic_ios</tt> or <tt>ios_base</tt> (<sref ref="[ios.base]"/>), which
+it derives from. This means that the implementation is allowed to use
+non-POD data members with default constructors that initialize the
+members with particular default values. For example, in the case of
+Microsoft Visual C++ STL the leaked memory is an <tt>std::locale</tt> instance
+that is dynamically allocated during <tt>basic_ios::init</tt>, a raw pointer to
+which is stored within ios_base. It is possible to store e.g. an
+<tt>unique_ptr</tt> instead of a raw pointer as a member of <tt>ios_base</tt>, the smart
+pointer will default initialize the underlying raw pointer on default
+construction and automatically destroy the allocated object upon being
+reset or destroyed, which would eliminate the leak and allow
+<tt>basic_ios::init</tt> to be called multiple times. This leads to conclusion
+that the default constructor of <tt>basic_ios</tt> cannot leave "its member
+objects uninitialized" but instead performs default initialization of
+the member objects, which would mean the same thing in case of POD types.
+<p/>
+However, I feel that restricting <tt>ios_base</tt> and <tt>basic_ios</tt> members to
+non-POD types is not acceptable. Since multiple calls to <tt>basic_ios::init</tt> are 
+not forbidden by the Standard, I propose to correct the <tt>basic_ios</tt> default 
+constructor description so that it is allowed to destroy <tt>basic_ios</tt> object 
+without calling <tt>basic_ios::init</tt>. This would imply that any raw members of 
+<tt>basic_ios</tt> and <tt>ios_base</tt> should be initialized to values suitable for 
+destruction (essentially, this means only initializing raw pointers to NULL). The new 
+wording could look like this:
+</p>
+<blockquote><p>
+<i>Effects</i>: Constructs an object of class <tt>basic_ios</tt> (<sref ref="[ios.base.cons]"/>)
+initializing its member objects to unspecified state, only suitable for <tt>basic_ios</tt> destruction.
+The object shall be initialized by calling <tt>basic_ios::init</tt> before its first use; otherwise 
+the behavior is undefined.
+</p></blockquote>
+<p>
+This would remove the hint that <tt>basic_ios::init</tt> must be called exactly
+once. Also, this would remove the requirement for <tt>basic_ios::init</tt> to
+be called at all before the destruction. This is also an important issue because 
+the derived stream constructor may throw an exception before it manages to call 
+<tt>basic_ios::init</tt> (for example, if the streambuf constructor throws), and 
+in this case the <tt>basic_ios</tt> destructor has undefined behavior.
+<p/>
+To my mind, the described modification is sufficient to resolve the issue. But to 
+emphasize the possibility to call <tt>basic_ios::init</tt> multiple times, a remark 
+or a footnote for <tt>basic_ios::init</tt> postconditions could be added to explicitly 
+state the semantics of calling it multiple times. The note could read as follows:
+</p>
+<blockquote><p>
+The function can be called multiple times during the object lifetime. Each subsequent 
+call reinitializes the object to the described in postconditions initial state.
+</p></blockquote>
+</discussion>
+
+<resolution>
+<p>This wording is relative to N3485.</p>
+
+<ol>
+<li><p>Edit <sref ref="[basic.ios.cons]"/> as indicated:</p>
+<blockquote><pre>
+basic_ios();
+</pre>
+<blockquote>
+<p>
+-2- <i>Effects</i>: Constructs an object of class <tt>basic_ios</tt> (<sref ref="[ios.base.cons]"/>) 
+<del>leaving its member objects uninitialized</del><ins>initializing its member objects to unspecified state, 
+only suitable for <tt>basic_ios</tt> destruction</ins>. The object shall be initialized by calling 
+<tt>basic_ios::init</tt> before its first use <del>or before it is destroyed, whichever comes first</del>; 
+otherwise the behavior is undefined.
+</p>
+</blockquote>
+<pre>
+void init(basic_streambuf&lt;charT,traits&gt;* sb);
+</pre><blockquote>
+<p>
+<i>Postconditions</i>: The postconditions of this function are indicated in Table 128.
+<p/>
+<ins>-?- <i>Remarks</i>: The function can be called multiple times during the object lifetime. Each subsequent 
+call reinitializes the object to the described in postconditions initial state.</ins>
+</p>
+</blockquote>
+</blockquote>
+</li>
+</ol>
+
+</resolution>
+
+</issue>
