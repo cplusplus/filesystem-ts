@@ -1,0 +1,43 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="2216" status="New">
+<title><tt>regex_replace(basic_string)</tt> allocator handling</title>
+<section><sref ref="[re.alg.replace]"/></section>
+<submitter>Jeffrey Yasskin</submitter>
+<date>26 Nov 2012</date>
+
+<discussion>
+
+<blockquote><pre>
+template &lt;class traits, class charT, class ST, class SA&gt;
+  basic_string&lt;charT, ST, SA&gt;
+  regex_replace(const basic_string&lt;charT, ST, SA&gt;&amp; s,
+      const basic_regex&lt;charT, traits&gt;&amp; e,
+      const charT* fmt,
+      regex_constants::match_flag_type flags = 
+	    regex_constants::match_default);
+</pre></blockquote>
+<p>
+and friends are documented as
+</p>
+<blockquote><p>
+Constructs an empty string result of type <tt>basic_string&lt;charT, ST, SA&gt;</tt>
+and calls <tt>regex_replace(back_inserter(result), s.begin(), s.end(), e, fmt, flags)</tt>.
+</p></blockquote>
+<p>
+This appears to require the result to have a default-constructed
+allocator, which isn't even possible for all allocator types. I
+suspect the allocator should be copied from 's' instead. Possibly
+there should be an additional defaulted argument to override the
+allocator of the result.
+</p>
+
+</discussion>
+
+<resolution>
+</resolution>
+
+</issue>
