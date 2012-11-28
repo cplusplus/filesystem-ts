@@ -1,0 +1,53 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="2217" status="New">
+<title><tt>operator==(sub_match, string)</tt> slices on embedded <tt>'\0'</tt>s</title>
+<section><sref ref="[re.submatch.op]"/></section>
+<submitter>Jeffrey Yasskin</submitter>
+<date>26 Nov 2012</date>
+
+<discussion>
+
+<blockquote><pre>
+template &lt;class BiIter, class ST, class SA&gt;
+  bool operator==(
+    const basic_string&lt;
+      typename iterator_traits&lt;BiIter&gt;::value_type, ST, SA&gt;&amp; lhs,
+    const sub_match&lt;BiIter&gt;&amp; rhs);
+</pre></blockquote>
+<p>
+is specified as:
+</p>
+<blockquote><p>
+<i>Returns</i>: <tt>rhs.compare(lhs.c_str()) == 0</tt>.
+</p></blockquote>
+<p>
+This is odd because <tt>sub_match::compare(basic_string)</tt> is defined to
+honor embedded <tt>'\0'</tt> characters. This could allow a <tt>sub_match</tt> to <tt>==</tt> or
+<tt>!=</tt> a <tt>std::string</tt> unexpectedly.
+</p>
+
+<note>Daniel:</note>
+<p>
+This wording change was done intentionally as of LWG <iref ref="1181"/>, but the here mentioned slicing
+effect was not considered at that time. It seems best to use another overload of compare to fix this problem:
+</p>
+<blockquote><p>
+<i>Returns</i>: <tt>rhs.str().compare(0, rhs.length(), lhs.data(), lhs.size()) == 0</tt>.
+</p></blockquote>
+<p>
+or
+</p>
+<blockquote><p>
+<i>Returns</i>: <tt>rhs.compare(sub_match&lt;BiIter&gt;::string_type(lhs.data(), lhs.size())) == 0</tt>.
+</p></blockquote>
+
+</discussion>
+
+<resolution>
+</resolution>
+
+</issue>
