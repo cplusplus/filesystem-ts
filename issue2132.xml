@@ -102,6 +102,25 @@ the passed functor object, <tt>f</tt>.
 Alisdair to apply similar changes to <tt>packaged_task</tt>.
 </p>
 
+<note>2012-11-09, Vicente J. Botet Escriba provides another example</note>
+
+<p>
+Consider the following:
+</p>
+<blockquote><pre>
+class AThreadWrapper {
+public:
+  explicit operator std::thread();
+  ...
+};
+std::thread th = std::thread(AThreadWrapper); // call to conversion operator intended
+</pre></blockquote>
+<p>
+The call to the conversion operator is overloaded with the thread constructor. But thread constructor requirement 
+makes it fail as <tt>AThreadWrapper</tt> is not a Callable and the compiler tries to instantiate the thread 
+constructor and fails.
+</p>
+
 </discussion>
 
 <resolution>
