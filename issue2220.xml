@@ -1,0 +1,44 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="2220" status="New">
+<title>Under-specification of <tt>operator==</tt> for <tt>regex_token_iterator</tt></title>
+<section><sref ref="[re.tokiter.comp]"/></section>
+<submitter>Pete Becker</submitter>
+<date>21 Nov 2012</date>
+
+<discussion>
+
+<p>
+Consider the following example:
+</p>
+<blockquote><pre>
+std::string str0("x");
+std::regex rg0("a");
+std::regex_token_iterator it0(str0.begin(), str0.end(), rg0, -1); // points at "x" in str0
+std::string str1("x");
+std::regex rg1("b");
+std::regex_token_iterator it1(str1.begin(), str1.end(), rg1, -1); // points at "x" in str1
+</pre></blockquote>
+<p>
+<sref ref="[re.tokiter.comp]"/> p1 says that <tt>it0.operator==(it1)</tt> returns true "if 
+<tt>*this</tt> and <tt>right</tt> are both suffix iterators and <tt>suffix == right.suffix</tt>"; both 
+conditions are satisfied in this example. It does not say that they must both be iterators 
+into the same sequence, nor does it say (as general iterator requirements do) that they must 
+both be in the domain of <tt>==</tt> in order for the comparison to be meaningful. It's a 
+simple statement: they're equal if the strings they point at compare equal. Given this being
+a valid comparison, the obtained result of "true" looks odd.
+<p/>
+The problem is that for iterator values prior to the suffix iterator, equality means the same 
+regular expression and the same matched sequence (both uses of "same" refer to identity, not equality); 
+for the suffix iterator, equality means that the matched sequences compare equal.
+</p>
+
+</discussion>
+
+<resolution>
+</resolution>
+
+</issue>
