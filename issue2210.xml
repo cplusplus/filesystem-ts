@@ -31,7 +31,32 @@ int main()
 </pre></blockquote>
 <p>
 The very same problem exists for all allocator-aware sequence containers.
+<p/>
+In addition it exists for associative containers. For example, it's possible to construct 
+<tt>std::set&lt;int&gt;{0, 1, 2}</tt> but not <tt>std::set&lt;int&gt;{{0, 1, 2}, alloc}</tt>, 
+and possible to construct <tt>std::set&lt;int&gt;{begin, end}</tt> but not 
+<tt>std::set&lt;int&gt;{begin, end, alloc}</tt>.
+<p/>
+This makes the following program fail when <tt>SCOPED</tt> is defined:
 </p>
+<blockquote><pre>
+#include &lt;set&gt;
+#include &lt;vector&gt;
+#include &lt;scoped_allocator&gt;
+
+#if SCOPED
+using A = std::scoped_allocator_adaptor&lt;std::allocator&lt;int&gt;&gt;;
+#else
+using A = std::allocator&lt;int&gt;;
+#endif
+
+int main()
+{
+  int values[] = {0, 1, 2};
+  std::vector&lt;std::set&lt;int&gt;, A&gt; v;
+  v.emplace_back(std::begin(values), std::end(values));
+}
+</pre></blockquote>
 
 </discussion>
 
