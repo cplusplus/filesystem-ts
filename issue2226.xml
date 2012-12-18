@@ -1,0 +1,33 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="2226" status="New">
+<title><tt>wstring_convert</tt> methods do not take allocator instance</title>
+<section><sref ref="[conversions.string]"/></section>
+<submitter>Glen Fernandes</submitter>
+<date>14 Dec 2012</date>
+
+<discussion>
+
+<p>
+The <tt>wstring_convert</tt> class template, described in <sref ref="[conversions.string]"/>, does not 
+support custom stateful allocators. It only supports custom stateless allocators.
+<p/>
+The <tt>to_bytes</tt> member function returns <tt>basic_string&lt;char, char_traits&lt;char&gt;, Byte_alloc&gt;</tt>  
+but it does not take an instance of <tt>Byte_alloc</tt> to pass to the constructor of the <tt>basic_string</tt>.
+<p/>
+Similarly the <tt>from_bytes</tt> member function returns <tt>basic_string&lt;Elem, char_traits&lt;Elem&gt;, Wide_alloc&gt;</tt>  
+but it does not take an instance of <tt>Wide_alloc</tt> to pass to the constructor of the <tt>basic_string</tt>.
+<p/>
+This makes these two member functions and the <tt>wstring_convert</tt> class template not usable when <tt>Wide_alloc</tt> 
+or <tt>Byte_alloc</tt> are stateful allocators.
+</p>
+
+</discussion>
+
+<resolution>
+</resolution>
+
+</issue>
