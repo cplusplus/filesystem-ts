@@ -1,0 +1,49 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="2224" status="New">
+<title>Ambiguous status of access to non-live objects</title>
+<section><sref ref="[res.on.objects]"/></section>
+<submitter>Geoffrey Romer</submitter>
+<date>17 Dec 2012</date>
+
+<discussion>
+
+<p>
+The standard currently does not discuss when library objects may be accessed, except in a non-normative 
+note pertaining to synchronization in [res.on.objects], leaving it ambiguous whether single-threaded 
+code can access a library object during its construction or destruction. For example, there is a 
+reasonable question as to what happens if the deleter supplied to a <tt>unique_ptr</tt> transitively 
+accesses the <tt>unique_ptr</tt> itself during <tt>unique_ptr</tt>'s destruction; a straightforward 
+reading suggests that this is permitted, and that the deleter will see the <tt>unique_ptr</tt> still 
+holding the originally stored pointer, but consensus on the LWG reflector indicates this was not the 
+intent (see discussion beginning with 
+<a href="http://accu.org/cgi-bin/wg21/message?wg=lib&amp;msg=33362">c++std-lib-33362</a>).
+</p>
+
+</discussion>
+
+<resolution>
+<p>This wording is relative to N3485.</p>
+
+<ol>
+<li><p>Change the title of sub-clause <sref ref="[res.on.objects]"/> as indicated:</p>
+<p><del>Shared objects and the library</del><ins>Library object access</ins> [res.on.objects]</p>
+</li>
+
+<li><p>Edit <sref ref="[res.on.objects]"/> p2 as indicated:</p>
+<p>-2- <del>[<i>Note</i>: In particular, the program is required to ensure that completion of the constructor 
+of any object of a class type defined in the standard library happens before any other member function 
+invocation on that object and, unless otherwise specified, to ensure that completion of any member function 
+invocation other than destruction on such an object happens before destruction of that object. This applies 
+even to objects such as mutexes intended for thread synchronization. &mdash; <i>end note</i>]</del>
+<ins>If an object of a standard library type is accessed outside of the object's lifetime (<sref ref="[basic.life]"/>), 
+the behavior is undefined unless otherwise specified.</ins></p>
+</li>
+</ol>
+
+</resolution>
+
+</issue>
