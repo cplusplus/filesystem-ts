@@ -19,12 +19,6 @@ bullet point of <sref ref="[unique.ptr.single.ctor]"/>/19). This asymmetry is co
 it may lead to situations where constructing one <tt>unique_ptr</tt> from another is well-formed, but assigning from 
 the same <tt>unique_ptr</tt> would be ill-formed.
 <p/>
-Proposed resolution: 
-<p/>
-Add a third bullet point to <sref ref="[unique.ptr.single.asgn]"/>/5, reading "either <tt>D</tt> is a reference type 
-and <tt>E</tt> is the same type as <tt>D</tt>, or <tt>D</tt> is not a reference type and <tt>E</tt> is implicitly 
-convertible to <tt>D</tt>.", and update commas and connectives as appropriate.
-<p/>
 There is a slight coupling between this and LWG <iref ref="2118"/>, in that my PR for LWG <iref ref="2118"/> incorporates 
 equivalent wording in the specification of the templated assignment operator for the array specialization; the two PRs 
 are logically independent, but if my PR for <iref ref="2118"/> is accepted but the above PR is not, the discrepancy 
