@@ -1,0 +1,131 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="2230" status="New">
+<title>&quot;<em>see below</em>&quot; for initializer-list constructors of unordered containers</title>
+<section><sref ref="[unord]"/></section>
+<submitter>Jonathan Wakely</submitter>
+<date>6 Jan 2013</date>
+
+<discussion>
+<p>
+The <tt>unordered_map</tt> class definition in <sref ref="[unord.map.overview]"/> declares an
+initializer-list constructor that says "see below":
+</p>
+
+<blockquote><pre>
+unordered_map(initializer_list&lt;value_type&gt;,
+    size_type = <em>see below</em>,
+    const hasher&amp; hf = hasher(),
+    const key_equal&amp; eql = key_equal(),
+    const allocator_type&amp; a = allocator_type());
+</pre></blockquote>
+
+<p>
+But that constructor isn't defined below. The same problem exists for the other unordered associative containers.
+</p>
+
+</discussion>
+
+<resolution>
+<p>This wording is relative to N3485.</p>
+
+<ol>
+<li><p>Edit <sref ref="[unord.map.cnstr]"/> as follows:</p>
+<blockquote><pre>
+template &lt;class InputIterator&gt;
+unordered_map(InputIterator f, InputIterator l,
+  size_type n = <em>see below</em>,
+  const hasher&amp; hf = hasher(),
+  const key_equal&amp; eql = key_equal(),
+  const allocator_type&amp; a = allocator_type());
+<ins>unordered_map(initializer_list&lt;value_type&gt; il,
+  size_type = <em>see below</em>,
+  const hasher&amp; hf = hasher(),
+  const key_equal&amp; eql = key_equal(),
+  const allocator_type&amp; a = allocator_type());</ins>
+</pre><blockquote>
+<p>
+-3- <i>Effects</i>: Constructs an empty <tt>unordered_map</tt> using the specified hash function, key equality function,
+and allocator, and using at least <tt>n</tt> buckets. If <tt>n</tt> is not provided, the number of buckets is
+implementation-defined. Then inserts elements from the range <tt>[f, l)</tt> <ins>for the first form, or from the range 
+<tt>[il.begin(), il.end())</tt> for the second form</ins>. <tt>max_load_factor()</tt> returns <tt>1.0</tt>.
+</p>
+</blockquote></blockquote>
+</li>
+
+<li><p>Edit <sref ref="[unord.multimap.cnstr]"/> as follows:</p>
+<blockquote><pre>
+template &lt;class InputIterator&gt;
+unordered_multimap(InputIterator f, InputIterator l,
+  size_type n = <em>see below</em>,
+  const hasher&amp; hf = hasher(),
+  const key_equal&amp; eql = key_equal(),
+  const allocator_type&amp; a = allocator_type());
+<ins>unordered_multimap(initializer_list&lt;value_type&gt; il,
+  size_type = <em>see below</em>,
+  const hasher&amp; hf = hasher(),
+  const key_equal&amp; eql = key_equal(),
+  const allocator_type&amp; a = allocator_type());</ins>
+</pre><blockquote>
+<p>
+-3- <i>Effects</i>: Constructs an empty <tt>unordered_multimap</tt> using the specified hash function, key equality function,
+and allocator, and using at least <tt>n</tt> buckets. If <tt>n</tt> is not provided, the number of buckets is
+implementation-defined. Then inserts elements from the range <tt>[f, l)</tt> <ins>for the first form, or from the range 
+<tt>[il.begin(), il.end())</tt> for the second form</ins>. <tt>max_load_factor()</tt> returns <tt>1.0</tt>.
+</p>
+</blockquote></blockquote>
+</li>
+
+<li><p>Edit <sref ref="[unord.set.cnstr]"/> as follows:</p>
+<blockquote><pre>
+template &lt;class InputIterator&gt;
+unordered_set(InputIterator f, InputIterator l,
+  size_type n = <em>see below</em>,
+  const hasher&amp; hf = hasher(),
+  const key_equal&amp; eql = key_equal(),
+  const allocator_type&amp; a = allocator_type());
+<ins>unordered_set(initializer_list&lt;value_type&gt; il,
+  size_type = <em>see below</em>,
+  const hasher&amp; hf = hasher(),
+  const key_equal&amp; eql = key_equal(),
+  const allocator_type&amp; a = allocator_type());</ins>
+</pre><blockquote>
+<p>
+-3- <i>Effects</i>: Constructs an empty <tt>unordered_set</tt> using the specified hash function, key equality function,
+and allocator, and using at least <tt>n</tt> buckets. If <tt>n</tt> is not provided, the number of buckets is
+implementation-defined. Then inserts elements from the range <tt>[f, l)</tt> <ins>for the first form, or from the range 
+<tt>[il.begin(), il.end())</tt> for the second form</ins>. <tt>max_load_factor()</tt> returns <tt>1.0</tt>.
+</p>
+</blockquote></blockquote>
+</li>
+
+<li><p>Edit <sref ref="[unord.multiset.cnstr]"/> as follows:</p>
+<blockquote><pre>
+template &lt;class InputIterator&gt;
+unordered_multiset(InputIterator f, InputIterator l,
+  size_type n = <em>see below</em>,
+  const hasher&amp; hf = hasher(),
+  const key_equal&amp; eql = key_equal(),
+  const allocator_type&amp; a = allocator_type());
+<ins>unordered_multiset(initializer_list&lt;value_type&gt; il,
+  size_type = <em>see below</em>,
+  const hasher&amp; hf = hasher(),
+  const key_equal&amp; eql = key_equal(),
+  const allocator_type&amp; a = allocator_type());</ins>
+</pre><blockquote>
+<p>
+-3- <i>Effects</i>: Constructs an empty <tt>unordered_multiset</tt> using the specified hash function, key equality function,
+and allocator, and using at least <tt>n</tt> buckets. If <tt>n</tt> is not provided, the number of buckets is
+implementation-defined. Then inserts elements from the range <tt>[f, l)</tt> <ins>for the first form, or from the range 
+<tt>[il.begin(), il.end())</tt> for the second form</ins>. <tt>max_load_factor()</tt> returns <tt>1.0</tt>.
+</p>
+</blockquote></blockquote>
+</li>
+</ol>
+
+</resolution>
+
+</issue>
