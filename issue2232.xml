@@ -1,0 +1,45 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="2232" status="New">
+<title>The <tt>char_traits</tt> specializations should declare their <tt>length()</tt>, <tt>compare()</tt>, and 
+<tt>find()</tt> members constexpr</title>
+<section><sref ref="[char.traits.specializations]"/></section>
+<submitter>Jeffrey Yasskin</submitter>
+<date>24 Dec 2012</date>
+
+<discussion>
+<p>
+These functions have easy recursive constexpr implementations that, unfortunately, aren't efficient at runtime. 
+EWG is still figuring out how to solve this problem in general (e.g., 
+<a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2012/n3444.html">N3444</a> isn't sufficient to avoid 
+stack overflows in debug builds or to get the optimal assembly-based implementations at runtime), so users can't 
+portably solve this problem for themselves, but implementations can use compiler-specific techniques to choose 
+the right implementation inside their standard libraries.
+</p>
+
+<p>
+The LWG is still undecided about whether individual implementations can add constexpr to these functions, so we 
+need to add <tt>constexpr</tt> to the standard here for implementations to be able to improve this.
+</p>
+</discussion>
+
+<resolution>
+<p>This wording is relative to N3485.</p>
+
+<ol>
+<li><p>In <sref ref="[char.traits.specializations.char]"/>, <sref ref="[char.traits.specializations.char16_t]"/>, 
+<sref ref="[char.traits.specializations.char32_t]"/>, and <sref ref="[char.traits.specializations.wchar.t]"/>:</p>
+<blockquote><pre>
+static <ins>constexpr</ins> int compare(const char_type* s1, const char_type* s2, size_t n);
+static <ins>constexpr</ins> size_t length(const char_type* s);
+static <ins>constexpr</ins> const char_type* find(const char_type* s, size_t n, const char_type&amp; a);
+</pre></blockquote>
+</li>
+</ol>
+
+</resolution>
+
+</issue>
