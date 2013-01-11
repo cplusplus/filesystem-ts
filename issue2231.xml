@@ -1,0 +1,53 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="2231" status="New">
+<title><tt>forward_as_tuple</tt> signature in header <tt>&lt;tuple&gt;</tt> synopsis</title>
+<section><sref ref="[tuple.general]"/></section>
+<submitter>Pablo Halpern</submitter>
+<date>9 Jan 2013</date>
+
+<discussion>
+<p>
+In <sref ref="[tuple.general]"/>, synopsis of header <tt>&lt;tuple&gt;</tt>, the signature for 
+<tt>forward_as_tuple</tt> is shown as:
+</p>
+
+<blockquote><pre>
+template &lt;class... Types&gt;
+  tuple&lt;<em>Types</em> ...&gt; forward_as_tuple(Types&amp;&amp;...) noexcept;
+</pre></blockquote>
+
+<p>
+However, in <sref ref="[tuple.creation]"/>, the signature is shown as:
+</p>
+
+<blockquote><pre>
+template &lt;class... Types&gt;
+  tuple&lt;Types&amp;&amp;...&gt; forward_as_tuple(Types&amp;&amp;... t) noexcept;
+</pre></blockquote>
+
+<p>
+The second signature (with the additional <tt>&amp;&amp;</tt>) is correct. It would be impossible to return a tuple 
+containing arbitrary values while still making the function noexcept. The purpose of <tt>forward_as_tuple</tt> is 
+to create a tuple references.
+</p>
+</discussion>
+
+<resolution>
+<p>This wording is relative to N3485.</p>
+
+<ol>
+<li><p>Edit the synopsis of header <tt>&lt;tuple&gt;</tt>, <sref ref="[tuple.general]"/> p2 as follows:</p>
+<blockquote><pre>
+template &lt;class... Types&gt;
+  tuple&lt;<del><em>Types</em></del><ins>Types&amp;&amp;</ins> ...&gt; forward_as_tuple(Types&amp;&amp;...) noexcept;
+</pre></blockquote>
+</li>
+</ol>
+
+</resolution>
+
+</issue>
