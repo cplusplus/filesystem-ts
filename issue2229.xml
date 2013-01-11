@@ -1,0 +1,58 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="2229" status="New">
+<title>Standard code conversion facets underspecified</title>
+<section><sref ref="[locale.stdcvt]"/></section>
+<submitter>Beman Dawes</submitter>
+<date>30 Dec 2012</date>
+
+<discussion>
+<p>The only specification for the non-inherited members of classes <tt>codecvt_utf8</tt>,
+<tt>codecvt_utf16</tt>, and <tt>codecvt_utf8_utf16</tt> is a comment line in the synopsis
+that says <i><tt>// unspecified</tt></i>. There is no further indication of functionality,
+so a user does not know if one of these classes can be constructed or destroyed.</p>
+
+<p>The proposed resolution adds a constructor that mimics the class <tt>codecvt</tt>
+constructor, and also adds a destructor. Following the practice of class <tt>codecvt</tt>,
+the semantics are not specified.</p>
+
+<p>The only existing implementation I could find was libc++, and it does supply the
+proposed constructor and destructor for each of the three classes.</p>
+</discussion>
+
+<resolution>
+<p><i>In [locale.stdcvt] paragraph 2, Header codecvt synopsis:</i></p>
+<blockquote>
+  <pre>template&lt;class Elem, unsigned long Maxcode = 0x10ffff,
+  codecvt_mode Mode = (codecvt_mode)0&gt;
+class codecvt_utf8
+  : public codecvt&lt;Elem, char, mbstate_t&gt; {
+  <del><i>// unspecified</i></del>
+  <ins>explicit codecvt_utf8(size_t refs = 0);</ins>
+  <ins>~codecvt_utf8();</ins>
+  };
+
+template&lt;class Elem, unsigned long Maxcode = 0x10ffff,
+  codecvt_mode Mode = (codecvt_mode)0&gt;
+class codecvt_utf16
+  : public codecvt&lt;Elem, char, mbstate_t&gt; {
+  <del><i>// unspecified</i></del>
+  <ins>explicit codecvt_utf16(size_t refs = 0);</ins>
+  <ins>~codecvt_utf16();</ins>
+  };
+
+template&lt;class Elem, unsigned long Maxcode = 0x10ffff,
+  codecvt_mode Mode = (codecvt_mode)0&gt;
+class codecvt_utf8_utf16
+  : public codecvt&lt;Elem, char, mbstate_t&gt; {
+  <del><i>// unspecified</i></del>
+  <ins>explicit codecvt_utf8_utf16(size_t refs = 0);</ins>
+  <ins>~codecvt_utf8_utf16();</ins>
+  };</pre>
+</blockquote>
+</resolution>
+
+</issue>
