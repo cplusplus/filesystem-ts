@@ -3,7 +3,7 @@
   <!ENTITY nbsp "&#160;">
 ] >
 
-<issue num="2106" status="Tentatively Ready">
+<issue num="2106" status="Open">
 <title><tt>move_iterator</tt> wrapping iterators returning prvalues</title>
 <section><sref ref="[move.iterators]"/></section>
 <submitter>Dave Abrahams</submitter>
@@ -237,13 +237,36 @@ Minor wording tweak to use <tt>add_rvalue_reference</tt> rather than manually ad
 then move to Tentatively Ready.
 </p>
 
-</discussion>
+<note>2013-01-09 Howard Hinnat comments</note>
 
-<resolution>
+<p>
+I believe the P/R for LWG 2106 is incorrect (item 3).  The way it currently reads, <tt>move_iterator&lt;I&gt;::reference</tt> 
+is <em>always</em> an lvalue reference.  I.e. if <tt>R</tt> is an lvalue reference type, then reference becomes 
+<tt>add_rvalue_reference&lt;R&gt;::type</tt> which is just <tt>R</tt>. And if <tt>R</tt> is not a reference type, 
+then reference becomes <tt>R</tt> (which is also just <tt>R</tt> ;-)).
+</p>
+
+<p>
+I believe the correct wording is what was there previously:
+</p>
+
+<p>
+-?- Let <tt>R</tt> be <tt>iterator_traits&lt;Iterator&gt;::reference</tt>. If <tt>is_reference&lt;R&gt;::value</tt> 
+is true, the template instantiation <tt>move_iterator&lt;Iterator&gt;</tt> shall define the nested type named 
+<tt>reference</tt> as a synonym for <tt>remove_reference&lt;R&gt;::type&amp;&amp;</tt>, otherwise as a synonym for 
+<tt>R</tt>.
+</p>
+
+<p>
+Additionally Marc Glisse points out that <tt>move_iterator&lt;I&gt;::operator*()</tt> should return 
+<tt>static_cast&lt;reference&gt;(*current)</tt>, not <tt>std::move(*current)</tt>.
+</p>
+
+<p>
+Previous resolution:
+</p>
+<blockquote class="note">
 <p>This wording is relative to the FDIS.</p>
-
-<p><strong>This section shows two mutually exclusive resolutions &mdash; only one can
-be picked!</strong></p>
 
 <ol>
 <li><p>Change <sref ref="[move.iterators]"/> p1 as indicated:</p>
@@ -286,6 +309,66 @@ namespace std {
 as a synonym for <tt>add_rvalue_reference&lt;<i>R</i>&gt;::type</tt>, otherwise as a synonym
 for <tt><i>R</i></tt>.</ins>
 </p></blockquote>
+</li>
+</ol>
+</blockquote>
+
+</discussion>
+
+<resolution>
+<p>This wording is relative to N3485.</p>
+
+<ol>
+<li><p>Change <sref ref="[move.iterators]"/> p1 as indicated:</p>
+
+<blockquote><p>
+Class template <tt>move_iterator</tt> is an iterator adaptor with the same behavior as the underlying iterator
+except that its indirection operator implicitly converts the value returned by the underlying iterator’s
+indirection operator to an rvalue <del>reference</del>. Some generic algorithms 
+can be called with move iterators to replace copying with moving.
+</p></blockquote>
+</li>
+
+<li><p>Change <sref ref="[move.iterator]"/>, class template <tt>move_iterator</tt> synopsis, as indicated:</p>
+
+<blockquote><pre>
+namespace std {
+  template &lt;class Iterator&gt;
+  class move_iterator {
+  public:
+    typedef Iterator iterator_type;
+    typedef typename iterator_traits&lt;Iterator&gt;::difference_type difference_type;
+    typedef Iterator pointer;
+    typedef typename iterator_traits&lt;Iterator&gt;::value_type value_type;
+    typedef typename iterator_traits&lt;Iterator&gt;::iterator_category iterator_category;
+    typedef <del>value_type&amp;&amp;</del><ins><i>see below</i></ins> reference;
+    [&hellip;]
+  };
+}
+</pre></blockquote>
+
+</li>
+
+<li><p>Immediately following the class template <tt>move_iterator</tt> synopsis in 
+<sref ref="[move.iterator]"/> insert a new paragraph as indicated:</p>
+
+<blockquote><p>
+<ins>-?- Let <tt><i>R</i></tt> be <tt>iterator_traits&lt;Iterator&gt;::reference</tt>. If 
+<tt>is_reference&lt;<i>R</i>&gt;::value</tt> is <tt>true</tt>, the template instantiation 
+<tt>move_iterator&lt;Iterator&gt;</tt> shall define the nested type named <tt>reference</tt> 
+as a synonym for <tt>remove_reference&lt;<i>R</i>&gt;::type&amp;&amp;</tt>, otherwise as a synonym
+for <tt><i>R</i></tt>.</ins>
+</p></blockquote>
+</li>
+
+<li><p>Edit <sref ref="[move.iter.op.star]"/> p1 as indicated:</p>
+<blockquote><pre>
+reference operator*() const;
+</pre><blockquote>
+<p>
+-1- <i>Returns</i>: <tt><del>std::move</del><ins>static_cast&lt;reference&gt;</ins>(*current)</tt>.
+</p>
+</blockquote></blockquote>
 </li>
 </ol>
 
