@@ -4,35 +4,31 @@
 ] >
 
 <issue num="2231" status="New">
-<title><tt>forward_as_tuple</tt> signature in header <tt>&lt;tuple&gt;</tt> synopsis</title>
-<section><sref ref="[tuple.general]"/></section>
-<submitter>Pablo Halpern</submitter>
-<date>9 Jan 2013</date>
+<title>DR 704 removes complexity guarantee for <tt>clear()</tt></title>
+<section><sref ref="[sequence.reqmts]"/></section>
+<submitter>Jonathan Wakely</submitter>
+<date>30 Dec 2012</date>
 
 <discussion>
 <p>
-In <sref ref="[tuple.general]"/>, synopsis of header <tt>&lt;tuple&gt;</tt>, the signature for 
-<tt>forward_as_tuple</tt> is shown as:
+From the question at <a href="http://stackoverflow.com/q/14094408/981959">stackoverflow</a>.
 </p>
 
-<blockquote><pre>
-template &lt;class... Types&gt;
-  tuple&lt;<em>Types</em> ...&gt; forward_as_tuple(Types&amp;&amp;...) noexcept;
-</pre></blockquote>
-
 <p>
-However, in <sref ref="[tuple.creation]"/>, the signature is shown as:
+Were we aware that the resolution to LWG <iref ref="704"/> means there is no complexity guarantee for 
+<tt>clear()</tt> on most sequence containers? Previously it was implied by defining it in terms of 
+<tt>erase(begin(), end())</tt> but we no longer do that.
 </p>
 
-<blockquote><pre>
-template &lt;class... Types&gt;
-  tuple&lt;Types&amp;&amp;...&gt; forward_as_tuple(Types&amp;&amp;... t) noexcept;
-</pre></blockquote>
+<p>
+There are explicit complexity requirements for <tt>std::list::clear()</tt>, but not the other sequence containers.
+</p>
+
+<p>Daniel:</p>
 
 <p>
-The second signature (with the additional <tt>&amp;&amp;</tt>) is correct. It would be impossible to return a tuple 
-containing arbitrary values while still making the function noexcept. The purpose of <tt>forward_as_tuple</tt> is 
-to create a tuple references.
+The idea was that the notion of "destroys all elements in <tt>a</tt>" would imply a linear complexity, but the wording 
+needs to be clearer, because this doesn't say that this step is the actual complexity bound.
 </p>
 </discussion>
 
@@ -40,12 +36,50 @@ to create a tuple references.
 <p>This wording is relative to N3485.</p>
 
 <ol>
-<li><p>Edit the synopsis of header <tt>&lt;tuple&gt;</tt>, <sref ref="[tuple.general]"/> p2 as follows:</p>
-<blockquote><pre>
-template &lt;class... Types&gt;
-  tuple&lt;<del><em>Types</em></del><ins>Types&amp;&amp;</ins> ...&gt; forward_as_tuple(Types&amp;&amp;...) noexcept;
-</pre></blockquote>
+<li><p>Change Table 100 as indicated:</p>
+
+<blockquote>
+<table border="1">
+<caption>Table 100 &mdash; Sequence container requirements (in addition to container) (continued)</caption>
+<tr>
+<th>Expression</th>
+<th>Return type</th>
+<th>Assertion&#47;note pre-&#47;post-condition</th>
+</tr>
+
+<tr>
+<td colspan="3" align="center">
+<tt>&hellip;</tt>
+</td>
+</tr>
+
+<tr>
+<td>
+<tt>a.clear()</tt>
+</td>
+<td>
+<tt>void</tt>
+</td>
+<td>
+Destroys all elements in <tt>a</tt>. Invalidates all<br/>
+references, pointers, and iterators referring to<br/>
+the elements of <tt>a</tt> and may invalidate the<br/>
+past-the-end iterator.<br/>
+post: <tt>a.empty()</tt> returns <tt>true</tt><br/>
+<ins>complexity: linear</ins>
+</td>
+</tr>
+
+<tr>
+<td colspan="3" align="center">
+<tt>&hellip;</tt>
+</td>
+</tr>
+
+</table>
+</blockquote>
 </li>
+
 </ol>
 
 </resolution>
