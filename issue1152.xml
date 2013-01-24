@@ -22,7 +22,7 @@ we have the following entries:
 <th>State</th> <th><tt>stdio</tt> equivalent</th>
 </tr>
 <tr>
-<td><tt>floatfield == ios_base::fixed | ios_base::scientific && !uppercase</tt></td>
+<td><tt>floatfield == ios_base::fixed | ios_base::scientific &amp;&amp; !uppercase</tt></td>
 <td align="center"><tt>%a</tt></td>
 </tr>
 
@@ -37,14 +37,14 @@ These expressions are supposed to mean:
 </p>
 
 <blockquote><pre>
-floatfield == (ios_base::fixed | ios_base::scientific) && !uppercase 
+floatfield == (ios_base::fixed | ios_base::scientific) &amp;&amp; !uppercase 
 floatfield == (ios_base::fixed | ios_base::scientific) 
 </pre></blockquote>
 <p>
 but technically parsed as: 
 </p>
 <blockquote><pre>
-((floatfield == ios_base::fixed) | ios_base::scientific) && (!uppercase) 
+((floatfield == ios_base::fixed) | ios_base::scientific) &amp;&amp; (!uppercase) 
 ((floatfield == ios_base::fixed) | ios_base::scientific) 
 </pre></blockquote>
 <p>
@@ -72,7 +72,7 @@ Change Table 83 &mdash; Floating-point conversions in  <sref ref="[facet.num.put
 <th>State</th> <th><tt>stdio</tt> equivalent</th>
 </tr>
 <tr>
-<td><tt>floatfield == <ins>(</ins>ios_base::fixed | ios_base::scientific<ins>)</ins> && !uppercase</tt></td>
+<td><tt>floatfield == <ins>(</ins>ios_base::fixed | ios_base::scientific<ins>)</ins> &amp;&amp; !uppercase</tt></td>
 <td align="center"><tt>%a</tt></td>
 </tr>
 

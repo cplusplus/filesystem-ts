@@ -57,7 +57,7 @@ template &lt;class T1, class T2&gt; struct tuple_element&lt;0, std::pair&lt;T1, 
 template &lt;class T1, class T2&gt; struct tuple_element&lt;1, std::pair&lt;T1, T2&gt; &gt;;
 
 template&lt;<del>int</del><ins>size_t</ins> I, class T1, class T2&gt;
-  <del>P</del><ins>typename tuple_element&lt;I, std::pair&lt;T1, T2&gt; &gt;::type </ins>& get(std::pair&lt;T1, T2&gt;&amp;);
+  <del>P</del><ins>typename tuple_element&lt;I, std::pair&lt;T1, T2&gt; &gt;::type </ins>&amp; get(std::pair&lt;T1, T2&gt;&amp;);
 template&lt;<del>int</del><ins>size_t</ins> I, class T1, class T2&gt;
   const <del>P</del><ins>typename tuple_element&lt;I, std::pair&lt;T1, T2&gt; &gt;::type </ins>&amp; get(const std::pair&lt;T1, T2&gt;&amp;);
 </pre>
@@ -66,7 +66,7 @@ Update <strong><sref ref="[pairs]"/> Pairs</strong>
 </p>
 <pre>
 template&lt;<del>int</del><ins>size_t</ins> I, class T1, class T2&gt;
-  <del>P</del><ins>typename tuple_element&lt;I, std::pair&lt;T1, T2&gt; &gt;::type </ins>& get(pair&lt;T1, T2&gt;&amp;);
+  <del>P</del><ins>typename tuple_element&lt;I, std::pair&lt;T1, T2&gt; &gt;::type </ins>&amp; get(pair&lt;T1, T2&gt;&amp;);
 template&lt;<del>int</del><ins>size_t</ins> I, class T1, class T2&gt;
   const <del>P</del><ins>typename tuple_element&lt;I, std::pair&lt;T1, T2&gt; &gt;::type </ins>&amp; get(const pair&lt;T1, T2&gt;&amp;);
 </pre>
@@ -90,9 +90,9 @@ template &lt;<del>int</del><ins>size_t</ins> I, class... Types> class tuple_elem
 
 <em>// 20.3.1.4, element access:</em>
 template &lt;<del>int</del><ins>size_t</ins> I, class... Types&gt;
-  typename tuple_element&lt;I, tuple&lt;Types...&gt; &gt;::type& get(tuple&lt;Types...&gt;&amp;);
+  typename tuple_element&lt;I, tuple&lt;Types...&gt; &gt;::type&amp; get(tuple&lt;Types...&gt;&amp;);
 template &lt;<del>int</del><ins>size_t</ins> I, class ... types&gt;
-  typename tuple_element&lt;I, tuple&lt;Types...&gt; &gt;::type const& get(const tuple&lt;Types...&gt;&amp;);
+  typename tuple_element&lt;I, tuple&lt;Types...&gt; &gt;::type const&amp; get(const tuple&lt;Types...&gt;&amp;);
 </pre>
 
 <p>
@@ -114,7 +114,7 @@ Update <strong><sref ref="[tuple.elem]"/> Element access</strong>
 </p>
 <pre>
 template &lt;<del>int</del><ins>size_t</ins> I, class... types &gt;
-typename tuple_element&lt;I, tuple&lt;Types...&gt; &gt;::type& get(tuple&lt;Types...&gt;&amp; t);
+typename tuple_element&lt;I, tuple&lt;Types...&gt; &gt;::type&amp; get(tuple&lt;Types...&gt;&amp; t);
 </pre>
 <p>
 1 <em>Requires:</em> <code><del>0 &lt;= I and </del>I &lt; sizeof...(Types)</code>. The program is ill-formed if <code>I</code> is out of bounds.
@@ -124,7 +124,7 @@ typename tuple_element&lt;I, tuple&lt;Types...&gt; &gt;::type& get(tuple&lt;Type
 <ins><em>Throws:</em> Nothing.</ins>
 <pre>
 template &lt;<del>int</del><ins>size_t</ins> I, class... types&gt;
-typename tuple_element&lt;I, tuple&lt;Types...&gt; &gt;::type const& get(const tuple&lt;Types...&gt;&amp; t);
+typename tuple_element&lt;I, tuple&lt;Types...&gt; &gt;::type const&amp; get(const tuple&lt;Types...&gt;&amp; t);
 </pre>
 <p>
 3 <em>Requires:</em> <code><del>0 &lt;= I and </del>I &lt; sizeof...(Types)</code>. The program is ill-formed if <code>I</code> is out of bounds.
@@ -148,9 +148,9 @@ template &lt;class T, size_t N&gt;
 template &lt;<del>int</del><ins>size_t</ins> I, class T, size_t N&gt;
   struct tuple_element&lt;I, array&lt;T, N&gt; &gt;;
 template &lt;<del>int</del><ins>size_t</ins> I, class T, size_t N&gt;
-  T& get(array&lt;T, N&gt;&amp;);
+  T&amp; get(array&lt;T, N&gt;&amp;);
 template &lt;<del>int</del><ins>size_t</ins> I, class T, size_t N&gt;
-  const T& get(const array&lt;T, N&gt;&amp;);
+  const T&amp; get(const array&lt;T, N&gt;&amp;);
 </pre>
 
 <p>
