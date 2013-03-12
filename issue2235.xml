@@ -1,0 +1,77 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="2235" status="New">
+<title>Undefined behavior without proper requirements on <tt>basic_string</tt> constructors</title>
+<section><sref ref="[string.cons]"/></section>
+<submitter>Juan Soulie</submitter>
+<date>17 Jan 2013</date>
+
+<discussion>
+<p>
+In <sref ref="[string.cons]"/>, I believe tighter requirements should be imposed on <tt>basic_string</tt>'s constructors 
+taking an <tt>s</tt> argument (or, a behavior should be provided for the undefined cases).
+These requirements are properly stated in the other members functions taking <tt>s</tt> arguments (<tt>append</tt>, 
+<tt>assign</tt>, <tt>insert</tt>,...).
+</p>
+
+<codeblock><pre>
+basic_string(const charT* s, size_type n, const Allocator&amp; a = Allocator());
+</pre></codeblock>
+
+<p>
+Relative to N3485, <sref ref="[string.cons]"/>/6 says "Requires: <tt>s</tt> shall not be a null pointer and <tt>n &lt; npos</tt>", 
+where it should say: "Requires: <tt>s</tt> points to an array of at least <tt>n</tt> elements of <tt>charT</tt>"
+</p>
+
+<codeblock><pre>
+basic_string(const charT* s, const Allocator&amp; a = Allocator());
+</pre></codeblock>
+
+<p>
+<sref ref="[string.cons]"/>/8 says "Requires: <tt>s</tt> shall not be a null pointer.", where it should say:
+"Requires: <tt>s</tt> points to an array of at least <tt>traits::length(s) + 1</tt> elements of <tt>charT</tt>"
+</p>
+
+<p>Daniel:</p>
+<p>
+I think that <sref ref="[res.on.arguments]"/> p1 b2 basically requires this already, but the wording is indeed worth 
+improving it.
+</p>
+</discussion>
+
+<resolution>
+<p>This wording is relative to N3485.</p>
+
+<ol>
+<li><p>Change <sref ref="[string.cons]"/>/6 as indicated:</p>
+
+<codeblock><pre>
+basic_string(const charT* s, size_type n, const Allocator&amp; a = Allocator());
+</pre><codeblock>
+<p>
+-6- <i>Requires</i>: <tt>s</tt> <del>shall not be a null pointer and <tt>n &lt; npos</tt></del><ins>points to an array 
+of at least <tt>n</tt> elements of <tt>charT</tt></ins>.
+</p>
+</codeblock></codeblock>
+
+</li>
+
+<li><p>Change <sref ref="[string.cons]"/>/8 as indicated:</p>
+
+<codeblock><pre>
+basic_string(const charT* s, const Allocator&amp; a = Allocator());
+</pre><codeblock>
+<p>
+-8- <i>Requires</i>: <tt>s</tt> <del>shall not be a null pointer</del><ins>points to an array 
+of at least <tt>traits::length(s) + 1</tt> elements of <tt>charT</tt></ins>.
+</p>
+</codeblock></codeblock>
+
+</li>
+</ol>
+</resolution>
+
+</issue>
