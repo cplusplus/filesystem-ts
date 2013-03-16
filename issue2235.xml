@@ -17,18 +17,18 @@ These requirements are properly stated in the other members functions taking <tt
 <tt>assign</tt>, <tt>insert</tt>,...).
 </p>
 
-<codeblock><pre>
+<blockquote><pre>
 basic_string(const charT* s, size_type n, const Allocator&amp; a = Allocator());
-</pre></codeblock>
+</pre></blockquote>
 
 <p>
 Relative to N3485, <sref ref="[string.cons]"/>/6 says "Requires: <tt>s</tt> shall not be a null pointer and <tt>n &lt; npos</tt>", 
 where it should say: "Requires: <tt>s</tt> points to an array of at least <tt>n</tt> elements of <tt>charT</tt>"
 </p>
 
-<codeblock><pre>
+<blockquote><pre>
 basic_string(const charT* s, const Allocator&amp; a = Allocator());
-</pre></codeblock>
+</pre></blockquote>
 
 <p>
 <sref ref="[string.cons]"/>/8 says "Requires: <tt>s</tt> shall not be a null pointer.", where it should say:
@@ -48,27 +48,27 @@ improving it.
 <ol>
 <li><p>Change <sref ref="[string.cons]"/>/6 as indicated:</p>
 
-<codeblock><pre>
+<blockquote><pre>
 basic_string(const charT* s, size_type n, const Allocator&amp; a = Allocator());
-</pre><codeblock>
+</pre><blockquote>
 <p>
 -6- <i>Requires</i>: <tt>s</tt> <del>shall not be a null pointer and <tt>n &lt; npos</tt></del><ins>points to an array 
 of at least <tt>n</tt> elements of <tt>charT</tt></ins>.
 </p>
-</codeblock></codeblock>
+</blockquote></blockquote>
 
 </li>
 
 <li><p>Change <sref ref="[string.cons]"/>/8 as indicated:</p>
 
-<codeblock><pre>
+<blockquote><pre>
 basic_string(const charT* s, const Allocator&amp; a = Allocator());
-</pre><codeblock>
+</pre><blockquote>
 <p>
 -8- <i>Requires</i>: <tt>s</tt> <del>shall not be a null pointer</del><ins>points to an array 
 of at least <tt>traits::length(s) + 1</tt> elements of <tt>charT</tt></ins>.
 </p>
-</codeblock></codeblock>
+</blockquote></blockquote>
 
 </li>
 </ol>
