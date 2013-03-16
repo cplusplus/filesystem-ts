@@ -23,9 +23,68 @@ shall not affect the validity of iterators if <tt>(N + n) &lt; z * B</tt> (<sref
 But for this case the two sides of the equation are equal, so <tt>insert</tt> can affect the validity of iterators.
 </p>
 
+<note>2013-03-16 Howard comments and provides wording</note>
+
+<p>
+Given the following:
+</p>
+
+<codeblock><pre>
+LF := load_factor()
+MLF := max_load_factor()
+S := size()
+B := bucket_count()
+
+LF == S/B
+</pre></codeblock>
+
+<p>
+The container has an invariant:
+</p>
+
+<codeblock><pre>
+LF &lt;= MLF
+</pre></codeblock>
+
+<p>
+Therefore:
+</p>
+
+<codeblock><pre>
+MLF &gt;= S/B
+S &lt;= MLF * B
+B &gt;= S/MLF
+</pre></codeblock>
+
 </discussion>
 
 <resolution>
+<p>This wording is relative to N3485.</p>
+
+<ol>
+<li>
+<p>
+In <sref ref="[unord.req]"/> Table 103 &mdash; Unordered associative container requirements, change the post-condition 
+in the row for <code>a.rehash(n)</code> to:
+</p>
+<blockquote>
+Post: <code>a.bucket_count() &gt;<ins>=</ins> a.size() / a.max_load_factor()</code> and <code>a.bucket_count() &gt;= n</code>.
+</blockquote>
+</li>
+
+<li>
+<p>
+In <sref ref="[unord.req]"/>/p15 change
+</p>
+<blockquote>
+The <code>insert</code> and <code>emplace</code> members shall not affect the validity of iterators if 
+<code>(N+n) &lt;<ins>=</ins> z * B</code>, where <code>N</code> is the number of elements in the container 
+prior to the insert operation, <code>n</code> is the number of elements inserted, <code>B</code> is the container’s 
+bucket count, and <code>z</code> is the container’s maximum load factor.
+</blockquote>
+</li>
+
+</ol>
 </resolution>
 
 </issue>
