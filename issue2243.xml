@@ -1,0 +1,27 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="2243" status="New">
+<title><tt>istream::putback</tt> problem</title>
+<section><sref ref="[istream.unformatted]"/></section>
+<submitter>Juan Soulie</submitter>
+<date>1 Mar 2013</date>
+
+<discussion>
+<p>
+In <sref ref="[istream.unformatted]"/> / 34, when describing <tt>putback</tt>, it says that "<tt>rdbuf-&gt;sputbackc()</tt>" 
+is called. The problem are not the obvious typos in the expression, but the fact that it may lead to different 
+interpretations, since nowhere is specified what the required argument to <tt>sputbackc</tt> is.
+<p/>
+It can be guessed to be "<tt>rdbuf()-&gt;sputbackc(c)</tt>", but "<tt>rdbuf()-&gt;sputbackc(char_type())</tt>" or 
+just anything would be as conforming (or non-confoming) as the first guess.
+</p>
+
+</discussion>
+
+<resolution>
+</resolution>
+
+</issue>
