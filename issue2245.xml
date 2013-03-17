@@ -26,6 +26,10 @@ void reset(const Alloc&amp;);
 <p>
 Alternatively, the effects of <tt>reset()</tt> need to require the same allocator is used 
 as at construction, which would require the constructor to store the allocator for later use.
+<p/>
+I like to remark that GCC at the moment uses the second option, i.e. the allocator passed to the constructor 
+(if any) is used to create the new shared state, because this didn't require any change to the
+interface.
 </p>
 
 </discussion>

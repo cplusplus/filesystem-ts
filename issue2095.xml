@@ -95,17 +95,26 @@ namespace std {
   public:
     // construction and destruction
     packaged_task() noexcept;
-    template &lt;class F&gt;
-    explicit packaged_task(F&amp;&amp; f);
     <ins>template &lt;class Allocator&gt;
-    explicit packaged_task(allocator_arg_t, const Allocator&amp; a) noexcept;
-    template &lt;class Allocator&gt;
-    explicit packaged_task(allocator_arg_t, const Allocator&amp; a, packaged_task&amp;&amp; rhs) noexcept;
-    template&lt;class Allocator&gt;
-    explicit packaged_task(allocator_arg_t, const Allocator&amp; a, const packaged_task&amp;) = delete;</ins>
+      packaged_task(allocator_arg_t, const Allocator&amp; a) noexcept;</ins>
+    template &lt;class F&gt;
+      explicit packaged_task(F&amp;&amp; f);
     template &lt;class F, class Allocator&gt;
-    explicit packaged_task(allocator_arg_t, const Allocator&amp; a, F&amp;&amp; f);
+      explicit packaged_task(allocator_arg_t, const Allocator&amp; a, F&amp;&amp; f);
     ~packaged_task();
+	
+    // no copy
+    packaged_task(const packaged_task&amp;) = delete;
+    <ins>template&lt;class Allocator&gt;
+      packaged_task(allocator_arg_t, const Allocator&amp; a, const packaged_task&amp;) = delete;</ins>
+    packaged_task&amp; operator=(const packaged_task&amp;) = delete;
+    
+    // move support
+    packaged_task(packaged_task&amp;&amp; rhs) noexcept;
+    <ins>template &lt;class Allocator&gt;
+      packaged_task(allocator_arg_t, const Allocator&amp; a, packaged_task&amp;&amp; rhs) noexcept;</ins>
+    packaged_task&amp; operator=(packaged_task&amp;&amp; rhs) noexcept;
+    void swap(packaged_task&amp; other) noexcept;
     [&hellip;]
   };
   [&hellip;]
@@ -118,7 +127,7 @@ namespace std {
 <blockquote><pre>
 packaged_task() noexcept;
 <ins>template &lt;class Allocator&gt;
-  explicit packaged_task(allocator_arg_t, const Allocator&amp; a) noexcept;</ins>
+  packaged_task(allocator_arg_t, const Allocator&amp; a) noexcept;</ins>
 </pre><blockquote>
 <p>
 -1- <i>Effects</i>: constructs a <tt>packaged_task</tt> object with no shared state and no stored task.
@@ -130,7 +139,7 @@ packaged_task() noexcept;
 <blockquote><pre>
 packaged_task(packaged_task&amp;&amp; rhs) noexcept;
 <ins>template &lt;class Allocator&gt;
-  explicit packaged_task(allocator_arg_t, const Allocator&amp; a, packaged_task&amp;&amp; rhs) noexcept;</ins>
+  packaged_task(allocator_arg_t, const Allocator&amp; a, packaged_task&amp;&amp; rhs) noexcept;</ins>
 </pre><blockquote>
 <p>
 -5- <i>Effects</i>: constructs a new <tt>packaged_task</tt> object and transfers ownership of <tt>rhs</tt>’s 
