@@ -31,11 +31,49 @@ Moved to Open.
 Geoffrey will provide an example that clearly highlights the issue.
 </p>
 
-</discussion>
+<note>2013-03-19 Geoffrey provides revised resolution and an example</note>
 
-<resolution>
-<p>This wording is relative to N3485.</p>
+<p>
+I contend that the most straightforward reading of the current standard requires the following example code to print 
+"good" (because <tt>~unique_ptr</tt> is not specified to modify the state of the internal pointer), but the consensus 
+on the reflector was that its behavior should be undefined.
+<p/>
+This example also shows that, contrary to a comment in the telecon, the PR is not tautological. <sref ref="[class.cdtor]"/>/p4 
+explicitly permits member function calls during destruction, so the behavior of this code is well-defined as far as 
+the core language is concerned, despite the fact that it accesses a library object after the end of the object's 
+lifetime. If we want this code to have undefined behavior, we need to specify that at the library level.
+</p>
 
+<blockquote><pre>
+#include &lt;memory&gt;
+#include &lt;iostream&gt;
+
+class A;
+
+struct B {
+ std::unique_ptr&lt;A&gt; a;
+};
+
+struct A {
+ B* b;
+ ~A() {
+   if (b-&gt;a.get() == this) {
+     std::cout &lt;&lt; "good" &lt;&lt; std::endl;
+   }
+ }
+};
+
+int main() {
+ B b;
+ b.a.reset(new A);
+ b.a-&gt;b = &b;
+}
+</pre></blockquote>
+
+<p>
+Previous resolution:
+</p>
+<blockquote class="note">
 <ol>
 <li><p>Change the title of sub-clause <sref ref="[res.on.objects]"/> as indicated:</p>
 <p><del>Shared objects and the library</del><ins>Library object access</ins> [res.on.objects]</p>
@@ -49,6 +87,31 @@ invocation other than destruction on such an object happens before destruction o
 even to objects such as mutexes intended for thread synchronization. &mdash; <i>end note</i>]</del>
 <ins>If an object of a standard library type is accessed outside of the object's lifetime (<sref ref="[basic.life]"/>), 
 the behavior is undefined unless otherwise specified.</ins></p>
+</li>
+</ol>
+</blockquote>
+
+</discussion>
+
+<resolution>
+<p>This wording is relative to N3485.</p>
+
+<ol>
+<li><p>Change the title of sub-clause <sref ref="[res.on.objects]"/> as indicated:</p>
+<p><del>Shared objects and the library</del><ins>Library object access</ins> [res.on.objects]</p>
+</li>
+
+<li><p>Edit <sref ref="[res.on.objects]"/> p2 as indicated: <em>[<i>Editorial remark:</i> The motivation, is to 
+be more precise about the meaning of "outside the object's lifetime" in the presence of threads &mdash; <i>end editorial 
+remark</i>]</em></p>
+<p>-2- <del>[<i>Note</i>: In particular, the program is required to ensure that completion of the constructor 
+of any object of a class type defined in the standard library happens before any other member function 
+invocation on that object and, unless otherwise specified, to ensure that completion of any member function 
+invocation other than destruction on such an object happens before destruction of that object. This applies 
+even to objects such as mutexes intended for thread synchronization. &mdash; <i>end note</i>]</del>
+<ins>If an object of a standard library type is accessed, and the beginning of the object's lifetime 
+(<sref ref="[basic.life]"/>) does not happen before the access, or the access does not happen before the end 
+of the object's lifetime, the behavior is undefined unless otherwise specified.</ins></p>
 </li>
 </ol>
 
