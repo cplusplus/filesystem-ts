@@ -39,13 +39,31 @@ Action: STL to provide additional wording for the <tt>r</tt> variants.
 Move to Review once that wording is availalbe.
 </p>
 
-</discussion>
+<note>
+2013-04-14 STL provides rationale and improved wording
+</note>
 
-<resolution>
+<p>Step 1: Implement <tt>std::cbegin/cend()</tt> by calling <tt>std::begin/end()</tt>. This has numerous advantages:</p>
+<ul>
+<li>It automatically works with arrays, which is the whole point of these non-member functions.</li>
+<li>It works with C++98/03-era user containers, written before <tt>cbegin/cend()</tt> members were invented.</li>
+<li>It works with <tt>initializer_list</tt>, which is extremely minimal and lacks <tt>cbegin/cend()</tt> members.</li>
+<li><sref ref="[container.requirements.general]"/> guarantees that this is equivalent to calling cbegin/cend() members.</li>
+</ul>
+<p>Step 2: Like <tt>std::begin/end()</tt>, implement <tt>std::rbegin/rend()</tt> by calling <tt>c.rbegin/rend()</tt>.  
+Note that C++98/03 had the <tt>Reversible Container Requirements</tt>.</p>
+<p>Step 3: Also like <tt>std::begin/end()</tt>, provide overloads of <tt>std::rbegin/rend()</tt> for arrays.</p>
+<p>Step 4: Provide overloads of <tt>std::rbegin/rend()</tt> for <tt>initializer_list</tt>, because it lacks 
+<tt>rbegin/rend()</tt> members. These overloads follow <sref ref="[support.initlist.range]"/>'s signatures. Note that 
+because these overloads return <tt>reverse_iterator</tt>, they aren't being specified in <tt>&lt;initializer_list&gt;</tt>.</p>
+<p>Step 5: Like Step 1, implement <tt>std::crbegin/crend()</tt> by calling <tt>std::rbegin/rend()</tt>.</p>
+
+<p>Original wording saved here:</p>
+<blockquote class="note">
 <p>This wording is relative to <a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2012/n3337.pdf">N3337</a>.</p>
 
 <ol>
-<li><p>In <sref ref="[iterator.synopsis]"/>, header iterator synopsis, add the following declarations::</p>
+<li><p>In <sref ref="[iterator.synopsis]"/>, header iterator synopsis, add the following declarations:</p>
 
 <blockquote><pre>
 namespace std {
@@ -101,6 +119,140 @@ namespace std {
 <blockquote>
 <p>
 <ins>-?- <i>Returns</i>: <tt>array + N</tt>.</ins>
+</p>
+</blockquote>
+</blockquote>
+</li>
+</ol>
+
+</blockquote>
+
+</discussion>
+
+<resolution>
+<p>This wording is relative to <a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2012/n3485.pdf">N3485</a>.</p>
+
+<ol>
+<li><p>In <sref ref="[iterator.synopsis]"/>, header iterator synopsis, add the following declarations:</p>
+
+<blockquote><pre>
+namespace std {
+  [&hellip;]
+  <i>// 24.6.5, range access:</i>
+  template &lt;class C&gt; auto begin(C&amp; c) -> decltype(c.begin());
+  template &lt;class C&gt; auto begin(const C&amp; c) -> decltype(c.begin());
+  template &lt;class C&gt; auto end(C&amp; c) -> decltype(c.end());
+  template &lt;class C&gt; auto end(const C&amp; c) -> decltype(c.end());
+  template &lt;class T, size_t N&gt; T* begin(T (&amp;array)[N]);
+  template &lt;class T, size_t N&gt; T* end(T (&amp;array)[N]);
+  <ins>template &lt;class C&gt; auto cbegin(const C&amp; c) -> decltype(std::begin(c));</ins>
+  <ins>template &lt;class C&gt; auto cend(const C&amp; c) -> decltype(std::end(c));</ins>
+  <ins>template &lt;class C&gt; auto rbegin(C&amp; c) -> decltype(c.rbegin());</ins>
+  <ins>template &lt;class C&gt; auto rbegin(const C&amp; c) -> decltype(c.rbegin());</ins>
+  <ins>template &lt;class C&gt; auto rend(C&amp; c) -> decltype(c.rend());</ins>
+  <ins>template &lt;class C&gt; auto rend(const C&amp; c) -> decltype(c.rend());</ins>
+  <ins>template &lt;class T, size_t N&gt; reverse_iterator&lt;T*&gt; rbegin(T (&amp;array)[N]);</ins>
+  <ins>template &lt;class T, size_t N&gt; reverse_iterator&lt;T*&gt; rend(T (&amp;array)[N]);</ins>
+  <ins>template &lt;class E> reverse_iterator&lt;const E*&gt; rbegin(initializer_list&lt;E&gt; il);</ins>
+  <ins>template &lt;class E> reverse_iterator&lt;const E*&gt; rend(initializer_list&lt;E&gt; il);</ins>
+  <ins>template &lt;class C&gt; auto crbegin(const C&amp; c) -> decltype(std::rbegin(c));</ins>
+  <ins>template &lt;class C&gt; auto crend(const C&amp; c) -> decltype(std::rend(c));</ins>
+}
+</pre></blockquote>
+</li>
+
+<li><p>In <sref ref="[iterator.range]"/> after p5 add the following series of paragraphs:</p>
+
+<blockquote>
+<pre>
+<ins>template &lt;class C&gt; auto cbegin(const C&amp; c) -> decltype(std::begin(c));</ins>
+</pre>
+<blockquote>
+<p>
+<ins>-?- <i>Returns</i>: <tt>std::begin(c)</tt>.</ins>
+</p>
+</blockquote>
+
+<pre>
+<ins>template &lt;class C&gt; auto cend(const C&amp; c) -> decltype(std::end(c));</ins>
+</pre>
+<blockquote>
+<p>
+<ins>-?- <i>Returns</i>: <tt>std::end(c)</tt>.</ins>
+</p>
+</blockquote>
+
+<pre>
+<ins>template &lt;class C&gt; auto rbegin(C&amp; c) -> decltype(c.rbegin());</ins>
+<ins>template &lt;class C&gt; auto rbegin(const C&amp; c) -> decltype(c.rbegin());</ins>
+</pre>
+<blockquote>
+<p>
+<ins>-?- <i>Returns</i>: <tt>c.rbegin()</tt>.</ins>
+</p>
+</blockquote>
+
+<pre>
+<ins>template &lt;class C&gt; auto rend(C&amp; c) -> decltype(c.rend());</ins>
+<ins>template &lt;class C&gt; auto rend(const C&amp; c) -> decltype(c.rend());</ins>
+</pre>
+<blockquote>
+<p>
+<ins>-?- <i>Returns</i>: <tt>c.rend()</tt>.</ins>
+</p>
+</blockquote>
+
+<pre>
+<ins>template &lt;class T, size_t N&gt; reverse_iterator&lt;T*&gt; rbegin(T (&amp;array)[N]);</ins>
+</pre>
+<blockquote>
+<p>
+<ins>-?- <i>Returns</i>: <tt>reverse_iterator&lt;T*&gt;(array + N)</tt>.</ins>
+</p>
+</blockquote>
+
+<pre>
+<ins>template &lt;class T, size_t N&gt; reverse_iterator&lt;T*&gt; rend(T (&amp;array)[N]);</ins>
+</pre>
+<blockquote>
+<p>
+<ins>-?- <i>Returns</i>: <tt>reverse_iterator&lt;T*&gt;(array)</tt>.</ins>
+</p>
+</blockquote>
+
+<pre>
+<ins>template &lt;class E> reverse_iterator&lt;const E*&gt; rbegin(initializer_list&lt;E&gt; il);</ins>
+</pre>
+<blockquote>
+<p>
+<ins>-?- <i>Returns</i>: <tt>reverse_iterator&lt;const E*&gt;(il.end())</tt>.</ins>
+</p>
+</blockquote>
+
+<pre>
+<ins>template &lt;class E> reverse_iterator&lt;const E*&gt; rend(initializer_list&lt;E&gt; il);</ins>
+</pre>
+<blockquote>
+<p>
+<ins>-?- <i>Returns</i>: <tt>reverse_iterator&lt;const E*&gt;(il.begin())</tt>.</ins>
+</p>
+</blockquote>
+
+<pre>
+<ins>template &lt;class C&gt; auto crbegin(const C&amp; c) -> decltype(std::rbegin(c));</ins>
+</pre>
+<blockquote>
+<p>
+<ins>-?- <i>Returns</i>: <tt>std::rbegin(c)</tt>.</ins>
+</p>
+</blockquote>
+
+<pre>
+<ins>template &lt;class C&gt; auto crend(const C&amp; c) -> decltype(std::rend(c));</ins>
+</pre>
+<blockquote>
+<p>
+<ins>-?- <i>Returns</i>: <tt>std::rend(c)</tt>.</ins>
 </p>
 </blockquote>
 </blockquote>
