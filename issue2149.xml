@@ -68,10 +68,43 @@ While not opposed to striking this paragraph, we will need the additional wordin
 hole before this issue can move forward.
 </p>
 
+<note>
+2013-04-14 STL provides rationale and improved wording
+</note>
+
+<p>Rationale:</p>
+
+<p>I've concluded that Scott's original proposed resolution was correct and complete. There are two sides to this 
+story: the producers and the consumers of these typedefs.</p>
+
+<p><em>Producers</em>: As Scott noted, the Standard clearly documents which function objects must provide these 
+typedefs. Some function objects must provide them unconditionally (e.g. <tt>plus&lt;T&gt;</tt> (for <tt>T != void</tt>), 
+<sref ref="[arithmetic.operations]"/>/1), some conditionally (e.g. <tt>reference_wrapper&lt;T&gt;</tt>, 
+<sref ref="[refwrap]"/>/2-4), and some don't have to provide them at all (e.g. lambdas, <sref ref="[expr.prim.lambda]"/>). 
+These requirements are clear, so we shouldn't change them or even add informative notes. Furthermore, because these 
+typedefs aren't needed in the C++11 world with <tt>decltype</tt>/perfect forwarding/etc., we shouldn't add more 
+requirements to provide them.</p>
+
+<p><em>Consumers</em>: This is what we were concerned about at Portland. However, the consumers also clearly document 
+their requirements in the existing text. For example, <tt>reference_wrapper&lt;T&gt;</tt> is also a conditional consumer, 
+and <sref ref="[refwrap]"/> explains what typedefs it's looking for. We were especially concerned about the old negators 
+and the deprecated binders, but they're okay too. <sref ref="[negators]"/> clearly says that 
+<tt>unary_negate&lt;Predicate&gt;</tt> requires <tt>Predicate::argument_type</tt> to be a type, and 
+<tt>binary_negate&lt;Predicate&gt;</tt> requires <tt>Predicate::first_argument_type</tt> and <tt>Predicate::second_argument_type</tt> 
+to be types. (<tt>unary_negate</tt>/<tt>binary_negate</tt> provide <tt>result_type</tt> but they don't consume it.) 
+<sref ref="[depr.lib.binders]"/> behaves the same way with <tt>Fn::first_argument_type</tt>, <tt>Fn::second_argument_type</tt>, 
+and <tt>Fn::result_type</tt>. No additional wording is necessary.</p>
+
+<p>A careful reading of <sref ref="[function.objects]"/>/5 reveals that it wasn't talking about anything beyond the mere 
+existence of the mentioned typedefs &mdash; for example, it didn't mention that the function object's return type should be 
+<tt>result_type</tt>, or even convertible to <tt>result_type</tt>. As the producers and consumers are certainly talking about 
+the existence of the typedefs (in addition to clearly implying semantic requirements), we lose nothing by deleting the 
+unnecessary paragraph.</p>
+
 </discussion>
 
 <resolution>
-<p>This wording is relative to N3376.</p>
+<p>This wording is relative to <a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2012/n3485.pdf">N3485</a>.</p>
 
 <p>Remove <sref ref="[function.objects]"/> p5:</p>
 
