@@ -3,7 +3,7 @@
   <!ENTITY nbsp "&#160;">
 ] >
 
-<issue num="2229" status="Review">
+<issue num="2229" status="Ready">
 <title>Standard code conversion facets underspecified</title>
 <section><sref ref="[locale.stdcvt]"/></section>
 <submitter>Beman Dawes</submitter>
@@ -43,6 +43,8 @@ Alisdair noted that this whole section was new in C++11.
 Howard suggested looking at section <sref ref="[locale.facet]"/>p2/p3 for more info.
 </p>
 
+<note>2013-04-18, Bristol</note> 
+
 </discussion>
 
 <resolution>
@@ -53,6 +55,7 @@ Howard suggested looking at section <sref ref="[locale.facet]"/>p2/p3 for more i
 class codecvt_utf8
   : public codecvt&lt;Elem, char, mbstate_t&gt; {
   <del><i>// unspecified</i></del>
+<ins>public:</ins>
   <ins>explicit codecvt_utf8(size_t refs = 0);</ins>
   <ins>~codecvt_utf8();</ins>
   };
@@ -62,6 +65,7 @@ template&lt;class Elem, unsigned long Maxcode = 0x10ffff,
 class codecvt_utf16
   : public codecvt&lt;Elem, char, mbstate_t&gt; {
   <del><i>// unspecified</i></del>
+<ins>public:</ins>
   <ins>explicit codecvt_utf16(size_t refs = 0);</ins>
   <ins>~codecvt_utf16();</ins>
   };
@@ -71,6 +75,7 @@ template&lt;class Elem, unsigned long Maxcode = 0x10ffff,
 class codecvt_utf8_utf16
   : public codecvt&lt;Elem, char, mbstate_t&gt; {
   <del><i>// unspecified</i></del>
+<ins>public:</ins>
   <ins>explicit codecvt_utf8_utf16(size_t refs = 0);</ins>
   <ins>~codecvt_utf8_utf16();</ins>
   };</pre>

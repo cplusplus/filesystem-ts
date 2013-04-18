@@ -3,7 +3,7 @@
   <!ENTITY nbsp "&#160;">
 ] >
 
-<issue num="2141" status="Review">
+<issue num="2141" status="Ready">
 <title><tt>common_type</tt> trait produces reference types</title>
 <section><sref ref="[meta.trans.other]"/></section>
 <submitter>Doug Gregor</submitter>
@@ -171,13 +171,39 @@ Want to carefully consider the effect of <tt>decay</tt> vs. <tt>remove_reference
 to constenss before adopting, although this proposed resolution stands for review in Bristol.
 </p>
 
-</discussion>
+<note>2013-04-18, Bristol meeting</note>
 
-<resolution>
+<p>Previous wording:</p>
+
+<blockquote class="note"> 
 <p>This wording is relative to N3376.</p>
 
 <ol><li><p>In <sref ref="[meta.trans.other]"/> p3, change the <tt>common_type</tt> definition to</p>
 <blockquote><pre>
+template &lt;class T, class U&gt;
+struct common_type&lt;T, U&gt; {
+  typedef <ins>typename decay&lt;</ins>decltype(true ? declval&lt;T&gt;() : declval&lt;U&gt;())<ins>&gt;::type</ins> type;
+};
+</pre></blockquote>
+</li>
+</ol>
+</blockquote>
+
+<note>2013-04-18, Bristol</note>
+
+</discussion>
+
+<resolution>
+<p>This wording is relative to N3485.</p>
+
+<ol>
+<li><p>Change <sref ref="[meta.trans.other]"/> p3 as indicated:</p>
+<blockquote><pre>
+template &lt;class T&gt;
+struct common_type&lt;T&gt; {
+  typedef <ins>typename decay&lt;</ins>T<ins>&gt;::type</ins> type;
+};
+
 template &lt;class T, class U&gt;
 struct common_type&lt;T, U&gt; {
   typedef <ins>typename decay&lt;</ins>decltype(true ? declval&lt;T&gt;() : declval&lt;U&gt;())<ins>&gt;::type</ins> type;

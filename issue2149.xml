@@ -3,7 +3,7 @@
   <!ENTITY nbsp "&#160;">
 ] >
 
-<issue num="2149" status="Open">
+<issue num="2149" status="Ready">
 <title>Concerns about 20.8/5</title>
 <section><sref ref="[function.objects]"/></section>
 <submitter>Scott Meyers</submitter>
@@ -101,11 +101,11 @@ existence of the mentioned typedefs &mdash; for example, it didn't mention that 
 the existence of the typedefs (in addition to clearly implying semantic requirements), we lose nothing by deleting the 
 unnecessary paragraph.</p>
 
-</discussion>
+<note>2013-04-18, Bristol</note>
 
-<resolution>
-<p>This wording is relative to <a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2012/n3485.pdf">N3485</a>.</p>
+<p>Previous wording:</p>
 
+<blockquote class="note"> 
 <p>Remove <sref ref="[function.objects]"/> p5:</p>
 
 <blockquote><p><del>
@@ -114,6 +114,21 @@ it is required that the function objects correspondingly provide typedefs <tt>ar
 <tt>result_type</tt> for function objects that take one argument and <tt>first_argument_type</tt>, 
 <tt>second_argument_type</tt>, and <tt>result_type</tt> for function objects that take two arguments.
 </del></p></blockquote>
+</blockquote>
+
+</discussion>
+
+<resolution>
+<p>This wording is relative to <a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2012/n3485.pdf">N3485</a>.</p>
+
+<p>Edit <sref ref="[function.objects]"/> p5:</p>
+
+<blockquote><p>
+<ins>[<i>Note:</i></ins>To enable adaptors and other components to manipulate function objects that take one or two arguments
+<del>it is required that the function objects</del><ins>many of the function objects in this clause</ins> correspondingly provide 
+typedefs <tt>argument_type</tt> and <tt>result_type</tt> for function objects that take one argument and <tt>first_argument_type</tt>, 
+<tt>second_argument_type</tt>, and <tt>result_type</tt> for function objects that take two arguments.<ins>&mdash; <i>end note</i>]</ins>
+</p></blockquote>
 </resolution>
 
 </issue>
