@@ -52,7 +52,13 @@ Moved to Review.
 
 <note>2013-04-18, Bristol</note> 
 
-<p>Daniel extends the P/R</p>
+<p>Daniel extends the P/R.</p>
+
+<p>Rationale:</p>
+
+<p>The wording in <sref ref="[string.capacity]"/> combined with <sref ref="[string.require]"/>
+seems to say the necessary things. We cannot impose all requirements as we do for <tt>vector</tt>, because
+we want to allow the short-string-optimization.</p>
 
 </discussion>
 
@@ -60,6 +66,44 @@ Moved to Review.
 <p>This wording is relative to N3485.</p>
 
 <ol>
+<li><p>Keep <sref ref="[string.capacity]"/> around p14 <em>unchanged</em>, because we don't speak about
+reallocations and we give the strong exception guarantee in <sref ref="[string.require]"/> (Invalidation
+specification also at that place):</p>
+<blockquote><pre>
+void shrink_to_fit();
+</pre>
+<p>
+-14- <i>Remarks</i>: <tt>shrink_to_fit</tt> is a non-binding request to reduce <tt>capacity()</tt> to 
+<tt>size()</tt>. [<i>Note</i>: The request is non-binding to allow latitude for implementation-specific 
+optimizations. &mdash; <i>end note</i> ].
+</p>
+</blockquote>
+</li>
+
+<li><p>Edit <sref ref="[deque.capacity]"/> around p7 as indicated:</p>
+<blockquote><pre>
+void shrink_to_fit();
+</pre>
+<p>
+-5- <i>Requires</i>: <tt>T</tt> shall be <tt>MoveInsertable</tt> into <tt>*this</tt>.
+<p/>
+<ins>-?- <i>Effects</i>: <tt>shrink_to_fit</tt> is a non-binding request to reduce <tt>capacity()</tt> to 
+<tt>size()</tt>. [<i>Note</i>: The request is non-binding to allow latitude for implementation-specific 
+optimizations. &mdash; <i>end note</i> ] Reallocation happens at this point if and only 
+if the function effectively reduces the capacity. If an exception is thrown other than by the move constructor 
+of a non-<tt>CopyInsertable</tt> <tt>T</tt> there are no effects.</ins> 
+<p/>
+-6- <i>Complexity</i>: Linear in the size of the sequence.
+<p/>
+-7- <i>Remarks</i>: <del><tt>shrink_to_fit</tt> is a non-binding request to reduce <tt>capacity()</tt> to 
+<tt>size()</tt>. [<i>Note</i>: The request is non-binding to allow latitude for implementation-specific 
+optimizations. &mdash; <i>end note</i> ] If an exception is thrown other than by the move constructor 
+of a non-<tt>CopyInsertable</tt> <tt>T</tt> there are no effects.</del><ins>Reallocation invalidates all 
+the references, pointers, and iterators referring to the elements in the sequence.</ins>
+</p>
+</blockquote>
+</li>
+
 <li><p>Edit <sref ref="[vector.capacity]"/> around p7 as indicated:</p>
 <blockquote><pre>
 void shrink_to_fit();
