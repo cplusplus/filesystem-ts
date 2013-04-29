@@ -1,0 +1,31 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="2251" status="New">
+<title>C++ library should define <tt>ssize_t</tt></title>
+<section><sref ref="[support.types]"/></section>
+<submitter>Matt Austern</submitter>
+<date>19 Apr 2013</date>
+
+<discussion>
+
+<p>
+The C++ standard library defines <tt>size_t</tt>, a typedef for an implementation defined unsigned integer type 
+that can represent the sizes of objects. The POSIX standard augments this with <tt>ssize_t</tt>, a typedef for a 
+signed integer type that corresponds to <tt>size_t</tt>.
+<p/>
+The <tt>ssize_t</tt> typedef is useful &mdash; useful enough that the C++ standard even refers to it. (In a 
+non-normative footnote in <sref ref="[stream.types]"/>.)  Also, lots of OS vendors add it to their headers anyway, 
+even though it isn't part of the C or C++ standards, because those vendors are trying to define headers that 
+conform to multiple standards at once. We should make users' and implementers' lives easier by adding 
+<tt>ssize_t</tt> to <sref ref="[support.types]"/>.
+</p>
+
+</discussion>
+
+<resolution>
+</resolution>
+
+</issue>
