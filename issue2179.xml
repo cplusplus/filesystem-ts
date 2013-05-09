@@ -44,8 +44,8 @@ template&lt;class Y&gt; explicit shared_ptr(Y* p);
 the notion of <em>creating unique pointers</em> can be read to be included by this note, because the post-condition
 of this constructor is <tt>unique() == true</tt>. Evidence for this interpretation seems to be weak, though.
 <p/>
-Howard Hinnant presented the counter argument, that actually the following is an "anti-idiom" and
-it seems questionable to teach it to be well-defined in any case:
+Howard Hinnant presented the counter argument, that actually the following is an "anti-idiom" and it seems questionable 
+to teach it to be well-defined in any case:
 </p>
 <blockquote><pre>
 auto xraw = new X;
@@ -63,8 +63,8 @@ are correct.
 <p/>
 Several library implementations currently do not support this example, instead they typically
 cause a crash. Matt points out that there are currently no explicit requirements imposed on
-<tt>shared_ptr</tt> objects to own the same underlying object without sharing the ownership. It
-might be useful to add such a requirement.
+<tt>shared_ptr</tt> objects to prevent them from owning the same underlying object without sharing the 
+ownership. It might be useful to add such a requirement.
 </p>
 
 <note>2013-03-15 Issues Teleconference</note>
@@ -73,6 +73,13 @@ Moved to Open.
 </p>
 <p>
 More discussion is needed to pick a direction to guide a proposed resolution.
+</p>
+
+<note>2013-05-09 Jonathan comments</note>
+<p>
+The note says the newly created <tt>shared_ptr</tt> is assigned to the <tt>weak_ptr</tt> member. It doesn't 
+say before doing that the <tt>shared_ptr</tt> should check if the <tt>weak_ptr</tt> is non-empty and possibly 
+share ownership with some other pre-existing <tt>shared_ptr</tt>.
 </p>
 
 </discussion>
