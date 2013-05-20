@@ -1,0 +1,82 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="2255" status="New">
+<title><tt>dynarray</tt> constructor ambiguity</title>
+<section><sref ref="[dynarray.cons]"/></section>
+<submitter>Jonathan Wakely</submitter>
+<date>23 Apr 2013</date>
+
+<discussion>
+
+<p>
+These constructors can interact badly::
+</p>
+<blockquote><pre>
+template&lt;class Alloc&gt;
+  dynarray(size_type c, const Alloc&amp; alloc);
+dynarray(size_type c, const T&amp; v);
+</pre></blockquote>
+<p>
+Unless the second argument is a value of exactly the type <tt>T</tt> you will get the first constructor, i.e. 
+all of these will fail to compile:
+</p>
+<blockquote><pre>
+dynarray&lt;long&gt; dlong(1, 1);   // 1 is not long
+dynarray&lt;float&gt; dflt(1, 1.0);  // 1.0 is not float
+dynarray&lt;int*&gt; dptr(1, nullptr);  // nullptr is not int*
+dynarray&lt;void*&gt; doh(1, 0);  // 0 is not void*
+</pre></blockquote>
+<p>
+The <tt>nullptr</tt> case is particularly annoying, a user trying to do the right thing by saying <tt>nullptr</tt> 
+instead of <tt>NULL</tt> still gets the wrong result.
+<p/>
+The constructor taking an allocator requires that "<tt>Alloc</tt> shall meet the requirements for an Allocator" 
+but doesn't actually say "shall not participate in overload resolution unless ..."
+<p/>
+I believe we have no precedent for using SFINAE to check "the requirements for an Allocator" because it's 
+a pretty complicated set of requirements. We could say it shall not participate in overload resolution if <tt>Alloc</tt> 
+is implicitly convertible to <tt>value_type</tt>.
+<p/>
+Alternatively, we could follow the same approach used by other types that can be constructed with an unconstrained 
+allocator type and use <tt>std::allocator_arg_t</tt> as the first argument instead of adding an allocator after the 
+other arguments.
+</p>
+</discussion>
+
+<resolution>
+
+<p>
+<em>Either</em> use the correct way to unambiguously call a constructor taking any type of allocator, i.e. change the 
+constructors to take <tt>dynarray(std::allocator_arg_t, const Alloc&amp;, ...)</tt></p>
+
+<ol>
+<li><p><em>or</em> constrain the problematic constructor by adding a new paragraph to <sref ref="[dynarray.cons]"/>:</p>
+<blockquote><pre>
+template &lt;class Alloc&gt;
+  dynarray(size_type c, const Alloc&amp; alloc);
+template &lt;class Alloc&gt;
+  dynarray(size_type c, const T&amp; v, const Alloc&amp; alloc);
+template &lt;class Alloc&gt;
+  dynarray(const dynarray&amp; d, const Alloc&amp; alloc);
+template &lt;class Alloc&gt;
+  dynarray(initializer_list&lt;T&gt;, const Alloc&amp; alloc);
+</pre><blockquote>
+<p>
+-9- <i>Requires</i>: <tt>Alloc</tt> shall meet the requirements for an Allocator (<sref ref="[allocator.requirements]"/>).
+<p/>
+-10- <i>Effects</i>: Equivalent to the preceding constructors except that each element is constructed with usesallocator
+construction (<sref ref="[allocator.uses.construction]"/>).
+<p/>
+<ins>-?- <i>Remarks</i>: The first constructor shall not participate in overload resolution unless <tt>Alloc</tt> is not 
+implicitly convertible to <tt>T</tt>.</ins>
+</p>
+</blockquote></blockquote>
+</li>
+</ol>
+
+</resolution>
+
+</issue>
