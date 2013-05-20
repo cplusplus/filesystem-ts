@@ -3,7 +3,7 @@
   <!ENTITY nbsp "&#160;">
 ] >
 
-<issue num="2181" status="New">
+<issue num="2181" status="Open">
 <title>Exceptions from <em>seed sequence</em> operations</title>
 <section><sref ref="[rand.req.seedseq]"/>, <sref ref="[rand.eng]"/>, <sref ref="[rand.adapt]"/></section>
 <submitter>Daniel Kr&uuml;gler</submitter>
@@ -91,6 +91,40 @@ solves the problem that currently <sref ref="[rand.eng]"/> also describes requir
 <sref ref="[rand.adapt]"/> (Constrained templates involving the <tt>Sseq</tt> parameters).
 </p>
 
+<note>2013-04-20, Bristol</note>
+
+<p>
+Remove the first bullet point:
+</p>
+<blockquote><p>
+?- Throughout this sub-clause general requirements and conventions are described that apply to every class 
+template specified in sub-clause <sref ref="[rand.eng]"/> and <sref ref="[rand.adapt]"/>. Phrases of the form "in those 
+sub-clauses" shall be interpreted as equivalent to "in sub-clauses <sref ref="[rand.eng]"/> and <sref ref="[rand.adapt]"/>". 
+</p></blockquote>
+<p>
+Replace "in those sub-clauses" with "in sub-clauses <sref ref="[rand.eng]"/> and <sref ref="[rand.adapt]"/>".
+<p/>
+Find another place for the wording. 
+<p/>
+Daniel: These are requirements on the implementation not on the types. I'm not comfortable in moving it to another place 
+without double checking. 
+<p/>
+Improve the text (there are 4 "for"s): <em>for</em> copy constructors, <em>for</em> copy assignment operators, 
+<em>for</em> streaming operators, and <em>for</em> equality and inequality operators are not shown in the synopses. 
+<p/>
+Move the information of this paragraph to the paragraphs it refers to: 
+</p>
+<blockquote><p>
+"-?- Descriptions are provided in those sub-clauses only for engine operations that are not described in 
+<sref ref="[rand.req.eng]"/>, for adaptor operations that are not described in <sref ref="[rand.req.adapt]"/>, or for 
+operations where there is additional semantic information. In particular, declarations for copy constructors, for 
+copy assignment operators, for streaming operators, and for equality and inequality operators are not shown in the synopses." 
+</p></blockquote>
+<p>
+Alisdair: I prefer duplication here than consolidation/reference to these paragraphs. 
+<p/>
+The room showed weakly favjust or for duplication. 
+</p>
 </discussion>
 
 <resolution>

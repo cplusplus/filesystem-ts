@@ -3,7 +3,7 @@
   <!ENTITY nbsp "&#160;">
 ] >
 
-<issue num="2188" status="New">
+<issue num="2188" status="Open">
 <title>Reverse iterator does not fully support targets that overload <tt>operator&amp;</tt></title>
 <section><sref ref="[reverse.iter.opref]"/></section>
 <submitter>Alisdair Meredith</submitter>
@@ -13,7 +13,7 @@
 <p>
 The specification for <tt>reverse_iterator::operator-></tt>
 returns the address of the object yielded by dereferencing
-with <tt>operatator*</tt>, but does not have the usual
+with <tt>operator*</tt>, but does not have the usual
 wording about returning the true address of the object.  As
 <tt>reverse_iterator</tt> requires the adapted iterator have
 at least the bidirectional iterator category, we know that
@@ -27,6 +27,13 @@ or <tt>vector</tt> of a type with such an overloaded operator,
 where algorithms are likely to work with a forward iteration, but
 not with reverse iteration.
 </p>
+
+<note>2013-04-20, Bristol</note>
+
+<p>
+Resolution: Goes to open now and move to review as soon as Daniel proposes a new wording.
+</p>
+
 </discussion>
 
 <resolution>
