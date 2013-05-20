@@ -3,7 +3,7 @@
   <!ENTITY nbsp "&#160;">
 ] >
 
-<issue num="2214" status="New">
+<issue num="2214" status="Open">
 <title>Clarify <tt>basic_ios::init</tt> call restrictions</title>
 <section><sref ref="[basic.ios.cons]"/></section>
 <submitter>Andrey Semashev</submitter>
@@ -99,6 +99,14 @@ state the semantics of calling it multiple times. The note could read as follows
 The function can be called multiple times during the object lifetime. Each subsequent 
 call reinitializes the object to the described in postconditions initial state.
 </p></blockquote>
+
+<note>2013-04-20, Bristol</note>
+
+<p>
+Alisdair: The current wording is unclear but the proposed resolution is wrong
+<p/>
+Solution: Clarify that <tt>init</tt> must be called once and only once. Move then to review. 
+</p>
 </discussion>
 
 <resolution>
