@@ -1,0 +1,49 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="2254" status="New">
+<title>Is <tt>dynarray</tt> an allocator-aware container?</title>
+<section><sref ref="[container.requirements.general]"/></section>
+<submitter>Jonathan Wakely</submitter>
+<date>23 Apr 2013</date>
+
+<discussion>
+
+<p>
+<sref ref="[container.requirements.general]"/> p3 says:
+</p>
+<blockquote>
+<p>
+"All of the containers defined in this Clause and in (21.4) except <tt>array</tt> meet the additional requirements 
+of an allocator-aware container, as described in Table 99."
+</p>
+</blockquote>
+<p>
+Is this true of <tt>dynarray</tt>?  I believe the answer must be no because <tt>dynarray</tt> has no <tt>allocator_type</tt>, 
+and morally should be no, so that operations are defined in terms of <tt>std::allocator&lt;T&gt;</tt>, which p13 says
+doesn't actually need to be used (which allows the elements to be default-initialized as is intended, rather than 
+"default-inserted into the container" using an allocator.)
+<p/>
+The requirement that "each element is constructed with uses-allocator construction" provides roughly equivalent behaviour 
+to the "<em>CopyInsertable into <tt>X</tt></em>" requirements for allocator-aware containers, allowing an allocator to 
+control construction of the <tt>dynarray</tt> elements.
+</p>
+
+</discussion>
+
+<resolution>
+
+<ol>
+<li><p>Change to <sref ref="[container.requirements.general]"/> p13:</p>
+<p>
+-13- All of the containers defined in this Clause and in (21.4) except <tt>array</tt> <ins>and <tt>dynarray</tt></ins> 
+meet the additional requirements of an allocator-aware container, as described in Table 99.
+</p>
+</li>
+</ol>
+
+</resolution>
+
+</issue>
