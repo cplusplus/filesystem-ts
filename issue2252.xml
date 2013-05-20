@@ -1,0 +1,65 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="2252" status="New">
+<title>Strong guarantee on <tt>vector::push_back()</tt> still broken with C++11?</title>
+<section><sref ref="[vector.modifiers]"/></section>
+<submitter>Nicolai Josuttis</submitter>
+<date>21 Apr 2013</date>
+
+<discussion>
+
+<p>
+According to my understanding, the strong guarantee of <tt>push_back()</tt> led to the introduction of <tt>noexcept</tt> 
+and to the typical implementation that vectors usually copy their elements on reallocation unless the move operations of 
+their element type guarantees not to throw.
+<p/>
+However, if I read the standard correctly, we still don't give the strong guarantee any more:
+Yes, <sref ref="[container.requirements.general]"/>/10 specifies:
+</p>
+<blockquote>
+<p>
+Unless otherwise specified (see 23.2.4.1, 23.2.5.1, 23.3.3.4, and 23.3.6.5) all container types defined in this
+Clause meet the following additional requirements:
+</p>
+<ul>
+<li>[&hellip;]</li>
+<li>if an exception is thrown by a <tt>push_back()</tt> or <tt>push_front()</tt> function, that function has no effects.</li>
+</ul>
+</blockquote>
+<p>
+However, <sref ref="[vector.modifiers]"/> specifies for vector modifiers, <em>including</em> <tt>push_back()</tt>:
+</p>
+<blockquote>
+<p>
+If an exception is thrown other than by the copy constructor, move constructor, assignment operator, or move 
+assignment operator of <tt>T</tt> or by any <tt>InputIterator</tt> operation there are no effects. If an exception 
+is thrown by the move constructor of a non-<tt>CopyInsertable</tt> <tt>T</tt>, the effects are unspecified.
+</p>
+</blockquote>
+<p>
+I would interpret this as an "otherwise specified" behavior for <tt>push_back()</tt>, saying that the strong guarantee 
+is only given if constructors and assignments do not throw. 
+<p/>
+That means, the strong guarantee of C++03 is broken with C++11.
+<p/>
+In addition to all that <sref ref="[container.requirements.general]"/> p10 b2 doesn't mention the corresponding functions
+<tt>emplace_back()</tt> and <tt>emplace_front()</tt>. These are similar single-element additions and should provide the same
+strong guarantee.
+<p/>
+Daniel adds:
+<p/>
+It seems the error came in when <a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2007/n2350.pdf">N2350</a>
+and <a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2007/n2345.pdf">N2345</a> became accepted and where 
+integrated into the working draft <a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2007/n2369.pdf">N2369</a>.
+The merge resulted in a form that changed the previous meaning and as far as I understand it, this effect was not intended.
+</p>
+
+</discussion>
+
+<resolution>
+</resolution>
+
+</issue>
