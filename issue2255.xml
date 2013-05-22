@@ -48,11 +48,26 @@ other arguments.
 
 <resolution>
 
+<ol style="list-style-type:upper-alpha">
+<li>
 <p>
 <em>Either</em> use the correct way to unambiguously call a constructor taking any type of allocator, i.e. change the 
-constructors to take <tt>dynarray(std::allocator_arg_t, const Alloc&amp;, ...)</tt></p>
+constructors to take <tt>dynarray(std::allocator_arg_t, const Alloc&amp;, ...)</tt> by modifying both the synopsis
+<sref ref="[dynarray.overview]"/> p2 and <sref ref="[dynarray.cons]"/> before p9 like so:</p>
 
-<ol>
+<blockquote><pre>
+template &lt;class Alloc&gt;
+  dynarray(<ins>allocator_arg_t, const Alloc&amp; a, </ins>size_type c<del>, const Alloc&amp; alloc</del>);
+template &lt;class Alloc&gt;
+  dynarray(<ins>allocator_arg_t, const Alloc&amp; a, </ins>size_type c, const T&amp; v<del>, const Alloc&amp; alloc</del>);
+template &lt;class Alloc&gt;
+  dynarray(<ins>allocator_arg_t, const Alloc&amp; a, </ins>const dynarray&amp; d<del>, const Alloc&amp; alloc</del>);
+template &lt;class Alloc&gt;
+  dynarray(<ins>allocator_arg_t, const Alloc&amp; a, </ins>initializer_list&lt;T&gt;<del>, const Alloc&amp; alloc</del>);
+</pre></blockquote>
+
+</li>
+
 <li><p><em>or</em> constrain the problematic constructor by adding a new paragraph to <sref ref="[dynarray.cons]"/>:</p>
 <blockquote><pre>
 template &lt;class Alloc&gt;
@@ -67,7 +82,7 @@ template &lt;class Alloc&gt;
 <p>
 -9- <i>Requires</i>: <tt>Alloc</tt> shall meet the requirements for an Allocator (<sref ref="[allocator.requirements]"/>).
 <p/>
--10- <i>Effects</i>: Equivalent to the preceding constructors except that each element is constructed with usesallocator
+-10- <i>Effects</i>: Equivalent to the preceding constructors except that each element is constructed with uses-allocator
 construction (<sref ref="[allocator.uses.construction]"/>).
 <p/>
 <ins>-?- <i>Remarks</i>: The first constructor shall not participate in overload resolution unless <tt>Alloc</tt> is not 
