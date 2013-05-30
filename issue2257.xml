@@ -1,0 +1,58 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="2257" status="New">
+<title>Simplify container requirements with the new algorithms</title>
+<section><sref ref="[container.requirements.general]"/></section>
+<submitter>Marshall Clow</submitter>
+<date>29 May 2013</date>
+
+<discussion>
+<p>
+Currently (n3690) table 96 says, in the row for &quot;<tt>a == b</tt>&quot;, that the
+Operational semantics are:
+</p>
+<blockquote>
+	<tt>==</tt> is an equivalence relation.<br/> 
+	<tt>distance(a.begin(), a.end()) == distance(b.begin(), b.end()) && equal(a.begin(), a.end(),b.begin())</tt>
+</blockquote>
+<p>
+Given the extension of equal for C++14, this can be simplified to:
+</p>
+<blockquote>
+	<tt>==</tt> is an equivalence relation.<br/>
+	<tt>equal(a.begin(), a.end(), b.begin(), b.end())</tt>
+</blockquote>
+
+<note>
+Alisdair notes that a similar edit would apply to the unordered containers requirements.
+</note>
+
+</discussion>
+
+<resolution>
+<p>
+Ammend the Operational Semantics for <sref ref="[container.requirements.general]"/>, Table 96, row &quot;<tt>a == b</tt>&quot;
+</p>
+<blockquote>
+	<tt>==</tt> is an equivalence relation.<br/>
+	<tt><del>distance(a.begin(), a.end()) == distance(b.begin(), b.end()) &&</del> equal(a.begin(), a.end(), b.begin()<ins>, b.end()</ins>)</tt>
+</blockquote>
+
+<p>
+Ammend <sref ref="[unord.req]"/> p12:
+</p>
+<blockquote>
+Two unordered containers <tt>a</tt> and <tt>b</tt> compare equal if <tt>a.size() == b.size()</tt>
+and, for every equivalent-key group <tt>[Ea1,Ea2)</tt> obtained from <tt>a.equal_range(Ea1)</tt>,
+there exists an equivalent-key group <tt>[Eb1,Eb2)</tt> obtained from <tt>b.equal_range(Ea1)</tt>,
+such that <del><tt>distance(Ea1, Ea2) == distance(Eb1, Eb2)</tt> and</del>
+<tt>is_permutation(Ea1, Ea2, Eb1<ins>, Eb2</ins>)</tt>
+returns <tt>true</tt>.  For ...
+</blockquote>
+
+</resolution>
+
+</issue>
