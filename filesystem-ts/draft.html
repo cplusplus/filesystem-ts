@@ -7,17 +7,11 @@
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 <title>
 
-  Filesystem Proposal
+  Draft Filesystem Technical Specification
   </title>
 <style type="text/css">
 
-body  {
-        font-family: sans-serif;
-        margin: 1em;
-        max-width : 7.5in;
-      }
-
-table { margin: 0.5em; }
+body  { max-width : 7.5in; }
 
 pre   { background-color:#D7EEFF }
 
@@ -31,12 +25,17 @@ del   { background-color:#FFD7D7 }
   <table border="0">
     <tr>
       <td>Document number:&nbsp;&nbsp; </td>
-      <td>N3505</td>
+      <td bgcolor="#FFFFCC">&nbsp;</td>
     </tr>
     <tr>
       <td>Date:</td>
       <td>
-      <!--webbot bot="Timestamp" S-Type="EDITED" S-Format="%Y-%m-%d" startspan -->2013-01-12<!--webbot bot="Timestamp" endspan i-checksum="12051" --></td>
+      <!--webbot bot="Timestamp" S-Type="EDITED" S-Format="%Y-%m-%d" startspan -->2013-06-24<!--webbot bot="Timestamp" endspan i-checksum="12376" --></td>
+    </tr>
+    <tr>
+      <td>Revises:</td>
+      <td>
+      N3505</td>
     </tr>
     <tr>
       <td>Project:</td>
@@ -49,297 +48,19 @@ del   { background-color:#FFD7D7 }
   </table>
 
 
-<h1>Filesystem Library Proposal (Revision 4)</h1>
+<h1 align="center">Working Draft,<br>
+Filesystem Library Technical Specification <font face="Times New Roman">— 
+Operations on File Systems</font></h1>
 
 
-      <a href="#Introduction">Introduction</a><br>
-      <a href="#Library-background">Library background</a><br>
-      <a href="#Differences-Boost">Differences from Boost Filesystem</a><br>
-<a href="#Design-path-encoding">Design decisions for paths</a><br>
-      <a href="#Revision-history">Revision history</a><br>
-      <a href="#TOC">Proposed Wording Table of Contents</a><br>
-      <a href="#Proposed-Wording">Proposed Wording</a><br>
-      <a href="#Acknowledgements">Acknowledgements</a><br>
-      <a href="#References">References</a>
+<p>© ISO/IEC</p>
 
 
-<h2><a name="Introduction">Introduction</a></h2>
+<p><b>Note: this is an early draft. It’s known to be incomplet and incorrekt, 
+and it has lots of <sub>bad formatting</sub>.</b></p>
 
 
-<p>This paper proposes a filesystem library component suitable for a <i>C++ 
-Standard Library Technical Specification.</i> 
-The proposed library is based on the 
-<a href="http://www.boost.org/libs/filesystem">Boost Filesystem Library</a>, 
-version 3. </p>
-
-
-<p>The proposal is a pure addition; no existing standard library headers are modified.&nbsp; 
-No existing code is broken by this proposal, assuming the usual namespace 
-discipline caveats. No 
-special compiler or runtime support is required, although C++11 features are used where appropriate. The 
-entire library is in a namespace within namespace <code>std</code>.</p>
-
-
-<h2><a name="Library-background">Library background</a></h2>
-
-
-<p>The Boost version of the library has been in widespread use for ten years. 
-The Dinkumware version of the library, based on <a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2006/n1975.html">
-N1975</a> (equivalent to version 2 of the Boost library), ships with Microsoft 
-Visual C++ 2012.</p>
-
-
-<p>The motivation and scope for a filesystem library were described in <a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2006/n1975.html">
-N1975</a>, and are not repeated here.</p>
-
-
-<h2><a name="Differences-Boost">Differences from Boost Filesystem</a></h2>
-
-
-<p>In the Boost library, facilities in class <code>path</code> to handle narrow 
-(i.e. <code>char</code>) character strings with encodings other than the 
-operating system's native encoding depend on <code>codecvt</code> arguments. In 
-the proposal, these facilities depend on <code>locale</code> arguments and 
-additional UTF-8 facilities have been added. The Filesystem Study Group believes 
-this approach is more reliable and useful, particularly as UTF-8 use continues 
-to spread.</p>
-
-
-<p>Otherwise, the proposal is very similar to the Boost library. Indeed, 
-most of the proposed wording is generated from the same source as the Boost library's 
-reference documentation.</p>
-
-
-<h2><a name="Design-path-encoding">Design</a> decisions for paths</h2>
-
-
-<p>The Filesystem library specification for paths carefully to 
-duplicates the encoding related behavior of the traditional C++ and C library 
-I/O functions that take narrow character path arguments. (E.G. on POSIX pass the 
-arguments unchanged to system API functions, on Windows let system API functions 
-handle the narrow to wide conversion.) Users who have been satisfied with that 
-behavior, and have not been plagued by portability or other path name encoding 
-problems, presumably will continue to supply paths to file system related 
-functions the same way they do currently and will continue to be satisfied. But 
-users who have been frustrated with portability or other path name encoding 
-problems may use C++11 <code>char16_t</code> and <code>char32_t</code> arguments 
-to and returns from class <code>path</code>, the class <code>path</code> 
-constructors that take locales, and the UTF-8 specific functions to address 
-encoding problems.</p>
-
-
-<h2><a name="Revision-history">Revision history</a></h2>
-
-
-<p><a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2013/n3505.html">
-N3505</a>, Filesystem 
-Library Proposal (Revision 4). Changes include:</p>
-
-
-<ul>
-  <li>Editorial:  Update POSIX references to ISO/IEC/IEEE 9945:2009.</li>
-  <li>Editorial:  Remove the table and shading formatting from examples and notes that 
-  mention trademarked names. The SG reviewed the use of trademarked names in 
-  Portland, and is satisfied they are useful and that ISO requirements have been 
-  met.</li>
-  <li>Editorial:  Remove the TODO list. Items have either been completed or moved elsewhere.</li>
-  <li>Editorial: Corrections reported by Jens Maurer.</li>
-  <li>Editorial: Corrections reported by Daniel Krügler.</li>
-  <li>Editorial: Cleanup of operating system references.</li>
-  <li>Editorial: Change document HTML encoding to <code>charset=utf-8</code>.</li>
-  <li>Editorial: Add &quot;native encoding&quot; definition for both narrow and 
-  wide encoding, and then replace uses of &quot;native encoding&quot; with &quot;native narrow 
-  encoding&quot; or &quot;native wide encode&quot; in response to request for clarification 
-  from Jean-Marc Bourguet, and a suggestion to add definition from Pete Becker.</li>
-  <li>Fix some class <code>path</code> editorial issues, remove &quot;<code>= default</code>&quot; 
-  from special member functions, and supply semantics for these functions. 
-  (Daniel Krügler, Alberto Ganesh Barbati)</li>
-  <li>Remove all <code>codecvt</code> arguments, as agreed by the SG in Portland.</li>
-  <li>Add two class <code>path</code> constructors and two <code>path</code> 
-  factory functions, with the UTF-8 and locale functionality agreed on by the SG in Portland. 
-  The functionality for the constructors and factory functions were reversed compared to 
-  the Portland discussion. This eliminated the need for an encoding enum, 
-  shortened the UTF-8 use case from <code>path(my_string, encoding::utf8)</code> 
-  to <code>u8path(my_string)</code>, and shortened the locale argument use case 
-  from <code>make_path(my_string, my_locale)</code> to <code>path(my_string, 
-  my_locale)</code>. Thanks to Daniel Krügler for help with the exact semantics.</li>
-  <li>Add class <code>path</code> observer functions <code>u8string()</code> 
-  and <code>generic_u8string()</code>, as agreed by the SG in Portland.</li>
-  <li >Add <code>operator string_type() const;</code> to class <code>path</code>. 
-  Microsoft and Dinkumware are already shipping this in their implementations. 
-  It provides a reasonable level of interoperation with standard library file 
-  steam constructors and open functions without modifying existing standard library 
-  classes or headers.</li>
-</ul>
-
-
-<p><a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2012/n3399.html">
-N3399=12-0089</a>, Filesystem 
-Library Proposal (Revision 3). Changes include:</p>
-
-
-<ul>
-  <li>Numerous corrections and improvements to the standardese of the proposed 
-  wording, based on comments and suggestions from the Filesystem Study Group, 
-  particularly Daniel Krügler and Robert Stewart.</li>
-  <li>Add <code>path::operator+=</code> and <code>concat</code> functions to tack on things like suffixes 
-  or numbers. Suggested by Ed Smith-Rowland and others.</li>
-    <li>Add section tags and section numbers, per LWG 
-    discussion in Kona.</li>
-  <li>Minimize use of trademarked names. Enclose uses in green highlighted boxes 
-  to facilitate discussion. Apply footnote required by ISO/IEC directives.</li>
-  <li>Introduce a definition for &quot;operating system dependent&quot;, and then use it 
-  to replace &quot;implementation defined behavior&quot; wherever the operating 
-  system's rules determine behavior.</li>
-  <li>Replace uses of&nbsp; const string return types with non-const string 
-  return types, per LWG discussion in Kona.</li>
-  <li>Remove permission for implementations to return const string&amp; in certain 
-  cases, per LWG discussion in Kona.</li>
-  <li>Remove path inserter and extractor dependency on Boost quoted manip (Issue 
-  7).</li>
-  <li>Replace use of <code>time_t</code> with <code>file_time_type</code>, a 
-  typedef for <code>std::chrono::system_clock::time_point</code>, per LWG 
-  discussion in Kona.</li>
-  <li>More consistent semantics and descriptions for return values from 
-  operational functions with <code>error_code&amp;</code> arguments that encounter 
-  an error. </li>
-  <li><code>recursive_directory_iterator</code> specifications are now given in 
-  terms of behavior only. Private &quot;for exposition only&quot; members have been 
-  removed.</li>
-  <li>
-  <code>recursive_directory_iterator</code> functions <code>
-  no_push_pending()</code> and <code>no_push()</code> have been renamed <code>
-  recursion_pending()</code> and <code>disable_recursion_pending()</code>. 
-  Option constant name <code>recurse</code> has been renamed <code>
-  follow_directory_symlinks</code>.&nbsp; These are responses to a request from 
-  Ed Smith-Rowland to improve clarity by reducing negative logic.</li>
-  <li>
-  A <code>recursive_directory_iterator</code> option <code>
-  skip_permission_denied</code> has been added to skip directories with 
-  permission denied, responding to several user requests.</li>
-  <li>
-  <code>symlink_option</code> has been renamed <code>
-  directory_options</code>, since it has become more general and now covers both
-  <code>follow_directory_symlinks</code> and <code>skip_permission_denied</code> 
-  options.&nbsp;</li>
-  <li>Add missing semantics  for <code>copy_directory</code>.</li>
-  <li>Change template parameters for <code>path::string</code> and
-  <code>path::generic_string</code> to the same as <code>std::basic_string</code> 
-  in response to comments from the FSG.</li>
-  <li>Remove <code>initial_path()</code> operational function. The functionality 
-  as currently specified is trivial for a user to duplicate using <code>
-  current_path()</code>. The original spec for <code>initial_path()</code> 
-  required support from the runtime library. That doesn't appear to be 
-  practical, and without it the motivation for the function is too weak for 
-  standardization.</li>
-  <li>Remove required changes to <code>&lt;fstream&gt;</code> header. The LWG 
-  does not wish to require modifications existing headers. Also, the Dinkumware/Microsoft version 
-  of the library has come up with a clever way to make class <code>path</code> 
-  work with the existing <code>&lt;fstream&gt;</code> classes constructors and open 
-  functions.</li>
-  <li>Remove <code>directory_entry</code> as a <code>Source</code> in [path.req]. 
-  It was Boost specific and is inappropriate for the standard library.</li>
-  <li>Change name of <code>recursive_directory_iterator::level()</code> to <code>
-  depth()</code>.</li>
-  <li>Change <code>enum file_type</code> to <code>enum class file_type</code>, 
-  simplify constant names, supply explicit values for constant names; per FSG 
-  discussions.</li>
-  <li>Change name of <code>copy_directory</code> function to <code>
-  create_directory</code> to more clearly reflect semantics per FSG 
-  discussions.</li>
-  <li>Major upgrade to <code>copy_options</code> in response to FSG 
-  discussions..</li>
-  <li>Major functionality upgrades to <code>copy()</code>and <code>
-  file_copy()</code> per FSG 
-  discussions.</li>
-  <li>Add path member function <code>replace_filename()</code>, suggested by 
-  Robert Stewart and others.</li>
-  <li>Add C++11 features to both the proposal and the Boost implementation and 
-  test suite:<ul>
-  <li>R-value reference move semantics.</li>
-  <li><code>noexcept</code>.</li>
-  <li><code>constexpr</code>.</li>
-  <li>Scoped enums.</li>
-  <li>Range-based for statement support.</li>
-  <li>New character types.</li>
-  <li>Replace explicit codecvt manipulation with a reference to <code>&lt;cuchar&gt;</code> 
-  conversion facilities.</li>
-</ul>
-
-
-  </li>
-</ul>
-
-
-<p><a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2012/n3365.html">N3365=12-0055</a>, Filesystem Library Proposal (Revision 
-2). Changes 
-include:</p>
-
-
-<ul>
-  <li>Namespaces changed to <code>std::tbd::filesystem</code> per discussion in Kona.</li>
-  <li>Removed references to Boost within the proposed wording.</li>
-  <li>Minor fixes to the proposed wording.</li>
-  <li>Added Issue 7: How should class path inserter and extractor be specified?</li>
-  <li>Marked up all issues to reflect Kona LWG discussions.</li>
-</ul>
-
-
-<p><a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2012/n3335.html">
-N3335=12-0025</a>, Filesystem Library for C++11/TR2 (Revision 1). Changes 
-include:</p>
-
-
-  <ul>
-    <li>Regenerated the proposed wording from the Boost Filesystem library 
-    reference documentation, using an automated process. This process reduces 
-    the likelihood of inadvertent discrepancies between descriptions.</li>
-    <li>An Issues list was added, seeded with issues 
-    raised by the LWG review of N3239 at the Bloomington meeting, and private 
-    communications from LWG members.</li>
-    <li>Namespace changed to <code>files</code> as an experiment. Made this 
-    issue number 1 so the LWG can pass judgment.</li>
-    <li>New functions were added, suggested by David Svoboda, to generate 
-    canonical paths and manage permissions.</li>
-    <li>More C++11 functionality was applied. This process is still incomplete, 
-    however.</li>
-    <li>Added proposed changes to header &lt;fstream&gt;. The previous paper had 
-    inadvertently supplied the wrong wording.</li>
-    <li>Continued the general cleanup of wording.</li>
-</ul>
-
-
-<p><a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2011/n3239.html">
-N3239 = 11-0009</a>, Filesystem Library Update for TR2 (Preliminary), reflected 
-changes made to the Boost library version 3 since the previously accepted 
-committee paper:</p>
-
-
-  <ul>
-    <li>A single class <code>path</code> handles all aspects of 
-    internationalization, replacing the previous template and its <code>path</code> 
-    and <code>wpath</code> instantiations. Character types <code>char</code>,
-    <code>wchar_t</code>, <code>char16_t</code>, and <code>char32_t</code> are 
-    supported. This is a major simplification of the path abstraction, 
-    particularly for functions that take path arguments. This change was based 
-    on a suggestion by Peter Dimov.</li>
-    <li>Several operational functions have been added, including much better 
-    symlink support, the ability to resize a file, and the ability to generate a 
-    unique path.</li>
-    <li>Support for error reporting via <code>error_code</code> is now uniform 
-    throughout the operations functions.</li>
-    <li>Several functions have been renamed, based on feedback from users.</li>
-  </ul>
-
-
-<p><a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2006/n1975.html">
-N1975 = 06-0045</a>, Filesystem Library Proposal for TR2 (Revision 3), was 
-adopted by the committee in April, 2006, at the Berlin meeting. Shortly 
-afterward the Library Working Group set aside work on TR2 to concentrate on 
-C++0x.</p>
-
-
-<h2>Proposed Wording <a name="TOC">Table of Contents</a></h2>
+<h2> <a name="TOC">Table of Contents</a></h2>
 
 <p>      <a href="#Filesystem Library">1  Filesystem Library </a><br>
       <a href="#Definitions">1.1  Definitions </a><br>
@@ -3733,48 +3454,10 @@ path unique_path(const path&amp; model, error_code&amp; ec);</pre>
   hexadecimal output characters are specified, 44 bits of randomness are 
   supplied.&nbsp; <i>-- end example</i>] </p>
 </blockquote>
-<hr>
-
-
- </p>
-<p><span style="font-style: italic; background-color: #E0E0E0">End of Proposed 
-wording.</span></p>
-<hr>
-<p>
 
 <p></p>
 <h2><a name="Acknowledgements">Acknowledgements</a></h2>
-<p>This Filesystem Library is dedicated to my wife, Sonda, who provided the 
-support necessary to see both a trial implementation and the proposal itself 
-through to completion. She gave me the strength to continue after a difficult 
-year of cancer treatment in the middle of it all.</p>
-<p>Members of the C++ standards committee Filesystem Study Group contributed 
-numerous comments, suggestions, and bug-fixes to the post-C++11 proposal for 
-standardizing the library. Daniel Krügler and Robert Steward reviewed the text 
-in great detail, and made major contributions to the standardization effort both 
-in terms of fixes and suggested improvements.</p>
-<p>Many people contributed technical comments, ideas, and suggestions to the 
-Boost Filesystem Library. See <a href="http://www.boost.org/libs/filesystem/doc/index.htm#Acknowledgements">http://www.boost.org/libs/filesystem/doc/index.htm#Acknowledgements</a>.</p>
-<p>Dietmar Kuehl contributed the original Boost Filesystem Library directory_iterator design. Peter Dimov, Walter Landry, Rob Stewart, and Thomas 
-Witt were particularly helpful in refining the library.</p>
-<p>The create_directories, extension, basename, and replace_extension functions 
-were developed by Vladimir Prus. The temp_directory_path function was 
-contributed by Jeff Flinn. David Svoboda suggested the canonical function and 
-provided psuedo-code. The Library Working Group requested the removal of 
-explicit codecvt arguments, leading to the separation of string interoperability 
-features into a separate library.</p>
-<p>Howard Hinnant and John Maddock reviewed a draft of the version 2 proposal, and 
-identified a number of mistakes or weaknesses, resulting in a more polished 
-final document.</p>
-<p>Peter Dimov suggested a single class path, with member templates to adapt to 
-multiple string types. His idea became the basis for the version 3 path design.</p>
 <h2><a name="References">References</a></h2>
-<table border="0" cellpadding="5" cellspacing="0" style="border-collapse: collapse" bordercolor="#111111" width="100%">
-  <tr>
-    <td width="16%" valign="top">[Abrahams]</td>
-    <td width="84%">Dave Abrahams, Error and Exception Handling, <a href="http://www.boost.org/more/error_handling.html">www.boost.org/more/error_handling.html</a></td>
-  </tr>
-</table>
 <hr>
 
 
