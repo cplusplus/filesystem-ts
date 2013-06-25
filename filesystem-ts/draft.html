@@ -93,7 +93,7 @@ Normative references<br>
       &nbsp;&nbsp;&nbsp;<a href="#Relative-path">1.1.18  relative path </a><br>
       &nbsp;&nbsp;&nbsp;<a href="#symbolic-link">1.1.19  symbolic link </a><br>
       <a href="#Conformance">1.2  Conformance </a><br>
-      &nbsp;&nbsp;&nbsp;<a href="#fs.conform.9945">1.2.1  ISO/IEC/IEEE 9945 conformance </a><br>
+      &nbsp;&nbsp;&nbsp;<a href="#fs.conform.9945">1.2.1 POSIX conformance </a><br>
       &nbsp;&nbsp;&nbsp;<a href="#fs.conform.os">1.2.2  Operating system dependent behavior conformance </a><br>
       <a href="#fs.req">1.3  Requirements </a><br>
       <a href="#Header-filesystem-synopsis">1.4  Header <code>&lt;filesystem&gt;</code> synopsis 
@@ -202,10 +202,9 @@ to call native
 operating system or other API's. <i>--end note</i>]</p>
 </blockquote>
 <p>Implementations are encouraged to provide such behavior as it is defined by 
-ISO/IEC/IEEE 9945. Implementations shall document any behavior that differs from 
-the behavior defined by ISO/IEC/IEEE 9945. Implementations that do not support 
-exact ISO/IEC/IEEE 9945 behavior are encouraged to provide behavior as close to 
-ISO/IEC/IEEE 9945 behavior as is reasonable given the 
+POSIX. Implementations shall document any behavior that differs from the 
+behavior defined by POSIX. Implementations that do not support exact POSIX 
+behavior are encouraged to provide behavior as close to POSIX behavior as is reasonable given the 
 limitations of actual operating systems and file systems. If an implementation cannot provide any 
 reasonable behavior, the implementation shall report an error in an 
 implementation-defined manner.</p>
@@ -382,8 +381,7 @@ native pathname format.</p>
 
 <p>Pathname resolution is the operating system dependent mechanism for resolving 
 a pathname to a particular file in a file hierarchy. There may be multiple 
-pathnames that resolve to the same file.&nbsp; [<i>Example:</i> The ISO/IEC/IEEE 9945 
-POSIX standard specifies the mechanism in section 4.11, Pathname resolution. <i>
+pathnames that resolve to the same file.&nbsp; [<i>Example:</i> POSIX specifies the mechanism in section 4.11, Pathname resolution. <i>
 --end example]</i></p>
 
 <h3>1.1.18  <a name="Relative-path">relative path</a> [fs.def.relative-path]</h3>
@@ -1981,7 +1979,7 @@ group results in undefined behavior.</p>
 </table>
 <h2>1.10  Enum class perms [<a name="enum.perms">enum.perms</a>]</h2>
 <p>This enumeration specifies bitmask constants used to identify file 
-permissions. <i><span style="background-color: #E0E0E0">ISO/</span><span style="background-color: #E0E0E0">IEC/IEEE</span><span style="background-color: #E0E0E0"> 9945 
+permissions. <i><span style="background-color: #E0E0E0">POSIX 
 (POSIX) specifies actual values, and those values have been adopted here because 
 they are very familiar and ingrained for many  users.</span></i></p>
 <table border="1" cellpadding="5" cellspacing="0" style="border-collapse: collapse" bordercolor="#111111">
@@ -1989,7 +1987,7 @@ they are very familiar and ingrained for many  users.</span></i></p>
     <td><b>Name</b></td>
     <td align="center"><b>Value<br>
     (octal)</b></td>
-    <td align="center"><b>ISO/IEC/IEEE 9945<br>
+    <td align="center"><b>POSIX<br>
     macro</b></td>
     <td><b>Definition or notes</b></td>
   </tr>
@@ -2406,7 +2404,8 @@ to avoid following symbolic links.</p>
 <p>If a file  is removed from or added to a directory after the 
 construction of a <code>directory_iterator</code> for the directory, it is 
 unspecified whether or not subsequently incrementing the iterator will ever 
-result in an iterator referencing the removed or added directory entry. See ISO/IEC/IEEE 9945 <code><a href="http://www.opengroup.org/onlinepubs/000095399/functions/readdir_r.html">readdir_r()</a></code>. <i>--end note</i>]</p>
+result in an iterator referencing the removed or added directory entry. See 
+POSIX <code><a href="http://www.opengroup.org/onlinepubs/000095399/functions/readdir_r.html">readdir_r()</a></code>. <i>--end note</i>]</p>
 </blockquote>
 <h3>1.14.1  <a name="directory_iterator-members"><code>directory_iterator</code> members</a> 
 [directory_iterator.members]</h3>
@@ -2839,7 +2838,7 @@ bool <a name="create_directories2">create_directories</a>(const path&amp; p, err
 bool create_directory(const path&amp; p, error_code&amp; ec) noexcept;</pre>
 <blockquote>
   <p><i>Effects:</i> Establishes the postcondition by attempting to create the 
-  directory <code>p</code> resolves to, as if by ISO/IEC/IEEE 9945 <code><a href="http://www.opengroup.org/onlinepubs/000095399/functions/mkdir.html">
+  directory <code>p</code> resolves to, as if by POSIX <code><a href="http://www.opengroup.org/onlinepubs/000095399/functions/mkdir.html">
   mkdir()</a></code> with a second argument of S_IRWXU|S_IRWXG|S_IRWXO. Creation 
   failure because <code>p</code> resolves to an existing directory shall not be 
   treated as an error. </p>
@@ -2880,7 +2879,7 @@ bool create_directory(const path&amp; p, const path&amp; existing_p, error_code&
 void create_directory_symlink(const path&amp; to, const path&amp; new_symlink,
                               error_code&amp; ec) noexcept;</pre>
 <blockquote>
-  <p><i>Effects:</i> Establishes the postcondition, as if by ISO/IEC/IEEE 9945 <code><a href="http://www.opengroup.org/onlinepubs/000095399/functions/symlink.html">symlink()</a></code>.</p>
+  <p><i>Effects:</i> Establishes the postcondition, as if by POSIX <code><a href="http://www.opengroup.org/onlinepubs/000095399/functions/symlink.html">symlink()</a></code>.</p>
   <p><i>
   Postcondition:</i> <code>new_symlink</code> resolves to a symbolic link file that 
   contains an unspecified representation of <code>to</code>.</p>
@@ -2898,7 +2897,7 @@ void create_directory_symlink(const path&amp; to, const path&amp; new_symlink,
 void <a name="create_hard_link2">create_hard_link</a>(const path&amp; to, const path&amp; new_hard_link,
                                       error_code&amp; ec) noexcept;</pre>
 <blockquote>
-  <p><i>Effects:</i> Establishes the postcondition, as if by ISO/IEC/IEEE 9945 <code><a href="http://www.opengroup.org/onlinepubs/000095399/functions/link.html">link()</a></code>.</p>
+  <p><i>Effects:</i> Establishes the postcondition, as if by POSIX <code><a href="http://www.opengroup.org/onlinepubs/000095399/functions/link.html">link()</a></code>.</p>
   <p><i>Postcondition:</i></p>
   <ul>
     <li>&nbsp;<code>exists(to) &amp;&amp; 
@@ -2919,7 +2918,7 @@ void <a name="create_hard_link2">create_hard_link</a>(const path&amp; to, const 
 void <a name="create_symlink2">create_symlink</a>(const path&amp; to, const path&amp; new_symlink,
                     error_code&amp; ec) noexcept;</pre>
 <blockquote>
-  <p><i>Effects:</i> Establishes the postcondition, as if by ISO/IEC/IEEE 9945 <code><a href="http://www.opengroup.org/onlinepubs/000095399/functions/symlink.html">symlink()</a></code>.</p>
+  <p><i>Effects:</i> Establishes the postcondition, as if by POSIX <code><a href="http://www.opengroup.org/onlinepubs/000095399/functions/symlink.html">symlink()</a></code>.</p>
   <p><i>
   Postcondition:</i> <code>new_symlink</code> resolves to a symbolic link file that 
   contains an unspecified representation of <code>to</code>.</p>
@@ -2935,8 +2934,7 @@ void <a name="create_symlink2">create_symlink</a>(const path&amp; to, const path
 path <a name="current_path2">current_path</a>(error_code&amp; ec);</pre>
 <blockquote>
   <p><i>Returns:</i> The absolute path of the current working directory, 
-  obtained as if by ISO/IEC/IEEE  
-  9945 <code><a href="http://www.opengroup.org/onlinepubs/000095399/functions/getcwd.html">getcwd()</a></code>. 
+  obtained as if by POSIX <code><a href="http://www.opengroup.org/onlinepubs/000095399/functions/getcwd.html">getcwd()</a></code>. 
   The signature with argument <code>ec</code> returns <code>path()</code> if an 
   error occurs.</p>
   <p><i>Throws:</i> As specified in <a href="#Error-reporting">Error reporting</a>.</p>
@@ -2952,7 +2950,7 @@ path <a name="current_path2">current_path</a>(error_code&amp; ec);</pre>
 <pre>void current_path(const path&amp; p);
 void current_path(const path&amp; p, error_code&amp; ec) noexcept;</pre>
 <blockquote>
-  <p><i>Effects:</i> Establishes the postcondition, as if by ISO/IEC/IEEE 9945 <code><a href="http://www.opengroup.org/onlinepubs/000095399/functions/chdir.html">chdir()</a></code>.</p>
+  <p><i>Effects:</i> Establishes the postcondition, as if by POSIX <code><a href="http://www.opengroup.org/onlinepubs/000095399/functions/chdir.html">chdir()</a></code>.</p>
 <p><i>Postcondition:</i> <code>equivalent(p, current_path())</code>.</p>
 <p><i>Throws:</i> As specified in <a href="#Error-reporting">Error reporting</a>.</p>
   <p>[<i>Note: </i>The current path for many operating systems is a dangerous 
@@ -2984,10 +2982,10 @@ bool <a name="equivalent2">equivalent</a>(const path&amp; p1, const path&amp; p2
   <blockquote>
   <p>Two paths are considered to resolve to the same file system entity if two 
   candidate entities reside on the same device at the same location. This is 
-  determined as if by the values of the ISO/IEC/IEEE 9945 <code><a href="http://www.opengroup.org/onlinepubs/000095399/basedefs/sys/stat.h.html">stat</a></code> structure<code>,</code> obtained as if by <code><a href="http://www.opengroup.org/onlinepubs/000095399/functions/stat.html">stat()</a></code> for the two paths, having equal <code>st_dev</code> values 
+  determined as if by the values of the POSIX <code><a href="http://www.opengroup.org/onlinepubs/000095399/basedefs/sys/stat.h.html">stat</a></code> structure<code>,</code> obtained as if by <code><a href="http://www.opengroup.org/onlinepubs/000095399/functions/stat.html">stat()</a></code> for the two paths, having equal <code>st_dev</code> values 
   and equal <code>st_ino</code> values.</p>
-  <p><i><span style="background-color: #E0E0E0">[Note: ISO/IEC/IEEE 9945 requires that &quot;st_dev 
-  must be unique within a Local Area Network&quot;. Conservative ISO/IEC/IEEE 9945 implementations may also wish to check for equal <code>st_size</code> and <code>st_mtime</code> values. Windows implementations may use <code>GetFileInformationByHandle()</code> as a surrogate for <code>stat()</code>, 
+  <p><i><span style="background-color: #E0E0E0">[Note: POSIX requires that &quot;st_dev 
+  must be unique within a Local Area Network&quot;. Conservative POSIX implementations may also wish to check for equal <code>st_size</code> and <code>st_mtime</code> values. Windows implementations may use <code>GetFileInformationByHandle()</code> as a surrogate for <code>stat()</code>, 
   and consider &quot;same&quot; to be equal values for <code>dwVolumeSerialNumber</code>, <code>nFileIndexHigh</code>, <code>nFileIndexLow</code>, <code>nFileSizeHigh</code>, <code>nFileSizeLow</code>, <code>ftLastWriteTime.dwLowDateTime</code>, and <code>ftLastWriteTime.dwHighDateTime</code>. -- end note]</span></i></p>
   </blockquote>
   <p><i>Throws:</i> <code>filesystem_error</code> if <code>(!exists(s1) &amp;&amp; !exists(s2)) || (is_other(s1) &amp;&amp; is_other(s2))</code>, 
@@ -2999,8 +2997,8 @@ uintmax_t <a name="file_size2">file_size</a>(const path&amp; p, error_code&amp; 
   <p><i>Returns:</i> If <code>exists(p) &amp;&amp; is_regular_file(p)</code>, the size 
   in bytes 
   of the file <code>p</code> resolves to, determined as if by the value of the 
-  ISO/IEC/IEEE 9945 <code><a href="http://www.opengroup.org/onlinepubs/000095399/basedefs/sys/stat.h.html">stat</a></code> structure member <code>st_size</code> 
-  obtained as if by ISO/IEC/IEEE 9945 <code><a href="http://www.opengroup.org/onlinepubs/000095399/functions/stat.html">stat()</a></code>. 
+  POSIX <code><a href="http://www.opengroup.org/onlinepubs/000095399/basedefs/sys/stat.h.html">stat</a></code> structure member <code>st_size</code> 
+  obtained as if by POSIX <code><a href="http://www.opengroup.org/onlinepubs/000095399/functions/stat.html">stat()</a></code>. 
   Otherwise, <code>static_cast&lt;uintmax_t&gt;(-1)</code>. The signature with 
   argument <code>ec</code> 
   returns <code>static_cast&lt;uintmax_t&gt;(-1)</code> if an error occurs.</p>
@@ -3142,8 +3140,8 @@ bool <a name="is_symlink3">is_symlink</a>(const path&amp; p, error_code&amp; ec)
 file_time_type <a name="last_write_time2">last_write_time</a>(const path&amp; p<code>, error_code&amp; ec</code>) noexcept;</pre>
 <blockquote>
   <p><i>Returns:</i> The time of last data modification of <code>p</code>, 
-  determined as if by the value of the ISO/IEC/IEEE 9945 <code><a href="http://www.opengroup.org/onlinepubs/000095399/basedefs/sys/stat.h.html">stat</a></code> structure member <code>st_mtime</code>&nbsp; 
-  obtained as if by ISO/IEC/IEEE 9945 <code><a href="http://www.opengroup.org/onlinepubs/000095399/functions/stat.html">stat()</a></code>. 
+  determined as if by the value of the POSIX <code><a href="http://www.opengroup.org/onlinepubs/000095399/basedefs/sys/stat.h.html">stat</a></code> structure member <code>st_mtime</code>&nbsp; 
+  obtained as if by POSIX <code><a href="http://www.opengroup.org/onlinepubs/000095399/functions/stat.html">stat()</a></code>. 
   The signature with argument <code>ec</code> returns <code>static_cast&lt;file_time_type&gt;(-1)</code> 
   if an error occurs.</p>
   <p><i>Throws:</i> As specified in <a href="#Error-reporting">Error reporting</a>.</p>
@@ -3153,9 +3151,8 @@ void <a name="last_write_time4">last_write_time</a>(const path&amp; p, file_time
                      error_code&amp; ec</code>) noexcept;</pre>
 <blockquote>
   <p><i>Effects:</i> Sets the time of last data modification of the file 
-  resolved to by <code>p</code> to <code>new_time</code>, as if by ISO/IEC/IEEE 
-  9945 <code><a href="http://www.opengroup.org/onlinepubs/000095399/functions/stat.html">stat()</a></code> 
-  followed by ISO/IEC/IEEE 9945 <a href="http://www.opengroup.org/onlinepubs/000095399/functions/utime.html"><code>utime()</code></a>.</p>
+  resolved to by <code>p</code> to <code>new_time</code>, as if by POSIX <code><a href="http://www.opengroup.org/onlinepubs/000095399/functions/stat.html">stat()</a></code> 
+  followed by POSIX <a href="http://www.opengroup.org/onlinepubs/000095399/functions/utime.html"><code>utime()</code></a>.</p>
   <p><i>Throws:</i> As specified in <a href="#Error-reporting">Error reporting</a>.</p>
   <p>[<i>Note:</i> A postcondition of <code>last_write_time(p) == new_time</code> is not specified since it might not hold for file systems 
   with coarse time granularity. <i>-- end note</i>]</p>
@@ -3166,7 +3163,7 @@ void permissions(const path&amp; p, <a href="#symlink_perms">perms</a> prms, err
   <p>
   <i>Requires:</i> <code>!((prms &amp; add_perms) &amp;&amp; (prms &amp; remove_perms))</code>.</p>
   <p><i>Effects:</i> Applies the effective permissions bits from <code>prms</code> to the file <code>p</code> 
-  resolves to, as if by ISO/IEC/IEEE 9945 <code><a href="http://pubs.opengroup.org/onlinepubs/9699919799/functions/fchmodat.html">fchmodat()</a></code>. The effective permission bits are determined as 
+  resolves to, as if by POSIX <code><a href="http://pubs.opengroup.org/onlinepubs/9699919799/functions/fchmodat.html">fchmodat()</a></code>. The effective permission bits are determined as 
   specified by the following table. </p>
   <table border="1" cellpadding="5" cellspacing="0" style="border-collapse: collapse" bordercolor="#111111">
     <tr>
@@ -3205,7 +3202,7 @@ path read_symlink(const path&amp; p, error_code&amp; ec);</pre>
 bool <a name="remove2">remove</a>(const path&amp; p, error_code&amp; ec) noexcept;</pre>
 <blockquote>
   <p><i>Effects:</i>&nbsp; If <code>exists(symlink_status(p,ec))</code>, it is 
-  removed as if by ISO/IEC/IEEE 9945 <code><a href="http://www.opengroup.org/onlinepubs/000095399/functions/remove.html">remove()</a></code>.</p>
+  removed as if by POSIX <code><a href="http://www.opengroup.org/onlinepubs/000095399/functions/remove.html">remove()</a></code>.</p>
   <blockquote>
   <p>[<i>Note:</i> A symbolic link is itself removed, rather than the file it 
   resolves to being removed. <i>-- end note</i>]</p>
@@ -3220,7 +3217,7 @@ bool <a name="remove2">remove</a>(const path&amp; p, error_code&amp; ec) noexcep
 uintmax_t <a name="remove_all2">remove_all</a>(const path&amp; p, error_code&amp; ec) noexcept;</pre>
 <blockquote>
   <p><i>Effects:</i>&nbsp; Recursively deletes the contents of p if it exists, 
-  then deletes file <code>p</code> itself, as if by ISO/IEC/IEEE 9945 <code><a href="http://www.opengroup.org/onlinepubs/000095399/functions/remove.html">remove()</a></code>.</p>
+  then deletes file <code>p</code> itself, as if by POSIX <code><a href="http://www.opengroup.org/onlinepubs/000095399/functions/remove.html">remove()</a></code>.</p>
   <blockquote>
   <p>[<i>Note:</i> A symbolic link is itself removed, rather than the file it 
   resolves to being removed. <i>-- end note</i>]</p>
@@ -3235,12 +3232,12 @@ uintmax_t <a name="remove_all2">remove_all</a>(const path&amp; p, error_code&amp
 void <a name="rename2">rename</a>(const path&amp; old_p, const path&amp; new_p, error_code&amp; ec) noexcept;</pre>
 <blockquote>
   <p><i>Effects:</i> Renames <code>old_p</code> to <code>new_p</code>, as if by 
-  ISO/IEC/IEEE 9945 <code><a href="http://www.opengroup.org/onlinepubs/000095399/functions/rename.html">rename()</a></code>.</p>
+  POSIX <code><a href="http://www.opengroup.org/onlinepubs/000095399/functions/rename.html">rename()</a></code>.</p>
   <blockquote>
   <p>[<i>Note:</i> If <code>old_p</code> and <code>new_p</code> resolve to the 
   same existing file, no action is taken. Otherwise, if <code>new_p</code> resolves to an 
   existing non-directory file, it is removed, while if <code>new_p</code> 
-  resolves to an existing directory, it is removed if empty on ISO/IEC/IEEE 9945 compliant operating 
+  resolves to an existing directory, it is removed if empty on POSIX compliant operating 
   systems but is an error on some other operating systems. A symbolic link is itself renamed, rather than 
   the file it resolves to being renamed. <i>-- end note</i>]</p>
   </blockquote>
@@ -3251,14 +3248,14 @@ void <a name="resize_file2">resize_file</a>(const path&amp; p, uintmax_t new_siz
 <blockquote>
 <p><i>Postcondition:</i> <code>file_size() == new_size</code>.</p>
 <p><i>Throws:</i> As specified in <a href="#Error-reporting">Error reporting</a>.</p>
-  <p><i>Remarks:</i> Achieves its postconditions as if by ISO/IEC/IEEE 9945 <code><a href="http://www.opengroup.org/onlinepubs/000095399/functions/truncate.html">truncate()</a></code>.</p>
+  <p><i>Remarks:</i> Achieves its postconditions as if by POSIX <code><a href="http://www.opengroup.org/onlinepubs/000095399/functions/truncate.html">truncate()</a></code>.</p>
 </blockquote>
 <pre>space_info <a name="space">space</a>(const path&amp; p);
 space_info <a name="space2">space</a>(const path&amp; p, error_code&amp; ec) noexcept;</pre>
 <blockquote>
   <p><i>Returns:</i> An object of type <code><a href="#space_info">space_info</a></code>. The value of the <code>space_info</code> 
-  object is determined as if by using ISO/IEC/IEEE 9945 <code><a href="http://www.opengroup.org/onlinepubs/000095399/functions/statvfs.html"
-   style="text-decoration: none">statvfs()</a></code> to obtain a ISO/IEC/IEEE 9945 struct
+  object is determined as if by using POSIX <code><a href="http://www.opengroup.org/onlinepubs/000095399/functions/statvfs.html"
+   style="text-decoration: none">statvfs()</a></code> to obtain a POSIX struct
   <code><a href="http://www.opengroup.org/onlinepubs/000095399/basedefs/sys/statvfs.h.html" style="text-decoration: none">statvfs</a></code>,
    and then multiplying its <code>f_blocks</code>, <code>f_bfree</code>,
    and <code>f_bavail</code> members by its <code>f_frsize</code> member,
@@ -3292,7 +3289,7 @@ thrown.<i> -- end note</i>] </p>
   <p><i>Effects: </i></p>
   <blockquote>
     <p>If possible, determines the attributes 
-    of the file <code>p</code> resolves to, as if by ISO/IEC/IEEE 9945 <code><a href="http://www.opengroup.org/onlinepubs/000095399/functions/stat.html">stat()</a></code>.</p>
+    of the file <code>p</code> resolves to, as if by POSIX <code><a href="http://www.opengroup.org/onlinepubs/000095399/functions/stat.html">stat()</a></code>.</p>
       If, during attribute determination, the underlying file system API reports 
     an error, sets <code>ec</code> to indicate the specific error reported. 
     Otherwise, <code>ec.clear()</code>.<blockquote>
@@ -3307,7 +3304,8 @@ thrown.<i> -- end note</i>] </p>
     <ul>
       <li>If the specific error indicates that <code>p</code> cannot be resolved 
       because some element of the path does not exist, return <code>
-      file_status(file_type::not_found)</code>.<span style="font-style: italic; background-color: #E0E0E0"> </span><i><span style="background-color: #E0E0E0">ISO/</span><span style="background-color: #E0E0E0">IEC/IEEE</span><span style="background-color: #E0E0E0"> 9945 errors that 
+      file_status(file_type::not_found)</code>.<span style="font-style: italic; background-color: #E0E0E0"> </span><i><span style="background-color: #E0E0E0">
+      POSIX errors that 
       indicate this are </span><span style="background-color: #E0E0E0">ENOENT</span><span style="background-color: #E0E0E0"> or 
       </span><span style="background-color: #E0E0E0">ENOTDIR</span><span style="background-color: #E0E0E0">. Windows equivalents 
       include </span><span style="background-color: #E0E0E0">
@@ -3322,8 +3320,7 @@ thrown.<i> -- end note</i>] </p>
       but the attributes cannot be determined, return <code>
       file_status(file_type::unknown)</code>. <i><span style="background-color: #E0E0E0">For example, Windows 
       </span><span style="background-color: #E0E0E0">ERROR_SHARING_VIOLATION</span><span style="background-color: #E0E0E0"> 
-      errors. For ISO/</span><span style="background-color: #E0E0E0">IEC/IEEE</span><span style="background-color: #E0E0E0"> 
-      9945, the case never arises.</span></i><br>
+      errors. For POSIX, the case never arises.</span></i><br>
 &nbsp;</li>
       <li>Otherwise, return <code>
       file_status(file_type::none)</code>.</li>
@@ -3335,7 +3332,7 @@ thrown.<i> -- end note</i>] </p>
     </blockquote>
     <p>Otherwise,</p>
     <ul>
-      <li>If the attributes indicate a regular file, as if by ISO/IEC/IEEE 9945&nbsp;<a href="http://www.opengroup.org/onlinepubs/000095399/basedefs/sys/stat.h.html">S_ISREG()</a>, 
+      <li>If the attributes indicate a regular file, as if by POSIX&nbsp;<a href="http://www.opengroup.org/onlinepubs/000095399/basedefs/sys/stat.h.html">S_ISREG()</a>, 
       return <code>
       file_status(file_type::regular)</code>. [<i>Note:</i> <code>
       file_type::regular</code> implies appropriate <code>&lt;fstream&gt;</code> operations 
@@ -3346,7 +3343,7 @@ thrown.<i> -- end note</i>] </p>
 fail on a directory.
 <i>-- end note</i>]<br>
 &nbsp;</li>
-      <li>Otherwise, if the attributes indicate a directory, as if by ISO/IEC/IEEE 9945
+      <li>Otherwise, if the attributes indicate a directory, as if by POSIX
       <a href="http://www.opengroup.org/onlinepubs/000095399/basedefs/sys/stat.h.html">S_ISDIR()</a>, 
       return <code>
       file_status(file_type::directory)</code>. [<i>Note:</i> <code>
@@ -3355,25 +3352,24 @@ directory_iterator(p)</code>would succeed.
 <i>-- end note</i>]<br>
 &nbsp;</li>
       <li>Otherwise, if the attributes indicate a block special file, as if by 
-      ISO/IEC/IEEE 9945
+      POSIX
       <a href="http://www.opengroup.org/onlinepubs/000095399/basedefs/sys/stat.h.html">S_ISBLK()</a>, 
       return <code>
       file_status(file_type::block)</code>.<br>
 &nbsp;</li>
       <li>Otherwise, if the attributes indicate a character special file, as if 
-      by ISO/IEC/IEEE 9945
+      by POSIX
       <a href="http://www.opengroup.org/onlinepubs/000095399/basedefs/sys/stat.h.html">S_ISCHR()</a>, 
       return <code>
       file_status(file_type::character)</code>.<br>
 &nbsp;</li>
       <li>Otherwise, if the attributes indicate a fifo or pipe file, as if by 
-      ISO/IEC/IEEE 9945
+      POSIX
       <a href="http://www.opengroup.org/onlinepubs/000095399/basedefs/sys/stat.h.html">S_ISFIFO()</a>, 
       return <code>
       file_status(file_type::fifo)</code>.<br>
 &nbsp;</li>
-      <li>Otherwise, if the attributes indicate a socket, as if by ISO/IEC/IEEE 
-      9945
+      <li>Otherwise, if the attributes indicate a socket, as if by POSIX
       <a href="http://www.opengroup.org/onlinepubs/000095399/basedefs/sys/stat.h.html">S_ISSOCK()</a>, 
       return <code>
       file_status(file_type::socket)</code>.<br>
@@ -3395,11 +3391,11 @@ file_status <a name="symlink_status2">symlink_status</a>(const path&amp; p, erro
 <blockquote>
   <p><i>Effects:</i>&nbsp; Same as <a href="#status">status()</a>, above, 
   except that the attributes 
-    of <code>p</code> are determined as if by ISO/IEC/IEEE 9945 <code><a href="http://www.opengroup.org/onlinepubs/000095399/functions/lstat.html">lstat()</a></code>.</p>
+    of <code>p</code> are determined as if by POSIX <code><a href="http://www.opengroup.org/onlinepubs/000095399/functions/lstat.html">lstat()</a></code>.</p>
 </blockquote>
 <blockquote>
       <p><i>Returns:</i> Same as <a href="#status">status()</a>, above, except 
-      that if the attributes indicate a symbolic link, as if by ISO/IEC/IEEE 9945 <a class="external" href="http://www.opengroup.org/onlinepubs/000095399/basedefs/sys/stat.h.html">S_ISLNK()</a>, return <code>
+      that if the attributes indicate a symbolic link, as if by POSIX <a class="external" href="http://www.opengroup.org/onlinepubs/000095399/basedefs/sys/stat.h.html">S_ISLNK()</a>, return <code>
       file_status(file_type::symlink)</code>. 
       The signature with argument <code>ec</code> returns <code>
       file_status(file_type::none)</code> if an error occurs.</p>
