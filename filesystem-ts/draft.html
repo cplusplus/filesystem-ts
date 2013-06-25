@@ -49,21 +49,29 @@ del   { background-color:#FFD7D7 }
 
 
 <h1 align="center">Working Draft,<br>
-Filesystem Library Technical Specification <font face="Times New Roman">— 
-Operations on File Systems</font></h1>
+Technical Specification <font face="Times New Roman">—</font> File System</h1>
 
 
 <p>© ISO/IEC</p>
 
 
-<p><b>Note: this is an early draft. It’s known to be incomplet and incorrekt, 
-and it has lots of <sub>bad formatting</sub>.</b></p>
+<p><i><b><span style="background-color: #E0E0E0">Note: this is an early draft. It’s known to be incomplet and incorrekt, 
+and it has lots of <sub>bad formatting</sub>.</span></b></i></p>
 
 
-<h2> <a name="TOC">Table of Contents</a></h2>
+<p><i><span style="background-color: #E0E0E0">Gray-shaded italic text is 
+editorial commentary on the draft. It will be removed from the actual Technical 
+Specification document.</span></i></p>
 
-<p>      <a href="#Filesystem Library">1  Filesystem Library </a><br>
-      <a href="#Definitions">1.1  Definitions </a><br>
+
+<h2> <a name="TOC">Contents</a></h2>
+
+<p>      Foreword<br>
+Introduction<br>
+Scope<br>
+Conformance<br>
+Normative references<br>
+      <a href="#Definitions">1.1 Terms and definitions </a><br>
       &nbsp;&nbsp;&nbsp;<a href="#Absolute-path">1.1.1  absolute path </a><br>
       &nbsp;&nbsp;&nbsp;<a href="#canonical-path">1.1.2  canonical path </a><br>
       &nbsp;&nbsp;&nbsp;<a href="#directory">1.1.3  directory </a><br>
@@ -157,49 +165,117 @@ path</code> iterators </a><br>
       <a href="#Operational-functions">1.16  Operational functions </a>
 </p>
       
-<h2><a name="Proposed-Wording">Proposed Wording</a></h2>
+<hr>
+<h2><a name="Foreword">Foreword</a></h2>
 
+<p><span style="background-color: #E0E0E0"><i>ISO requires a foreword, with most 
+content supplied by the Central Secretariat of ISO. It will be added by the 
+editor before the final document is sent to ISO.</i></span></p>
 
-<p><i><span style="background-color: #E0E0E0">Gray-shaded italic text is commentary on the proposal. It is not to be added to 
-the working paper.</span></i></p>
+<h2><a name="Introduction">Introduction</a></h2>
 
-<p><i><span style="background-color: #E0E0E0">Trademarked names are used in 
-non-normative examples and notes to illustrate operating system dependent 
-behavior.&nbsp; Such use is in accordance with <a href="#ISO-Drafting">ISO/IEC 
-Directives</a>, Part2, section 6.6.3, Use of trade names and trademarks</span></i><span style="background-color: #E0E0E0">.
-</span></p>
+<p><span style="background-color: #E0E0E0"><i>ISO specifies &quot;The introduction is 
+an optional preliminary element used, if required, to give specific information 
+or commentary about the technical content of the document, and about the reasons 
+prompting its preparation. It shall not contain requirements.&quot;</i></span></p>
 
-<p><span style="font-style: italic; background-color: #E0E0E0">Start of proposed 
-wording:</span></p>
-<h1>1  <a name="Filesystem Library">Filesystem Library</a> [filesystem]</h1>
+<h2><a name="Scope">Scope</a>&nbsp; [fs.scope]</h2>
 
-<p>This technical specification describes components that perform operations on file systems and 
-their components, such as paths, regular files, and directories.</p>
+<p>This Technical Specification specifies requirements for implementations of an 
+interface that computer programs written in the C++ programming language may use 
+to perform operations on file systems and their components, such as paths, 
+regular files, and directories. This Technical Specification is applicable to 
+information technology systems that can access hierarchical file systems, such 
+as those with operating systems that conform to the POSIX ([fs.norm.ref]) 
+interface. This Technical Specification is applicable only to vendors who wish 
+to provide the interface it describes.</p>
 
-<p>ISO/IEC/IEEE 9945 contains provisions which, through referenced in this 
-text, constitute provisions of this technical specification. At the time of 
-publication, the editions indicated were valid. All standards are subject to 
-revision, and parties to agreements based on this technical specification are 
-encouraged to investigate the possibility of applying the most recent editions 
-of the standard indicated below. Members of IEC and ISO maintain registers of 
-currently valid International Standards.</p>
+<h2> <a name="Conformance">Conformance</a> [fs.conformance]</h2>
+
+<p>&nbsp;</p>
+
+<h3>POSIX conformance [<a name="fs.conform.9945">fs.conform.9945</a>]</h3>
+<p>Some behavior is specified by reference to POSIX ([fs.norm.ref]). How such behavior is actually implemented is unspecified.</p>
+<blockquote>
+<p>[<i>Note:</i> This constitutes an &quot;as if&quot; rule allowing implementations 
+to call native 
+operating system or other API's. <i>--end note</i>]</p>
+</blockquote>
+<p>Implementations are encouraged to provide such behavior as it is defined by 
+ISO/IEC/IEEE 9945. Implementations shall document any behavior that differs from 
+the behavior defined by ISO/IEC/IEEE 9945. Implementations that do not support 
+exact ISO/IEC/IEEE 9945 behavior are encouraged to provide behavior as close to 
+ISO/IEC/IEEE 9945 behavior as is reasonable given the 
+limitations of actual operating systems and file systems. If an implementation cannot provide any 
+reasonable behavior, the implementation shall report an error in an 
+implementation-defined manner.</p>
+<blockquote>
+<p>[<i>Note:</i> Such errors might be reported by an #error directive, a <code>
+static_assert</code>, a <code>filesystem_error</code> exception, a special 
+return value, or some other manner. <i>--end note</i>]</p>
+</blockquote>
+<p>Implementations are not required to provide behavior that is not supported by 
+a particular file system.</p>
+<blockquote>
+<p>[<i>Example:</i> The <a href="http://en.wikipedia.org/wiki/FAT_filesystem">
+FAT file system</a> used by some memory cards, camera memory, and floppy discs 
+does not support hard links, symlinks, and many other features of more capable 
+file systems, so implementations are not required to support those features 
+on the FAT file system. <i>-- end example</i>]</p>
+</blockquote>
+<p>The behavior of functions described in this 
+technical specification 
+may differ from their specification in 
+the presence of <a href="#file-system-race">file system races</a> ([fs.def.race]). No diagnostic is required.</p>
+<p>If the possibility of a file system race would make it unreliable for a program to 
+test for a precondition before calling a function described herein, <i>
+Requires</i> is not specified for the function.</p>
+<blockquote>
+<p>[<i>Note:</i> As a design practice, preconditions are not specified when it 
+is unreasonable for a program to detect them prior to calling the function. <i>
+-- end note</i>]</p>
+</blockquote>
+<h3>Operating system dependent behavior conformance [<a name="fs.conform.os">fs.conform.os</a>]</h3>
+<p>Some behavior is specified as being 
+operating system dependent ([fs.def.osdep]). The operating system an 
+implementation is dependent upon is implementation defined.</p>
+<p>It is permissible for an implementation to be dependent upon an operating 
+system emulator rather than the actual underlying operating system.</p>
+
+<h2><a name="Normative-references">Normative references</a>&nbsp; [fs.norm.ref]</h2>
+
+<p>The following referenced documents are indispensable for the application of 
+this document. For dated references, only the edition cited applies. For undated 
+references, the latest edition of the referenced document (including any 
+amendments) applies. <span style="background-color: #E0E0E0"><i>ISO required 
+wording.</i></span></p>
+
 <ul>
-  <li>ISO/IEC/IEEE 9945:2009, Portable Operating System Interface (POSIX®) Base 
-  Specifications, Issue 7.</li>
+  <li>ISO/IEC 14882, <i>Programming Language C++<br>
+&nbsp;</i></li>
+  <li>ISO/IEC 9945, <i>Information Technology — Portable Operating System 
+  Interface (POSIX)</i></li>
 </ul>
 
-<p>This technical specification  mentions commercially 
+<p>[<i>Note:</i> The programming language and library described in ISO/IEC 14882 
+is herein called <i>the C++ Standard</i>. The operating system interface 
+described in ISO/IEC 9945 is herein called <i>POSIX</i>. <i>-- end note</i>]<p>This technical specification  mentions commercially 
 available operating systems for purposes of exposition.<sup> <a href="#footnote">
-[footnote]</a></sup><p><i><span style="background-color: #E0E0E0">This footnote 
+[footnote]</a></sup><p>Unless otherwise specified, the whole of the C++ 
+Standard&#39;s Library introduction [lib.library] is included into this Technical 
+Specification by reference.<p><i><span style="background-color: #E0E0E0">This footnote 
 is required by ISO/IEC Directives, Part2, section 6.6.3 Use of trade names and 
-trademarks:</span></i><p><sup>[<a name="footnote">footnote</a>]</sup> POSIX® is 
+trademarks:</span></i><blockquote>
+  <p><sup>[<a name="footnote">footnote</a>]</sup> POSIX® is 
 a registered trademark of The IEEE. MAC OS® is a registered trademark of Apple 
 Inc. Windows® is a registered trademark of Microsoft Corporation. This information is given for the convenience of 
 users of this document and does not constitute an endorsement by ISO or IEC of 
-these products.<p><span style="background-color: #E0E0E0"><i>End of footnote.</i></span><p></p>
+these products.</blockquote>
+<p></p>
 
-<h2>1.1  <a name="Definitions">Definitions</a> [fs.definitions]</h2>
-<p>The following definitions  shall apply throughout this technical specification:</p>
+<h2>  <a name="Definitions">Terms and definitions</a> [fs.definitions]</h2>
+<p>For the purposes of this document, the terms and definitions given in the C++ 
+Standard and the following apply.</p>
 
 <h3>1.1.1  <a name="Absolute-path">absolute path</a> [fs.def.absolute-path]</h3>
 <p>A path that 
@@ -328,55 +404,6 @@ If the file pointed to does not exist, the symbolic link is said to be a
 &quot;dangling&quot; symbolic link.<i> -- end note</i>]<i> </i></p>
 </blockquote>
 
-<h2>1.2  <a name="Conformance">Conformance</a> [fs.conformance]</h2>
-
-<h3>1.2.1  ISO/IEC/IEEE 9945 conformance [<a name="fs.conform.9945">fs.conform.9945</a>]</h3>
-<p>Some behavior is specified by reference to ISO/IEC/IEEE 9945. How such behavior is actually implemented is unspecified.</p>
-<blockquote>
-<p>[<i>Note:</i> This constitutes an &quot;as if&quot; rule allowing implementations 
-to call native 
-operating system or other API's. <i>--end note</i>]</p>
-</blockquote>
-<p>Implementations are encouraged to provide such behavior as it is defined by 
-ISO/IEC/IEEE 9945. Implementations shall document any behavior that differs from 
-the behavior defined by ISO/IEC/IEEE 9945. Implementations that do not support 
-exact ISO/IEC/IEEE 9945 behavior are encouraged to provide behavior as close to 
-ISO/IEC/IEEE 9945 behavior as is reasonable given the 
-limitations of actual operating systems and file systems. If an implementation cannot provide any 
-reasonable behavior, the implementation shall report an error in an 
-implementation-defined manner.</p>
-<blockquote>
-<p>[<i>Note:</i> Such errors might be reported by an #error directive, a <code>
-static_assert</code>, a <code>filesystem_error</code> exception, a special 
-return value, or some other manner. <i>--end note</i>]</p>
-</blockquote>
-<p>Implementations are not required to provide behavior that is not supported by 
-a particular file system.</p>
-<blockquote>
-<p>[<i>Example:</i> The <a href="http://en.wikipedia.org/wiki/FAT_filesystem">
-FAT file system</a> used by some memory cards, camera memory, and floppy discs 
-does not support hard links, symlinks, and many other features of more capable 
-file systems, so implementations are not required to support those features 
-on the FAT file system. <i>-- end example</i>]</p>
-</blockquote>
-<p>The behavior of functions described in this 
-technical specification 
-may differ from their specification in 
-the presence of <a href="#file-system-race">file system races</a> ([fs.def.race]). No diagnostic is required.</p>
-<p>If the possibility of a file system race would make it unreliable for a program to 
-test for a precondition before calling a function described herein, <i>
-Requires</i> is not specified for the function.</p>
-<blockquote>
-<p>[<i>Note:</i> As a design practice, preconditions are not specified when it 
-is unreasonable for a program to detect them prior to calling the function. <i>
--- end note</i>]</p>
-</blockquote>
-<h3>1.2.2  Operating system dependent behavior conformance [<a name="fs.conform.os">fs.conform.os</a>]</h3>
-<p>Some behavior is specified as being 
-operating system dependent ([fs.def.osdep]). The operating system an 
-implementation is dependent upon is implementation defined.</p>
-<p>It is permissible for an implementation to be dependent upon an operating 
-system emulator rather than the actual underlying operating system.</p>
 <h2>1.3  Requirements [<a name="fs.req">fs.req</a>]</h2>
 <p>Throughout this technical specification, <code>char</code>, <code>wchar_t</code>,
 <code>char16_t</code>, and <code>char32_t</code> are collectively called <i>
