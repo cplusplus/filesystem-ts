@@ -2617,6 +2617,7 @@ storage.</p>
 other kinds of errors occur frequently in file system operations, users should be aware 
 that any filesystem operational function, no matter how apparently innocuous, may encounter 
 an error.&nbsp;See <a href="#Error-reporting">Error reporting</a>. <i>-- end note</i>]</p>
+<h3>Absolute&nbsp; [<a name="fs.op.absolute">fs.op.absolute</a>]</h3>
 <pre>path <a name="absolute">absolute</a>(const path&amp; p, const path&amp; base=current_path());</pre>
   <blockquote>
   <p><i>Returns:</i> An <a href="#Absolute-path">absolute path</a> composed according to the 
@@ -2644,6 +2645,7 @@ an error.&nbsp;See <a href="#Error-reporting">Error reporting</a>. <i>-- end not
   <p><i>Throws:</i> If <code>base.is_absolute()</code> is true, throws only if 
   memory allocation fails.</p>
 </blockquote>
+<h3>Canonical&nbsp; [<a name="fs.op.canonical">fs.op.canonical</a>]</h3>
 <pre>path <a name="canonical">canonical</a>(const path&amp; p, const path&amp; base = current_path());
 path canonical(const path&amp; p, error_code&amp; ec);
 path canonical(const path&amp; p, const path&amp; base, error_code&amp; ec);</pre>
@@ -2663,6 +2665,7 @@ Signatures with argument <code>ec</code> return <code>path()</code> if an error 
   does this path live in /home/goodguy or /home/badguy?)&nbsp; <i>-- end note</i>]</p>
   
 </blockquote>
+<h3>Copy&nbsp; [<a name="fs.op.copy">fs.op.copy</a>]</h3>
 <pre>void <a name="copy">copy</a>(const path&amp; from, const path&amp; to);
 void copy(const path&amp; from, const path&amp; to, error_code&amp; ec) noexcept;</pre>
 <blockquote>
@@ -2779,6 +2782,7 @@ void copy(const path&amp; from, const path&amp; to, <a href="#copy_option">copy_
   
 </blockquote>
 
+<h3>Copy file&nbsp; [<a name="fs.op.copy_file">fs.op.copy_file</a>]</h3>
 <pre>bool copy_file(const path&amp; from, const path&amp; to);
 bool copy_file(const path&amp; from, const path&amp; to, error_code&amp; ec) noexcept;</pre>
 <blockquote>
@@ -2810,6 +2814,7 @@ bool <a name="copy_file2">copy_file</a>(const path&amp; from, const path&amp; to
   <p><i>Complexity:</i> At most one direct or indirect invocation of <code>
   status(to)</code>.</p>
 </blockquote>
+<h3>Copy symlink&nbsp; [fs.op.copy_symlink]</h3>
 <pre>void <a name="copy_symlink">copy_symlink</a>(const path&amp; existing_symlink, const path&amp; new_symlink);
 void copy_symlink(const path&amp; existing_symlink, const path&amp; new_symlink,
                   error_code&amp; ec) noexcept;</pre>
@@ -2821,6 +2826,9 @@ void copy_symlink(const path&amp; existing_symlink, const path&amp; new_symlink,
   <p><i>Throws:</i> As specified in <a href="#Error-reporting">Error reporting</a>.</p>
   
 </blockquote>
+
+<h3>Create directories&nbsp; [<a name="fs.op.create_directories">fs.op.create_directories</a>]</h3>
+
 <pre>bool <a name="create_directories">create_directories</a>(const path&amp; p);
 bool <a name="create_directories2">create_directories</a>(const path&amp; p, error_code&amp; ec) noexcept;</pre>
 <blockquote>
@@ -2835,6 +2843,9 @@ bool <a name="create_directories2">create_directories</a>(const path&amp; p, err
   <p><i>Complexity:</i> <i>O(n+1)</i> where <i>n</i> is the number of elements 
   of <code>p</code> that do not exist.</p>
 </blockquote>
+
+<h3>Create directory&nbsp; [<a name="fs.op.create_directory">fs.op.create_directory</a>]</h3>
+
 <pre>bool <a name="create_directory">create_directory</a>(const path&amp; p);
 bool create_directory(const path&amp; p, error_code&amp; ec) noexcept;</pre>
 <blockquote>
@@ -2876,6 +2887,8 @@ bool create_directory(const path&amp; p, const path&amp; existing_p, error_code&
 
 </blockquote>
 
+<h3>Create directory symlink&nbsp; [<a name="fs.op.create_dir_symlk">fs.op.create_dir_symlk</a>]</h3>
+
 <pre>void <a name="create_directory_symlink">create_directory_symlink</a>(const path&amp; to, const path&amp; new_symlink);
 void create_directory_symlink(const path&amp; to, const path&amp; new_symlink,
                               error_code&amp; ec) noexcept;</pre>
@@ -2894,6 +2907,9 @@ void create_directory_symlink(const path&amp; to, const path&amp; new_symlink,
   symbolic links regardless of the operating system - the FAT file system used on 
   memory cards and flash drives, for example. <i>-- end note</i>]</p>
   </blockquote>
+
+<h3>Create hard link&nbsp; [<a name="fs.op.create_hard_lk">fs.op.create_hard_lk</a>]</h3>
+
 <pre>void <a name="create_hard_link">create_hard_link</a>(const path&amp; to, const path&amp; new_hard_link);
 void <a name="create_hard_link2">create_hard_link</a>(const path&amp; to, const path&amp; new_hard_link,
                                       error_code&amp; ec) noexcept;</pre>
@@ -2915,6 +2931,9 @@ void <a name="create_hard_link2">create_hard_link</a>(const path&amp; to, const 
   cards and flash drives, for example. Some file systems limit the number of 
   links per file. <i>-- end note</i>]</p>
   </blockquote>
+
+<h3>Create symlink&nbsp; [fs.op.create_symlink]</h3>
+
 <pre>void <a name="create_symlink">create_symlink</a>(const path&amp; to, const path&amp; new_symlink);
 void <a name="create_symlink2">create_symlink</a>(const path&amp; to, const path&amp; new_symlink,
                     error_code&amp; ec) noexcept;</pre>
@@ -2931,6 +2950,9 @@ void <a name="create_symlink2">create_symlink</a>(const path&amp; to, const path
   symbolic links regardless of the operating system - the FAT system used on 
   memory cards and flash drives, for example. <i>-- end note</i>]</p>
   </blockquote>
+
+<h3>Current path&nbsp; [<a name="fs.op.current_path">fs.op.current_path</a>]</h3>
+
 <pre>path <a name="current_path">current_path</a>();
 path <a name="current_path2">current_path</a>(error_code&amp; ec);</pre>
 <blockquote>
@@ -2948,6 +2970,7 @@ path <a name="current_path2">current_path</a>(error_code&amp; ec);</pre>
   global variable. It may be changed unexpectedly by a third-party or system 
   library functions, or by another thread.&nbsp; <i>-- end note</i>]</p>
 </blockquote>
+
 <pre>void current_path(const path&amp; p);
 void current_path(const path&amp; p, error_code&amp; ec) noexcept;</pre>
 <blockquote>
@@ -2958,6 +2981,9 @@ void current_path(const path&amp; p, error_code&amp; ec) noexcept;</pre>
   global state. It may be changed unexpectedly by a third-party or system 
   library functions, or by another thread.&nbsp; <i>-- end note</i>]</p>
 </blockquote>
+
+<h3>Exists&nbsp; [<a name="fs.op.exists">fs.op.exists</a>]</h3>
+
 <pre>bool <a name="exists">exists</a>(file_status s) noexcept;</pre>
 <blockquote>
   <p><i>Returns:</i> <code>status_known(s) &amp;&amp; s.type() != 
@@ -2971,6 +2997,9 @@ bool <a name="exists3">exists</a>(const path&amp; p, error_code&amp; ec) noexcep
   if an error occurs.</p>
 <p><i>Throws:</i> As specified in <a href="#Error-reporting">Error reporting</a>.</p>
 </blockquote>
+
+<h3>Equivalent&nbsp; [<a name="fs.op.equivalent">fs.op.equivalent</a>]</h3>
+
 <pre><code>bool <a name="equivalent">equivalent</a>(const path&amp; p1, const path&amp; p2);
 bool <a name="equivalent2">equivalent</a>(const path&amp; p1, const path&amp; p2, error_code&amp; ec)</code> noexcept<code>;</code></pre>
 <blockquote>
@@ -2992,6 +3021,9 @@ bool <a name="equivalent2">equivalent</a>(const path&amp; p1, const path&amp; p2
   <p><i>Throws:</i> <code>filesystem_error</code> if <code>(!exists(s1) &amp;&amp; !exists(s2)) || (is_other(s1) &amp;&amp; is_other(s2))</code>, 
   otherwise as specified in <a href="#Error-reporting">Error reporting</a>.</p>
 </blockquote>
+
+<h3>File size&nbsp; [<a name="fs.op.file_size">fs.op.file_size</a>]</h3>
+
 <pre>uintmax_t <a name="file_size">file_size</a>(const path&amp; p);
 uintmax_t <a name="file_size2">file_size</a>(const path&amp; p, error_code&amp; ec) noexcept;</pre>
 <blockquote>
@@ -3005,6 +3037,9 @@ uintmax_t <a name="file_size2">file_size</a>(const path&amp; p, error_code&amp; 
   returns <code>static_cast&lt;uintmax_t&gt;(-1)</code> if an error occurs.</p>
   <p><i>Throws:</i> As specified in <a href="#Error-reporting">Error reporting</a>.</p>
 </blockquote>
+
+<h3>Hard link count&nbsp; [<a name="fs.op.hard_lk_ct">fs.op.hard_lk_ct</a>]</h3>
+
 <pre>uintmax_t <a name="hard_link_count">hard_link_count</a>(const path&amp; p);
 uintmax_t hard_link_count(const path&amp; p, error_code&amp; ec) noexcept;</pre>
 <blockquote>
@@ -3016,10 +3051,13 @@ uintmax_t hard_link_count(const path&amp; p, error_code&amp; ec) noexcept;</pre>
 
 </blockquote>
 
+<h3>Is block file&nbsp; [fs.op.]</h3>
+
 <pre>bool <code><a name="is_block_file">is_block_file</a></code>(file_status s) noexcept;</pre>
 <blockquote>
   <p><i>Returns:</i> <code>s.type() == file_type::block</code></p>
 </blockquote>
+
 <pre><code>bool is_block_file(const path&amp; p);
 bool is_block_file</a>(const path&amp; p, error_code&amp; ec) noexcept;</code></pre>
 <blockquote>
@@ -3028,6 +3066,9 @@ bool is_block_file</a>(const path&amp; p, error_code&amp; ec) noexcept;</code></
   ec</code> returns <code>false</code> if an error occurs.</p>
 <p><i>Throws:</i> As specified in <a href="#Error-reporting">Error reporting</a>.</p>
 </blockquote>
+
+
+<h3>Is character file&nbsp; [<a name="fs.op.is_char_file">fs.op.is_char_file</a>]</h3>
 
 <pre>bool <code><a name="is_character_file">is_character_file</a></code>(file_status s) noexcept;</pre>
 <blockquote>
@@ -3043,6 +3084,8 @@ bool is_character_file</a>(const path&amp; p, error_code&amp; ec) noexcept;</cod
 <p><i>Throws:</i> As specified in <a href="#Error-reporting">Error reporting</a>.</p>
 </blockquote>
 
+<h3>Is directory&nbsp; [<a name="fs.op.is_directory">fs.op.is_directory</a>]</h3>
+
 <pre>bool <code><a name="is_directory">is_directory</a></code>(file_status s) noexcept;</pre>
 <blockquote>
   <p><i>Returns:</i> <code>s.type() == file_type::directory</code></p>
@@ -3055,6 +3098,9 @@ bool <a name="is_directory3">is_directory</a>(const path&amp; p, error_code&amp;
   ec</code> returns <code>false</code> if an error occurs.</p>
 <p><i>Throws:</i> As specified in <a href="#Error-reporting">Error reporting</a>.</p>
 </blockquote>
+
+<h3>Is empty&nbsp; [<a name="fs.op.is_empty">fs.op.is_empty</a>]</h3>
+
 <pre><code>bool <a name="is_empty">is_empty</a>(const path&amp; p);
 bool <a name="is_empty2">is_empty</a></a>(const path&amp; p, error_code&amp; ec)</code> noexcept<code>;</code></pre>
 <blockquote>
@@ -3070,10 +3116,13 @@ bool <a name="is_empty2">is_empty</a></a>(const path&amp; p, error_code&amp; ec)
 <p><i>Throws:</i> As specified in <a href="#Error-reporting">Error reporting</a>.</p>
 </blockquote>
 
+<h3>Is fifo&nbsp; [<a name="fs.op.is_fifo">fs.op.is_fifo</a>]</h3>
+
 <pre>bool <code><a name="is_fifo">is_fifo</a></code>(file_status s) noexcept;</pre>
 <blockquote>
   <p><i>Returns:</i> <code>s.type() == file_type::fifo</code></p>
 </blockquote>
+
 <pre><code>bool is_fifo(const path&amp; p);
 bool is_fifo(const path&amp; p, error_code&amp; ec) noexcept;</code></pre>
 <blockquote>
@@ -3082,6 +3131,9 @@ bool is_fifo(const path&amp; p, error_code&amp; ec) noexcept;</code></pre>
   false</code> if an error occurs.</p>
 <p><i>Throws:</i> As specified in <a href="#Error-reporting">Error reporting</a>.</p>
 </blockquote>
+
+<h3>Is other&nbsp; [<a name="fs.op.is_other">fs.op.is_other</a>]</h3>
+
 <pre>bool <a name="is_other">is_other</a>(file_status s) noexcept;</pre>
 <blockquote>
   <p><i>Returns:</i> <code>return exists(s) &amp;&amp; !is_regular_file(s) &amp;&amp; !is_directory(s) &amp;&amp; !is_symlink(s)</code></p>
@@ -3094,6 +3146,9 @@ bool <a name="is_other3">is_other</a>(const path&amp; p, error_code&amp; ec) noe
   if an error occurs.</p>
   <p><i>Throws:</i> As specified in <a href="#Error-reporting">Error reporting</a>.</p>
 </blockquote>
+
+<h3>Is regular file&nbsp; [<a name="fs.op.is_regular_file">fs.op.is_regular_file</a>]</h3>
+
 <pre>bool <code><a name="is_regular_file">is_regular_file</a></code>(file_status s) noexcept;</pre>
 <blockquote>
   <p><i>Returns:</i> <code>s.type() == file_type::regular</code>.</p>
@@ -3113,6 +3168,8 @@ bool <a name="is_other3">is_other</a>(const path&amp; p, error_code&amp; ec) noe
   false</code> if an error occurs.</p>
 </blockquote>
 
+<h3>Is socket&nbsp; [<a name="fs.op.is_socket">fs.op.is_socket</a>]</h3>
+
 <pre>bool <code><a name="is_socket">is_socket</a></code>(file_status s) noexcept;</pre>
 <blockquote>
   <p><i>Returns:</i> <code>s.type() == file_type::socket</code></p>
@@ -3125,6 +3182,9 @@ bool is_socket(const path&amp; p, error_code&amp; ec) noexcept;</code></pre>
   ec</code> returns <code>false</code> if an error occurs.</p>
 <p><i>Throws:</i> As specified in <a href="#Error-reporting">Error reporting</a>.</p>
 </blockquote>
+
+<h3>Is symlink&nbsp; [<a name="fs.op.is_symlink">fs.op.is_symlink</a>]</h3>
+
 <pre>bool <a name="is_symlink">is_symlink</a>(file_status s) noexcept;</pre>
 <blockquote>
   <p><i>Returns:</i> <code>s.type() == file_type::symlink</code></p>
@@ -3137,6 +3197,9 @@ bool <a name="is_symlink3">is_symlink</a>(const path&amp; p, error_code&amp; ec)
   if an error occurs.</p>
   <p><i>Throws:</i> As specified in <a href="#Error-reporting">Error reporting</a>.</p>
 </blockquote>
+
+<h3>Last write time&nbsp; [<a name="fs.op.last_write_time">fs.op.last_write_time</a>]</h3>
+
 <pre>file_time_type <a name="last_write_time">last_write_time</a>(const path&amp; p);
 file_time_type <a name="last_write_time2">last_write_time</a>(const path&amp; p<code>, error_code&amp; ec</code>) noexcept;</pre>
 <blockquote>
@@ -3158,6 +3221,9 @@ void <a name="last_write_time4">last_write_time</a>(const path&amp; p, file_time
   <p>[<i>Note:</i> A postcondition of <code>last_write_time(p) == new_time</code> is not specified since it might not hold for file systems 
   with coarse time granularity. <i>-- end note</i>]</p>
 </blockquote>
+
+<h3>Permissions&nbsp; [<a name="fs.op.permissions">fs.op.permissions</a>]</h3>
+
 <pre>void <a name="permissions">permissions</a>(const path&amp; p, <a href="#symlink_perms">perms</a> prms);
 void permissions(const path&amp; p, <a href="#symlink_perms">perms</a> prms, error_code&amp; ec) noexcept;</pre>
 <blockquote>
@@ -3189,6 +3255,9 @@ void permissions(const path&amp; p, <a href="#symlink_perms">perms</a> prms, err
   implementation may use some other mechanism. -- <i>end note</i>]</p>
   <p><i>Throws:</i> As specified in <a href="#Error-reporting">Error reporting</a>.</p>
 </blockquote>
+
+<h3>Read symlink&nbsp; [<a name="fs.op.read_symlink">fs.op.read_symlink</a>]</h3>
+
 <pre>path <a name="read_symlink">read_symlink</a>(const path&amp; p);
 path read_symlink(const path&amp; p, error_code&amp; ec);</pre>
 <blockquote>
@@ -3199,6 +3268,9 @@ path read_symlink(const path&amp; p, error_code&amp; ec);</pre>
   <p><i>Throws:</i> As specified in <a href="#Error-reporting">Error reporting</a>. [<i>Note:</i> It is an error if <code>p</code> does not 
   resolve to a symbolic link. <i>-- end note</i>]</p>
 </blockquote>
+
+<h3>Remove&nbsp; [<a name="fs.op.remove">fs.op.remove</a>]</h3>
+
 <pre>bool <a name="remove">remove</a>(const path&amp; p);
 bool <a name="remove2">remove</a>(const path&amp; p, error_code&amp; ec) noexcept;</pre>
 <blockquote>
@@ -3214,6 +3286,9 @@ bool <a name="remove2">remove</a>(const path&amp; p, error_code&amp; ec) noexcep
   returns <code>false</code> if an error occurs.</p>
   <p><i>Throws:</i> As specified in <a href="#Error-reporting">Error reporting</a>.</p>
 </blockquote>
+
+<h3>Remove all&nbsp; [<a name="fs.op.remove_all">fs.op.remove_all</a>]</h3>
+
 <pre>uintmax_t <a name="remove_all">remove_all</a>(const path&amp; p);
 uintmax_t <a name="remove_all2">remove_all</a>(const path&amp; p, error_code&amp; ec) noexcept;</pre>
 <blockquote>
@@ -3229,6 +3304,9 @@ uintmax_t <a name="remove_all2">remove_all</a>(const path&amp; p, error_code&amp
   occurs.</p>
   <p><i>Throws:</i> As specified in <a href="#Error-reporting">Error reporting</a>.</p>
 </blockquote>
+
+<h3>Rename&nbsp; [<a name="fs.op.rename">fs.op.rename</a>]</h3>
+
 <pre>void <a name="rename">rename</a>(const path&amp; old_p, const path&amp; new_p);
 void <a name="rename2">rename</a>(const path&amp; old_p, const path&amp; new_p, error_code&amp; ec) noexcept;</pre>
 <blockquote>
@@ -3244,6 +3322,9 @@ void <a name="rename2">rename</a>(const path&amp; old_p, const path&amp; new_p, 
   </blockquote>
   <p><i>Throws:</i> As specified in <a href="#Error-reporting">Error reporting</a>.</p>
 </blockquote>
+
+<h3>Resize file&nbsp; [<a name="fs.op.resize_file">fs.op.resize_file</a>]</h3>
+
 <pre>void <a name="resize_file">resize_file</a>(const path&amp; p, uintmax_t new_size);
 void <a name="resize_file2">resize_file</a>(const path&amp; p, uintmax_t new_size, error_code&amp; ec) noexcept;</pre>
 <blockquote>
@@ -3251,6 +3332,9 @@ void <a name="resize_file2">resize_file</a>(const path&amp; p, uintmax_t new_siz
 <p><i>Throws:</i> As specified in <a href="#Error-reporting">Error reporting</a>.</p>
   <p><i>Remarks:</i> Achieves its postconditions as if by POSIX <code><a href="http://www.opengroup.org/onlinepubs/000095399/functions/truncate.html">truncate()</a></code>.</p>
 </blockquote>
+
+<h3>Space&nbsp; [<a name="fs.op.space">fs.op.space</a>]</h3>
+
 <pre>space_info <a name="space">space</a>(const path&amp; p);
 space_info <a name="space2">space</a>(const path&amp; p, error_code&amp; ec) noexcept;</pre>
 <blockquote>
@@ -3267,6 +3351,9 @@ space_info <a name="space2">space</a>(const path&amp; p, error_code&amp; ec) noe
   static_cast&lt;uintmax_t&gt;(-1)</code> if an error occurs.</p>
   <p><i>Throws:</i> As specified in <a href="#Error-reporting">Error reporting</a>.</p>
 </blockquote>
+
+<h3>Status&nbsp; [<a name="fs.op.status">fs.op.status</a>]</h3>
+
 <pre><a href="#file_status">file_status</a> <a name="status">status</a>(const path&amp; p);</pre>
 <blockquote>
   <p><i>Effects: </i>As if:</p>
@@ -3383,10 +3470,16 @@ directory_iterator(p)</code>would succeed.
       resolution, 
       pathname resolution continues using the contents of the symbolic link.</p>
 </blockquote>
+
+<h3>Status known&nbsp; [<a name="fs.op.status_known">fs.op.status_known</a>]</h3>
+
 <pre>bool <a name="status_known">status_known</a>(file_status s) noexcept;</pre>
 <blockquote>
   <p><i>Returns:</i> <code>s.type() != file_type::none</code></p>
 </blockquote>
+
+<h3>Symlink status&nbsp; [<a name="fs.op.symlink_status">fs.op.symlink_status</a>]</h3>
+
 <pre>file_status <a name="symlink_status">symlink_status</a>(const path&amp; p);
 file_status <a name="symlink_status2">symlink_status</a>(const path&amp; p, error_code&amp; ec) noexcept;</pre>
 <blockquote>
@@ -3403,6 +3496,9 @@ file_status <a name="symlink_status2">symlink_status</a>(const path&amp; p, erro
       <p><i>Remarks:</i> Pathname resolution terminates if <code>p</code> names a symbolic link.</p>
   <p><i>Throws:</i> As specified in <a href="#Error-reporting">Error reporting</a>.</p>
 </blockquote>
+
+<h3>System complete&nbsp; [<a name="fs.op.system_complete">fs.op.system_complete</a>]</h3>
+
 <pre>path <a name="system_complete">system_complete</a>(const path&amp; p);
 path <a name="system_complete2">system_complete</a>(const path&amp; p, error_code&amp; ec);</pre>
 <blockquote>
@@ -3430,6 +3526,9 @@ path <a name="system_complete2">system_complete</a>(const path&amp; p, error_cod
 </blockquote>
   
 </blockquote>
+
+<h3>Temporary directory path&nbsp; [<a name="fs.op.temp_dir_path">fs.op.temp_dir_path</a>]</h3>
+
 <pre>path <a name="temp_directory_path">temp_directory_path</a>();
 path temp_directory_path(error_code&amp; ec);</pre>
 <blockquote>
@@ -3451,6 +3550,9 @@ path temp_directory_path(error_code&amp; ec);</pre>
   
 </blockquote>
 </blockquote>
+
+<h3>Unique path&nbsp; [<a name="fs.op.unique_path">fs.op.unique_path</a>]</h3>
+
 <pre>path <a name="unique_path">unique_path</a>(const path&amp; model=&quot;%%%%-%%%%-%%%%-%%%%&quot;);
 path unique_path(const path&amp; model, error_code&amp; ec);</pre>
 <blockquote>
@@ -3480,8 +3582,6 @@ path unique_path(const path&amp; model, error_code&amp; ec);</pre>
 </blockquote>
 
 <p></p>
-<h2><a name="Acknowledgements">Acknowledgements</a></h2>
-<h2><a name="References">References</a></h2>
 <hr>
 
 
