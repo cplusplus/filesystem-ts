@@ -47,6 +47,7 @@ del   { background-color:#FFD7D7 }
     </tr>
   </table>
 
+<!--webbot bot="PurpleText" PREVIEW="generate-section-numbers=false" -->
 
 <h1 align="center">Working Draft,<br>
 Technical Specification <font face="Times New Roman">—</font> File System</h1>
@@ -71,104 +72,7 @@ document in a committee mailing. Only drafts should have yellow-shaded text.</sp
 
 <h2> <a name="TOC">Contents</a></h2>
 
-<p>      Foreword<br>
-Introduction<br>
-Scope<br>
-Conformance<br>
-Normative references<br>
-      <a href="#Definitions">1.1 Terms and definitions </a><br>
-      &nbsp;&nbsp;&nbsp;<a href="#Absolute-path">1.1.1  absolute path </a><br>
-      &nbsp;&nbsp;&nbsp;<a href="#canonical-path">1.1.2  canonical path </a><br>
-      &nbsp;&nbsp;&nbsp;<a href="#directory">1.1.3  directory </a><br>
-      &nbsp;&nbsp;&nbsp;<a href="#file">1.1.4  file </a><br>
-      &nbsp;&nbsp;&nbsp;<a href="#file-system">1.1.5  file system </a><br>
-      &nbsp;&nbsp;&nbsp;<a href="#file-system-race">1.1.6  file system race </a><br>
-      &nbsp;&nbsp;&nbsp;<a href="#filename">1.1.7  filename </a><br>
-      &nbsp;&nbsp;&nbsp;<a href="#hard-link">1.1.8  hard link </a><br>
-      &nbsp;&nbsp;&nbsp;<a href="#link">1.1.9  link </a><br>
-      &nbsp;&nbsp;&nbsp;<a href="#fs.def.native.encode">1.1.10  native encoding </a><br>
-      &nbsp;&nbsp;&nbsp;<a href="#fs.def.native">1.1.11  native pathname format </a><br>
-      &nbsp;&nbsp;&nbsp;<a href="#NTCTS">1.1.12  NTCTS </a><br>
-      &nbsp;&nbsp;&nbsp;<a href="#operating system dependent">1.1.13  operating system dependent behavior 
-</a><br>
-      &nbsp;&nbsp;&nbsp;<a href="#fs.def.parent">1.1.14  parent directory </a><br>
-      &nbsp;&nbsp;&nbsp;<a href="#path">1.1.15  path </a><br>
-      &nbsp;&nbsp;&nbsp;<a href="#fs.def.pathname">1.1.16  pathname </a><br>
-      &nbsp;&nbsp;&nbsp;<a href="#fs.def.pathres">1.1.17  pathname resolution </a><br>
-      &nbsp;&nbsp;&nbsp;<a href="#Relative-path">1.1.18  relative path </a><br>
-      &nbsp;&nbsp;&nbsp;<a href="#symbolic-link">1.1.19  symbolic link </a><br>
-      <a href="#Conformance">1.2  Conformance </a><br>
-      &nbsp;&nbsp;&nbsp;<a href="#fs.conform.9945">1.2.1 POSIX conformance </a><br>
-      &nbsp;&nbsp;&nbsp;<a href="#fs.conform.os">1.2.2  Operating system dependent behavior conformance </a><br>
-      <a href="#fs.req">1.3  Requirements </a><br>
-      <a href="#Header-filesystem-synopsis">1.4  Header <code>&lt;filesystem&gt;</code> synopsis 
-</a><br>
-      <a href="#Error-reporting">1.5  Error reporting </a><br>
-      <a href="#class-path">1.6  Class <code>path</code> </a><br>
-      &nbsp;&nbsp;&nbsp;<a href="#path.generic">1.6.1  Generic pathname format grammar </a><br>
-      &nbsp;&nbsp;&nbsp;<a href="#path-Conversions">1.6.2  <code>path</code> conversions </a><br>
-      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#path-Conversions-to-native-format">1.6.2.1  <code>path</code> argument 
-format conversions </a><br>
-      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#path.arg.convert">1.6.2.2  <code>path</code> type and encoding conversions </a><br>
-      &nbsp;&nbsp;&nbsp;<a href="#path-Requirements">1.6.3  <code>path</code> Requirements </a><br>
-      &nbsp;&nbsp;&nbsp;<a href="#path-constructors">1.6.4    <code>
-path</code> constructors </a><br>
-      &nbsp;&nbsp;&nbsp;<a href="#path-assignments">1.6.5    <code>
-path</code> assignments </a><br>
-      &nbsp;&nbsp;&nbsp;<a href="#path-appends">1.6.6  <code><font size="4"> path</font></code> appends 
-</a><br>
-      &nbsp;&nbsp;&nbsp;<a href="#path-concatenation">1.6.7  <code>path</code> concatenation </a><br>
-      &nbsp;&nbsp;&nbsp;<a href="#path-modifiers">1.6.8   <code>
-path</code> modifiers </a><br>
-      &nbsp;&nbsp;&nbsp;<a href="#path-native-format-observers">1.6.9   <code>path</code> native format observers 
-</a><br>
-      &nbsp;&nbsp;&nbsp;<a href="#path-generic-format-observers">1.6.10   <code>path</code> generic format observers 
-</a><br>
-      &nbsp;&nbsp;&nbsp;<a href="#path-compare">1.6.11   <code>path</code> compare </a><br>
-      &nbsp;&nbsp;&nbsp;<a href="#path-decomposition">1.6.12    <code>path</code> decomposition 
-</a><br>
-      &nbsp;&nbsp;&nbsp;<a href="#path-query">1.6.13    <code>path</code> query </a><br>
-      &nbsp;&nbsp;&nbsp;<a href="#path-iterators">1.6.14    <code>
-path</code> iterators </a><br>
-      &nbsp;&nbsp;&nbsp;<a href="#path-non-member-functions">1.6.15    <code>path</code> non-member functions 
-</a><br>
-      &nbsp;&nbsp;&nbsp;<a href="#path-inserter-extractor">1.6.16  <code>path</code> inserter 
-  and extractor </a><br>
-      &nbsp;&nbsp;&nbsp;<a href="#path.factory">1.6.17  <code>path</code> factory functions </a><br>
-      <a href="#Class-filesystem_error">1.7  Class <code>filesystem_error</code> 
-</a><br>
-      &nbsp;&nbsp;&nbsp;<a href="#filesystem_error-members">1.7.1    <code>filesystem_error</code> members 
-</a><br>
-      <a href="#Enum-file_type">1.8  Enum class file_type </a><br>
-      <a href="#enum.copy_options">1.9  Enum class copy_options </a><br>
-      <a href="#enum.perms">1.10  Enum class perms </a><br>
-      <a href="#enum.perm-opts">1.11  Enum class permissions_options </a><br>
-      <a href="#file_status">1.12  Class file_status </a><br>
-      &nbsp;&nbsp;&nbsp;<a href="#file_status-constructors">1.12.1  <code>file_status</code> constructors 
-</a><br>
-      &nbsp;&nbsp;&nbsp;<a href="#file_status-observers">1.12.2  <code>file_status</code> observers </a><br>
-      &nbsp;&nbsp;&nbsp;<a href="#file_status-modifiers">1.12.3  <code>file_status</code> modifiers </a><br>
-      <a href="#Class-directory_entry">1.13  Class <code>directory_entry</code> </a><br>
-      &nbsp;&nbsp;&nbsp;<a href="#directory_entry-constructors">1.13.1    <code>directory_entry </code>constructors 
-</a><br>
-      &nbsp;&nbsp;&nbsp;<a href="#directory_entry-modifiers">1.13.2    <code>directory_entry </code>modifiers 
-</a><br>
-      &nbsp;&nbsp;&nbsp;<a href="#directory_entry-observers">1.13.3    <code>directory_entry</code> observers 
-</a><br>
-      <a href="#Class-directory_iterator">1.14  Class <code>directory_iterator</code> 
-</a><br>
-      &nbsp;&nbsp;&nbsp;<a href="#directory_iterator-members">1.14.1  <code>directory_iterator</code> members 
-</a><br>
-      &nbsp;&nbsp;&nbsp;<a href="#directory_iterator-non-member-functions">1.14.2  <code>directory_iterator</code> non-member functions 
-</a><br>
-      <a href="#Class-recursive_directory_iterator">1.15  Class <code>recursive_directory_iterator</code> 
-</a><br>
-      &nbsp;&nbsp;&nbsp;<a href="#recursive_directory_iterator-members">1.15.1  <code>recursive_directory_iterator</code> members 
-</a><br>
-      &nbsp;&nbsp;&nbsp;<a href="#rec.dir.itr.nonmembers">1.15.2  <code>recursive_directory_iterator</code> non-member functions 
-</a><br>
-      <a href="#Operational-functions">1.16  Operational functions </a>
-</p>
+<p>      &nbsp;</p>
       
 <hr>
 <h2><a name="Foreword">Foreword</a></h2>
@@ -183,6 +87,8 @@ editor before the final document is sent to ISO.</i></span></p>
 an optional preliminary element used, if required, to give specific information 
 or commentary about the technical content of the document, and about the reasons 
 prompting its preparation. It shall not contain requirements.&quot;</i></span></p>
+
+<!--webbot bot="PurpleText" PREVIEW="generate-section-numbers=true" -->
 
 <h2><a name="Scope">Scope</a>&nbsp; [fs.scope]</h2>
 
@@ -2814,7 +2720,7 @@ bool <a name="copy_file2">copy_file</a>(const path&amp; from, const path&amp; to
   <p><i>Complexity:</i> At most one direct or indirect invocation of <code>
   status(to)</code>.</p>
 </blockquote>
-<h3>Copy symlink&nbsp; [fs.op.copy_symlink]</h3>
+<h3>Copy symlink&nbsp; [<a name="fs.op.copy_symlink">fs.op.copy_symlink</a>]</h3>
 <pre>void <a name="copy_symlink">copy_symlink</a>(const path&amp; existing_symlink, const path&amp; new_symlink);
 void copy_symlink(const path&amp; existing_symlink, const path&amp; new_symlink,
                   error_code&amp; ec) noexcept;</pre>
@@ -2932,7 +2838,7 @@ void <a name="create_hard_link2">create_hard_link</a>(const path&amp; to, const 
   links per file. <i>-- end note</i>]</p>
   </blockquote>
 
-<h3>Create symlink&nbsp; [fs.op.create_symlink]</h3>
+<h3>Create symlink&nbsp; [<a name="fs.op.create_symlink">fs.op.create_symlink</a>]</h3>
 
 <pre>void <a name="create_symlink">create_symlink</a>(const path&amp; to, const path&amp; new_symlink);
 void <a name="create_symlink2">create_symlink</a>(const path&amp; to, const path&amp; new_symlink,
@@ -3051,7 +2957,7 @@ uintmax_t hard_link_count(const path&amp; p, error_code&amp; ec) noexcept;</pre>
 
 </blockquote>
 
-<h3>Is block file&nbsp; [fs.op.]</h3>
+<h3>Is block file&nbsp; [<a name="fs.op.is_block_file">fs.op.is_block_file</a>]</h3>
 
 <pre>bool <code><a name="is_block_file">is_block_file</a></code>(file_status s) noexcept;</pre>
 <blockquote>
