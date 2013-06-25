@@ -30,7 +30,7 @@ del   { background-color:#FFD7D7 }
     <tr>
       <td>Date:</td>
       <td>
-      <!--webbot bot="Timestamp" S-Type="EDITED" S-Format="%Y-%m-%d" startspan -->2013-06-24<!--webbot bot="Timestamp" endspan i-checksum="12376" --></td>
+      <!--webbot bot="Timestamp" S-Type="EDITED" S-Format="%Y-%m-%d" startspan -->2013-06-25<!--webbot bot="Timestamp" endspan i-checksum="12378" --></td>
     </tr>
     <tr>
       <td>Revises:</td>
@@ -453,10 +453,10 @@ implied encoding, they are not included as permitted types. <i>--end note</i>]</
     basic_istream&lt;charT, traits&gt;&amp;
     operator&gt;&gt;(basic_istream&lt;charT, traits&gt;&amp; is, path&amp; p);
 
-    <ins>template &lt;class <a href="#Source">Source</a>&gt;</ins>  
-      <ins>path u8path(Source const&amp; source);</ins>
-    <ins>template &lt;class InputIterator&gt;</ins>
-      <ins>path u8path(InputIterator begin, InputIterator end);</ins>
+    template &lt;class <a href="#Source">Source</a>&gt;  
+      path u8path(Source const&amp; source);
+    template &lt;class InputIterator&gt;
+      path u8path(InputIterator begin, InputIterator end);
 
     class <a href="#Class-filesystem_error">filesystem_error</a>;      
     class <a href="#Class-directory_entry">directory_entry</a>;
@@ -709,10 +709,10 @@ system or for a particular file system.</p>
           path(Source const&amp; source);
         template &lt;class InputIterator&gt;
           path(InputIterator begin, InputIterator end);
-        <ins>template &lt;class <a href="#Source">Source</a>&gt;</ins>  
-          <ins>path(Source const&amp; source, const locale&amp; loc);</ins>
-        <ins>template &lt;class InputIterator&gt;</ins>
-          <ins>path(InputIterator begin, InputIterator end, const locale&amp; loc);</ins>
+        template &lt;class <a href="#Source">Source</a>&gt;  
+          path(Source const&amp; source, const locale&amp; loc);
+        template &lt;class InputIterator&gt;
+          path(InputIterator begin, InputIterator end, const locale&amp; loc);
        ~path() = default;
 
         // <a href="#path-assignments">assignments</a>
@@ -759,7 +759,7 @@ system or for a particular file system.</p>
         // <a href="#path-native-format-observers">native format observers</a>
         const string_type&amp;  <a href="#native">native</a>() const noexcept;
         const value_type*   <a href="#c_str">c_str</a>() const noexcept;
-        <ins><a href="#operator-string_type">operator string_type</a>() const;</ins>
+        <a href="#operator-string_type">operator string_type</a>() const;
 
         template &lt;class charT, class traits = char_traits&lt;charT&gt;,
                   class Allocator = allocator&lt;charT&gt; &gt;
@@ -767,7 +767,7 @@ system or for a particular file system.</p>
           <a href="#string-template">string</a>(const Allocator&amp; a = Allocator()) const;
         string    <a href="#string">string</a>() const;
         wstring   <a href="#wstring">wstring</a>() const;
-        <ins>string    u8string() const;</ins>
+        string    u8string() const;
         u16string <a href="#u16string">u16string</a>() const;
         u32string <a href="#u32string">u32string</a>() const;
 
@@ -778,7 +778,7 @@ system or for a particular file system.</p>
           <a href="#generic_string-template">generic_string</a>(const Allocator&amp; a = Allocator()) const;
         string    <a href="#generic_string">generic_string</a>() const;
         wstring   <a href="#generic_wstring">generic_wstring</a>() const;
-        <ins>string    generic_u8string() const;</ins>
+        string    generic_u8string() const;
         u16string <a href="#generic_u16string">generic_u16string</a>() const;
         u32string <a href="#generic_u32string">generic_u32string</a>() const;
 
