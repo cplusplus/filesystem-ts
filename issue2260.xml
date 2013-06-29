@@ -1,0 +1,111 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="2260" status="New">
+<title>Missing requirement for <tt>Allocator::pointer</tt></title>
+<section><sref ref="[allocator.requirements]"/></section>
+<submitter>Jonathan Wakely</submitter>
+<date>14 May 2013</date>
+
+<discussion>
+<p>
+For an allocator <tt>A&lt;T&gt;</tt> which defines <tt>A&lt;T&gt;::pointer</tt> to a class type,
+i.e. not <tt>T*</tt>, I see no requirement that <tt>A&lt;T&gt;::pointer</tt> is convertible to
+<tt>A&lt;U&gt;::pointer</tt>, even if <tt>T*</tt> is convertible to <tt>U*</tt>.  Such conversions are
+needed in containers to convert from e.g. <tt>ListNodeBase*</tt> to <tt>ListNode&lt;T&gt;*</tt>.
+</p>
+
+<p>The obvious way to do such conversions appears to be
+<tt>pointer_traits::pointer_to()</tt>, but that's ill-formed if the static
+member function <tt>A&lt;T&gt;::pointer::pointer_to()</tt> doesn't exist and the
+allocator requirements don't mention that function, so you need to
+cast <tt>A&lt;T&gt;::pointer</tt> to <tt>A&lt;T&gt;::void_pointer</tt> then cast that to
+<tt>A&lt;U&gt;::pointer</tt>.
+</p>
+
+<p>
+Is converting via <tt>void_pointer</tt> really intended, or are we missing a requirement that 
+<tt>pointer_traits&lt;A&lt;T&gt;::pointer&gt;::pointer_to()</tt> be well-formed?
+</p>
+
+<p>Proposed resolution:</p>
+
+<p>Add to the Allocator requirements table the following requirement:</p>
+
+<blockquote>
+<p>
+The expression <tt>pointer_traits&lt;XX::pointer&gt;::pointer_to(r)</tt> is well-defined.
+</p>
+</blockquote>
+
+</discussion>
+
+<resolution>
+<ol>
+<li><p>
+Edit Table 28 as indicated:
+</p>
+
+<blockquote>
+<table border="1">
+<caption>Table 28 &mdash; Allocator requirements (continued)</caption>
+<tr>
+<th>Expression</th>
+<th>Return type</th>
+<th>Assertion&#47;note pre-&#47;post-condition</th>
+<th>Default</th>
+</tr>
+
+<tr>
+<td colspan="4" align="center">
+<tt>&hellip;</tt>
+</td>
+</tr>
+
+<tr>
+<td>
+<tt>static_cast&lt;X::const_pointer&gt;(z)</tt>
+</td>
+<td>
+<tt>X::const_pointer</tt>
+</td>
+<td>
+<tt>static_cast&lt;X::const_pointer&gt;(z) == q</tt>
+</td>
+<td>
+&nbsp;
+</td>
+</tr>
+
+<tr>
+<td>
+<ins><tt>pointer_traits&lt;X::pointer&gt;::pointer_to(r)</tt></ins>
+</td>
+<td>
+<ins><tt>X::pointer</tt></ins>
+</td>
+<td>
+&nbsp;
+</td>
+<td>
+&nbsp;
+</td>
+</tr>
+
+<tr>
+<td colspan="4" align="center">
+<tt>&hellip;</tt>
+</td>
+</tr>
+
+</table>
+</blockquote>
+
+
+</li>
+</ol>
+</resolution>
+
+</issue>
