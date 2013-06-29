@@ -1,0 +1,61 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="2259" status="New">
+<title>Issues in 17.6.5.5 rules for member functions</title>
+<section><sref ref="[member.functions]"/></section>
+<submitter>Richard Smith</submitter>
+<date>12 May 2013</date>
+
+<discussion>
+<p>
+<sref ref="[member.functions]"/> p2 says:
+</p>
+
+<blockquote><p>
+&quot;An implementation may declare additional non-virtual member function signatures within a class:
+</p>
+<ul>
+<p>by adding arguments with default values to a member function signature; [Footnote: Hence, the address of a member 
+function of a class in the C++ standard library has an unspecified type.] [<i>Note</i>: An implementation
+may not add arguments with default values to virtual, global, or non-member functions. &mdash; <i>end note</i>]</p>
+<p>by replacing a member function signature with default values by two or more member function signatures
+with equivalent behavior; and</p>
+<p>by adding a member function signature for a member function name.&quot;</p>
+</ul>
+</blockquote>
+
+<ol>
+<li>
+<p>
+This wording is not using the correct terminology. "by adding arguments with default values" presumably means 
+"by adding parameters with default arguments", and likewise throughout.
+</p>
+</li>
+<li>
+<p>
+This paragraph only allows an implementation to declare "additional" signatures, but the first bullet is talking 
+about replacing a standard signature with one with additional parameters.
+</p>
+</li>
+<li>
+<p>
+None of these bullets allows a member function with no <i>ref</i>-qualifier to be replaced by signatures with <i>ref</i>-qualifiers 
+(a situation which was just discussed on std-proposals), and likewise for <i>cv</i>-qualifiers. Presumably that is 
+not intentional, and such changes should be permissible.
+</p>
+</li>
+</ol>
+
+<p>
+I think the first two items are probably editorial, since the intent is clear.
+</p>
+
+</discussion>
+
+<resolution>
+</resolution>
+
+</issue>
