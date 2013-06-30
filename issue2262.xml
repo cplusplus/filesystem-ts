@@ -1,0 +1,109 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="2262" status="New">
+<title>Requirement for <tt>unique_ptr&lt;T&gt;::get_deleter()(p)</tt> to be able to destroy the <tt>unique_ptr</tt></title>
+<section><sref ref="[unique.ptr.single]"/></section>
+<submitter>Rob Desbois</submitter>
+<date>15 May 2013</date>
+
+<discussion>
+<p>
+N3337 <sref ref="[unique.ptr.single.modifiers]"/> contains 2 non-normative notes stating:
+</p>
+
+<blockquote>
+<p>
+[para 4]: &quot;The order of these operations is significant because the call to <tt>get_deleter()</tt> 
+may destroy <tt>*this</tt>.&quot;
+</p>
+<p>
+[para 5]: &quot;The postcondition does not hold if the call to <tt>get_deleter()</tt> destroys <tt>*this</tt> since 
+<tt>this->get()</tt> is no longer a valid expression.&quot;
+</p>
+</blockquote>
+
+<p>
+It seems this wording was created to resolve <iref ref="998"/> due to the possibility that a <tt>unique_ptr</tt> may be 
+destroyed through deletion of its stored pointer where that directly or indirectly refers to the same <tt>unique_ptr</tt>. 
+If <tt>unique_ptr</tt> is required to support circular references then it seems this must be normative text: an implementation 
+is currently allowed to operate on <tt>*this</tt> after the assignment and deletion specified in para 4, since this is only 
+'disallowed' by the non-normative note.
+</p>
+
+<p>I propose the following draft rewording:</p>
+
+<p>
+[para 4]: <i>Effects</i>: assigns <tt>p</tt> to the stored pointer, and then if the old value of the stored pointer, <tt>old_p</tt>, was not
+equal to <tt>nullptr</tt>, calls <tt>get_deleter()(old_p)</tt>. <ins>No operation shall be performed after the call to 
+<tt>get_deleter()(old_p)</tt> that requires <tt>*this</tt> to be valid, because the deletion may destroy <tt>*this</tt> if it is 
+referred to directly or indirectly by the stored pointer.</ins> <del>[<i>Note:</i> The order of these operations is significant
+because the call to <tt>get_deleter()</tt> may destroy <tt>*this</tt>. &mdash; <i>end note</i>]</del>
+<p/>
+[para 5]: <i>Postconditions</i>: <ins>If the call <tt>get_deleter()(old_p)</tt> destroyed <tt>*this</tt>, none. Otherwise,</ins> 
+<tt>get() == p</tt>. <del>[<i>Note:</i> The postcondition does not hold if the call to <tt>get_deleter()</tt>
+destroys <tt>*this</tt> since <tt>this->get()</tt> is no longer a valid expression. &mdash; <i>end note</i>]</del>
+</p>
+
+<p>
+I expect it will also be necessary to amend the requirements for a deleter, so in addition:
+</p>
+
+<p>
+<sref ref="[unique.ptr.single]"/> [para 1]: The default type for the template parameter <tt>D</tt> is <tt>default_delete</tt>. 
+A client-supplied template argument <tt>D</tt> shall be a function object type (20.10), lvalue-reference to function, or 
+lvalue-reference to function object type for which, given a value <tt>d</tt> of type <tt>D</tt> and a value <tt>ptr</tt> of type 
+<tt>unique_ptr&lt;T, D&gt;::pointer</tt>, the expression <tt>d(ptr)</tt> is valid and has the effect of disposing of the pointer 
+as appropriate for that deleter. <ins>Where <tt>D</tt> is not an lvalue reference type, <tt>d(ptr)</tt> shall be valid if <tt>ptr</tt> 
+refers directly or indirectly to the invoking <tt>unique_ptr</tt> object.</ins>
+</p>
+
+</discussion>
+
+<resolution>
+
+<ol>
+<li>
+<p>
+Edit <sref ref="[unique.ptr.single]"/> p1 as indicated:
+</p>
+<blockquote><p>
+The default type for the template parameter <tt>D</tt> is <tt>default_delete</tt>. 
+A client-supplied template argument <tt>D</tt> shall be a function object type (20.10), lvalue-reference to function, or 
+lvalue-reference to function object type for which, given a value <tt>d</tt> of type <tt>D</tt> and a value <tt>ptr</tt> of type 
+<tt>unique_ptr&lt;T, D&gt;::pointer</tt>, the expression <tt>d(ptr)</tt> is valid and has the effect of disposing of the pointer 
+as appropriate for that deleter. <ins>Where <tt>D</tt> is not an lvalue reference type, <tt>d(ptr)</tt> shall be valid if <tt>ptr</tt> 
+refers directly or indirectly to the invoking <tt>unique_ptr</tt> object.</ins>
+</p></blockquote>
+</li>
+
+<li>
+<p>
+Edit <sref ref="[unique.ptr.single.modifiers]"/> p4+5 as indicated:
+</p>
+<blockquote><pre>
+void reset(pointer p = pointer()) noexcept;
+</pre><blockquote>
+<p>
+-3- <i>Requires:</i> The expression <tt>get_deleter()(get())</tt> shall be well formed, shall have well-defined behavior,
+and shall not throw exceptions.
+<p/>
+-4- <i>Effects:</i> assigns <tt>p</tt> to the stored pointer, and then if the old value of the stored pointer, <tt>old_p</tt>, was not
+equal to <tt>nullptr</tt>, calls <tt>get_deleter()(old_p)</tt>. <ins>No operation shall be performed after the call to 
+<tt>get_deleter()(old_p)</tt> that requires <tt>*this</tt> to be valid, because the deletion may destroy <tt>*this</tt> if it is 
+referred to directly or indirectly by the stored pointer.</ins> <del>[<i>Note:</i> The order of these operations is significant
+because the call to <tt>get_deleter()</tt> may destroy <tt>*this</tt>. &mdash; <i>end note</i>]</del>
+<p/>
+-5- <i>Postconditions:</i> <ins>If the call <tt>get_deleter()(old_p)</tt> destroyed <tt>*this</tt>, none. Otherwise,</ins> 
+<tt>get() == p</tt>. <del>[<i>Note:</i> The postcondition does not hold if the call to <tt>get_deleter()</tt>
+destroys <tt>*this</tt> since <tt>this->get()</tt> is no longer a valid expression. &mdash; <i>end note</i>]</del>
+</p>
+</blockquote></blockquote>
+</li>
+</ol>
+
+</resolution>
+
+</issue>
