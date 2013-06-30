@@ -1,0 +1,65 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="2263" status="New">
+<title>Comparing iterators and allocator pointers with different const-character</title>
+<section><sref ref="[allocator.requirements]"/>, <sref ref="[container.requirements]"/></section>
+<submitter>Howard Hinnant</submitter>
+<date>25 Jun 2013</date>
+
+<discussion>
+<p>
+This ancient issue <iref ref="179"/> says one ought to be able to compare iterators with <tt>const_iterators</tt> 
+from any given container.  I'm having trouble finding words that guarantee this in C++11.  This impacts not only a 
+container's iterators, but also the allocator requirements in <sref ref="allocator.requirements]"/> surrounding 
+<tt>pointer</tt>, <tt>const_pointer</tt>, <tt>void_pointer</tt> and <tt>const_void_pointer</tt>.  E.g. can one 
+compare a <tt>pointer</tt> with a <tt>const_pointer</tt>? 
+<p/>
+Since <tt>allocator::pointer</tt> and <tt>const_pointer</tt> are required to be random access iterators, one could 
+expect that the <iref ref="179"/> guarantees apply for them as well.
+</p>
+
+<note>
+Daniel comments:
+</note>
+
+<p>
+The wording for <iref ref="179"/> was part of several working drafts (e.g. also in 
+<a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2010/n3092.pdf">N3092</a>) over some time and suddenly got lost
+in <a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2011/n3242.pdf">N3242</a>, presumably by accident. Whatever we
+decide for allocator pointers, I expect that we need to restore the  <iref ref="179"/> wording as part of the overall resolution:
+</p>
+
+<p>Reinsert after <sref ref="[container.requirements]"/> p6:</p>
+
+<blockquote>
+<p>
+-6- <tt>begin()</tt> returns an iterator referring to the first element in the container. <tt>end()</tt> returns an iterator which
+is the past-the-end value for the container. If the container is empty, then <tt>begin() == end()</tt>;
+<p/>
+<ins>-?- In the expressions</ins>
+</p>
+<blockquote><pre>
+<ins>i == j
+i != j
+i &lt; j
+i &lt;= j
+i &gt;= j
+i &gt; j
+i - j</ins>
+</pre></blockquote>
+<p>
+<ins>where <tt>i</tt> and <tt>j</tt> denote objects of a container's <tt>iterator</tt> type, either or both may be replaced by an object 
+of the container's <tt>const_iterator</tt> type referring to the same element with no change in semantics.</ins>
+</p>
+</blockquote>
+
+</discussion>
+
+<resolution>
+
+</resolution>
+
+</issue>
