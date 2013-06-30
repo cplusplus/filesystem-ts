@@ -1,0 +1,106 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="2268" status="New">
+<title>Setting a default argument in the declaration of a member function <tt>assign</tt> of <tt>std::basic_string</tt></title>
+<section><sref ref="[basic.string]"/></section>
+<submitter>Vladimir Grigoriev</submitter>
+<date>26 Jun 2013</date>
+
+<discussion>
+<p>
+Constructors and member functions <tt>assign</tt> of class <tt>std::basic_string</tt> have one to one relation (except the 
+explicit constructor that creates an empty string).
+<p/>
+In fact any creating of an object of type <tt>std::basic_string</tt> using any of the above constructors except the 
+explicit constructor can be substituted for creating an empty string.
+<p/>
+For example these two code snippets give the same result:
+</p>
+
+<blockquote><pre>
+std::string s("Hello World");
+</pre></blockquote>
+
+<p>
+and
+</p>
+
+<blockquote><pre>
+std::string s;
+s.assign("Hello World");
+</pre></blockquote>
+
+<p>
+However there is one exception that has no a logical support. It is the pair of the following constructor and member function 
+<tt>assign</tt>
+</p>
+
+<blockquote><pre>
+basic_string(const basic_string&amp; str, size_type pos, size_type n = npos,
+             const Allocator&amp; a = Allocator());
+
+basic_string&amp; assign(const basic_string&amp; str, size_type pos, size_type n);
+</pre></blockquote>
+
+<p>
+The third parameter of the constructor has a default argument while in the <tt>assign</tt> function it is absent. So it is impossible 
+one to one to substitute the following code snippet
+</p>
+
+<blockquote><pre>
+std::string s("Hello World");
+std::string t(s, 6);
+</pre></blockquote>
+
+<p>
+by
+</p>
+
+<blockquote><pre>
+std::string s("Hello World");
+std::string t;
+t.assign(s, 6); // error: no such function
+</pre></blockquote>
+
+<p>
+To get an equivalent result using the <tt>assign</tt> function the programmer has to complicate the code that is error-prone
+</p>
+
+<blockquote><pre>
+std::string s("Hello World");
+std::string t;
+t.assign(s, 6, s.size() - 6); 
+</pre></blockquote>
+
+<p>
+To fix that, the declaration of the member function <tt>assign</tt> should be changed in such a way that its declaration 
+would be fully compatible with the declaration of the corresponding constructor, that is to specify the same default argument 
+for the third parameter of the <tt>assign</tt>.
+</p>
+
+<note>Daniel comments</note>
+
+<p>
+The mentioned issue is not restricted to the <tt>assign</tt> overloads, it also applies at least to <tt>append</tt> as well.
+</p>
+
+</discussion>
+
+<resolution>
+
+<ol>
+<li><p>Change class template <tt>basic_string</tt> synopsis, <sref ref="[basic.string]"/> p5, and
+<sref ref="[string::assign]"/> before p4, as indicated:</p>
+
+<blockquote><pre>
+basic_string&amp; assign(const basic_string&amp; str, size_type pos, size_type n <ins>= npos</ins>);
+</pre></blockquote>
+</li>
+</ol>
+
+</resolution>
+
+</issue>
