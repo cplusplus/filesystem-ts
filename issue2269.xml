@@ -1,0 +1,47 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="2269" status="New">
+<title>Container iterators and argument-dependent lookup</title>
+<section><sref ref="[container.requirements.general]"/></section>
+<submitter>Matt Austern</submitter>
+<date>26 Jun 2013</date>
+
+<discussion>
+<p>
+Consider the following code snippet:
+</p>
+
+<blockquote><pre>
+#include &lt;vector&gt;
+#include &lt;algorithm&gt;
+
+int main() {
+  std::vector&lt;int&gt; v1(100, 3);
+  std::vector&lt;int&gt; v2(100);
+  copy(v1.begin(), v1.end(), v2.begin());
+}
+</pre></blockquote>
+
+<p>
+It compiles without error on my desktop. Is it required to? I can't find evidence from the standard that it is. 
+In my test <tt>std::copy</tt> was found by argument-dependent lookup because the implementation I used made 
+<tt>std::vector&lt;int&gt;::iterator</tt> a user-defined type defined in namespace <tt>std</tt>. But the standard 
+only requires <tt>std::vector&lt;int&gt;::iterator</tt> to be an implementation specified random access iterator 
+type. I can't find anything requiring it to be a user-defined type at all (and in fact there are reasonable implementation 
+where it isn't), let alone a user defined type defined in a specific namespace.
+</p>
+
+<p>
+Since the defining namespace of container iterators is visible to users, should the standard say anything about what 
+that namespace is?
+</p>
+
+</discussion>
+
+<resolution>
+</resolution>
+
+</issue>
