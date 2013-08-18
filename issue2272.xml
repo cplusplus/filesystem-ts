@@ -1,0 +1,56 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="2272" status="New">
+<title><tt>quoted</tt> should use <tt>char_traits</tt> for comparison</title>
+<section><sref ref="[quoted.manip]"/></section>
+<submitter>Marshall Clow</submitter>
+<date>12 Jul 2013</date>
+
+<discussion>
+<p>
+In <sref ref="[quoted.manip]"/> p2 b2:
+</p>
+<blockquote>
+<p>
+&mdash; Each character in <tt>s</tt>. If the character to be output is equal to <tt>escape</tt> or <tt>delim</tt>, 
+as determined by <tt>operator==</tt>, first output <tt>escape</tt>.
+</p>
+</blockquote>
+<p>
+In <sref ref="[quoted.manip]"/> p3 b1 sb1:
+</p>
+<blockquote>
+<p>
+&mdash; If the first character extracted is equal to <tt>delim</tt>, as determined by <tt>operator==</tt>, [&hellip;]
+</p>
+</blockquote>
+
+<p>
+these should both use <tt>traits::eq</tt>.
+</p>
+
+<p>
+Also, I believe that <sref ref="[quoted.manip]"/> p3 implies that:
+</p>
+<blockquote>
+<pre>
+std::ostream _stream;
+std::string _string;
+_stream &lt;&lt; _string;
+_stream &lt;&lt; quoted(_string);
+</pre>
+</blockquote>
+<p>
+should both compile, or both fail to compile, based on whether or not their <tt>char_traits</tt> match.
+But I believe that the standard should say that explicitly.
+</p>
+
+</discussion>
+
+<resolution>
+</resolution>
+
+</issue>
