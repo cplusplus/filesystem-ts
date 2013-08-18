@@ -1,0 +1,57 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="2275" status="New">
+<title>Why is <tt>forward_as_tuple</tt> not <tt>constexpr</tt>?</title>
+<section><sref ref="[tuple.creation]"/></section>
+<submitter>Marshall Clow</submitter>
+<date>30 Jul 2013</date>
+
+<discussion>
+<p>
+In <a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2012/n3471.html">n3471</a>, a bunch of routines 
+from header <tt>&lt;tuple&gt;</tt> were made <tt>constexpr</tt>.
+<p/>
+<tt>make_tuple/tuple_cat/get&lt;&gt;(tuple)/</tt>relational operators &mdash; all these were "constexpr-ified".
+<p/>
+But not <tt>forward_as_tuple</tt>.
+<p/>
+Why not?
+<p/>
+This was discussed in Portland, and STL opined that this was "an omission" (along with <tt>tuple_cat</tt>, which was added)
+<p/>
+In discussion on c++std-lib@accu.org list, Pablo agreed that <tt>forward_as_tuple</tt> should be <tt>constexpr</tt>.
+</p>
+
+</discussion>
+
+<resolution>
+<p>This wording is relative to N3691.</p>
+
+<ol>
+<li><p>Change header <tt>&lt;tuple&gt;</tt> synopsis, <sref ref="[tuple.general]"/> as indicated:</p>
+
+<blockquote>
+<pre>
+template &lt;class... Types&gt;
+  <ins>constexpr</ins> tuple&lt;Types&amp;&amp;...&gt; forward_as_tuple(Types&amp;&amp;...) noexcept;
+</pre>
+</blockquote>
+</li>
+
+<li><p>Change <sref ref="[tuple.creation]"/> before p5 as indicated:</p>
+
+<blockquote>
+<pre>
+template &lt;class... Types&gt;
+  <ins>constexpr</ins> tuple&lt;Types&amp;&amp;...&gt; forward_as_tuple(Types&amp;&amp;... t) noexcept;
+</pre>
+</blockquote>
+</li>
+</ol>
+
+</resolution>
+
+</issue>
