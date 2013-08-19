@@ -1,0 +1,109 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="2278" status="New">
+<title>User-defined literals for Standard Library types</title>
+<section><sref ref="[time.syn]"/>, <sref ref="[string.classes]"/></section>
+<submitter>Howard Hinnant</submitter>
+<date>22 Jul 2013</date>
+
+<discussion>
+<p>
+<a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2013/n3642.pdf">This paper</a> adds user-defined literals 
+for <tt>string</tt>, <tt>complex</tt> and <tt>chrono</tt> types. It puts each new literal signature in an inline namespace 
+inside of std. Section 3.1 of the paper gives the rationale for doing this:
+</p>
+
+<blockquote><p>
+As a common schema this paper proposes to put all suffixes for user defined literals in separate inline namespaces 
+that are below the inline namespace <tt>std::literals</tt>. [<i>Note:</i> This allows a user either to do a 
+<tt>using namespace std::literals;</tt> to import all literal operators from the standard available through header 
+file inclusion, or to use <tt>using namespace std::string_literals;</tt> to just obtain the literals operators 
+for a specific type. &mdash; <i>end note</i>]
+</p></blockquote>
+
+<p>This isn't how inline namespaces work.</p>
+
+<p>
+<sref ref="[namespace.def]"/>/p8 says in part:
+</p>
+
+<blockquote><p>
+Members of an inline namespace can be used in most respects as though they were members of the enclosing namespace. 
+Specifically, the inline namespace and its enclosing namespace are both added to the set of associated namespaces 
+used in argument-dependent lookup (3.4.2) whenever one of them is, and a using- directive (7.3.4) that names the 
+inline namespace is implicitly inserted into the enclosing namespace as for an unnamed namespace (7.3.1.1). [&hellip;]
+</p></blockquote>
+
+<p>
+I.e. these literals will appear to the client to already be imported into namespace <tt>std</tt>. The rationale in 
+the paper appears to indicate that this is not the intended behavior, and that instead the intended behavior is 
+to require the user to say:
+</p>
+<blockquote><pre>
+using namespace std::literals;
+</pre></blockquote>
+<p>
+or:
+</p>
+<blockquote><pre>
+using namespace std::literals::string_literals;
+</pre></blockquote>
+<p>
+prior to use. To get this behavior non-inlined (normal) namespaces must be used.
+</p>
+
+<p>
+Proposed Resolution:
+<p/>
+Strike the use of "inline" from each use associated with <tt>string_literals</tt>, <tt>chrono_literals</tt>.
+<p/>
+My opinion is that this must be done prior to publishing C++14, otherwise we are stuck with this 
+(apparently unwanted) decision forever.
+<p/>
+See also reflector message <a href="http://accu.org/cgi-bin/wg21/message?wg=lib&amp;msg=34256">c++std-lib-34256</a>.
+</p>
+
+</discussion>
+
+<resolution>
+<p>This wording is relative to N3691.</p>
+
+<ol>
+<li><p>Modify header <tt>&lt;chrono&gt;</tt> synopsis, <sref ref="[time.syn]"/>, as indicated:</p>
+
+<blockquote><pre>
+namespace std {
+namespace chrono {
+[&hellip;]
+} // namespace chrono
+<del>inline</del> namespace literals {
+inline namespace chrono_literals {
+[&hellip;]
+} // namespace chrono_literals
+} // namespace literals
+} // namespace std
+</pre></blockquote>
+</li>
+
+<li><p>Modify header <tt>&lt;string&gt;</tt> synopsis, <sref ref="[string.classes]"/> p1, as indicated:</p>
+
+<blockquote><pre>
+#include &lt;initializer_list&gt;
+
+namespace std {
+[&hellip;]
+<del>inline</del> namespace literals {
+inline namespace string_literals {
+[&hellip;]
+}
+}
+}
+</pre></blockquote>
+</li>
+</ol>
+</resolution>
+
+</issue>
