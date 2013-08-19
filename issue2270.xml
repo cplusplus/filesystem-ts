@@ -14,7 +14,20 @@
 For internal consistency, <tt>to_string()</tt> should either list all relevant types (including <tt>bool</tt>, <tt>char</tt>, etc.), 
 or only those that are the destination types of integral or floating-point promotion (<tt>float</tt> not being among them).
 <p/>
-Relevance: Why should it lack round-trip fidelity <em>and</em> look silly?
+A defensible reason for having (or rather keeping) the <tt>float</tt> overloads anyway could be to exactly mirror the adjacent 
+sets of <tt>stoX()</tt> function overloads (even without round-trip fidelity for floating-point numbers).
+<p/>
+Unfortunately, that reveals a bigger issue than redundant overloads: the glaring and indefensible omission of an overloaded 
+function <tt>stoui()</tt>. Adding that is not as trivial as removing redundant overloads, of course, because it requires 
+everybody to take action. Still, it is the preferable remedy for the present situation.
+<p/>
+As far as I can tell from easily accessible information, C++ has already created the precedent with <tt>stoi()</tt>, which 
+is not the equivalent of a function <tt>strtoi()</tt> in C, but it would be if such a function existed. The function 
+<tt>atoi()</tt> may look similar, but it does not qualify because it is as different from a hypothetical <tt>strtoi()</tt> 
+as <tt>atol()</tt> currently is from <tt>strtol()</tt>, with the latter two both Standard C. It is only logical to act on 
+this one-sided precedent by completing the set. Whether or not Standard C leads the way (or follows suit) is immaterial, 
+but an invitation could be extended, because emulating <tt>strto(u)i()</tt> from <tt>strto(u)l()</tt> is not as trivial 
+as casting the result.
 </p>
 </discussion>
 
