@@ -51,6 +51,70 @@ But I believe that the standard should say that explicitly.
 </discussion>
 
 <resolution>
+
+<p>This wording is relative to N3691.</p>
+
+<ol>
+<li><p>Change <sref ref="[quoted.manip]"/> p2+3 as indicated:</p>
+
+<blockquote>
+<pre>
+template &lt;class charT&gt;
+  <i>unspecified</i> quoted(const charT* s, charT delim=charT('"'), charT escape=charT('\\'));
+template &lt;class charT, class traits, class Allocator&gt;
+  <i>unspecified</i> quoted(const basic_string&lt;charT, traits, Allocator>&amp; s,
+                     charT delim=charT('"'), charT escape=charT('\\'));
+</pre>
+<blockquote>
+<p>
+-2- <i>Returns:</i> An object of unspecified type such that if <tt>out</tt> is an instance of <tt>basic_ostream</tt> with member
+type <tt>char_type</tt> the same as <tt>charT</tt> <ins>and with member type <tt>traits_type</tt> the same as 
+<tt>char_traits&lt;charT&gt;</tt> for the first form and <tt>traits</tt> for second form</ins>, then the expression 
+<tt>out &lt;&lt; quoted(s, delim, escape)</tt> behaves
+as if it inserts the following characters into <tt>out</tt> using character inserter function templates (27.7.3.6.4),
+which may throw <tt>ios_base::failure</tt> (27.5.3.1.1):
+</p>
+<ul>
+<li><p><tt>delim</tt></p></li>
+<li><p>Each character in <tt>s</tt>. If the character to be output is equal to <tt>escape</tt> or <tt>delim</tt>, 
+as determined by <del><tt>operator==</tt></del><ins><tt>traits_type::eq</tt></ins>, first output <tt>escape</tt>.</p></li>
+<li><p><tt>delim</tt></p></li>
+</ul>
+</blockquote>
+
+<pre>
+template &lt;class charT, class traits, class Allocator&gt;
+  <i>unspecified</i> quoted(basic_string&lt;charT, traits, Allocator>&amp; s,
+                     charT delim=charT('"'), charT escape=charT('\\'));
+</pre>
+<blockquote>
+<p>
+-3- <i>Returns:</i> An object of unspecified type such that:
+</p>
+<ul>
+<li><p>If <tt>in</tt> is an instance of <tt>basic_istream</tt> with member type<ins>s</ins> <tt>char_type</tt>
+<ins>and <tt>traits_type</tt></ins> the same as <tt>charT</tt> <ins>and <tt>traits</tt>, respectively</ins>, then the 
+expression <tt>in &gt;&gt; quoted(s, delim, escape)</tt> behaves as if it extracts 
+the following characters from in using <tt>basic_istream::operator&gt;&gt;</tt> (27.7.2.2.3) which may throw 
+<tt>ios_base::failure</tt> (27.5.3.1.1):
+</p>
+<ul>
+<li><p>If the first character extracted is equal to <tt>delim</tt>, as determined by 
+<del><tt>operator==</tt></del><ins><tt>traits_type::eq</tt></ins>, then: [&hellip;]</p></li>
+</ul>
+</li>
+<li><p>
+If <tt>out</tt> is an instance of <tt>basic_ostream</tt> with member type<ins>s</ins> <tt>char_type</tt>
+<ins>and <tt>traits_type</tt></ins> the same as <tt>charT</tt> <ins>and <tt>traits</tt>, respectively</ins>, 
+then the expression <tt>out &lt;&lt; quoted(s, delim, escape)</tt> behaves as specified for the <tt>const 
+basic_string&lt;charT, traits, Allocator&gt;&amp;</tt> overload of the quoted function.
+</p></li>
+</ul>
+</blockquote>
+</blockquote>
+</li>
+
+</ol>
 </resolution>
 
 </issue>
