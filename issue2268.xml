@@ -12,10 +12,47 @@
 <discussion>
 <p>
 Constructors and member functions <tt>assign</tt> of class <tt>std::basic_string</tt> have one to one relation (except the 
-explicit constructor that creates an empty string).
-<p/>
-In fact any creating of an object of type <tt>std::basic_string</tt> using any of the above constructors except the 
-explicit constructor can be substituted for creating an empty string.
+explicit constructor that creates an empty string). The following list shows this relation:
+</p>
+
+<blockquote><pre>
+explicit basic_string(const Allocator&amp; a = Allocator());
+
+basic_string(const basic_string&amp; str);
+basic_string&amp; assign(const basic_string&amp; str);
+
+basic_string(basic_string&amp;&amp; str) noexcept;
+basic_string&amp; assign(basic_string&amp;&amp; str) noexcept;
+
+basic_string(const basic_string&amp; str, size_type pos, size_type n = npos,
+  const Allocator&amp; a = Allocator());
+basic_string&amp; assign(const basic_string&amp; str, size_type pos,
+  size_type n);
+
+basic_string(const charT* s,
+  size_type n, const Allocator&amp; a = Allocator());
+basic_string&amp; assign(const charT* s, size_type n);
+
+basic_string(const charT* s, const Allocator&amp; a = Allocator());
+basic_string&amp; assign(const charT* s);
+
+basic_string(size_type n, charT c, const Allocator&amp; a = Allocator());
+basic_string&amp; assign(size_type n, charT c);
+
+template&lt;class InputIterator&gt;
+basic_string(InputIterator begin, InputIterator end,
+  const Allocator&amp; a = Allocator());
+template&lt;class InputIterator&gt;
+basic_string&amp; assign(InputIterator first, InputIterator last);
+
+basic_string(initializer_list&lt;charT&gt;, const Allocator&amp; = Allocator());
+basic_string&amp; assign(initializer_list&lt;charT&gt;);
+</pre></blockquote>
+
+<p>
+So in fact any creating of an object of type <tt>std::basic_string</tt> using any of the above constructors 
+except the explicit constructor can be substituted for creating a (possibly non-empty) string and 
+then applying to it the corresponding method assign.
 <p/>
 For example these two code snippets give the same result:
 </p>
@@ -81,22 +118,187 @@ would be fully compatible with the declaration of the corresponding constructor,
 for the third parameter of the <tt>assign</tt>.
 </p>
 
-<note>Daniel comments</note>
+<p>
+The <tt>assign</tt> function is not the only function that requires to be revised. 
+<p/>
+Now let include in the list of pairs constructor-assign with the modified method <tt>assign</tt> one more member function 
+<tt>append</tt>. We will get:
+</p>
+
+<blockquote><pre>
+explicit basic_string(const Allocator&amp; a = Allocator());
+
+basic_string(const basic_string&amp; str);
+basic_string&amp; assign(const basic_string&amp; str);
+<span style="color:#009900;font-weight:bold">basic_string&amp; append(const basic_string&amp; str);</span>
+
+basic_string(basic_string&amp;&amp; str) noexcept;
+basic_string&amp; assign(basic_string&amp;&amp; str) noexcept;
+
+basic_string(const basic_string&amp; str, size_type pos, size_type n = npos,
+  const Allocator&amp; a = Allocator());
+basic_string&amp; assign(const basic_string&amp; str, size_type pos,
+  size_type n);
+<span style="color:#009900;font-weight:bold">basic_string&amp; append(const basic_string&amp; str, size_type pos,
+  size_type n);</span>
+
+basic_string(const charT* s,
+  size_type n, const Allocator&amp; a = Allocator());
+basic_string&amp; assign(const charT* s, size_type n);
+<span style="color:#009900;font-weight:bold">basic_string&amp; append(const charT* s, size_type n);</span>
+
+basic_string(const charT* s, const Allocator&amp; a = Allocator());
+basic_string&amp; assign(const charT* s);
+<span style="color:#009900;font-weight:bold">basic_string&amp; append(const charT* s);</span>
+
+basic_string(size_type n, charT c, const Allocator&amp; a = Allocator());
+basic_string&amp; assign(size_type n, charT c);
+<span style="color:#009900;font-weight:bold">basic_string&amp; append(size_type n, charT c);</span>
+
+template&lt;class InputIterator&gt;
+basic_string(InputIterator begin, InputIterator end,
+  const Allocator&amp; a = Allocator());
+template&lt;class InputIterator&gt;
+basic_string&amp; assign(InputIterator first, InputIterator last);
+<span style="color:#009900;font-weight:bold">template&lt;class InputIterator&gt;
+basic_string&amp; append(InputIterator first, InputIterator last);</span>
+
+basic_string(initializer_list&lt;charT&gt;, const Allocator&amp; = Allocator());
+basic_string&amp; assign(initializer_list&lt;charT&gt;);
+<span style="color:#009900;font-weight:bold">basic_string&amp; append(initializer_list&lt;charT&gt;);</span>
+</pre></blockquote>
+
+<p>As it seen from this record:</p>
+
+<blockquote><pre>
+basic_string(const basic_string&amp; str, size_type pos, size_type n = npos,
+  const Allocator&amp; a = Allocator());
+basic_string&amp; assign(const basic_string&amp; str, size_type pos,
+  size_type n);
+<span style="color:#009900;font-weight:bold">basic_string&amp; append(const basic_string&amp; str, size_type pos,
+  size_type n);</span>
+</pre></blockquote>
 
 <p>
-The mentioned issue is not restricted to the <tt>assign</tt> overloads, it also applies at least to <tt>append</tt> as well.
+it is obvious that the function <tt>append</tt> also should have the default argument that is that it should be declared as:
 </p>
+
+<blockquote><pre>
+basic_string&amp; append(const basic_string&amp; str, size_type pos,
+  size_type n <ins>= npos</ins>);
+</pre></blockquote>
+
+<p>
+In fact there is no a great difference in using <tt>assign</tt> or <tt>append</tt> especially when the string is empty:
+</p>
+
+<blockquote><pre>
+std::string s("Hello World");
+std::string t;
+t.assign(s, 6);
+ 
+std::string s("Hello World");
+std::string t;
+t.append(s, 6);
+</pre></blockquote>
+
+<p>
+In both cases the result will be the same. So the <tt>assign</tt> and <tt>append</tt> will be interchangeable from the point 
+of view of used arguments.
+<p/>
+There are another three member functions in class <tt>std::basic_string</tt> that could be brought in conformity with considered above functions.  
+They are member functions <tt>insert</tt>, <tt>replace</tt>, and <tt>compare</tt>.
+<p/>
+So it is suggested to substitute the following declarations of <tt>insert</tt>, <tt>replace</tt>, and <tt>compare</tt>:
+</p>
+
+<blockquote><pre>
+basic_string&amp; insert(size_type pos1, const basic_string&amp; str,
+  size_type pos2, size_type n);
+
+basic_string&amp; replace(size_type pos1, size_type n1,
+  const basic_string&amp; str, size_type pos2, size_type n2);
+
+int compare(size_type pos1, size_type n1,
+  const basic_string&amp; str, size_type pos2, size_type n2) const;
+</pre></blockquote>
+
+<p>
+by the declarations:
+</p>
+
+<blockquote><pre>
+basic_string&amp; insert(size_type pos1, const basic_string&amp; str,
+  size_type pos2, size_type n <ins>= npos</ins>);
+
+basic_string&amp; replace(size_type pos1, size_type n1,
+  const basic_string&amp; str, size_type pos2, size_type n2 <ins>= npos</ins>);
+
+int compare(size_type pos1, size_type n1,
+  const basic_string&amp; str, size_type pos2, size_type n2 <ins>= npos</ins>) const;
+</pre></blockquote>
 
 </discussion>
 
 <resolution>
 
 <ol>
-<li><p>Change class template <tt>basic_string</tt> synopsis, <sref ref="[basic.string]"/> p5, and
-<sref ref="[string::assign]"/> before p4, as indicated:</p>
+<li><p>Change class template <tt>basic_string</tt> synopsis, <sref ref="[basic.string]"/> p5, as indicated:</p>
+
+<blockquote><pre>
+namespace std {
+  template&lt;class charT, class traits = char_traits&lt;charT&gt;,
+    class Allocator = allocator&lt;charT&gt; &gt;
+  class basic_string {
+  public:
+    [&hellip;]
+    basic_string&amp; append(const basic_string&amp; str, size_type pos, size_type n <ins>= npos</ins>);
+    [&hellip;]
+    basic_string&amp; assign(const basic_string&amp; str, size_type pos, size_type n <ins>= npos</ins>);
+    [&hellip;]
+    basic_string&amp; insert(size_type pos1, const basic_string&amp; str, size_type pos2, size_type n <ins>= npos</ins>);
+    [&hellip;]
+    basic_string&amp; replace(size_type pos1, size_type n1, const basic_string&amp; str, size_type pos2, size_type n2 <ins>= npos</ins>);
+    [&hellip;]
+    int compare(size_type pos1, size_type n1, const basic_string&amp; str, size_type pos2, size_type n2 <ins>= npos</ins>) const;
+    [&hellip;]
+  };
+}
+</pre></blockquote>
+</li>
+
+<li><p>Change <sref ref="[string::append]"/> before p3 as indicated:</p>
+
+<blockquote><pre>
+basic_string&amp; append(const basic_string&amp; str, size_type pos, size_type n <ins>= npos</ins>);
+</pre></blockquote>
+</li>
+
+<li><p>Change <sref ref="[string::assign]"/> before p4 as indicated:</p>
 
 <blockquote><pre>
 basic_string&amp; assign(const basic_string&amp; str, size_type pos, size_type n <ins>= npos</ins>);
+</pre></blockquote>
+</li>
+
+<li><p>Change <sref ref="[string::insert]"/> before p5 as indicated:</p>
+
+<blockquote><pre>
+basic_string&amp; insert(size_type pos1, const basic_string&amp; str, size_type pos2, size_type n <ins>= npos</ins>);
+</pre></blockquote>
+</li>
+
+<li><p>Change <sref ref="[string::replace]"/> before p5 as indicated:</p>
+
+<blockquote><pre>
+basic_string&amp; replace(size_type pos1, size_type n1, const basic_string&amp; str, size_type pos2, size_type n2 <ins>= npos</ins>);
+</pre></blockquote>
+</li>
+
+<li><p>Change <sref ref="[string::compare]"/> before p4 as indicated:</p>
+
+<blockquote><pre>
+int compare(size_type pos1, size_type n1, const basic_string&amp; str, size_type pos2, size_type n2 <ins>= npos</ins>) const;
 </pre></blockquote>
 </li>
 </ol>
