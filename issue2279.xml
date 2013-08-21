@@ -68,10 +68,10 @@ void splice_after(const_iterator position, forward_list&amp;&amp; x, const_itera
 [&hellip;]
 <p/>
 -6- <i>Effects:</i> Inserts the element following <tt>i</tt> into <tt>*this</tt>, following <tt>position</tt>, 
-and removes it from <tt>x</tt>. The result is unchanged if <ins><tt>&amp;x == this</tt> and</ins> <tt>position == i</tt> 
-or <tt>position == ++i</tt>. Pointers and references to <tt>*++i</tt> continue to refer to the same element but 
-as a member of <tt>*this</tt>. Iterators to <tt>*++i</tt> continue to refer to the same element, but now behave 
-as iterators into <tt>*this</tt>, not into <tt>x</tt>.
+and removes it from <tt>x</tt>. The result is unchanged if <ins><tt>&amp;x == this</tt> and the following 
+condition is satisfied:</ins> <tt>position == i</tt> or <tt>position == ++i</tt>. Pointers and references to 
+<tt>*++i</tt> continue to refer to the same element but as a member of <tt>*this</tt>. Iterators to <tt>*++i</tt> 
+continue to refer to the same element, but now behave as iterators into <tt>*this</tt>, not into <tt>x</tt>.
 </p>
 </blockquote>
 </blockquote>
@@ -87,10 +87,11 @@ void splice(const_iterator position, list&amp;&amp; x, const_iterator i);
 <blockquote>
 <p>
 -7- <i>Effects:</i> Inserts an element pointed to by <tt>i</tt> from list <tt>x</tt> before position and removes 
-the element from <tt>x</tt>. The result is unchanged if <ins><tt>&amp;x == this</tt> and</ins> <tt>position == i</tt> 
-or <tt>position == ++i</tt>. Pointers and references to <tt>*i</tt> continue to refer to this same element but as 
-a member of <tt>*this</tt>. Iterators to <tt>*i</tt> (including <tt>i</tt> itself) continue to refer to the same 
-element, but now behave as iterators into <tt>*this</tt>, not into <tt>x</tt>.
+the element from <tt>x</tt>. The result is unchanged if <ins><tt>&amp;x == this</tt> and the following 
+condition is satisfied:</ins> <tt>position == i</tt> or <tt>position == ++i</tt>. Pointers and references to 
+<tt>*i</tt> continue to refer to this same element but as a member of <tt>*this</tt>. Iterators to <tt>*i</tt> 
+(including <tt>i</tt> itself) continue to refer to the same element, but now behave as iterators into <tt>*this</tt>, 
+not into <tt>x</tt>.
 </p>
 </blockquote>
 </blockquote>
