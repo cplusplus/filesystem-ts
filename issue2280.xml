@@ -1,0 +1,60 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="2280" status="New">
+<title><tt>begin/end</tt> for arrays should be <tt>constexpr</tt> and <tt>noexcept</tt></title>
+<section><sref ref="[iterator.range]"/></section>
+<submitter>Andy Sawyer</submitter>
+<date>22 Aug 2013</date>
+
+<discussion>
+<p>
+The array forms of <tt>std::begin</tt> and <tt>std::end</tt> should be <tt>constexpr</tt> and <tt>noexcept</tt>.
+</p>
+
+</discussion>
+
+<resolution>
+<p>This wording is relative to N3691.</p>
+
+<ol>
+<li><p>Edit header <tt>&lt;iterator&gt;</tt> synopsis, <sref ref="[iterator.synopsis]"/> as indicated:</p>
+
+<blockquote>
+<pre>
+[&hellip;]
+template &lt;class T, size_t N&gt; <ins>constexpr</ins> T* begin(T (&amp;array)[N]) <ins>noexcept</ins>;
+template &lt;class T, size_t N&gt; <ins>constexpr</ins> T* end(T (&amp;array)[N]) <ins>noexcept</ins>;
+[&hellip;]
+</pre>
+</blockquote>
+</li>
+
+<li><p>Edit <sref ref="[iterator.range]"/> before p4+5 as indicated:</p>
+
+<blockquote>
+<pre>
+template &lt;class T, size_t N&gt; <ins>constexpr</ins> T* begin(T (&amp;array)[N]) <ins>noexcept</ins>;
+</pre>
+<blockquote>
+<p>
+-4- <i>Returns</i>: <tt>array</tt>.
+</p>
+</blockquote>
+<pre>
+template &lt;class T, size_t N&gt; <ins>constexpr</ins> T* end(T (&amp;array)[N]) <ins>noexcept</ins>;
+</pre>
+<blockquote>
+<p>
+-5- <i>Returns</i>: <tt>array + N</tt>.
+</p>
+</blockquote>
+</blockquote>
+</li>
+
+</ol>
+</resolution>
+
+</issue>
