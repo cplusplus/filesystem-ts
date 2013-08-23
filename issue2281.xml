@@ -1,0 +1,50 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="2281" status="New">
+<title>Cross-reference typo in latest draft</title>
+<section><sref ref="[using.linkage]"/></section>
+<submitter>Chris Sharpe</submitter>
+<date>23 Aug 2013</date>
+
+<discussion>
+<p>
+There is a footnote at section <sref ref="[using.linkage]"/>/2 that reads:
+</p>
+<blockquote><p>
+"The only reliable way to declare an object or function signature from the Standard C library is by including 
+the header that declares it, notwithstanding the latitude granted in 7.1.7 of the C Standard."
+</p></blockquote>
+<p>
+There is no section 7.1.7 in the C99 Standard (or C11 final draft). I think the relevant section is:
+</p>
+<blockquote><p>
+"Provided that a library function can be declared without reference to any type defined in a header, it is also 
+permissible to declare the function and use it without including its associated header."
+</p></blockquote>
+<p>
+at 7.1.4/2 from C99.
+</p>
+
+</discussion>
+
+<resolution>
+<p>This wording is relative to N3691.</p>
+
+<ol>
+<li><p>Edit footnote 182, <sref ref="[using.linkage]"/> as indicated:</p>
+
+<blockquote>
+<p>
+The only reliable way to declare an object or function signature from the Standard C library is by including the header
+that declares it, notwithstanding the latitude granted in <del>7.1.7</del><ins>7.1.4</ins> of the C Standard.
+</p>
+</blockquote>
+</li>
+
+</ol>
+</resolution>
+
+</issue>
