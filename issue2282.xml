@@ -1,0 +1,58 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="2282" status="New">
+<title>Incorrect <tt>is_assignable</tt> constraint in <tt>optional::op=(U&amp;&amp;)</tt></title>
+<section><sref ref="[optional.object.assign]"/></section>
+<submitter>Howard Hinnant</submitter>
+<date>25 Aug 2013</date>
+
+<discussion>
+<p>
+Minor wording nit in <sref ref="[optional.object.assign]"/>/p15:
+</p>
+<blockquote><pre>
+template &lt;class U&gt; optional&lt;T&gt;&amp; operator=(U&amp;&amp; v);
+</pre>
+<blockquote>
+<p>
+-15- <i>Requires:</i> <tt>is_constructible&lt;T, U&gt;::value</tt> is true and <tt>is_assignable&lt;<span  style="color:#C80000;font-weight:bold">U, T</span>&gt;::value</tt> is true.
+</p>
+</blockquote></blockquote>
+<p>
+Should be:
+</p>
+<blockquote><pre>
+template &lt;class U&gt; optional&lt;T&gt;&amp; operator=(U&amp;&amp; v);
+</pre>
+<blockquote>
+<p>
+-15- <i>Requires:</i> <tt>is_constructible&lt;T, U&gt;::value</tt> is true and <tt>is_assignable&lt;<span  style="color:#C80000;font-weight:bold">T&amp;, U</span>&gt;::value</tt> is true.
+</p>
+</blockquote></blockquote>
+
+</discussion>
+
+<resolution>
+<p>This wording is relative to N3691.</p>
+
+<ol>
+<li><p>Edit <sref ref="[optional.object.assign]"/> p15 as indicated:</p>
+
+<blockquote><pre>
+template &lt;class U&gt; optional&lt;T&gt;&amp; operator=(U&amp;&amp; v);
+</pre>
+<blockquote>
+<p>
+-15- <i>Requires:</i> <tt>is_constructible&lt;T, U&gt;::value</tt> is true and 
+<tt>is_assignable&lt;<del>U, T</del><ins>T&amp;, U</ins>&gt;::value</tt> is true.
+</p>
+</blockquote></blockquote>
+</li>
+
+</ol>
+</resolution>
+
+</issue>
