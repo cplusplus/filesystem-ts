@@ -1,0 +1,55 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="2284" status="New">
+<title>Inconsistency in <tt>allocator_traits::max_size</tt></title>
+<section><sref ref="[allocator.traits]"/></section>
+<submitter>Marshall Clow</submitter>
+<date>27 Aug 2013</date>
+
+<discussion>
+<p>
+Section <sref ref="[allocator.traits]"/> says:
+</p>
+<blockquote><pre>
+static size_type max_size(const Alloc&amp; a) noexcept;
+</pre></blockquote>
+<p>
+Section <sref ref="[allocator.traits.members]"/> says:
+</p>
+<blockquote><pre>
+static size_type max_size(Alloc&amp; a) noexcept;
+</pre></blockquote>
+
+<p>
+These should be the same.
+</p>
+
+<p>
+Discussion:
+</p>
+
+<p>
+Pablo (who I believe wrote the <tt>allocator_traits</tt> proposal) says "The function should take a <tt>const</tt> reference."
+</p>
+
+</discussion>
+
+<resolution>
+<p>This wording is relative to N3691.</p>
+
+<ol>
+<li><p>Change <sref ref="[allocator.traits.members]"/> as follows:</p>
+
+<blockquote><pre>
+static size_type max_size(<ins>const</ins> Alloc&amp; a) noexcept;
+</pre>
+</blockquote>
+</li>
+
+</ol>
+</resolution>
+
+</issue>
