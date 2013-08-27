@@ -46,6 +46,46 @@ AJM suggest we spawn a new status of 'EWG' to handle such issues - and will move
 the software can record such resolutions.
 </p>
 
+<note>2013-08-27, Joaqu&iacute;n M L&oacute;pez Mu&ntilde;oz comments:</note>
+
+<p>
+For the record, I'd like to point out that the resolution proposed by the submitter, namely replacing
+</p>
+
+<blockquote><pre>
+explicit basic_string(const Allocator&amp; a = Allocator());
+</pre></blockquote>
+
+<p>
+by
+</p>
+
+<blockquote><pre>
+basic_string() : basic_string(Allocator()) {}
+explicit basic_string(const Allocator&amp; a);
+</pre></blockquote>
+
+<p>
+(and similarly for other container and container-like classes) might introduce a potential
+backwards-compatibility problem related with explicit instantiation. Consider for instance
+</p>
+
+<blockquote><pre>
+struct my_allocator
+{
+  my_allocator(...); // no default ctor
+  ...
+};
+
+template class std::basic_string&lt;char, std::char_traits&lt;char&gt;, my_allocator&lt;char&gt;&gt;;
+</pre></blockquote>
+
+<p>
+This (which I understand is currently a valid explicit instantiation of <tt>std::basic_string</tt>) will break if
+<tt>std::basic_string</tt> ctors are modified as proposed by this issue, since <tt>my_allocator</tt> doesn't have
+a default ctor.
+</p>
+
 </discussion>
 
 <resolution>
