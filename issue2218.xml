@@ -34,7 +34,7 @@ allocating nodes and to use the same object to construct elements in aligned sto
 those nodes, avoiding rebinding and copying the stored allocator every time an element needs
 to be constructed.
 <p/>
-It should be made clear that possibly-rebound copy of the container's allocator is used for object 
+It should be made clear that a possibly-rebound copy of the container's allocator is used for object 
 construction.
 </p>
 
@@ -85,7 +85,7 @@ of type <tt>T</tt>, the following terms are defined.
 [&hellip;]
 <p/>
 [ <i>Note</i>: A container calls <tt>allocator_traits&lt;A&gt;::construct(m, p, args)</tt> to construct an element 
-at <tt>p</tt> using <tt>args</tt><ins>, with <tt>m == get_allocator()</tt></ins>. The default construct in 
+at <tt>p</tt> using <tt>args</tt><ins>, with <tt>m == get_allocator()</tt></ins>. The default <tt>construct</tt> in 
 <tt>std::allocator</tt> will call <tt>::new((void*)p) T(args)</tt>, but specialized allocators may choose a 
 different definition. &mdash; <i>end note</i> ]
 </p></blockquote>
