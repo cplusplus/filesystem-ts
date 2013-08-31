@@ -1,0 +1,51 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="2286" status="New">
+<title><tt>stringbuf::underflow()</tt> underspecified</title>
+<section><sref ref="[stringbuf.virtuals]"/></section>
+<submitter>Sergey Zubkov</submitter>
+<date>29 Aug 2013</date>
+
+<discussion>
+<p>
+In <sref ref="[stringbuf.virtuals]"/>/1, <tt>basic_stringbuf::underflow()</tt> is specified to unconditionally 
+return <tt>traits::eof()</tt> when a read position is not available.
+<p/>
+The semantics of <tt>basic_stringbuf</tt> require, and existing libraries implement it so that this function makes 
+a read position available if possible to do so, e.g. if some characters were inserted into the stream since the 
+last call to <tt>overflow()</tt>, resulting in <tt>pptr() &gt; egptr()</tt>. Compare to the conceptually similar 
+<sref ref="[depr.strstreambuf.virtuals]"/>/15.
+</p>
+
+</discussion>
+
+<resolution>
+<p>This wording is relative to N3691.</p>
+
+<ol>
+
+<li><p>Change <sref ref="[stringbuf.virtuals]"/> as indicated:</p>
+
+<blockquote>
+<pre>
+int_type underflow();
+</pre><blockquote>
+<p>
+-1- <i>Returns:</i> If the input sequence has a read position available <ins>or the function makes a read position available 
+(as described below)</ins>, returns <tt>traits::to_int_type(*gptr())</tt>. Otherwise, returns <tt>traits::eof()</tt>. Any 
+character in the underlying buffer which has been initialized is considered to be part of the input sequence.
+<p/>
+<ins>-?- The function can make a read position available only if <tt>(mode &amp; ios_base::in) != 0</tt> and if the write 
+next pointer <tt>pptr()</tt> is not null and is greater than the current read end pointer <tt>egptr()</tt>. To make a read 
+position available, the function alters the read end pointer <tt>egptr()</tt> to equal <tt>pptr()</tt>.</ins>
+</p>
+</blockquote></blockquote>
+</li>
+
+</ol>
+</resolution>
+
+</issue>
