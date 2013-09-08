@@ -1,0 +1,200 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="2288" status="New">
+<title>Inconsistent requirements for shared mutexes</title>
+<section><sref ref="[thread.sharedmutex.requirements]"/></section>
+<submitter>Daniel Kr&uuml;gler</submitter>
+<date>30 Aug 2013</date>
+
+<discussion>
+<p>
+Albeit shared mutex types refine timed mutex types, the requirements imposed on the corresponding required member function
+expressions are inconsistent in several aspects, most probably because failing synchronisation with wording changes for
+timed mutexes applied by some issues:
+</p>
+
+<ol>
+<li>
+<p>
+Due to acceptance of <a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2013/n3568.html">N3568</a> a wording phrase
+came in <sref ref="[thread.sharedmutex.requirements]"/> p26,
+</p>
+<blockquote><p>
+<i>Effects:</i> If the tick period of <tt>rel_time</tt> is not exactly convertible to the native tick period, the
+duration shall be rounded up to the nearest native tick period. [&hellip;]
+</p></blockquote>
+<p> 
+while a very similar one had been removed for <sref ref="[thread.timedmutex.requirements]"/> by LWG <iref href="2091"/>. 
+<p/>
+Having this guaranteed effect for <tt>try_lock_shared_for</tt> but not for <tt>try_lock_for</tt> seems inconsistent
+and astonishing.
+<p/>
+If the actual intended restriction imposed onto the implementation is to forbid early wakeups here, we should ensure that
+to hold for timed mutex's <tt>try_lock_for</tt> as well. Note that the rationale provided for LWG <iref href="2091"/> was
+a potential late wakeup situation, but it seems that there is no implementation restriction that prevents early wakeups.
+</p>
+</li>
+
+<li>
+<p>
+The shared-lock requirements for any <tt>*lock*()</tt> functions don't provide the guarantee that "If an exception is thrown then 
+a lock shall not have been acquired for the current execution agent.". For other mutex types this guarantee can be derived from
+the corresponding <tt>TimedLockable</tt> requirements, but there are no <tt>SharedLockable</tt> requirements.
+</p>
+</li>
+
+<li>
+<p>
+The shared-lock requirements for <tt>*lock_for/_until()</tt> functions require "<i>Throws:</i> Nothing."
+instead of "<i>Throws:</i> Timeout-related exceptions (30.2.4)." which had been added by LWG <iref href="2093"/>, because user-provided
+clocks, durations, or time points may throw exceptions. 
+</p>
+</li>
+
+<li>
+<p>
+With the addition of <tt>std::shared_mutex</tt>, the explicit lists of <sref ref="[thread.mutex.requirements.mutex]"/> p7+15,
+</p>
+<blockquote><p>
+<i>Requires:</i> If <tt>m</tt> is of type <tt>std::mutex</tt> or <tt>std::timed_mutex</tt>, the calling thread does not own the mutex.
+</p></blockquote>
+<p>
+and of <sref ref="[thread.timedmutex.requirements]"/> p4+11,
+</p>
+<blockquote><p>
+<i>Requires:</i> If <tt>m</tt> is of type <tt>std::timed_mutex</tt>, the calling thread does not own the mutex.
+</p></blockquote>
+<p>
+are incomplete and should add the non-recursive <tt>std::shared_mutex</tt> as well.
+</p>
+</li>
+</ol>
+
+</discussion>
+
+<resolution>
+<p>This wording is relative to N3691.</p>
+
+<ol>
+<li><p>Change <sref ref="[thread.mutex.requirements.mutex]"/> p7+15 as indicated:</p>
+
+<blockquote>
+<p>
+-6- The expression <tt>m.lock()</tt> shall be well-formed and have the following semantics:
+</p>
+<blockquote>
+<p>
+-7- <i>Requires:</i> If <tt>m</tt> is of type <tt>std::mutex</tt><del> or</del><ins>,</ins> <tt>std::timed_mutex</tt><ins>, or 
+<tt>std::shared_mutex</tt></ins>, the calling thread does not own the mutex.
+</p>
+</blockquote>
+<p>
+[&hellip;]
+</p>
+<p>
+-14- The expression <tt>m.try_lock()</tt> shall be well-formed and have the following semantics:
+</p>
+<blockquote>
+<p>
+-15- <i>Requires:</i> If <tt>m</tt> is of type <tt>std::mutex</tt><del> or</del><ins>,</ins> <tt>std::timed_mutex</tt><ins>, or 
+<tt>std::shared_mutex</tt></ins>, the calling thread does not own the mutex.
+</p>
+</blockquote>
+</blockquote>
+</li>
+
+<li><p>Change <sref ref="[thread.timedmutex.requirements]"/> p4+11 as indicated:</p>
+
+<blockquote>
+<p>
+-3- The expression <tt>m.try_lock_for(rel_time)</tt> shall be well-formed and have the following semantics:
+</p>
+<blockquote>
+<p>
+-4- <i>Requires:</i> If <tt>m</tt> is of type <tt>std::timed_mutex</tt><ins> or <tt>std::shared_mutex</tt></ins>, 
+the calling thread does not own the mutex.
+</p>
+</blockquote>
+<p>
+[&hellip;]
+</p>
+<p>
+-10- The expression <tt>m.try_lock_until(abs_time)</tt> shall be well-formed and have the following semantics:
+</p>
+<blockquote>
+<p>
+-11- <i>Requires:</i> If <tt>m</tt> is of type <tt>std::timed_mutex</tt><ins> or <tt>std::shared_mutex</tt></ins>, 
+the calling thread does not own the mutex.
+</p>
+</blockquote>
+</blockquote>
+</li>
+
+<li><p>Change <sref ref="[thread.sharedmutex.requirements]"/> as indicated:</p>
+
+<blockquote>
+<p>
+-3- The expression <tt>m.lock_shared()</tt> shall be well-formed and have the following semantics:
+</p>
+<blockquote>
+<p>
+-4- <i>Requires:</i> The calling thread has no ownership of the mutex.
+<p/>
+-5- <i>Effects:</i> Blocks the calling thread until shared ownership of the mutex can be obtained for the calling
+thread. <ins>If an exception is thrown then a shared lock shall not have been acquired for the current thread.</ins>
+<p/>
+[&hellip;]
+</p>
+</blockquote>
+<p>
+-24- The expression <tt>m.try_lock_shared_for(rel_time)</tt> shall be well-formed and have the following semantics:
+</p>
+<blockquote>
+<p>
+-25- <i>Requires:</i> The calling thread has no ownership of the mutex.
+<p/>
+-26- <i>Effects:</i> <del>If the tick period of <tt>rel_time</tt> is not exactly convertible to the native tick period, the
+duration shall be rounded up to the nearest native tick period.</del> Attempts to obtain shared lock
+ownership for the calling thread within the relative timeout (30.2.4) specified by <tt>rel_time</tt>. If the
+time specified by <tt>rel_time</tt> is less than or equal to <tt>rel_time.zero()</tt>, the function attempts to obtain
+ownership without blocking (as if by calling <tt>try_lock_shared()</tt>). The function shall return within
+the timeout specified by <tt>rel_time</tt> only if it has obtained shared ownership of the mutex object. [<i>Note:</i>
+As with <tt>try_lock()</tt>, there is no guarantee that ownership will be obtained if the lock is available, but
+implementations are expected to make a strong effort to do so. &mdash; <i>end note</i>] <ins>If an exception is thrown then 
+a shared lock shall not have been acquired for the current thread.</ins>
+<p/>
+[&hellip;]
+<p/>
+-30- <i>Throws:</i> <del>Nothing</del><ins>Timeout-related exceptions (<sref ref="[thread.req.timing]"/>)</ins>.
+</p>
+</blockquote>
+<p>
+-31- The expression <tt>m.try_lock_shared_until(abs_time)</tt> shall be well-formed and have the following semantics:
+</p>
+<blockquote>
+<p>
+-32- <i>Requires:</i> The calling thread has no ownership of the mutex.
+<p/>
+-33- <i>Effects:</i> The function attempts to obtain shared ownership of the mutex. If <tt>abs_time</tt> has already
+passed, the function attempts to obtain shared ownership without blocking (as if by calling <tt>try_lock_shared()</tt>). 
+The function shall return before the absolute timeout (30.2.4) specified by <tt>abs_time</tt>
+only if it has obtained shared ownership of the mutex object. [<i>Note:</i> As with <tt>try_lock()</tt>, there is no
+guarantee that ownership will be obtained if the lock is available, but implementations are expected
+to make a strong effort to do so. &mdash; <i>end note</i>] <ins>If an exception is thrown then 
+a shared lock shall not have been acquired for the current thread.</ins>
+<p/>
+[&hellip;]
+<p/>
+-37- <i>Throws:</i> <del>Nothing</del><ins>Timeout-related exceptions (<sref ref="[thread.req.timing]"/>)</ins>.
+</p>
+</blockquote>
+</blockquote>
+</li>
+
+</ol>
+</resolution>
+
+</issue>
