@@ -1,0 +1,40 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="2290" status="New">
+<title>Top-level "SFINAE"-based constraints should get a separate definition in Clause 17</title>
+<section><sref ref="[meta]"/></section>
+<submitter>Daniel Kr&uuml;gler</submitter>
+<date>2 Sep 2013</date>
+
+<discussion>
+<p>
+The current library specification uses at several places wording that is intended to refer to
+core language template deduction failure at the top-level of expressions (aka "SFINAE"), for example:
+</p>
+
+<blockquote><p>
+The expression <tt>declval&lt;T&gt;() = declval&lt;U&gt;()</tt> is well-formed when treated as an unevaluated operand (Clause 5). 
+Access checking is performed as if in a context unrelated to <tt>T</tt> and <tt>U</tt>. Only the validity of the immediate context 
+of the assignment expression is considered. [<i>Note:</i> The compilation of the expression can result in side effects 
+such as the instantiation of class template specializations and function template specializations, the generation of
+implicitly-defined functions, and so on. Such side effects are not in the “immediate context” and can result in the program
+being ill-formed. &mdash; <i>end note</i>]
+</p></blockquote>
+
+<p>
+Similar wording can be found in the specification of <tt>result_of</tt>, <tt>is_constructible</tt>, and <tt>is_convertible</tt>,
+being added to resolve an NB comment by LWG <iref ref="1390"/> and <iref ref="1391"/> through 
+<a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2010/n3142.html">N3142</a>.
+<p/>
+This wording is necessary to limit speculative compilations needed to implement these traits, but it is also lengthy and repetitive.
+</p>
+
+</discussion>
+
+<resolution>
+</resolution>
+
+</issue>
