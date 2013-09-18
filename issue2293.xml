@@ -1,0 +1,43 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="2293" status="New">
+<title>Wrong facet used by <tt>num_put::do_put</tt></title>
+<section><sref ref="[facet.num.put.virtuals]"/></section>
+<submitter>Juan Soulie</submitter>
+<date>4 Sep 2013</date>
+
+<discussion>
+<p>
+At the end of <sref ref="[facet.num.put.virtuals]"/> (in p6), the return value is said to be obtained by calling 
+<tt>truename</tt> or <tt>falsename</tt> on the wrong facet: <tt>ctype</tt> should be replaced by <tt>numpunct</tt>.
+</p>
+
+</discussion>
+
+<resolution>
+<p>This wording is relative to N3691.</p>
+
+<ol>
+<li><p>Edit <sref ref="[facet.num.put.virtuals]"/> p6 as indicated:</p>
+
+<blockquote><p>
+-6- <i>Returns:</i> If <tt>(str.flags() &amp; ios_base::boolalpha) == 0</tt> returns <tt>do_put(out, str, fill, (int)val)</tt>, 
+otherwise obtains a string <tt>s</tt> as if by
+</p>
+<blockquote><pre>
+string_type s =
+  val ? use_facet&lt;<del>ctype</del><ins>numpunct</ins>&lt;charT&gt; &gt;(loc).truename()
+      : use_facet&lt;<del>ctype</del><ins>numpunct</ins>&lt;charT&gt; &gt;(loc).falsename();
+</pre></blockquote>
+<p>
+and then inserts each character c of s into out via *out++ = c and returns out.
+</p>
+</blockquote>
+</li>
+</ol>
+</resolution>
+
+</issue>
