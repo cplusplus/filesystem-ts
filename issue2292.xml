@@ -1,0 +1,41 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="2292" status="New">
+<title>Find a better phrasing for "shall not participate in overload resolution"</title>
+<section><sref ref="[structure.specifications]"/></section>
+<submitter>Jeffrey Yasskin</submitter>
+<date>3 Sep 2013</date>
+
+<discussion>
+<p>
+The C++14 CD has 25 sections including the phrase "X shall not
+participate in overload resolution ...". Most of these uses are double
+negatives, which are hard to interpret. "shall not ... unless" tends
+to be the easiest to read, since the condition is true when the
+function is available, but we also have a lot of "if X is not Y, then
+Z shall not participate", which actually means "You can call Z if X is
+Y." The current wording is also clumsy and long-winded. We should find
+a better and more concise phrasing.
+<p/>
+As an initial proposal, I'd suggest using "X is enabled if and only if Y" in prose
+and adding an "<i>Enabled If:</i> ..." element to <sref ref="[structure.specifications]"/>.
+<p/>
+Daniel:
+<p/>
+I suggest to name this new specification element for <sref ref="[structure.specifications]"/>
+as "<i>Template Constraints:</i>" instead, because the mentioned wording form was intentionally provided 
+starting with LWG <iref ref="1237"/> to give implementations more freedom to realize the 
+concrete constraints. Instead of the original <tt>std::enable_if</tt>-based specifications
+we can use better forms of "SFINAE" constraints today and it eases the path to possible language-based
+constraints in the future.
+</p>
+
+</discussion>
+
+<resolution>
+</resolution>
+
+</issue>
