@@ -1,0 +1,61 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="2294" status="New">
+<title><tt>&lt;cstdlib&gt;</tt> should declare <tt>abs(double)</tt></title>
+<section><sref ref="[c.math]"/></section>
+<submitter>Pete Becker</submitter>
+<date>4 Sep 2013</date>
+
+<discussion>
+<p>
+&hellip; and <tt>abs(float)</tt> and <tt>abs(long double)</tt>. And <tt>&lt;cmath&gt;</tt> should declare 
+<tt>abs(int)</tt>, <tt>abs(long)</tt>, and <tt>abs(long long)</tt>.
+<p/>
+As things currently stand, this program is illegal:
+</p>
+<blockquote><pre>
+#include &lt;cstdlib&gt;
+
+int main() {
+  double d = -1.23;
+  double dd = std::abs(d);
+  return 0;
+}
+</pre></blockquote>
+<p>
+The call is ambiguous because of the various integer overloads, that's because <tt>&lt;cstdlib&gt;</tt> provides 
+<tt>abs(int)</tt> but not <tt>abs(double)</tt>.
+<p/>
+This lead one commenter on Stackoverflow to state that <tt>abs</tt> is dangerous, and to recommend using <tt>fabs</tt> instead.
+<p/>
+In general, it makes sense to declare overloaded functions that take user-defined types in the same header as the 
+definition of the user-defined types; it isn't necessary to declare all of the overloads in the same place. But 
+here we're not dealing with any user-defined types; we're dealing with builtin types, which are always defined; 
+all of the overloads should be defined in the same place, to avoid mysterious problems like the one in the code above.
+<p/>
+The standard library has six overloads for <tt>abs</tt>:
+</p>
+<blockquote><pre>
+int abs(int);  // &lt;cstdlib&gt;
+long abs(long); // &lt;cstdlib&gt;
+long long abs(long long); // &lt;cstdlib&gt;
+
+float abs(float); // &lt;cmath&gt;
+double abs(double); // &lt;cmath&gt;
+long double abs(long double); // &lt;cmath&gt;
+</pre></blockquote>
+<p>
+These should all be declared in both headers.
+<p/>
+I have no opinion on <tt>&lt;stdlib.h&gt;</tt> and <tt>&lt;math.h&gt;</tt>.
+</p>
+
+</discussion>
+
+<resolution>
+</resolution>
+
+</issue>
