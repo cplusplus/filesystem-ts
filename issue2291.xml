@@ -1,0 +1,87 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="2291" status="New">
+<title><tt>std::hash</tt> is vulnerable to collision DoS attack</title>
+<section><sref ref="[hash.requirements]"/></section>
+<submitter>Zhihao Yuan</submitter>
+<date>2 Sep 2013</date>
+
+<discussion>
+<p>
+For a non-cryptographic hash function, it's possible to pre-calculate massive inputs with 
+the same hashed value to algorithmically slow down the unordered containers, and results 
+in a denial-of-service attack. Many languages with built-in hash table support have fixed
+this issue. For example, Perl has universal hashing, Python 3 uses salted hashes.
+<p/>
+However, for C++, in <sref ref="[hash.requirements]"/> p2, Table 26:
+</p>
+
+<blockquote><p>
+The value returned shall depend only on the argument <tt>k</tt>.
+[<i>Note:</i> Thus all evaluations of the expression <tt>h(k)</tt> with the
+same value for <tt>k</tt> yield the same result. &mdash; <i>end note</i>]
+</p></blockquote>
+
+<p>
+The wording is not clear here: does that mean all the standard
+library implementations must use the same hash function for a same
+type?  Or it is not allowed for an implementation to change its hash
+function?
+<p/>
+I suggest to explicitly allow the salted hash functions.
+</p>
+
+</discussion>
+
+<resolution>
+<p>This wording is relative to N3691.</p>
+
+<ol>
+<li><p>Edit <sref ref="[hash.requirements]"/> p2, Table 26, as indicated: <em>[Editorial note:
+We can consider adding some additional guideline here. Unlike 
+<a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2012/n3333.html">N3333</a>, this 
+proposed change makes the hashing per-execution instead of per-process. The standard does not 
+discuss OS processes. And, practically, a per-process hashing makes a program unable to
+share an unordered container to a child process. &mdash; end note ]</em></p>
+
+<blockquote>
+<table border="1">
+<caption>Table 26 &mdash; Hash requirements [hash]</caption>
+<tr>
+<th>Expression</th>
+<th>Return type</th>
+<th>Requirement</th>
+</tr>
+
+<tr>
+<td>
+<tt>h(k)</tt>
+</td>
+<td>
+<tt>size_t</tt>
+</td>
+<td>
+The value returned shall depend only on the argument <tt>k</tt><br/>
+<ins>for the duration of the program</ins>.<br/>
+[<i>Note:</i> Thus all evaluations of the expression <tt>h(k)</tt> with the<br/>
+same value for <tt>k</tt> yield the same result <ins>for each execution<br/>
+of the program</ins>. &mdash; <i>end note</i>]<br/>
+</td>
+</tr>
+
+<tr>
+<td colspan="3" align="center">
+<tt>&hellip;</tt>
+</td>
+</tr>
+
+</table>
+</blockquote>
+</li>
+</ol>
+</resolution>
+
+</issue>
