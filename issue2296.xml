@@ -1,0 +1,91 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="2296" status="New">
+<title><tt>std::addressof</tt> should be <tt>constexpr</tt></title>
+<section><sref ref="[specialized.addressof]"/></section>
+<submitter>Daryle Walker</submitter>
+<date>8 Sep 2013</date>
+
+<discussion>
+<p>
+I'm writing a function that needs to be <tt>constexpr</tt> and I wanted to take the address of its input. I was 
+thinking of using <tt>std::addressof</tt> to be safe, but it isn't currently <tt>constexpr</tt>. A 
+<a href="http://en.cppreference.com/w/cpp/memory/addressof">sample implementation</a> 
+couldn't be <tt>constexpr</tt> under the C++11 rules, though.
+<p/>
+Daniel Kr&uuml;gler:
+<p/>
+Indeed the core language clarified by <a href="http://www.open-std.org/jtc1/sc22/wg21/docs/cwg_defects.html#1312">CWG 1312</a> 
+and by <a href="www.open-std.org/jtc1/sc22/wg21/docs/cwg_closed.html#1384">CWG 1384</a>, that such emulations of <tt>std::addressof</tt>
+implementations are not valid in constant expressions, therefore it seems more like a defect than a feature request to ask for 
+the guarantee that <tt>std::addressof</tt> is a <tt>constexpr</tt> function. It should be added that a similar requirement
+already exists for <tt>offsetof</tt> indirectly via the C99 standard as of 7.17 p3:
+</p>
+<blockquote>
+<p>
+The macros are [&hellip;]
+</p>
+<blockquote><pre>
+offsetof(type, member-designator)
+</pre></blockquote>
+<p>
+which expands to an integer constant expression that has type <tt>size_t</tt> [&hellip;]
+</p>
+</blockquote>
+
+<p>
+combined with the noted property in C++11 that:
+</p>
+
+<blockquote><p>
+"<tt>offsetof</tt> is required to work as specified even if unary <tt>operator&amp;</tt> 
+is overloaded for any of the types involved"
+</p></blockquote>
+
+<p>Therefore implementations should already be able without heroic efforts to realize this functionality by
+some intrinsic. The wording needs to ensure that for any constant expression <tt><em>e</em></tt> that is a glvalue core 
+constant expression the expression <tt>std::addressof(<em>e</em>)</tt> is a prvalue core constant expression</p>
+
+</discussion>
+
+<resolution>
+<p>This wording is relative to N3691.</p>
+
+<ol>
+<li><p>Change header <tt>&lt;memory&gt;</tt> synopsis, <sref ref="[memory.syn]"/> as indicated:</p>
+
+<blockquote><pre>
+namespace std {
+  [&hellip;]
+  <i>// 20.8.12, specialized algorithms:</i>
+  template &lt;class T&gt; <ins>constexpr</ins> T* addressof(T&amp; r) noexcept;
+  [&hellip;]
+}
+</pre></blockquote>
+</li>
+
+<li><p>Change <sref ref="[specialized.addressof]"/> as indicated:</p>
+
+<blockquote><pre>
+template &lt;class T&gt; <ins>constexpr</ins> T* addressof(T&amp; r) noexcept;
+</pre><blockquote>
+<p>
+-1- <i>Returns:</i> The actual address of the object or function referenced by <tt>r</tt>, even in the presence of an
+overloaded <tt>operator&amp;</tt>.
+<p/>
+<ins>-?- <i>Remarks:</i> For any constant expression <tt><em>e</em></tt> that is a glvalue core
+constant expression (<sref ref="[expr.const]"/>) the expression <tt>std::addressof(<em>e</em>)</tt>
+is a prvalue core constant expression.</ins>
+</p>
+</blockquote>
+</blockquote>
+
+</li>
+</ol>
+
+</resolution>
+
+</issue>
