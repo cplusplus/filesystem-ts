@@ -1,0 +1,96 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="2300" status="New">
+<title>[CD] Redundant sections for <tt>map</tt> and <tt>multimap</tt> members should be removed</title>
+<section><sref ref="[map.ops]"/>, <sref ref="[multimap.ops]"/></section>
+<submitter>Daniel Kr&uuml;gler</submitter>
+<date>25 Sep 2013</date>
+
+<discussion>
+<p><b>Addresses ES 17</b></p>
+
+<p>
+Sections are redundant with general associative container requirements at <sref ref="[associative.reqmts]"/>, Table 102. 
+<p/>
+Suggested action:     
+<p/>
+Delete sections.
+</p>
+
+<note>2013-09-25 Daniel provides resolution suggestion</note>
+
+</discussion>
+
+<resolution>
+<p>This wording is relative to N3691.</p>
+
+<ol>
+<li><p>Change the header <tt>&lt;map&gt;</tt> synopsis, <sref ref="[map.overview]"/> p2 as indicated:</p>
+
+<blockquote><pre>
+// <del>23.4.4.5,</del> map operations:
+iterator find(const key_type&amp; x);
+const_iterator find(const key_type&amp; x) const;
+template &lt;class K&gt; iterator find(const K&amp; x);
+template &lt;class K&gt; const_iterator find(const K&amp; x) const;
+</pre>
+</blockquote>
+</li>
+
+<li><p>Delete the complete sub-clause <sref ref="[map.ops]"/>:</p>
+
+<p>
+<del>23.4.4.5 map operations [map.ops]</del>
+</p>
+<blockquote><pre>
+<del>iterator find(const key_type&amp; x);
+const_iterator find(const key_type&amp; x) const;
+iterator lower_bound(const key_type&amp; x);
+const_iterator lower_bound(const key_type&amp; x) const;
+iterator upper_bound(const key_type&amp; x);
+const_iterator upper_bound(const key_type &amp;x) const;
+pair&lt;iterator, iterator&gt;
+  equal_range(const key_type &amp;x);
+pair&lt;const_iterator, const_iterator&gt;
+  equal_range(const key_type&amp; x) const;</del>
+</pre><blockquote>
+<p>
+<del>-1- The <tt>find</tt>, <tt>lower_bound</tt>, <tt>upper_bound</tt> and <tt>equal_range</tt> member functions each have two versions,
+one const and the other non-const. In each case the behavior of the two functions is identical except
+that the const version returns a <tt>const_iterator</tt> and the non-const version an <tt>iterator</tt> (23.2.4).</del>
+</p>
+</blockquote></blockquote>
+</li>
+
+<li><p>Delete the complete sub-clause <sref ref="[multimap.ops]"/>:</p>
+
+<p>
+<del>23.4.5.4 multimap operations [multimap.ops]</del>
+</p>
+<blockquote><pre>
+<del>iterator find(const key_type &amp;x);
+const_iterator find(const key_type&amp; x) const;
+
+iterator lower_bound(const key_type&amp; x);
+const_iterator lower_bound(const key_type&amp; x) const;
+
+pair&lt;iterator, iterator&gt;
+  equal_range(const key_type &amp;x);
+pair&lt;const_iterator, const_iterator&gt;
+  equal_range(const key_type&amp; x) const;</del>
+</pre><blockquote>
+<p>
+<del>-1- The <tt>find</tt>, <tt>lower_bound</tt>, <tt>upper_bound</tt> and <tt>equal_range</tt> member functions each have two versions,
+one const and one non-const. In each case the behavior of the two versions is identical except
+that the const version returns a <tt>const_iterator</tt> and the non-const version an <tt>iterator</tt> (23.2.4).</del>
+</p>
+</blockquote></blockquote>
+</li>
+
+</ol>
+</resolution>
+
+</issue>
