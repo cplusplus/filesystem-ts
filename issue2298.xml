@@ -1,0 +1,63 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="2298" status="New">
+<title>[CD] <tt>is_nothrow_constructible</tt> is always false because of <tt>create&lt;&gt;</tt></title>
+<section><sref ref="[meta.unary.prop]"/></section>
+<submitter>Daniel Kr&uuml;gler</submitter>
+<date>24 Sep 2013</date>
+
+<discussion>
+<p><b>Addresses US 18</b></p>
+
+<p>
+The trait <tt>is_constructible&lt;T, Args...&gt;</tt> is defined in terms of a helper template, <tt>create&lt;&gt;</tt>, 
+that is identical to <tt>std::declval&lt;&gt;</tt> except for the latter's <tt>noexcept</tt> clause.   
+<p/>
+If the absence of <tt>noexcept</tt> is critical to this definition, insert a Note of explanation; otherwise, excise 
+<tt>create&lt;&gt;</tt> and reformulate in terms of <tt>declval&lt;&gt;</tt> the definition of <tt>is_constructible</tt>. 
+</p>
+
+<note>2013-09-24 Daniel comments</note>
+
+<p>
+Replacing <tt>create&lt;&gt;</tt> by <tt>std::declval&lt;&gt;</tt> would make the situation worse, because the definition of
+<tt>is_constructible</tt> is based on a well-formed variable definition and there is no way to specify a variable definition
+without odr-using its initializer arguments. It should also be added, that there is another problem with the specification of
+all existing <tt>is_trivially_*</tt> traits, because neither <tt>create&lt;&gt;</tt> nor <tt>std::declval&lt;&gt;</tt>
+are considered as trivial functions, but this should be solved by a different issue.
+</p>
+
+</discussion>
+
+<resolution>
+<p>This wording is relative to N3691.</p>
+
+<ol>
+<li><p>Change <sref ref="[meta.unary.prop]"/> around p6 as indicated:</p>
+
+<blockquote><p>
+-6- Given the following function prototype:
+</p>
+<blockquote><pre>
+template &lt;class T&gt;
+  typename add_rvalue_reference&lt;T&gt;::type create() <ins>noexcept</ins>;
+</pre></blockquote>
+<p>
+the predicate condition for a template specialization <tt>is_constructible&lt;T, Args...&gt;</tt> shall be satisfied
+if and only if the following variable definition would be well-formed for some invented variable <tt>t</tt>:
+</p>
+<blockquote><pre>
+T t(create&lt;Args&gt;()...);
+</pre></blockquote>
+<p>
+[&hellip;]
+</p>
+</blockquote>
+</li>
+</ol>
+</resolution>
+
+</issue>
