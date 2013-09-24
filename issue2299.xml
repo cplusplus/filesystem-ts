@@ -1,0 +1,51 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="2299" status="New">
+<title>[CD] Effects of inaccessible <tt>key_compare::is_transparent</tt> type are not clear</title>
+<section><sref ref="[associative.reqmts]"/></section>
+<submitter>Daniel Kr&uuml;gler</submitter>
+<date>24 Sep 2013</date>
+
+<discussion>
+<p><b>Addresses ES 16</b></p>
+
+<p>
+The condition "<tt>X::key_compare::is_transparent</tt> exists" does not specify that the type be publicly accessible.     
+<p/>
+Consider the public accessibility of <tt>X::key_compare::is_transparent</tt> and whether its potential inaccessibility 
+should be banned for a compliant <tt>key_compare</tt> type. 
+</p>
+
+</discussion>
+
+<resolution>
+<p>This wording is relative to N3691.</p>
+
+<ol>
+<li><p>Change <sref ref="[associative.reqmts]"/> p8 as indicated:</p>
+
+<blockquote><p>
+-8- In Table 102, <tt>X</tt> denotes an associative container class, <tt>a</tt> denotes a value of <tt>X</tt>, <tt>a_uniq</tt> 
+denotes a value of <tt>X</tt> when <tt>X</tt> supports unique keys, <tt>a_eq</tt> denotes a value of <tt>X</tt> when <tt>X</tt> 
+supports multiple keys, <tt>a_tran</tt> denotes a value of <tt>X</tt> when <del>the</del><ins>a publicly accessible</ins> type 
+<tt>X::key_compare::is_transparent</tt> exists <ins>whose name is unambiguous and not hidden</ins>, 
+[&hellip;]
+</p>
+</blockquote>
+</li>
+
+<li><p>Change <sref ref="[associative.reqmts]"/> p13 as indicated:</p>
+
+<blockquote><p>
+The member function templates <tt>find</tt>, <tt>count</tt>, <tt>lower_bound</tt>, <tt>upper_bound</tt>, and <tt>equal_range</tt> shall not
+participate in overload resolution unless <del>the</del><ins>a publicly accessible</ins> type 
+<tt>Compare::is_transparent</tt> exists <ins>whose name is unambiguous and not hidden</ins>.
+</p></blockquote>
+</li>
+</ol>
+</resolution>
+
+</issue>
