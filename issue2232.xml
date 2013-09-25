@@ -47,11 +47,11 @@ Moved to NAD Future.
 <p>
 While it is clear that this feature can be implemented using only C++14 <tt>constexpr</tt> features,
 there is real concern that we cannot call the efficient, highly optimized, C implementations of these
-functions under a C++14 <tt>constexpr</tt> implentation, nor implement similar ourselves as this
+functions under a C++14 <tt>constexpr</tt> implementation, nor implement similar ourselves as this
 typically involves use of inline <tt>asm</tt> instructions.
 </p>
 <p>
-Clang and libc++ have some experience of using intrinsics to try to address the perfomance issue, but
+Clang and libc++ have some experience of using intrinsics to try to address the performance issue, but
 the current intrinsics are not general enough to support <tt>char_traits</tt>.  The intrinsics support
 only operations on character string literals, and the string literal is no longer visible <i>as</i> a
 literal after passing as a <tt>const char *</tt> to the <tt>char_traits</tt> functions.
@@ -65,7 +65,7 @@ literal type.  Jeffrey then pointed out the pending <tt>string_view</tt> library
 
 <p>
 Given the choice of giving up performance on a critical library component, or requiring a compiler
-intrisic with only unsuccessful implementation experience, the consensus is to not reject this, unless
+intrinsic with only unsuccessful implementation experience, the consensus is to not reject this, unless
 compelling implementation experience is demonstrated.  NAD Future seems the appropriate resolution.
 </p>
 
