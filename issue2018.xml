@@ -93,10 +93,19 @@ Consensus that this looks to be a correct solution, and the presentation as a ta
 Concern that the middle section wording is a little muddled and confusing, Stefanus volunteered to reword.
 </p>
 
+<note>
+2013-09 Chicago
+</note>
+
+<p>
+Stefanus provides improved wording (replaced below)
+</p>
+
 </discussion>
 
 <resolution>
 <p>This wording is relative to the FDIS.</p>
+
 <ol>
 <li><p>Modify <sref ref="[re.traits]"/> p. 10 as indicated:</p>
 <blockquote><pre>
@@ -109,7 +118,7 @@ sequence designated by the iterator range [<tt>first</tt>,<tt>last</tt>). If the
 returned mask identifies the character classification without regard to the case of the characters being
 matched, otherwise it does honor the case of the characters being matched.(footnote 335) The value returned shall
 be independent of the case of the characters in the character sequence. If the name is not recognized
-then returns a value that compares equal to 0.
+then returns a value that compares equal to <tt>0</tt>.
 <p/>
 -10- <i>Remarks</i>: For <tt>regex_traits&lt;char&gt;</tt>, at least the <del>names "d", "w", "s", "alnum", "alpha", "blank",
 "cntrl", "digit", "graph", "lower", "print", "punct", "space", "upper" and "xdigit"</del><ins>narrow character
@@ -125,33 +134,43 @@ bool isctype(charT c, char_class_type f) const;
 </pre><blockquote><p>
 -11- <i>Effects</i>: Determines if the character <tt>c</tt> is a member of the character classification represented by <tt>f</tt>.
 <p/>
--12- <i>Returns</i>: Converts <tt>f</tt> into a value <tt>m</tt> of type <tt>std::ctype_base::mask</tt> in an unspecified manner, <del>and
-returns true if <tt>use_facet&lt;ctype&lt;charT&gt; &gt;(getloc()).is(m, c)</tt> is true. Otherwise returns true
-if <tt>f</tt> bitwise or'ed with the result of calling <tt>lookup_classname</tt> with an iterator pair that designates
-the character sequence "w" is not equal to <tt>0</tt> and <tt>c == '_'</tt>, or if <tt>f</tt> bitwise or'ed with the result of
-calling <tt>lookup_classname</tt> with an iterator pair that designates the character sequence "blank" is not
-equal to <tt>0</tt> and <tt>c</tt> is one of an implementation-defined subset of the characters for which 
-<tt>isspace(c, getloc())</tt> returns true, otherwise returns false.</del><ins>except that when <tt>f</tt> represents 
-membership of a character class named in Table X, the corresponding <tt>ctype_base::mask</tt> value shall be set in <tt>m</tt>. 
-Given the function prototype</ins>
-</p><blockquote><pre>
-<ins>template&lt;class C&gt;
-   ctype_base::mask convert(typename regex_traits&lt;C&gt;::char_class_type);</ins>
+-12- <i>Returns</i>: <del>Converts <tt>f</tt> into a value <tt>m</tt> of type <tt>std::ctype_base::mask</tt> in an 
+ unspecified manner, and returns true if <tt>use_facet&lt;ctype&lt;charT&gt; &gt;(getloc()).is(m, c)</tt> is true. Otherwise 
+ returns true if <tt>f</tt> bitwise or'ed with the result of calling <tt>lookup_classname</tt> with an iterator pair that 
+ designates the character sequence "w" is not equal to <tt>0</tt> and <tt>c == '_'</tt>, or if <tt>f</tt> bitwise or'ed 
+ with the result of calling <tt>lookup_classname</tt> with an iterator pair that designates the character sequence "blank" 
+ is not equal to <tt>0</tt> and <tt>c</tt> is one of an implementation-defined subset of the characters for 
+ which <tt>isspace(c, getloc())</tt> returns true, otherwise returns false.</del>
+<ins>Given an exposition-only function prototype</ins></p>
+<blockquote><pre>
+<ins style="text-decoration: none">
+  template&lt;class C&gt;
+   ctype_base::mask convert(typename regex_traits&lt;C&gt;::char_class_type f);
+</ins>
 </pre></blockquote>
-<p><ins>the result is determined as if by</ins>
-</p><blockquote><pre><ins>
+<p>
+<ins>that returns a value in which each <tt>ctype_base::mask</tt> value corresponding to a value in <tt>f</tt> named in Table <i>X</i> is set,
+then the result is determined as if by:</ins>
+</p>
+<blockquote><pre>
+<ins style="text-decoration: none">
 ctype_base::mask m = convert&lt;charT&gt;(f);
-const ctype&lt;charT&gt;&amp; ct = use_facet&lt;ctype&lt;charT&gt; &gt;(getloc());
-if (ct.is(m, c))
+const ctype&lt;charT&gt;&amp; ct = use_facet&lt;ctype&lt;charT&gt;&gt;(getloc());
+if (ct.is(m, c)) {
   return true;
-charT w[1] = { ct.widen('w') };
-char_class_type x = lookup_classname(w, w+1);
-if ((f&amp;x) == x &amp;&amp; c == ct.widen('_'))
-  return true;
-return false;
-</ins></pre></blockquote>
-<p><ins>[<i>Example</i>:</ins>
-</p><blockquote><pre><ins>
+} else if (c == ct.widen('_')) {
+  charT w[1] = { ct.widen('w') };
+  char_class_type x = lookup_classname(w, w+1);
+  
+  return (f&amp;x) == x;
+} else {
+  return false;
+} 
+</ins>
+</pre></blockquote>
+<p><ins>[<i>Example</i>:</ins></p>
+
+<blockquote><pre><ins style="text-decoration: none">
 regex_traits&lt;char&gt; t;
 string d("d");
 string u("upper");
@@ -161,8 +180,8 @@ f |= t.lookup_classname(u.begin(), u.end());
 ctype_base::mask m = convert&lt;char&gt;(f); // m == ctype_base::digit|ctype_base::upper
 </ins></pre></blockquote>
 <p><ins>&mdash; <i>end example</i>]</ins></p>
-<p><ins>[<i>Example</i>:</ins>
-</p><blockquote><pre><ins>
+<p><ins>[<i>Example</i>:</ins></p>
+<blockquote><pre><ins style="text-decoration: none">
 regex_traits&lt;char&gt; t;
 string w("w");
 regex_traits&lt;char&gt;::char_class_type f;
@@ -171,11 +190,11 @@ t.isctype('A', f); // returns true
 t.isctype('_', f); // returns true
 t.isctype(' ', f); // returns false
 </ins></pre></blockquote>
-<p><ins>&mdash; <i>end example</i>]</ins>
-</p></blockquote></blockquote>
+<p><ins>&mdash; <i>end example</i>]</ins></p>
+</blockquote></blockquote>
 </li>
 
-<li><p>At the end of [re.traits] add a new Table X &mdash; Character class names and corresponding ctype masks:</p>
+<li><p>At the end of <sref ref="[re.traits]"/> add a new "Table X &mdash; Character class names and corresponding ctype masks":</p>
 
 <blockquote>
 <table border="1">
@@ -281,6 +300,7 @@ t.isctype(' ', f); // returns false
 </blockquote> 
 </li>
 </ol>
+
 </resolution>
 
 </issue>
