@@ -49,16 +49,24 @@ Note for Portland: John Spicer has agreed to represent Core's concerns during
 any such discussion within LWG.
 </p>
 
+<note>2013-09 Chicago</note>
+
+<p>
+Straw poll: LWG strongly favoured to remove from implementations the freedom to add <tt>constexpr</tt>.
+<p/>
+Matt provides new wording.
+</p>
+
 </discussion>
 
 <resolution>
-<p><i>In 17.6.4.6 [constexpr.functions], change paragraph 1 to:</i></p>
+<p><i>In <sref ref="[constexpr.functions]"/>, change paragraph 1 to:</i></p>
 
 <blockquote><p>
 <ins>This standard explicitly requires that certain standard library functions
-are <tt>constexpr</tt> [dcl.constexpr].
-Additionally, an implementation may declare any function to be <tt>constexpr</tt>
-if that function's definition satisfies the necessary constraints.</ins>
+are <tt>constexpr</tt> [dcl.constexpr]. 
+An implementation shall not declare any standard library signature as <tt>constexpr</tt> 
+except for those where it is explicitly required.</ins>
 Within any header that provides any non-defining declarations of <tt>constexpr</tt>
 functions or constructors an implementation shall provide corresponding definitions. 
 </p></blockquote>
