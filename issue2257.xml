@@ -30,9 +30,10 @@ Given the extension of equal for C++14, this can be simplified to:
 Alisdair notes that a similar edit would apply to the unordered containers requirements.
 </note>
 
-</discussion>
-
-<resolution>
+<p>
+Previous resolution from Marshall Clow:
+</p>
+<blockquote class="note">
 <p>
 Ammend the Operational Semantics for <sref ref="[container.requirements.general]"/>, Table 96, row &quot;<tt>a == b</tt>&quot;
 </p>
@@ -52,6 +53,97 @@ such that <del><tt>distance(Ea1, Ea2) == distance(Eb1, Eb2)</tt> and</del>
 <tt>is_permutation(Ea1, Ea2, Eb1<ins>, Eb2</ins>)</tt>
 returns <tt>true</tt>.  For ...
 </blockquote>
+</blockquote>
+
+<note>2013-09 Chicago</note>
+
+<p>
+Marshall improves wording
+</p>
+</discussion>
+
+<resolution>
+<ol>
+<li>
+<p>
+Ammend <sref ref="[container.requirements.general]"/>, Table 96 as indicated:
+</p>
+
+<blockquote>
+<table border="1">
+<caption>Table 96 &mdash; Container requirements (continued)</caption>
+<tr>
+<th>Expression</th>
+<th>Return type</th>
+<th>Operational<br/>semantics</th>
+<th>Assertion/note<br/>pre-/post-condition</th>
+<th>Complexity</th>
+</tr>
+
+<tr>
+<td colspan="5" align="center">
+<tt>&hellip;</tt>
+</td>
+</tr>
+
+<tr>
+<td>
+<tt>a == b</tt>
+</td>
+<td>
+convertible to <tt>bool</tt>
+</td>
+<td>
+<tt>==</tt> is an equivalence relation.<br/>
+<tt><del>distance(a.begin(),<br/>
+a.end()) == <br/>
+distance(b.begin(),<br/>
+b.end()) &amp;&amp;</del><br/>
+equal(a.begin(),<br/>
+a.end(),<br/>
+b.begin()<ins>, b.end()</ins>)</tt>
+</td>
+<td>
+<i>Requires:</i> <tt>T</tt> is<br/>
+<tt>EqualityComparable</tt>
+</td>
+<td>
+<ins>Constant if <tt>a.size() != b.size()</tt>,</ins> linear <ins>otherwise</ins>
+</td>
+</tr>
+
+<tr>
+<td colspan="5" align="center">
+<tt>&hellip;</tt>
+</td>
+</tr>
+
+</table>
+</blockquote>
+
+</li>
+
+<li>
+<p>
+Ammend <sref ref="[unord.req]"/> p12:
+</p>
+<blockquote>
+Two unordered containers <tt>a</tt> and <tt>b</tt> compare equal if <tt>a.size() == b.size()</tt>
+and, for every equivalent-key group <tt>[Ea1,Ea2)</tt> obtained from <tt>a.equal_range(Ea1)</tt>,
+there exists an equivalent-key group <tt>[Eb1,Eb2)</tt> obtained from <tt>b.equal_range(Ea1)</tt>,
+such that <del><tt>distance(Ea1, Ea2) == distance(Eb1, Eb2)</tt> and</del>
+<tt>is_permutation(Ea1, Ea2, Eb1<ins>, Eb2</ins>)</tt>
+returns <tt>true</tt>.  For [&hellip;]
+</blockquote>
+</li>
+
+<li><p>Amend <sref ref="[forwardlist.overview]"/> p2:</p>
+<blockquote><p>
+-2- A <tt>forward_list</tt> satisfies all of the requirements of a container (Table 96), except that the <tt>size()</tt> member
+function is not provided <ins>and the <tt>operator==</tt> has linear complexity</ins>. [&hellip;]
+</p></blockquote>
+</li>
+</ol>
 
 </resolution>
 
