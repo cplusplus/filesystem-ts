@@ -48,6 +48,14 @@ should both compile, or both fail to compile, based on whether or not their <tt>
 But I believe that the standard should say that explicitly.
 </p>
 
+<note>
+2013-09 Chicago
+</note>
+
+<p>
+Marshall Clow improved the wording with support from Stefanus.
+</p>
+
 </discussion>
 
 <resolution>
@@ -68,8 +76,8 @@ template &lt;class charT, class traits, class Allocator&gt;
 <blockquote>
 <p>
 -2- <i>Returns:</i> An object of unspecified type such that if <tt>out</tt> is an instance of <tt>basic_ostream</tt> with member
-type <tt>char_type</tt> the same as <tt>charT</tt> <ins>and with member type <tt>traits_type</tt> the same as 
-<tt>char_traits&lt;charT&gt;</tt> for the first form and <tt>traits</tt> for second form</ins>, then the expression 
+type <tt>char_type</tt> the same as <tt>charT</tt> <ins>and with member type <tt>traits_type</tt>, which in the second form is 
+the same as <tt>traits</tt></ins>, then the expression 
 <tt>out &lt;&lt; quoted(s, delim, escape)</tt> behaves
 as if it inserts the following characters into <tt>out</tt> using character inserter function templates (27.7.3.6.4),
 which may throw <tt>ios_base::failure</tt> (27.5.3.1.1):
