@@ -57,6 +57,19 @@ Alisdair notes that this looks like wording in the right direction.  Wonders abo
 typedefs and the similar ones for iterators.
 </p>
 
+<note>2013-09 Chicago</note>
+<p>
+Moved to Ready.
+</p>
+<p>
+Consensus that the requirements should require real references, just like iterators, as containers are
+required to support at least ForwardIterators, which have the same restriction on references.
+</p>
+
+<p>
+Matt will file a new issue for some additional concerns with regex <tt>match_results</tt>.
+</p>
+
 </discussion>
 
 <resolution>
@@ -81,14 +94,12 @@ typedefs and the similar ones for iterators.
 <tt>X::reference</tt>
 </td>
 <td>
-<del>lvalue of</del><ins>type that behaves like a reference to</ins> <tt>T</tt>
+<del>lvalue of </del><tt>T<ins>&amp;</ins></tt>
 </td>
 <td>
 &nbsp;
 </td>
 <td>
-<ins>convertible to <tt>X::const_reference</tt><br/>
-and to <tt>const T&amp;</tt></ins>
 </td>
 <td>
 compile time
@@ -100,13 +111,12 @@ compile time
 <tt>X::const_reference</tt>
 </td>
 <td>
-<del>const lvalue of</del><ins>type that behaves like a reference to <tt>const</tt></ins> <tt>T</tt>
+<del>const lvalue of</del><ins><tt>const</tt></ins> <tt>T<ins>&amp;</ins></tt>
 </td>
 <td>
 &nbsp;
 </td>
 <td>
-<ins>convertible to <tt>const T&amp;</tt></ins>
 </td>
 <td>
 compile time

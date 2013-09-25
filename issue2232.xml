@@ -3,7 +3,7 @@
   <!ENTITY nbsp "&#160;">
 ] >
 
-<issue num="2232" status="Open">
+<issue num="2232" status="NAD Future">
 <title>[CD] The <tt>char_traits</tt> specializations should declare their <tt>length()</tt>, <tt>compare()</tt>, and 
 <tt>find()</tt> members constexpr</title>
 <section><sref ref="[char.traits.specializations]"/></section>
@@ -38,6 +38,35 @@ There are a number of people who have a strong interest in this issue not availa
 <p>
 It also plays at the heart of a discussion about library freedoms for <tt>constexpr</tt> and specifying
 a library that may depend on unspecified compiler intrinsics to be implementable.
+</p>
+
+<note>2013-09 Chicago</note>
+<p>
+Moved to NAD Future.
+</p>
+<p>
+While it is clear that this feature can be implemented using only C++14 <tt>constexpr</tt> features,
+there is real concern that we cannot call the efficient, highly optimized, C implementations of these
+functions under a C++14 <tt>constexpr</tt> implentation, nor implement similar ourselves as this
+typically involves use of inline <tt>asm</tt> instructions.
+</p>
+<p>
+Clang and libc++ have some experience of using intrinsics to try to address the perfomance issue, but
+the current intrinsics are not general enough to support <tt>char_traits</tt>.  The intrinsics support
+only operations on character string literals, and the string literal is no longer visible <i>as</i> a
+literal after passing as a <tt>const char *</tt> to the <tt>char_traits</tt> functions.
+</p>
+<p>
+Additional concern was raised that these operations are unlikely to be useful anyway, as the only client
+is <tt>basic_string</tt> which relies on dynamic memory allocation, and so cannot effectively be made a
+literal type.  Jeffrey then pointed out the pending <tt>string_view</tt> library that will also use
+<tt>char_traits</tt> and would most certainly benefit from being a literal type.
+</p>
+
+<p>
+Given the choice of giving up performance on a critical library component, or requiring a compiler
+intrisic with only unsuccessful implementation experience, the consensus is to not reject this, unless
+compelling implementation experience is demonstrated.  NAD Future seems the appropriate resolution.
 </p>
 
 </discussion>

@@ -3,7 +3,7 @@
   <!ENTITY nbsp "&#160;">
 ] >
 
-<issue num="2291" status="New">
+<issue num="2291" status="Ready">
 <title><tt>std::hash</tt> is vulnerable to collision DoS attack</title>
 <section><sref ref="[hash.requirements]"/></section>
 <submitter>Zhihao Yuan</submitter>
@@ -32,6 +32,28 @@ type?  Or it is not allowed for an implementation to change its hash
 function?
 <p/>
 I suggest to explicitly allow the salted hash functions.
+</p>
+
+<note>2013-09 Chicago</note>
+<p>
+Moved to Ready.
+</p>
+
+<p>
+There is some concern that the issue of better hashing, especially standardizing any kind of
+secure hashing, is a feature that deserves attention in LEWG
+</p>
+
+<p>
+The proposed resolution is much simpler than the larger issue though, merely clarifying a
+permission that many implementers believe they already have, without mandating a change to
+more straight forward implementations.
+</p>
+
+<p>
+Move to Ready, rather than Immediate, as even the permission has been contentious in reflector
+discussion, although the consensus in Chicago is to accept as written unless we hear a further
+strong objection.
 </p>
 
 </discussion>
@@ -67,7 +89,7 @@ share an unordered container to a child process. &mdash; end note ]</em></p>
 The value returned shall depend only on the argument <tt>k</tt><br/>
 <ins>for the duration of the program</ins>.<br/>
 [<i>Note:</i> Thus all evaluations of the expression <tt>h(k)</tt> with the<br/>
-same value for <tt>k</tt> yield the same result <ins>for each execution<br/>
+same value for <tt>k</tt> yield the same result <ins>for a given execution<br/>
 of the program</ins>. &mdash; <i>end note</i>]<br/>
 </td>
 </tr>
