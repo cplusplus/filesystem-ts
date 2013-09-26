@@ -3,7 +3,7 @@
   <!ENTITY nbsp "&#160;">
 ] >
 
-<issue num="2252" status="New">
+<issue num="2252" status="Ready">
 <title>Strong guarantee on <tt>vector::push_back()</tt> still broken with C++11?</title>
 <section><sref ref="[vector.modifiers]"/></section>
 <submitter>Nicolai Josuttis</submitter>
@@ -108,6 +108,7 @@ if an exception is thrown by a <tt>push_back()</tt> <del>or</del><ins>,</ins> <t
 
 <li><p>Edit <sref ref="[deque.modifiers]"/> as indicated:</p>
 
+<blockquote>
 <pre>iterator insert(const_iterator position, const T&amp; x);
 iterator insert(const_iterator position, T&amp;&amp; x);
 iterator insert(const_iterator position, size_type n, const T&amp; x);
@@ -133,7 +134,7 @@ no effect on the validity of references to elements of the deque.
 If an exception is thrown other than by the copy constructor, move constructor, assignment
 operator, or move assignment operator of <tt>T</tt> there are no effects.
 <ins>
-If an exception is thrown while inserting a single element at either end, that function has no effects.
+If an exception is thrown while inserting a single element at either end, there are no effects.
 </ins>
 <del>If</del><ins>Otherwise, if</ins> an exception is thrown by the move
 constructor of a non-<tt>CopyInsertable</tt> <tt>T</tt>, the effects are unspecified.
@@ -142,39 +143,12 @@ constructor of a non-<tt>CopyInsertable</tt> <tt>T</tt>, the effects are unspeci
 to the beginning and end of the deque. Inserting a single element either at the beginning or end of a
 deque always takes constant time and causes a single call to a constructor of <tt>T</tt>.
 </p>
-</blockquote>
+</blockquote></blockquote>
 </li>
-
-<li><p>Edit <sref ref="[list.modifiers]"/> as indicated:</p>
-
-<pre>iterator insert(const_iterator position, const T&amp; x);
-iterator insert(const_iterator position, T&amp;&amp; x);
-iterator insert(const_iterator position, size_type n, const T&amp; x);
-template &lt;class InputIterator&gt;
-  iterator insert(const_iterator position, InputIterator first, InputIterator last);
-iterator insert(const_iterator position, initializer_list&lt;T&gt;);
-template &lt;class... Args&gt; void emplace_front(Args&amp;&amp;... args);
-template &lt;class... Args&gt; void emplace_back(Args&amp;&amp;... args);
-template &lt;class... Args&gt; iterator emplace(const_iterator position, Args&amp;&amp;... args);
-void push_front(const T&amp; x);
-void push_front(T&amp;&amp; x);
-void push_back(const T&amp; x);
-void push_back(T&amp;&amp; x);
-</pre>
-<blockquote>
-<p>
--1- <i>Remarks:</i> Does not affect the validity of iterators and references. 
-<del>If an exception is thrown there are no effects.</del>
-</p><p>
--2- <i>Complexity:</i> ...
-</p>
-</blockquote>
- 
-</li>
-
 
 <li><p>Edit <sref ref="[vector.modifiers]"/> as indicated:</p>
 
+<blockquote>
 <pre>iterator insert(const_iterator position, const T&amp; x);
 iterator insert(const_iterator position, T&amp;&amp; x);
 iterator insert(const_iterator position, size_type n, const T&amp; x);
@@ -194,8 +168,8 @@ If an exception is thrown other
 than by the copy constructor, move constructor, assignment operator, or move assignment operator
 of <tt>T</tt> or by any <tt>InputIterator</tt> operation there are no effects.
 <ins>
-If an exception is thrown while inserting a single element at the end and the element type is <tt>CopyInsertable</tt>
-or has a non-throwing move constructor, that function has no effects.
+If an exception is thrown while inserting a single element at the end and <tt>T</tt> is <tt>CopyInsertable</tt>
+or <tt>is_nothrow_move_constructible&lt;T&gt;::value</tt> is <tt>true</tt>, there are no effects.
 </ins>
 <del>If</del><ins>Otherwise, if</ins> an exception is thrown by the move
 constructor of a non-<tt>CopyInsertable</tt> <tt>T</tt>, the effects are unspecified.
@@ -203,7 +177,7 @@ constructor of a non-<tt>CopyInsertable</tt> <tt>T</tt>, the effects are unspeci
 -2- <i>Complexity:</i> The complexity is linear in the number of elements inserted plus the distance to the end
 of the vector.
 </p>
-</blockquote>
+</blockquote></blockquote>
 </li>
 </ol>
 
