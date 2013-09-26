@@ -3,7 +3,7 @@
   <!ENTITY nbsp "&#160;">
 ] >
 
-<issue num="2270" status="New">
+<issue num="2270" status="NAD">
 <title>Inconsistent <tt>to_string</tt> overloads</title>
 <section><sref ref="[string.conversions]"/></section>
 <submitter>Raf Schietekat</submitter>
@@ -28,6 +28,13 @@ hypothetical <tt>strtoi()</tt> as <tt>atol()</tt> currently is from <tt>strtol()
 It is only logical to act on this one-sided precedent by completing the set. Whether or not Standard C leads the way 
 (or follows suit) is immaterial, but an invitation could be extended.
 </p>
+
+<note>2013-09 Chicago</note>
+<p>
+These overloads were very carefully and experimentally determined to be the minimal set, when all (known) promotion and
+conversion scenarios were considered.  Removing superfluous-looking overloads is likely to result in ambiguities.
+</p>
+
 </discussion>
 
 <resolution>
