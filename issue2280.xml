@@ -27,6 +27,8 @@ The array forms of <tt>std::begin</tt> and <tt>std::end</tt> should be <tt>const
 [&hellip;]
 template &lt;class T, size_t N&gt; <ins>constexpr</ins> T* begin(T (&amp;array)[N]) <ins>noexcept</ins>;
 template &lt;class T, size_t N&gt; <ins>constexpr</ins> T* end(T (&amp;array)[N]) <ins>noexcept</ins>;
+template &lt;class C&gt; <ins>constexpr</ins> auto cbegin(const C&amp; c) -&gt; decltype(std::begin(c));
+template &lt;class C&gt; <ins>constexpr</ins> auto cend(const C&amp; c) -&gt; decltype(std::end(c));
 [&hellip;]
 </pre>
 </blockquote>
@@ -49,6 +51,22 @@ template &lt;class T, size_t N&gt; <ins>constexpr</ins> T* end(T (&amp;array)[N]
 <blockquote>
 <p>
 -5- <i>Returns</i>: <tt>array + N</tt>.
+</p>
+</blockquote>
+<pre>
+template &lt;class C&gt; <ins>constexpr</ins> auto cbegin(const C&amp; c) -&gt; decltype(std::begin(c));
+</pre>
+<blockquote>
+<p>
+-6- <i>Returns</i>: <tt>std::begin(c)</tt>.
+</p>
+</blockquote>
+<pre>
+template &lt;class C&gt; <ins>constexpr</ins> auto cend(const C&amp; c) -&gt; decltype(std::end(c));
+</pre>
+<blockquote>
+<p>
+-7- <i>Returns</i>: <tt>std::end(c)</tt>.
 </p>
 </blockquote>
 </blockquote>

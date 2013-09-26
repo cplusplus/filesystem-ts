@@ -150,14 +150,19 @@ This is accomplished by marking namespace <tt>std::literals</tt> as <tt>inline</
 <blockquote><pre>
 namespace std {
 [&hellip;]
-namespace literals {
+inline namespace literals {
 inline namespace chrono_literals {
 [&hellip;]
 constexpr chrono::duration&lt;<i>unspecified</i> , nano&gt; operator "" ns(long double);
-<ins>using namespace literals::chrono_literals;</ins>
 
 } // namespace chrono_literals
 } // namespace literals
+
+<ins>
+namespace chrono {
+    using namespace literals::chrono_literals;
+} // namespace chrono
+</ins>
 } // namespace std
 </pre></blockquote>
 </li>
