@@ -3,7 +3,7 @@
   <!ENTITY nbsp "&#160;">
 ] >
 
-<issue num="2279" status="New">
+<issue num="2279" status="NAD">
 <title>Carefully state effects of <tt>list::splice</tt> function</title>
 <section><sref ref="[list.ops]"/>, <sref ref="[forwardlist.ops]"/></section>
 <submitter>Arseny Klimovsky</submitter>
@@ -42,6 +42,15 @@ One is formally allowed to have list implementation where two iterators from dif
 For example, this can only happen to non-dereferenceable iterators, and <tt>position</tt> and <tt>++i</tt> can be 
 non-dereferenceable. So, literally according to the standard, it is not allowed in this implementation to transfer 
 such elements with <tt>splice</tt> function.
+</p>
+
+<note>2013-09 Chicago (late night issues)</note>
+<p>
+Moved to NAD.
+</p>
+<p>
+The condition under which the <tt>list</tt> is unchanged is not program code, so there is no undefined behavior to protect against.
+Rather, the precondition that the evaluation can be performed is implicit if determining when the condition applies.
 </p>
 
 </discussion>

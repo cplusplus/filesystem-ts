@@ -51,9 +51,8 @@ Wait for that paper to be applied before visiting this issue - deliberately leav
 status until the next meeting.
 </p>
 
-</discussion>
-
-<resolution>
+<p><strong>Proposed resolution from Kona 2012:</strong></p>
+<blockquote class="note">
 <p>This wording is relative to the FDIS.</p>
 
 <p>
@@ -69,6 +68,30 @@ elements from the range [<tt>first,last</tt>).
 <p/>
 -4- <i>Requires</i>: If the iterator’s dereference operator returns an lvalue or a <del>non-</del>const rvalue, 
 then <tt>Key</tt> shall be <tt>CopyConstructible</tt>.
+<p/>
+-5- <i>Complexity</i>: Linear in <tt>N</tt> if the range [<tt>first,last</tt>) is already sorted using 
+<tt>comp</tt> and otherwise <tt>N logN</tt>, where <tt>N</tt> is <tt>last - first</tt>.
+</p></blockquote></blockquote>
+</blockquote>
+
+</discussion>
+
+<resolution>
+<p>This wording is relative to the N3691.</p>
+
+<p>
+Change <sref ref="[set.cons]"/> p4 as follows:
+</p> 
+<blockquote><pre>
+template &lt;class InputIterator&gt;
+  set(InputIterator first, InputIterator last,
+    const Compare&amp; comp = Compare(), const Allocator&amp; = Allocator());
+</pre><blockquote><p>
+-3- Effects: Constructs an empty <tt>set</tt> using the specified comparison object and allocator, and inserts
+elements from the range [<tt>first,last</tt>).
+<p/>
+-4- <i>Requires</i>: If the iterator’s indirection operator returns an lvalue or a <del>non-</del>const rvalue, 
+then <tt>Key</tt> shall be <tt>CopyInsertible</tt> into <tt>*this</tt>.
 <p/>
 -5- <i>Complexity</i>: Linear in <tt>N</tt> if the range [<tt>first,last</tt>) is already sorted using 
 <tt>comp</tt> and otherwise <tt>N logN</tt>, where <tt>N</tt> is <tt>last - first</tt>.
