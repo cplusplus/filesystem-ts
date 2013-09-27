@@ -3,7 +3,7 @@
   <!ENTITY nbsp "&#160;">
 ] >
 
-<issue num="2159" status="Open">
+<issue num="2159" status="Immediate">
 <title><tt>atomic_flag</tt> initialization</title>
 <section><sref ref="[atomics.flag]"/></section>
 <submitter>Alberto Ganesh Barbati</submitter>
@@ -93,6 +93,15 @@ to identify which additional contexts (if any) would be universally valid.
 Moved to open
 </p>
 
+<note>2012, Portland</note>
+<p>
+Move to Immediate, following review.
+</p>
+<p>
+Some discussion over the explicit use of only copy initialization, and not direct initializtion.  This is necessary to
+allow the implementation of <tt>atomic_flag</tt> as an aggregate, and may be further reviewed in the future.
+</p>
+
 </discussion>
 
 <resolution>
@@ -108,7 +117,7 @@ type <tt>atomic_flag</tt> to the clear state.  <ins>The macro can be used in the
 <ins>atomic_flag guard = ATOMIC_FLAG_INIT;</ins>
 </pre></blockquote>
 <p>
-<ins>It's unspecified whether the macro can be used in other initialization contexts.</ins> For a <ins>complete</ins>
+<ins>It is unspecified whether the macro can be used in other initialization contexts.</ins> For a <ins>complete</ins>
 static-duration object, that initialization shall be static. <del>It is unspecified whether an uninitialized</del> 
 <ins>Unless initialized with <tt>ATOMIC_FLAG_INIT</tt>, it is unspecified whether an</ins> <tt>atomic_flag</tt> 
 object has an initial state of set or clear. <del><i>[ Example:</i></del>
