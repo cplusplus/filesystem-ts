@@ -66,9 +66,286 @@ Hans: so if the <tt>unlock</tt> throws we simply propagate the exception.
 Move the issue to open and add some formal wording at a later time.
 </p>
 
+<note>2013-09 Chicago: Resolved</note>
+
 </discussion>
 
 <resolution>
+<p>This wording is relative to N3691.</p>
+
+<ol>
+<li><p>Edit <sref ref="[thread.condition.condvar]"/> as indicated:</p>
+
+<blockquote><pre>
+void wait(unique_lock&lt;mutex&gt;&amp; lock);
+</pre><blockquote>
+<p>
+[&hellip;]
+<p/>
+-10- <i>Effects:</i>
+</p>
+<ul>
+<li><p>Atomically calls <tt>lock.unlock()</tt> and blocks on <tt>*this</tt>.</p></li>
+<li><p>When unblocked, calls <tt>lock.lock()</tt> (possibly blocking on the lock), then returns.</p></li>
+<li><p>The function will unblock when signaled by a call to <tt>notify_one()</tt> or a call to <tt>notify_all()</tt>,
+or spuriously.</p></li>
+<li><p><del>If the function exits via an exception, <tt>lock.lock()</tt> shall be called prior to exiting the function
+scope.</del></p></li>
+</ul>
+<p>
+-11- <i>Postcondition:</i> <tt>lock.owns_lock()</tt> is true and <tt>lock.mutex()</tt> is locked by the calling 
+thread. <ins>If the function fails to meet the postcondition, <tt>std::terminate()</tt> shall be called 
+(<sref ref="[except.terminate]"/>). [<i>Note:</i> This can happen if the re-locking of the mutex throws an 
+exception. &mdash; <i>end note</i>]</ins>
+<p/>
+-12- <i>Throws:</i> <ins>Nothing</ins><del><tt>system_error</tt> when an exception is required (30.2.2)</del>.
+<p/>
+<del>-13- <i>Error conditions:</i></del>
+</p>
+<ul>
+<li><p><del>equivalent error condition from <tt>lock.lock()</tt> or <tt>lock.unlock()</tt>.</del></p></li>
+</ul>
+</blockquote>
+
+<blockquote>
+<pre>
+template &lt;class Predicate&gt;
+void wait(unique_lock&lt;mutex&gt;&amp; lock, Predicate pred);
+</pre><blockquote>
+<p>
+[&hellip;]
+<p/>
+-16- <i>Postcondition:</i> <tt>lock.owns_lock()</tt> is true and <tt>lock.mutex()</tt> is locked by the calling 
+thread. <ins>If the function fails to meet the postcondition, <tt>std::terminate()</tt> shall be called 
+(<sref ref="[except.terminate]"/>). [<i>Note:</i> This can happen if the re-locking of the mutex throws an 
+exception. &mdash; <i>end note</i>]</ins>
+<p/>
+-17- <i>Throws:</i> <del><tt>system_error</tt> when an exception is required (30.2.2),</del> timeout-related exceptions 
+(30.2.4)<del>,</del> or any exception thrown by <tt>pred</tt>.
+<p/>
+<del>-18- <i>Error conditions:</i></del>
+</p>
+<ul>
+<li><p><del>equivalent error condition from <tt>lock.lock()</tt> or <tt>lock.unlock()</tt>.</del></p></li>
+</ul>
+</blockquote></blockquote>
+
+<blockquote>
+<pre>
+template &lt;class Clock, class Duration&gt;
+  cv_status wait_until(unique_lock&lt;mutex&gt;&amp; lock,
+    const chrono::time_point&lt;Clock, Duration&gt;&amp; abs_time);
+</pre><blockquote>
+<p>
+[&hellip;]
+<p/>
+-20- <i>Effects:</i> 
+</p>
+<ul>
+<li><p>[&hellip;]</p></li>
+<li><p>If the function exits via an exception, <tt>lock.lock()</tt> shall be called prior to exiting the function
+<del>scope</del>.</p></li>
+</ul>
+<p>
+-21- <i>Postcondition:</i> <tt>lock.owns_lock()</tt> is true and <tt>lock.mutex()</tt> is locked by the calling 
+thread. <ins>If the function fails to meet the postcondition, <tt>std::terminate()</tt> shall be called 
+(<sref ref="[except.terminate]"/>). [<i>Note:</i> This can happen if the re-locking of the mutex throws an 
+exception. &mdash; <i>end note</i>]</ins>
+<p/>
+[&hellip;]
+<p/>
+-23- <i>Throws:</i> <del><tt>system_error</tt> when an exception is required (30.2.2) or</del> timeout-related 
+exceptions (30.2.4).
+<p/>
+<del>-24- <i>Error conditions:</i></del>
+</p>
+<ul>
+<li><p><del>equivalent error condition from <tt>lock.lock()</tt> or <tt>lock.unlock()</tt>.</del></p></li>
+</ul>
+</blockquote></blockquote>
+
+<blockquote>
+<pre>
+template &lt;class Rep, class Period&gt;
+  cv_status wait_for(unique_lock&lt;mutex&gt;&amp; lock,
+    const chrono::duration&lt;Rep, Period&gt;&amp; rel_time);
+</pre><blockquote>
+<p>
+[&hellip;]
+<p/>
+-28- <i>Postcondition:</i> <tt>lock.owns_lock()</tt> is true and <tt>lock.mutex()</tt> is locked by the calling 
+thread. <ins>If the function fails to meet the postcondition, <tt>std::terminate()</tt> shall be called 
+(<sref ref="[except.terminate]"/>). [<i>Note:</i> This can happen if the re-locking of the mutex throws an 
+exception. &mdash; <i>end note</i>]</ins>
+<p/>
+[&hellip;]
+<p/>
+-29- <i>Throws:</i> <del><tt>system_error</tt> when an exception is required (30.2.2) or</del> timeout-related 
+exceptions (30.2.4).
+<p/>
+<del>-30- <i>Error conditions:</i></del>
+</p>
+<ul>
+<li><p><del>equivalent error condition from <tt>lock.lock()</tt> or <tt>lock.unlock()</tt>.</del></p></li>
+</ul>
+</blockquote></blockquote>
+
+<blockquote>
+<pre>
+template &lt;class Clock, class Duration, class Predicate&gt;
+  bool wait_until(unique_lock&lt;mutex&gt;&amp; lock,
+    const chrono::time_point&lt;Clock, Duration&gt;&amp; abs_time,
+	Predicate pred);
+</pre><blockquote>
+<p>
+[&hellip;]
+<p/>
+-33- <i>Postcondition:</i> <tt>lock.owns_lock()</tt> is true and <tt>lock.mutex()</tt> is locked by the calling 
+thread. <ins>If the function fails to meet the postcondition, <tt>std::terminate()</tt> shall be called 
+(<sref ref="[except.terminate]"/>). [<i>Note:</i> This can happen if the re-locking of the mutex throws an 
+exception. &mdash; <i>end note</i>]</ins>
+<p/>
+[&hellip;]
+<p/>
+-35- <i>Throws:</i> <del><tt>system_error</tt> when an exception is required (30.2.2),</del> timeout-related exceptions 
+(30.2.4)<del>,</del> or any exception thrown by <tt>pred</tt>.
+<p/>
+<del>-36- <i>Error conditions:</i></del>
+</p>
+<ul>
+<li><p><del>equivalent error condition from <tt>lock.lock()</tt> or <tt>lock.unlock()</tt>.</del></p></li>
+</ul>
+</blockquote></blockquote>
+
+<blockquote>
+<pre>
+template &lt;class Rep, class Period, class Predicate&gt;
+  bool wait_for(unique_lock&lt;mutex&gt;&amp; lock,
+    const chrono::duration&lt;Rep, Period&gt;&amp; rel_time,
+	Predicate pred);
+</pre><blockquote>
+<p>
+[&hellip;]
+<p/>
+-40- <i>Postcondition:</i> <tt>lock.owns_lock()</tt> is true and <tt>lock.mutex()</tt> is locked by the calling 
+thread. <ins>If the function fails to meet the postcondition, <tt>std::terminate()</tt> shall be called 
+(<sref ref="[except.terminate]"/>). [<i>Note:</i> This can happen if the re-locking of the mutex throws an 
+exception. &mdash; <i>end note</i>]</ins>
+<p/>
+[&hellip;]
+<p/>
+-42- <i>Throws:</i> <del><tt>system_error</tt> when an exception is required (30.2.2),</del> timeout-related exceptions 
+(30.2.4)<del>,</del> or any exception thrown by <tt>pred</tt>.
+<p/>
+<del>-43- <i>Error conditions:</i></del>
+</p>
+<ul>
+<li><p><del>equivalent error condition from <tt>lock.lock()</tt> or <tt>lock.unlock()</tt>.</del></p></li>
+</ul>
+</blockquote></blockquote>
+
+</blockquote>
+
+</li>
+
+<li><p>Edit <sref ref="[thread.condition.condvarany]"/> as indicated:</p>
+
+<blockquote><pre>
+template&lt;class Lock&gt;
+void wait(Lock&amp; lock);
+</pre><blockquote>
+<p>
+[&hellip;]
+<p/>
+-10- <i>Effects:</i>
+</p>
+<ul>
+<li><p>Atomically calls <tt>lock.unlock()</tt> and blocks on <tt>*this</tt>.</p></li>
+<li><p>When unblocked, calls <tt>lock.lock()</tt> (possibly blocking on the lock) and returns.</p></li>
+<li><p>The function will unblock when signaled by a call to <tt>notify_one()</tt>, a call to <tt>notify_all()</tt>,
+or spuriously.</p></li>
+<li><p><del>If the function exits via an exception, <tt>lock.lock()</tt> shall be called prior to exiting the function
+scope.</del></p></li>
+</ul>
+<p>
+-11- <i>Postcondition:</i> <tt>lock</tt> is locked by the calling thread. 
+<ins>If the function fails to meet the postcondition, <tt>std::terminate()</tt> shall be called 
+(<sref ref="[except.terminate]"/>). [<i>Note:</i> This can happen if the re-locking of the mutex throws an 
+exception. &mdash; <i>end note</i>]</ins>
+<p/>
+-12- <i>Throws:</i> <ins>Nothing</ins><del><tt>system_error</tt> when an exception is required (30.2.2)</del>.
+<p/>
+<del>-13- <i>Error conditions:</i></del>
+</p>
+<ul>
+<li><p><del>equivalent error condition from <tt>lock.lock()</tt> or <tt>lock.unlock()</tt>.</del></p></li>
+</ul>
+
+</blockquote>
+
+<blockquote>
+<pre>
+template &lt;class Lock, class Clock, class Duration&gt;
+  cv_status wait_until(Lock&amp; lock, const chrono::time_point&lt;Clock, Duration&gt;&amp; abs_time);
+</pre><blockquote>
+<p>
+[&hellip;]
+<p/>
+-15- <i>Effects:</i> 
+</p>
+<ul>
+<li><p>[&hellip;]</p></li>
+<li><p>If the function exits via an exception, <tt>lock.lock()</tt> shall be called prior to exiting the function
+<del>scope</del>.</p></li>
+</ul>
+<p>
+-16- <i>Postcondition:</i> <tt>lock</tt> is locked by the calling thread. 
+ <ins>If the function fails to meet the postcondition, <tt>std::terminate()</tt> shall be called 
+(<sref ref="[except.terminate]"/>). [<i>Note:</i> This can happen if the re-locking of the mutex throws an 
+exception. &mdash; <i>end note</i>]</ins>
+<p/>
+[&hellip;]
+<p/>
+-18- <i>Throws:</i> <del><tt>system_error</tt> when an exception is required (30.2.2) or</del> timeout-related 
+exceptions (30.2.4).
+<p/>
+<del>-19- <i>Error conditions:</i></del>
+</p>
+<ul>
+<li><p><del>equivalent error condition from <tt>lock.lock()</tt> or <tt>lock.unlock()</tt>.</del></p></li>
+</ul>
+</blockquote></blockquote>
+
+<blockquote>
+<pre>
+template &lt;class Lock, class Rep, class Period&gt;
+  cv_status wait_for(Lock&amp; lock, const chrono::duration&lt;Rep, Period&gt;&amp; rel_time);
+</pre><blockquote>
+<p>
+[&hellip;]
+<p/>
+-22- <i>Postcondition:</i> <tt>lock</tt> is locked by the calling thread. 
+ <ins>If the function fails to meet the postcondition, <tt>std::terminate()</tt> shall be called 
+(<sref ref="[except.terminate]"/>). [<i>Note:</i> This can happen if the re-locking of the mutex throws an 
+exception. &mdash; <i>end note</i>]</ins>
+<p/>
+[&hellip;]
+<p/>
+-23- <i>Throws:</i> <del><tt>system_error</tt> when an exception is required (30.2.2) or</del> timeout-related 
+exceptions (30.2.4).
+<p/>
+<del>-24- <i>Error conditions:</i></del>
+</p>
+<ul>
+<li><p><del>equivalent error condition from <tt>lock.lock()</tt> or <tt>lock.unlock()</tt>.</del></p></li>
+</ul>
+</blockquote></blockquote>
+
+</blockquote>
+
+</li>
+</ol>
+
 </resolution>
 
 </issue>
