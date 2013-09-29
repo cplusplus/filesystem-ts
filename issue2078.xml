@@ -3,7 +3,7 @@
   <!ENTITY nbsp "&#160;">
 ] >
 
-<issue num="2078" status="Tentatively NAD Editorial">
+<issue num="2078" status="Pending WP">
 <title>Throw specification of <tt>async()</tt> incomplete</title>
 <section><sref ref="[futures.async]"/></section>
 <submitter>Nicolai Josuttis</submitter>
@@ -51,9 +51,41 @@ the policy argument should be <tt>lauch::async</tt>. Current wording seems good 
 We believe this choice of policy statement is really an editorial issue.
 </p>
 
+<note>2013-09 Chicago</note>
+<p>
+If all the implementors read it and can't get it right - it is not editorial. Nico to provide wording
+</p>
+<p>
+No objections to revised wording, so moved to Immediate.
+</p>
+<p>
+Accept for Working Paper
+</p>
 </discussion>
 
 <resolution>
+<p>This wording is relative to N3691.</p>
+
+<ol>
+<li><p>Change <sref ref="[futures.async]"/> p6, p7 as indicated:</p>
+
+<blockquote>
+<p>
+-6- <i>Throws:</i> <tt>system_error</tt> if <tt>policy</tt> <del>is</del> <ins><tt>==</tt></ins> <tt>launch::async</tt> 
+and the implementation is unable to start a new thread.
+</p>
+<p>
+-7- <i>Error conditions:</i>
+</p>
+<ul>
+<li><p> <tt>resource_unavailable_try_again</tt> &mdash; if <tt>policy</tt> <del>is</del> <ins><tt>==</tt></ins> <tt>launch::async</tt> 
+and the system is unable to start a new thread.</p>
+</li>
+</ul>
+</blockquote>
+</li>
+</ol>
+
 </resolution>
 
 </issue>
