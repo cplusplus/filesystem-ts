@@ -28,6 +28,8 @@ conform to multiple standards at once. We should make users' and implementers' l
 I decided to use the phrase to describe <tt>ssize_t</tt> below because of the text describing it in the 
 <a href="http://pubs.opengroup.org/onlinepubs/9699919799/basedefs/sys_types.h.html#tag_13_67">POSIX</a> standard. 
 In it, it describes <tt>ssize_t</tt> with the value range of <tt>[-1,{SSIZE_MAX}]</tt>.
+<tt>SSIZE_MAX</tt> is specified in the <a href="http://pubs.opengroup.org/onlinepubs/9699919799/basedefs/limits.h.html#tag_13_24">POSIX</a> 
+standard as a minimum value of <tt>_POSIX_SSIZE_MAX</tt>. This macro is referenced in the wording below.
 </p>
 
 </discussion>
@@ -69,8 +71,9 @@ Ammend <sref ref="[support.types]"/>, Table 30 as indicated:
 
 <p>Add the following paragraph to describe <tt>ssize_t</tt></p>
 <blockquote><p><ins>
--?- The type <tt>ssize_t</tt> is an implementation-defined signed integer type that shall contain the minimum range <tt>[-1, {SSIZE_MAX}]</tt>.
-</ins></p></blockquote>
+-?- The type <tt>ssize_t</tt> is an implementation-defined signed integer type that shall contain the minimum range 
+<tt>[-1, {SSIZE_MAX}]</tt> where <tt>SSIZE_MAX</tt> is specified at a minimum of <tt>_POSIX_SSIZE_MAX</tt>.</ins>
+</p></blockquote>
 <p>Ammend p7 as follows:</p>
 <blockquote><p>
 -7- [<i>Note:</i> It is recommended that implementations choose types for <tt>ptrdiff_t<ins>, ssize_t,</ins></tt> and <tt>size_t</tt> whose integer conversion ranks &hellip;</p></blockquote>
