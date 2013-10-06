@@ -1,0 +1,125 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="2303" status="New">
+<title>Explicit instantiation of <tt>std::vector&lt;UserType&gt;</tt> broken?</title>
+<section><sref ref="[new.delete.placement]"/></section>
+<submitter>Daniel Kr&uuml;gler</submitter>
+<date>18 Sep 2013</date>
+
+<discussion>
+<p>
+The library gives explicit permission in <sref ref="[namespace.std]"/> p2 that user code may explicitly instantiate
+a library template provided that the instantiations depend on at least one user-defined type:
+</p>
+
+<blockquote><p>
+A program may explicitly instantiate a template defined in the standard library only if the declaration
+depends on the name of a user-defined type and the instantiation meets the standard library requirements
+for the original template.
+</p></blockquote>
+
+<p>
+But it seems that the C++11 library is not specified in a way that guarantees such an instantiation to be well-formed
+if the minimum requirements of the library is not satisfied. 
+<p/>
+For example, in general, the first template parameter of <tt>std::vector</tt> is not required to be 
+<tt>DefaultConstructible</tt> in general, but due to the split of the single C++03 member function
+with default argument
+</p>
+<blockquote><pre>
+void resize(size_type sz, T c = T());
+</pre></blockquote>
+<p>
+into
+</p>
+<blockquote><pre>
+void resize(size_type sz);
+void resize(size_type sz, const T&amp; c);
+</pre></blockquote>
+<p>
+the effect is now that for a type <tt>ND</tt> that is not <tt>DefaultConstructible</tt>, such as
+</p>
+<blockquote><pre>
+struct NP { 
+  NP(int); 
+};
+</pre></blockquote>
+<p>
+the explicit instantiation of <tt>std::vector&lt;ND&gt;</tt> is no longer well-formed, because the attempt to
+instantiate the single-argument overload of <tt>resize</tt> cannot not succeed, because this function imposes
+the <tt>DefaultInsertable</tt> requirements and given the default allocator this effectively requires
+<tt>DefaultConstructible</tt>.
+</p>
+<p>
+But <tt>DefaultConstructible</tt> is not the only point, what about <tt>CopyConstructible</tt> versus
+<tt>MoveConstructible</tt> alone? It turns out that currently the second <tt>resize</tt> overload
+would fail during an explicit instantiation for a type like
+</p>
+<blockquote><pre>
+struct MO { 
+  MO() = default; 
+  MO(MO&amp;&amp;) = default; 
+};
+</pre></blockquote>
+<p>
+because it imposes <tt>CopyInsertable</tt> requirements that end up being equivalent to the <tt>CopyConstructible</tt>
+requirements for the default allocator.
+<p/>
+Technically a library can solve these issues: For special member functions by defining them in some base class, for others
+by transforming them effectively into a function template due to the great feature of default template arguments for
+function templates. E.g. the here mentioned <tt>resize</tt> functions of <tt>std::vector</tt> could be prevented from
+instantiation by defining them like this with an implementation:
+</p>
+<blockquote><pre>
+template&lt;class = void&gt;
+void resize(size_type sz) { [&hellip;] }
+template&lt;class = void&gt;
+void resize(size_type sz, const T&amp; c) { [&hellip;] }
+</pre></blockquote>
+<p>
+In this case, these functions could also be defined in a base class, but the latter approach won't work in all cases.
+<p/>
+Basically such an implementation is required to constrain all member functions that are not covered by the general
+requirements imposed on the actual library template parameters. I tested three different C++11 library implementations
+and but none could instantiate for example <tt>std::list</tt>, <tt>std::vector</tt>, or <tt>std::deque</tt> with
+value types that are not <tt>DefaultConstructible</tt> or only <tt>MoveConstructible</tt>. 
+<p/>
+
+<p/>
+This issue is raised to clarify the current situation in regard to the actual requirements imposed on user-provided
+types that are used to explicitly instantiate Library-provided templates. For example, the current Container requirements
+impose very little requirements on the actual value type and it is unclear to which extend library implementations have
+to respect that. 
+<p/>
+The minimum solution of this issue should be to at least realize that there is no fundamental requirement on 
+<tt>DefaultConstructible</tt> for value types of library containers.
+It is unclear whether <tt>CopyConstructible</tt> should be required for an explicit instantiation request.
+<p/>
+In any case I can envision at least two approaches to solve this issue:
+</p>
+<ol>
+<li>
+<p>
+As indicated in LWG <iref ref="2292"/>, those function could get an explicit "<i>Template Constraints:</i>"
+element, albeit this promises more than needed to solve this issue.
+</p>
+</li>
+<li>
+<p>
+The library could introduce a completely new element form, such as "<i>Instantiation Constraints:</i>" that
+would handle this situation for explicit instantiation situations. This would allow for simpler techniques
+to solve the issue when explicit instantiation is required compared to the first bullet, because it would not 
+(necessarily) guarantee SFINAE-friendly expression-wellformedness, such as inspecting the expression 
+<tt>std::declval&lt;std::vector&lt;ND&gt;&amp;&gt;.resize(0)</tt> in an unevaluated context.
+</p>
+</li>
+</ol>
+</discussion>
+
+<resolution>
+</resolution>
+
+</issue>
