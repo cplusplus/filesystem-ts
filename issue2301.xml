@@ -1,0 +1,48 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="2301" status="New">
+<title>Why is <tt>std::tie</tt> not <tt>constexpr</tt>?</title>
+<section><sref ref="[tuple.creation]"/></section>
+<submitter>Rein Halbersma</submitter>
+<date>11 Sep 2013</date>
+
+<discussion>
+<p>
+In <a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2012/n3471.html">N3471</a>, a bunch of routines from header 
+<tt>&lt;tuple&gt;</tt> were made <tt>constexpr</tt>.
+<p/>
+<tt>make_tuple/tuple_cat/get&lt;&gt;(tuple)/</tt>relational operators &mdash; all these were "<tt>constexpr</tt>-ified".     
+<p/>
+But not <tt>tie</tt>. This is similar to Issue <iref ref="2275"/>, where the same observation was made about <tt>forward_as_tuple</tt>.
+</p>
+</discussion>
+
+<resolution>
+<p>This wording is relative to N3691.</p>
+
+<ol>
+<li><p>Change the header <tt>&lt;tuple&gt;</tt> synopsis, <sref ref="[tuple.general]"/> p2 as indicated:</p>
+
+<blockquote><pre>
+template&lt;class... Types&gt;
+  <ins>constexpr</ins> tuple&lt;Types&amp;...&gt; tie(Types&amp;...) noexcept;
+</pre>
+</blockquote>
+</li>
+
+<li><p>Change <sref ref="[tuple.creation]"/> around p7 as indicated:</p>
+
+<blockquote><pre>
+template&lt;class... Types&gt;
+  <ins>constexpr</ins> tuple&lt;Types&amp;...&gt; tie(Types&amp;... t) noexcept;
+</pre>
+</blockquote>
+</li>
+
+</ol>
+</resolution>
+
+</issue>
