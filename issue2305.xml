@@ -1,0 +1,116 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="2305" status="Deferred">
+<title><tt>optional</tt> forwarding construction/assignment</title>
+<section><sref ref="[optional.object.ctor]"/></section>
+<submitter>Cassio Neri</submitter>
+<date>23 Sep 2013</date>
+
+<discussion>
+<p>
+Consider:
+</p>
+<blockquote><pre>
+struct foo {
+  foo(std::initializer_list&lt;int&gt;&amp;);        // 1
+  foo(const std::initializer_list&lt;int&gt;&amp;);  // 2
+  foo(std::initializer_list&lt;int&gt;&amp;&amp;);       // 3
+  foo(const std::initializer_list&lt;int&gt;&amp;&amp;); // 4
+};
+
+std::initializer_list&lt;int&gt; il{0, 1, 2};
+
+foo foo_0{1, 2, 3};                                 // calls 3
+foo foo_1{il};                                      // calls 1
+foo foo_2((const std::initializer_list&lt;int&gt;&amp;) il);  // calls 2
+foo foo_3{(std::initializer_list&lt;int&gt;&amp;&amp;) il};       // calls 3
+foo foo_4((const std::initializer_list&lt;int&gt;&amp;&amp;) il); // calls 4
+</pre></blockquote>
+<p>
+Although the constructors of <tt>foo</tt> are unusual (<tt>initializer_list</tt>s are <i>normally</i> passed by
+value) users of <tt>optional</tt> could naturally expect perfect forwarding of <tt>initializer_list</tt>s. However,
+all lines below end up calling 1.
+</p>
+<blockquote><pre>
+optional&lt;foo&gt; opt0{in_place, {1, 2, 3}};
+optional&lt;foo&gt; opt1{in_place, il};                    
+optional&lt;foo&gt; opt3{in_place, (const std::initializer_list&lt;int&gt;&amp;) il};
+optional&lt;foo&gt; opt2{in_place, (std::initializer_list&lt;int&gt;&amp;&amp;) il};
+optional&lt;foo&gt; opt4{in_place, (const std::initializer_list&lt;int&gt;&amp;&amp;) il};
+
+opt0.emplace({1, 2, 3});
+opt0.emplace(il);
+opt0.emplace((const std::initializer_list&lt;int&gt;&amp;) il);
+opt0.emplace((std::initializer_list&lt;int&gt;&amp;&amp;) il);
+opt0.emplace((const std::initializer_list&lt;int&gt;&amp;&amp;) il);
+</pre></blockquote>
+<p>
+The constructor
+</p>
+<blockquote><pre>
+template &lt;class... Args&gt; constexpr explicit optional(in_place_t, Args&amp;&amp;... args);
+</pre></blockquote>
+<p>
+can handle all constructor calls above, except the one taking <tt>{1, 2, 3}</tt>. Hence, a simple
+<ins>modification</ins> of
+</p>
+<blockquote><pre>
+template &lt;class U, class... Args&gt;
+constexpr explicit optional(in_place_t, initializer_list&lt;U&gt;<ins>&amp;&amp;</ins> il, Args&amp;&amp;... args);
+</pre></blockquote>
+<p>
+allows perfect forwarding of <tt>std::initializer_list&lt;U&gt;</tt>s to be complete.
+</p>
+</discussion>
+
+<resolution>
+<p>This wording is relative to N3691.</p>
+
+<ol>
+<li><p>Change <sref ref="[optional.object.ctor]"/> as indicated:</p>
+
+<blockquote><pre>
+template &lt;class U, class... Args&gt; 
+constexpr explicit optional(in_place_t, initializer_list&lt;U&gt;<ins>&amp;&amp;</ins> il, Args&amp;&amp;... args);
+</pre><blockquote>
+<p>
+-27- <i>Requires</i>: <tt>is_constructible&lt;T, initializer_list&lt;U&gt;&amp;<ins>&amp;</ins>, Args&amp;&amp;...>::value</tt> is <tt>true.</tt>
+<p/>
+-28- <i>Effects</i>: Initializes the contained value as if constructing an object of type <tt>T</tt> with the arguments
+<tt><del>il</del><ins>std::move(il)</ins></tt>, <tt>std::forward&lt;Args&gt;(args)...</tt>.
+<p/>
+[&hellip;]
+<p/>
+<del>-31- <i>Remarks</i>: The function shall not participate in overload resolution unless
+<tt>is_constructible&lt;T, initializer_list&lt;U&gt;&amp;, Args&amp;&amp;...&gt;::value</tt> is <tt>true</tt>.</del>
+</p>
+</blockquote>
+</blockquote>
+</li>
+<li><p>Change <sref ref="[optional.object.assign]"/> as indicated:</p>
+
+<blockquote><pre>
+template &lt;class U, class... Args&gt;
+void optional&lt;T&gt;::emplace(initializer_list&lt;U&gt;<ins>&amp;&amp;</ins> il, Args&amp;&amp;... args);
+</pre><blockquote>
+<p>
+-27- <i>Requires</i>: <tt>is_constructible&lt;T, initializer_list&lt;U&gt;&amp;<ins>&amp;</ins>, Args&amp;&amp;...>::value</tt> is <tt>true.</tt>
+<p/>
+-28- <i>Effects</i>: Calls <tt>*this = nullopt</tt>. Then initializes the contained value as if constructing an object of
+type <tt>T</tt> with the arguments <tt><del>il</del><ins>std::move(il)</ins></tt>, <tt>std::forward&lt;Args&gt;(args)...</tt>.
+<p/>
+[&hellip;]
+<p/>
+<del>-32- <i>Remarks</i>: This function shall not participate in overload resolution unless
+<tt>is_constructible&lt;T, initializer_list&lt;U&gt;&amp;, Args&amp;&amp;...>::value</tt> is <tt>true.</tt></del>
+</p>
+</blockquote>
+</blockquote>
+</li>
+</ol>
+</resolution>
+
+</issue>
