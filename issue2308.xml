@@ -1,0 +1,39 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="2308" status="New">
+<title>Clarify container destructor requirements w.r.t. <tt>std::array</tt></title>
+<section><sref ref="[container.requirements.general]"/></section>
+<submitter>Jonathan Wakely</submitter>
+<date>26 Sep 2013</date>
+
+<discussion>
+<p>
+It has been suggested that Table 96 &mdash; "Container requirements" makes
+confusing requirements for the destructor of <tt>std::array</tt>:
+<p/>
+"note: the destructor is applied to every element of <tt>a</tt>; all the memory is deallocated."
+<p/>
+Since <tt>std::array</tt> obtains no memory, there is none to deallocate,
+arguably  making it unclear what the requirement means for <tt>std::array::~array()</tt>.
+</p>
+</discussion>
+
+<resolution>
+<p>This wording is relative to N3691.</p>
+
+<ol>
+<li><p>Change in <sref ref="[container.requirements.general]"/>, Table 96 &mdash; "Container requirements", 
+the "Assertion/note/pre-/post-condition" for the expression "<tt>(&amp;a)-&gt;~X()</tt>" as indicated:</p>
+
+<blockquote><p>
+note: the destructor is applied to every element of <tt>a</tt>; <del>all the</del><ins>any</ins> memory 
+<ins>obtained</ins> is deallocated.
+</p></blockquote>
+</li>
+</ol>
+</resolution>
+
+</issue>
