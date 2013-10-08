@@ -1,0 +1,33 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="2309" status="New">
+<title><tt>mutex::lock()</tt> should not throw <tt>device_or_resource_busy</tt></title>
+<section><sref ref="[thread.mutex.requirements.mutex]"/></section>
+<submitter>Detlef Vollmann</submitter>
+<date>27 Sep 2013</date>
+
+<discussion>
+<p>
+As discussed during the Chicago meeting in 
+<a href="http://wiki.edg.com/twiki/bin/view/Wg21chicago2013/ThursdayMorningMinutes#LWG_2135_revisited">SG1</a>
+the only reasonable reasons for throwing <tt>device_or_resource_busy</tt> seem to be:
+</p>
+<ul>
+<li><p>
+The thread currently already holds the mutex, the mutex is not recursive, and the implementation detects this.
+In this case <tt>resource_deadlock_would_occur</tt> should be thrown.
+</p></li>
+<li><p>
+Priority reasons. At least <tt>std::mutex</tt> (and possibly all standard mutex types)
+should not be setup this way, otherwise we have real problems with <tt>condition_variable::wait()</tt>.
+</p></li>
+</ul>
+</discussion>
+
+<resolution>
+</resolution>
+
+</issue>
