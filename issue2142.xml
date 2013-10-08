@@ -3,7 +3,7 @@
   <!ENTITY nbsp "&#160;">
 ] >
 
-<issue num="2142" status="Open">
+<issue num="2142" status="Ready">
 <title><tt>packaged_task::operator()</tt> synchronization too broad?</title>
 <section><sref ref="[futures.task.members]"/></section>
 <submitter>Pete Becker</submitter>
@@ -36,9 +36,44 @@ Detlef: will ask Anthony Williams to draft some wording.
 Moved to open (Anthony drafted to draft)
 </p>
 
+<note>2013-09, Chicago: move to Ready</note>
+
+<p>
+Anthony's conclusion is that the offending paragraph is not needed. Already included in the statement 
+that the state is made ready.
+<p/>
+Recommendation: Remove <sref ref="[futures.task.members]"/> p18 (the synchronization clause). Redundant because of 
+<sref ref="[futures.state]"/> p9.
+</p>
+<p>
+Moved to Ready
+</p>
+
 </discussion>
 
 <resolution>
+<p>This wording is relative to N3691.</p>
+
+<ol>
+<li><p>Remove <sref ref="[futures.task.members]"/> p18 as indicated:</p>
+
+<blockquote><pre>
+void operator()(ArgTypes... args);
+</pre><blockquote>
+<p>
+[&hellip;]
+<p/>
+<del>-18- <i>Synchronization:</i> a successful call to <tt>operator()</tt> synchronizes with (1.10) a call to any member function
+of a <tt>future</tt> or <tt>shared_future</tt> object that shares the shared state of <tt>*this</tt>. The completion of
+the invocation of the stored task and the storage of the result (whether normal or exceptional) into
+the shared state synchronizes with (1.10) the successful return from any member function that detects
+that the state is set to ready. [<i>Note:</i> <tt>operator()</tt> synchronizes and serializes with other functions
+through the shared state. &mdash; <i>end note</i>]</del>
+</p>
+</blockquote></blockquote>
+</li>
+</ol>
+
 </resolution>
 
 </issue>
