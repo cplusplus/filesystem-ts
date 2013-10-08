@@ -1,0 +1,32 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="2307" status="New">
+<title>Should the Standard Library use <tt>explicit</tt> only when necessary?</title>
+<section><sref ref="[re.results]"/></section>
+<submitter>Zhihao Yuan</submitter>
+<date>26 Sep 2013</date>
+
+<discussion>
+<p>
+LWG <iref ref="2193"/> yields <tt>explicit</tt> for default ctors to allow <tt>{}</tt>, but not for
+all cases of uniform initialization. For example:
+</p>
+<blockquote><pre>
+explicit vector(size_type count, const Allocator&amp; alloc = Allocator());
+</pre></blockquote>
+<p>
+This prevents <tt>{n, alloc()}</tt>. Although this use is relatively rare,
+but the behavior is inconsistent with that of
+</p>
+<blockquote><pre>
+vector(size_type count, const T&amp; value, const Allocator&amp; alloc = Allocator());
+</pre></blockquote>
+</discussion>
+
+<resolution>
+</resolution>
+
+</issue>
