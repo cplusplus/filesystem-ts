@@ -68,6 +68,12 @@ Move the issue to open and add some formal wording at a later time.
 
 <note>2013-09 Chicago: Resolved</note>
 
+<p>
+Detlef improves wording. Daniel suggests to introduce a <i>Remarks</i> element for the special
+"If the function fails to meet the postcondition..." wording and applies this to the proposed
+wording.
+</p>
+
 </discussion>
 
 <resolution>
@@ -93,10 +99,12 @@ or spuriously.</p></li>
 scope.</del></p></li>
 </ul>
 <p>
--11- <i>Postcondition:</i> <tt>lock.owns_lock()</tt> is true and <tt>lock.mutex()</tt> is locked by the calling 
-thread. <ins>If the function fails to meet the postcondition, <tt>std::terminate()</tt> shall be called 
+<ins>-?- <i>Remarks:</i> If the function fails to meet the postcondition, <tt>std::terminate()</tt> shall be called 
 (<sref ref="[except.terminate]"/>). [<i>Note:</i> This can happen if the re-locking of the mutex throws an 
 exception. &mdash; <i>end note</i>]</ins>
+<p/>
+-11- <i>Postcondition:</i> <tt>lock.owns_lock()</tt> is true and <tt>lock.mutex()</tt> is locked by the calling 
+thread. 
 <p/>
 -12- <i>Throws:</i> <ins>Nothing</ins><del><tt>system_error</tt> when an exception is required (30.2.2)</del>.
 <p/>
@@ -115,10 +123,12 @@ void wait(unique_lock&lt;mutex&gt;&amp; lock, Predicate pred);
 <p>
 [&hellip;]
 <p/>
--16- <i>Postcondition:</i> <tt>lock.owns_lock()</tt> is true and <tt>lock.mutex()</tt> is locked by the calling 
-thread. <ins>If the function fails to meet the postcondition, <tt>std::terminate()</tt> shall be called 
+<ins>-?- <i>Remarks:</i> If the function fails to meet the postcondition, <tt>std::terminate()</tt> shall be called 
 (<sref ref="[except.terminate]"/>). [<i>Note:</i> This can happen if the re-locking of the mutex throws an 
 exception. &mdash; <i>end note</i>]</ins>
+<p/>
+-16- <i>Postcondition:</i> <tt>lock.owns_lock()</tt> is true and <tt>lock.mutex()</tt> is locked by the calling 
+thread.
 <p/>
 -17- <i>Throws:</i> <del><tt>system_error</tt> when an exception is required (30.2.2),</del> timeout-related exceptions 
 (30.2.4)<del>,</del> or any exception thrown by <tt>pred</tt>.
@@ -147,10 +157,12 @@ template &lt;class Clock, class Duration&gt;
 <del>scope</del>.</p></li>
 </ul>
 <p>
--21- <i>Postcondition:</i> <tt>lock.owns_lock()</tt> is true and <tt>lock.mutex()</tt> is locked by the calling 
-thread. <ins>If the function fails to meet the postcondition, <tt>std::terminate()</tt> shall be called 
+<ins>-?- <i>Remarks:</i> If the function fails to meet the postcondition, <tt>std::terminate()</tt> shall be called 
 (<sref ref="[except.terminate]"/>). [<i>Note:</i> This can happen if the re-locking of the mutex throws an 
 exception. &mdash; <i>end note</i>]</ins>
+<p/>
+-21- <i>Postcondition:</i> <tt>lock.owns_lock()</tt> is true and <tt>lock.mutex()</tt> is locked by the calling 
+thread.
 <p/>
 [&hellip;]
 <p/>
@@ -173,10 +185,12 @@ template &lt;class Rep, class Period&gt;
 <p>
 [&hellip;]
 <p/>
--28- <i>Postcondition:</i> <tt>lock.owns_lock()</tt> is true and <tt>lock.mutex()</tt> is locked by the calling 
-thread. <ins>If the function fails to meet the postcondition, <tt>std::terminate()</tt> shall be called 
+<ins>-?- <i>Remarks:</i> If the function fails to meet the postcondition, <tt>std::terminate()</tt> shall be called 
 (<sref ref="[except.terminate]"/>). [<i>Note:</i> This can happen if the re-locking of the mutex throws an 
 exception. &mdash; <i>end note</i>]</ins>
+<p/>
+-28- <i>Postcondition:</i> <tt>lock.owns_lock()</tt> is true and <tt>lock.mutex()</tt> is locked by the calling 
+thread.
 <p/>
 [&hellip;]
 <p/>
@@ -200,10 +214,12 @@ template &lt;class Clock, class Duration, class Predicate&gt;
 <p>
 [&hellip;]
 <p/>
--33- <i>Postcondition:</i> <tt>lock.owns_lock()</tt> is true and <tt>lock.mutex()</tt> is locked by the calling 
-thread. <ins>If the function fails to meet the postcondition, <tt>std::terminate()</tt> shall be called 
+<ins>-?- <i>Remarks:</i> If the function fails to meet the postcondition, <tt>std::terminate()</tt> shall be called 
 (<sref ref="[except.terminate]"/>). [<i>Note:</i> This can happen if the re-locking of the mutex throws an 
 exception. &mdash; <i>end note</i>]</ins>
+<p/>
+-33- <i>Postcondition:</i> <tt>lock.owns_lock()</tt> is true and <tt>lock.mutex()</tt> is locked by the calling 
+thread.
 <p/>
 [&hellip;]
 <p/>
@@ -227,10 +243,12 @@ template &lt;class Rep, class Period, class Predicate&gt;
 <p>
 [&hellip;]
 <p/>
--40- <i>Postcondition:</i> <tt>lock.owns_lock()</tt> is true and <tt>lock.mutex()</tt> is locked by the calling 
-thread. <ins>If the function fails to meet the postcondition, <tt>std::terminate()</tt> shall be called 
+<ins>-?- <i>Remarks:</i> If the function fails to meet the postcondition, <tt>std::terminate()</tt> shall be called 
 (<sref ref="[except.terminate]"/>). [<i>Note:</i> This can happen if the re-locking of the mutex throws an 
 exception. &mdash; <i>end note</i>]</ins>
+<p/>
+-40- <i>Postcondition:</i> <tt>lock.owns_lock()</tt> is true and <tt>lock.mutex()</tt> is locked by the calling 
+thread.
 <p/>
 [&hellip;]
 <p/>
@@ -268,10 +286,11 @@ or spuriously.</p></li>
 scope.</del></p></li>
 </ul>
 <p>
--11- <i>Postcondition:</i> <tt>lock</tt> is locked by the calling thread. 
-<ins>If the function fails to meet the postcondition, <tt>std::terminate()</tt> shall be called 
+<ins>-?- <i>Remarks:</i> If the function fails to meet the postcondition, <tt>std::terminate()</tt> shall be called 
 (<sref ref="[except.terminate]"/>). [<i>Note:</i> This can happen if the re-locking of the mutex throws an 
 exception. &mdash; <i>end note</i>]</ins>
+<p/>
+-11- <i>Postcondition:</i> <tt>lock</tt> is locked by the calling thread. 
 <p/>
 -12- <i>Throws:</i> <ins>Nothing</ins><del><tt>system_error</tt> when an exception is required (30.2.2)</del>.
 <p/>
@@ -299,10 +318,11 @@ template &lt;class Lock, class Clock, class Duration&gt;
 <del>scope</del>.</p></li>
 </ul>
 <p>
--16- <i>Postcondition:</i> <tt>lock</tt> is locked by the calling thread. 
- <ins>If the function fails to meet the postcondition, <tt>std::terminate()</tt> shall be called 
+<ins>-?- <i>Remarks:</i> If the function fails to meet the postcondition, <tt>std::terminate()</tt> shall be called 
 (<sref ref="[except.terminate]"/>). [<i>Note:</i> This can happen if the re-locking of the mutex throws an 
 exception. &mdash; <i>end note</i>]</ins>
+<p/>
+-16- <i>Postcondition:</i> <tt>lock</tt> is locked by the calling thread.
 <p/>
 [&hellip;]
 <p/>
@@ -324,10 +344,11 @@ template &lt;class Lock, class Rep, class Period&gt;
 <p>
 [&hellip;]
 <p/>
--22- <i>Postcondition:</i> <tt>lock</tt> is locked by the calling thread. 
- <ins>If the function fails to meet the postcondition, <tt>std::terminate()</tt> shall be called 
+<ins>-?- <i>Remarks:</i> If the function fails to meet the postcondition, <tt>std::terminate()</tt> shall be called 
 (<sref ref="[except.terminate]"/>). [<i>Note:</i> This can happen if the re-locking of the mutex throws an 
 exception. &mdash; <i>end note</i>]</ins>
+<p/>
+-22- <i>Postcondition:</i> <tt>lock</tt> is locked by the calling thread.
 <p/>
 [&hellip;]
 <p/>
