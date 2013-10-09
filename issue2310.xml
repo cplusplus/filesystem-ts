@@ -1,0 +1,31 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="2310" status="New">
+<title>Public <em>exposition only</em> member in <tt>std::array</tt></title>
+<section><sref ref="[array.overview]"/></section>
+<submitter>Jonathan Wakely</submitter>
+<date>30 Sep 2013</date>
+
+<discussion>
+<p>
+<sref ref="[array.overview]"/> shows <tt>std::array</tt> with an "exposition only" data member, <tt>elems</tt>.
+<p/>
+The wording in <sref ref="[objects.within.classes]"/> that defines how
+"exposition only" is used says it applies to private members, but
+<tt>std::array::elems</tt> (or its equivalent) must be public in order for
+<tt>std::array</tt> to be an aggregate.
+<p/>
+If the intention is that <tt>std::array::elems</tt> places requirements on the
+implementation to provide "equivalent external behavior" to a public
+array member, then <sref ref="[objects.within.classes]"/> needs to cover public
+members too, or some other form should be used in <sref ref="[array.overview]"/>.
+</p>
+</discussion>
+
+<resolution>
+</resolution>
+
+</issue>
