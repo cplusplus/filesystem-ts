@@ -68,7 +68,7 @@ for all <i>i</i>.</del>
 <p/>
 -10- <i>Remark:</i> This constructor shall not participate in overload resolution unless <del>each type in <tt>UTypes</tt> is
 implicitly convertible to its corresponding type in <tt>Types</tt></del><ins><tt>sizeof...(Types) == sizeof...(UTypes)</tt> and 
-<tt>is_convertible&lt;Ui, Ti&gt;::value</tt> is true for all <i>i</i></ins>.
+both <tt>is_constructible&lt;Ti, Ui&gt;::value</tt> and <tt>is_convertible&lt;Ui, Ti&gt;::value</tt> are true for all <i>i</i></ins>.
 </p>
 </blockquote>
 <p>
@@ -87,7 +87,8 @@ for all <i>i</i>.</del>
 <p/>
 -17- <i>Remark:</i> This constructor shall not participate in overload resolution unless <del><tt>const Ui&amp;</tt> is implicitly
 convertible to <tt>Ti</tt></del><ins><tt>sizeof...(Types) == sizeof...(UTypes)</tt> and 
-<tt>is_convertible&lt;const Ui&amp;, Ti&gt;::value</tt> is true</ins> for all <i>i</i>.
+both <tt>is_constructible&lt;Ti, const Ui&amp;&gt;::value</tt> and <tt>is_convertible&lt;const Ui&amp;, Ti&gt;::value</tt> are 
+true</ins> for all <i>i</i>.
 </p>
 </blockquote>
 </blockquote>
@@ -103,7 +104,7 @@ for all <i>i</i>.</del>
 <p/>
 -20- <i>Remark:</i> This constructor shall not participate in overload resolution unless <del>each type in <tt>UTypes</tt> is
 implicitly convertible to its corresponding type in <tt>Types</tt></del><ins><tt>sizeof...(Types) == sizeof...(UTypes)</tt> and 
-<tt>is_convertible&lt;Ui, Ti&gt;::value</tt> is true for all <i>i</i></ins>.
+both <tt>is_constructible&lt;Ti, Ui&gt;::value</tt> and <tt>is_convertible&lt;Ui, Ti&gt;::value</tt> are true for all <i>i</i></ins>.
 </p>
 </blockquote>
 </blockquote>
@@ -118,8 +119,9 @@ type <tt>T0</tt> in Types and <tt>is_constructible&lt;T1, const U2&amp;&gt;::val
 [&hellip;]
 <p/>
 -23- <i>Remark:</i> This constructor shall not participate in overload resolution unless <del><tt>const U1&amp;</tt> is implicitly
-convertible to <tt>T0</tt> and <tt>const U2&amp;</tt> is implicitly convertible to <tt>T1</tt></del><ins><tt>sizeof...(Types) == 2</tt> 
-and both <tt>is_convertible&lt;const U1&amp;, T0&gt;::value</tt> and <tt>is_convertible&lt;const U2&amp;, T1&gt;::value</tt> are true</ins>.
+convertible to <tt>T0</tt> and <tt>const U2&amp;</tt> is implicitly convertible to <tt>T1</tt></del><ins><tt>sizeof...(Types) == 2 
+&amp;&amp; is_constructible&lt;T0, const U1&amp;&gt;::value &amp;&amp; is_constructible&lt;T1, const U2&amp;&gt;::value &amp;&amp; 
+is_convertible&lt;const U1&amp;, T0&gt;::value &amp;&amp; is_convertible&lt;const U2&amp;, T1&gt;::value</tt> is true</ins>.
 </p>
 </blockquote>
 </blockquote>
@@ -134,8 +136,9 @@ type <tt>T0</tt> in Types and <tt>is_constructible&lt;T1, U2&amp;&amp;&gt;::valu
 [&hellip;]
 <p/>
 -26- <i>Remark:</i> This constructor shall not participate in overload resolution unless <del><tt>U1</tt> is implicitly convertible
-to <tt>T0</tt> and <tt>U2</tt> is implicitly convertible to <tt>T1</tt></del><ins><tt>sizeof...(Types) == 2</tt> and both 
-<tt>is_convertible&lt;U1, T0&gt;::value</tt> and <tt>is_convertible&lt;U2, T1&gt;::value</tt> are true</ins>.
+to <tt>T0</tt> and <tt>U2</tt> is implicitly convertible to <tt>T1</tt></del><ins><tt>sizeof...(Types) == 2
+&amp;&amp; is_constructible&lt;T0, U1&gt;::value &amp;&amp; is_constructible&lt;T1, U2&gt;::value &amp;&amp; 
+is_convertible&lt;U1, T0&gt;::value &amp;&amp; is_convertible&lt;U2, T1&gt;::value</tt> is true</ins>.
 </p>
 </blockquote>
 </blockquote>
