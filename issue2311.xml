@@ -233,19 +233,6 @@ bool operator!=(const SimpleAllocator&lt;T&gt;&amp;, const SimpleAllocator&lt;U&
 
 </li>
 
-<li><p>At the beginning of <sref ref="[allocator.traits.types]"/>, add a new paragraph:</p>
-
-<blockquote><pre>
-<ins>typedef <i>see below</i> value_type;</ins>
-</pre><blockquote>
-<p>
-<ins><i>Type:</i> <tt>Alloc::value_type</tt> if such a type exists; otherwise, <tt>T</tt> if <tt>Alloc</tt> is a class template 
-instantiation of the form <tt>Alloc&lt;T, Args&gt;</tt>, where <tt>Args</tt> is zero or more type arguments; otherwise, the program 
-is ill-formed.</ins>
-</p>
-</blockquote></blockquote>
-</li>
-
 <li><p>Edit <sref ref="[allocator.traits]"/>p1, class template <tt>allocator_traits</tt> synopsis, as indicated:</p>
 
 <blockquote><pre>
@@ -263,6 +250,19 @@ namespace std {
   };
 }
 </pre></blockquote>
+</li>
+
+<li><p>At the beginning of <sref ref="[allocator.traits.types]"/>, add a new paragraph:</p>
+
+<blockquote><pre>
+<ins>typedef <i>see below</i> value_type;</ins>
+</pre><blockquote>
+<p>
+<ins><i>Type:</i> <tt>Alloc::value_type</tt> if such a type exists; otherwise, <tt>T</tt> if <tt>Alloc</tt> is a class template 
+instantiation of the form <tt>Alloc&lt;T, Args&gt;</tt>, where <tt>Args</tt> is zero or more type arguments; otherwise, the program 
+is ill-formed.</ins>
+</p>
+</blockquote></blockquote>
 </li>
 
 <li><p>At the end of <sref ref="[allocator.traits.members]"/>, add a new paragraph:</p>
