@@ -252,8 +252,13 @@ is ill-formed.</ins>
 namespace std {
   template &lt;class Alloc&gt; struct allocator_traits {
     typedef Alloc allocator_type;
+
+    typedef <del>typename Alloc::value_type</del><ins><i>see below</i></ins> value_type;
+
     [&hellip;]
+
     static Alloc select_on_container_copy_construction(const Alloc&amp; rhs);
+
     <ins>static bool equal(const Alloc&amp; a1, const Alloc&amp; a2) noexcept;</ins>
   };
 }
