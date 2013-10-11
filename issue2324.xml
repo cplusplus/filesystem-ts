@@ -1,0 +1,61 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="2324" status="New">
+<title>Insert iterator constructors should use <tt>addressof()</tt></title>
+<section><sref ref="[back.insert.iter.cons]"/>, <sref ref="[front.insert.iter.cons]"/>, <sref ref="[insert.iter.cons]"/></section>
+<submitter>Stephan T. Lavavej</submitter>
+<date>21 Sep 2013</date>
+
+<discussion>
+<p>
+<sref ref="[back.insert.iter.cons]"/>/1, <sref ref="[front.insert.iter.cons]"/>/1, and <sref ref="[insert.iter.cons]"/>/1 
+say "Initializes container with <tt>&amp;x</tt>", which doesn't defend against containers overloading <tt>operator&amp;()</tt>.  
+Containers are now required to have such defenses for their elements, so we may as well be consistent here.
+</p>
+</discussion>
+
+<resolution>
+<p>This wording is relative to N3691.</p>
+
+<ol>
+<li><p>Edit <sref ref="[back.insert.iter.cons]"/>/1 as indicated:</p>
+
+<blockquote><pre>
+explicit back_insert_iterator(Container&amp; x);
+</pre><blockquote>
+<p>
+-1- <i>Effects:</i> Initializes <tt>container</tt> with <tt><del>&amp;x</del><ins>std::addressof(x)</ins></tt>.
+</p>
+</blockquote></blockquote>
+</li>
+
+<li><p>Edit <sref ref="[front.insert.iter.cons]"/>/1 as indicated:</p>
+
+<blockquote><pre>
+explicit front_insert_iterator(Container&amp; x);
+</pre><blockquote>
+<p>
+-1- <i>Effects:</i> Initializes <tt>container</tt> with <tt><del>&amp;x</del><ins>std::addressof(x)</ins></tt>.
+</p>
+</blockquote></blockquote>
+</li>
+
+<li><p>Edit <sref ref="[insert.iter.cons]"/>/1 as indicated:</p>
+
+<blockquote><pre>
+insert_iterator(Container&amp; x, typename Container::iterator i);
+</pre><blockquote>
+<p>
+-1- <i>Effects:</i> Initializes <tt>container</tt> with <tt><del>&amp;x</del><ins>std::addressof(x)</ins></tt> and <tt>iter</tt> with <tt>i</tt>.
+</p>
+</blockquote></blockquote>
+</li>
+
+</ol>
+
+</resolution>
+
+</issue>
