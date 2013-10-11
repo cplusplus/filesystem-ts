@@ -1,0 +1,52 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="2316" status="New">
+<title><tt>weak_ptr::lock()</tt> should be atomic</title>
+<section><sref ref="[util.smartptr.weak.obs]"/></section>
+<submitter>Stephan T. Lavavej</submitter>
+<date>21 Sep 2013</date>
+
+<discussion>
+<p>
+<sref ref="[util.smartptr.shared]"/>/4 says: "For purposes of determining the presence of a data race, member functions shall 
+access and modify only the <tt>shared_ptr</tt> and <tt>weak_ptr</tt> objects themselves and not objects they refer to. Changes 
+in <tt>use_count()</tt> do not reflect modifications that can introduce data races."  This requires <tt>shared_ptr/weak_ptr</tt> 
+implementations to protect their strong and weak refcounts with atomic operations, without the Standardese having to say this 
+elsewhere. <sref ref="[util.smartptr.weak.obs]"/>/5 describes <tt>weak_ptr::lock()</tt> with 
+"<i>Returns:</i> <tt>expired() ? shared_ptr&lt;T&gt;() : shared_ptr&lt;T&gt;(*this)</tt>."  
+Even after considering the blanket wording about 
+data races, this specification is insufficient. If this conditional expression were literally implemented, the <tt>use_count()</tt> 
+could change from nonzero to zero after testing <tt>expired()</tt>, causing <tt>shared_ptr&lt;T&gt;(*this)</tt> to throw 
+<tt>bad_weak_ptr</tt> when the intention is for <tt>weak_ptr::lock()</tt> to return empty or nonempty without throwing &mdash; indeed, 
+<tt>weak_ptr::lock()</tt> is marked as <tt>noexcept</tt>.</p>
+<p>
+We all know what <tt>weak_ptr::lock()</tt> should do, the Standardese just doesn't say it. 
+<tt>shared_ptr(const weak_ptr&lt;Y&gt;&amp;)</tt>'s specification is not really affected because 
+<sref ref="[util.smartptr.shared.const]"/>/23-27 describes the behavior with English instead of code.
+</p>
+</discussion>
+
+<resolution>
+<p>This wording is relative to N3691.</p>
+
+<ol>
+<li><p>Edit <sref ref="[util.smartptr.weak.obs]"/>/5 as indicated:</p>
+
+<blockquote><pre>
+shared_ptr&lt;T&gt; lock() const noexcept;
+</pre>
+<blockquote>
+<p>
+-5- <i>Returns:</i> <tt>expired() ? shared_ptr&lt;T&gt;() : shared_ptr&lt;T&gt;(*this)</tt><ins>, executed atomically</ins>.
+</p>
+</blockquote>
+</blockquote>
+</li>
+
+</ol>
+</resolution>
+
+</issue>
