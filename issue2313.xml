@@ -45,7 +45,7 @@ They should be required to behave like the "primary template". This is more than
 <p/>
 LWG <iref ref="1118"/> noticed this underspecification, but instead of correcting it, the resolution changed 
 <sref ref="[tuple.helper]"/>/3 to require <tt>tuple_size&lt;<i>cv</i> T&gt;</tt> to derive from 
-<tt>integral_constant&lt;remove_cv&lt;decltype(TS::value)&lt;::type, TS::value&gt;</tt>. This is unnecessarily overgeneralized.  
+<tt>integral_constant&lt;remove_cv&lt;decltype(TS::value)&gt;::type, TS::value&gt;</tt>. This is unnecessarily overgeneralized.  
 <tt>tuple_size</tt> is primarily for tuples, where it is required to be <tt>size_t</tt>, and it has been extended to handle 
 pairs and arrays, which (as explained above) should also be guaranteed to be <tt>size_t</tt>. <tt>tuple_size&lt;<i>cv</i> T&gt;</tt> 
 works with <i>cv</i>-qualified tuples, pairs, arrays, and user-defined types that also want to participate in the <tt>tuple_size</tt> 
