@@ -1,0 +1,41 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="2320" status="New">
+<title><tt>select_on_container_copy_construction()</tt> takes allocators, not containers</title>
+<section><sref ref="[container.requirements.general]"/></section>
+<submitter>Stephan T. Lavavej</submitter>
+<date>21 Sep 2013</date>
+
+<discussion>
+<p>
+<sref ref="[container.requirements.general]"/>/7 says "Copy constructors for these container types obtain an allocator by calling 
+<tt>allocator_traits&lt;allocator_type&gt;::select_on_container_copy_construction</tt> on their first parameters."  However, 
+<sref ref="[allocator.traits.members]"/>/8 says that this takes <tt>const Alloc&amp;</tt>, not a container.  
+<sref ref="[container.requirements.general]"/>/7 goes on to say "Move constructors obtain an allocator by move construction from 
+the allocator belonging to the container being moved." so we can follow that wording.
+</p>
+</discussion>
+
+<resolution>
+<p>This wording is relative to N3691.</p>
+
+<ol>
+<li><p>In <sref ref="[container.requirements.general]"/>/7 change as indicated:</p>
+
+<blockquote><p>
+-7- Unless otherwise specified, all containers defined in this clause obtain memory using an allocator (see 17.6.3.5).
+Copy constructors for these container types obtain an allocator by calling 
+<tt>allocator_traits&lt;allocator_type&gt;::select_on_container_copy_construction</tt> on <del>their first 
+parameters</del><ins>the allocator belonging to the container being copied</ins>. 
+Move constructors obtain an allocator by move construction from the allocator belonging to the container being moved. [&hellip;]
+</p></blockquote>
+</li>
+
+</ol>
+
+</resolution>
+
+</issue>
