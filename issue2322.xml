@@ -1,0 +1,180 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="2322" status="New">
+<title>Associative(<tt>initializer_list</tt>, stuff) constructors are underspecified</title>
+<section><sref ref="[associative.reqmts]"/>, <sref ref="[unord.req]"/></section>
+<submitter>Stephan T. Lavavej</submitter>
+<date>21 Sep 2013</date>
+
+<discussion>
+<p>
+<sref ref="[associative.reqmts]"/> specifies both <tt>X(i,j)</tt> and <tt>X(i,j,c)</tt>, but only <tt>X(il)</tt>.  
+<sref ref="[map.overview]"/> declares "<tt>map(initializer_list&lt;value_type&gt;, const Compare&amp; = Compare(), 
+const Allocator&amp; = Allocator());</tt>" but <sref ref="[map.cons]"/> intentionally doesn't explain it, relying 
+on the big table's requirements. As a result, <tt>map(il, c)</tt>'s behavior is not actually specified by the Standard.  
+(All of the other ordered associative containers also provide such constructors.)
+<p/>
+The unordered associative containers are similarly affected, although they have more arguments. (Again, the actual 
+containers are correctly depicted with the desired constructors, their behavior just isn't specified.)
+</p>
+</discussion>
+
+<resolution>
+<p>This wording is relative to N3691.</p>
+
+<ol>
+<li><p>Edit <sref ref="[associative.reqmts]"/>, Table 102 &mdash; "Associative container requirements", as indicated:</p>
+
+<blockquote>
+<table border="1">
+<caption>Table 102 &mdash; Associative container requirements (in addition to container) (continued)</caption>
+<tr>
+<th>Expression</th>
+<th>Return type</th>
+<th>Assertion&#47;note pre-&#47;post-condition</th>
+<th>Complexity</th>
+</tr>
+
+<tr>
+<td colspan="4" align="center">
+<tt>&hellip;</tt>
+</td>
+</tr>
+
+<tr>
+<td>
+<ins><tt>X(il, c);</tt></ins>
+</td>
+<td>
+<tt>&nbsp;</tt>
+</td>
+<td>
+<ins>Same as <tt>X(il.begin(), il.end(), c)</tt>.</ins>
+</td>
+<td>
+<ins>Same as <tt>X(il.begin(), il.end(), c)</tt>.</ins>
+</td>
+</tr>
+
+<tr>
+<td>
+<tt>X(il);</tt>
+</td>
+<td>
+<tt></tt>
+</td>
+<td>
+Same as <tt>X(il.begin(), il.end())</tt>.
+</td>
+<td>
+<del>s</del><ins>S</ins>ame as <tt>X(il.begin(), il.end())</tt>.
+</td>
+</tr>
+
+<tr>
+<td colspan="4" align="center">
+<tt>&hellip;</tt>
+</td>
+</tr>
+
+</table>
+</blockquote>
+</li>
+
+<li><p>Edit <sref ref="[unord.req]"/>, Table 103 "Unordered associative container requirements", as indicated:</p>
+
+<blockquote>
+<table border="1">
+<caption>Table 103 &mdash; Unordered associative container requirements (in addition to container)</caption>
+<tr>
+<th>Expression</th>
+<th>Return type</th>
+<th>Assertion&#47;note pre-&#47;post-condition</th>
+<th>Complexity</th>
+</tr>
+
+<tr>
+<td colspan="4" align="center">
+<tt>&hellip;</tt>
+</td>
+</tr>
+
+<tr>
+<td>
+<tt>X(il)</tt>
+</td>
+<td>
+<tt>X</tt>
+</td>
+<td>
+Same as <tt>X(il.begin(), il.end())</tt>.
+</td>
+<td>
+Same as <tt>X(il.begin(), il.end())</tt>.
+</td>
+</tr>
+
+<tr>
+<td>
+<ins><tt>X(il, n)</tt></ins>
+</td>
+<td>
+<ins><tt>X</tt></ins>
+</td>
+<td>
+<ins>Same as <tt>X(il.begin(), il.end(), n)</tt>.</ins>
+</td>
+<td>
+<ins>Same as <tt>X(il.begin(), il.end(), n)</tt>.</ins>
+</td>
+</tr>
+
+<tr>
+<td>
+<ins><tt>X(il, n, hf)</tt></ins>
+</td>
+<td>
+<ins><tt>X</tt></ins>
+</td>
+<td>
+<ins>Same as <tt>X(il.begin(), il.end(), n, hf)</tt>.</ins>
+</td>
+<td>
+<ins>Same as <tt>X(il.begin(), il.end(), n, hf)</tt>.</ins>
+</td>
+</tr>
+
+<tr>
+<td>
+<ins><tt>X(il, n, hf, eq)</tt></ins>
+</td>
+<td>
+<ins><tt>X</tt></ins>
+</td>
+<td>
+<ins>Same as <tt>X(il.begin(), il.end(), n, hf, eq)</tt>.</ins>
+</td>
+<td>
+<ins>Same as <tt>X(il.begin(), il.end(), n, hf, eq)</tt>.</ins>
+</td>
+</tr>
+
+<tr>
+<td colspan="4" align="center">
+<tt>&hellip;</tt>
+</td>
+</tr>
+
+</table>
+</blockquote>
+
+</li>
+
+</ol>
+
+</resolution>
+
+</issue>
