@@ -1,0 +1,68 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="2323" status="New">
+<title><tt>vector::resize(n, t)</tt>'s specification should be simplified</title>
+<section><sref ref="[vector.capacity]"/>, <sref ref="[deque.capacity]"/></section>
+<submitter>Stephan T. Lavavej</submitter>
+<date>21 Sep 2013</date>
+
+<discussion>
+<p>
+First, <sref ref="[deque.capacity]"/>/4 and <sref ref="[vector.capacity]"/>/16 say that <tt>resize(size_type sz, const T&amp; c)</tt> 
+"<i>Requires:</i> <tt>T</tt> shall be <tt>MoveInsertable</tt> into <tt>*this</tt> and <tt>CopyInsertable</tt> into <tt>*this</tt>."  
+The <tt>CopyInsertable</tt> requirement is correct (because <tt>sz</tt> might be <tt>size() + 2</tt> or more), but the 
+<tt>MoveInsertable</tt> requirement is redundant due to <sref ref="[container.requirements.general]"/>/13: "<tt>T</tt> is 
+<tt>CopyInsertable</tt> into <tt>X</tt> means that, in addition to <tt>T</tt> being <tt>MoveInsertable</tt> into <tt>X</tt>, the [...]".  
+(LWG <iref ref="2033"/>'s resolution said that this was "not redundant, because <tt>CopyInsertable</tt> is not necessarily a refinement 
+of <tt>MoveInsertable</tt>" which was true at the time, but then LWG <iref ref="2177"/>'s resolution made it a refinement.)
+<p/>
+Second, <sref ref="[vector.capacity]"/>/17 says "<i>Remarks:</i> If an exception is thrown other than by the move constructor of a 
+non-<tt>CopyInsertable</tt> <tt>T</tt> there are no effects." This is confusing because <tt>T</tt> is required to be 
+<tt>CopyInsertable</tt>. (/14 says the same thing for <tt>resize(size_type sz)</tt>, where it is correct because that overload 
+requires only <tt>MoveInsertable</tt> and <tt>DefaultInsertable</tt>.)
+</p>
+</discussion>
+
+<resolution>
+<p>This wording is relative to N3691.</p>
+
+<ol>
+<li><p>Edit <sref ref="[deque.capacity]]"/>/4 as indicated:</p>
+
+<blockquote><pre>
+void resize(size_type sz, const T&amp; c);
+</pre><blockquote>
+<p>
+[&hellip;]
+<p/>
+-4- <i>Requires:</i> <tt>T</tt> shall be <del><tt>MoveInsertable</tt> into <tt>*this</tt> and</del> <tt>CopyInsertable</tt> into 
+<tt>*this</tt>.
+</p>
+</blockquote></blockquote>
+</li>
+
+<li><p>Edit <sref ref="[vector.capacity]]"/>/16+17 as indicated:</p>
+
+<blockquote><pre>
+void resize(size_type sz, const T&amp; c);
+</pre><blockquote>
+<p>
+[&hellip;]
+<p/>
+-16- <i>Requires:</i> <tt>T</tt> shall be <del><tt>MoveInsertable</tt> into <tt>*this</tt> and</del> <tt>CopyInsertable</tt> into 
+<tt>*this</tt>.
+<p/>
+-17- <i>Remarks:</i> If an exception is thrown <del>other than by the move constructor of a non-<tt>CopyInsertable</tt> <tt>T</tt></del> 
+there are no effects.
+</p>
+</blockquote></blockquote>
+</li>
+
+</ol>
+
+</resolution>
+
+</issue>
