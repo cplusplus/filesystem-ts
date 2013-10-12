@@ -95,8 +95,11 @@ impose very little requirements on the actual value type and it is unclear to wh
 to respect that. 
 <p/>
 The minimum solution of this issue should be to at least realize that there is no fundamental requirement on 
-<tt>DefaultConstructible</tt> for value types of library containers.
-It is unclear whether <tt>CopyConstructible</tt> should be required for an explicit instantiation request.
+<tt>DefaultConstructible</tt> for value types of library containers, because we have since C++03 the general
+statement of <sref ref="[utility.arg.requirements]"/> ("In general, a default constructor is not required.").
+It is unclear whether <tt>CopyConstructible</tt> should be required for an explicit instantiation request, but
+given the careful introduction of move operations in the library it would seem astonishing that a
+<tt>MoveConstructible</tt> type wouldn't suffice for value types of the container types.
 <p/>
 In any case I can envision at least two approaches to solve this issue:
 </p>
