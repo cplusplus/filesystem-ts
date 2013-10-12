@@ -23,6 +23,65 @@ this will optimize away if <tt>min()</tt> is <tt>0</tt>. (It is vaguely plausibl
 imagine something that simply masks off low-order bits without shifting the rest downwards.) What is important is for the entire 
 range to have a power-of-two width; <tt>[1729, 1984]</tt> is acceptable as its size is 256.
 </p>
+
+<note>2013-10-12: Howard presents a counterexample</note>
+
+<p>
+Consider:
+</p>
+<blockquote><pre>
+#include &lt;random&gt;
+#include &lt;string&gt;
+#include &lt;iostream&gt;
+
+template &lt;class Int&gt;
+bool is_power_2m1(Int i)
+{
+  return (i &amp; (i + 1)) == 0;
+}
+
+template &lt;class URNG&gt;
+void test(const std::string&amp; urng)
+{
+  using namespace std;
+  typename URNG::result_type rng = URNG::max() - URNG::min();
+  if (!is_power_2m1(rng))
+  {
+    cout &lt;&lt; hex;
+    cout &lt;&lt; urng &lt;&lt; " : min = " &lt;&lt; URNG::min() &lt;&lt; ", max = " &lt;&lt; URNG::max()
+         &lt;&lt; ", max-min = " &lt;&lt; rng &lt;&lt; '\n';
+  }
+};
+
+int main()
+{
+    using namespace std;
+    test&lt;minstd_rand0&gt;("minstd_rand0");
+    test&lt;minstd_rand&gt;("minstd_rand");
+    test&lt;mt19937&gt;("mt19937");
+    test&lt;mt19937_64&gt;("mt19937_64");
+    test&lt;ranlux24_base&gt;("ranlux24_base");
+    test&lt;ranlux48_base&gt;("ranlux48_base");
+    test&lt;ranlux24&gt;("ranlux24");
+    test&lt;ranlux48&gt;("ranlux48");
+    test&lt;knuth_b&gt;("knuth_b");
+}
+</pre></blockquote>
+
+<p>
+Which for me outputs:
+</p>
+
+<blockquote><pre>
+minstd_rand0 : min = 1, max = 7ffffffe, max-min = 7ffffffd
+minstd_rand : min = 1, max = 7ffffffe, max-min = 7ffffffd
+knuth_b : min = 1, max = 7ffffffe, max-min = 7ffffffd
+</pre></blockquote>
+
+<p>
+We do not want to outlaw these three URNG's, and the proposed wording would do that.
+</p>
+
 </discussion>
 
 <resolution>
