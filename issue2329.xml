@@ -1,0 +1,73 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="2329" status="New">
+<title><tt>regex_match()/regex_search()</tt> with <tt>match_results</tt> should forbid temporary strings</title>
+<section><sref ref="[re.syn]"/></section>
+<submitter>Stephan T. Lavavej</submitter>
+<date>21 Sep 2013</date>
+
+<discussion>
+<p>
+Consider the following code:
+</p>
+<blockquote><pre>
+const regex r(R"(meow(\d+)\.txt)");
+smatch m;
+if (regex_match(dir_iter-&gt;path().filename().string(), m, r)) {
+  DoSomethingWith(m[1]);
+}
+</pre></blockquote>
+<p>
+This occasionally crashes. The problem is that <tt>dir_iter-&gt;path().filename().string()</tt> returns a temporary string, 
+so the <tt>match_results</tt> contains invalidated iterators into a destroyed temporary string.
+<p/>
+It's fine for <tt>regex_match/regex_search(str, reg)</tt> to accept temporary strings, because they just return <tt>bool</tt>. 
+However, the overloads taking <tt>match_results</tt> should forbid temporary strings.
+</p>
+</discussion>
+
+<resolution>
+<p>This wording is relative to N3691.</p>
+
+<ol>
+<li><p>Edit <sref ref="[re.syn]"/>, header <tt>&lt;regex&gt;</tt> synopsis, as indicated:</p>
+
+<blockquote><pre>
+#include &lt;initializer_list&gt;
+
+namespace std {
+
+  [&hellip;]
+  
+  <i>// 28.11.2, function template regex_match:</i>
+  [&hellip;]
+  <ins>template &lt;class ST, class SA, class Allocator, class charT, class traits&gt; 
+  bool regex_match(const basic_string&lt;charT, ST, SA&gt;&amp;&amp;, 
+                   match_results&lt;
+                     typename basic_string&lt;charT, ST, SA&gt;::const_iterator, 
+                     Allocator&gt;&amp;, 
+                   const basic_regex&lt;charT, traits&gt;&amp;, 
+                   regex_constants::match_flag_type = 
+                     regex_constants::match_default) = delete;</ins>
+
+  <i>// 28.11.3, function template regex_search:</i>
+  [&hellip;]
+  <ins>template &lt;class ST, class SA, class Allocator, class charT, class traits&gt; 
+  bool regex_search(const basic_string&lt;charT, ST, SA&gt;&amp;&amp;, 
+                    match_results&lt;
+                      typename basic_string&lt;charT, ST, SA&gt;::const_iterator, 
+                      Allocator&gt;&amp;, 
+                    const basic_regex&lt;charT, traits&gt;&amp;, 
+                    regex_constants::match_flag_type = 
+                      regex_constants::match_default) = delete;</ins>
+  [&hellip;]
+}
+</pre></blockquote>
+</li>
+</ol>
+</resolution>
+
+</issue>
