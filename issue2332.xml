@@ -1,0 +1,91 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="2332" status="New">
+<title><tt>regex_iterator/regex_token_iterator</tt> should forbid temporary regexes</title>
+<section><sref ref="[re.iter]"/></section>
+<submitter>Stephan T. Lavavej</submitter>
+<date>21 Sep 2013</date>
+
+<discussion>
+<p>
+Users can write "<tt>for(sregex_iterator i(s.begin(), s.end(), regex("meow")), end; i != end; ++i)</tt>", binding a temporary 
+<tt>regex</tt> to <tt>const regex&amp;</tt> and storing a pointer to it. This will compile silently, triggering undefined behavior 
+at runtime. We now have the technology to prevent this from compiling, like how <tt>reference_wrapper</tt> refuses to bind to 
+temporaries.
+</p>
+</discussion>
+
+<resolution>
+<p>This wording is relative to N3691.</p>
+
+<ol>
+<li><p>Change <sref ref="[re.regiter]"/>/1, class template <tt>regex_iterator</tt> synopsis, as indicated:</p>
+
+<blockquote><pre>
+regex_iterator();
+regex_iterator(BidirectionalIterator a, BidirectionalIterator b,
+  const regex_type&amp; re,
+  regex_constants::match_flag_type m =
+    regex_constants::match_default);
+<ins>regex_iterator(BidirectionalIterator a, BidirectionalIterator b,
+  const regex_type&amp;&amp; re,
+  regex_constants::match_flag_type m =
+    regex_constants::match_default) = delete;</ins>
+</pre></blockquote>
+</li>
+
+<li><p>Change <sref ref="[re.tokiter]"/>/6, class template <tt>regex_token_iterator</tt> synopsis, as indicated:</p>
+
+<blockquote><pre>
+regex_token_iterator();
+regex_token_iterator(BidirectionalIterator a, BidirectionalIterator b,
+                     const regex_type&amp; re,
+                     int submatch = 0,
+                     regex_constants::match_flag_type m =
+                       regex_constants::match_default);
+regex_token_iterator(BidirectionalIterator a, BidirectionalIterator b,
+                     const regex_type&amp; re,
+                     const std::vector&lt;int&gt;&amp; submatches,
+                     regex_constants::match_flag_type m =
+                       regex_constants::match_default);
+regex_token_iterator(BidirectionalIterator a, BidirectionalIterator b,
+                     const regex_type&amp; re,
+                     initializer_list&lt;int&gt; submatches,
+                     regex_constants::match_flag_type m =
+                       regex_constants::match_default);
+template &lt;std::size_t N&gt;
+regex_token_iterator(BidirectionalIterator a, BidirectionalIterator b,
+                     const regex_type&amp; re,
+                     const int (&amp;submatches)[N],
+                     regex_constants::match_flag_type m =
+                       regex_constants::match_default);
+<ins>regex_token_iterator(BidirectionalIterator a, BidirectionalIterator b,
+                     const regex_type&amp;&amp; re,
+                     int submatch = 0,
+                     regex_constants::match_flag_type m =
+                       regex_constants::match_default) = delete;
+regex_token_iterator(BidirectionalIterator a, BidirectionalIterator b,
+                     const regex_type&amp;&amp; re,
+                     const std::vector&lt;int&gt;&amp; submatches,
+                     regex_constants::match_flag_type m =
+                       regex_constants::match_default) = delete;
+regex_token_iterator(BidirectionalIterator a, BidirectionalIterator b,
+                     const regex_type&amp;&amp; re,
+                     initializer_list&lt;int&gt; submatches,
+                     regex_constants::match_flag_type m =
+                       regex_constants::match_default) = delete;
+template &lt;std::size_t N&gt;
+regex_token_iterator(BidirectionalIterator a, BidirectionalIterator b,
+                     const regex_type&amp;&amp; re,
+                     const int (&amp;submatches)[N],
+                     regex_constants::match_flag_type m =
+                       regex_constants::match_default) = delete;</ins>
+</pre></blockquote>
+</li>
+</ol>
+</resolution>
+
+</issue>
