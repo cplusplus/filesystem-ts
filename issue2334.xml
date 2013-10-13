@@ -20,6 +20,7 @@ A ::A () noexcept = default;
 <i>Effects:</i> leaves the atomic object in an uninitialized state. [<i>Note:</i> These semantics ensure compatibility
 with <tt>C</tt>. &mdash; <i>end note</i>]
 </p>
+</blockquote></blockquote>
 <p>
 This implementation requirement is OK for POD types, like <tt>int</tt>, but <sref ref="[atomics.types.generic]"/> p1
 intentionally allows template arguments of <tt>atomic</tt> with a non-trivial default constructor ("The type of the template argument 
@@ -47,7 +48,7 @@ very surprising to me.
 <p/>
 To realize that seemingly existing requirement, an implementation is either required to violate normal language rules internally
 or to perform specific bit-randomization-techniques after the normal default-initialization that called the default constructor
-of <tt>S</tt>
+of <tt>S</tt>.
 <p/>
 According to my understanding, the non-normative note in <sref ref="[atomics.types.operations.req]"/> p4 is intended to
 refer to types that are valid <tt>C</tt>-types, but the example type <tt>S</tt> is not such a type.
@@ -58,7 +59,6 @@ language used here and has some similarities to wording that was incorrectly use
 as described by LWG <iref ref="2159"/>.
 </p>
 
-</blockquote></blockquote>
 </discussion>
 
 <resolution>
