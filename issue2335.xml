@@ -1,0 +1,45 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="2335" status="New">
+<title><tt>array&lt;array&lt;int, 3&gt;, 4&gt;</tt> should be layout-compatible with <tt>int[4][3]</tt></title>
+<section><sref ref="[array]"/></section>
+<submitter>Jeffrey Yasskin</submitter>
+<date>4 Oct 2013</date>
+
+<discussion>
+<p>
+In order to replace some uses of C arrays with <tt>std::array</tt>, we need it
+to be possible to cast from a <tt>std::array&lt;&gt;</tt> to an equivalent C array.
+Core wording doesn't appear to be in quite the right state to allow
+casting, but if we specify that appropriate types are
+layout-compatible, we can at least write:
+</p>
+<blockquote><pre>
+union {
+  array&lt;array&lt;array&lt;int, 2&gt;, 3&gt;, 4&gt; arr;
+  int carr[4][3][2];
+};
+</pre></blockquote>
+<p>
+to view memory as the other type: C++14 CD [class.mem]p18.
+</p>
+I believe it's sufficient to add "<tt>array&lt;T, N&gt;</tt> shall be
+layout-compatible (<sref ref="[basic.types]"/>) with <tt>T[N]</tt>." to 
+<sref ref="[array.overview]"/>, but we might also need some extension to 
+<sref ref="[class.mem]"/> to address the possibility of layout-compatibility 
+between struct and array types.
+<p>
+I checked that libc++ on MacOS already implements this, although it
+would be good for someone else to double-check; I haven't checked any
+other standard libraries.
+</p>
+
+</discussion>
+
+<resolution>
+</resolution>
+
+</issue>
