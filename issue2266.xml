@@ -33,10 +33,26 @@ There are two problems with that wording: First, the special constraints for <tt
 forward iterators only, are necessary for all iterator categories. Second, the same special constraints are needed for <tt>deque</tt>, too. 
 </p>
 
-</discussion>
+<note>2013-10-05, Stephan T. Lavavej comments and provides alternative wording</note>
+<p>
+In Chicago, we determined that the original proposed resolution was correct, except that it needed additional requirements.  
+When <tt>vector</tt> <tt>insert(p, i, j)</tt> is called with input-only iterators, it can't know how many elements will be inserted, 
+which is obviously problematic for insertion anywhere other than at the end. Therefore, implementations typically append elements 
+(geometrically reallocating), followed by <tt>rotate()</tt>. Given forward+ iterators, some implementations append and 
+<tt>rotate()</tt> when they determine that there is sufficient capacity. Additionally, <tt>deque</tt> <tt>insert(p, i, j)</tt> is 
+typically implemented with prepending/appending, with a possible call to <tt>reverse()</tt>, followed by a call to <tt>rotate()</tt>.  
+Note that <tt>rotate()</tt>'s requirements are strictly stronger than <tt>reverse()</tt>'s.
+<p/>
+Therefore, when patching Table 100, we need to add <tt>rotate()</tt>'s requirements. Note that this does not physically affect code 
+(implementations were already calling <tt>rotate()</tt> here), and even in Standardese terms it is barely noticeable &mdash; if an 
+element is <tt>MoveInsertable</tt> and <tt>MoveAssignable</tt> then it is almost certainly <tt>MoveConstructible</tt> and swappable.  
+However, this patch is necessary to be strictly correct.
+</p>
 
-<resolution>
-
+<p>
+Previous resolution from Ahmed Charles:
+</p>
+<blockquote class="note">
 <ol>
 <li><p>Change Table 100 as indicated:</p>
 <blockquote>
@@ -66,6 +82,58 @@ forward iterators only, are necessary for all iterator categories. Second, the s
 into <tt>X</tt> from <tt>*i</tt>. For <tt>vector</tt> <ins>and <tt>deque</tt></ins>, <del>if the iterator
 does not meet the forward iterator requirements (24.2.5),</del> <tt>T</tt> shall also be
 <tt>MoveInsertable</tt> into <tt>X</tt> and <tt>MoveAssignable</tt>.<br/>
+Each iterator in the range <tt>[i,j)</tt> shall be dereferenced exactly once.<br/>
+<i>pre:</i> <tt>i</tt> and <tt>j</tt> are not iterators into <tt>a</tt>.<br/>
+Inserts copies of elements in <tt>[i, j)</tt> before <tt>p</tt>
+</td>
+</tr>
+
+<tr>
+<td colspan="3" align="center">
+<tt>&hellip;</tt>
+</td>
+</tr>
+
+</table>
+</blockquote>
+
+</li>
+</ol>
+</blockquote>
+</discussion>
+
+<resolution>
+
+<ol>
+<li><p>Change Table 100 as indicated:</p>
+<blockquote>
+<table border="1">
+<caption>Table 100 &mdash; Sequence container requirements (in addition to container) (continued)</caption>
+<tr>
+<th>Expression</th>
+<th>Return type</th>
+<th>Assertion&#47;note pre-&#47;post-condition</th>
+</tr>
+
+<tr>
+<td colspan="3" align="center">
+<tt>&hellip;</tt>
+</td>
+</tr>
+
+<tr>
+<td>
+<tt>a.insert(p,i,j)</tt>
+</td>
+<td>
+<tt>iterator</tt>
+</td>
+<td>
+<i>Requires:</i> <tt>T</tt> shall be <tt>EmplaceConstructible</tt> into <tt>X</tt><br/> 
+from <tt>*i</tt>. For <tt>vector</tt> <ins>and <tt>deque</tt></ins>, <del>if the iterator<br/>
+does not meet the forward iterator requirements (24.2.5),</del> <tt>T</tt> shall also be<br/>
+<tt>MoveInsertable</tt> into <tt>X</tt><ins>, <tt>MoveConstructible</tt>,<br/> 
+</ins><del>and</del> <tt>MoveAssignable</tt> <ins>and swappable (<sref ref="[swappable.requirements]"/>)</ins>.<br/>
 Each iterator in the range <tt>[i,j)</tt> shall be dereferenced exactly once.<br/>
 <i>pre:</i> <tt>i</tt> and <tt>j</tt> are not iterators into <tt>a</tt>.<br/>
 Inserts copies of elements in <tt>[i, j)</tt> before <tt>p</tt>
