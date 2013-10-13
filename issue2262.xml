@@ -60,10 +60,24 @@ as appropriate for that deleter. <ins>Where <tt>D</tt> is not an lvalue referenc
 refers directly or indirectly to the invoking <tt>unique_ptr</tt> object.</ins>
 </p>
 
-</discussion>
+<note>2013-10-05, Stephan T. Lavavej comments and provides alternative wording</note>
+<p>
+In Chicago, we determined that the original proposed change to <sref ref="[unique.ptr.single]"/>/1 was insufficient, because 
+<tt>d</tt> might be a reference to a deleter functor that's destroyed during self-destruction.
+<p/>
+We believed that <sref ref="[unique.ptr.single.modifiers]"/>/4 was already sufficiently clear. The Standard occasionally prevents 
+implementations of <tt>X</tt> from doing various things, through the principle of "nothing allows <tt>X</tt> to fail in that situation".  
+For example, <tt>v.push_back(v[0])</tt> is required to work for non-empty vectors because nothing allows that to fail. In this case, 
+the intent to allow self-destruction is already clear.
+<p/>
+Additionally, we did not believe that <sref ref="[unique.ptr.single.modifiers]"/>/5 had to be changed. The current note is slightly 
+squirrely but it does not lead to confusion for implementers or users.
+</p>
 
-<resolution>
-
+<p>
+Previous resolution from Rob Desbois:
+</p>
+<blockquote class="note">
 <ol>
 <li>
 <p>
@@ -101,6 +115,30 @@ because the call to <tt>get_deleter()</tt> may destroy <tt>*this</tt>. &mdash; <
 destroys <tt>*this</tt> since <tt>this->get()</tt> is no longer a valid expression. &mdash; <i>end note</i>]</del>
 </p>
 </blockquote></blockquote>
+</li>
+</ol>
+
+</blockquote>
+
+</discussion>
+
+<resolution>
+
+<p>This wording is relative to N3691.</p>
+
+<ol>
+<li>
+<p>
+Edit <sref ref="[unique.ptr.single]"/> p1 as indicated:
+</p>
+<blockquote><p>
+The default type for the template parameter <tt>D</tt> is <tt>default_delete</tt>. 
+A client-supplied template argument <tt>D</tt> shall be a function object type (20.10), lvalue-reference to function, or 
+lvalue-reference to function object type for which, given a value <tt>d</tt> of type <tt>D</tt> and a value <tt>ptr</tt> of type 
+<tt>unique_ptr&lt;T, D&gt;::pointer</tt>, the expression <tt>d(ptr)</tt> is valid and has the effect of disposing of the pointer 
+as appropriate for that deleter. <ins><tt>d(ptr)</tt> shall be valid even if it triggers the destruction of <tt>d</tt> or (if 
+<tt>D</tt> is an lvalue reference to function object type) the function object that <tt>d</tt> refers to.</ins>
+</p></blockquote>
 </li>
 </ol>
 
