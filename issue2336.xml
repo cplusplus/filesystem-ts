@@ -1,0 +1,147 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="2336" status="New">
+<title><tt>is_trivially_constructible/is_trivially_assignable</tt> traits are always false</title>
+<section><sref ref="[meta.unary.prop]"/></section>
+<submitter>Daniel Kr&uuml;gler</submitter>
+<date>1 Oct 2013</date>
+
+<discussion>
+<p>
+In <sref ref="[meta.unary.prop]"/> we have traits to allow testing for triviality of specific operations, such as
+<tt>is_trivially_constructible</tt> and <tt>is_trivially_assignable</tt> (and their derived forms), which are specified
+in terms of the following initialization and assignment, respectively:
+</p>
+<blockquote><pre>
+T t(create&lt;Args&gt;()...);
+
+declval&lt;T&gt;() = declval&lt;U&gt;()
+</pre></blockquote>
+<p>
+The wording that describes the way how triviality is deduced, is in both cases of the same form:
+</p>
+<blockquote><p>
+[&hellip; ] and the variable definition/assignment, as defined by <tt>is_constructible/is_assignable</tt>, is known
+to call no operation that is not trivial (3.9, 12).
+</p></blockquote>
+<p>
+The problematic part of this wording is that both definitions are specified in terms of an "object construction" function
+<tt>create</tt> or <tt>declval</tt>, respectively, (The former being a conceptual function, the latter being a library function), 
+but for none of these functions we can assume that they could be considered as trivial &mdash; only special member functions can 
+have this property and none of these is one. This problem became obvious, when the similar issue LWG <iref ref="2298"/> 
+in regard to <tt>is_nothrow_constructible</tt> was opened.
+<p/>
+A possible approach to solve this specification problem is to make a blanket statement for sub-clause <sref ref="[meta.unary.prop]"/>
+that these helper functions are considered trivial for the purpose of defining these traits.
+<p/>
+Using this kind of wording technique can also be used to get rid of the additional helper function template <tt>create</tt>, which
+is currently needed for the <tt>is_convertible</tt> and the <tt>is_constructible</tt> traits, because both traits are specified in
+terms of contexts where technically the corresponding "object construction" function would be considered as odr-used. This is problematic,
+because these traits are defined in terms of well-formed code and odr-using <tt>declval</tt> would make the program ill-formed (see
+<sref ref="[declval]"/>). So extending above blanket statement to consider <tt>std::declval&lt;T&gt;()</tt> as not odr-used
+in the context of the corresponding trait definition would allow for replacing <tt>create</tt> by <tt>declval</tt>.
+</p>
+
+</discussion>
+
+<resolution>
+<p>This wording is relative to N3691.</p>
+
+<ol>
+<li><p>Add a new paragraph after <sref ref="[meta.unary.prop]"/> p3 as indicated: <em>[Editorial note: The first change in
+<sref ref="[meta.unary.prop]"/> p3 is recommended, because technically a Clause is always a "main chapter" &mdash; such as
+Clause 20 &mdash;; but every child of a Clause or sub-clause is a sub-clause]</em></p>
+
+<blockquote>
+<p>
+[&hellip;]
+<p/>
+-3- For all of the class templates <tt>X</tt> declared in this <del>Clause</del><ins>sub-clause</ins>, instantiating that 
+template with a template-argument that is a class template specialization may result in the implicit instantiation of the 
+template argument if and only if the semantics of <tt>X</tt> require that the argument must be a complete type.
+<p/>
+<ins>-?- For the purpose of defining the templates in this sub-clause, a function call expression 
+<tt>std::declval&lt;T&gt;()</tt> for any type <tt>T</tt> is considered as a trivial function call that is not odr-used in 
+the context of the corresponding definition.</ins>
+<p/>
+[&hellip;]
+</p>
+</blockquote>
+</li>
+
+<li><p>Modify <sref ref="[meta.unary.prop]"/> p6 as indicated:</p>
+
+<blockquote>
+<p>
+-6- <del>Given the following function prototype:</del>
+</p>
+<blockquote><pre>
+<del>template &lt;class T&gt;
+  typename add_rvalue_reference&lt;T&gt;::type create();</del>
+</pre></blockquote>
+<p>
+<del>t</del><ins>T</ins>he predicate condition for a template specialization <tt>is_constructible&lt;T, Args...&gt;</tt> 
+shall be satisfied if and only if the following variable definition would be well-formed for some invented variable <tt>t</tt>:
+</p>
+<blockquote><pre>
+T t(<del>create</del><ins>declval</ins>&lt;Args&gt;()...);
+</pre></blockquote>
+<p>
+[&hellip;]
+</p>
+</blockquote>
+</li>
+
+<li><p>Add a new paragraph after <sref ref="[meta.rel]"/> p2 as indicated: <em>[Editorial note: Technically we don't need
+the guarantee of "a trivial function call" for the type relationship predicates at the very moment, but it seems more robust and
+consistent to have the exact same guarantee here as well]</em>
+</p>
+<blockquote>
+<p>
+[&hellip;]
+<p/>
+-2- [&hellip;]
+<p/>
+<ins>-?- For the purpose of defining the templates in this sub-clause, a function call expression 
+<tt>std::declval&lt;T&gt;()</tt> for any type <tt>T</tt> is considered as a trivial function call that is not odr-used in 
+the context of the corresponding definition.</ins>
+<p/>
+[&hellip;]
+</p>
+</blockquote>
+</li>
+
+<li><p>Modify <sref ref="[meta.rel]"/> p4 as indicated:</p>
+
+<blockquote>
+<p>
+-4- <del>Given the following function prototype:</del>
+</p>
+<blockquote><pre>
+<del>template &lt;class T&gt;
+  typename add_rvalue_reference&lt;T&gt;::type create();</del>
+</pre></blockquote>
+<p>
+<del>t</del><ins>T</ins>he predicate condition for a template specialization <tt>is_convertible&lt;From, To&gt;</tt> 
+shall be satisfied if and only if the return expression in the following code would be well-formed, including any implicit 
+conversions to the return type of the function:
+</p>
+<blockquote><pre>
+To test() {
+  return <del>create</del><ins>declval</ins>&lt;From&gt;();
+}
+</pre></blockquote>
+<p>
+[&hellip;]
+</p>
+</blockquote>
+</li>
+
+</ol>
+
+</resolution>
+
+</issue>
