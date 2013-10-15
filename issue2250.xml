@@ -34,9 +34,363 @@ N3485):
 <li><p><sref ref="[string::substr]"/> p1+2</p></li>
 </ol>
 
+<note>2013-10-15: Daniel provides wording</note>
+
 </discussion>
 
 <resolution>
+<p>This wording is relative to N3691.</p>
+
+<ol>
+<li><p>Modify <sref ref="[bitset.cons]"/> as indicated: <em>[Editorial comment: The wording form used to ammend the 
+<i>Throws</i> element is borrowed from a similar style used in <sref ref="[string::replace]"/> p10]</em></p>
+
+<blockquote><pre>
+template &lt;class charT, class traits, class Allocator&gt;
+explicit
+bitset(const basic_string&lt;charT, traits, Allocator&gt;&amp; str,
+       typename basic_string&lt;charT, traits, Allocator&gt;::size_type pos = 0,
+       typename basic_string&lt;charT, traits, Allocator&gt;::size_type n =
+         basic_string&lt;charT, traits, Allocator&gt;::npos,
+         charT zero = charT('0'), charT one = charT('1'));
+</pre><blockquote>
+<p>
+<del>-3- <i>Requires:</i> <tt>pos &lt;= str.size()</tt>.</del>
+<p/>
+-4- <i>Throws:</i> <tt>out_of_range</tt> if <tt>pos &gt; str.size()</tt> <ins>or <tt>invalid_argument</tt> if an
+invalid character is found (see below)</ins>.
+<p/>
+-5- <i>Effects:</i> Determines the effective length <tt>rlen</tt> of the initializing string as the smaller of <tt>n</tt> and 
+<tt>str.size() - pos</tt>.
+<p/>
+The function then throws <tt>invalid_argument</tt> if any of the <tt>rlen</tt> characters in <tt>str</tt> beginning at position
+<tt>pos</tt> is other than <tt>zero</tt> or <tt>one</tt>. The function uses <tt>traits::eq()</tt> to compare the character values.
+<p/>
+[&hellip;]
+</p>
+</blockquote></blockquote>
+</li>
+
+<li><p>Modify <sref ref="[bitset.members]"/> as indicated:</p>
+
+<blockquote><pre>
+bitset&lt;N&gt;&amp; set(size_t pos, bool val = true);
+</pre><blockquote>
+<p>
+<del>-13- <i>Requires:</i> <tt>pos</tt> is valid</del>
+<p/>
+-14- <i>Throws:</i> <tt>out_of_range</tt> if <tt>pos</tt> does not correspond to a valid bit position.
+<p/>
+[&hellip;]
+</p>
+</blockquote></blockquote>
+
+<blockquote><pre>
+bitset&lt;N&gt;&amp; reset(size_t pos);
+</pre><blockquote>
+<p>
+<del>-19- <i>Requires:</i> <tt>pos</tt> is valid</del>
+<p/>
+-20- <i>Throws:</i> <tt>out_of_range</tt> if <tt>pos</tt> does not correspond to a valid bit position.
+<p/>
+[&hellip;]
+</p>
+</blockquote></blockquote>
+
+<blockquote><pre>
+bitset&lt;N&gt;&amp; flip(size_t pos);
+</pre><blockquote>
+<p>
+<del>-27- <i>Requires:</i> <tt>pos</tt> is valid</del>
+<p/>
+-28- <i>Throws:</i> <tt>out_of_range</tt> if <tt>pos</tt> does not correspond to a valid bit position.
+<p/>
+[&hellip;]
+</p>
+</blockquote></blockquote>
+
+<blockquote><pre>
+bool test(size_t pos) const;
+</pre><blockquote>
+<p>
+<del>-41- <i>Requires:</i> <tt>pos</tt> is valid</del>
+<p/>
+-42- <i>Throws:</i> <tt>out_of_range</tt> if <tt>pos</tt> does not correspond to a valid bit position.
+<p/>
+[&hellip;]
+</p>
+</blockquote></blockquote>
+
+</li>
+
+<li><p>Modify <sref ref="[string.cons]"/> as indicated:</p>
+
+<blockquote><pre>
+basic_string(const basic_string&amp; str,
+             size_type pos, size_type n = npos,
+             const Allocator&amp; a = Allocator());
+</pre><blockquote>
+<p>
+<del>-3- <i>Requires:</i> <tt>pos &lt;= str.size()</tt></del>
+<p/>
+-4- <i>Throws:</i> <tt>out_of_range</tt> if <tt>pos &gt; str.size()</tt>.
+</p>
+</blockquote></blockquote>
+</li>
+
+<li><p>Modify <sref ref="[string.capacity]"/> as indicated:</p>
+
+<blockquote><pre>
+void resize(size_type n, charT c);
+</pre><blockquote>
+<p>
+<del>-6- <i>Requires:</i> <tt>n &lt;= max_size()</tt></del>
+<p/>
+-7- <i>Throws:</i> <tt>length_error</tt> if <tt>n &gt; max_size()</tt>.
+</p>
+</blockquote></blockquote>
+</li>
+
+<li><p>Modify <sref ref="[string::append]"/> as indicated:</p>
+
+<blockquote><pre>
+basic_string&amp;
+  append(const basic_string&amp; str, size_type pos, size_type n);
+</pre><blockquote>
+<p>
+<del>-3- <i>Requires:</i> <tt>pos &lt;= str.size()</tt></del>
+<p/>
+-4- <i>Throws:</i> <tt>out_of_range</tt> if <tt>pos &gt; str.size()</tt>.
+</p>
+</blockquote></blockquote>
+</li>
+
+<li><p>Modify <sref ref="[string::assign]"/> as indicated:</p>
+
+<blockquote><pre>
+basic_string&amp;
+  assign(const basic_string&amp; str, size_type pos, size_type n);
+</pre><blockquote>
+<p>
+<del>-4- <i>Requires:</i> <tt>pos &lt;= str.size()</tt></del>
+<p/>
+-5- <i>Throws:</i> <tt>out_of_range</tt> if <tt>pos &gt; str.size()</tt>.
+</p>
+</blockquote></blockquote>
+</li>
+
+<li><p>Modify <sref ref="[string::insert]"/> as indicated: <em>[Editorial note: The first change suggestion is also a bug fix
+of the current wording, because (a) the function has parameter <tt>pos1</tt> but the semantics refers to <tt>pos</tt> and (b) 
+it is possible that this function can throw <tt>length_error</tt>, see p10]</em></p>
+
+<blockquote><pre>
+basic_string&amp;
+  insert(size_type pos<del>1</del>, const basic_string&amp; str);
+</pre><blockquote>
+<p>
+<del>-1- <i>Requires:</i> <tt>pos &lt;= size()</tt>.</del>
+<p/>
+<del>-2- <i>Throws:</i> <tt>out_of_range</tt> if <tt>pos &gt; size()</tt>.</del>
+<p/>
+-3- <i>Effects:</i> <del>Calls</del><ins>Equivalent to:</ins> <tt><ins>return</ins> insert(pos, str.data(), str.size())<ins>;</ins></tt><del>.</del>
+<p/>
+<del>-4- <i>Returns:</i> <tt>*this</tt>.</del>
+</p>
+</blockquote></blockquote>
+
+<blockquote><pre>
+basic_string&amp;
+  insert(size_type pos1, const basic_string&amp; str,
+         size_type pos2, size_type n);
+</pre><blockquote>
+<p>
+<del>-5- <i>Requires:</i> <tt>pos1 &lt;= size()</tt> and <tt>pos2 &lt;= str.size()</tt>.</del>
+<p/>
+-6- <i>Throws:</i> <tt>out_of_range</tt> if <tt>pos1 &gt; size()</tt> or <tt>pos2 &gt; str.size()</tt>.
+<p/>
+[&hellip;]
+</p>
+</blockquote></blockquote>
+
+<blockquote><pre>
+basic_string&amp;
+  insert(size_type pos, const charT* s, size_type n);
+</pre><blockquote>
+<p>
+-9- <i>Requires:</i> <tt>s</tt> points to an array of at least <tt>n</tt> elements of <tt>charT</tt> <del>and 
+<tt>pos &lt;= size()</tt></del>.
+<p/>
+-10- <i>Throws:</i> <tt>out_of_range</tt> if <tt>pos &gt; size()</tt> or <tt>length_error</tt> if <tt>size() + n &gt; max_size()</tt>.
+<p/>
+[&hellip;]
+</p>
+</blockquote></blockquote>
+
+<blockquote><pre>
+basic_string&amp;
+  insert(size_type pos, const charT* s);
+</pre><blockquote>
+<p>
+-13- <i>Requires:</i> <del><tt>pos &lt;= size()</tt> and</del> <tt>s</tt> points to an array of at least 
+<tt>traits::length(s) + 1</tt> elements of <tt>charT</tt>.
+<p/>
+-14- <i>Effects:</i> Equivalent to <tt><ins>return</ins> insert(pos, s, traits::length(s))<ins>;</ins></tt><del>.</del>
+<p/>
+<del>-15- <i>Returns:</i> <tt>*this</tt>.</del>
+</p>
+</blockquote></blockquote>
+</li>
+
+<li><p>Modify <sref ref="[string::erase]"/> as indicated:</p>
+
+<blockquote><pre>
+basic_string&amp; erase(size_type pos = 0, size_type n = npos);
+</pre><blockquote>
+<p>
+<del>-1- <i>Requires:</i> <tt>pos &lt;= size()</tt></del>
+<p/>
+-2- <i>Throws:</i> <tt>out_of_range</tt> if <tt>pos &gt; size()</tt>.
+<p/>
+[&hellip;]
+</p>
+</blockquote></blockquote>
+</li>
+
+<li><p>Modify <sref ref="[string::replace]"/> as indicated: <em>[Editorial note: The first change suggestion is also a bug fix
+of the current wording, because it is possible that this function can throw <tt>length_error</tt>, see p10]</em></p>
+
+<blockquote><pre>
+basic_string&amp;
+  replace(size_type pos1, size_type n1,
+          const basic_string&amp; str);
+</pre><blockquote>
+<p>
+<del>-1- <i>Requires:</i> <tt>pos1 &lt;= size()</tt>.</del>
+<p/>
+<del>-2- <i>Throws:</i> <tt>out_of_range</tt> if <tt>pos1 &gt; size()</tt>.</del>
+<p/>
+-3- <i>Effects:</i> <del>Calls</del><ins>Equivalent to</ins> <tt><ins>return</ins> replace(pos1, n1, str.data(), str.size())<ins>;</ins></tt><del>.</del>
+<p/>
+<del>-4- <i>Returns:</i> <tt>*this</tt>.</del>
+</p>
+</blockquote></blockquote>
+
+<blockquote><pre>
+basic_string&amp;
+  replace(size_type pos1, size_type n1,
+          const basic_string&amp; str,
+          size_type pos2, size_type n);
+</pre><blockquote>
+<p>
+<del>-5- <i>Requires:</i> <tt>pos1 &lt;= size()</tt> and <tt>pos2 &lt;= str.size()</tt>.</del>
+<p/>
+-6- <i>Throws:</i> <tt>out_of_range</tt> if <tt>pos1 &gt; size()</tt> or <tt>pos2 &gt; str.size()</tt>.
+<p/>
+[&hellip;]
+</p>
+</blockquote></blockquote>
+
+<blockquote><pre>
+basic_string&amp;
+  replace(size_type pos1, size_type n1, const charT* s, size_type n2);
+</pre><blockquote>
+<p>
+-9- <i>Requires:</i> <del><tt>pos1 &lt;= size()</tt> and</del> <tt>s</tt> points to an array of at least <tt>n2</tt> elements 
+of <tt>charT</tt>.
+<p/>
+-10- <i>Throws:</i> <tt>out_of_range</tt> if <tt>pos1 &gt; size()</tt> or <tt>length_error</tt> if the length of the resulting 
+string would exceed <tt>max_size()</tt> (see below).
+<p/>
+[&hellip;]
+</p>
+</blockquote></blockquote>
+
+<blockquote><pre>
+basic_string&amp;
+  replace(size_type pos, size_type n, const charT* s);
+</pre><blockquote>
+<p>
+-13- <i>Requires:</i> <del><tt>pos &lt;= size()</tt> and</del> <tt>s</tt> points to an array of at least 
+<tt>traits::length(s) + 1</tt> elements of <tt>charT</tt>.
+<p/>
+-14- <i>Effects:</i> Equivalent to <tt><ins>return</ins> replace(pos, n, s, traits::length(s))<ins>;</ins></tt><del>.</del>
+<p/>
+<del>-15- <i>Returns:</i> <tt>*this</tt>.</del>
+</p>
+</blockquote></blockquote>
+
+</li>
+
+<li><p>Modify <sref ref="[string::copy]"/> as indicated:</p>
+
+<blockquote><pre>
+size_type copy(charT* s, size_type n, size_type pos = 0) const;
+</pre><blockquote>
+<p>
+<del>-1- <i>Requires:</i> <tt>pos &lt;= size()</tt></del>
+<p/>
+-2- <i>Throws:</i> <tt>out_of_range</tt> if <tt>pos &gt; size()</tt>.
+<p/>
+[&hellip;]
+</p>
+</blockquote></blockquote>
+</li>
+
+<li><p>Modify <sref ref="[string::substr]"/> as indicated:</p>
+
+<blockquote><pre>
+basic_string substr(size_type pos = 0, size_type n = npos) const;
+</pre><blockquote>
+<p>
+<del>-1- <i>Requires:</i> <tt>pos &lt;= size()</tt></del>
+<p/>
+-2- <i>Throws:</i> <tt>out_of_range</tt> if <tt>pos &gt; size()</tt>.
+<p/>
+[&hellip;]
+</p>
+</blockquote></blockquote>
+</li>
+
+<li><p>Modify <sref ref="[thread.thread.member]"/> as indicated:</p>
+
+<blockquote><pre>
+void join();
+</pre><blockquote>
+<p>
+<del>-3- <i>Requires:</i> <tt>joinable()</tt> is true.</del>
+<p/>
+[&hellip;]
+<p/>
+-7- <i>Throws:</i> <tt>system_error</tt> when an exception is required (30.2.2).
+<p/>
+-8- <i>Error conditions:</i>
+</p>
+<ul>
+<li><p>[&hellip;]</p></li>
+<li><p><tt>invalid_argument</tt> &mdash; if the thread is not joinable.</p></li>
+</ul>
+</blockquote></blockquote>
+
+<blockquote><pre>
+void detach();
+</pre><blockquote>
+<p>
+<del>-9- <i>Requires:</i> <tt>joinable()</tt> is true.</del>
+<p/>
+[&hellip;]
+<p/>
+-12- <i>Throws:</i> <tt>system_error</tt> when an exception is required (30.2.2).
+<p/>
+-13- <i>Error conditions:</i>
+</p>
+<ul>
+<li><p>[&hellip;]</p></li>
+<li><p><tt>invalid_argument</tt> &mdash; if the thread is not joinable.</p></li>
+</ul>
+</blockquote></blockquote>
+</li>
+
+</ol>
 </resolution>
 
 </issue>
