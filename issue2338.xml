@@ -1,0 +1,66 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="2338" status="New">
+<title>[re.traits]/7 expects of locale facets something not guaranteed by [locale.facet]/4</title>
+<section><sref ref="[re.traits]"/>, <sref ref="[locale.facet]"/></section>
+<submitter>Sergey Zubkov</submitter>
+<date>15 Oct 2013</date>
+
+<discussion>
+<p>
+<sref ref="[re.traits]"/>/7, begins with "if <tt>typeid(use_facet&lt;collate&lt;charT&gt; &gt;) == typeid(collate_byname&lt;charT&gt;)</tt>", 
+which appears to be pseudocode with the intention to convey that the collate facet has not been replaced by the user. Cf. the wording in 
+<a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2003/n1429.htm">N1429</a> "there is no portable way to implement 
+<tt>transform_primary</tt> in terms of <tt>std::locale</tt>, since even if the sort key format returned by 
+<tt>std::collate_byname&lt;&gt;::transform</tt> is known and can be converted into a primary sort key, the user can still 
+install their own custom <tt>std::collate</tt> implementation into the locale object used, and that can use any sort key 
+format they see fit.".
+<p/>
+Taken literally, <sref ref="[re.traits]"/>/7 appears to imply that named locales are required to hold their collate facets with 
+dynamic type <tt>std::collate_byname&lt;charT&gt;</tt>, which is in fact true in some implementations (e.g libc++), but not others 
+(e.g. libstdc++). This does not follow from the description of <tt>_byname</tt> in <sref ref="[locale.facet]"/>/4, which is only 
+required to provide equivalent semantics, to the named locale's facet, not to actually be one.
+</p>
+</discussion>
+
+<resolution>
+<p>This wording is relative to N3691.</p>
+
+<ol>
+<li><p>Modify <sref ref="[locale.facet]"/>/4 as indicated:</p>
+
+<blockquote><p>
+For some standard facets a standard "...<tt>_byname</tt>" class, derived from it, implements the virtual function
+semantics <del>equivalent to</del><ins>provided by</ins> that facet of the locale constructed by <tt>locale(const char*)</tt> 
+with the same name.
+Each such facet provides a constructor that takes a <tt>const char*</tt> argument, which names the locale, and a
+<tt>refs</tt> argument, which is passed to the base class constructor. Each such facet also provides a constructor
+that takes a string argument <tt>str</tt> and a <tt>refs</tt> argument, which has the same effect as calling the first
+constructor with the two arguments <tt>str.c_str()</tt> and <tt>refs</tt>. If there is no "...<tt>_byname</tt>" 
+version of a facet, the base class implements named locale semantics itself by reference to other facets. <ins>For any 
+locale <tt>loc</tt> constructed by <tt>locale(const char*)</tt> and facet <tt>Facet</tt> that has a corresponding standard 
+<tt>Facet_byname</tt> class, <tt>typeid(use_facet&lt;Facet&gt;(loc)) == typeid(Facet_byname)</tt>.</ins>
+</p></blockquote>
+</li>
+
+<li><p>Modify <sref ref="[re.traits]"/>/7 as indicated:</p>
+
+<blockquote><pre>
+template &lt;class ForwardIterator&gt;
+  string_type transform_primary(ForwardIterator first, ForwardIterator last) const;
+</pre><blockquote>
+<p>
+-7- <i>Effects:</i> if <tt>typeid(use_facet&lt;collate&lt;charT&gt; &gt;<ins>(getloc())</ins>) == typeid(collate_byname&lt;charT&gt;)</tt> 
+and the form of the sort key returned by <tt>collate_byname&lt;charT&gt;::transform(first, last)</tt> is known and
+can be converted into a primary sort key then returns that key, otherwise returns an empty string.
+</p>
+</blockquote></blockquote>
+</li>
+
+</ol>
+</resolution>
+
+</issue>
