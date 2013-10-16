@@ -70,8 +70,10 @@ requirements for the default allocator.
 <p/>
 Technically a library can solve these issues: For special member functions by defining them in some base class, for others
 by transforming them effectively into a function template due to the great feature of default template arguments for
-function templates. E.g. the here mentioned <tt>resize</tt> functions of <tt>std::vector</tt> could be prevented from
-instantiation by defining them like this with an implementation:
+function templates (At the very moment the validity of the latter approach depends on a resolution of core language issue
+<a href="http://www.open-std.org/jtc1/sc22/wg21/docs/cwg_active.html#1635">CWG 1635</a>, though). E.g. the here mentioned 
+<tt>resize</tt> functions of <tt>std::vector</tt> could be prevented from instantiation by defining them like this 
+with an implementation:
 </p>
 <blockquote><pre>
 template&lt;class = void&gt;
