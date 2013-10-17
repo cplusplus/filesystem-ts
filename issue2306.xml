@@ -32,7 +32,26 @@ for containers like <tt>set</tt> and <tt>unordered_set</tt> that provide const i
 <p/>
 The way we handle const containers is just that in the case of a const-qualified container (including <tt>match_results</tt>) 
 there are no operations that return <tt>Container::reference</tt>. That's already the case, so this issue is complaining 
-about an unused typedef.</p>
+about an unused typedef.
+</p>
+
+<note>2013-10-17: Daniel comments</note>
+<p>
+The <tt>std::initializer_list</tt> synopsis, <sref ref="[support.initlist]"/> shows a similar problem:
+</p>
+<blockquote><pre>
+template&lt;class E&gt; class initializer_list {
+public:
+  typedef E value_type;
+  typedef const E&amp; reference;
+  typedef const E&amp; const_reference;
+  [&hellip;]
+}
+</pre></blockquote>
+<p>
+Given the fact that <tt>std::initializer_list</tt> doesn't meet the container requirements anyway (and is such a core-language related
+type) I recommend to stick with the current state.
+</p>
 </discussion>
 
 <resolution>
