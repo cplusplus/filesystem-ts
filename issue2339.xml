@@ -1,0 +1,71 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="2339" status="New">
+<title>Wording issue in <tt>nth_element</tt></title>
+<section><sref ref="[alg.nth.element]"/></section>
+<submitter>Christopher Jefferson</submitter>
+<date>19 Oct 2013</date>
+
+<discussion>
+<p>
+The wording of <tt>nth_element</tt> says:
+</p>
+<blockquote><pre>
+template&lt;class RandomAccessIterator&gt;
+  void nth_element(RandomAccessIterator first, RandomAccessIterator nth,
+                   RandomAccessIterator last);
+</pre><blockquote>
+<p>
+After <tt>nth_element</tt> the element in the position pointed to by <tt>nth</tt> is the element that would be in that
+position if the whole range were sorted. Also for every iterator <tt>i</tt> in the range <tt>[first,nth)</tt> and every
+iterator <tt>j</tt> in the range <tt>[nth,last)</tt> it holds that: <tt>!(*j &lt; *i)</tt> or <tt>comp(*j, *i) == false</tt>.
+</p>
+</blockquote></blockquote>
+<p>
+That wording, to me, implies that there must be an element at '<tt>nth</tt>'.
+However, gcc at least accepts <tt>nth == last</tt>, and returns without effect
+(which seems like the sensible option).
+<p/>
+Is it intended to accept <tt>nth == last</tt>? If so, then I would suggest adding
+this to the wording explicitly, say:
+</p>
+<blockquote>
+<p>
+After <tt>nth_element</tt> the element in the position pointed to by <tt>nth</tt> is the element that would be in that
+position if the whole range were sorted<ins>, unless <tt>nth == last</tt></ins>. Also for every iterator <tt>i</tt> in the 
+range <tt>[first,nth)</tt> and every iterator <tt>j</tt> in the range <tt>[nth,last)</tt> it holds that: <tt>!(*j &lt; *i)</tt> 
+or <tt>comp(*j, *i) == false</tt>.
+</p>
+</blockquote>
+</discussion>
+
+<resolution>
+<p>This wording is relative to N3797.</p>
+
+<ol>
+<li><p>Modify <sref ref="[alg.nth.element]"/>/1 as indicated:</p>
+
+<blockquote><pre>
+template&lt;class RandomAccessIterator&gt;
+  void nth_element(RandomAccessIterator first, RandomAccessIterator nth,
+                   RandomAccessIterator last);
+template&lt;class RandomAccessIterator, class Compare&gt;
+  void nth_element(RandomAccessIterator first, RandomAccessIterator nth,
+                   RandomAccessIterator last, Compare comp);
+</pre><blockquote>
+<p>
+-1- After <tt>nth_element</tt> the element in the position pointed to by <tt>nth</tt> is the element that would be in that
+position if the whole range were sorted<ins>, unless <tt>nth == last</tt></ins>. Also for every iterator <tt>i</tt> in the 
+range <tt>[first,nth)</tt> and every iterator <tt>j</tt> in the range <tt>[nth,last)</tt> it holds that: <tt>!(*j &lt; *i)</tt> 
+or <tt>comp(*j, *i) == false</tt>.
+</p>
+</blockquote></blockquote>
+</li>
+
+</ol>
+</resolution>
+
+</issue>
