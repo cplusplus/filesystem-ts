@@ -1,0 +1,93 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="2343" status="New">
+<title>Is the value of the RegExp object's multiline property really false?</title>
+<section><sref ref="[ostream]"/></section>
+<submitter>Nayuta Taga</submitter>
+<date>30 Oct 2013</date>
+
+<discussion>
+<p>
+In the following "Multiline" is the value of the RegExp object's multiline property.
+<p/>
+In <a href="http://www.ecma-international.org/publications/files/ECMA-ST-ARCH/ECMA-262,%203rd%20edition,%20December%201999.pdf">ECMA-262</a>, 
+there are some definitions that relate to Multiline:
+</p>
+<ul>
+<li><p>
+ECMA-262 15.10.2.6:
+</p>
+<blockquote>
+<p>
+If Multiline is true, ^ matches just after LineTerminator.
+<p/>
+If Multiline is false, ^ does not match just after LineTerminator.
+<p/>
+If Multiline is true, $ matches just before LineTerminator.
+<p/>
+If Multiline is false, $ does not match just before LineTerminator.
+</p>
+</blockquote>
+</li>
+<li>
+<p>
+ECMA-262 15.10.4.1, 15.10.7.4:
+</p>
+<blockquote><p>
+By default, Multiline is false.
+</p></blockquote>
+</li>
+</ul>
+<p>
+So, the C++11 standard says that Multiline is false. As it is false,
+^ matches only the beginning of the string, and $ matches only the end
+of the string.
+<p/>
+However, two flags are defined in <sref ref="[re.matchflag]"/> Table 139:
+</p>
+<blockquote>
+<p>
+<tt>match_not_bol</tt>: the character ^ in the regular expression shall not match <tt>[first,first)</tt>.
+<p/>
+<tt>match_not_eol</tt>: the character "$" in the regular expression shall not match <tt>[last,last)</tt>.
+</p>
+</blockquote>
+<p>
+As Multiline is false, the <tt>match_not_bol</tt> and the <tt>match_not_eol</tt> are
+meaningless because they only make ^ and $ match none.
+<p/>
+In my opinion, Multiline should be true.
+<p/>
+FYI, Multiline of the existing implementations are as follows:
+<p/>
+<em>Multiline=false:</em>
+</p>
+<ul>
+<li><p>
+libstdc++ r203261
+</p></li>
+<li><p>
+libc++ r192176
+</p></li>
+</ul>
+<p>
+<em>Multiline=true:</em>
+</p>
+<ul>
+<li><p>
+Visual Studio Express 2013 RC
+</p></li>
+<li><p>
+boost 1.53
+</p></li>
+</ul>
+
+</discussion>
+
+<resolution>
+</resolution>
+
+</issue>
