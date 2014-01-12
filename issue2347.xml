@@ -20,7 +20,7 @@ const reference. This const reference cannot be converted back to a
 mutable reference.
 <p/>
 This issue is related to the "<em>unspecified</em>" return value of
-<tt>reverse_iterator::operator[]</tt>. See defect <iref ref="386"/>.
+<tt>reverse_iterator::operator[]</tt>, see defect <iref ref="386"/>.
 <p/>
 The -1 is due to "current" pointing one item beyond the
 <tt>reverse_iterator</tt>'s real current value.
@@ -28,7 +28,7 @@ The -1 is due to "current" pointing one item beyond the
 The current libstdc++ implementation reads "<tt>*(current + n)</tt>" for
 <tt>reverse_iterator::operator[]</tt>.
 <p/>
-This copied current, advances (backwards) via <tt>operator+</tt> and
+This copied <tt>current</tt>, advances (backwards) via <tt>operator+</tt> and
 dereferences. It bypasses the issues due to <tt>reverse_iterator::operator[]</tt>
 being const by copying the iterator.
 </p>
