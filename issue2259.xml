@@ -53,9 +53,50 @@ not intentional, and such changes should be permissible.
 I think the first two items are probably editorial, since the intent is clear.
 </p>
 
+<note>2013-12-11 Richard provides concrete wording</note>
+<p>
+</p>
 </discussion>
 
 <resolution>
+<p>This wording is relative to N3797.</p>
+
+<ol>
+<li><p>Merge <sref ref="[member.functions]"/>p2+3 as indicated:</p>
+
+<blockquote>
+<p>
+-2- <del>An implementation may declare additional non-virtual member function signatures within a class:</del>
+</p>
+<ul>
+<li><p>
+<del>by adding arguments with default values to a member function signature;188 [<i>Note:</i> An implementation
+may not add arguments with default values to virtual, global, or non-member functions. &mdash; <i>end note</i>]</del>
+</p></li>
+<li><p>
+<del>by replacing a member function signature with default values by two or more member function signatures
+with equivalent behavior; and</del>
+</p></li>
+<li><p>
+<del>by adding a member function signature for a member function name.</del>
+</p></li>
+</ul>
+<p>
+<del>-3- A call to a member function signature described in the C++ standard library behaves as if the implementation
+declares no additional member function signatures.[Footnote: A valid C++ program always calls the expected library 
+member function, or one with equivalent behavior. An implementation may also define additional member functions 
+that would otherwise not be called by a valid C++ program.]</del> <ins>For a non-virtual member function described 
+in the C++ standard library, an implementation may declare a different set of member function signatures, provided 
+that any call to the member function that would select an overload from the set of declarations described in this 
+standard behaves as if that overload were selected. [<i>Note:</i> For instance, an implementation may add parameters 
+with default values, or replace a member function with default arguments with two or more member functions with 
+equivalent behavior, or add additional signatures for a member function name. &mdash; <i>end note</i>]</ins>
+</p>
+
+</blockquote>
+</li>
+
+</ol>
 </resolution>
 
 </issue>
