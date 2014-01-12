@@ -1,0 +1,48 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="2345" status="New">
+<title><tt>integer_sequence</tt> should have a self-typedef <tt>::type</tt></title>
+<section><sref ref="[intseq.intseq]"/></section>
+<submitter>Stephan T. Lavavej</submitter>
+<date>1 Nov 2013</date>
+
+<discussion>
+<p>
+<sref ref="[meta.help]"/> says that <tt>integral_constant&lt;T, v&gt;</tt> provides <tt>::value_type</tt> (for <tt>T</tt>) 
+and <tt>::type</tt> (for itself).
+<p/>
+<sref ref="[intseq.intseq]"/> says that <tt>integer_sequence&lt;T, I...&gt;</tt> provides <tt>::value_type</tt> (for <tt>T</tt>), 
+but nothing for itself.
+<p/>
+Self-typedefs can be useful when users create chains of derived classes, then want to get the Standard base type.  
+This is especially relevant to <tt>integer_sequence</tt>, as variadic templates encourage recursive inheritance.
+</p>
+
+</discussion>
+
+<resolution>
+<p>This wording is relative to N3797.</p>
+
+<ol>
+<li><p>Edit <sref ref="[intseq.intseq]"/> as indicated:</p>
+
+<blockquote><pre>
+namespace std {
+  template&lt;class T, T... I&gt;
+  struct integer_sequence {
+    typedef T value_type;
+    <ins>typedef integer_sequence&lt;T, I...&gt; type;</ins>
+    static constexpr size_t size() noexcept { return sizeof...(I); }
+  };
+}
+</pre></blockquote>
+</li>
+
+</ol>
+
+</resolution>
+
+</issue>
