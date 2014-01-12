@@ -1,0 +1,38 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="2351" status="New">
+<title>Does <tt>.seed()</tt> completely reset state of engine?</title>
+<section><sref ref="[rand.eng]"/></section>
+<submitter>Thomas Plum</submitter>
+<date>2 Dec 2013</date>
+
+<discussion>
+<p>
+With regard to Random number engine class templates <sref ref="[rand.eng]"/>,
+the Standard can be read in two different ways: when the member function
+</p>
+<blockquote><pre>
+.seed(result_type s = default_seed)
+</pre></blockquote>
+<p>
+is invoked, is all associated state (such as carry) reset to the same
+state that would have been created by the constructor
+</p>
+<blockquote><pre>
+explicit <em>engine-type</em>(result_type s = default_seed)
+</pre></blockquote>
+<p>
+or is the exact state unspecified?
+<p/>
+Implementations differ.
+</p>
+
+</discussion>
+
+<resolution>
+</resolution>
+
+</issue>
