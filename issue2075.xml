@@ -192,6 +192,21 @@ Hans: each atomic <i>modification</i> completes, even if the whole thing is bloc
 Moved to open.
 </p>
 
+<note>2013-11-06: Jason Hearne-McGuiness comments</note>
+
+<p>
+Related to this issue, the wording in <sref ref="[atomics.lockfree]"/> p2,
+</p>
+<blockquote><p>
+In any given program execution, the result of the lock-free query
+shall be consistent for all pointers of the same type.
+</p></blockquote>
+<p>
+should be made clearer, because the object-specific (non-static) nature of the <tt>is_lock_free()</tt> functions 
+from <sref ref="[atomics.types.generic]"/> and <sref ref="[atomics.types.operations]"/> imply that for different 
+instances of pointers of the same type the returned value could be different.
+</p>
+
 </discussion>
 
 <resolution>
