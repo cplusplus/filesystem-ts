@@ -3,7 +3,7 @@
   <!ENTITY nbsp "&#160;">
 ] >
 
-<issue num="2274" status="New">
+<issue num="2274" status="Open">
 <title>Does <tt>map::operator[]</tt> value-initialize or default-insert a missing element?</title>
 <section><sref ref="[map.access]"/>, <sref ref="[unord.map.elem]"/></section>
 <submitter>Andrzej Krzemie&#324;ski</submitter>
@@ -68,6 +68,41 @@ Not to mention that default-insertion is more useful, because it allows custom a
 default value of <tt>mapped_type</tt>.
 </p>
 
+<note>2013-09 Chicago</note>
+<p>
+Alisdair: Matters only for POD or trivial types 
+<p/>
+Marshall: issue might show up elsewhere other than <tt>map&lt;&gt;</tt> 
+<p/>
+Alisdair: initialize elements in any containers &mdash; by calling construct on allocator traits 
+<p/>
+Marshall: existing wording is clear 
+<p/>
+Alisdair: main concern is difference in wording, discusses default initialization 
+<p/>
+Nico: different requirement needed 
+<p/>
+Alisdair: gut is issue is NAD, brings up <tt>DefaultInsertable</tt> definition &mdash; discusses definition 
+<p/>
+Nico: why do we have the requirement? 
+<p/>
+Alisdair: other containers have this requirement 
+<p/>
+Marshall: this applies to many other containers 
+<p/>
+Nico: <tt>deque&lt;&gt;</tt> in particular 
+<p/>
+Alisdair: discusses allocator construct 
+<p/>
+Alisdair: wording raises concerns that aren't said in existing standard 
+<p/>
+Nico: sees no benefit to change 
+<p/>
+Marshall: leery of change 
+<p/>
+Alisdair: can be made clearer; might need to add note to <tt>DefaultInsertable</tt>; borderline editorial, 
+comfortable without note, willing to wait until other issues arise. close issue as NAD
+</p>
 </discussion>
 
 <resolution>

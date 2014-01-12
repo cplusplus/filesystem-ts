@@ -3,7 +3,7 @@
   <!ENTITY nbsp "&#160;">
 ] >
 
-<issue num="2230" status="New">
+<issue num="2230" status="Deferred">
 <title>&quot;<em>see below</em>&quot; for initializer-list constructors of unordered containers</title>
 <section><sref ref="[unord]"/></section>
 <submitter>Jonathan Wakely</submitter>
@@ -25,6 +25,33 @@ unordered_map(initializer_list&lt;value_type&gt;,
 
 <p>
 But that constructor isn't defined below. The same problem exists for the other unordered associative containers.
+</p>
+
+<note>2013-09 Chicago</note>
+<p>
+STL: ordered are also missing declarations, but issue is forthcoming
+<p/>
+Walter: how does adding a signature address issue? &mdash; nevermind 
+<p/>
+Jayson: in his wording, isn't he just dropping the <tt>size_type</tt>?
+<p/> 
+Walter: partial fix is to introduce the name
+<p/>
+Stefanus: explanation of requiring name because of n buckets 
+<p/>
+STL: solution for his issue satisfies both ordered and unordered and is simplier than provided wording 
+<p/>
+STL: patches general table instead 
+<p/>
+STL: proposes adding extra rows instead of extra declarations 
+<p/>
+Stefanus: clarify <tt>n</tt> in the synopsis 
+<p/>
+Walter: general rule, name is optional in declaration 
+<p/>
+Stefanus: how to proceed 
+<p/>
+Walter: significant overlap with forthcoming issue, suggestion to defer
 </p>
 
 </discussion>
