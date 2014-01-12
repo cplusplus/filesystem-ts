@@ -1,0 +1,139 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="2349" status="New">
+<title>Clarify input/output function rethrow behavior</title>
+<section><sref ref="[istream.formatted.reqmts]"/></section>
+<submitter>Zhihao Yuan</submitter>
+<date>6 Dec 2013</date>
+
+<discussion>
+<p>
+The formatted input function requirement says in <sref ref="[istream.formatted.reqmts]"/>:
+</p>
+<blockquote><p>
+"If an exception is thrown during input then <tt>ios::badbit</tt> is turned on
+in <tt>*this</tt>'s error state.  If <tt>(exceptions()&amp;badbit) != 0</tt> then the exception
+is rethrown."
+</p></blockquote>
+<p>
+while some formatted function may throw an exception from <tt>basic_ios::clear</tt>, for example
+in <sref ref="[bitset.operators]"/> p6:
+</p>
+<blockquote><p>
+"If no characters are stored in <tt>str</tt>, calls <tt>is.setstate(ios_base::failbit)</tt> (which may 
+throw <tt>ios_base::failure</tt>)"
+</p></blockquote>
+<p>
+So should this exception be considered as "an exception [...] thrown
+during input"?  And here is an implementation divergence (or you
+can read the following as "a bug libc++ only has" :)
+</p>
+<blockquote><pre>
+cin.exceptions(ios_base::failbit);
+bitset&lt;N&gt; b;
+try {
+  cin &gt;&gt; b;  // type 'a' and return
+} catch (...)
+{}
+</pre></blockquote>
+<p>
+Now <tt>cin.rdstate()</tt> is just <tt>failbit</tt> in libstdc++ (and Dinkumware, by
+PJ), but <tt>failbit &amp; badbit</tt> libc++. Similar difference found in other
+places, like <tt>eofbit &amp; badbid</tt> after <tt>std::getline</tt>.
+<p/>
+PJ and Matt both agree that the intention (of <tt>badbit</tt> + rethrow) is
+"to signify an exception arising in user code, not the iostreams package".
+<p/>
+In addition, I found the following words in unformatted input
+function's requirements (<sref ref="[istream.unformatted]"/>):
+</p>
+<blockquote><p>
+If an exception is thrown during input then <tt>ios::badbit</tt> is turned on
+in <tt>*this</tt>'s error state. (Exceptions thrown from <tt>basic_ios&lt;&gt;::clear()</tt>
+are not caught or rethrown.)  If <tt>(exceptions()&amp;badbit) != 0</tt> then the
+exception is rethrown.
+</p></blockquote>
+<p>
+The content within the parenthesis is added by LWG defect <iref ref="61"/>,
+and does fix the ambiguity. However, it only fixed the 1 of 4
+requirements, and it lost some context (the word "rethrown" is not
+seen before this sentence within this section).
+</p>
+
+</discussion>
+
+<resolution>
+<p>This wording is relative to N3797.</p>
+
+[<i>Drafting note:</i> The editor is kindly asked to introduce additional spaces at the following marked occurrences of
+<tt>operator&amp;</tt> &mdash; <i>end drafting note</i>]
+
+<ol>
+<li><p>Modify <sref ref="[istream.formatted.reqmts]"/> p1 as indicated:</p>
+
+<blockquote><p>
+-1- Each formatted input function begins execution by constructing an object of class <tt>sentry</tt> with the <tt>noskipws</tt>
+(second) argument false. If the <tt>sentry</tt> object returns true, when converted to a value of type <tt>bool</tt>, the
+function endeavors to obtain the requested input. If an exception<ins>, other than the ones thrown from <tt>clear()</tt>, if any,</ins> 
+is thrown during input then <tt>ios::badbit</tt>
+is turned on[Footnote 314] in <tt>*this</tt>'s error state. If <tt>(exceptions()<ins> </ins>&amp;<ins> </ins>badbit) != 0</tt> 
+then the exception is rethrown.
+In any case, the formatted input function destroys the <tt>sentry</tt> object. If no exception has been thrown, it returns <tt>*this</tt>.
+</p></blockquote>
+</li>
+
+<li><p>Modify <sref ref="[ostream.formatted.reqmts]"/> p1 as indicated:</p>
+
+<blockquote><p>
+-1- Each formatted output function begins execution by constructing an object of class <tt>sentry</tt>. If this object
+returns true when converted to a value of type <tt>bool</tt>, the function endeavors to generate the requested
+output. If the generation fails, then the formatted output function does <tt>setstate(ios_base::failbit)</tt>,
+which might throw an exception. If an exception<ins>, other than the ones thrown from <tt>clear()</tt>, if any,</ins> is thrown 
+during output, then <tt>ios::badbit</tt> is turned on[Footnote 327]
+in <tt>*this</tt>'s error state. If <tt>(exceptions()<ins> </ins>&amp;<ins> </ins>badbit) != 0</tt> then the exception is rethrown. 
+Whether or not
+an exception is thrown, the <tt>sentry</tt> object is destroyed before leaving the formatted output function. If no
+exception is thrown, the result of the formatted output function is <tt>*this</tt>.
+</p></blockquote>
+</li>
+
+<li><p>Modify <sref ref="[ostream.unformatted]"/> p1 as indicated:</p>
+
+<blockquote><p>
+-1- Each unformatted output function begins execution by constructing an object of class <tt>sentry</tt>. If this object
+returns true, while converting to a value of type <tt>bool</tt>, the function endeavors to generate the requested
+output. If an exception<ins>, other than the ones thrown from <tt>clear()</tt>, if any,</ins> is thrown during output, 
+then ios::badbit is turned on[Footnote 330] in <tt>*this</tt>'s error state.
+If <tt>(exceptions() &amp; badbit) != 0</tt> then the exception is rethrown. In any case, the unformatted output
+function ends by destroying the <tt>sentry</tt> object, then, if no exception was thrown, returning the value specified
+for the unformatted output function.
+</p></blockquote>
+</li>
+
+<li><p>Modify <sref ref="[istream.unformatted]"/> p1 as indicated:</p>
+
+<blockquote><p>
+-1- Each unformatted input function begins execution by constructing an object of class <tt>sentry</tt> with the default
+argument <tt>noskipws</tt> (second) argument true. If the <tt>sentry</tt> object returns true, when converted to a value
+of type <tt>bool</tt>, the function endeavors to obtain the requested input. Otherwise, if the <tt>sentry</tt> constructor exits
+by throwing an exception or if the sentry object returns false, when converted to a value of type <tt>bool</tt>, the
+function returns without attempting to obtain any input. In either case the number of extracted characters
+is set to <tt>0</tt>; unformatted input functions taking a character array of non-zero size as an argument shall also
+store a null character (using <tt>charT()</tt>) in the first location of the array. If an exception<ins>, other than the 
+ones thrown from <tt>clear()</tt>, if any,</ins> is thrown during input
+then <tt>ios::badbit</tt> is turned on[Footnote 317] in <tt>*this</tt>'s error state. <del>(Exceptions thrown from 
+<tt>basic_ios&lt;&gt;::clear()</tt> are not caught or rethrown.)</del> If <tt>(exceptions()<ins> </ins>&amp;<ins> </ins>badbit) != 0</tt> 
+then the exception is rethrown. It also counts the number of characters extracted. If no exception has been thrown it ends 
+by storing the count in a member object and returning the value specified. In any event the <tt>sentry</tt> object is destroyed 
+before leaving the unformatted input function.
+</p></blockquote>
+</li>
+
+</ol>
+
+</resolution>
+
+</issue>
