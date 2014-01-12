@@ -1,0 +1,68 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="2350" status="New">
+<title><tt>min</tt>, <tt>max</tt>, and <tt>minmax</tt> should be <tt>constexpr</tt></title>
+<section><sref ref="[alg.min.max]"/></section>
+<submitter>Ville Voutilainen</submitter>
+<date>15 Dec 2013</date>
+
+<discussion>
+<p>
+Having <tt>min</tt>, <tt>max</tt>, and <tt>minmax</tt> <tt>constexpr</tt> 
+was a large part of the motivation to allow reference-to-const arguments for 
+<tt>constexpr</tt> functions as per 
+<a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2010/n3039.pdf">N3039</a>.
+Furthermore, <tt>initializer_lists</tt> are immutable and not-movable-from
+for large part in order to allow using them in <tt>constexpr</tt> contexts
+and other hoisting-optimizations. In <a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2013/n3797.pdf">N3797</a> 
+version of the draft none of these functions are <tt>constexpr</tt>, and they should be made
+<tt>constexpr</tt>.
+</p>
+
+</discussion>
+
+<resolution>
+<p>This wording is relative to N3797.</p>
+
+<ol>
+<li><p>In <sref ref="[algorithms.general]"/>, header <tt>&lt;algorithm&gt;</tt> synopsis, and <sref ref="[alg.min.max]"/>, 
+change as indicated (add <tt>constexpr</tt> to every signature before <tt>min_element</tt>):</p>
+
+<blockquote><pre>
+template&lt;class T&gt; <ins>constexpr</ins> const T&amp; min(const T&amp; a, const T&amp; b);
+template&lt;class T, class Compare&gt;
+<ins>constexpr</ins> const T&amp; min(const T&amp; a, const T&amp; b, Compare comp);
+[&hellip;]
+template&lt;class T&gt;
+<ins>constexpr</ins> T min(initializer_list&lt;T&gt; t);
+template&lt;class T, class Compare>
+<ins>constexpr</ins> T min(initializer_list&lt;T&gt; t, Compare comp);
+[&hellip;]
+template&lt;class T&gt; <ins>constexpr</ins> const T&amp; max(const T&amp; a, const T&amp; b);
+template&lt;class T, class Compare&gt;
+<ins>constexpr</ins> const T&amp; max(const T&amp; a, const T&amp; b, Compare comp);
+[&hellip;]
+template&lt;class T&gt;
+<ins>constexpr</ins> T max(initializer_list&lt;T&gt; t);
+template&lt;class T, class Compare>
+<ins>constexpr</ins> T max(initializer_list&lt;T&gt; t, Compare comp);
+[&hellip;]
+template&lt;class T&gt; <ins>constexpr</ins> pair&lt;const T&amp;, const T&amp;&gt; minmax(const T&amp; a, const T&amp; b);
+template&lt;class T, class Compare&gt;
+<ins>constexpr</ins> pair&lt;const T&amp;, const T&amp;&gt; minmax(const T&amp; a, const T&amp; b, Compare comp);
+[&hellip;]
+template&lt;class T&gt;
+<ins>constexpr</ins> pair&lt;T, T&gt; minmax(initializer_list&lt;T&gt; t);
+template&lt;class T, class Compare>
+<ins>constexpr</ins> pair&lt;T, T&gt; minmax(initializer_list&lt;T&gt; t, Compare comp);
+</pre></blockquote>
+</li>
+
+</ol>
+
+</resolution>
+
+</issue>
