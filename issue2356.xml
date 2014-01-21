@@ -1,0 +1,65 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="2356" status="New">
+<title>Stability of erasure in unordered associative containers</title>
+<section><sref ref="[unord.req]"/></section>
+<submitter>Joaqu&iacute;n M L&oacute;pez Mu&ntilde;oz</submitter>
+<date>21 Jan 2014</date>
+
+<discussion>
+<p>
+Issue <iref ref="518"/> resolution for unordered associative containers, modelled after that of issue <iref ref="371"/>, 
+which is related to associative containers, states that insertion, erasure and rehashing preserve the relative ordering 
+of equivalent elements. Unfortunately, this is not sufficient to guarantee the validity of code such as this:
+</p>
+<blockquote><pre>
+std::unordered_multimap&lt;int, int&gt; m;
+auto i = m.begin();
+while (i != m.end()) {
+  if (pred(i))
+    m.erase(i++);
+  else
+    ++i;
+}
+</pre></blockquote>
+<p>
+(which is a direct translation from <tt>multimap</tt> to <tt>unordered_multimap</tt> of the motivating example in <iref ref="371"/>), 
+or even this:
+</p>
+<blockquote><pre>
+std::unordered_multimap&lt;int, int&gt; m;
+auto p = m.equal_range(k);
+while (p.first != p.second) {
+  if (pred(p.first))
+    m.erase((p.first)++);
+  else
+    ++(p.first);
+}
+</pre></blockquote>
+<p>
+because the relative ordering of non-equivalent elements elements could potentially change after erasure (not that any actual 
+implementation does that, anyway). Such an underspecification does not happen for regular associative containers, where the 
+relative ordering of non-equivalent elements is kept by design.
+</p>
+
+</discussion>
+
+<resolution>
+<p>This wording is relative to N3797.</p>
+
+<ol>
+<li><p>Modify <sref ref="[unord.req]"/>, p14 as indicated:</p>
+
+<blockquote><p>
+-14- The <tt>insert</tt> and <tt>emplace</tt> members shall not affect the validity of references to container elements, but may
+invalidate all iterators to the container. The <tt>erase</tt> members shall invalidate only iterators and references
+to the erased elements<ins>, and preserve the relative ordering of the remaining elements</ins>.
+</p></blockquote>
+</li>
+</ol>
+</resolution>
+
+</issue>
