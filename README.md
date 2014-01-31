@@ -18,7 +18,7 @@ but never 'N' numbers.
 *Top-level (i.e. root) directory*
 
 <blockquote>
-*doc directory* - The (often generated) documents.
+The (often generated) documents.
 
 *src directory* - The source code used to generate the documents.
 
