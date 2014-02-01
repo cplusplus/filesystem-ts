@@ -1,0 +1,55 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="2357" status="New">
+<title>Remaining "<tt>Assignable</tt>" requirement</title>
+<section><sref ref="[alg.partitions]"/></section>
+<submitter>Daniel Kr&uuml;gler</submitter>
+<date>1 Feb 2014</date>
+
+<discussion>
+<p>
+The <i>Requires</i> element of <tt>partition_copy</tt> says (emphasis mine):
+</p>
+<blockquote><p>
+<i>Requires</i>: <tt>InputIterator</tt>'s value type shall be <b><tt>Assignable</tt></b>, and &hellip;
+</p></blockquote>
+<p>
+The C++03 term <tt>Assignable</tt> was replaced by <tt>CopyAssignable</tt>, remaining cleanups happened via LWG issue
+<iref ref="972"/>, but algorithm <tt>partition_copy</tt> was not affected at that time (during that time the requirements
+of <tt>partition_copy</tt> didn't mention writable nor assignable, but I cannot track down at the moment where these requirements
+had been added). Presumably this requirement should be corrected similarly to the approach used in <iref ref="972"/>.
+<p/>
+Another question is whether a <tt>CopyAssignable</tt> is needed here, given the fact that we already require "writable to" an 
+<tt>OutputIterator</tt> which is defined in <sref ref="[iterator.requirements.general]"/> and does already impose the necessary
+statement
+</p>
+<blockquote><pre>
+*out = *in;
+</pre></blockquote>
+<p>
+Given the fact that <tt>partition_copy</tt> never touches any input value twice, there is no reason why anything more than
+<i>writable to</i> should be necessary.
+<p/>
+The below suggested primary resolution does not respond to the second part of this question.
+</p>
+</discussion>
+
+<resolution>
+<p>This wording is relative to N3797.</p>
+
+<ol>
+<li><p>Modify <sref ref="[alg.partitions]"/>, p12 as indicated:</p>
+
+<blockquote><p>
+-12- <i>Requires</i>: <tt>InputIterator</tt>'s value type shall be <tt><ins>Copy</ins>Assignable</tt>, and shall be writable 
+to the <tt>out_true</tt> and <tt>out_false</tt> <tt>OutputIterator</tt>s, and shall be convertible to <tt>Predicate</tt>'s 
+argument type. The input range shall not overlap with either of the output ranges.
+</p></blockquote>
+</li>
+</ol>
+</resolution>
+
+</issue>
