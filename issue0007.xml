@@ -1,0 +1,25 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="7" status="New">
+<title>[PDTS] Unhelpful comment for <tt>struct space_info</tt></title>
+<section><sref ref="[fs.filesystem.synopsis]"/></section>
+<submitter>GB-4</submitter>
+<date>20 Jan 2014</date>
+
+<discussion>
+<p>Use of the term a 'non-privileged' process.
+The comment for available in the struct space_info refers to: free space available to a
+non-privileged process.
+This seems quite specific to a POSIX implementation (on Windows, for instance, the
+equivalent data would be user-specific but not directly related to privilege)</p>
+</discussion>
+
+<resolution>
+<p>Remove the comment and add a note to 15.32 [fs.op.space]:
+[Note: the precise meaning of available space is implementation dependent. --end note]</p>
+</resolution>
+
+</issue>
