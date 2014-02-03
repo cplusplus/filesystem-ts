@@ -1,0 +1,84 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="11" status="New">
+<title>[PDTS] Lack of relative() operation function</title>
+<section><sref ref="6 & 15"/></section>
+<submitter>GB-1</submitter>
+<date>20 Jan 2014</date>
+
+<discussion>
+<p>There is no relative() operation, to complement both absolute() and canonical()
+The TS introduces relative paths. 
+They are defined in section 4.18 relative path [fs.def.relative-path] 
+A decomposition method relative_path() is described in section 8.4.9 path decomposition [path.decompose] 
+Two query methods to determine if a path either has_relative_path() or is_relative()
+described in 8.4.10 path query [path.query] 
+However there is no way to create a relative path as a path relative to another.
+
+Methods are provided to create absolute and canonical paths.
+In section 15.1 Absolute [fs.op.absolute]:
+path absolute(const path& p, const path& base=current_path());
+and in section 15.2 Canonical [fs.op.canonical]
+path canonical(const path& p, const path& base = current_path());
+path canonical(const path& p, error_code& ec);
+path canonical(const path& p, const path& base, error_code& ec);
+By providing a operations to achieve absolute and canonical paths there is no impediment
+to providing a similar operation relative() that
+attempts to return a new path relative to some base path.
+For example:
+path relative(const path& p, const path& to = current_path());
+path relative(const path& p, error_code& ec);
+path relative(const path& p, const path& to, error_code& ec);
+This would return a path, if possible, that is relative to to. The implementation can make
+use of absolute() and canonical() to determine the relative path, if it exists.
+The File System TS is based on the ​boost::filesystem library and it too suffers from this
+anomaly. There are open tickets for this in ​Boost Trac:
+​#5897 Make path relative function 
+​#1976 Inverse function for complete 
+and it is the subject of several posts on StackOverflow for example:
+​http://stackoverflow.com/questions/10167382/boostfilesystem-get-relative-path 
+​http://stackoverflow.com/questions/5772992/get-relative-path-from-two-absolute-paths 
+Other languages typically provide a similar function. For example python provides:
+os.path.relpath(path[, start])
+Return a relative filepath to path either from the current directory or from an optional
+start directory. This is a path computation: the filesystem is not accessed to confirm the
+existence or nature of path or start.
+start defaults to os.curdir.</p>
+</discussion>
+
+<resolution>
+<p>Modify section:
+6 Header <filesystem> synopsis [fs.filesystem.synopsis]
+by adding the operational functions after canonical:
+
+path relative(const path& p, const path& to = current_path());
+path relative(const path& p, error_code& ec);
+path relative(const path& p, const path& to, error_code& ec);
+
+Insert the section:
+
+15.3 Relative [fs.op.relative]
+path relative(const path& p, const path& to = current_path());
+path relative(const path& p, error_code& ec);
+path relative(const path& p, const path& to, error_code& ec);
+Overview: Return a relative path of p to the current directory or from an optional to path.</p>
+Returns: A relative path such that canonical(to)/relative(p,to) == canonical(p),
+otherwise path(). If canonical(to) == canonical(p) the path path(".") is returned. For the
+overload without a to argument, to is current_path(). Signatures with argument ec return
+path() if an error occurs.
+Throws: As specified in Error reporting.
+Remarks: !exists(p) or !exists(to) or !is_directory(to) is an error.
+and bump all following sections up by 0.1. Update the contents and any cross-references
+accordingly.
+
+Question: Should Returns be specified in terms of equivalence? For example:
+equivalent( canonical(to)/relative(p,to), canonical(p) )
+
+Question: Should canonical(to) == canonical(p) return path(".") or path()? Why?
+
+Question: Should to be spelt start?</resolution>
+
+</issue>
