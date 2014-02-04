@@ -1,0 +1,35 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="23" status="New">
+<title>[PDTS] Request for <tt>create_regular_file()</tt> and/or <tt>touch()</tt></title>
+<section><sref ref="15"/></section>
+<submitter>CH-14</submitter>
+<date>20 Jan 2014</date>
+
+<discussion>
+<p>Since create_symlink(), create_hardlink(), and create_directory() exist, there’s
+no reason not to have a create_regular_file() function.</p>
+</discussion>
+
+<resolution>
+<p>Consider adding a function create_regular_file() with the behaviour of the POSIX touch
+command.</p>
+
+<p>[Beman comments] <tt>create_regular_file()</tt> and <tt>touch()</tt> should be different functions since
+their behavior would differ if the file already exists; touch() updates the last write
+date.</p>
+
+<p>I have often wanted <tt>create_regular_file()</tt> but never got around to adding it.</p>
+
+<p>While touch is quite useful from the command line, I'm less sure of its usefulness as
+a library function. It is trivial for a user to implement.</p>
+
+<p>Whether or not it is appropriate to add operational functions this late in the PDTS
+process is questionable.</p>
+ 
+</resolution>
+
+</issue>
