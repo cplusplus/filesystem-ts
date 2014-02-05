@@ -501,7 +501,7 @@ implied encoding, they are not included as permitted types. <i>--end note</i>]</
     template &lt;class <a href="#Source">Source</a>&gt;  
       path u8path(Source const&amp; source);
     template &lt;class InputIterator&gt;
-      path u8path(InputIterator begin, InputIterator end);
+      path u8path(InputIterator <del>begin</del><ins>first</ins>, InputIterator <del>end</del><ins>last</ins>);
 
     class <a href="#Class-filesystem_error">filesystem_error</a>;      
     class <a href="#Class-directory_entry">directory_entry</a>;
@@ -756,11 +756,11 @@ system or for a particular file system.</p>
         template &lt;class <a href="#Source">Source</a>&gt;
           path(Source const&amp; source);
         template &lt;class InputIterator&gt;
-          path(InputIterator begin, InputIterator end);
+          path(InputIterator <del>begin</del><ins>first</ins>, InputIterator <del>end</del><ins>last</ins>);
         template &lt;class <a href="#Source">Source</a>&gt;  
           path(Source const&amp; source, const locale&amp; loc);
         template &lt;class InputIterator&gt;
-          path(InputIterator begin, InputIterator end, const locale&amp; loc);
+          path(InputIterator <del>begin</del><ins>first</ins>, InputIterator <del>end</del><ins>last</ins>, const locale&amp; loc);
        ~path() = default;
 
         // <a href="#path-assignments">assignments</a>
@@ -771,7 +771,7 @@ system or for a particular file system.</p>
         template &lt;class <a href="#Source">Source</a>&gt;
           path&amp; assign(Source const&amp; source)
         template &lt;class InputIterator&gt;
-          path&amp; assign(InputIterator begin, InputIterator end);
+          path&amp; assign(InputIterator <del>begin</del><ins>first</ins>, InputIterator <del>end</del><ins>last</ins>);
 
         // <a href="#path-appends">appends</a>
         path&amp; operator/=(const path&amp; p);
@@ -780,7 +780,7 @@ system or for a particular file system.</p>
         template &lt;class <a href="#Source">Source</a>&gt;
           path&amp; append(Source const&amp; source);
         template &lt;class InputIterator&gt;
-          path&amp; append(InputIterator begin, InputIterator end);
+          path&amp; append(InputIterator <del>begin</del><ins>first</ins>, InputIterator <del>end</del><ins>last</ins>);
 
         // <a href="#path-concatenation">concatenation</a>
         path&amp; operator+=(const path&amp; x);
@@ -794,7 +794,7 @@ system or for a particular file system.</p>
         template &lt;class Source&gt;
           path&amp; concat(Source const&amp; x);
         template &lt;class InputIterator&gt;
-          path&amp; concat(InputIterator begin, InputIterator end);
+          path&amp; concat(InputIterator <del>begin</del><ins>first</ins>, InputIterator <del>end</del><ins>last</ins>);
         
         // <a href="#path-modifiers">modifiers</a>
         void  <a href="#path-clear">clear</a>() noexcept;
@@ -1093,7 +1093,7 @@ path(path&amp;&amp; p) noexcept;</pre>
 <pre>template &lt;class <a href="#Source">Source</a>&gt;
   path(Source const&amp; source);
 template &lt;class InputIterator&gt;
-  path(InputIterator begin, InputIterator end);</pre>
+  path(InputIterator <del>begin</del><ins>first</ins>, InputIterator <del>end</del><ins>last</ins>);</pre>
 <blockquote>
   <p><i>Effects:</i> Constructs an object of class <code>path</code>, storing the effective range of <code>source</code> ([<a href="#path-Requirements">path.req</a>]) 
   or the range [<code>begin</code>,<code>end</code>) in <code>pathname</code>, converting format and 
@@ -1102,7 +1102,7 @@ template &lt;class InputIterator&gt;
 <pre>template &lt;class <a href="#Source">Source</a>&gt;
   path(Source const&amp; source, const locale&amp; loc);
 template &lt;class InputIterator&gt;
-  path(InputIterator begin, InputIterator end, const locale&amp; loc);</pre>
+  path(InputIterator <del>begin</del><ins>first</ins>, InputIterator <del>end</del><ins>last</ins>, const locale&amp; loc);</pre>
   <blockquote>
   <p><i>Requires:</i> The value type of <code>Source</code> and <code>InputIterator</code> is <code>
   char</code>.</p>
@@ -1169,7 +1169,7 @@ fs::create_directory(fs::path(latin1_string, latin1_locale);</pre>
 template &lt;class <a href="#Source">Source</a>&gt;
   path&amp; assign(Source const&amp; source);
 template &lt;class InputIterator&gt;
-  path&amp; assign(InputIterator begin, InputIterator end);</pre>
+  path&amp; assign(InputIterator <del>begin</del><ins>first</ins>, InputIterator <del>end</del><ins>last</ins>);</pre>
 <blockquote>
   <p><i>Effects:</i> Stores the effective range of <code>source</code> ([<a href="#path-Requirements">path.req</a>]) 
   or the range [<code>begin</code>,<code>end</code>) in <code>pathname</code>, converting format and 
@@ -1202,7 +1202,7 @@ template &lt;class InputIterator&gt;
 template &lt;class <a href="#Source">Source</a>&gt;
   path&amp; append(Source const&amp; source);
 template &lt;class InputIterator&gt;
-  path&amp; append(InputIterator begin, InputIterator end);</pre>
+  path&amp; append(InputIterator <del>begin</del><ins>first</ins>, InputIterator <del>end</del><ins>last</ins>);</pre>
 <blockquote>
   <p><i>Effects:</i></p>
   <blockquote>
@@ -1234,7 +1234,7 @@ template &lt;class charT&gt;
 template &lt;class Source&gt;
   path&amp; concat(Source const&amp; x);
 template &lt;class InputIterator&gt;
-  path&amp; concat(InputIterator begin, InputIterator end);</pre>
+  path&amp; concat(InputIterator <del>begin</del><ins>first</ins>, InputIterator <del>end</del><ins>last</ins>);</pre>
 <blockquote><p><i>Postcondition:</i> <code>native() == prior_native + <i>effective-argument</i></code>,
  where <code>prior_native</code> is <code>native()</code> prior to the call to <code>operator+=</code>,
  and <code><i>effective-argument</i></code> is:</p>
@@ -1665,7 +1665,7 @@ p = tmp;</pre>
 <pre>template &lt;class <a href="#Source">Source</a>&gt;  
   path u8path(Source const&amp; source);
 template &lt;class InputIterator&gt;
-  path u8path(InputIterator begin, InputIterator end);</pre>
+  path u8path(InputIterator <del>begin</del><ins>first</ins>, InputIterator <del>end</del><ins>last</ins>);</pre>
 <blockquote>
   <p><i>Requires:</i> The <code>source</code> and [<code>begin</code>,<code>end</code>) 
   sequences are UTF-8 encoded. The value type of <code>
