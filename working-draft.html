@@ -28,12 +28,12 @@ del     { background-color:#FFD7D7 }
   <table border="0">
     <tr>
       <td>Document number:&nbsp;&nbsp; </td>
-      <td>N3790</td>
+      <td>Dnnnn</td>
     </tr>
     <tr>
       <td>Date:</td>
       <td>
-      <!--webbot bot="Timestamp" S-Type="EDITED" S-Format="%Y-%m-%d" startspan -->2013-09-27<!--webbot bot="Timestamp" endspan i-checksum="12574" --></td>
+      <!--webbot bot="Timestamp" S-Type="EDITED" S-Format="%Y-%m-%d" startspan -->2014-02-05<!--webbot bot="Timestamp" endspan i-checksum="12128" --></td>
     </tr>
     <tr>
       <td>Revises:</td>
@@ -61,10 +61,6 @@ Technical Specification <font face="Times New Roman">—</font> File System</h1>
 
 
 <p>© ISO/IEC</p>
-
-
-<p><i><b><span style="background-color: #E0E0E0">Note: this is an early draft. It’s known to be incomplet and incorrekt, 
-and it has lots of <sub>bad formatting</sub>.</span></b></i></p>
 
 
 <p><i><span style="background-color: #E0E0E0">Gray-shaded italic text is 
@@ -304,12 +300,13 @@ wording.</i></span></p>
 </ul>
 
 <p>[<i>Note:</i> The programming language and library described in ISO/IEC 14882 
-is herein called <i>the C++ Standard</i>. The operating system interface 
+is herein called <i>the C++ Standard</i>. <ins>References to clauses within the C++ 
+Standard are written as &quot;C++11 §3.2&quot;.</ins><p>The operating system interface 
 described in ISO/IEC 9945 is herein called <i>POSIX</i>. <i>-- end note</i>]<p>This 
 Technical Specification  mentions commercially 
 available operating systems for purposes of exposition.<sup> <a href="#footnote">
 [footnote]</a></sup><p>Unless otherwise specified, the whole of the C++ 
-Standard&#39;s Library introduction [lib.library] is included into this Technical 
+Standard&#39;s Library introduction <del>[lib.library]</del> <ins>(C++11 §17)</ins> is included into this Technical 
 Specification by reference.<p><i><span style="background-color: #E0E0E0">This footnote 
 is required by ISO/IEC Directives, Part2, section 6.6.3 Use of trade names and 
 trademarks:</span></i><blockquote>
@@ -388,9 +385,9 @@ filename with a file. A link is either a hard link ([fs.def.hardlink]) or a
 symbolic link ([fs.def.symlink]).</p>
 
 <h3>4.10  native encoding [<a name="fs.def.native.encode">fs.def.native.encode</a>]</h3>
-<p>For narrow character strings, the operating system dependent current encoding 
+<p dir="ltr">For narrow character strings, the operating system dependent current encoding 
 for path names. For wide character strings, the implementation defined execution 
-wide-character set encoding (C++ standard [lex.charset]).</p>
+wide-character set encoding (<del>C++ standard [lex.charset]</del> <ins>C++11 §2.3</ins>).</p>
 
 <h3>4.11  native pathname format [<a name="fs.def.native">fs.def.native</a>]</h3>
 <p>The operating system dependent pathname format accepted by the host operating system.</p>
@@ -459,7 +456,8 @@ encoded character types</i>.</p>
 encoded character types.</p>
 
 <p>Template parameters named <code>InputIterator</code> shall meet the 
-C++ Standard&#39;s library input iterator requirements ([input.iterators]) and shall 
+C++ Standard&#39;s library input iterator requirements (<del>[input.iterators]</del> <ins>
+C++11 §24.2.3</ins>) and shall 
 have a value type that is one of the encoded character types.</p>
 
 <blockquote>
@@ -680,7 +678,7 @@ implied encoding, they are not included as permitted types. <i>--end note</i>]</
 } } }  // namespaces std::tbd::filesystem</pre>
 
  <p><b><i><code>unspecified-trivial-clock</code></i></b> is an unspecified type 
-provided by the implementation that satisfies the <code>TrivialClock</code> requirements ([time.clock.req]) 
+provided by the implementation that satisfies the <code>TrivialClock</code> requirements (<del>[time.clock.req]</del> <ins>C++11 §20.12.3</ins>) 
  and that is capable of representing and measuring file time values.</p>
 <h2>7  <a name="Error-reporting">Error reporting</a> [fs.err.report]</h2>
 <p>Filesystem library functions often provide two overloads, one that 
@@ -713,8 +711,8 @@ errors are truly exceptional and indicate a serious failure. Throwing an
 <code>filesystem_error</code> constructor as the <code>path1</code> argument, 
   and the second shall be passed as the <code>path2</code> argument.<br>
 &nbsp;</li>
-  <li>Failure to allocate storage is reported by throwing an exception as described in the C++ standard, 
-  17.6.4.10 [res.on.exception.handling].<br>
+  <li>Failure to allocate storage is reported by throwing an exception as described in <del>the C++ standard,</del><ins>C++11 
+  §</ins>17.6.4.10<del> [res.on.exception.handling]</del>.<br>
 &nbsp;</li>
   <li>Destructors throw nothing.</li>
   </ul>
@@ -1555,9 +1553,9 @@ operating systems.&nbsp; <i>--end example</i>]
 </blockquote>
 <h3>8.5  <a name="path-iterators"> <code>path</code> iterators</a> [path.itr]</h3>
 <p> Path iterators iterate over the elements of the stored pathname.</p>
-<p> A <code>path::iterator</code> is a constant iterator satisfying all 
-the requirements of a bidirectional iterator (C++ Std, 24.1.4 Bidirectional 
-iterators [lib.bidirectional.iterators]). Its <code>value_type</code> is <code>path</code>.</p>
+<p dir="ltr"> A <code>path::iterator</code> is a constant iterator satisfying all 
+the requirements of a bidirectional iterator (C++<del> Std,</del><ins>C++11 §</ins>24.1.4 Bidirectional 
+iterators<del> [lib.bidirectional.iterators]</del>). Its <code>value_type</code> is <code>path</code>.</p>
   <p>Calling any non-const member function of a <code>path</code> object 
   invalidates all iterators referring to elements of that object.</p>
 <p> The forward traversal order is as follows:</p>
@@ -2390,12 +2388,12 @@ directory.&nbsp;
         directory_iterator&amp;    increment(error_code&amp; ec) noexcept;
 
         // other members as required by
-        //  C++ Std, 24.1.1 Input iterators [input.iterators]
+        //  C++<del> Std, </del><ins>11 §</ins>24.1.1 Input iterators <del>[input.iterators]</del>
       };
 
 } } }  // namespaces std::tbd::filesystem</pre>
 <p> <code>directory_iterator</code> satisfies the requirements of an input 
-iterator ([input.iterators]).</p>
+iterator (<del>[input.iterators]</del> <ins>C++11 §24.2.3</ins>).</p>
 <p>If an iterator of type <code>directory_iterator</code> is advanced past the 
 last directory element, that iterator shall become equal to the end iterator 
 value. The <code>directory_iterator</code> default constructor&nbsp;shall 
@@ -2458,7 +2456,7 @@ elements representing the files in the directory, if any; otherwise the end iter
 directory_iterator&amp; increment(error_code&amp; ec)<code> noexcept</code>;</pre>
 <blockquote>
 
-<p><i>Effects:</i> As specified by the C++ Standard, 24.1.1 Input iterators [input.iterators]</p>
+<p><i>Effects:</i> As specified by <del>the C++ Standard,</del> <ins>C++11 §</ins>24.1.1 Input iterators <del>[input.iterators]</del><ins>.</ins></p>
 
 <p><i>Returns:</i> <code>*this</code>.</p>
 
@@ -2582,7 +2580,8 @@ recursive_directory_iterator&amp; increment(error_code&amp; ec);</pre>
 
   <p><i>Requires:</i> <code>*this != recursive_directory_iterator()</code>.</p>
 
-<p><i>Effects:</i> As specified by the C++ Standard, 24.1.1 Input iterators [input.iterators], 
+<p dir="ltr"><i>Effects:</i> As specified by <del>the C++ Standard,</del><ins>C++11 § </ins>
+ 24.1.1 Input iterators<del> [input.iterators]</del>, 
 except that:</p>
 
 <ul>
