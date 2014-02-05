@@ -761,7 +761,7 @@ system or for a particular file system.</p>
           path(Source const&amp; source, const locale&amp; loc);
         template &lt;class InputIterator&gt;
           path(InputIterator <del>begin</del><ins>first</ins>, InputIterator <del>end</del><ins>last</ins>, const locale&amp; loc);
-       ~path() = default;
+       ~path()<del> = default</del>;
 
         // <a href="#path-assignments">assignments</a>
         path&amp; operator=(const path&amp; p);
@@ -2133,7 +2133,7 @@ involved. Input from security experts is needed.</span></i></p>
                              <a href="#Enum.perms">perms</a> prms = perms::unknown) noexcept;
         file_status(const file_status&amp;) noexcept = default;
         file_status(file_status&amp;&amp;) noexcept = default;
-       ~file_status() = default;
+       ~file_status()<del> = default</del>;
 
         file_status&amp; operator=(const file_status&amp;) noexcept = default;
         file_status&amp; operator=(file_status&amp;&amp;) noexcept = default;
@@ -2190,7 +2190,7 @@ and permissions of a file.</p>
         directory_entry(directory_entry&amp;&amp;) noexcept = default;
         explicit directory_entry(const path&amp; p, file_status st=file_status(),
           file_status symlink_st=file_status());
-       ~directory_entry() = default; 
+       ~directory_entry()<del> = default</del>; 
 
         // <a href="#directory_entry-modifiers">modifiers</a>
         directory_entry&amp; operator=(const directory_entry&amp;) = default;
@@ -2383,7 +2383,7 @@ directory.&nbsp;
         directory_iterator(const path&amp; p, error_code&amp; ec) noexcept;
         directory_iterator(const directory_iterator&amp;) = default;
         directory_iterator(directory_iterator&amp;&amp;) = default;
-       ~directory_iterator() = default;
+       ~directory_iterator()<del> = default</del>;
 
         directory_iterator&amp; operator=(const directory_iterator&amp;) = default;
         directory_iterator&amp; operator=(directory_iterator&amp;&amp;) = default;
@@ -2502,7 +2502,7 @@ directory and its sub-directories.</p>
           <a href="#symlink_option">directory_options</a> options, error_code&amp; ec) noexcept;
         recursive_directory_iterator(const path&amp; p, error_code&amp; ec) noexcept;
         recursive_directory_iterator(recursive_directory_iterator&amp;&amp;) = default;
-       ~recursive_directory_iterator() = default;
+       ~recursive_directory_iterator()<del> = default</del>;
 
         // observers
         directory_options  options() const;
