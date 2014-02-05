@@ -1124,7 +1124,7 @@ template &lt;class InputIterator&gt;
 std::string latin1_string = read_latin1_data();
 codecvt_8859_1&lt;wchar_t&gt; latin1_facet;
 std::locale latin1_locale(std::locale(), latin1_facet);
-fs::create_directory(fs::path(latin1_string, latin1_locale);</pre>
+fs::create_directory(fs::path(latin1_string, latin1_locale)<ins>)</ins>;</pre>
     <p>For POSIX based operating systems the path is constructed by first using <code>
     latin1_facet</code> to convert ISO/IEC 8859-1 encoded
     <code>latin1_string</code> to a wide character string in the native wide 
