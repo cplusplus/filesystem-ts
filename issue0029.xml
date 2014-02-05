@@ -1,0 +1,24 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="29" status="New">
+<title>[PDTS] Unclear semantics of <tt>read_symlink</tt> on error</title>
+<section><sref ref="15.27"/></section>
+<submitter>GB-16</submitter>
+<date>20 Jan 2014</date>
+
+<discussion>
+<p>Unclear semantics of read_symlink on error: 15.27 [fs.op.read_symlink] has:
+Returns: If p resolves to a symbolic link, a path object containing the contents of
+that symbolic link. Otherwise path(). and also [Note: It is an error if p does not
+resolve to a symbolic link. -- end note]</p>
+<p>I do not believe path() can be a valid return for the overload not taking error_code.</p>
+</discussion>
+
+<resolution>
+<p>Strike "Otherwise path()."</p>
+</resolution>
+
+</issue>

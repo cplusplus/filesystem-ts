@@ -1,0 +1,25 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="33" status="New">
+<title>[PDTS] <tt>unique_path()</tt> is a security vulnerability</title>
+<section><sref ref="15.38 [fs.op.unique_path]"/></section>
+<submitter>CH-19</submitter>
+<date>20 Jan 2014</date>
+
+<discussion>
+<p>unique_path() is a security vulnerability. As the Linux manual page for the similar
+function tmpnam() writes in the “BUGS” section: “Never use this function. Use mkstemp(3)
+or tmpfile(3) instead.” mkstemp() and tmpfile() avoid the inherent race condition of
+unique_path() by returning an open file descriptor or FILE *.</p>
+</discussion>
+
+<resolution>
+<p>Remove this function. Consider providing a function create_unique_directory().
+If it fits the scope of the proposed TS, consider providing functions
+create_unique_file() that returns ifstream, ofstream and iofstream.</p>
+</resolution>
+
+</issue>
