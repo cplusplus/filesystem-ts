@@ -1,0 +1,26 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="53" status="New">
+<title>[PDTS] <tt>directory_entry</tt> multithreading concerns</title>
+<section><sref ref="12 [class.directory_entry]"/></section>
+<submitter>Stephan T. Lavavej</submitter>
+<date>3 Feb 2014</date>
+
+<discussion>
+<p>12 [class.directory_entry] depicts directory_entry as having mutable m_status and
+m_symlink_status data members.  This is problematic because of C++11's multithreading
+guarantees, which say that const member functions are simultaneously callable.
+As a result, mutable data members must be protected with synchronization, which was
+probably not considered during this design.  The complexity and expense may be acceptable
+in directory_entry (since it can save filesystem queries, apparently) but it would be
+very very nice to have a note about this.</p>
+</discussion>
+
+<resolution>
+<p></p>
+</resolution>
+
+</issue>
