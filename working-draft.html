@@ -33,7 +33,7 @@ del     { background-color:#FFD7D7 }
     <tr>
       <td>Date:</td>
       <td>
-      <!--webbot bot="Timestamp" S-Type="EDITED" S-Format="%Y-%m-%d" startspan -->2014-02-05<!--webbot bot="Timestamp" endspan i-checksum="12128" --></td>
+      <!--webbot bot="Timestamp" S-Type="EDITED" S-Format="%Y-%m-%d" startspan -->2014-02-06<!--webbot bot="Timestamp" endspan i-checksum="12130" --></td>
     </tr>
     <tr>
       <td>Revises:</td>
@@ -645,6 +645,9 @@ implied encoding, they are not included as permitted types. <i>--end note</i>]</
     void         <a href="#last_write_time2">last_write_time</a>(const path&amp; p, file_time_type new_time);
     void         <a href="#last_write_time2">last_write_time</a>(const path&amp; p, file_time_type new_time,
                                  error_code&amp; ec) noexcept;
+                                 
+    <ins>void         <a href="#fs.op.permissions">permissions</a>(const path&amp; p, perms prms);</ins>
+    <ins>void         <a href="#fs.op.permissions">permissions</a>(const path&amp; p, perms prms, error_code&amp; ec) noexcept;</ins>
 
     path         <a href="#read_symlink">read_symlink</a>(const path&amp; p);
     path         <a href="#read_symlink">read_symlink</a>(const path&amp; p, error_code&amp; ec);
@@ -2287,7 +2290,7 @@ non-cached results may differ in the presence of file system races. <i>-- end no
     </tr>
     <tr>
       <td width="18%"><code>path()</code></td>
-      <td width="82%"><code>path().parent_path() / s</code></td>
+      <td width="82%"><code>path().parent_path() / <del>s</del> <ins>p</ins></code></td>
     </tr>
     <tr>
       <td width="18%"><code>status()</code></td>
@@ -2536,8 +2539,8 @@ as a <code>directory_iterator</code> unless otherwise specified.</p>
 
 <pre>explicit recursive_directory_iterator(const path&amp; p,
   <a href="#symlink_option">directory_options</a> options = directory_options::none);
-recursive_directory_iterator(const path&amp; p, <a href="#symlink_option">directory_options</a> options, error_code&amp; ec);
-recursive_<code>directory_iterator(</code>const path&amp; p, error_code&amp; ec<code>);</code></pre>
+recursive_directory_iterator(const path&amp; p, <a href="#symlink_option">directory_options</a> options, error_code&amp; ec) <ins>noexcept</ins>;
+recursive_<code>directory_iterator(</code>const path&amp; p, error_code&amp; ec<code>) <ins>noexcept</ins>;</code></pre>
 <blockquote>
 
 <p><i>Effects:</i>&nbsp; Constructs a iterator representing the first 
