@@ -4,14 +4,26 @@
 ] >
 
 <issue num="12" status="New">
-<title>[PDTS] <tt>uintmax_t</tt> too small for file sizes beyond 4 exabytes</title>
+<title>[PDTS] <tt>uintmax_t</tt> too small for large file sizes</title>
 <section><sref ref="[fs.filesystem.synopsis], [fs.op.file_size]"/></section>
 <submitter>CH-8</submitter>
 <date>20 Jan 2014</date>
 
 <discussion>
 <p>uintmax_t is specified to hold at least 64 bit. This is not enough for sizes
-beyond 4 exabytes.</p>
+beyond 4 [sic] exabytes.</p>
+
+  <p>
+    <i>[2014-02-06: Jeffery Yasskin points out 64-bits unsigned actually has a maximum value of "16 exabytes, not 4"]</i>
+  </p>
+
+  <p>
+    <i>[2014-02-07: Beman Dawes suggests: This should be NAD. Such ultra-large files are the province
+    of enterprise-wide filesystems such as requested by IBM and others for a follow-on SG3 TS. That would be
+    the best vehicle to address this concern IMO.]</i>
+  </p>
+
+
 </discussion>
 
 <resolution>

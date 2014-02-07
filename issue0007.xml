@@ -5,7 +5,7 @@
 
 <issue num="7" status="New">
 <title>[PDTS] Unhelpful comment for <tt>struct space_info</tt></title>
-<section><sref ref="[fs.filesystem.synopsis]"/></section>
+<section><sref ref="6 [fs.filesystem.synopsis], 15.32 [fs.op.space]"/></section>
 <submitter>GB-4</submitter>
 <date>20 Jan 2014</date>
 
@@ -20,6 +20,27 @@ equivalent data would be user-specific but not directly related to privilege)</p
 <resolution>
 <p>Remove the comment and add a note to 15.32 [fs.op.space]:
 [Note: the precise meaning of available space is implementation dependent. --end note]</p>
+  
+  <h4>Proposed wording:</h4>
+  <blockquote>
+    <p>
+      <i>[2014-02-07: Beman Dawes]</i>
+    </p>
+    <p>
+      <i>Change 6 [fs.filesystem.synopsis]:</i>
+      <code>uintmax_t available; <del>// free space available to a non-privileged process</del></code>
+    </p>
+    <p><i>Add Remarks to 15.32 [fs.op.space]:</i></p>
+    <p>
+      <ins>
+        <i>Remarks:</i> The precise value of member <code>space_info::available</code>
+        is implementation dependent. [<i>Note:</i> <code>available</code> may be less than
+        <code>free</code>. <i>--end note</i>]
+      </ins>
+    </p>
+  </blockquote>
+
+
 </resolution>
 
 </issue>
