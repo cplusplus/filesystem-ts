@@ -33,7 +33,7 @@ del     { background-color:#FFD7D7 }
     <tr>
       <td>Date:</td>
       <td>
-      <!--webbot bot="Timestamp" S-Type="EDITED" S-Format="%Y-%m-%d" startspan -->2014-02-06<!--webbot bot="Timestamp" endspan i-checksum="12130" --></td>
+      <!--webbot bot="Timestamp" S-Type="EDITED" S-Format="%Y-%m-%d" startspan -->2014-02-08<!--webbot bot="Timestamp" endspan i-checksum="12134" --></td>
     </tr>
     <tr>
       <td>Revises:</td>
@@ -1097,7 +1097,7 @@ template &lt;class InputIterator&gt;
   path(InputIterator <del>begin</del><ins>first</ins>, InputIterator <del>end</del><ins>last</ins>);</pre>
 <blockquote>
   <p><i>Effects:</i> Constructs an object of class <code>path</code>, storing the effective range of <code>source</code> ([<a href="#path-Requirements">path.req</a>]) 
-  or the range [<code>begin</code>,<code>end</code>) in <code>pathname</code>, converting format and 
+  or the range [<code><del>begin</del><ins>first</ins></code>,<code><del>end</del><ins>last</ins></code>) in <code>pathname</code>, converting format and 
   encoding if required ([<a href="#path.arg.convert">path.arg.convert</a>]).</p>
 </blockquote>
 <pre>template &lt;class <a href="#Source">Source</a>&gt;
@@ -1109,7 +1109,7 @@ template &lt;class InputIterator&gt;
   char</code>.</p>
   <p><i>Effects:</i> Constructs an object of class <code>path</code>, storing the effective range of <code>
   source</code> 
-  or the range [<code>begin</code>,<code>end</code>) in <code>pathname</code>, 
+  or the range [<code><del>begin</del><ins>first</ins></code>,<code><del>end</del><ins>last</ins></code>) in <code>pathname</code>, 
   after converting format if required and after converting the encoding as 
   follows:</p>
   <blockquote>
@@ -1173,7 +1173,7 @@ template &lt;class InputIterator&gt;
   path&amp; assign(InputIterator <del>begin</del><ins>first</ins>, InputIterator <del>end</del><ins>last</ins>);</pre>
 <blockquote>
   <p><i>Effects:</i> Stores the effective range of <code>source</code> ([<a href="#path-Requirements">path.req</a>]) 
-  or the range [<code>begin</code>,<code>end</code>) in <code>pathname</code>, converting format and 
+  or the range [<code><del>begin</del><ins>first</ins></code>,<code><del>end</del><ins>last</ins></code>) in <code>pathname</code>, converting format and 
   encoding if required ([<a href="#path.arg.convert">path.arg.convert</a>]). </p>
   <p>
   <i>Returns: </i><code>*this</code></p>
@@ -1217,7 +1217,7 @@ template &lt;class InputIterator&gt;
     <li><code>*p.native().cbegin()</code> is a separator.</li>
   </ul>
     <p>Appends the effective range of <code>source</code> ([<a href="#path-Requirements">path.req</a>]) 
-    or the range [<code>begin</code>,<code>end</code>) to <code>pathname</code>, converting format and 
+    or the range [<code><del>begin</del><ins>first</ins></code>,<code><del>end</del><ins>last</ins></code>) to <code>pathname</code>, converting format and 
     encoding if required ([<a href="#path.arg.convert">path.arg.convert</a>]).</p>
   </blockquote>
   <p><i>Returns: </i><code>*this</code></p>
@@ -1242,7 +1242,7 @@ template &lt;class InputIterator&gt;
  <ul><li><code>x.native()</code> if <code>x</code> is present and is <code>const path&amp;</code>, otherwise</li>
  <li>the effective range <code>source</code> ([<a href="#path-Requirements">path.req</a>]), 
  if <code>source</code> is present, otherwise,</li>
- <li>the range [<code>begin</code>,<code>end</code>), if <code>begin</code> and
+ <li>the range [<code><del>begin</del><ins>first</ins></code>,<code><del>end</del><ins>last</ins></code>), if <code>begin</code> and
  <code>end</code> are present, otherwise,</li>
  <li><code>x</code>.</li></ul><p>If the value type of <code><i>effective-argument</i></code> would not be <code>path::value_type</code>, the actual argument or argument range is first
    converted ([<a href="#path.arg.convert">path.arg.convert</a>]) so that <code><i>effective-argument</i></code> has value type <code>path::value_type</code>.</li> </p>
@@ -1668,7 +1668,7 @@ p = tmp;</pre>
 template &lt;class InputIterator&gt;
   path u8path(InputIterator <del>begin</del><ins>first</ins>, InputIterator <del>end</del><ins>last</ins>);</pre>
 <blockquote>
-  <p><i>Requires:</i> The <code>source</code> and [<code>begin</code>,<code>end</code>) 
+  <p><i>Requires:</i> The <code>source</code> and [<code><del>begin</del><ins>first</ins></code>,<code><del>end</del><ins>last</ins></code>) 
   sequences are UTF-8 encoded. The value type of <code>
   Source</code> and <code>
   InputIterator</code> is <code>char</code>. </p>
@@ -1676,15 +1676,15 @@ template &lt;class InputIterator&gt;
   <blockquote>
     <ul>
       <li>If <code>value_type</code> is <code>char</code> and the current native 
-      narrow encoding ([fs.def.native.encode]) is UTF-8, <code>path(source)</code> or <code>path(begin, end)</code>, 
+      narrow encoding ([fs.def.native.encode]) is UTF-8, <code>path(source)</code> or <code>path(<del>begin, end</del> <ins>first, last</ins>)</code>, 
       else</li>
       <li>if <code>value_type</code> is <code>wchar_t </code>and the 
       native wide encoding is UTF-16, or if <code>value_type</code> is <code>char16_t</code> 
-      or <code>char32_t</code>,&nbsp; convert <code>source</code> or [<code>begin</code>,<code>end</code>) 
+      or <code>char32_t</code>,&nbsp; convert <code>source</code> or [<code><del>begin</del><ins>first</ins></code>,<code><del>end</del><ins>last</ins></code>) 
       to a temporary, <code>tmp</code>, of type <code>string_type</code> and 
       return <code>path(tmp)</code>, 
       else</li>
-      <li>convert <code>source</code> or [<code>begin</code>,<code>end</code>) 
+      <li>convert <code>source</code> or [<code><del>begin</del><ins>first</ins></code>,<code><del>end</del><ins>last</ins></code>) 
       to a temporary, <code>tmp</code>, of type <code>u32string</code> and 
       return <code>path(tmp)</code>.</li>
     </ul>
