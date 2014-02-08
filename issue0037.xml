@@ -4,31 +4,39 @@
 ] >
 
 <issue num="37" status="New">
-<title>[PDTS] All functions with error_code arguments should be noexcept</title>
+<title>[PDTS] All functions with <tt>error_code</tt> arguments should be <tt>noexcept</tt></title>
 <section><sref ref="?"/></section>
 <submitter>P.J. Plauger</submitter>
 <date>30 Jan 2014</date>
 
 <discussion>
 <p>
-  all functions with error_code arguments should be noexcept
-  (see canonical, current_path, read_symlink, system_complete,
-  temp_directory_path, unique_path, plus member functions).
+all functions with <tt>error_code</tt> arguments should be <tt>noexcept</tt>
+(see <tt>canonical</tt>, <tt>current_path</tt>, <tt>read_symlink</tt>, <tt>system_complete</tt>,
+<tt>temp_directory_path</tt>, <tt>unique_path</tt>, plus member functions).
 </p>
 <p><i>[2014-02-03: Stephan T. Lavavej comments:]</i></p>
 <p>The declaration and definition of
-"recursive_directory_iterator&amp; increment(error_code&amp; ec);" should almost certainly
+"<tt>recursive_directory_iterator&amp; increment(error_code&amp; ec);</tt>" should almost certainly
 be marked noexcept.</p>
 
 <note>2014-02-08: Daniel comments</note>
 <p>
 All functions that return a <tt>path</tt> value such as <tt>canonical</tt>, <tt>current_path</tt>,
-<tt>read_symlink</tt>, <tt>system_complete</tt>, <tt>temp_directory_path</tt>, or <tt>unique_path</tt>
-might legally throw an exception, if the allocator of the underlying string complains about insufficient 
-memory. The Standard is currently very careful <em>not</em> to specify functions as <tt>noexcept</tt>,
+<tt>read_symlink</tt>, <tt>system_complete</tt>, <tt>temp_directory_path</tt>, <tt>unique_path</tt>,
+or any member function returning a <tt>path</tt> value or <tt>basic_string</tt> value might legally 
+throw an exception, if the allocator of the underlying string complains about insufficient 
+memory. This is an anti-pattern for <tt>noexcept</tt>, because the exception-specification includes 
+the return statement of a function and given the fact that the language currently does declare RVO
+as an optional action, we cannot rely on it.
+<p/>
+The Standard is currently very careful <em>not</em> to specify functions as <tt>noexcept</tt>,
 if this case can happen, see e.g. <tt>std::locale::name()</tt>. To the contrary, enforcing them to be
 <tt>noexcept</tt>, would cause a similar problem as the unconditional <tt>noexcept</tt> specifier of
 the value-returning <tt>kill_dependency</tt> as denoted by LWG 2360.
+<p/>
+Basically this requirement conflicts with the section "Adopted Guidelines", second bullet of
+<a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2011/n3279.pdf">N3279</a>.
 </p>
 
 </discussion>
