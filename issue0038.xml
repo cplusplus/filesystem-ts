@@ -4,21 +4,40 @@
 ] >
 
 <issue num="38" status="New">
-<title>[PDTS] Make certain functions noexcept and drop error_code version</title>
+<title>[PDTS] Make certain functions <tt>noexcept</tt> and drop <tt>error_code</tt> version</title>
 <section><sref ref="?"/></section>
 <submitter>P.J. Plauger</submitter>
 <date>30 Jan 2014</date>
 
 <discussion>
 <p>
-  exists(const path&) should be noexcept (drop error_code version).
-  
-  is_*(const path&) should be noexcept (drop error_code version).<br/>
-  status(const path&) should be noexcept (drop error_code version).<br/>
-  symlink_status(const path&) should be noexcept (drop error_code version).<br/>
-  file_status::status() should be noexcept (drop error_code version).<br/>
-  file_status::symlink_status() should be noexcept (drop error_code version).<br/>
-  unique_path(const path&) should be noexcept (drop error_code version).
+<tt>exists(const path&amp;)</tt> should be <tt>noexcept</tt> (drop <tt>error_code</tt> version).<br/>
+<tt>is_*(const path&amp;)</tt> should be <tt>noexcept</tt> (drop <tt>error_code</tt> version).<br/>
+<tt>status(const path&amp;)</tt> should be <tt>noexcept</tt> (drop <tt>error_code</tt> version).<br/>
+<tt>symlink_status(const path&amp;)</tt> should be <tt>noexcept</tt> (drop <tt>error_code</tt> version).<br/>
+<tt>file_status::status()</tt> should be <tt>noexcept</tt> (drop <tt>error_code</tt> version).<br/>
+<tt>file_status::symlink_status()</tt> should be <tt>noexcept</tt> (drop <tt>error_code</tt> version).<br/>
+<tt>unique_path(const path&amp;)</tt> should be <tt>noexcept</tt> (drop <tt>error_code</tt> version).
+</p>
+
+<note>2014-02-08: Daniel comments</note>
+<p>
+<tt>unique_path(const path&amp;)</tt> cannot be declared as <tt>noexcept</tt>, because it returns an object
+during whose construction a memory allocation request may fail, see the rationale provided in <iref ref="37"/>.
+<p/>
+<tt>exists(const path&amp;)</tt> and the <tt>is_*(const path&amp;)</tt> functions cannot be <tt>noexcept</tt>, because 
+they are specified in terms of <tt>status(const path&amp;)</tt>, which again may throw an exception, which is explicitly 
+described in the Effects (<tt>filesystem_error</tt>), because the non-throwing function (<tt>status(const path&amp;, error_code&amp;)</tt>) 
+may fail to satisfy the request.
+<p/>
+<tt>symlink_status(const path&amp;)</tt> may throw an exception for similar reasons that <tt>status(const path&amp;)</tt>
+could fail.
+<p/>
+The reference to <tt>file_status::status()/symlink_status()</tt> looks like a typo to me (there are no such functions
+in <tt>file_status</tt>), presumably <tt>directory_entry::status()/symlink_status()</tt> was meant. In this case I see 
+now reason how these could be marked as <tt>noexcept</tt>, because these functions all may fail and may throw an exception.
+<p/>
+Based on this interpretation of the issue discussion I recommend to resolve this issue as NAD.
 </p>
 </discussion>
 
