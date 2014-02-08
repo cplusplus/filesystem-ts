@@ -10,15 +10,15 @@
 <date>20 Jan 2014</date>
 
 <discussion>
-<p>The constraint on last_write_time is too weak: It is noted that the postcondition
-of last_write_time(p) &eq;&eq; new_time is not specified since it might not hold for file
+<p>The constraint on <tt>last_write_time</tt> is too weak: It is noted that the postcondition
+of <tt>last_write_time(p) == new_time</tt> is not specified since it might not hold for file
 systems with coarse time granularity.
-However, might it be possible to have a postcondition that
-last_write_time(p) &lt;&eq; new_time ?</p>
+<p/>
+However, might it be possible to have a postcondition that <tt>last_write_time(p) &lt;= new_time</tt> ?</p>
 </discussion>
 
 <resolution>
-<p>Add postcondition: last_write_time(p) &lt;= new_time</p>
+<p>Add postcondition: <tt>last_write_time(p) &lt;= new_time</tt></p>
 </resolution>
 
 </issue>
