@@ -24,6 +24,25 @@ and end(), namely that begin() returns a reference to const and end() returns a 
   //  auto - thus the top-level const is stripped - so returning const is harmless and
   //  emphasizes begin() is just a pass through.</pre>
 
+  <note>2014-02-08: Daniel responds to Beman</note>
+  
+  <p>
+  The difference in return types becomes relevant, when testing whether e.g. <tt>directory_iterator</tt>
+  would satisfy the <tt>Traversable</tt> requirements as currently specified in 
+  <a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2013/n3763.html">N3763</a>. Expressed in
+  code form these requirements impose that the following assertion holds:
+  </p>
+  <blockquote><pre>
+  static_assert(std::is_same&lt;
+      decltype(std::range_begin(std::declval&lt;directory_iterator&gt;())),
+      decltype(std::range_end(std::declval&lt;directory_iterator&gt;()))
+    &gt;::value, "No Traversable type");
+  </pre></blockquote>
+  <p>
+  Both <tt>directory_iterator</tt> and <tt>recursive_directory_iterator</tt> won't satisfy this requirement
+  currently.
+  </p>
+  
 </discussion>
 
 <resolution>
