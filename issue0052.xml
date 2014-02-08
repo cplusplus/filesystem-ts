@@ -33,7 +33,7 @@ of the return types of the following members:
 </p>
 <blockquote><pre>
 const directory_entry&amp; operator*() const;
-const directory_entry* operator->() const;
+const directory_entry* operator-&gt;() const;
 </pre></blockquote>
 <p>
 The proposed fording fixes this by correcting these <tt>typedef</tt> to corresponding <tt>const</tt> access.
@@ -91,7 +91,7 @@ namespace std { namespace tbd { namespace filesystem {
         recursive_directory_iterator&amp; operator=(recursive_directory_iterator&amp;&amp;) = default;
         
         <ins>const directory_entry&amp; operator*() const;</ins>
-        <ins>const directory_entry* operator->() const;</ins>
+        <ins>const directory_entry* operator-&gt;() const;</ins>
 
         recursive_directory_iterator&amp; operator++();
         recursive_directory_iterator&amp; increment(error_code&amp; ec);
