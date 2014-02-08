@@ -13,7 +13,49 @@
 <p>
 <tt>path::template&lt;class charT&gt;string()</tt> should promise to convert by the same
 rules as <tt>u16string</tt> for <tt>string&lt;char16_t&gt;</tt>, etc. and one-for-one otherwise.
+<p/>
+What if <tt>charT</tt> is <tt>signed char</tt> (or even <tt>float</tt>)? I don't see where that choice
+is disallowed, so we should either disallow it or make it be something that is quasi-sensible. 
 </p>
+
+<note>2014-02-08 Daniel comments</note>
+<p>
+There are two relevant places in the wording that seem to clarify what is required here:
+</p>
+<ol>
+<li><p>
+Most importantly, [fs.req] says:
+</p>
+<blockquote><p>
+Throughout this Technical Specification, <tt>char</tt>, <tt>wchar_t</tt>, <tt>char16_t</tt>, and <tt>char32_t</tt> 
+are collectively called <em>encoded character types</em>.
+<p/>
+Template parameters named <tt>charT</tt> shall be one of the encoded character types.
+<p/>
+[&hellip;]
+[<i>Note</i>: Use of an encoded character type implies an associated encoding. Since <tt>signed char</tt> and <tt>unsigned char</tt> 
+have no implied encoding, they are not included as permitted types. &mdash; <i>end note</i>]
+</p></blockquote>
+</li>
+
+<li><p>
+For both the mentioned <tt>string</tt> function template and the specific non-template functions (such as <tt>u16string()</tt>)
+the same <tt>Remarks</tt> element exists, that refers to character conversion:
+</p>
+<blockquote><p>
+Conversion, if any, is performed as specified by [path.cvt].
+</p></blockquote>
+</li>
+</ol>
+
+<p>
+The first quote excludes arbitrary types such as <tt>signed char</tt> or <tt>float</tt> as feasible template arguments. 
+The second quote makes clear that both the function template and the non-template functions do normatively refer to the same 
+wording in [path.cvt].
+<p/>
+Based on this interpretation of the issue discussion I recommend resolving it as NAD.
+</p>
+
 </discussion>
 
 <resolution>
