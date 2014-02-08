@@ -5,7 +5,7 @@
 
 <issue num="16" status="New">
 <title>[PDTS] Append behavior underspecified if target is empty </title>
-<section><sref ref="[path.append]"/></section>
+<section><sref ref="8.4.3 [path.append]"/></section>
 <submitter>CH-11</submitter>
 <date>20 Jan 2014</date>
 
@@ -16,6 +16,41 @@ I.e. does the result start with a separator?</p>
 
 <resolution>
 <p>Specify what behaviour is required.</p>
-</resolution>
+  <h4>Proposed wording:</h4>
+
+  <p>
+    <i>[2014-02-07: Beman Dawes comments:]</i> The second bullet item is supposed to deal with the empty() condition.
+    The proposed wording below might add clarity if the SG feels it is useful or necessary.
+ </p>
+
+  <p>
+    <i>[2014-02-08: Beman Dawes]</i>
+  </p>
+  <p>
+    <i>Change 8.4.3 [path.append]:</i>
+  </p>
+  <p>
+    <i>Effects:</i>
+  </p>
+  <blockquote>
+    Appends <code>path::preferred_separator</code> to <code>pathname</code> unless:<ul>
+      <li>
+        an added separator
+        would be redundant, or
+      </li>
+      <li>would change an relative path to an absolute path, or</li>
+      <li>
+        <code>
+          <ins>empty() ||</ins> p.empty()</code>, or
+      </li>
+      <li>
+        <code>*p.native().cbegin()</code> is a directory separator.
+      </li>
+    </ul>
+    <p>
+      Then appends <code>p.native()</code> to <code>pathname</code>.
+    </p>
+    </blockquote>
+  </resolution>
 
 </issue>
