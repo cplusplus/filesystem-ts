@@ -11,15 +11,61 @@
 
 <discussion>
 <p>Although the Standard has made this mistake almost a dozen times, I recommend not
-depicting directory_iterator and recursive_directory_iterator as deriving from
-std::iterator, since that's a binding requirement on implementations.
+depicting <tt>directory_iterator</tt> and <tt>recursive_directory_iterator</tt> as deriving from
+<tt>std::iterator</tt>, since that's a binding requirement on implementations.
 Instead they should be depicted as having the appropriate typedefs, and leave it up to
-implementers to decide how to provide them.  (The difference is observable to users with
-is_base_of, not that they should be asking that question.)</p>
+implementers to decide how to provide them. (The difference is observable to users with
+<tt>is_base_of</tt>, not that they should be asking that question.)</p>
+
+<note>2014-02-08 Daniel comments and provides wording</note>
+<p>
+This issue is basically similar to the kind of solution that had been used to remove the
+requirement to derive from <tt>unary_function</tt> and friends as described by
+<a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2010/n3198.htm">N3198</a> and
+I'm strongly in favour to follow that spirit here as well. I'd like to add that basically all
+"newer" iterator types (such as the <tt>regex</tt> related iterator don't derive from
+<tt>std::iterator</tt> either.
+<p/>
+Another reason to change the current specification is the fact that it currently says that
+the member types <tt>pointer</tt> and <tt>reference</tt> would be determined to <tt>value_type*</tt>
+and <tt>value_type&amp;</tt> (that is mutable pointers and references), which conflicts with the specification 
+of the return types of the following members:
+</p>
+<blockquote><pre>
+const directory_entry&amp; operator*() const;
+const directory_entry* operator->() const;
+</pre></blockquote>
+<p>
+The proposed fording fixes this by correcting these <tt>typedef</tt> to corresponding <tt>const</tt> access.
+</p>
 </discussion>
 
 <resolution>
-<p></p>
+<p>This wording is relative to <a href="http://wiki.edg.com/twiki/pub/Wg21issaquah/SG3/working-draft.html">SG3 working draft</a>.</p>
+
+<ol>
+<li><p>Change class <tt>directory_iterator</tt> synopsis, [class.directory_iterator], as indicated:</p>
+<blockquote><pre>
+namespace std { namespace tbd { namespace filesystem {
+
+      class directory_iterator <del>:
+        public iterator&lt;input_iterator_tag, directory_entry&gt;</del>
+      {
+      public:
+        <ins>typedef directory_entry        value_type</ins>
+        <ins>typedef ptrdiff_t              difference_type</ins>
+        <ins>typedef const directory_entry* pointer</ins>
+        <ins>typedef const directory_entry&amp; reference</ins>
+        <ins>typedef input_iterator_tag     iterator_category</ins>
+
+        // member functions
+        [&hellip;]
+      };
+
+} } }  // namespaces std::tbd::filesystem
+</pre></blockquote>
+</li>
+</ol>
 </resolution>
 
 </issue>
