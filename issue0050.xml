@@ -4,18 +4,40 @@
 ] >
 
 <issue num="50" status="New">
-<title>[PDTS] <tt>path::compare(const string& s)</tt> wrong argument type</title>
+<title>[PDTS] <tt>path::compare(const string&amp; s)</tt> wrong argument type</title>
 <section><sref ref="?"/></section>
 <submitter>Stephan T. Lavavej</submitter>
 <date>3 Feb 2014</date>
 
 <discussion>
-<p>path has "int compare(const string& s) const;" but it should almost certainly take
-const string_type&, since the third overload takes const value_type *</p>
+<p>
+<tt>path</tt> has "<tt>int compare(const string&amp; s) const;</tt>" but it should almost certainly take
+<tt>const string_type&amp;</tt>, since the third overload takes <tt>const value_type*</tt>.
+</p>
+
+<note>2014-02-08 Daniel provides wording</note>
+
 </discussion>
 
 <resolution>
-<p></p>
+<p>This wording is relative to <a href="http://wiki.edg.com/twiki/pub/Wg21issaquah/SG3/working-draft.html">SG3 working draft</a>.</p>
+
+<ol>
+<li><p>Change class <tt>path</tt> synopsis, [class.path], as indicated:</p>
+<blockquote><pre>
+<i>// compare</i>
+int compare(const path&amp; p) const noexcept;
+int compare(const string<ins>_type</ins>&amp; s) const;
+int compare(const value_type* s) const;
+</pre></blockquote>
+</li>
+
+<li><p>Change <tt>path compare</tt> prototype specification, [path.compare], as indicated:</p>
+<blockquote><pre>
+int compare(const string<ins>_type</ins>&amp; s) const<ins>;</ins>
+</pre></blockquote>
+</li>
+</ol>
 </resolution>
 
 </issue>
