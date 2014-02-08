@@ -11,12 +11,47 @@
 
 <discussion>
 <p>
-  In last_write_time, static_cast&lt;file_time_type&gt;(-1) is ill formed,
-    (possibly should be chrono&lt;unspecified-trivial-clock&gt;::from_time_t(-1)).</p>
+In <tt>last_write_time</tt>, <tt>static_cast&lt;file_time_type&gt;(-1)</tt> is ill formed,
+(possibly should be <tt>chrono&lt;<i>unspecified-trivial-clock</i>&gt;::from_time_t(-1))</tt>.
+</p>
+
+<note>2014-02-08 Daniel comments and provides wording</note>
+
+<p>
+I agree that the current wording needs to be fixed, but it is unclear to me whether invoking
+<tt>from_time_t</tt> (which is only guaranteed to exist for <tt>std::chrono::system_clock</tt>)
+with a value of <tt>time_t(-1)</tt> is a well-defined operation. Reason is that the C Standard
+makes a difference between a <i>calendar time</i> and the value <tt>time_t(-1)</tt> as an error 
+indication. But the specification of <tt>system_clock::from_time_t</tt> only says "A <tt>time_point</tt> 
+object that represents the same point in time as <tt>t</tt> [&hellip;]" and it is not clear whether
+<tt>time_t(-1)</tt> can be considered as a "point in time". Instead of relying on such a potentially
+subtle semantics of the conversion result of <tt>time_t(-1)</tt> to <tt>std::chrono::system_clock::time_point</tt>
+with a further conversion to <tt>file_time_type</tt> (which in theory could led to overflow or underflow and
+thus another potential source of undefined behaviour), I suggest to change the current error value of
+<tt>last_write_time</tt> to one of the well-define limiting values of <tt>file_time_type</tt>, e.g.
+<tt>file_time_type::min()</tt>.
+</p>
+
 </discussion>
 
 <resolution>
-<p></p>
+<p>This wording is relative to <a href="http://wiki.edg.com/twiki/pub/Wg21issaquah/SG3/working-draft.html">SG3 working draft</a>.</p>
+
+<ol>
+<li><p>Change the last write time prototype specification, [fs.op.last_write_time], as indicated:</p>
+<blockquote><pre>
+file_time_type last_write_time(const path&amp; p);
+file_time_type last_write_time(const path&amp; p, error_code&amp; ec) noexcept;
+</pre>
+<blockquote>
+<p>
+<i>Returns</i>: The time of last data modification of <tt>p</tt>, determined as if by the value of the POSIX <tt>stat</tt> 
+structure member <tt>st_mtime</tt> obtained as if by POSIX <tt>stat()</tt>. The signature with argument <tt>ec</tt> returns 
+<tt><del>static_cast&lt;file_time_type&gt;(-1)</del><ins>file_time_type::min()</ins></tt> if an error occurs.
+</p>
+</blockquote></blockquote>
+</li>
+</ol>
 </resolution>
 
 </issue>
