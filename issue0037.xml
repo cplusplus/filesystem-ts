@@ -17,8 +17,20 @@
 </p>
 <p><i>[2014-02-03: Stephan T. Lavavej comments:]</i></p>
 <p>The declaration and definition of
-"recursive_directory_iterator& increment(error_code& ec);" should almost certainly
+"recursive_directory_iterator&amp; increment(error_code&amp; ec);" should almost certainly
 be marked noexcept.</p>
+
+<note>2014-02-08: Daniel comments</note>
+<p>
+All functions that return a <tt>path</tt> value such as <tt>canonical</tt>, <tt>current_path</tt>,
+<tt>read_symlink</tt>, <tt>system_complete</tt>, <tt>temp_directory_path</tt>, or <tt>unique_path</tt>
+might legally throw an exception, if the allocator of the underlying string complains about insufficient 
+memory. The Standard is currently very careful <em>not</em> to specify functions as <tt>noexcept</tt>,
+if this case can happen, see e.g. <tt>std::locale::name()</tt>. To the contrary, enforcing them to be
+<tt>noexcept</tt>, would cause a similar problem as the unconditional <tt>noexcept</tt> specifier of
+the value-returning <tt>kill_dependency</tt> as denoted by LWG 2360.
+</p>
+
 </discussion>
 
 <resolution>
