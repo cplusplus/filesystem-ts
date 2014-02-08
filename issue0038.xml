@@ -21,7 +21,7 @@
 </p>
 
 <note>2014-02-08: Daniel comments</note>
-<p>
+<p/>
 <tt>unique_path(const path&amp;)</tt> cannot be declared as <tt>noexcept</tt>, because it returns an object
 during whose construction a memory allocation request may fail, see the rationale provided in <iref ref="37"/>.
 <p/>
@@ -38,7 +38,6 @@ in <tt>file_status</tt>), presumably <tt>directory_entry::status()/symlink_statu
 now reason how these could be marked as <tt>noexcept</tt>, because these functions all may fail and may throw an exception.
 <p/>
 Based on this interpretation of the issue discussion I recommend to resolve this issue as NAD.
-</p>
 </discussion>
 
 <resolution>
