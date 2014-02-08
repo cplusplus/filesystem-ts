@@ -52,13 +52,47 @@ namespace std { namespace tbd { namespace filesystem {
         public iterator&lt;input_iterator_tag, directory_entry&gt;</del>
       {
       public:
-        <ins>typedef directory_entry        value_type</ins>
-        <ins>typedef ptrdiff_t              difference_type</ins>
-        <ins>typedef const directory_entry* pointer</ins>
-        <ins>typedef const directory_entry&amp; reference</ins>
-        <ins>typedef input_iterator_tag     iterator_category</ins>
+        <ins>typedef directory_entry        value_type;</ins>
+        <ins>typedef ptrdiff_t              difference_type;</ins>
+        <ins>typedef const directory_entry* pointer;</ins>
+        <ins>typedef const directory_entry&amp; reference;</ins>
+        <ins>typedef input_iterator_tag     iterator_category;</ins>
 
         // member functions
+        [&hellip;]
+      };
+
+} } }  // namespaces std::tbd::filesystem
+</pre></blockquote>
+</li>
+
+<li><p>Change class <tt>recursive_directory_iterator</tt> synopsis, [class.rec.dir.itr], as indicated:</p>
+<blockquote><pre>
+namespace std { namespace tbd { namespace filesystem {
+
+      class recursive_directory_iterator <del>:
+        public iterator&lt;input_iterator_tag, directory_entry&gt;</del>
+      {
+      public:
+        <ins>typedef directory_entry        value_type;</ins>
+        <ins>typedef ptrdiff_t              difference_type;</ins>
+        <ins>typedef const directory_entry* pointer;</ins>
+        <ins>typedef const directory_entry&amp; reference;</ins>
+        <ins>typedef input_iterator_tag     iterator_category;</ins>
+
+        // constructors and destructor
+        [&hellip;]
+        
+        // modifiers
+        recursive_directory_iterator&amp; operator=(const recursive_directory_iterator&amp;) = default;
+        recursive_directory_iterator&amp; operator=(recursive_directory_iterator&amp;&amp;) = default;
+        
+        <ins>const directory_entry&amp; operator*() const;</ins>
+        <ins>const directory_entry* operator->() const;</ins>
+
+        recursive_directory_iterator&amp; operator++();
+        recursive_directory_iterator&amp; increment(error_code&amp; ec);
+
         [&hellip;]
       };
 
