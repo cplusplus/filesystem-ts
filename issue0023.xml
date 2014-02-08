@@ -10,17 +10,21 @@
 <date>20 Jan 2014</date>
 
 <discussion>
-<p>Since <tt>create_symlink()</tt>, <tt>create_hardlink()</tt>, and <tt>create_directory()</tt> exist, there's
-no reason not to have a <tt>create_regular_file()</tt> function.</p>
-</discussion>
+<p>
+Since <tt>create_symlink()</tt>, <tt>create_hardlink()</tt>, and <tt>create_directory()</tt> exist, there's
+no reason not to have a <tt>create_regular_file()</tt> function.
+</p>
+<p>
+Consider adding a function <tt>create_regular_file()</tt> with the behaviour of the POSIX <tt>touch</tt>
+command.
+</p>
 
-<resolution>
-<p>Consider adding a function <tt>create_regular_file()</tt> with the behaviour of the POSIX <tt>touch</tt>
-command.</p>
-
-<p>[Beman comments] <tt>create_regular_file()</tt> and <tt>touch()</tt> should be different functions since
+<note>Beman comments</note>
+<p> 
+<tt>create_regular_file()</tt> and <tt>touch()</tt> should be different functions since
 their behavior would differ if the file already exists; touch() updates the last write
-date.</p>
+date.
+</p>
 
 <p>I have often wanted <tt>create_regular_file()</tt> but never got around to adding it.</p>
 
@@ -30,6 +34,9 @@ a library function. It is trivial for a user to implement.</p>
 <p>Whether or not it is appropriate to add operational functions this late in the PDTS
 process is questionable.</p>
  
+</discussion>
+
+<resolution>
 </resolution>
 
 </issue>
