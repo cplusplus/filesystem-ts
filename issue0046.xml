@@ -10,7 +10,26 @@
 <date>30 Jan 2014</date>
 
 <discussion>
-<p>Do we really need generic*?</p>
+<p>Do we really need <tt>generic*</tt>?</p>
+
+<note>2014-02-08 Daniel comments</note>
+<p>
+These functions should exist for more than one reason.
+<p/>
+First, the <i>generic pathname format</i> is a well-defined concept for the <tt>path</tt> specification
+and defining just a single way into a <tt>path</tt> but not out of it looks like an incomplete design.
+<p/>
+More importantly, the existence of these functions have demonstrated to be quite useful in practice,
+because the <i>generic pathname format</i> concept is popular for many tools such as <tt>maven</tt>
+or the some configuration files for the Eclipse IDE do understand this syntax uniformly on all platforms
+and it allows to generate or modify such files using C++ code based on <tt>filesystem::path</tt>. The
+practical problem of the non-portable root-names doesn't matter in such contexts, because the
+serialized path names are in general relative names or depend on initial parts that are determined
+by properties or environment variables.
+<p/>
+In other words: I'm recommending NAD for this issue.
+</p>
+
 </discussion>
 
 <resolution>
