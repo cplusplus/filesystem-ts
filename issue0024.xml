@@ -17,6 +17,36 @@ of this type (<tt>file_status</tt>)</p>
 
 <resolution>
 <p>Replace with "<tt>equivalent(from, to)</tt>"</p>
+
+
+  <h4>Proposed wording:</h4>
+
+  <p/>  <i>[Beman Dawes 9 Feb 2014]</i>
+
+  <p/>  <i>Change 15.3 [fs.op.copy]:</i>
+
+  <blockquote>
+    <p>
+      Report an error as specified in <a href="#Error-reporting">Error reporting</a>
+      if:
+    </p>
+
+    <ul>
+      <li>
+        <code>!exists(f)</code>.
+      </li>
+      <li>
+        <code>equivalent(<del>f, t</del> <ins>from, to</ins>)</code>.
+      </li>
+      <li>
+        <code>is_other(f) || is_other(t)</code>.
+      </li>
+      <li>
+        <code>is_directory(f) &amp;&amp; is_regular_file(t)</code>.
+      </li>
+    </ul>
+  </blockquote>
+
 </resolution>
 
 </issue>
