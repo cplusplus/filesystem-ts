@@ -10,16 +10,16 @@
 <date>20 Jan 2014</date>
 
 <discussion>
-<p>unique_path() is a security vulnerability. As the Linux manual page for the similar
-function tmpnam() writes in the "BUGS" section: "Never use this function. Use mkstemp(3)
-or tmpfile(3) instead." mkstemp() and tmpfile() avoid the inherent race condition of
-unique_path() by returning an open file descriptor or FILE *.</p>
+<p><tt>unique_path()</tt> is a security vulnerability. As the Linux manual page for the similar
+function <tt>tmpnam()</tt> writes in the "BUGS" section: "Never use this function. Use <tt>mkstemp</tt>(3)
+or <tt>tmpfile</tt>(3) instead." <tt>mkstemp()</tt> and <tt>tmpfile()</tt> avoid the inherent race condition of
+<tt>unique_path()</tt> by returning an open file descriptor or <tt>FILE*</tt>.</p>
 </discussion>
 
 <resolution>
-<p>Remove this function. Consider providing a function create_unique_directory().
+<p>Remove this function. Consider providing a function <tt>create_unique_directory()</tt>.
 If it fits the scope of the proposed TS, consider providing functions
-create_unique_file() that returns ifstream, ofstream and iofstream.</p>
+<tt>create_unique_file()</tt> that returns <tt>ifstream</tt>, <tt>ofstream</tt> and <tt>iofstream</tt>.</p>
 </resolution>
 
 </issue>
