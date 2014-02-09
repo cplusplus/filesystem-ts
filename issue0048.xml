@@ -5,7 +5,7 @@
 
 <issue num="48" status="New">
 <title>[PDTS] <tt>path::template&lt;class charT&gt;string()</tt> conversion rules</title>
-<section><sref ref="?"/></section>
+<section><sref ref="8.4.6  [path.native.obs]"/></section>
 <submitter>P.J. Plauger</submitter>
 <date>30 Jan 2014</date>
 
@@ -24,7 +24,7 @@ There are two relevant places in the wording that seem to clarify what is requir
 </p>
 <ol>
 <li><p>
-Most importantly, [fs.req] says:
+Most importantly, 5 [fs.req] says:
 </p>
 <blockquote><p>
 Throughout this Technical Specification, <tt>char</tt>, <tt>wchar_t</tt>, <tt>char16_t</tt>, and <tt>char32_t</tt> 
@@ -43,7 +43,7 @@ For both the mentioned <tt>string</tt> function template and the specific non-te
 the same <tt>Remarks</tt> element exists, that refers to character conversion:
 </p>
 <blockquote><p>
-Conversion, if any, is performed as specified by [path.cvt].
+Conversion, if any, is performed as specified by 8.2 [path.cvt].
 </p></blockquote>
 </li>
 </ol>
@@ -51,10 +51,20 @@ Conversion, if any, is performed as specified by [path.cvt].
 <p>
 The first quote excludes arbitrary types such as <tt>signed char</tt> or <tt>float</tt> as feasible template arguments. 
 The second quote makes clear that both the function template and the non-template functions do normatively refer to the same 
-wording in [path.cvt].
+wording in 8.2 [path.cvt].
 <p/>
 Based on this interpretation of the issue discussion I recommend resolving it as NAD.
+<p/>
+In addition to that recommendation I recommend to rename the current usage of the symbol <tt>charT</tt> in this technical
+specification, because 5 [fs.req] assigns a very special meaning to the constraints on <tt>charT</tt> types that does not
+exist to this extend in the rest of the standard library. A similar approach is used in Clause 22, where a special symbol <tt>C</tt>
+is used for constrained character types (C++11 &sect;22.3.1.1.1 [locale.category]):
 </p>
+<blockquote><p>
+A template formal parameter with name <tt>C</tt> represents the set of types containing <tt>char</tt>, <tt>wchar_t</tt>, 
+and any other implementation-defined character types that satisfy the requirements for a character on which any of the 
+<tt>iostream</tt> components can be instantiated.
+</p></blockquote>
 
 </discussion>
 
