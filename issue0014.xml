@@ -12,20 +12,18 @@
 <discussion>
 <p>The postconditions for the copy/move constructor for path are shown as "empty()".
 This appears to have been incorrectly copied from the default ctor.</p>
+
+<p>Remove the 'postconditions' clause from the copy/move ctor.</p>
+
+<note>2014-02-07, Beman Dawes suggests wording</note>
+
 </discussion>
 
 <resolution>
-<p>Remove the 'postconditions' clause from the copy/move ctor.</p>
-
-  <h4>Proposed wording:</h4>
-
-
-    <p>
-      <i>[2014-02-07: Beman Dawes]</i>
-    </p>
     <p>
       <i>Change 8.4.1 [path.construct]:</i>
     </p>
+    <blockquote>
     <pre>
       path(const path&amp; p);
       path(path&amp;&amp; p) noexcept;
@@ -40,6 +38,7 @@ This appears to have been incorrectly copied from the default ctor.</p>
       <p>
         <del><i>Postconditions:</i> empty().</del>
       </p>
+    </blockquote>
     </blockquote>
 </resolution>
 
