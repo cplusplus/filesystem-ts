@@ -13,10 +13,54 @@
 <p>"[<i>Note</i>: Pathnames containing spaces require special handling by the user to avoid
 truncation when read by the extractor. &mdash; <i>end note</i>]" sounds like a quoted manipulator
 as specified in the C++14 draft in [quoted.manip] would be useful.</p>
+
+<p>Consider using quoted manipulators for stream insertion and extraction.</p>
+
+<note>2014-02-10, Daniel suggests wording</note>
 </discussion>
 
 <resolution>
-<p>Consider using quoted manipulators for stream insertion and extraction.</p>
+
+<ol>
+<li><p>Change 8.6.1 [path.io] as indicated:</p>
+
+<blockquote><pre>
+template &lt;class charT, class traits&gt;
+basic_ostream&lt;charT, traits&gt;&amp;
+operator&lt;&lt;(basic_ostream&lt;charT, traits&gt;&amp; os, const path&amp; p);
+</pre>
+<blockquote>
+<p>
+<i>Effects</i>: <tt>os &lt;&lt; <ins>quoted(</ins>p.string&lt;charT, traits&gt;()<ins>)</ins></tt>.
+<p/>
+<del>[<i>Note</i>: Pathnames containing spaces require special handling by the user to avoid truncation when read by the extractor. 
+&mdash; <i>end note</i>]</del>
+<p/>
+<i>Returns</i>: <tt>os</tt>
+</p>
+</blockquote>
+<pre>
+template &lt;class charT, class traits&gt;
+basic_istream&lt;charT, traits&gt;&amp;
+operator&gt;&gt;(basic_istream&lt;charT, traits&gt;&amp; is, path&amp; p);
+</pre>
+<blockquote>
+<p>
+<i>Effects</i>:
+</p>
+<blockquote><pre>
+basic_string&lt;charT, traits&gt; tmp;
+is &gt;&gt; <ins>quoted(</ins>tmp<ins>)</ins>;
+p = tmp;
+</pre></blockquote>
+<p>
+</p>
+</blockquote>
+</blockquote>
+
+</li>
+</ol>
+
 </resolution>
 
 </issue>
