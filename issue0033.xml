@@ -14,6 +14,27 @@
 function <tt>tmpnam()</tt> writes in the "BUGS" section: "Never use this function. Use <tt>mkstemp</tt>(3)
 or <tt>tmpfile</tt>(3) instead." <tt>mkstemp()</tt> and <tt>tmpfile()</tt> avoid the inherent race condition of
 <tt>unique_path()</tt> by returning an open file descriptor or <tt>FILE*</tt>.</p>
+
+<p/><i>[Beman Dawes comments: 10 Feb 2014:]</i>
+  <blockquote>
+    <p>There are two issues here:</p>
+    <ul>
+      <li>
+        Confusion over what unique_path does and how it is used. The function is
+        misleadingly named. These issue have arisen in the past, but apparently not
+        been fully corrected. The suggested fix is to (1) rename the function and (2)
+        provide an example of how to use the function safely with fstreams or even C I/O.
+        See below for proposed wording.
+      </li>
+      <li>
+        Very real security concerns. See <a href="#54">issue 54</a>. The security
+        concerns are probably best dealt with in the next File System TS, since a
+        full-blown proposal is needed and will likely take several years to develop.
+      </li>
+    </ul>
+
+  </blockquote>
+  
 </discussion>
 
 <resolution>
@@ -23,23 +44,22 @@ If it fits the scope of the proposed TS, consider providing functions
 
   <h4>Proposed wording:</h4>
 
-  <p/>
-  <i>[Beman Dawes: 9 Feb 2014:]</i>
+  <note>2014-02-10 Beman Dawes</note>
+
 
   <p/>
-  <i>Change x.x.x x:</i>
-
-  <h3>
-    15.38  Unique path&nbsp; [<a name="fs.op.unique_path">fs.op.unique_path</a>]
-  </h3>
+  <i>Change 15.38 [fs.op.unique_path]:</i>
 
   <pre>
-    path <a name="unique_path">unique_path</a>(const path&amp; model=&quot;%%%%-%%%%-%%%%-%%%%&quot;);
-    path unique_path(const path&amp; model, error_code&amp; ec);
+    path <del>unique_path</del><ins>generate_random_filename</ins>(const path&amp; model=&quot;%%%%-%%%%-%%%%-%%%%&quot;);
+    path <del>unique_path</del><ins>generate_random_filename</ins>(const path&amp; model, error_code&amp; ec);
   </pre>
   <blockquote>
     <p>
-      The <code>unique_path</code> function generates a name suitable for temporary files, including directories. The name is based
+      The <code>
+        <del>unique_path</del>
+        <ins>generate_random_filename</ins>
+      </code> function generates a name suitable for temporary files, including directories. The name is based
       on a model that uses the percent sign character to specify replacement by a
       random hexadecimal digit.
     </p>
@@ -65,10 +85,20 @@ If it fits the scope of the proposed TS, consider providing functions
       until sufficient entropy develops. <i>--end note</i>]
     </p>
     <p>
+      <p>
+        <i>
+          <span style="background-color: #e0e0e0">
+            Replace this example with one
+            that opens a std::ofstream:
+          </span>
+        </i>
+      </p>
       [<i>Example</i>:
     </p>
     <blockquote>
-      <pre>cout &lt;&lt; unique_path(&quot;test-%%%%%%%%%%%.txt&quot;) &lt;&lt; endl;</pre>
+      <pre>
+        cout &lt;&lt; <del>unique_path</del><ins>generate_random_filename</ins>(&quot;test-%%%%%%%%%%%.txt&quot;) &lt;&lt; endl;
+      </pre>
     </blockquote>
     <p>
       Typical output would be <code>&quot;test-0db7f2bf57a.txt&quot;</code>. Because 11
@@ -77,6 +107,6 @@ If it fits the scope of the proposed TS, consider providing functions
     </p>
   </blockquote>
 
-  </resolution>
+</resolution>
 
 </issue>
