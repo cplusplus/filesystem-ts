@@ -13,20 +13,32 @@
 <p>It is unfortunate that error reporting for inability to provide reasonable behaviour is
 completely implementation-defined. This hurts portability in the sense that programmers have no
 idea how errors will be reported and cannot anticipate anything.</p>
-</discussion>
 
-<resolution>
 <p>Change "If an implementation cannot provide any reasonable behavior, the implementation
 shall report an error in an implementation-defined manner." to "If an implementation cannot
 provide any reasonable behavior, the code using the facilities for which reasonable behaviour
 cannot be provided shall be ill-formed." and strike the note.</p>
 
-<h4>Proposed wording:</h4>
+<note>2014-02-07, Beman Dawes suggests wording</note>
 
-<p><i>[2014-02-07: Beman Dawes]</i></p>
+<note>2014-02-10, Daniel comments</note>
+
+<p>The addition "a diagnostic is required" really should be removed. Unless explicitly said differently,
+any ill-formed program already requires a diagnostics. The requirement "is ill-formed" is sufficient and really
+should be left alone, otherwise this wording change unintentionally weakens all occurrences of "is ill-formed"
+requirements in the Library specification</p>
+
+</discussion>
+
+<resolution>
+
+<ol>
+<li>
 <p>Change 2.1: "If an implementation cannot provide any reasonable behavior,
 the <del>implementation shall report an error in an implementation-defined manner</del>
 <ins>program is ill-formed; a diagnostic is required</ins>."</p>
+</li>
+</ol>
 
 </resolution>
 
