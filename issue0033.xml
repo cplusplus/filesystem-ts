@@ -20,6 +20,63 @@ or <tt>tmpfile</tt>(3) instead." <tt>mkstemp()</tt> and <tt>tmpfile()</tt> avoid
 <p>Remove this function. Consider providing a function <tt>create_unique_directory()</tt>.
 If it fits the scope of the proposed TS, consider providing functions
 <tt>create_unique_file()</tt> that returns <tt>ifstream</tt>, <tt>ofstream</tt> and <tt>iofstream</tt>.</p>
-</resolution>
+
+  <h4>Proposed wording:</h4>
+
+  <p/>
+  <i>[Beman Dawes: 9 Feb 2014:]</i>
+
+  <p/>
+  <i>Change x.x.x x:</i>
+
+  <h3>
+    15.38  Unique path&nbsp; [<a name="fs.op.unique_path">fs.op.unique_path</a>]
+  </h3>
+
+  <pre>
+    path <a name="unique_path">unique_path</a>(const path&amp; model=&quot;%%%%-%%%%-%%%%-%%%%&quot;);
+    path unique_path(const path&amp; model, error_code&amp; ec);
+  </pre>
+  <blockquote>
+    <p>
+      The <code>unique_path</code> function generates a name suitable for temporary files, including directories. The name is based
+      on a model that uses the percent sign character to specify replacement by a
+      random hexadecimal digit.
+    </p>
+    <p>
+      [<i>Note:</i> The more bits of randomness in the
+      generated name, the less likelihood of prior existence or being guessed.
+      Each replacement hexadecimal digit in the model adds four bits of randomness.
+      The default model thus provides 64 bits of randomness. <i>--end note</i>]
+    </p>
+    <p>
+      <i>Returns:</i> A path identical to <code>model</code>, except that each
+      occurrence of the percent sign character is replaced by a random hexadecimal
+      digit character in the range 0-9, a-f. The signature with argument <code>ec</code>
+      returns <code>path()</code> if an error occurs.
+    </p>
+    <p>
+      <i>Throws:</i> As specified in <a href="#Error-reporting">Error reporting</a>.
+    </p>
+    <p>
+      <i>Remarks:</i> Implementations are encouraged to obtain the required
+      randomness via a <a href="http://en.wikipedia.org/wiki/Cryptographically_secure_pseudorandom_number_generator">cryptographically secure pseudo-random number generator</a>, such as one
+      provided by the operating system. [<i>Note</i>: Such generators may block
+      until sufficient entropy develops. <i>--end note</i>]
+    </p>
+    <p>
+      [<i>Example</i>:
+    </p>
+    <blockquote>
+      <pre>cout &lt;&lt; unique_path(&quot;test-%%%%%%%%%%%.txt&quot;) &lt;&lt; endl;</pre>
+    </blockquote>
+    <p>
+      Typical output would be <code>&quot;test-0db7f2bf57a.txt&quot;</code>. Because 11
+      hexadecimal output characters are specified, 44 bits of randomness are
+      supplied.&nbsp; <i>-- end example</i>]
+    </p>
+  </blockquote>
+
+  </resolution>
 
 </issue>
