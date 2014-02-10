@@ -15,39 +15,53 @@ The comment for available in the struct space_info refers to: free space availab
 non-privileged process.
 This seems quite specific to a POSIX implementation (on Windows, for instance, the
 equivalent data would be user-specific but not directly related to privilege)</p>
-</discussion>
 
-<resolution>
 <p>Remove the comment and add a note to 15.32 [fs.op.space]:
-[Note: the precise meaning of available space is implementation dependent. --end note]</p>
-  
-  <h4>Proposed wording:</h4>
+[<i>Note</i>: the precise meaning of available space is implementation dependent. &mdash; <i>end note</i>]</p>
 
-  <p>
-    <i>[2014-02-07: Beman Dawes comments:]</i> "implementaton defined" and "operating system dependent"
+<note>2014-02-07, Beman Dawes comments</note>
+
+<p>
+"implementaton defined" and "operating system dependent"
     are well defined terms in this TS, but "implementation dependent" is not well defined.
     The meaning of <code>available</code> is operating system dependent, so that's the form used 
     in the proposed wording.
+</p>
+
+<note>2014-02-07, Beman Dawes provides wording</note>
+
+</discussion>
+
+<resolution>
+
+<ol>
+<li>
+  <p>
+  <i>Change 6 [fs.filesystem.synopsis]:</i>
   </p>
   
   <blockquote>
-    <p>
-      <i>[2014-02-07: Beman Dawes]</i>
-    </p>
-    <p>
-      <i>Change 6 [fs.filesystem.synopsis]:</i>
+     <p>
       <code>uintmax_t available; <del>// free space available to a non-privileged process</del></code>
     </p>
+  </blockquote>
+</li>
+
+<li>
+  <p>
     <p><i>Add Remarks to 15.32 [fs.op.space]:</i></p>
+  </p>
+  <blockquote>
     <p>
       <ins>
         <i>Remarks:</i> The precise value of member <code>space_info::available</code>
         is operating system dependent. [<i>Note:</i> <code>available</code> may be less than
-        <code>free</code>. <i>--end note</i>]
+        <code>free</code>. <i>&mdash; end note</i>]
       </ins>
     </p>
   </blockquote>
-
+</li>
+</ol>
 
 </resolution>
 
