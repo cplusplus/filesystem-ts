@@ -10,13 +10,26 @@
 <date>20 Jan 2014</date>
 
 <discussion>
-<p>Must the file_time_type hold times before 1960 and after 2050?</p>
+<p>Must the <tt>file_time_type</tt> hold times before 1960 and after 2050?</p>
 
-<p>Specify the requirements to unspecified-trivial-clock for file_time_type.</p>
+<p>Specify the requirements to <i>unspecified-trivial-clock</i> for <tt>file_time_type</tt>.</p>
+
+<note>2014-02-10, Daniel suggest wording</note>
 
 </discussion>
 
 <resolution>
+<ol>
+<li><p>Modify 6 [fs.filesystem.synopsis] as indicated:</p>
+
+<blockquote><p>
+<em>unspecified-trivial-clock</em> is an unspecified type provided by the implementation that satisfies the TrivialClock requirements 
+(C++11 &sect;20.12.3) and that is capable of representing and measuring file time values. <ins>Implementations should ensure that 
+resolution and range of <tt>file_time_type</tt> reflect the operating system dependent resolution and range of
+file time values.</ins>
+</p></blockquote>
+</li>
+</ol>
 </resolution>
 
 </issue>
