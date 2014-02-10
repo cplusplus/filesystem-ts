@@ -1,0 +1,62 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="54" status="New">
+<title>[PDTS] Concerns with security and testability</title>
+<section><sref ref="all"/></section>
+<submitter>Google</submitter>
+<date>20 Jan 2014</date>
+
+<discussion>
+  <p>We have two primary concerns with the interface as specified: </p>
+  <p>
+    (a) its interface repeats the mistake of V7 Unix in 1979 by exposing access
+    checking (and similarly file creation) independently from opening and mutating
+    the file, and
+  </p>
+  <p>
+    (b) it provides no realistic means of testing a software library which uses
+    the standard interface for accessing the filesystem under fault scenarios.
+  </p>
+  <p>
+    Due to the extent of (a), TOCTTOU [1] security vulnerabilities are
+    guaranteed, if not during access checking[2], during other common operations
+    such as temporary file creation[3].
+  </p>
+  <p>
+    Due to (b) it is impossible to portably test libraries using the proposed
+    interface against critical correctness and security edge cases.
+  </p>
+  <p>
+    [1]: TOCTTOU: Time-of-check-to-time-of-use.&nbsp;<a HREF="http://ieeexplore.ieee.org/stamp/stamp.jsp?tp=&arnumber=5388162">
+      
+        <u>
+            http://ieeexplore.ieee.org/stamp/stamp.jsp?tp=HYPERLINK
+            &quot;http://ieeexplore.ieee.org/stamp/stamp.jsp?tp=&amp;arnumber=5388162&quot;&amp;HYPERLINK
+            &quot;http://ieeexplore.ieee.org/stamp/stamp.jsp?tp=&amp;arnumber=5388162&quot;arnumber=5388162
+        </u>
+      
+    </a>
+  </p>
+      <p>[2]:&nbsp;http://www.csl.sri.com/users/ddean/papers/usenix04.pdf</p>
+      <p>[3]:&nbsp;http://www.cs.ucdavis.edu/research/tech-reports/1995/CSE-95-10.pdf</p>
+
+  <p/>
+  
+  <i>[Beman Dawes: 10 Feb 2014: Suggested response: NAD, Future]</i>
+
+  <blockquote>
+    <p/>We share your concerns and look forward to receiving specific proposals to address them.
+    Whether they will addressed by a revision of TS 18822 or a new TS will be decided as proposals progress
+    through the committee process. See N???? (the call for proposals).
+  </blockquote>
+
+    </discussion>
+
+<resolution>
+<p></p>
+</resolution>
+
+</issue>
