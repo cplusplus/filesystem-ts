@@ -5,7 +5,7 @@
 
 <issue num="28" status="New">
 <title>[PDTS] Possible <tt>last_write_time()</tt> postcondition?</title>
-<section><sref ref="15.25"/></section>
+<section><sref ref="15.25 [fs.op.last_write_time]"/></section>
 <submitter>GB-15</submitter>
 <date>20 Jan 2014</date>
 
@@ -16,14 +16,15 @@ systems with coarse time granularity.
 <p/>
 However, might it be possible to have a postcondition that <tt>last_write_time(p) &lt;= new_time</tt> ?</p>
 
-  <p/><i>[Beman Dawes: 9 Feb 2014:]</i>
+<p>Add postcondition: <tt>last_write_time(p) &lt;= new_time</tt></p>
+
+  <note>2014-02-09, Beman Dawes comments:</note>
   <p/>That assumes the file system rounds down. We don't know which direction a file system rounds. Nice try, but
   this one looks NAD to me.
   
 </discussion>
 
 <resolution>
-<p>Add postcondition: <tt>last_write_time(p) &lt;= new_time</tt></p>
 </resolution>
 
 </issue>
