@@ -1,9 +1,9 @@
-<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<?xml version='1.0' encoding='utf-8' standalone='no'?>
 <!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
   <!ENTITY nbsp "&#160;">
 ] >
 
-<issue num="9" status="New">
+<issue num="9" status="Open">
 <title>[PDTS] Unclear why range-based-for functions return different types</title>
 <section><sref ref="6 [fs.filesystem.synopsis]"/></section>
 <submitter>FI-2</submitter>
@@ -42,11 +42,71 @@ and <tt>end()</tt>, namely that <tt>begin()</tt> returns a reference to <tt>cons
   Both <tt>directory_iterator</tt> and <tt>recursive_directory_iterator</tt> won't satisfy this requirement
   currently.
   </p>
-  
+  <note>
+    2014-02-11 Issaquah: Change begin() argument and return to pass-by-value. See wiki notes for rationale.
+    Beman to provide wording for review next meeting.
+  </note>
+
 </discussion>
 
 <resolution>
-<p></p>
+  <note>Change 6 [fs.filesystem.synopsis]:</note>
+  
+  <pre>
+  class directory_iterator;
+
+  // enable directory_iterator range-based for statements
+  <del>const</del> directory_iterator<del>&amp;</del> begin(<del>const</del> directory_iterator<del>&amp;</del> iter) noexcept;
+  directory_iterator end(const directory_iterator&amp;) noexcept;
+
+  class recursive_directory_iterator;
+
+  // enable recursive_directory_iterator range-based for statements
+  <del>const</del> recursive_directory_iterator<del>&amp;</del> begin(<del>const</del> recursive_directory_iterator<del>&amp;</del> iter) noexcept;
+  recursive_directory_iterator end(const recursive_directory_iterator&amp;) noexcept;
+  </pre>
+
+  <note>
+    Change 13.2 [directory_iterator.nonmembers]:
+  </note>
+  <p>
+    These functions enable use of <code>directory_iterator</code> with C++11
+    range-based for statements.
+  </p>
+  <pre><del>const</del> directory_iterator<del>&amp;</del> begin(<del>const</del>directory_iterator<del>&amp;</del> iter) noexcept;</pre>
+  <blockquote>
+    <p>
+      <i>Returns: </i><code>iter</code>.
+    </p>
+  </blockquote>
+  <pre>directory_iterator end(const directory_iterator&amp;) noexcept;</pre>
+  <blockquote>
+    <p>
+      <i>Returns: </i><code>directory_iterator()</code>.
+    </p>
+  </blockquote>
+
+  <note>
+    Change 14.2 [rec.dir.itr.nonmembers]:
+  </note>
+  <p>
+    These functions enable use of <code>recursive_directory_iterator</code>
+    with C++11 range-based for statements.
+  </p>
+  <pre><del>const</del> recursive_directory_iterator<del>&amp;</del> begin(<del>const</del>recursive_directory_iterator<del>&amp;</del> iter) noexcept;</pre>
+  <blockquote>
+    <p>
+      <i>Returns: </i><code>iter</code>.
+    </p>
+  </blockquote>
+  <pre>recursive_directory_iterator end(const recursive_directory_iterator&amp;) noexcept;</pre>
+  <blockquote>
+    <p>
+      <i>Returns: </i><code>recursive_directory_iterator()</code>.
+    </p>
+  </blockquote>
+
+
 </resolution>
 
 </issue>
