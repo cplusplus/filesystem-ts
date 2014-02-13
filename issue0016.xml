@@ -12,44 +12,47 @@
 <discussion>
 <p>Is the added separator redundant in p1 /= p2, where p1 is empty? 
 I.e. does the result start with a separator?</p>
+
+<p>Suggested action:</p>
+<p>Specify what behaviour is required.</p>
   
+  <note>2014-02-07: Beman Dawes comments</note> 
+  <p>The second bullet item is supposed to deal with the <tt>empty()</tt> condition.</p>
+
   <note>2014-02-12 LWG/SG-3 Issaquah: The text is correct as written, however
   adding a note will clarify this and address the NB comment.</note>  
   
 </discussion>
 
 <resolution>
-<p>Specify what behaviour is required.</p>
-  <h4>Proposed wording:</h4>
-
-  <p>
-    <i>[2014-02-07: Beman Dawes comments:]</i> The second bullet item is supposed to deal with the empty() condition.
- </p>
-
   <p>
     <i>Change 8.4.3 [path.append]:</i>
   </p>
+  <blockquote>
   <p>
     <i>Effects:</i>
   </p>
-  <blockquote>
-    Appends <code>path::preferred_separator</code> to <code>pathname</code> unless:<ul>
-      <li>
+  <blockquote><p>
+    Appends <code>path::preferred_separator</code> to <code>pathname</code> unless:
+   </p>
+    <ul>
+      <li><p>
         an added separator
         would be redundant, or
-      </li>
-      <li>would change a<del>n</del> relative path to a<del>n</del> absolute path
-      <ins>[Note: An empty path is relative. --end note]</ins>, or</li>
-      <li>
+      </p></li>
+      <li><p>would change a<del>n</del> relative path to a<del>n</del> absolute path
+      <ins>[<i>Note</i>: An empty path is relative. &mdash; <i>end note</i>]</ins>, or</p></li>
+      <li><p>
         <code>p.empty()</code>, or
-      </li>
-      <li>
+      </p></li>
+      <li><p>
         <code>*p.native().cbegin()</code> is a directory separator.
-      </li>
+      </p></li>
     </ul>
     <p>
       Then appends <code>p.native()</code> to <code>pathname</code>.
     </p>
+    </blockquote>
     </blockquote>
   </resolution>
 
