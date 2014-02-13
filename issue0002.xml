@@ -26,7 +26,7 @@ cannot be provided shall be ill-formed." and strike the note.</p>
   <blockquote>
   <p/>In our code bases we routinely have to target different filesystems,
   notably POSIX-based and Windows. While on Windows there is no meaning
-  in setting the owner_exec permission, for example, this is required on
+  in setting the <tt>owner_exec</tt> permission, for example, this is required on
   POSIX systems when the corresponding file should be executable. Still,
   attempting to invoke this operation should be possible. It would be
   OK, if we got a defined runtime response to this, such as a
@@ -52,13 +52,15 @@ cannot be provided shall be ill-formed." and strike the note.</p>
 <resolution>
 
 <ol>
-<li>
-<p>Change 2.1: "If an implementation cannot provide any reasonable behavior,
+<li><p>Change 2.1:</p>
+<blockquote><p>
+If an implementation cannot provide any reasonable behavior,
 the implementation shall report an error <del>in an implementation-defined manner</del>
-<ins>as specified in § 7 [fs.err.report]. [<i>Note:</i> This allows users
+<ins>as specified in &sect; 7 [fs.err.report]. [<i>Note:</i> This allows users
 to rely on an exception being thrown or an error code being set when an
-imlementation cannot provide any reasonable behavior. <i>-- end note</i>]
-</ins>."</p>
+implementation cannot provide any reasonable behavior. &mdash; <i>end note</i>]
+</ins>.
+</p></blockquote>
 </li>
 </ol>
 

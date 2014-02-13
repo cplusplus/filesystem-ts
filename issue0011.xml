@@ -4,30 +4,30 @@
 ] >
 
 <issue num="11" status="Open">
-<title>[PDTS] Lack of relative() operation function</title>
-<section><sref ref="6 & 15"/></section>
+<title>[PDTS] Lack of <tt>relative()</tt> operation function</title>
+<section><sref ref="6 &amp; 15"/></section>
 <submitter>GB-1</submitter>
 <date>20 Jan 2014</date>
 
 <discussion>
-<p>There is no relative() 
-operation, to complement both absolute() and canonical()</p>
 <p>
+There is no <tt>relative()</tt> operation, to complement both <tt>absolute()</tt> and <tt>canonical()</tt>
+</p>
+<p>
+The TS introduces relative paths. 
+</p>
 
-The TS introduces relative paths. </p>
 <ul>
   <li>
     <p>
-
       They are defined in section 4.18
       relative path [fs.def.relative-path]
     </p> </li>
   <li>
     <p>
-
       A decomposition method
 
-      relative_path()
+      <tt>relative_path()</tt>
       is described in section 8.4.9 path decomposition [path.decompose]
     </p> 
   </li>
@@ -35,17 +35,14 @@ The TS introduces relative paths. </p>
   <p>
   
   Two query methods to determine if a path 
-  either 
-  has_relative_path() 
-  or 
-  is_relative() 
-  described in 8.4.10 path query [path.query] </p>
+  either <tt>has_relative_path()</tt> or 
+  <tt>is_relative()</tt> described in 8.4.10 path query [path.query] </p>
 </li>
 </ul>
 <p>
-
 However there is no way to create a relative path as a path relative to another. 
-Methods are provided to create absolute and canonical paths.</p>
+Methods are provided to create absolute and canonical paths.
+</p>
 <p>
 
 In section 15.1 Absolute [fs.op.absolute]:</p>
@@ -140,29 +137,29 @@ to determine the relative path, if it exists.</p>
 
 The File System TS is 
 based on the 
-<a HREF="http://www.boost.org/doc/libs/1_55_0/libs/filesystem/doc/index.htm">
+<a href="http://www.boost.org/doc/libs/1_55_0/libs/filesystem/doc/index.htm">
 
-<u>&#8203;</u></a><a HREF="http://www.boost.org/doc/libs/1_55_0/libs/filesystem/doc/index.htm">boost::filesystem 
+<u>&#8203;</u></a><a href="http://www.boost.org/doc/libs/1_55_0/libs/filesystem/doc/index.htm">boost::filesystem 
 library</a> and it too suffers from this anomaly. There are open tickets for 
 this in 
-<a HREF="https://svn.boost.org/">
+<a href="https://svn.boost.org/">
 
-<u>&#8203;</u></a><a HREF="https://svn.boost.org/">Boost 
+<u>&#8203;</u></a><a href="https://svn.boost.org/">Boost 
 Trac</a>:</p>
 <ul>
   <li>
   <p>
   
-  <a HREF="https://svn.boost.org/trac/boost/ticket/5897">
-  <u>&#8203;</u></a><a HREF="https://svn.boost.org/trac/boost/ticket/5897">#5897 
+  <a href="https://svn.boost.org/trac/boost/ticket/5897">
+  <u>&#8203;</u></a><a href="https://svn.boost.org/trac/boost/ticket/5897">#5897 
   Make path relative function</a>
   </p>
 </li>
   <li>
   <p>
   
-  <a HREF="https://svn.boost.org/trac/boost/ticket/1976">
-  <u>&#8203;</u></a><a HREF="https://svn.boost.org/trac/boost/ticket/1976">#1976 
+  <a href="https://svn.boost.org/trac/boost/ticket/1976">
+  <u>&#8203;</u></a><a href="https://svn.boost.org/trac/boost/ticket/1976">#1976 
   Inverse function for complete</a>
   </p>
 </li>
@@ -174,15 +171,15 @@ and it is the subject of several posts on StackOverflow for example:</p>
   <li>
   <p>
   
-  <a HREF="http://stackoverflow.com/questions/10167382/boostfilesystem-get-relative-path">
-  <u>&#8203;</u></a><a HREF="http://stackoverflow.com/questions/10167382/boostfilesystem-get-relative-path">http://stackoverflow.com/questions/10167382/boostfilesystem-get-relative-path</a>
+  <a href="http://stackoverflow.com/questions/10167382/boostfilesystem-get-relative-path">
+  <u>&#8203;</u></a><a href="http://stackoverflow.com/questions/10167382/boostfilesystem-get-relative-path">http://stackoverflow.com/questions/10167382/boostfilesystem-get-relative-path</a>
   </p>
 </li>
   <li>
   <p>
   
-  <a HREF="http://stackoverflow.com/questions/5772992/get-relative-path-from-two-absolute-paths">
-  <u>&#8203;</u></a><a HREF="http://stackoverflow.com/questions/5772992/get-relative-path-from-two-absolute-paths">http://stackoverflow.com/questions/5772992/get-relative-path-from-two-absolute-paths</a>
+  <a href="http://stackoverflow.com/questions/5772992/get-relative-path-from-two-absolute-paths">
+  <u>&#8203;</u></a><a href="http://stackoverflow.com/questions/5772992/get-relative-path-from-two-absolute-paths">http://stackoverflow.com/questions/5772992/get-relative-path-from-two-absolute-paths</a>
   </p>
 </li>
 </ul>
@@ -211,68 +208,75 @@ start
 defaults to 
 os.curdir.</p>
 
-  <p>
-    <i>[2014-02-07: Beman Dawes comments:]</i>
-  </p>
+  <note>2014-02-07, Beman Dawes comments</note>
 
 <p>A <code>relative()</code> function is useful and much requested.
 I've seen such a function provided by users and have written it myself in app code.
 It is one of those things I've been meaning to do for years, and have just never gotten around to.</p>
 
-  <p>That said, my mild perference is to treat this as "NAD, Future" for File System TS1,
+  <p>That said, my mild preference is to treat this as "NAD, Future" for File System TS1,
   but treat it as a priority for TS2.</p>
 
   <note>
-    2014-02-11 Issaquah: The LWG/SG-3 voted strongly in favor of adding this functionality, and doing so in
+    2014-02-11 Issaquah
+  </note>
+<p>
+ The LWG/SG-3 voted strongly in favor of adding this functionality, and doing so in
     this TS. That implies quite a bit of work before the next meeting to validate that the proposed interface
     works as desired for various platforms. There was general agreement not to hold FS STS1 if this functionality
     isn't ready when the rest of the TS is ready.
-  </note>
+</p>
 
 
 </discussion>
 
 <resolution>
-<p>Modify section:
-6 Header &lt;filesystem&gt; synopsis [fs.filesystem.synopsis]
-by adding the operational functions after canonical</p>
-
-<pre>path relative(const path& p, const path& to = current_path());
-path relative(const path& p, error_code& ec);
-path relative(const path& p, const path& to, error_code& ec);</pre>
-
-<p>Insert the section:</p>
-
+<ol>
+<li>
+<p>Modify header <tt>&lt;filesystem&gt;</tt> synopsis, 6 [fs.filesystem.synopsis],
+by adding the operational functions after <tt>canonical</tt>:</p>
+<blockquote><pre>
+path relative(const path&amp; p, const path&amp; to = current_path());
+path relative(const path&amp; p, error_code&amp; ec);
+path relative(const path&amp; p, const path&amp; to, error_code&amp; ec);
+</pre></blockquote>
+</li>
+<li><p>Insert the section:</p>
+<blockquote><p>
 15.3 Relative [fs.op.relative]
+</p>
 <pre>
-path relative(const path& p, const path& to = current_path());
-path relative(const path& p, error_code& ec);
-path relative(const path& p, const path& to, error_code& ec);</pre>
-
-<p>Overview: Return a relative path of p to the current directory or from an optional to path.</p>
-<p>Returns: A relative path such that canonical(to)/relative(p,to) == canonical(p),
-otherwise path(). If canonical(to) == canonical(p) the path path(".") is returned. For the
-overload without a to argument, to is current_path(). Signatures with argument ec return
-path() if an error occurs.</p>
+path relative(const path&amp; p, const path&amp; to = current_path());
+path relative(const path&amp; p, error_code&amp; ec);
+path relative(const path&amp; p, const path&amp; to, error_code&amp; ec);</pre>
+<blockquote>
+<p><i>Overview</i>: Return a relative path of p to the current directory or from an optional to path.</p>
+<p><i>Returns</i>: A relative path such that <tt>canonical(to)/relative(p,to) == canonical(p)</tt>,
+otherwise <tt>path()</tt>. If <tt>canonical(to) == canonical(p)</tt> the path <tt>path(".")</tt> is returned. For the
+overload without a <tt>to</tt> argument, <tt>to</tt> is <tt>current_path()</tt>. Signatures with argument <tt>ec</tt> return
+<tt>path()</tt> if an error occurs.
+</p>
 <p>
-Throws: As specified in Error reporting.</p>
+<i>Throws</i>: As specified in Error reporting.</p>
 <p>
-
-Remarks: !exists(p) or !exists(to) or !is_directory(to) is an error.
+<i>Remarks</i>: <tt>!exists(p) or !exists(to) or !is_directory(to)</tt> is an error.
+</p>
+</blockquote></blockquote>
+<p>
 and bump all following sections up by 0.1. Update the contents and any cross-references
 accordingly.
-
 </p>
+</li>
+</ol>
 <p>
 Question: Should Returns be specified in terms of equivalence? For example:
-equivalent( canonical(to)/relative(p,to), canonical(p) )
+<tt>equivalent( canonical(to)/relative(p,to), canonical(p) )</tt>
+</p>
+<p>
+Question: Should <tt>canonical(to) == canonical(p)</tt> return <tt>path(".")</tt> or <tt>path()</tt>? Why?
 </p>
 <p>
 
-Question: Should canonical(to) == canonical(p) return path(".") or path()? Why?
-</p>
-<p>
-
-Question: Should to be spelt start?</p></resolution>
+Question: Should <tt>to</tt> be spelt start?</p></resolution>
 
 </issue>
