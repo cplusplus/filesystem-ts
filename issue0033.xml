@@ -3,7 +3,7 @@
   <!ENTITY nbsp "&#160;">
 ] >
 
-<issue num="33" status="New">
+<issue num="33" status="Immediate">
 <title>[PDTS] <tt>unique_path()</tt> is a security vulnerability</title>
 <section><sref ref="15.38 [fs.op.unique_path]"/></section>
 <submitter>CH-19</submitter>
@@ -35,15 +35,21 @@ or <tt>tmpfile</tt>(3) instead." <tt>mkstemp()</tt> and <tt>tmpfile()</tt> avoid
 
   </blockquote>
   
-</discussion>
+  <note>
+    2014-02-11 Issaquah: Strike the function.
+  </note>
 
-<resolution>
-<p>Remove this function. Consider providing a function <tt>create_unique_directory()</tt>.
-If it fits the scope of the proposed TS, consider providing functions
-<tt>create_unique_file()</tt> that returns <tt>ifstream</tt>, <tt>ofstream</tt> and <tt>iofstream</tt>.</p>
-
-  <h4>Proposed wording:</h4>
-
+  <note>2014-02-12 The following Proposed resolution from CH-19 was moved here
+  to avoid confusion with the final Proposed resolution wording from the WG/SG3.</note>
+  <p>
+    Remove this function. Consider providing a function <tt>create_unique_directory()</tt>.
+    If it fits the scope of the proposed TS, consider providing functions
+    <tt>create_unique_file()</tt> that returns <tt>ifstream</tt>, <tt>ofstream</tt> and <tt>iofstream</tt>.
+  </p>
+  <note>
+    2014-02-12 The following Proposed wording was moved here
+    to avoid confusion with the final Proposed resolution wording from the WG/SG3.
+  </note>
   <note>2014-02-10 Beman Dawes</note>
 
 
@@ -107,6 +113,17 @@ If it fits the scope of the proposed TS, consider providing functions
     </p>
   </blockquote>
 
+
+</discussion>
+
+<resolution>
+
+  <p/>Remove the two <code>unique_path</code> function signatures from 6 [fs.filesystem.synopsis].
+
+  <p/>Remove 15.38 [fs.op.unique_path] in its entirety.
+  
+  <note>This removes all references the function from the working draft.</note>
+ 
 </resolution>
 
 </issue>

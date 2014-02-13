@@ -3,76 +3,34 @@
   <!ENTITY nbsp "&#160;">
 ] >
 
-<issue num="13" status="New">
+<issue num="13" status="NAD">
 <title>[PDTS] Missing actual error conditions thrown</title>
 <section><sref ref="7 [fs.err.report] etc."/></section>
 <submitter>CH 9</submitter>
 <date>20 Jan 2014</date>
 
-<discussion>
-<p>The specification of the actual error conditions for the functions that specify
-Throws: As specified in Error reporting. is missing.</p>
+  <discussion>
+    <p>
+      The specification of the actual error conditions for the functions that specify
+      Throws: As specified in Error reporting. is missing.
+    </p>
 
-<p>Add those specifications.</p>
+    <p>Add those specifications.</p>
 
-<note>2014-02-07, Beman Dawes comments</note>
+    <note>2014-02-07, Beman Dawes comments</note>
 
-  <p>The actual error codes, and thus the error conditions, are determined by the operating system, 
-  and thus operating system dependent. The wording change below is intended to clarify that.</p>
+    <p>
+      The actual error codes, and thus the error conditions, are determined by the operating system,
+      and thus operating system dependent.
+    </p>
 
-<note>2014-02-07, Beman Dawes suggests wording</note>
+    <note>2014-02-11 Issaquah</note>
+    <p/>There is no concensus for a change. LWG/SG3 requested a separate issue be opened to clarify
+    7 [fs.err.report]. See issue 55.
 
-</discussion>
+  </discussion>
 
 <resolution>
-
-  <ol>
-  <li><p><i>Change 7 [fs.err.report]:</i></p>
-
-  <blockquote>
-     <p>
-      Functions <b>not</b> having an argument of type <code>error_code&amp;</code> report errors as follows, unless otherwise specified:
-    </p>
-    <ul>
-      <li>
-        When a call by the
-        implementation to an operating system or other underlying API results in an
-        error that prevents the function from meeting its specifications, an exception
-        of type
-        <code>filesystem_error</code> shall be thrown. For functions with a single path
-        argument, that argument shall be passed to the
-        <code>filesystem_error</code> constructor with a single path argument.&nbsp; For
-        functions with two path arguments, the first of these arguments shall be
-        passed to the
-        <code>filesystem_error</code> constructor as the <code>path1</code> argument,
-        and the second shall be passed as the <code>path2</code> argument.
-        <ins>The <code>filesystem_error</code> constructor's <code>error_code&amp;</code> argument is set as
-        appropriate for the specific operating system dependent error.</ins><br/>
-&nbsp;</li>
-      <li>
-        Failure to allocate storage is reported by throwing an exception as described in C++11
-        &sect; 17.6.4.10.<br/>
-&nbsp;</li>
-      <li>Destructors throw nothing.</li>
-    </ul>
-    <p>
-      Functions having an argument of type <code>error_code&amp;</code> report errors as follows, unless otherwise
-      specified:
-    </p>
-    <ul>
-      <li>
-        If a call by the
-        implementation to an operating system or other underlying API results in an
-        error that prevents the function from meeting its specifications, the
-        <code>error_code&amp;</code> argument is set as
-        appropriate for the specific <ins>operating system dependent</ins> error.
-        Otherwise, <code>clear()</code> is called on the <code>error_code&amp;</code> argument.
-      </li>
-    </ul>
-  </blockquote>
-  
-   </li>
- </ol>
 
 
 </resolution>
