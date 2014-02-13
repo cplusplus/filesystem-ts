@@ -3,7 +3,7 @@
   <!ENTITY nbsp "&#160;">
 ] >
 
-<issue num="16" status="New">
+<issue num="16" status="Immediate">
 <title>[PDTS] Append behavior underspecified if target is empty </title>
 <section><sref ref="8.4.3 [path.append]"/></section>
 <submitter>CH-11</submitter>
@@ -12,6 +12,10 @@
 <discussion>
 <p>Is the added separator redundant in p1 /= p2, where p1 is empty? 
 I.e. does the result start with a separator?</p>
+  
+  <note>2014-02-12 LWG/SG-3 Issaquah: The text is correct as written, however
+  adding a note will clarify this and address the NB comment.</note>  
+  
 </discussion>
 
 <resolution>
@@ -20,12 +24,8 @@ I.e. does the result start with a separator?</p>
 
   <p>
     <i>[2014-02-07: Beman Dawes comments:]</i> The second bullet item is supposed to deal with the empty() condition.
-    The proposed wording below might add clarity if the SG feels it is useful or necessary.
  </p>
 
-  <p>
-    <i>[2014-02-08: Beman Dawes]</i>
-  </p>
   <p>
     <i>Change 8.4.3 [path.append]:</i>
   </p>
@@ -38,10 +38,10 @@ I.e. does the result start with a separator?</p>
         an added separator
         would be redundant, or
       </li>
-      <li>would change an relative path to an absolute path, or</li>
+      <li>would change a<del>n</del> relative path to a<del>n</del> absolute path
+      <ins>[Note: An empty path is relative. --end note]</ins>, or</li>
       <li>
-        <code>
-          <ins>empty() ||</ins> p.empty()</code>, or
+        <code>p.empty()</code>, or
       </li>
       <li>
         <code>*p.native().cbegin()</code> is a directory separator.
