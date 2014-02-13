@@ -17,6 +17,16 @@ possible race conditions?</p>
 <p>Suggested action:</p>
 <p>Specify the required behaviour in these cases.</p>
 </p>
+
+  <note>2014-02-13 Beman Dawes</note>
+  <p/>Suggest NAD. <tt>increment</tt> takes an <tt>error_code& ec</tt> argument and its error reporting
+  is no different from any other function in the library with such an argument. 7 Error reporting [fs.err.report]
+  and other front matter already answer the questions posed in great detail.
+  
+  <p/>It might be a bit clearer to globally change "Throws: as specified in Error reporting." to
+  "Remarks: Errors are reported as specified in 7 [fs.err.report]" so that it is clearer that both
+  throwing and non-throwing signatures are covered. 
+
 </discussion>
 
 <resolution>
