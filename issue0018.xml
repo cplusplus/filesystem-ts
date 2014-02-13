@@ -12,20 +12,20 @@
 <discussion>
 <p><tt>is_absolute</tt> says: "Returns: true if the elements of <tt>root_path()</tt> uniquely identify
 a file system location, else false." The "uniquely identify a location" seems confusing
-in presence of symlinks.</p>
+in presence of symlinks.
+</p>
+<p>Suggested action:</p>
+<p>Clarify the returns clause so that there's no confusion about symlinks and 'location'.</p>
+
+  <note>2014-02-10 Beman Dawes provides wording</note>
+
+
 </discussion>
 
 <resolution>
-<p>Clarify the returns clause so that there's no confusion about symlinks and 'location'.</p>
-
-  <h4>Proposed wording:</h4>
-
-  <note>2014-02-10 Beman Dawes</note>
-
-  <p/>
+  <p>
   <i>Change 8.4.10 path query [path.query]:</i>
-
-
+  </p>
   <blockquote>
     <pre>bool <a name="path-is_absolute">is_absolute</a>() const;</pre>
     <blockquote>
@@ -41,7 +41,7 @@ in presence of symlinks.</p>
     <blockquote>
       [<i>Example:</i> <code>path(&quot;/&quot;).is_absolute()</code> is
       <code>true</code> for POSIX based operating systems, and <code>false</code> for Windows based
-      operating systems.&nbsp; <i>--end example</i>]
+      operating systems.&nbsp; &mdash; <i>end example</i>]
     </blockquote>
   </blockquote>
 
