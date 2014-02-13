@@ -1,9 +1,9 @@
-<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<?xml version='1.0' encoding='utf-8' standalone='no'?>
 <!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
   <!ENTITY nbsp "&#160;">
 ] >
 
-<issue num="26" status="New">
+<issue num="26" status="NAD">
 <title>[PDTS] Equivalence is a volatile property</title>
 <section><sref ref="15.13 [fs.op.equivalent]"/></section>
 <submitter>CH-16</submitter>
@@ -14,19 +14,7 @@
 
 <p>Consider adding a note that equivalence cannot be determined race-free.</p>
 
-<note>2014-02-09, Beman Dawes comments:</note>
-
-  <p/>For ideal operating systems populated by ideal external memory devices, we might be able to
-  identify the specific functions that are subject to file system races. But this library needs to
-  be useful across real operating system and external memory devices. In that environment, a blanket
-  warning seems more appropriate. Operational functions [15 fs.op.funcs] introduction already concerns this warning:
-
-  <blockquote>  <p/>[<i>Note</i>: Because hardware failures, network failures, file system races, and many other kinds of errors
-occur frequently in file system operations, users should be aware that any filesystem operational
-function, no matter how apparently innocuous, may encounter an error. See Error reporting. &mdash; <i>end note</i>]
-</blockquote>
-  
-Thus I see this issue as NAD. It is redundant to repeat this warning for a particular function.
+<note>2014-02-13 LWG/SG-3 Issaquah: No consensus for change. Section 2.1 description of races is sufficient.</note>
   
 </discussion>
 
