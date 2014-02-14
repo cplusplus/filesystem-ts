@@ -3,7 +3,7 @@
   <!ENTITY nbsp "&#160;">
 ] >
 
-<issue num="27" status="New">
+<issue num="27" status="Open">
 <title>[PDTS] Return value of <tt>uintmax_t</tt> on error?</title>
 <section><sref ref="15.15 [fs.op.hard_lk_ct]"/></section>
 <submitter>FI-9</submitter>
@@ -15,10 +15,18 @@ occurs.", one would expect that <b>both</b> signatures return that if an error o
 
 <p>Clarify the Returns clause, and apply the same for every function that returns an
 <tt>uintmax_t</tt> where applicable.</p>
+  
+ <note>2014-02-13 LWG/SG-3 Issaquah:</note>
 
-  <note>2014-02-09, Beman Dawes comments:</note>
-  <p/>Operational functions without <tt>ec</tt> arguments throw if an error occurs, unless otherwise specified.
-  So unless I'm misunderstanding something, the issue is NAD.
+  <p/>Discussion when around in circles for awhile, until someone suggested the reference was wrong,
+  and that the issue applied to the previous function in the WP, 15.14 File size [fs.op.file_size].
+  
+  <p/>The NB Comment makes much more sense if it applies to file_size(), so the chair was directed
+  to change the reference from 15.15 [fs.op.hard_lk_ct] to 15.14 [fs.op.file_size].
+  
+  <p/>The intent that file_size() is only meaningful for regular_files. Beman to strike the
+  the static_cast, changing it to "Otherwise an error is reported.".  
+  
 
 </discussion>
 
