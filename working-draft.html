@@ -256,12 +256,16 @@ POSIX. Implementations shall document any behavior that differs from the
 behavior defined by POSIX. Implementations that do not support exact POSIX 
 behavior are encouraged to provide behavior as close to POSIX behavior as is reasonable given the 
 limitations of actual operating systems and file systems. If an implementation cannot provide any 
-reasonable behavior, the implementation shall report an error in an 
-implementation-defined manner.</p>
+reasonable behavior, the implementation shall report an error <del>in an 
+implementation-defined manner</del> <ins>as specified in § 7 [fs.err.report].
+</ins></p>
 <blockquote>
-<p>[<i>Note:</i> Such errors might be reported by an <del>#error</del> <ins><code>#error</code></ins> directive, a <code>
+<p><del>[<i>Note:</i> Such errors might be reported by an <del>#error</del> <ins><code>#error</code></ins> directive, a <code>
 static_assert</code>, a <code>filesystem_error</code> exception, a special 
-return value, or some other manner. <i>--end note</i>]</p>
+return value, or some other manner. <i>--end note</i>]</del></p>
+<p><ins>[<i>Note:</i> This allows users to rely on an exception being thrown or 
+an error code being set when an implementation cannot provide any reasonable 
+behavior. — <i>end note</i>]</ins></p>
 </blockquote>
 <p>Implementations are not required to provide behavior that is not supported by 
 a particular file system.</p>
