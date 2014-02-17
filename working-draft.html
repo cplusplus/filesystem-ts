@@ -33,7 +33,7 @@ del     { background-color:#FFD7D7 }
     <tr>
       <td>Date:</td>
       <td>
-      <!--webbot bot="Timestamp" S-Type="EDITED" S-Format="%Y-%m-%d" startspan -->2014-02-12<!--webbot bot="Timestamp" endspan i-checksum="12123" --></td>
+      <!--webbot bot="Timestamp" S-Type="EDITED" S-Format="%Y-%m-%d" startspan -->2014-02-17<!--webbot bot="Timestamp" endspan i-checksum="12133" --></td>
     </tr>
     <tr>
       <td>Revises:</td>
@@ -106,7 +106,8 @@ Specification document.</span></i></p>
       &nbsp;&nbsp;&nbsp;<a href="#fs.def.pathres">4.17  pathname resolution </a><br>
       &nbsp;&nbsp;&nbsp;<a href="#Relative-path">4.18  relative path </a><br>
       &nbsp;&nbsp;&nbsp;<a href="#symbolic-link">4.19  symbolic link </a><br>
-      <a href="#fs.req">5  Requirements </a><br>
+      <a href="#fs.req">5  Requirements</a><br>
+&nbsp;&nbsp; <a href="#Namespaces-and-headers">5.1 Namespaces and headers</a><a href="#fs.req"> </a><br>
       <a href="#Header-filesystem-synopsis">6  Header <code>&lt;filesystem&gt;</code> synopsis 
 </a><br>
       <a href="#Error-reporting">7  Error reporting </a><br>
@@ -472,9 +473,34 @@ encoding. Since <code>signed char</code> and <code>unsigned char</code> have no
 implied encoding, they are not included as permitted types. <i>--end note</i>]</p>
 
 </blockquote>
+<h3>5.1 <a name="Namespaces-and-headers">Namespaces and headers</a></h3>
+
+<ins>
+<p>The components described in this technical specification are experimental and 
+not part of the C++ standard library. All components described in this technical 
+specification are declared in namespace <code>std::experimental::filesystem::filesystem_v1</code> 
+or a sub-namespace thereof unless otherwise specified. The header described in 
+this technical specification shall import the contents of <code>
+std::experimental::filesystem::filesystem_v1</code> into <code>std::experimental::filesystem</code> as 
+if by </p>
+<blockquote>
+<pre>namespace std {
+  namespace experimental {
+    namespace filesystem {
+      inline namespace v1 {}
+    }
+  }
+}</pre>
+</blockquote>
+<p>Unless otherwise specified, references to other entities described in this 
+technical specification are assumed to be qualified with <code>std::experimental::</code><code>filesystem::filesystem_v1::</code>, 
+and references to entities described in the C++ standard are assumed to be qualified 
+with <code>std::</code>. </p>
+</ins>
+
 <h2>6  <a name="Header-filesystem-synopsis">Header <code>&lt;filesystem&gt;</code> synopsis</a> 
 [fs.filesystem.synopsis]</h2>
-<pre>namespace std { namespace tbd { namespace filesystem {
+<pre>namespace std { namespace experimental { namespace filesystem { inline namespace v1 {
 
     class <a href="#class-path">path</a>;
     
@@ -684,7 +710,7 @@ implied encoding, they are not included as permitted types. <i>--end note</i>]</
     path         <a href="#unique_path">unique_path</a>(const path&amp; model=&quot;%%%%-%%%%-%%%%-%%%%&quot;);
     path         <a href="#unique_path">unique_path</a>(const path&amp; model, error_code&amp; ec);
 
-} } }  // namespaces std::tbd::filesystem</pre>
+} } } }  // namespaces std::experimental::filesystem::v1</pre>
 
  <p><b><i><code>unspecified-trivial-clock</code></i></b> is an unspecified type 
 provided by the implementation that satisfies the <code>TrivialClock</code> requirements (<del>[time.clock.req]</del> <ins>C++11 §20.12.3</ins>) 
@@ -743,7 +769,7 @@ of a path. The path does not necessarily exist in external storage, and the
 pathname is not necessarily valid for the current operating 
 system or for a particular file system.</p>
 <blockquote>
-<pre>namespace std { namespace tbd { namespace filesystem {
+<pre>namespace std { namespace experimental { namespace filesystem { inline namespace v1 {
 
       class path
       {
@@ -872,7 +898,7 @@ system or for a particular file system.</p>
         string_type pathname;  // <b><i>exposition only</i></b>
       };
 
-} } }  // namespaces std::tbd::filesystem</pre>
+} } } }  // namespaces std::experimental::filesystem::v1</pre>
 
 </blockquote>
 <p><code><a name="value_type">value_type</a></code> is a <code>typedef</code> for the 
@@ -1123,7 +1149,7 @@ template &lt;class InputIterator&gt;
     <blockquote>
   <p>A string is to be read from a database 
   that is encoded in ISO/IEC 8859-1, and used to create a directory:</p>
-      <pre>namespace fs = std::tbd::filesystem;
+      <pre>namespace fs = std::experimental::filesystem;
 std::string latin1_string = read_latin1_data();
 codecvt_8859_1&lt;wchar_t&gt; latin1_facet;
 std::locale latin1_locale(std::locale(), latin1_facet);
@@ -1697,7 +1723,7 @@ template &lt;class InputIterator&gt;
   <blockquote>
     <p>A string is to be read from a database that is encoded in UTF-8, and used 
     to create a directory using the native encoding for filenames:</p>
-    <pre>namespace fs = std::tbd::filesystem;
+    <pre>namespace fs = std::experimental::filesystem;
 std::string utf8_string = read_utf8_data();
 fs::create_directory(fs::u8path(utf8_string));</pre>
     <p>For POSIX based operating systems with the native narrow encoding set 
@@ -1713,7 +1739,7 @@ fs::create_directory(fs::u8path(utf8_string));</pre>
 </blockquote>
 <h2>9  <a name="Class-filesystem_error">Class <code>filesystem_error</code> 
 [class.filesystem_error]</a></h2>
-<pre>namespace std { namespace tbd { namespace filesystem {
+<pre>namespace std { namespace experimental { namespace filesystem { inline namespace v1 {
 
       class filesystem_error : public system_error
       {
@@ -1728,7 +1754,7 @@ fs::create_directory(fs::u8path(utf8_string));</pre>
         const path&amp; <a href="#filesystem_error-path2">path2</a>() const noexcept;
         const char* <a href="#filesystem_error-what">what</a>() const noexcept;
       };
-} } }  // namespaces std::tbd::filesystem</pre>
+} } } }  // namespaces std::experimental::filesystem::v1</pre>
 <p>The class template <code>filesystem_error</code> defines the type of 
 objects thrown as exceptions to report file system errors from functions described in this 
 Technical Specification.</p>
@@ -2124,7 +2150,7 @@ removing write permission for owner, group, or others removes write permission
 for all. The Cygwin users guide has extensive discussion of the problems 
 involved. Input from security experts is needed.</span></i></p>
 <h2>11  <a name="file_status">Class <code>file_status</code></a> [class.file_status]</h2>
-<pre>namespace std { namespace tbd { namespace filesystem {
+<pre>namespace std { namespace experimental { namespace filesystem { inline namespace v1 {
 
       class file_status
       {
@@ -2148,7 +2174,7 @@ involved. Input from security experts is needed.</span></i></p>
         void       type(<a href="#file_type">file_type</a> ft) noexcept;
         void       permissions(<a href="#Enum.perms">perms</a> prms) noexcept;
       };
-} } }  // namespaces std::tbd::filesystem</pre>
+} } } }  // namespaces std::experimental::filesystem::v1</pre>
 <p>An object of type <code>file_status</code> stores information about the type 
 and permissions of a file.</p>
 <h3>11.1  <a name="file_status-constructors"><code>file_status</code> constructors</a> 
@@ -2180,7 +2206,7 @@ and permissions of a file.</p>
   <p><i>Postconditions:</i> <code>permissions() == prms</code>.</p>
 </blockquote>
 <h2>12  <a name="Class-directory_entry">Class <code>directory_entry</code></a> [class.directory_entry]</h2>
-<pre>namespace std { namespace tbd { namespace filesystem {
+<pre>namespace std { namespace experimental { namespace filesystem { inline namespace v1 {
 
       class directory_entry
       {
@@ -2221,7 +2247,7 @@ and permissions of a file.</p>
         mutable file_status  m_symlink_status; // for exposition only; lstat()-like
       };
 
-} } }  // namespaces std::tbd::filesystem</pre>
+} } } }  // namespaces std::experimental::filesystem::v1</pre>
 <p>A <code>directory_entry</code> object stores a <code>path object</code>, 
 a <code>file_status</code> object for non-symbolic link status, and a <code>file_status</code> object for symbolic link status. The <code>file_status</code> objects act as value caches.</p>
 <blockquote>
@@ -2373,7 +2399,7 @@ sequence of <code>directory_entry</code> elements representing the files in a
 directory.&nbsp; 
 [<i>Note:</i> For iteration into sub-directories,&nbsp; see class <code><a href="#Class-recursive_directory_iterator">recursive_directory_iterator</a></code> 
 ([class.rec.dir.itr]). <i>--end note</i>]</p>
-<pre>namespace std { namespace tbd { namespace filesystem {
+<pre>namespace std { namespace experimental { namespace filesystem { inline namespace v1 {
 
       class directory_iterator :
         public iterator&lt;input_iterator_tag, directory_entry&gt;
@@ -2399,7 +2425,7 @@ directory.&nbsp;
         //  C++<del> Std, </del><ins>11 §</ins>24.1.1 Input iterators <del>[input.iterators]</del>
       };
 
-} } }  // namespaces std::tbd::filesystem</pre>
+} } } }  // namespaces std::experimental::filesystem::v1</pre>
 <p> <code>directory_iterator</code> satisfies the requirements of an input 
 iterator (<del>[input.iterators]</del> <ins>C++11 §24.2.3</ins>).</p>
 <p>If an iterator of type <code>directory_iterator</code> is advanced past the 
@@ -2488,7 +2514,7 @@ range-based for statements.</p>
 <p>An object of type <code>recursive_directory_iterator</code> provides an iterator for 
 a sequence of <code>directory_entry</code> elements representing the files in a 
 directory and its sub-directories.</p>
-<pre>namespace std { namespace tbd { namespace filesystem {
+<pre>namespace std { namespace experimental { namespace filesystem { inline namespace v1 {
 
       class recursive_directory_iterator :
         public iterator&lt;input_iterator_tag, directory_entry&gt;
@@ -2524,7 +2550,7 @@ directory and its sub-directories.</p>
         // ... other members as required for Input iterators [input.iterators]
       };
 
-} } }  // namespaces std::tbd::filesystem</pre>
+} } } }  // namespaces std::experimental::filesystem::v1</pre>
 
 <p>The behavior of a <code>recursive_directory_iterator</code> is the same 
 as a <code>directory_iterator</code> unless otherwise specified.</p>
