@@ -573,7 +573,7 @@ with <code>std::</code>. </p>
       skip_permission_denied
     };
 
-    typedef chrono::time_point&lt;<b><i>unspecified-trivial-clock</i></b>&gt;  file_time_type;
+    typedef chrono::time_point&lt;<b><i><del>unspecified-</del>trivial-clock</i></b>&gt;  file_time_type;
 
     // <a href="#Operational-functions">operational functions</a>
 
@@ -719,9 +719,13 @@ with <code>std::</code>. </p>
 
 } } } }  // namespaces std::experimental::filesystem::v1</pre>
 
- <p><b><i><code>unspecified-trivial-clock</code></i></b> is an unspecified type 
-provided by the implementation that satisfies the <code>TrivialClock</code> requirements (<del>[time.clock.req]</del> <ins>C++11 §20.12.3</ins>) 
- and that is capable of representing and measuring file time values.</p>
+ <p><b><i><code><del>unspecified-</del>trivial-clock</code></i></b> is an <del>unspecified type 
+provided by the implementation</del> <ins>implementation-defined type</ins> that satisfies the
+<code>TrivialClock</code> requirements (<del>[time.clock.req]</del> <ins>C++11 §20.12.3</ins>) 
+ and that is capable of representing and measuring file time values. <ins>
+ Implementations should ensure that the resolution and range of <tt>
+ file_time_type</tt> reflect the operating system dependent resolution and range 
+ of file time values.</ins></p>
 <h2>7  <a name="Error-reporting">Error reporting</a> [fs.err.report]</h2>
 <p>Filesystem library functions often provide two overloads, one that 
 throws an exception to report file system errors, and another that sets an <code>error_code</code>.</p>
