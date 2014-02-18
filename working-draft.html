@@ -33,7 +33,7 @@ del     { background-color:#FFD7D7 }
     <tr>
       <td>Date:</td>
       <td>
-      <!--webbot bot="Timestamp" S-Type="EDITED" S-Format="%Y-%m-%d" startspan -->2014-02-17<!--webbot bot="Timestamp" endspan i-checksum="12133" --></td>
+      <!--webbot bot="Timestamp" S-Type="EDITED" S-Format="%Y-%m-%d" startspan -->2014-02-18<!--webbot bot="Timestamp" endspan i-checksum="12135" --></td>
     </tr>
     <tr>
       <td>Revises:</td>
@@ -561,7 +561,7 @@ with <code>std::</code>. </p>
     {
       uintmax_t capacity;
       uintmax_t free; 
-      uintmax_t available; // free space available to a non-privileged process
+      uintmax_t available; <del>// free space available to a non-privileged process</del>
     };
 
     enum class <a name="copy_option" href="#enum.copy_options">copy_options</a>;  // [<a href="#enum.copy_options">enum.copy_options</a>]
@@ -3412,6 +3412,9 @@ space_info <a name="space2">space</a>(const path&amp; p, error_code&amp; ec) noe
   For the signature with argument <code>ec</code>, all members are set to <code>
   static_cast&lt;uintmax_t&gt;(-1)</code> if an error occurs.</p>
   <p><i>Throws:</i> As specified in <a href="#Error-reporting">Error reporting</a>.</p>
+      <p><ins><i>Remarks:</i> The value of member <code>space_info::available</code> 
+      is operating system dependent. [<i>Note:</i> <code>available</code> may be 
+      less than <code>free</code>. <i>— end note</i>] </ins></p>
 </blockquote>
 
 <h3>15.33  Status&nbsp; [<a name="fs.op.status">fs.op.status</a>]</h3>
