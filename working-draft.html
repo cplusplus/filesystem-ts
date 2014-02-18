@@ -1681,16 +1681,13 @@ iterators<del> [lib.bidirectional.iterators]</del>). Its <code>value_type</code>
 basic_ostream&lt;charT, traits&gt;&amp;
 operator&lt;&lt;(basic_ostream&lt;charT, traits&gt;&amp; os, const path&amp; p);</pre>
 <blockquote>
-  <p><i>Effects:</i> <code>os &lt;&lt; p.string&lt;charT, traits&gt;()</code>.</p>
-  <p>[<i>Note:</i> Pathnames containing spaces require special handling by the 
-  user to avoid truncation when read by the extractor. <i>--end note</i>]</p>
-  <p><span style="background-color: #E0E0E0"><i>The Boost inserter outputs 
-  quoted strings, which are recognized as such by the extractor. There is a 
-  sentiment within the Filesystem Study Group that supplying a quoted and/or 
-  escaped string manipulator as a string extension would be a better solution than a 
-  path specific feature. See proposal 
-  <a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2012/n3431.html">N3431</a>, Quoted Strings 
-  Library Proposal.</i></span></p>
+  <p><i>Effects:</i> <code>os </code>
+  <tt>&lt;&lt; <ins>quoted(</ins>p.string&lt;charT, traits&gt;()<ins>)</ins></tt>. </p>
+  <p><del>[<i>Note</i>: Pathnames containing spaces require special handling by 
+  the user to avoid truncation when read by the extractor. — <i>end note</i>]
+  </del></p>
+  <p><ins>[<i>Note</i>: The <code>quoted</code> function is described in ISO 
+  14882:2014 §27.7.6. — <i>end note</i>] </ins></p>
   <p><i>Returns:</i> <code>os</code></p>
   </blockquote>
 <pre>template &lt;class charT, class traits&gt;
@@ -1700,7 +1697,7 @@ operator&gt;&gt;(basic_istream&lt;charT, traits&gt;&amp; is, path&amp; p);</pre>
   <p><i>Effects:&nbsp; </i></p>
   <blockquote>
     <pre>basic_string&lt;charT, traits&gt; tmp;
-is &gt;&gt; tmp;
+is &gt;&gt; <ins>quoted(</ins>tmp<ins>)</ins>;
 p = tmp;</pre>
   </blockquote>
   <p><i>Returns:</i> <code>is</code></p>
