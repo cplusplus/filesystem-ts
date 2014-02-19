@@ -207,8 +207,8 @@ conversions </a><br>
       &nbsp;&nbsp;&nbsp;<a href="#fs.op.status_known">15.34  Status known&nbsp; </a><br>
       &nbsp;&nbsp;&nbsp;<a href="#fs.op.symlink_status">15.35  Symlink status&nbsp; </a><br>
       &nbsp;&nbsp;&nbsp;<a href="#fs.op.system_complete">15.36  System complete&nbsp; </a><br>
-      &nbsp;&nbsp;&nbsp;<a href="#fs.op.temp_dir_path">15.37  Temporary directory path&nbsp; </a><br>
-      &nbsp;&nbsp;&nbsp;<a href="#fs.op.unique_path">15.38 Unique path</a></p>
+      &nbsp;&nbsp;&nbsp;<a href="#fs.op.temp_dir_path">15.37 Temporary directory 
+      path</a></p>
 </blockquote>
       
 <hr>
@@ -714,8 +714,8 @@ with <code>std::</code>. </p>
     path         <a href="#temp_directory_path">temp_directory_path</a>();
     path         <a href="#temp_directory_path">temp_directory_path</a>(error_code&amp; ec);
 
-    path         <a href="#unique_path">unique_path</a>(const path&amp; model=&quot;%%%%-%%%%-%%%%-%%%%&quot;);
-    path         <a href="#unique_path">unique_path</a>(const path&amp; model, error_code&amp; ec);
+    <del>path         <a href="#unique_path">unique_path</a>(const path&amp; model=&quot;%%%%-%%%%-%%%%-%%%%&quot;);</del>
+    <del>path         <a href="#unique_path">unique_path</a>(const path&amp; model, error_code&amp; ec);</del>
 
 } } } }  // namespaces std::experimental::filesystem::v1</pre>
 
@@ -3624,12 +3624,12 @@ path temp_directory_path(error_code&amp; ec);</pre>
 </blockquote>
 </blockquote>
 
-<h3>15.38  Unique path&nbsp; [<a name="fs.op.unique_path">fs.op.unique_path</a>]</h3>
+<del><h3>15.38  Unique path&nbsp; [fs.op.unique_path]</h3></del>
 
-<pre>path <a name="unique_path">unique_path</a>(const path&amp; model=&quot;%%%%-%%%%-%%%%-%%%%&quot;);
-path unique_path(const path&amp; model, error_code&amp; ec);</pre>
+<pre><del>path <a name="unique_path">unique_path</a>(const path&amp; model=&quot;%%%%-%%%%-%%%%-%%%%&quot;);</del>
+<del>path unique_path(const path&amp; model, error_code&amp; ec);</del></pre>
 <blockquote>
-  <p>The <code>unique_path</code> function generates a name suitable for temporary files, including directories. The name is based 
+<del>  <p>The <code>unique_path</code> function generates a name suitable for temporary files, including directories. The name is based 
   on a model that uses the percent sign character to specify replacement by a 
   random hexadecimal digit.</p>
   <p>[<i>Note:</i> The more bits of randomness in the 
@@ -3640,9 +3640,9 @@ path unique_path(const path&amp; model, error_code&amp; ec);</pre>
   occurrence of the percent sign character is replaced by a random hexadecimal 
   digit character in the range 0-9, a-f. The signature with argument <code>ec</code> 
   returns <code>path()</code> if an error occurs.</p>
-  <p><i>Throws:</i> As specified in <a href="#Error-reporting">Error reporting</a>.</p>
+  <p><i>Throws:</i> As specified in Error reporting.</p>
   <p><i>Remarks:</i> Implementations are encouraged to obtain the required 
-  randomness via a <a href="http://en.wikipedia.org/wiki/Cryptographically_secure_pseudorandom_number_generator">cryptographically secure pseudo-random number generator</a>, such as one 
+  randomness via a cryptographically secure pseudo-random number generator, such as one 
   provided by the operating system. [<i>Note</i>: Such generators may block 
   until sufficient entropy develops. <i>--end note</i>]</p>
   <p>[<i>Example</i>:</p>
@@ -3652,7 +3652,7 @@ path unique_path(const path&amp; model, error_code&amp; ec);</pre>
   <p>Typical output would be <code>&quot;test-0db7f2bf57a.txt&quot;</code>. Because 11 
   hexadecimal output characters are specified, 44 bits of randomness are 
   supplied.&nbsp; <i>-- end example</i>] </p>
-</blockquote>
+</blockquote></del>
 
 <p></p>
 <hr>
