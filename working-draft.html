@@ -755,7 +755,9 @@ errors are truly exceptional and indicate a serious failure. Throwing an
   functions with two path arguments, the first of these arguments shall be 
   passed to the
 <code>filesystem_error</code> constructor as the <code>path1</code> argument, 
-  and the second shall be passed as the <code>path2</code> argument.<br>
+  and the second shall be passed as the <code>path2</code> argument. <ins>The
+  <code>filesystem_error</code> constructor&#39;s <code>error_code</code> argument 
+  is set as appropriate for the specific operating system dependent error. </ins><br>
 &nbsp;</li>
   <li>Failure to allocate storage is reported by throwing an exception as described in <del>the C++ standard,</del><ins>C++11 
   §</ins>17.6.4.10<del> [res.on.exception.handling]</del>.<br>
@@ -769,7 +771,7 @@ errors are truly exceptional and indicate a serious failure. Throwing an
   implementation to an operating system or other underlying API results in an 
   error that prevents the function from meeting its specifications, the
 <code>error_code&amp;</code> argument is set as 
-  appropriate<del> appropriate</del> for the specific error. Otherwise, <code>clear()</code> 
+  appropriate for the specific <ins>operating system dependent</ins> error. Otherwise, <code>clear()</code> 
   is called on the
 <code>error_code&amp;</code> argument.</li>
 </ul>
@@ -2446,7 +2448,7 @@ directory.&nbsp;
         directory_iterator&amp;    increment(error_code&amp; ec) noexcept;
 
         // other members as required by
-        //  C++<del> Std, </del><ins>11 §</ins>24.1.1 Input iterators <del>[input.iterators]</del>
+        //  C++<del> Std, </del><ins>11 § </ins>24.1.1 Input iterators <del>[input.iterators]</del>
       };
 
 } } } }  // namespaces std::experimental::filesystem::v1</pre>
@@ -2581,7 +2583,7 @@ directory and its sub-directories.</p>
         void disable_recursion_pending();
 
        <del>// ... other members as required for Input iterators [input.iterators]</del>
-       <ins>// other members as required by C++11 §24.1.1 Input iterators</ins>
+       <ins>// other members as required by C++11 § 24.1.1 Input iterators</ins>
       
      };
 
