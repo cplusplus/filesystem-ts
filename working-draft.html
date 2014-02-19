@@ -3585,9 +3585,9 @@ path <a name="system_complete2">system_complete</a>(const path&amp; p, error_cod
   
 <blockquote>
 [<i>Example:</i> For POSIX based operating systems, <code>system_complete(p)</code>
-  has the same semantics as <code>complete(p, current_path())</code>.</p>
+  has the same semantics as <code><del>complete</del><ins>absolute</ins>(p, current_path())</code>.</p>
   <p>For Windows based operating systems, <code>system_complete(p)</code> has the 
-  same semantics as <code>absolute(ph, current_path())</code> if <code>p.is_absolute() ||
+  same semantics as <code>absolute(p<del>h</del>, current_path())</code> if <code>p.is_absolute() ||
   !p.has_root_name()</code> or <code>p</code> and <code>base</code> have the same
   <code>root_name()</code>. 
   Otherwise it acts like <code>absolute(p, kinky)</code>, where <code>kinky</code> is
