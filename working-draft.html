@@ -2416,12 +2416,19 @@ sequence of <code>directory_entry</code> elements representing the files in a
 directory.&nbsp; 
 [<i>Note:</i> For iteration into sub-directories,&nbsp; see class <code><a href="#Class-recursive_directory_iterator">recursive_directory_iterator</a></code> 
 ([class.rec.dir.itr]). <i>--end note</i>]</p>
+
 <pre>namespace std { namespace experimental { namespace filesystem { inline namespace v1 {
 
-      class directory_iterator :
-        public iterator&lt;input_iterator_tag, directory_entry&gt;
+      class directory_iterator <del>:</del>
+        <del>public iterator&lt;input_iterator_tag, directory_entry&gt;</del>
       {
       public:
+        <ins>typedef directory_entry        value_type;</ins>
+        <ins>typedef ptrdiff_t              difference_type;</ins>
+        <ins>typedef const directory_entry* pointer;</ins>
+        <ins>typedef const directory_entry&amp; reference;</ins>
+        <ins>typedef input_iterator_tag     iterator_category;</ins>
+
         // <a href="#directory_iterator-members">member functions</a>
         directory_iterator() noexcept;
         explicit directory_iterator(const path&amp; p);
@@ -2443,6 +2450,7 @@ directory.&nbsp;
       };
 
 } } } }  // namespaces std::experimental::filesystem::v1</pre>
+
 <p> <code>directory_iterator</code> satisfies the requirements of an input 
 iterator (<del>[input.iterators]</del> <ins>C++11 §24.2.3</ins>).</p>
 <p>If an iterator of type <code>directory_iterator</code> is advanced past the 
@@ -2533,10 +2541,15 @@ a sequence of <code>directory_entry</code> elements representing the files in a
 directory and its sub-directories.</p>
 <pre>namespace std { namespace experimental { namespace filesystem { inline namespace v1 {
 
-      class recursive_directory_iterator :
-        public iterator&lt;input_iterator_tag, directory_entry&gt;
+      class recursive_directory_iterator <del>:</del>
+        <del>public iterator&lt;input_iterator_tag, directory_entry&gt;</del>
       {
       public:
+        <ins>typedef directory_entry        value_type;</ins>
+        <ins>typedef ptrdiff_t              difference_type;</ins>
+        <ins>typedef const directory_entry* pointer;</ins>
+        <ins>typedef const directory_entry&amp; reference;</ins>
+        <ins>typedef input_iterator_tag     iterator_category;</ins>
 
         // constructors and destructor
         recursive_directory_iterator() noexcept;
@@ -2558,14 +2571,19 @@ directory and its sub-directories.</p>
         recursive_directory_iterator&amp; operator=(const recursive_directory_iterator&amp;) = default;
         recursive_directory_iterator&amp; operator=(recursive_directory_iterator&amp;&amp;) = default;
 
+        <ins>const directory_entry&amp; operator*() const;</ins>
+        <ins>const directory_entry* operator-&gt;() const;</ins>
+
         recursive_directory_iterator&amp; operator++();
         recursive_directory_iterator&amp; increment(error_code&amp; ec);
 
         void pop();
         void disable_recursion_pending();
 
-        // ... other members as required for Input iterators [input.iterators]
-      };
+       <del>// ... other members as required for Input iterators [input.iterators]</del>
+       <ins>// other members as required by C++11 §24.1.1 Input iterators</ins>
+      
+     };
 
 } } } }  // namespaces std::experimental::filesystem::v1</pre>
 
