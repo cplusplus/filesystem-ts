@@ -482,28 +482,27 @@ implied encoding, they are not included as permitted types. <i>&mdash;end note</
 </blockquote>
 <h3>5.1 <a name="Namespaces-and-headers">Namespaces and headers</a></h3>
 
-<ins>
-<p>The components described in this technical specification are experimental and 
+
+<p><ins>The components described in this technical specification are experimental and 
 not part of the C++ standard library. All components described in this technical 
-specification are declared in namespace <code>std::experimental::filesystem::filesystem_v1</code> 
+specification are declared in namespace <code>std::experimental::filesystem::v1</code> 
 or a sub-namespace thereof unless otherwise specified. The header described in 
 this technical specification shall import the contents of <code>
-std::experimental::filesystem::filesystem_v1</code> into <code>std::experimental::filesystem</code> as 
-if by </p>
+std::experimental::filesystem::v1</code> into <code>std::experimental::filesystem</code> as 
+if by</ins></p>
 <blockquote>
-<pre>namespace std {
-  namespace experimental {
-    namespace filesystem {
-      inline namespace v1 {}
-    }
-  }
-}</pre>
+<pre><ins>namespace std {</ins>
+  <ins>namespace experimental {</ins>
+    <ins>namespace filesystem {</ins>
+     <ins> inline namespace v1 {}</ins>
+    <ins>}</ins>
+  <ins>}</ins>
+<ins>}</ins></pre>
 </blockquote>
-<p>Unless otherwise specified, references to other entities described in this 
-technical specification are assumed to be qualified with <code>std::experimental::</code><code>filesystem::filesystem_v1::</code>, 
+<p><ins>Unless otherwise specified, references to other entities described in this 
+technical specification are assumed to be qualified with <code>std::experimental::</code><code>filesystem::v1::</code>, 
 and references to entities described in the C++ standard are assumed to be qualified 
-with <code>std::</code>. </p>
-</ins>
+with <code>std::</code>.</ins></p>
 
 <h2>6  <a name="Header-filesystem-synopsis">Header <code>&lt;filesystem&gt;</code> synopsis</a> 
 [fs.filesystem.synopsis]</h2>
@@ -3646,35 +3645,35 @@ path temp_directory_path(error_code&amp; ec);</pre>
 </blockquote>
 </blockquote>
 
-<del><h3>15.38  Unique path&nbsp; [fs.op.unique_path]</h3></del>
+<h3><del>15.38  Unique path&nbsp; [fs.op.unique_path]</del></h3>
 
 <pre><del>path <a name="unique_path">unique_path</a>(const path&amp; model=&quot;%%%%-%%%%-%%%%-%%%%&quot;);</del>
 <del>path unique_path(const path&amp; model, error_code&amp; ec);</del></pre>
 <blockquote>
-<del>  <p>The <code>unique_path</code> function generates a name suitable for temporary files, including directories. The name is based 
+  <p><del>The <code>unique_path</code> function generates a name suitable for temporary files, including directories. The name is based 
   on a model that uses the percent sign character to specify replacement by a 
-  random hexadecimal digit.</p>
-  <p>[<i>Note:</i> The more bits of randomness in the 
+  random hexadecimal digit.</del></p>
+  <p><del>[<i>Note:</i> The more bits of randomness in the 
   generated name, the less likelihood of prior existence or being guessed. 
   Each replacement hexadecimal digit in the model adds four bits of randomness. 
-  The default model thus provides 64 bits of randomness. <i>&mdash;end note</i>]</p>
-  <p><i>Returns:</i> A path identical to <code>model</code>, except that each 
+  The default model thus provides 64 bits of randomness. <i>&mdash;end note</i>]</del></p>
+  <p><del><i>Returns:</i> A path identical to <code>model</code>, except that each 
   occurrence of the percent sign character is replaced by a random hexadecimal 
   digit character in the range 0-9, a-f. The signature with argument <code>ec</code> 
-  returns <code>path()</code> if an error occurs.</p>
-  <p><i>Throws:</i> As specified in Error reporting.</p>
-  <p><i>Remarks:</i> Implementations are encouraged to obtain the required 
+  returns <code>path()</code> if an error occurs.</del></p>
+  <p><del><i>Throws:</i> As specified in Error reporting.</del></p>
+  <p><del><i>Remarks:</i> Implementations are encouraged to obtain the required 
   randomness via a cryptographically secure pseudo-random number generator, such as one 
   provided by the operating system. [<i>Note</i>: Such generators may block 
-  until sufficient entropy develops. <i>&mdash;end note</i>]</p>
-  <p>[<i>Example</i>:</p>
+  until sufficient entropy develops. <i>&mdash;end note</i>]</del></p>
+  <p><del>[<i>Example</i>:</del></p>
   <blockquote>
-    <pre>cout &lt;&lt; unique_path(&quot;test-%%%%%%%%%%%.txt&quot;) &lt;&lt; endl;</pre>
+    <pre><del>cout &lt;&lt; unique_path(&quot;test-%%%%%%%%%%%.txt&quot;) &lt;&lt; endl;</del></pre>
   </blockquote>
-  <p>Typical output would be <code>&quot;test-0db7f2bf57a.txt&quot;</code>. Because 11 
+  <p><del>Typical output would be <code>&quot;test-0db7f2bf57a.txt&quot;</code>. Because 11 
   hexadecimal output characters are specified, 44 bits of randomness are 
-  supplied.&nbsp; <i>&mdash;end example</i>] </p>
-</blockquote></del>
+  supplied.&nbsp; <i>&mdash;end example</i>]</del></p>
+</blockquote>
 
 <p></p>
 <hr>
