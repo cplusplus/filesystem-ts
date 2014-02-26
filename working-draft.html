@@ -28,12 +28,12 @@ del     { background-color:#FFD7D7 }
   <table border="0">
     <tr>
       <td>Document number:&nbsp;&nbsp; </td>
-      <td>D3940</td>
+      <td><span style="background-color: #FFFF00">D3940</span></td>
     </tr>
     <tr>
       <td>Date:</td>
       <td>
-      <!--webbot bot="Timestamp" S-Type="EDITED" S-Format="%Y-%m-%d" startspan -->2014-02-20<!--webbot bot="Timestamp" endspan i-checksum="12120" --></td>
+      <!--webbot bot="Timestamp" S-Type="EDITED" S-Format="%Y-%m-%d" startspan -->2014-02-26<!--webbot bot="Timestamp" endspan i-checksum="12132" --></td>
     </tr>
     <tr>
       <td>Revises:</td>
@@ -1130,7 +1130,7 @@ path(path&amp;&amp; p) noexcept;</pre>
   <p><i>Effects:</i> Constructs an object of class <code>path</code> with <code>
   pathname</code> having the original value of <code>p.pathname</code>. In the 
   second form, <code>p</code> is left in a valid but unspecified state.</p>
-  <del><p><i>Postconditions:</i> empty().</p></del>
+  <p><del><i>Postconditions:</i> empty().</del></p>
 </blockquote>
 <pre>template &lt;class <a href="#Source">Source</a>&gt;
   path(Source const&amp; source);
@@ -2365,7 +2365,7 @@ file_status status(error_code&amp; ec) const noexcept;</pre>
   </blockquote>
   <p><i>Returns:</i> <code>m_status</code></p>
   
-  <p><i>Throws:</i> As specified in <a href="#Error-reporting">Error reporting</a>.</p>
+  <p><i>Throws:</i> As specified in <a href="#Error-reporting">Error reporting <ins>(7)</ins></a>.</p>
   
 </blockquote>
 <pre>file_status  symlink_status() const;
@@ -2381,7 +2381,7 @@ file_status  symlink_status(error_code&amp; ec) const noexcept;</pre>
   </blockquote>
   <p><i>Returns:</i> <code>m_symlink_status</code></p>
   
-  <p><i>Throws:</i> As specified in <a href="#Error-reporting">Error reporting</a>.</p>
+  <p><i>Throws:</i> As specified in <a href="#Error-reporting">Error reporting <ins>(7)</ins></a>.</p>
   
 </blockquote>
 <pre>bool operator==(const directory_entry&amp; rhs) const noexcept;</pre>
@@ -2508,7 +2508,7 @@ directory_iterator(</code>const path&amp; p, error_code&amp; ec<code>) noexcept;
 iterator for the first element in a sequence of <code>directory_entry</code> 
 elements representing the files in the directory, if any; otherwise the end iterator.</p>
 
-<p><i>Throws:</i> As specified in <a href="#Error-reporting">Error reporting</a>.</p>
+<p><i>Throws:</i> As specified in <a href="#Error-reporting">Error reporting <ins>(7)</ins></a>.</p>
 
 <p>[<i>Note:</i> To iterate over the current directory, use <code>directory_iterator(&quot;.&quot;)</code> rather than <code>directory_iterator(&quot;&quot;)</code>. <i>&mdash;end note</i>]</p>
 </blockquote>
@@ -2520,7 +2520,7 @@ directory_iterator&amp; increment(error_code&amp; ec)<code> noexcept</code>;</pr
 
 <p><i>Returns:</i> <code>*this</code>.</p>
 
-<p><i>Throws:</i> As specified in <a href="#Error-reporting">Error reporting</a>.</p>
+<p><i>Throws:</i> As specified in <a href="#Error-reporting">Error reporting <ins>(7)</ins></a>.</p>
 
 </blockquote>
 <h3>13.2  <a name="directory_iterator-non-member-functions"><code>directory_iterator</code> non-member functions</a> 
@@ -2613,7 +2613,7 @@ entry in the directory <code>p</code> resolves to, if any; otherwise, the end it
 directory_options</code> argument, otherwise <code>options() == 
 directory_options::none</code>.</p>
 
-<p><i>Throws:</i> As specified in <a href="#Error-reporting">Error reporting</a>.</p>
+<p><i>Throws:</i> As specified in <a href="#Error-reporting">Error reporting <ins>(7)</ins></a>.</p>
 
 <p>[<i>Note:</i> To iterate over the current directory, use <code>recursive_directory_iterator(&quot;.&quot;)</code> rather than <code>recursive_directory_iterator(&quot;&quot;)</code>. <i>&mdash;end note</i>]</p>
 
@@ -2672,7 +2672,7 @@ directory_options::follow_directory_symlink) != 0)</code> then&nbsp;directory <c
 
 <p><i>Returns:</i> <code>*this</code>.</p>
 
-<p><i>Throws:</i> As specified in <a href="#Error-reporting">Error reporting</a>.</p>
+<p><i>Throws:</i> As specified in <a href="#Error-reporting">Error reporting <ins>(7)</ins></a>.</p>
 
 </blockquote>
 <pre>void pop();</pre>
@@ -2707,7 +2707,7 @@ storage.</p>
 <p>[<i>Note: </i>Because hardware failures, network failures, <a href="#file-system-race">file system races</a>, and many 
 other kinds of errors occur frequently in file system operations, users should be aware 
 that any filesystem operational function, no matter how apparently innocuous, may encounter 
-an error.&nbsp;See <a href="#Error-reporting">Error reporting</a>. <i>&mdash;end note</i>]</p>
+an error.&nbsp;See <a href="#Error-reporting">Error reporting <ins>(7)</ins></a>. <i>&mdash;end note</i>]</p>
 <h3>15.1  Absolute&nbsp; [<a name="fs.op.absolute">fs.op.absolute</a>]</h3>
 <pre>path <a name="absolute">absolute</a>(const path&amp; p, const path&amp; base=current_path());</pre>
   <blockquote>
@@ -2748,7 +2748,7 @@ or <code>&quot;..&quot;</code> elements. </p>
 the same file system object as <code>absolute(p,base)</code>. For the overload 
 without a <code>base</code> argument, <code>base</code> is <code>current_path()</code>. 
 Signatures with argument <code>ec</code> return <code>path()</code> if an error occurs.</p>
-  <p><i>Throws:</i>&nbsp; As specified in <a href="#Error-reporting">Error reporting</a>.</p>
+  <p><i>Throws:</i>&nbsp; As specified in <a href="#Error-reporting">Error reporting <ins>(7)</ins></a>.</p>
   
   <p><i>Remarks:</i> <code>!exists(p)</code> is an error.</p>
   
@@ -2781,7 +2781,7 @@ void copy(const path&amp; from, const path&amp; to, <a href="#copy_option">copy_
       <li>Otherwise, <code>auto f = status(from)</code> and if needed <code>auto 
       t = status(to)</code>.</li>
     </ul>
-  <p>Report an error as specified in <a href="#Error-reporting">Error reporting</a> 
+  <p>Report an error as specified in <a href="#Error-reporting">Error reporting <ins>(7)</ins></a> 
   if:</p>
   
     <ul>
@@ -2796,7 +2796,7 @@ void copy(const path&amp; from, const path&amp; to, <a href="#copy_option">copy_
       <li>If <code>options &amp; copy_options::skip_symlinks</code>, then return.</li>
       <li>Otherwise if <code>!exists(t)</code>, then <code>copy_symlink(from, 
       to, options)</code>.</li>
-      <li>Otherwise report an error as specified in <a href="#Error-reporting">Error reporting</a>.</li>
+      <li>Otherwise report an error as specified in <a href="#Error-reporting">Error reporting <ins>(7)</ins></a>.</li>
     </ul>
   <p>Otherwise if <code>is_regular_file(f)</code>, then:</p>
   
@@ -2832,7 +2832,7 @@ void copy(const path&amp; from, const path&amp; to, <a href="#copy_option">copy_
   <p>Otherwise no effects.</p>
   
   </blockquote>
-  <p><i>Throws:</i> As specified in <a href="#Error-reporting">Error reporting</a>.</p>
+  <p><i>Throws:</i> As specified in <a href="#Error-reporting">Error reporting <ins>(7)</ins></a>.</p>
   
   <p><i>Remarks: </i>For the signature with argument <code>ec</code>, any 
   Filesystem library functions called by the implementation shall have an <code>
@@ -2879,7 +2879,7 @@ bool copy_file(const path&amp; from, const path&amp; to, error_code&amp; ec) noe
 <blockquote>
   <p><i>Returns: </i><code>copy_file(from, to, copy_options::none</code><i>[</i><code>, ec</code><i>]</i><code>)</code>.</p>
   
-  <p><i>Throws:</i> As specified in <a href="#Error-reporting">Error reporting</a>.</p>
+  <p><i>Throws:</i> As specified in <a href="#Error-reporting">Error reporting <ins>(7)</ins></a>.</p>
   
 </blockquote>
 <pre>bool <a name="copy_file">copy_file</a>(const path&amp; from, const path&amp; to, <a href="#copy_option">copy_options</a> options);
@@ -2893,7 +2893,7 @@ bool <a name="copy_file2">copy_file</a>(const path&amp; from, const path&amp; to
   <blockquote>
   <p>If&nbsp; <code>exists(to) &amp;&amp;</code> <code>!(options &amp; (copy_options::skip_existing 
   | copy_options::overwrite_existing | copy_options::update_existing))</code> report a 
-      file already exists error as specified in <a href="#Error-reporting">Error reporting</a>.</p>
+      file already exists error as specified in <a href="#Error-reporting">Error reporting <ins>(7)</ins></a>.</p>
   <p>If <code>!exists(to) || (options &amp; copy_options::overwrite_existing) || ((options &amp; copy_options::update_existing) 
   &amp;&amp; last_write_time(from) &gt; last_write_time(to)) || !(options &amp; (copy_options::skip_existing 
   | copy_options::overwrite_existing | copy_options::update_existing))</code> copy the contents and attributes of the file <code>from</code> resolves to  the file <code>to</code> resolves to.</p>
@@ -2901,7 +2901,7 @@ bool <a name="copy_file2">copy_file</a>(const path&amp; from, const path&amp; to
   <p><i>Returns</i>: <code>true</code> if the <code>from</code> file 
   was copied, otherwise <code>false</code>. The signature with argument <code>ec</code> return
   <code>false</code> if an error occurs.</p>
-  <p><i>Throws:</i> As specified in <a href="#Error-reporting">Error reporting</a>.</p>
+  <p><i>Throws:</i> As specified in <a href="#Error-reporting">Error reporting <ins>(7)</ins></a>.</p>
   <p><i>Complexity:</i> At most one direct or indirect invocation of <code>
   status(to)</code>.</p>
 </blockquote>
@@ -2914,7 +2914,7 @@ void copy_symlink(const path&amp; existing_symlink, const path&amp; new_symlink,
   where <i><code>function</code></i> is <code>create_symlink</code> or <code>
   create_directory_symlink</code>, as appropriate.</p>
   
-  <p><i>Throws:</i> As specified in <a href="#Error-reporting">Error reporting</a>.</p>
+  <p><i>Throws:</i> As specified in <a href="#Error-reporting">Error reporting <ins>(7)</ins></a>.</p>
   
 </blockquote>
 
@@ -2930,7 +2930,7 @@ bool <a name="create_directories2">create_directories</a>(const path&amp; p, err
   <p><i>Returns:</i> <code>true</code> if a new directory was created, otherwise <code>
   false</code>. The signature with argument <code>ec</code> returns false if an 
   error occurs.</p>
-  <p><i>Throws:</i> As specified in <a href="#Error-reporting">Error reporting</a>.</p>
+  <p><i>Throws:</i> As specified in <a href="#Error-reporting">Error reporting <ins>(7)</ins></a>.</p>
   <p><i>Complexity:</i> <i>O(n+1)</i> where <i>n</i> is the number of elements 
   of <code>p</code> that do not exist.</p>
 </blockquote>
@@ -2948,7 +2948,7 @@ bool create_directory(const path&amp; p, error_code&amp; ec) noexcept;</pre>
   <p><i>Postcondition:</i> <code>is_directory(p)</code></p>
   <p><i>Returns:</i> <code>true</code> if a new directory was created, otherwise <code>false</code>. 
   The signature with argument <code>ec</code> returns false if an error occurs.</p>
-  <p><i>Throws:</i> As specified in <a href="#Error-reporting">Error reporting</a>.</p>
+  <p><i>Throws:</i> As specified in <a href="#Error-reporting">Error reporting <ins>(7)</ins></a>.</p>
 </blockquote>
 
 <pre>bool <a name="create_directory2">create_directory</a>(const path&amp; p, const path&amp; existing_p);
@@ -2974,7 +2974,7 @@ bool create_directory(const path&amp; p, const path&amp; existing_p, error_code&
   <p><i>Returns:</i> <code>true</code> if a new directory was created, otherwise <code>false</code>. 
   The signature with argument <code>ec</code> returns false if an error occurs.</p>
   
-  <p><i>Throws:</i> As specified in <a href="#Error-reporting">Error reporting</a>.</p>
+  <p><i>Throws:</i> As specified in <a href="#Error-reporting">Error reporting <ins>(7)</ins></a>.</p>
 
 </blockquote>
 
@@ -2988,7 +2988,7 @@ void create_directory_symlink(const path&amp; to, const path&amp; new_symlink,
   <p><i>
   Postcondition:</i> <code>new_symlink</code> resolves to a symbolic link file that 
   contains an unspecified representation of <code>to</code>.</p>
-  <p><i>Throws:</i> As specified in <a href="#Error-reporting">Error reporting</a>.</p>
+  <p><i>Throws:</i> As specified in <a href="#Error-reporting">Error reporting <ins>(7)</ins></a>.</p>
   <p>[<i>Note:</i> Some operating systems require symlink creation to 
   identify that the link is to a directory. Portable code should use <code>create_directory_symlink()</code> to create directory symlinks rather than <code>create_symlink()</code> <i>&mdash;end note</i>]</p>
   <p>[<i>Note:</i> Some operating systems do not support symbolic links at all or support 
@@ -3015,7 +3015,7 @@ void <a name="create_hard_link2">create_hard_link</a>(const path&amp; to, const 
     <li>The contents of the file or directory
     <code>to</code> resolves to are unchanged.</li>
   </ul>
-  <p><i>Throws:</i> As specified in <a href="#Error-reporting">Error reporting</a>.</p>
+  <p><i>Throws:</i> As specified in <a href="#Error-reporting">Error reporting <ins>(7)</ins></a>.</p>
   <p>[<i>Note:</i> Some operating systems do not support hard links at all or support 
   them only for regular files. Some file systems do not support hard 
   links regardless of the operating system - the FAT file system used on memory 
@@ -3033,7 +3033,7 @@ void <a name="create_symlink2">create_symlink</a>(const path&amp; to, const path
   <p><i>
   Postcondition:</i> <code>new_symlink</code> resolves to a symbolic link file that 
   contains an unspecified representation of <code>to</code>.</p>
-  <p><i>Throws:</i> As specified in <a href="#Error-reporting">Error reporting</a>.</p>
+  <p><i>Throws:</i> As specified in <a href="#Error-reporting">Error reporting <ins>(7)</ins></a>.</p>
   <p>[<i>Note:</i> Some operating systems do not support symbolic links at all or support 
   them only for regular files. 
   Some file systems do not 
@@ -3051,7 +3051,7 @@ path <a name="current_path2">current_path</a>(error_code&amp; ec);</pre>
   obtained as if by POSIX <code><a href="http://www.opengroup.org/onlinepubs/000095399/functions/getcwd.html">getcwd()</a></code>. 
   The signature with argument <code>ec</code> returns <code>path()</code> if an 
   error occurs.</p>
-  <p><i>Throws:</i> As specified in <a href="#Error-reporting">Error reporting</a>.</p>
+  <p><i>Throws:</i> As specified in <a href="#Error-reporting">Error reporting <ins>(7)</ins></a>.</p>
   <p><i>Remarks: </i>The current working directory is the directory, associated 
   with the process, that is used as the starting location in pathname resolution 
   for relative paths.</p>
@@ -3067,7 +3067,7 @@ void current_path(const path&amp; p, error_code&amp; ec) noexcept;</pre>
 <blockquote>
   <p><i>Effects:</i> Establishes the postcondition, as if by POSIX <code><a href="http://www.opengroup.org/onlinepubs/000095399/functions/chdir.html">chdir()</a></code>.</p>
 <p><i>Postcondition:</i> <code>equivalent(p, current_path())</code>.</p>
-<p><i>Throws:</i> As specified in <a href="#Error-reporting">Error reporting</a>.</p>
+<p><i>Throws:</i> As specified in <a href="#Error-reporting">Error reporting <ins>(7)</ins></a>.</p>
   <p>[<i>Note: </i>The current path for many operating systems is a dangerous 
   global state. It may be changed unexpectedly by a third-party or system 
   library functions, or by another thread.&nbsp; <i>&mdash;end note</i>]</p>
@@ -3086,7 +3086,7 @@ bool <a name="exists3">exists</a>(const path&amp; p, error_code&amp; ec) noexcep
   <p><i>Returns:</i> <code>exists(status(p))</code> or <code>exists(status(p, ec))</code>, 
   respectively. The signature with argument <code>ec</code> returns <code>false</code> 
   if an error occurs.</p>
-<p><i>Throws:</i> As specified in <a href="#Error-reporting">Error reporting</a>.</p>
+<p><i>Throws:</i> As specified in <a href="#Error-reporting">Error reporting <ins>(7)</ins></a>.</p>
 </blockquote>
 
 <h3>15.13  Equivalent&nbsp; [<a name="fs.op.equivalent">fs.op.equivalent</a>]</h3>
@@ -3110,7 +3110,7 @@ bool <a name="equivalent2">equivalent</a>(const path&amp; p1, const path&amp; p2
   and consider &quot;same&quot; to be equal values for <code>dwVolumeSerialNumber</code>, <code>nFileIndexHigh</code>, <code>nFileIndexLow</code>, <code>nFileSizeHigh</code>, <code>nFileSizeLow</code>, <code>ftLastWriteTime.dwLowDateTime</code>, and <code>ftLastWriteTime.dwHighDateTime</code>. &mdash;end note]</span></i></p>
   </blockquote>
   <p><i>Throws:</i> <code>filesystem_error</code> if <code>(!exists(s1) &amp;&amp; !exists(s2)) || (is_other(s1) &amp;&amp; is_other(s2))</code>, 
-  otherwise as specified in <a href="#Error-reporting">Error reporting</a>.</p>
+  otherwise as specified in <a href="#Error-reporting">Error reporting <ins>(7)</ins></a>.</p>
 </blockquote>
 
 <h3>15.14  File size&nbsp; [<a name="fs.op.file_size">fs.op.file_size</a>]</h3>
@@ -3126,7 +3126,7 @@ uintmax_t <a name="file_size2">file_size</a>(const path&amp; p, error_code&amp; 
   Otherwise, <code>static_cast&lt;uintmax_t&gt;(-1)</code>. The signature with 
   argument <code>ec</code> 
   returns <code>static_cast&lt;uintmax_t&gt;(-1)</code> if an error occurs.</p>
-  <p><i>Throws:</i> As specified in <a href="#Error-reporting">Error reporting</a>.</p>
+  <p><i>Throws:</i> As specified in <a href="#Error-reporting">Error reporting <ins>(7)</ins></a>.</p>
 </blockquote>
 
 <h3>15.15  Hard link count&nbsp; [<a name="fs.op.hard_lk_ct">fs.op.hard_lk_ct</a>]</h3>
@@ -3138,7 +3138,7 @@ uintmax_t hard_link_count(const path&amp; p, error_code&amp; ec) noexcept;</pre>
   <p><i>Returns:</i> The number of hard links for <code>p</code>. The signature 
   with argument <code>ec</code> returns <code>static_cast&lt;uintmax_t&gt;(-1)</code> 
   if an error occurs.</p>
-  <p><i>Throws:</i> As specified in <a href="#Error-reporting">Error reporting</a>.</p>
+  <p><i>Throws:</i> As specified in <a href="#Error-reporting">Error reporting <ins>(7)</ins></a>.</p>
 
 </blockquote>
 
@@ -3155,7 +3155,7 @@ bool is_block_file</a>(const path&amp; p, error_code&amp; ec) noexcept;</code></
   <p><i>Returns:</i> <code>is_block_file(status(p))</code> or <code>
   is_block_file(status(p, ec))</code>, respectively. The signature with argument <code>
   ec</code> returns <code>false</code> if an error occurs.</p>
-<p><i>Throws:</i> As specified in <a href="#Error-reporting">Error reporting</a>.</p>
+<p><i>Throws:</i> As specified in <a href="#Error-reporting">Error reporting <ins>(7)</ins></a>.</p>
 </blockquote>
 
 
@@ -3172,7 +3172,7 @@ bool is_character_file</a>(const path&amp; p, error_code&amp; ec) noexcept;</cod
   or <code>is_character_file(status(p, ec))</code>, 
   respectively. The signature with argument <code>ec</code> returns <code>false</code> 
   if an error occurs.</p>
-<p><i>Throws:</i> As specified in <a href="#Error-reporting">Error reporting</a>.</p>
+<p><i>Throws:</i> As specified in <a href="#Error-reporting">Error reporting <ins>(7)</ins></a>.</p>
 </blockquote>
 
 <h3>15.18  Is directory&nbsp; [<a name="fs.op.is_directory">fs.op.is_directory</a>]</h3>
@@ -3187,7 +3187,7 @@ bool <a name="is_directory3">is_directory</a>(const path&amp; p, error_code&amp;
   <p><i>Returns:</i> <code>is_directory(status(p))</code> or <code>
   is_directory(status(p, ec))</code>, respectively. The signature with argument <code>
   ec</code> returns <code>false</code> if an error occurs.</p>
-<p><i>Throws:</i> As specified in <a href="#Error-reporting">Error reporting</a>.</p>
+<p><i>Throws:</i> As specified in <a href="#Error-reporting">Error reporting <ins>(7)</ins></a>.</p>
 </blockquote>
 
 <h3>15.19  Is empty&nbsp; [<a name="fs.op.is_empty">fs.op.is_empty</a>]</h3>
@@ -3204,7 +3204,7 @@ bool <a name="is_empty2">is_empty</a></a>(const path&amp; p, error_code&amp; ec)
   an error occurs.</p>
   </blockquote>
 
-<p><i>Throws:</i> As specified in <a href="#Error-reporting">Error reporting</a>.</p>
+<p><i>Throws:</i> As specified in <a href="#Error-reporting">Error reporting <ins>(7)</ins></a>.</p>
 </blockquote>
 
 <h3>15.20  Is fifo&nbsp; [<a name="fs.op.is_fifo">fs.op.is_fifo</a>]</h3>
@@ -3220,7 +3220,7 @@ bool is_fifo(const path&amp; p, error_code&amp; ec) noexcept;</code></pre>
   <p><i>Returns:</i> <code>is_fifo(status(p))</code> or <code>is_fifo(status(p, 
   ec))</code>, respectively. The signature with argument <code>ec</code> returns <code>
   false</code> if an error occurs.</p>
-<p><i>Throws:</i> As specified in <a href="#Error-reporting">Error reporting</a>.</p>
+<p><i>Throws:</i> As specified in <a href="#Error-reporting">Error reporting <ins>(7)</ins></a>.</p>
 </blockquote>
 
 <h3>15.21  Is other&nbsp; [<a name="fs.op.is_other">fs.op.is_other</a>]</h3>
@@ -3235,7 +3235,7 @@ bool <a name="is_other3">is_other</a>(const path&amp; p, error_code&amp; ec) noe
   <p><i>Returns:</i> <code>is_other(status(p))</code> or <code>is_other(status(p, ec))</code>, 
   respectively. The signature with argument <code>ec</code> returns <code>false</code> 
   if an error occurs.</p>
-  <p><i>Throws:</i> As specified in <a href="#Error-reporting">Error reporting</a>.</p>
+  <p><i>Throws:</i> As specified in <a href="#Error-reporting">Error reporting <ins>(7)</ins></a>.</p>
 </blockquote>
 
 <h3>15.22  Is regular file&nbsp; [<a name="fs.op.is_regular_file">fs.op.is_regular_file</a>]</h3>
@@ -3271,7 +3271,7 @@ bool is_socket(const path&amp; p, error_code&amp; ec) noexcept;</code></pre>
   <p><i>Returns:</i> <code>is_socket(status(p))</code> or <code>
   is_socket(status(p, ec))</code>, respectively. The signature with argument <code>
   ec</code> returns <code>false</code> if an error occurs.</p>
-<p><i>Throws:</i> As specified in <a href="#Error-reporting">Error reporting</a>.</p>
+<p><i>Throws:</i> As specified in <a href="#Error-reporting">Error reporting <ins>(7)</ins></a>.</p>
 </blockquote>
 
 <h3>15.24  Is symlink&nbsp; [<a name="fs.op.is_symlink">fs.op.is_symlink</a>]</h3>
@@ -3286,7 +3286,7 @@ bool <a name="is_symlink3">is_symlink</a>(const path&amp; p, error_code&amp; ec)
   <p><i>Returns:</i> <code>is_symlink(symlink_status(p))</code> or <code>is_symlink(symlink_status(p, ec))</code>, 
   respectively. The signature with argument <code>ec</code> returns <code>false</code> 
   if an error occurs.</p>
-  <p><i>Throws:</i> As specified in <a href="#Error-reporting">Error reporting</a>.</p>
+  <p><i>Throws:</i> As specified in <a href="#Error-reporting">Error reporting <ins>(7)</ins></a>.</p>
 </blockquote>
 
 <h3>15.25  Last write time&nbsp; [<a name="fs.op.last_write_time">fs.op.last_write_time</a>]</h3>
@@ -3299,7 +3299,7 @@ file_time_type <a name="last_write_time2">last_write_time</a>(const path&amp; p<
   obtained as if by POSIX <code><a href="http://www.opengroup.org/onlinepubs/000095399/functions/stat.html">stat()</a></code>. 
   The signature with argument <code>ec</code> returns <tt><del>static_cast&lt;file_time_type&gt;(-1)</del><ins>file_time_type::min()</ins></tt> 
   if an error occurs.</p>
-  <p><i>Throws:</i> As specified in <a href="#Error-reporting">Error reporting</a>.</p>
+  <p><i>Throws:</i> As specified in <a href="#Error-reporting">Error reporting <ins>(7)</ins></a>.</p>
 </blockquote>
 <pre>void <a name="last_write_time3">last_write_time</a>(const path&amp; p, file_time_type new_time);
 void <a name="last_write_time4">last_write_time</a>(const path&amp; p, file_time_type new_time<code>,
@@ -3308,7 +3308,7 @@ void <a name="last_write_time4">last_write_time</a>(const path&amp; p, file_time
   <p><i>Effects:</i> Sets the time of last data modification of the file 
   resolved to by <code>p</code> to <code>new_time</code>, as if by POSIX <code><a href="http://www.opengroup.org/onlinepubs/000095399/functions/stat.html">stat()</a></code> 
   followed by POSIX <a href="http://www.opengroup.org/onlinepubs/000095399/functions/utime.html"><code>utime()</code></a>.</p>
-  <p><i>Throws:</i> As specified in <a href="#Error-reporting">Error reporting</a>.</p>
+  <p><i>Throws:</i> As specified in <a href="#Error-reporting">Error reporting <ins>(7)</ins></a>.</p>
   <p>[<i>Note:</i> A postcondition of <code>last_write_time(p) == new_time</code> is not specified since it might not hold for file systems 
   with coarse time granularity. <i>&mdash;end note</i>]</p>
 </blockquote>
@@ -3344,7 +3344,7 @@ void permissions(const path&amp; p, <a href="#symlink_perms">perms</a> prms, err
   </table>
   <p>[<i>Note:</i> Conceptually permissions are viewed as bits, but the actual 
   implementation may use some other mechanism. -- <i>end note</i>]</p>
-  <p><i>Throws:</i> As specified in <a href="#Error-reporting">Error reporting</a>.</p>
+  <p><i>Throws:</i> As specified in <a href="#Error-reporting">Error reporting <ins>(7)</ins></a>.</p>
 </blockquote>
 
 <h3>15.27  Read symlink&nbsp; [<a name="fs.op.read_symlink">fs.op.read_symlink</a>]</h3>
@@ -3356,7 +3356,7 @@ path read_symlink(const path&amp; p, error_code&amp; ec);</pre>
   link, a <code>path</code> object containing the contents of that symbolic 
   link. <del>Otherwise <code>path()</code>.</del> The signature with argument <code>ec</code> 
   returns <code>path()</code> if an error occurs.</p>
-  <p><i>Throws:</i> As specified in <a href="#Error-reporting">Error reporting</a>. [<i>Note:</i> It is an error if <code>p</code> does not 
+  <p><i>Throws:</i> As specified in <a href="#Error-reporting">Error reporting <ins>(7)</ins></a>. [<i>Note:</i> It is an error if <code>p</code> does not 
   resolve to a symbolic link. <i>&mdash;end note</i>]</p>
 </blockquote>
 
@@ -3375,7 +3375,7 @@ bool <a name="remove2">remove</a>(const path&amp; p, error_code&amp; ec) noexcep
   <p><i>Returns:</i>&nbsp; <code>false</code> if p did not exist in the first 
   place, otherwise <code>true</code>. The signature with argument <code>ec</code> 
   returns <code>false</code> if an error occurs.</p>
-  <p><i>Throws:</i> As specified in <a href="#Error-reporting">Error reporting</a>.</p>
+  <p><i>Throws:</i> As specified in <a href="#Error-reporting">Error reporting <ins>(7)</ins></a>.</p>
 </blockquote>
 
 <h3>15.29  Remove all&nbsp; [<a name="fs.op.remove_all">fs.op.remove_all</a>]</h3>
@@ -3393,7 +3393,7 @@ uintmax_t <a name="remove_all2">remove_all</a>(const path&amp; p, error_code&amp
   <p><i>Returns:</i> The number of files removed. The signature with argument
   <code>ec</code> returns <code>static_cast&lt;uintmax_t&gt;(-1)</code> if an error 
   occurs.</p>
-  <p><i>Throws:</i> As specified in <a href="#Error-reporting">Error reporting</a>.</p>
+  <p><i>Throws:</i> As specified in <a href="#Error-reporting">Error reporting <ins>(7)</ins></a>.</p>
 </blockquote>
 
 <h3>15.30  Rename&nbsp; [<a name="fs.op.rename">fs.op.rename</a>]</h3>
@@ -3411,7 +3411,7 @@ void <a name="rename2">rename</a>(const path&amp; old_p, const path&amp; new_p, 
   systems but is an error on some other operating systems. A symbolic link is itself renamed, rather than 
   the file it resolves to being renamed. <i>&mdash;end note</i>]</p>
   </blockquote>
-  <p><i>Throws:</i> As specified in <a href="#Error-reporting">Error reporting</a>.</p>
+  <p><i>Throws:</i> As specified in <a href="#Error-reporting">Error reporting <ins>(7)</ins></a>.</p>
 </blockquote>
 
 <h3>15.31  Resize file&nbsp; [<a name="fs.op.resize_file">fs.op.resize_file</a>]</h3>
@@ -3420,7 +3420,7 @@ void <a name="rename2">rename</a>(const path&amp; old_p, const path&amp; new_p, 
 void <a name="resize_file2">resize_file</a>(const path&amp; p, uintmax_t new_size, error_code&amp; ec) noexcept;</pre>
 <blockquote>
 <p><i>Postcondition:</i> <code>file_size() == new_size</code>.</p>
-<p><i>Throws:</i> As specified in <a href="#Error-reporting">Error reporting</a>.</p>
+<p><i>Throws:</i> As specified in <a href="#Error-reporting">Error reporting <ins>(7)</ins></a>.</p>
   <p><i>Remarks:</i> Achieves its postconditions as if by POSIX <code><a href="http://www.opengroup.org/onlinepubs/000095399/functions/truncate.html">truncate()</a></code>.</p>
 </blockquote>
 
@@ -3440,7 +3440,7 @@ space_info <a name="space2">space</a>(const path&amp; p, error_code&amp; ec) noe
   value cannot be determined shall be set to <code>static_cast&lt;uintmax_t&gt;(-1)</code>. 
   For the signature with argument <code>ec</code>, all members are set to <code>
   static_cast&lt;uintmax_t&gt;(-1)</code> if an error occurs.</p>
-  <p><i>Throws:</i> As specified in <a href="#Error-reporting">Error reporting</a>.</p>
+  <p><i>Throws:</i> As specified in <a href="#Error-reporting">Error reporting <ins>(7)</ins></a>.</p>
       <p><ins><i>Remarks:</i> The value of member <code>space_info::available</code> 
       is operating system dependent. [<i>Note:</i> <code>available</code> may be 
       less than <code>free</code>. <i>— end note</i>] </ins></p>
@@ -3588,7 +3588,7 @@ file_status <a name="symlink_status2">symlink_status</a>(const path&amp; p, erro
       The signature with argument <code>ec</code> returns <code>
       file_status(file_type::none)</code> if an error occurs.</p>
       <p><i>Remarks:</i> Pathname resolution terminates if <code>p</code> names a symbolic link.</p>
-  <p><i>Throws:</i> As specified in <a href="#Error-reporting">Error reporting</a>.</p>
+  <p><i>Throws:</i> As specified in <a href="#Error-reporting">Error reporting <ins>(7)</ins></a>.</p>
 </blockquote>
 
 <h3>15.36  System complete&nbsp; [<a name="fs.op.system_complete">fs.op.system_complete</a>]</h3>
@@ -3602,7 +3602,7 @@ path <a name="system_complete2">system_complete</a>(const path&amp; p, error_cod
   <p><i>Returns:</i> The composed path. The signature with argument <code>ec</code> 
   returns <code>path()</code> if an error occurs.</p>
   <p><i>Postcondition:</i> For the returned path, <code>rp,</code> <code>rp.is_absolute()</code> is true.</p>
-  <p><i>Throws:</i> As specified in <a href="#Error-reporting">Error reporting</a>.</p>
+  <p><i>Throws:</i> As specified in <a href="#Error-reporting">Error reporting <ins>(7)</ins></a>.</p>
   
 <blockquote>
 [<i>Example:</i> For POSIX based operating systems, <code>system_complete(p)</code>
@@ -3630,7 +3630,7 @@ path temp_directory_path(error_code&amp; ec);</pre>
   || !is_directory(p)</code>, where <code>p</code> is the path to be returned. 
   The signature with argument <code>ec</code> returns <code>path()</code> if an 
   error occurs.</p>
-  <p><i>Throws:</i> As specified in <a href="#Error-reporting">Error reporting</a>.</p>
+  <p><i>Throws:</i> As specified in <a href="#Error-reporting">Error reporting <ins>(7)</ins></a>.</p>
   <p><i><span style="background-color: #E0E0E0">The <code>temp_directory_path()</code> 
   name was chosen to emphasize that the return is a path, not just a single 
   directory name.</span></i></p>
