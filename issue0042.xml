@@ -15,6 +15,27 @@
 <p>
 <tt>class path</tt> should have defaulted constructors/destructor/assignments.
 </p>
+
+<note>2014-02-26 Beman Dawes comments</note>
+
+<p/>Suggest NAD. Earlier versions did have defaulted constructors/destructor/assignments,
+but they were removed at the request of Alberto Ganesh Barbati (c++std-filesys January 8, 2013):
+
+<blockquote>
+<p/>Speaking of <tt>=default</tt>, we have to be careful not over-constrain the specification.
+I mean, if we just specify the intended meaning of those function with proper wording,
+the implementation is allowed to use <tt>=default</tt> in case it provides an equivalent behaviour,
+but if we put <tt>=default</tt> in the specification, the implementation is required to use it.
+However, we have to remember that "for exposition only" data members may not be an
+exhaustive list and that 17.5.2.3/2 allows implementations to provide an equivalent
+behaviour using different members for which "default" construction/copy/assignment
+may not be appropriate.
+
+<p/><tt>=default</tt> is what we want for tuple, atomics, etc. It might be appropriate for
+simple types like file_status, but, for more complex types like <tt>path</tt> itself,
+I'd remove it and add proper wording.
+</blockquote>  
+
 </discussion>
 
 <resolution>
