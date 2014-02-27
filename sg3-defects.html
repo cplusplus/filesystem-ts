@@ -1,0 +1,1409 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"
+    "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+<title>Filesystem Study Group (SG3) Defect Report List</title>
+<style type="text/css">
+  p {text-align:justify}
+  li {text-align:justify}
+  blockquote.note
+  {
+    background-color:#E0E0E0;
+    padding-left: 15px;
+    padding-right: 15px;
+    padding-top: 1px;
+    padding-bottom: 1px;
+  }
+  ins {background-color:#E8FFE8}
+  del {background-color:#FFD7D7}
+</style>
+</head>
+<body>
+<table>
+<tr>
+  <td align="left">Doc. no.</td>
+  <td align="left">D????</td>
+</tr>
+<tr>
+  <td align="left">Date:</td>
+  <td align="left">2014-02-27</td>
+</tr>
+<tr>
+  <td align="left">Project:</td>
+  <td align="left">Programming Language C++</td>
+</tr>
+<tr>
+  <td align="left">Reply to:</td>
+  <td align="left">Beman Dawes &lt;<a href="mailto:bdawes at acm dot org">bdawes at acm dot org</a>&gt;</td>
+</tr>
+</table>
+<h1>Filesystem Study Group (SG3) Defect Report List (Revision D0)</h1>
+<p>Revised 2014-02-27 at 15:02:50 UTC</p>
+
+  <p>Reference ISO/IEC TS 18822</p>
+  <p>Also see:</p>
+    <ul>
+      <li><a href="sg3-toc.html">Table of Contents</a> for all study group issues.</li>
+      <li><a href="sg3-index.html">Index by Section</a> for all study group issues.</li>
+      <li><a href="sg3-status.html">Index by Status</a> for all study group issues.</li>
+      <li><a href="sg3-active.html">Active Issues List</a></li>
+      <li><a href="sg3-closed.html">Closed Issues List</a></li>
+    </ul>
+  <p>This document contains only study group issues which have been closed
+  by the study group after being found to be defects
+  in the TS.  That is, issues which have a status of <a href="sg3-active.html#DR">DR</a>,
+  <a href="sg3-active.html#TC1">TC1</a>, <a href="sg3-active.html#C++11">C++11</a>, 
+  or <a href="sg3-active.html#Resolved">Resolved</a>. See the
+  <a href="sg3-closed.html">Closed Issues List</a> for issues closed as non-defects.  See the
+  <a href="sg3-active.html">Active Issues List</a> for active issues and more information.  The
+  introductory material in that document also applies to this
+  document.</p>
+
+<h2>Revision History</h2>
+<ul>
+<li>D0: 2014-02-03 SG-3 File System TS<ul>
+<li><b>Summary:</b><ul>
+<li>22 open issues, up by 22.</li>
+<li>35 closed issues, up by 35.</li>
+<li>57 issues total, up by 57.</li>
+</ul></li>
+<li><b>Details:</b><ul>
+<li>Added the following 15 New issues: <a href="sg3-active.html#34">34</a>, <a href="sg3-active.html#35">35</a>, <a href="sg3-active.html#36">36</a>, <a href="sg3-active.html#37">37</a>, <a href="sg3-active.html#38">38</a>, <a href="sg3-active.html#40">40</a>, <a href="sg3-active.html#41">41</a>, <a href="sg3-active.html#42">42</a>, <a href="sg3-active.html#45">45</a>, <a href="sg3-active.html#48">48</a>, <a href="sg3-active.html#49">49</a>, <a href="sg3-active.html#54">54</a>, <a href="sg3-active.html#56">56</a>, <a href="sg3-active.html#57">57</a>, <a href="sg3-active.html#58">58</a>.</li>
+<li>Added the following 7 Open issues: <a href="sg3-active.html#4">4</a>, <a href="sg3-active.html#5">5</a>, <a href="sg3-active.html#11">11</a>, <a href="sg3-active.html#22">22</a>, <a href="sg3-active.html#25">25</a>, <a href="sg3-active.html#27">27</a>, <a href="sg3-active.html#53">53</a>.</li>
+<li>Added the following NAD Future issue: <a href="sg3-closed.html#12">12</a>.</li>
+<li>Added the following 22 WP issues: <a href="sg3-defects.html#1">1</a>, <a href="sg3-defects.html#2">2</a>, <a href="sg3-defects.html#3">3</a>, <a href="sg3-defects.html#6">6</a>, <a href="sg3-defects.html#7">7</a>, <a href="sg3-defects.html#8">8</a>, <a href="sg3-defects.html#9">9</a>, <a href="sg3-defects.html#14">14</a>, <a href="sg3-defects.html#15">15</a>, <a href="sg3-defects.html#16">16</a>, <a href="sg3-defects.html#18">18</a>, <a href="sg3-defects.html#19">19</a>, <a href="sg3-defects.html#21">21</a>, <a href="sg3-defects.html#24">24</a>, <a href="sg3-defects.html#29">29</a>, <a href="sg3-defects.html#32">32</a>, <a href="sg3-defects.html#33">33</a>, <a href="sg3-defects.html#44">44</a>, <a href="sg3-defects.html#47">47</a>, <a href="sg3-defects.html#50">50</a>, <a href="sg3-defects.html#52">52</a>, <a href="sg3-defects.html#55">55</a>.</li>
+<li>Added the following NAD Editorial issue: <a href="sg3-closed.html#39">39</a>.</li>
+<li>Added the following 9 NAD issues: <a href="sg3-closed.html#10">10</a>, <a href="sg3-closed.html#13">13</a>, <a href="sg3-closed.html#17">17</a>, <a href="sg3-closed.html#23">23</a>, <a href="sg3-closed.html#26">26</a>, <a href="sg3-closed.html#28">28</a>, <a href="sg3-closed.html#30">30</a>, <a href="sg3-closed.html#31">31</a>, <a href="sg3-closed.html#46">46</a>.</li>
+<li>Added the following 2 Dup issues: <a href="sg3-closed.html#43">43</a>, <a href="sg3-closed.html#51">51</a>.</li>
+<li>No issues changed.</li>
+</ul></li>
+</ul>
+</li>
+</ul>
+
+<h2>Defect Reports</h2>
+<hr>
+<h3><a name="1"></a>1. [PDTS] Make namespaces consistent with Library TS policy</h3>
+<p><b>Section:</b> X All <b>Status:</b> <a href="sg3-active.html#WP">WP</a>
+ <b>Submitter:</b> FI-5, US-5, GB-3, CH-6 <b>Opened:</b> 2014-01-20 <b>Last modified:</b> 2014-02-27</p>
+<p><b>View all issues with</b> <a href="sg3-status.html#WP">WP</a> status.</p>
+<p><b>Discussion:</b></p>
+<p>The PDTS used a placeholder namespace "tbs" since the Standard Library policy for
+TS namespaces had not yet been fully articulated. 
+</p>
+
+  <p><i>[2014-02-11 Issaquah: Project editor to make indicated changes to WP,
+  post notice on lib and SG3 reflectors.]</i></p>
+
+
+
+
+<p><b>Proposed resolution:</b></p>
+
+<p><i>[2014-02-07: Beman Dawes]</i></p>
+<p>Throughout the WP, change namespace "tbs" to "experimental" as described in the
+Library Fundamentals TS working paper, 1.3 Namespaces and headers [general.namespaces].
+</p>
+
+  
+
+
+
+
+
+<hr>
+<h3><a name="2"></a>2. [PDTS] Tighten specification when there is no reasonable behavior</h3>
+<p><b>Section:</b> X 2.1 [fs.conform.9945] <b>Status:</b> <a href="sg3-active.html#WP">WP</a>
+ <b>Submitter:</b> FI-1 <b>Opened:</b> 2014-01-20 <b>Last modified:</b> 2014-02-20</p>
+<p><b>View all other</b> <a href="sg3-index.html#.1 [fs.conform.9945">issues</a> in 2.1 [fs.conform.9945].</p>
+<p><b>View all issues with</b> <a href="sg3-status.html#WP">WP</a> status.</p>
+<p><b>Discussion:</b></p>
+<p>It is unfortunate that error reporting for inability to provide reasonable behaviour is
+completely implementation-defined. This hurts portability in the sense that programmers have no
+idea how errors will be reported and cannot anticipate anything.</p>
+
+<p>Change "If an implementation cannot provide any reasonable behavior, the implementation
+shall report an error in an implementation-defined manner." to "If an implementation cannot
+provide any reasonable behavior, the code using the facilities for which reasonable behaviour
+cannot be provided shall be ill-formed." and strike the note.</p>
+
+  <p><i>[2014-02-07, Beman Dawes suggests wording]</i></p>
+
+
+  <p><i>[2014-02-12, Daniel Krügler comments:]</i></p>
+
+
+  <blockquote>
+  <p/>In our code bases we routinely have to target different filesystems,
+  notably POSIX-based and Windows. While on Windows there is no meaning
+  in setting the <tt>owner_exec</tt> permission, for example, this is required on
+  POSIX systems when the corresponding file should be executable. Still,
+  attempting to invoke this operation should be possible. It would be
+  OK, if we got a defined runtime response to this, such as a
+  specifically defined error code value that could be tested either via
+  the error_code&amp; overload, but it would be IMO unacceptable for
+  end-users to tell them "Well, this code may not compile". I don't
+  think that we can teach people that code written using the filesystem
+  operations might or might not compile. It would be very valuable to
+  have at least a clear indication that implementers are required to
+  give a defined runtime-response if they do believe that this operation
+  cannot be implemented resulting in "reasonable behaviour".
+  </blockquote>
+
+  <p><i>[2014-02-12, Proposed wording updated to reflect LWG/SG-3 discussion in Issaquah.
+  <p/>Since the standardese to carry out the LWG/SG-3 "throw or error code" intent is
+  best achieved by reference to the Error reporting section, a note was added by the project
+  editor. Please review carefully.
+  ]</i></p>
+
+
+  <p><i>[2014-02-13 LWG/SG-3 Issaquah: Proposed wording accepted.]</i></p>
+
+
+
+
+
+<p><b>Proposed resolution:</b></p>
+
+<ol>
+<li><p>Change 2.1:</p>
+<blockquote><p>
+If an implementation cannot provide any reasonable behavior,
+the implementation shall report an error <del>in an implementation-defined manner</del>
+<ins>as specified in &sect; 7 [fs.err.report]. [<i>Note:</i> This allows users
+to rely on an exception being thrown or an error code being set when an
+implementation cannot provide any reasonable behavior. &mdash; <i>end note</i>]
+</ins>.
+</p></blockquote>
+</li>
+</ol>
+
+
+
+
+
+
+<hr>
+<h3><a name="3"></a>3. [PDTS] Filename length needs bullet item</h3>
+<p><b>Section:</b> X 4.7 [fs.def.filename] <b>Status:</b> <a href="sg3-active.html#WP">WP</a>
+ <b>Submitter:</b> CH-2 <b>Opened:</b> 2014-01-20 <b>Last modified:</b> 2014-02-20</p>
+<p><b>View all issues with</b> <a href="sg3-status.html#WP">WP</a> status.</p>
+<p><b>Discussion:</b></p>
+<p>Filename lengths are also implementation dependent. This is not the same as
+<tt>FILENAME_MAX</tt> that specifies the maximum length of pathnames.</p>
+
+<p>Add a bullet: "Length of filenames."</p>
+
+<p><i>[2014-02-07, Beman Dawes provides wording]</i></p>
+
+
+
+<p><b>Proposed resolution:</b></p>
+<p>Change 4.7 [fs.def.filename]:</p>
+  <p>The name of a file. Filenames dot&nbsp; and dot-dot&nbsp; have special meaning. The following characteristics of 
+  filenames are operating system dependent:</p>
+<ul>
+  <li>
+  <p>The permitted characters. [<i>Example</i>: Some operating systems prohibit the ASCII control characters (0x00-0x1F) 
+    in filenames. &mdash; <i>end example</i>].</p>
+  </li>
+  <li><ins>The maximum permitted length.</ins></li>
+  <li>
+  <p>Filenames that are not permitted.</p>
+  </li>
+  <li>
+  <p>Filenames that have special meaning.</p>
+  </li>
+  <li>
+  <p>Case awareness and sensitivity during path resolution.</p>
+  </li>
+  <li>
+  <p>Special rules that may apply to file types other than regular 
+  files, such as directories.</p>
+  </li>
+</ul>
+
+
+
+
+
+<hr>
+<h3><a name="6"></a>6. [PDTS] Path depth is underspecified</h3>
+<p><b>Section:</b> X 4.15 [fs.def.path] <b>Status:</b> <a href="sg3-active.html#WP">WP</a>
+ <b>Submitter:</b> CH-5 <b>Opened:</b> 2014-01-20 <b>Last modified:</b> 2014-02-20</p>
+<p><b>View all issues with</b> <a href="sg3-status.html#WP">WP</a> status.</p>
+<p><b>Discussion:</b></p>
+<p>Path depth is implementation dependent.</p>
+
+<p>Add a paragraph: "The maximum length of the sequence (i.e. the maximum depth) is
+ implementation dependent.</p>
+
+ <p><i>[2014-02-07, Beman Dawes comments]</i></p>
+
+
+   <p>
+    "implementaton defined" and "operating system dependent"
+    are well defined terms in this TS, but "implementation dependent" is not well defined.
+    The path depth is operating system dependent, so that's the form used in the proposed wording.
+  </p>
+
+ <p><i>[2014-02-07, Beman Dawes provides wording]</i></p>
+
+
+
+
+<p><b>Proposed resolution:</b></p>
+  <p><i>Change 4.15 [fs.def.path]:</i></p>
+  <blockquote>
+  <p>
+    <b>4.15  path [fs.def.path]</b>
+  </p>
+    <p>
+      A sequence of elements that identify
+      the location of a file within a filesystem. The elements are the <i>
+        root-name<sub>opt</sub>
+      </i>, <i>
+        root-directory<sub>opt</sub>
+      </i>,
+      and an optional sequence of filenames.
+    </p>
+  <p>
+    <ins>
+      The maximum number of elements in the sequence is
+      operating system dependent.
+    </ins>
+  </p>
+  </blockquote>
+
+
+
+
+
+<hr>
+<h3><a name="7"></a>7. [PDTS] Unhelpful comment for <tt>struct space_info</tt></h3>
+<p><b>Section:</b> X 6 [fs.filesystem.synopsis], 15.32 [fs.op.space] <b>Status:</b> <a href="sg3-active.html#WP">WP</a>
+ <b>Submitter:</b> GB-4 <b>Opened:</b> 2014-01-20 <b>Last modified:</b> 2014-02-20</p>
+<p><b>View all issues with</b> <a href="sg3-status.html#WP">WP</a> status.</p>
+<p><b>Discussion:</b></p>
+<p>Use of the term a 'non-privileged' process.
+The comment for available in the struct space_info refers to: free space available to a
+non-privileged process.
+This seems quite specific to a POSIX implementation (on Windows, for instance, the
+equivalent data would be user-specific but not directly related to privilege)</p>
+
+<p>Remove the comment and add a note to 15.32 [fs.op.space]:
+[<i>Note</i>: the precise meaning of available space is implementation dependent. &mdash; <i>end note</i>]</p>
+
+<p><i>[2014-02-07, Beman Dawes comments]</i></p>
+
+
+<p>
+"implementaton defined" and "operating system dependent"
+    are well defined terms in this TS, but "implementation dependent" is not well defined.
+    The meaning of <code>available</code> is operating system dependent, so that's the form used 
+    in the proposed wording.
+</p>
+
+<p><i>[2014-02-07, Beman Dawes provides wording]</i></p>
+
+
+
+
+<p><b>Proposed resolution:</b></p>
+
+<ol>
+<li>
+  <p>
+  <i>Change 6 [fs.filesystem.synopsis]:</i>
+  </p>
+  
+  <blockquote>
+     <p>
+      <code>uintmax_t available; <del>// free space available to a non-privileged process</del></code>
+    </p>
+  </blockquote>
+</li>
+
+<li>
+  <p>
+    <p><i>Add Remarks to 15.32 [fs.op.space]:</i></p>
+  </p>
+  <blockquote>
+    <p>
+      <ins>
+        <i>Remarks:</i> The value of member <code>space_info::available</code>
+        is operating system dependent. [<i>Note:</i> <code>available</code> may be less than
+        <code>free</code>. <i>&mdash; end note</i>]
+      </ins>
+    </p>
+  </blockquote>
+</li>
+</ol>
+
+
+
+
+
+
+<hr>
+<h3><a name="8"></a>8. [PDTS] <tt>file_time_type</tt> underspecified</h3>
+<p><b>Section:</b> X [fs.filesystem.synopsis] <b>Status:</b> <a href="sg3-active.html#WP">WP</a>
+ <b>Submitter:</b> CH-7 <b>Opened:</b> 2014-01-20 <b>Last modified:</b> 2014-02-20</p>
+<p><b>View all issues with</b> <a href="sg3-status.html#WP">WP</a> status.</p>
+<p><b>Discussion:</b></p>
+<p>Must the <tt>file_time_type</tt> hold times before 1960 and after 2050?</p>
+
+<p>Specify the requirements to <i>unspecified-trivial-clock</i> for <tt>file_time_type</tt>.</p>
+
+<p><i>[2014-02-10, Daniel suggests wording]</i></p>
+
+  <p><i>[
+    2014-02-11 Issaquah: (1)Implementation-defined. See wiki notes for rationale.
+    (2) Leave other additions in place, but insert "the" before "resolution"
+    (3) Strike "unspecified-" from "unspecified-trivial-type" in two places.
+    Beman to provide wording for review next meeting.
+  ]</i></p>
+
+
+  <p><i>[2014-02-13 LWG/SG-3 Issaquah: Proposed wording accepted.]</i></p>
+
+
+
+
+<p><b>Proposed resolution:</b></p>
+<ol>
+<li><p>Modify 6 [fs.filesystem.synopsis] as indicated:</p>
+
+<blockquote>
+  <pre>
+    typedef chrono::time_point&lt;<b><i><del>unspecified-</del>trivial-clock</i></b>&gt;  file_time_type;
+  </pre> 
+<p>
+<em><del>unspecified-</del>trivial-clock</em> is an <del>unspecified type provided by the implementation</del>
+<ins>implementation-defined type</ins> that satisfies the TrivialClock requirements 
+(<del>C++11</del><ins>ISO 14882:2011</ins> &sect;20.12.3) and that is capable of representing and measuring file time values. 
+<ins>Implementations should ensure that the resolution and range of <tt>file_time_type</tt> reflect the operating system dependent 
+resolution and range of file time values.</ins>
+</p></blockquote>
+</li>
+</ol>
+
+
+
+
+
+<hr>
+<h3><a name="9"></a>9. [PDTS] Unclear why range-based-for functions return different types</h3>
+<p><b>Section:</b> X 6 [fs.filesystem.synopsis] <b>Status:</b> <a href="sg3-active.html#WP">WP</a>
+ <b>Submitter:</b> FI-2 <b>Opened:</b> 2014-01-20 <b>Last modified:</b> 2014-02-20</p>
+<p><b>View other</b> <a href="sg3-index-open.html# [fs.filesystem.synopsis">active issues</a> in 6 [fs.filesystem.synopsis].</p>
+<p><b>View all other</b> <a href="sg3-index.html# [fs.filesystem.synopsis">issues</a> in 6 [fs.filesystem.synopsis].</p>
+<p><b>View all issues with</b> <a href="sg3-status.html#WP">WP</a> status.</p>
+<p><b>Discussion:</b></p>
+<p>It is unclear why the range-for support functions (begin()/end()) for
+<tt>directory_iterator</tt> and <tt>recursive_directory_iterator</tt> return different types for <tt>begin()</tt>
+and <tt>end()</tt>, namely that <tt>begin()</tt> returns a reference to <tt>const</tt> and <tt>end()</tt> returns a value.</p>
+
+  <p>
+    <i>[2014-02-07: Beman Dawes provides comments from the Boost implementation:]</i>
+  </p>
+
+
+  <pre>
+  //  begin() and end() are only used by a range-based for statement in the context of
+  //  auto - thus the top-level const is stripped - so returning const is harmless and
+  //  emphasizes begin() is just a pass through.</pre>
+
+  <p><i>[2014-02-08: Daniel responds to Beman]</i></p>
+
+  
+  <p>
+  The difference in return types becomes relevant, when testing whether e.g. <tt>directory_iterator</tt>
+  would satisfy the <tt>Traversable</tt> requirements as currently specified in 
+  <a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2013/n3763.html">N3763</a>. Expressed in
+  code form these requirements impose that the following assertion holds:
+  </p>
+  <blockquote><pre>
+  static_assert(std::is_same&lt;
+      decltype(std::range_begin(std::declval&lt;directory_iterator&gt;())),
+      decltype(std::range_end(std::declval&lt;directory_iterator&gt;()))
+    &gt;::value, "No Traversable type");
+  </pre></blockquote>
+  <p>
+  Both <tt>directory_iterator</tt> and <tt>recursive_directory_iterator</tt> won't satisfy this requirement
+  currently.
+  </p>
+  <p><i>[
+    2014-02-11 Issaquah: Change begin() argument and return to pass-by-value. See wiki notes for rationale.
+    Beman to provide wording for review next meeting.
+  ]</i></p>
+
+
+  <p><i>[2014-02-13 LWG/SG-3 Issaquah: Proposed wording accepted.]</i></p>
+
+
+
+
+<p><b>Proposed resolution:</b></p>
+<ol>
+<li>
+  <p><i>Change 6 [fs.filesystem.synopsis]:</i></p>
+  
+  <pre>
+  class directory_iterator;
+
+  // enable directory_iterator range-based for statements
+  <del>const</del> directory_iterator<del>&amp;</del> begin(<del>const</del> directory_iterator<del>&amp;</del> iter) noexcept;
+  directory_iterator end(const directory_iterator&amp;) noexcept;
+
+  class recursive_directory_iterator;
+
+  // enable recursive_directory_iterator range-based for statements
+  <del>const</del> recursive_directory_iterator<del>&amp;</del> begin(<del>const</del> recursive_directory_iterator<del>&amp;</del> iter) noexcept;
+  recursive_directory_iterator end(const recursive_directory_iterator&amp;) noexcept;
+  </pre>
+</li>
+<li>
+  <p><i>
+    Change 13.2 [directory_iterator.nonmembers]:
+  </i></p>
+  <p>
+    These functions enable use of <code>directory_iterator</code> with C++11
+    range-based for statements.
+  </p>
+  <pre><del>const</del> directory_iterator<del>&amp;</del> begin(<del>const</del>directory_iterator<del>&amp;</del> iter) noexcept;</pre>
+  <blockquote>
+    <p>
+      <i>Returns: </i><code>iter</code>.
+    </p>
+  </blockquote>
+  <pre>directory_iterator end(const directory_iterator&amp;) noexcept;</pre>
+  <blockquote>
+    <p>
+      <i>Returns: </i><code>directory_iterator()</code>.
+    </p>
+  </blockquote>
+</li>
+<li>
+  <p><i>
+    Change 14.2 [rec.dir.itr.nonmembers]:
+  </i></p>
+  <p>
+    These functions enable use of <code>recursive_directory_iterator</code>
+    with C++11 range-based for statements.
+  </p>
+  <pre><del>const</del> recursive_directory_iterator<del>&amp;</del> begin(<del>const</del>recursive_directory_iterator<del>&amp;</del> iter) noexcept;</pre>
+  <blockquote>
+    <p>
+      <i>Returns: </i><code>iter</code>.
+    </p>
+  </blockquote>
+  <pre>recursive_directory_iterator end(const recursive_directory_iterator&amp;) noexcept;</pre>
+  <blockquote>
+    <p>
+      <i>Returns: </i><code>recursive_directory_iterator()</code>.
+    </p>
+  </blockquote>
+</li>
+</ol>
+
+
+
+
+
+
+
+<hr>
+<h3><a name="14"></a>14. [PDTS] Incorrect postconditions for <tt>path</tt> copy/move constructor</h3>
+<p><b>Section:</b> X 8.4.1 [path.construct] <b>Status:</b> <a href="sg3-active.html#WP">WP</a>
+ <b>Submitter:</b> GB-7, CH-10 <b>Opened:</b> 2014-01-20 <b>Last modified:</b> 2014-02-20</p>
+<p><b>View all other</b> <a href="sg3-index.html#.4.1 [path.construct">issues</a> in 8.4.1 [path.construct].</p>
+<p><b>View all issues with</b> <a href="sg3-status.html#WP">WP</a> status.</p>
+<p><b>Discussion:</b></p>
+<p>The postconditions for the copy/move constructor for path are shown as "empty()".
+This appears to have been incorrectly copied from the default ctor.</p>
+
+<p>Remove the 'postconditions' clause from the copy/move ctor.</p>
+
+<p><i>[2014-02-07, Beman Dawes suggests wording]</i></p>
+
+
+
+
+<p><b>Proposed resolution:</b></p>
+    <p>
+      <i>Change 8.4.1 [path.construct]:</i>
+    </p>
+    <blockquote>
+    <pre>
+      path(const path&amp; p);
+      path(path&amp;&amp; p) noexcept;
+    </pre>
+    <blockquote>
+      <p>
+        <i>Effects:</i> Constructs an object of class <code>path</code> with <code>
+          pathname
+        </code> having the original value of <code>p.pathname</code>. In the
+        second form, <code>p</code> is left in a valid but unspecified state.
+      </p>
+      <p>
+        <del><i>Postconditions:</i> empty().</del>
+      </p>
+    </blockquote>
+    </blockquote>
+
+
+
+
+
+<hr>
+<h3><a name="15"></a>15. [PDTS] Missing behavior for characters with no representation</h3>
+<p><b>Section:</b> X 8.2.2 [path.type.cvt], X 8.4.1 [path.construct] <b>Status:</b> <a href="sg3-active.html#WP">WP</a>
+ <b>Submitter:</b> GB-8 <b>Opened:</b> 2014-01-20 <b>Last modified:</b> 2014-02-20</p>
+<p><b>View all issues with</b> <a href="sg3-status.html#WP">WP</a> status.</p>
+<p><b>Discussion:</b></p>
+<p>
+  No specification for characters with no representation. The example at the end of
+  8.4.1 refers to "for other native narrow encodings some characters may have no
+  representation" - what happens in such cases?</p>
+
+  <p>Suggested action:</p>
+  <p>Add some definition of the behaviour for characters with no representation.</p>
+
+  <p><i>[2014-02-12 Applied LWG/SG-3 Issaquah wording tweaks to make characters referred to plural.]</i></p>
+
+
+  <p><i>[2014-02-08, Beman Dawes provides wording]</i></p>
+
+
+
+<p><b>Proposed resolution:</b></p>
+  <p>
+    <i>Add a paragraph at the end of 8.2.2 [path.type.cvt]:</i>
+  </p>
+  <blockquote><p>
+    <ins>If the encoding being converted to has no representation for source characters,
+    the resulting converted characters, if any, are unspecified.</ins>
+  </p></blockquote>
+
+
+
+
+
+
+<hr>
+<h3><a name="16"></a>16. [PDTS] Append behavior underspecified if target is empty </h3>
+<p><b>Section:</b> X 8.4.3 [path.append] <b>Status:</b> <a href="sg3-active.html#WP">WP</a>
+ <b>Submitter:</b> CH-11 <b>Opened:</b> 2014-01-20 <b>Last modified:</b> 2014-02-20</p>
+<p><b>View all issues with</b> <a href="sg3-status.html#WP">WP</a> status.</p>
+<p><b>Discussion:</b></p>
+<p>Is the added separator redundant in p1 /= p2, where p1 is empty? 
+I.e. does the result start with a separator?</p>
+
+<p>Suggested action:</p>
+<p>Specify what behaviour is required.</p>
+  
+  <p><i>[2014-02-07: Beman Dawes comments]</i></p>
+ 
+  <p>The second bullet item is supposed to deal with the <tt>empty()</tt> condition.</p>
+
+  <p><i>[2014-02-12 LWG/SG-3 Issaquah: The text is correct as written, however
+  adding a note will clarify this and address the NB comment.]</i></p>
+  
+  
+
+
+<p><b>Proposed resolution:</b></p>
+  <p>
+    <i>Change 8.4.3 [path.append]:</i>
+  </p>
+  <blockquote>
+  <p>
+    <i>Effects:</i>
+  </p>
+  <blockquote><p>
+    Appends <code>path::preferred_separator</code> to <code>pathname</code> unless:
+   </p>
+    <ul>
+      <li><p>
+        an added separator
+        would be redundant, or
+      </p></li>
+      <li><p>would change a<del>n</del> relative path to a<del>n</del> absolute path
+      <ins>[<i>Note</i>: An empty path is relative. &mdash; <i>end note</i>]</ins>, or</p></li>
+      <li><p>
+        <code>p.empty()</code>, or
+      </p></li>
+      <li><p>
+        <code>*p.native().cbegin()</code> is a directory separator.
+      </p></li>
+    </ul>
+    <p>
+      Then appends <code>p.native()</code> to <code>pathname</code>.
+    </p>
+    </blockquote>
+    </blockquote>
+  
+
+
+
+
+<hr>
+<h3><a name="18"></a>18. [PDTS] <tt>is_absolute()</tt> return clause confusing</h3>
+<p><b>Section:</b> X 8.4.10 [path.query] <b>Status:</b> <a href="sg3-active.html#WP">WP</a>
+ <b>Submitter:</b> FI-7 <b>Opened:</b> 2014-01-20 <b>Last modified:</b> 2014-02-20</p>
+<p><b>View all issues with</b> <a href="sg3-status.html#WP">WP</a> status.</p>
+<p><b>Discussion:</b></p>
+<p><tt>is_absolute</tt> says: "Returns: true if the elements of <tt>root_path()</tt> uniquely identify
+a file system location, else false." The "uniquely identify a location" seems confusing
+in presence of symlinks.
+</p>
+<p>Suggested action:</p>
+<p>Clarify the returns clause so that there's no confusion about symlinks and 'location'.</p>
+
+  <p><i>[2014-02-10 Beman Dawes provides wording]</i></p>
+
+
+
+
+
+<p><b>Proposed resolution:</b></p>
+  <p>
+  <i>Change 8.4.10 path query [path.query]:</i>
+  </p>
+  <blockquote>
+    <pre>bool <a name="path-is_absolute">is_absolute</a>() const;</pre>
+    <blockquote>
+      <p>
+        <i>Returns:</i> <code>true</code> if <del>
+          the elements of <code>root_path()</code> uniquely identify a
+          file system location
+        </del> <ins>
+          <code>pathname</code> contains an absolute path (4.1 [fs.def.absolute-path])
+        </ins>, else <code>false</code>.
+      </p>
+    </blockquote>
+    <blockquote>
+      [<i>Example:</i> <code>path(&quot;/&quot;).is_absolute()</code> is
+      <code>true</code> for POSIX based operating systems, and <code>false</code> for Windows based
+      operating systems.&nbsp; &mdash; <i>end example</i>]
+    </blockquote>
+  </blockquote>
+
+
+
+
+
+
+<hr>
+<h3><a name="19"></a>19. [PDTS] Consider using quoted manipulators</h3>
+<p><b>Section:</b> X 8.6.1 [path.io] <b>Status:</b> <a href="sg3-active.html#WP">WP</a>
+ <b>Submitter:</b> FI-8 <b>Opened:</b> 2014-01-20 <b>Last modified:</b> 2014-02-20</p>
+<p><b>View all issues with</b> <a href="sg3-status.html#WP">WP</a> status.</p>
+<p><b>Discussion:</b></p>
+<p>"[<i>Note</i>: Pathnames containing spaces require special handling by the user to avoid
+truncation when read by the extractor. &mdash; <i>end note</i>]" sounds like a quoted manipulator
+as specified in the C++14 draft in [quoted.manip] would be useful.</p>
+
+<p>Consider using quoted manipulators for stream insertion and extraction.</p>
+
+<p><i>[2014-02-10, Daniel suggests wording]</i></p>
+
+
+<p><i>[2014-02-12 Applied LWG/SG-3 Issaquah wording tweak to use ISO doc number for reference to C++14.]</i></p>
+
+
+
+
+<p><b>Proposed resolution:</b></p>
+
+<ol>
+<li><p>Change 8.6.1 [path.io] as indicated:</p>
+
+<blockquote><pre>
+template &lt;class charT, class traits&gt;
+basic_ostream&lt;charT, traits&gt;&amp;
+operator&lt;&lt;(basic_ostream&lt;charT, traits&gt;&amp; os, const path&amp; p);
+</pre>
+<blockquote>
+<p>
+<i>Effects</i>: <tt>os &lt;&lt; <ins>quoted(</ins>p.string&lt;charT, traits&gt;()<ins>)</ins></tt>.
+<p/>
+<del>
+  [<i>Note</i>: Pathnames containing spaces require special handling by the user to avoid truncation when read by the extractor.
+  &mdash; <i>end note</i>]
+</del>
+  <p/>
+  <ins>
+    [<i>Note</i>: The <code>quoted</code> function is described in ISO 14882:2014 §27.7.6.
+    &mdash; <i>end note</i>]
+  </ins>
+  <p/>
+<i>Returns</i>: <tt>os</tt>
+</p>
+</blockquote>
+<pre>
+template &lt;class charT, class traits&gt;
+basic_istream&lt;charT, traits&gt;&amp;
+operator&gt;&gt;(basic_istream&lt;charT, traits&gt;&amp; is, path&amp; p);
+</pre>
+<blockquote>
+<p>
+<i>Effects</i>:
+</p>
+<blockquote><pre>
+basic_string&lt;charT, traits&gt; tmp;
+is &gt;&gt; <ins>quoted(</ins>tmp<ins>)</ins>;
+p = tmp;
+</pre></blockquote>
+<p>
+</p>
+</blockquote>
+</blockquote>
+
+</li>
+</ol>
+
+
+
+
+
+
+<hr>
+<h3><a name="21"></a>21. [PDTS] <tt>directory_entry operator==</tt> needs clarification</h3>
+<p><b>Section:</b> X 12.3 [directory_entry.obs] <b>Status:</b> <a href="sg3-active.html#WP">WP</a>
+ <b>Submitter:</b> GB-12 <b>Opened:</b> 2014-01-20 <b>Last modified:</b> 2014-02-20</p>
+<p><b>View all other</b> <a href="sg3-index.html#2.3 [directory_entry.obs">issues</a> in 12.3 [directory_entry.obs].</p>
+<p><b>View all issues with</b> <a href="sg3-status.html#WP">WP</a> status.</p>
+<p><b>Discussion:</b></p>
+<p>Since <tt>operator==</tt> for <tt>directory_entry</tt> does not check status, it would be worth
+highlighting that <tt>operator==</tt> only checks that the paths match.</p>
+<p>Suggested action:</p>
+<p>Add: [<i>Note</i>: does not include status values &mdash; <i>end note</i>]</p>
+
+  <p><i>[2014-02-09, Beman Dawes suggest wording]</i></p>
+
+
+  <p><i>[2014-02-13 LWG/SG-3 Issaquah: Proposed wording accepted. Typo /no/not/ fixed per suggestion.]</i></p>
+
+
+
+
+<p><b>Proposed resolution:</b></p>
+  <p/>
+  <i>To 12.3 [directory_entry.obs] <tt>operator==</tt> add:</i>
+
+  <p/><ins>
+    [<i>Note:</i> Status members do not participate in determining equality. &mdash; <ins>end note</ins>]</ins>
+
+  <blockquote>
+  </blockquote>
+
+
+
+
+
+
+<hr>
+<h3><a name="24"></a>24. [PDTS] Incorrect effects clause for path <tt>copy</tt></h3>
+<p><b>Section:</b> X 15.3 [fs.op.copy] <b>Status:</b> <a href="sg3-active.html#WP">WP</a>
+ <b>Submitter:</b> GB-14 <b>Opened:</b> 2014-01-20 <b>Last modified:</b> 2014-02-20</p>
+<p><b>View all issues with</b> <a href="sg3-status.html#WP">WP</a> status.</p>
+<p><b>Discussion:</b></p>
+<p>Incorrect effects clause for path copy &mdash; the effect clause for <tt>copy</tt> [fs.op.copy]
+includes "<tt>equivalent(f, t)</tt>" &mdash; there is no <tt>equivalent()</tt> function defined for variables
+of this type (<tt>file_status</tt>)</p>
+<p>Suggested action:</p>
+<p>Replace with "<tt>equivalent(from, to)</tt>"</p>
+
+  <p><i>[2014-02-09, Beman Dawes suggests wording]</i></p>
+
+
+  <p><i>[2014-02-13 LWG/SG-3 Issaquah: Proposed wording accepted.]</i></p>
+
+
+
+
+<p><b>Proposed resolution:</b></p>
+  <p/>  <i>Change 15.3 [fs.op.copy]:</i>
+
+  <blockquote>
+    <p>
+      Report an error as specified in <a href="#Error-reporting">Error reporting</a>
+      if:
+    </p>
+
+    <ul>
+      <li>
+        <code>!exists(f)</code>.
+      </li>
+      <li>
+        <code>equivalent(<del>f, t</del> <ins>from, to</ins>)</code>.
+      </li>
+      <li>
+        <code>is_other(f) || is_other(t)</code>.
+      </li>
+      <li>
+        <code>is_directory(f) &amp;&amp; is_regular_file(t)</code>.
+      </li>
+    </ul>
+  </blockquote>
+
+
+
+
+
+
+<hr>
+<h3><a name="29"></a>29. [PDTS] Unclear semantics of <tt>read_symlink</tt> on error</h3>
+<p><b>Section:</b> X 15.27 [fs.op.read_symlink] <b>Status:</b> <a href="sg3-active.html#WP">WP</a>
+ <b>Submitter:</b> GB-16 <b>Opened:</b> 2014-01-20 <b>Last modified:</b> 2014-02-20</p>
+<p><b>View all issues with</b> <a href="sg3-status.html#WP">WP</a> status.</p>
+<p><b>Discussion:</b></p>
+<p>Unclear semantics of read_symlink on error: 15.27 [fs.op.read_symlink] has:
+Returns: If p resolves to a symbolic link, a path object containing the contents of
+that symbolic link. Otherwise path(). and also [Note: It is an error if p does not
+resolve to a symbolic link. -- end note]</p>
+<p>I do not believe path() can be a valid return for the overload not taking error_code.</p>
+
+<p>Strike "Otherwise <tt>path()</tt>."</p>
+
+  <p><i>[2014-02-09, Beman Dawes provides wording]</i></p>
+
+
+  <p/>
+
+  <p><i>[2014-02-13 LWG/SG-3 Issaquah: Proposed wording accepted.]</i></p>
+
+
+
+
+<p><b>Proposed resolution:</b></p>
+  <i>Change 15.27 [fs.op.read_symlink]:</i>
+
+  <blockquote>
+    <p>
+      <i>Returns:</i>&nbsp; If <code>p</code> resolves to a symbolic
+      link, a <code>path</code> object containing the contents of that symbolic
+      link. <del>Otherwise <code>path()</code>.</del> The signature with argument <code>ec</code>
+      returns <code>path()</code> if an error occurs.
+    </p>
+    <p>
+      <i>Throws:</i> As specified in <a href="#Error-reporting">Error reporting</a>. [<i>Note:</i> It is an error if 
+      <code>p</code> does not resolve to a symbolic link. &mdash; <i>end note</i>]
+    </p>
+  </blockquote>
+
+
+
+
+
+
+
+<hr>
+<h3><a name="32"></a>32. [PDTS] <tt>system_complete()</tt> example needs clarification</h3>
+<p><b>Section:</b> X 15.36 [fs.op.system_complete] <b>Status:</b> <a href="sg3-active.html#WP">WP</a>
+ <b>Submitter:</b> FI-10 <b>Opened:</b> 2014-01-20 <b>Last modified:</b> 2014-02-20</p>
+<p><b>View all issues with</b> <a href="sg3-status.html#WP">WP</a> status.</p>
+<p><b>Discussion:</b></p>
+<p>"[Example: For POSIX based operating systems, <tt>system_complete(p)</tt>
+has the same semantics as <tt>complete(p, current_path())</tt>." What is this
+<tt>complete</tt> that is referred here?</p>
+
+<p>Clarify the example.</p>
+
+<p><i>[2014-02-10 Beman Dawes suggests wording]</i></p>
+
+
+  <p><i>[2014-02-13 LWG/SG-3 Issaquah: Proposed wording accepted.]</i></p>
+
+
+
+
+<p><b>Proposed resolution:</b></p>
+  <p>
+  <i>Change 15.36 [fs.op.system_complete]:</i>
+  </p> 
+  <blockquote>
+    [<i>Example:</i> For POSIX based operating systems, <code>system_complete(p)</code>
+    has the same semantics as <code>
+      <del>complete</del><ins>absolute</ins>(p, current_path())</code>.
+
+  </blockquote>
+
+
+
+
+
+
+<hr>
+<h3><a name="33"></a>33. [PDTS] <tt>unique_path()</tt> is a security vulnerability</h3>
+<p><b>Section:</b> X 15.38 [fs.op.unique_path] <b>Status:</b> <a href="sg3-active.html#WP">WP</a>
+ <b>Submitter:</b> CH-19 <b>Opened:</b> 2014-01-20 <b>Last modified:</b> 2014-02-20</p>
+<p><b>View all issues with</b> <a href="sg3-status.html#WP">WP</a> status.</p>
+<p><b>Discussion:</b></p>
+<p><tt>unique_path()</tt> is a security vulnerability. As the Linux manual page for the similar
+function <tt>tmpnam()</tt> writes in the "BUGS" section: "Never use this function. Use <tt>mkstemp</tt>(3)
+or <tt>tmpfile</tt>(3) instead." <tt>mkstemp()</tt> and <tt>tmpfile()</tt> avoid the inherent race condition of
+<tt>unique_path()</tt> by returning an open file descriptor or <tt>FILE*</tt>.</p>
+
+<p/><i>[Beman Dawes comments: 10 Feb 2014:]</i>
+  <blockquote>
+    <p>There are two issues here:</p>
+    <ul>
+      <li>
+        Confusion over what unique_path does and how it is used. The function is
+        misleadingly named. These issue have arisen in the past, but apparently not
+        been fully corrected. The suggested fix is to (1) rename the function and (2)
+        provide an example of how to use the function safely with fstreams or even C I/O.
+        See below for proposed wording.
+      </li>
+      <li>
+        Very real security concerns. See <a href="#54">issue 54</a>. The security
+        concerns are probably best dealt with in the next File System TS, since a
+        full-blown proposal is needed and will likely take several years to develop.
+      </li>
+    </ul>
+
+  </blockquote>
+  
+  <p><i>[
+    2014-02-11 Issaquah: Strike the function.
+  ]</i></p>
+
+
+  <p><i>[2014-02-12 The following Proposed resolution from CH-19 was moved here
+  to avoid confusion with the final Proposed resolution wording from the WG/SG3.]</i></p>
+
+  <p>
+    Remove this function. Consider providing a function <tt>create_unique_directory()</tt>.
+    If it fits the scope of the proposed TS, consider providing functions
+    <tt>create_unique_file()</tt> that returns <tt>ifstream</tt>, <tt>ofstream</tt> and <tt>iofstream</tt>.
+  </p>
+  <p><i>[
+    2014-02-12 The following Proposed wording was moved here
+    to avoid confusion with the final Proposed resolution wording from the WG/SG3.
+  ]</i></p>
+
+  <p><i>[2014-02-10 Beman Dawes]</i></p>
+
+
+  <p><strong>Previous resolution from Beman [SUPERSEDED]:</strong></p>
+  <blockquote class="note">
+  <p>
+  <i>Change 15.38 [fs.op.unique_path]:</i>
+  </p>
+  <pre>
+    path <del>unique_path</del><ins>generate_random_filename</ins>(const path&amp; model=&quot;%%%%-%%%%-%%%%-%%%%&quot;);
+    path <del>unique_path</del><ins>generate_random_filename</ins>(const path&amp; model, error_code&amp; ec);
+  </pre>
+  <blockquote>
+    <p>
+      The <code>
+        <del>unique_path</del>
+        <ins>generate_random_filename</ins>
+      </code> function generates a name suitable for temporary files, including directories. The name is based
+      on a model that uses the percent sign character to specify replacement by a
+      random hexadecimal digit.
+    </p>
+    <p>
+      [<i>Note:</i> The more bits of randomness in the
+      generated name, the less likelihood of prior existence or being guessed.
+      Each replacement hexadecimal digit in the model adds four bits of randomness.
+      The default model thus provides 64 bits of randomness. <i>--end note</i>]
+    </p>
+    <p>
+      <i>Returns:</i> A path identical to <code>model</code>, except that each
+      occurrence of the percent sign character is replaced by a random hexadecimal
+      digit character in the range 0-9, a-f. The signature with argument <code>ec</code>
+      returns <code>path()</code> if an error occurs.
+    </p>
+    <p>
+      <i>Throws:</i> As specified in <a href="#Error-reporting">Error reporting</a>.
+    </p>
+    <p>
+      <i>Remarks:</i> Implementations are encouraged to obtain the required
+      randomness via a <a href="http://en.wikipedia.org/wiki/Cryptographically_secure_pseudorandom_number_generator">cryptographically secure pseudo-random number generator</a>, such as one
+      provided by the operating system. [<i>Note</i>: Such generators may block
+      until sufficient entropy develops. <i>--end note</i>]
+    </p>
+    <p>
+      <p>
+        <i>
+          <span style="background-color: #e0e0e0">
+            Replace this example with one
+            that opens a std::ofstream:
+          </span>
+        </i>
+      </p>
+      [<i>Example</i>:
+    </p>
+    <blockquote>
+      <pre>
+        cout &lt;&lt; <del>unique_path</del><ins>generate_random_filename</ins>(&quot;test-%%%%%%%%%%%.txt&quot;) &lt;&lt; endl;
+      </pre>
+    </blockquote>
+    <p>
+      Typical output would be <code>&quot;test-0db7f2bf57a.txt&quot;</code>. Because 11
+      hexadecimal output characters are specified, 44 bits of randomness are
+      supplied.&nbsp; <i>-- end example</i>]
+    </p>
+  </blockquote>
+</blockquote>
+
+
+
+<p><b>Proposed resolution:</b></p>
+
+  <p/>Remove the two <code>unique_path</code> function signatures from 6 [fs.filesystem.synopsis].
+
+  <p/>Remove 15.38 [fs.op.unique_path] in its entirety.
+  
+  <p><i>[This removes all references the function from the working draft.]</i></p>
+
+ 
+
+
+
+
+
+<hr>
+<h3><a name="44"></a>44. [PDTS] enum classes <tt>copy_options</tt> and <tt>perms</tt> should be bitmask types</h3>
+<p><b>Section:</b> X 10.2 [enum.copy_options], X 10.3 [enum.perms] <b>Status:</b> <a href="sg3-active.html#WP">WP</a>
+ <b>Submitter:</b> P.J. Plauger <b>Opened:</b> 2014-01-30 <b>Last modified:</b> 2014-02-20</p>
+<p><b>View all other</b> <a href="sg3-index.html#0.2 [enum.copy_options">issues</a> in 10.2 [enum.copy_options].</p>
+<p><b>View all issues with</b> <a href="sg3-status.html#WP">WP</a> status.</p>
+<p><b>Discussion:</b></p>
+<p>
+enum classes <tt>copy_options</tt> and <tt>perms</tt> should be bitmask types.
+</p>
+
+<p><i>[2014-02-08 Daniel comments and suggests wording]</i></p>
+
+<p>
+Since both enum types contain enumeration values that denote the value zero, they are currently not
+allowed to be described as <i>bitmask types</i>. This issue depends on LWG issue 1450, which &mdash; if it would
+be accepted &mdash; would allow for applying this concept to these enumeration types.
+</p>
+
+  <p><i>[2014-02-13 LWG/SG-3 Issaquah: Proposed wording accepted.]</i></p>
+
+
+
+
+<p><b>Proposed resolution:</b></p>
+<p>This wording is relative to <a href="http://wiki.edg.com/twiki/pub/Wg21issaquah/SG3/working-draft.html">SG3 working draft</a> <em>and 
+assumes that LWG 1450 has been resolved</em>.</p>
+
+<ol>
+<li><p>Change [enum.copy_options] as indicated:</p>
+<blockquote><p>
+<del>This enumeration</del><ins>The <tt>enum class</tt> type <tt>copy_options</tt> is a bitmask type (C++11 &sect;17.5.2.1.3) that</ins> 
+specifies bitmask constants used to control the semantics of copy operations. The constants are specified in option groups. [&hellip;]
+</p></blockquote>
+</li>
+
+<li><p>Change [enum.perms] as indicated:</p>
+<blockquote><p>
+<del>This enumeration</del><ins>The <tt>enum class</tt> type <tt>perms</tt> is a bitmask type (C++11 &sect;17.5.2.1.3) that</ins> 
+specifies bitmask constants used to identify file permissions.
+</p></blockquote>
+</li>
+</ol>
+
+
+
+
+
+<hr>
+<h3><a name="47"></a>47. [PDTS] <tt>last_write_time()</tt> uses ill-formed cast</h3>
+<p><b>Section:</b> X 15.25 [fs.op.last_write_time] <b>Status:</b> <a href="sg3-active.html#WP">WP</a>
+ <b>Submitter:</b> P.J. Plauger <b>Opened:</b> 2014-01-30 <b>Last modified:</b> 2014-02-20</p>
+<p><b>View all other</b> <a href="sg3-index.html#5.25 [fs.op.last_write_time">issues</a> in 15.25 [fs.op.last_write_time].</p>
+<p><b>View all issues with</b> <a href="sg3-status.html#WP">WP</a> status.</p>
+<p><b>Discussion:</b></p>
+<p>
+In <tt>last_write_time</tt>, <tt>static_cast&lt;file_time_type&gt;(-1)</tt> is ill formed,
+(possibly should be <tt>chrono&lt;<i>unspecified-trivial-clock</i>&gt;::from_time_t(-1))</tt>.
+</p>
+
+<p><i>[2014-02-08 Daniel comments and provides wording]</i></p>
+
+
+<p>
+I agree that the current wording needs to be fixed, but it is unclear to me whether invoking
+<tt>from_time_t</tt> (which is only guaranteed to exist for <tt>std::chrono::system_clock</tt>)
+with a value of <tt>time_t(-1)</tt> is a well-defined operation. Reason is that the C Standard
+makes a difference between a <i>calendar time</i> and the value <tt>time_t(-1)</tt> as an error 
+indication. But the specification of <tt>system_clock::from_time_t</tt> only says "A <tt>time_point</tt> 
+object that represents the same point in time as <tt>t</tt> [&hellip;]" and it is not clear whether
+<tt>time_t(-1)</tt> can be considered as a "point in time". Instead of relying on such a potentially
+subtle semantics of the conversion result of <tt>time_t(-1)</tt> to <tt>std::chrono::system_clock::time_point</tt>
+with a further conversion to <tt>file_time_type</tt> (which in theory could led to overflow or underflow and
+thus another potential source of undefined behaviour), I suggest to change the current error value of
+<tt>last_write_time</tt> to one of the well-define limiting values of <tt>file_time_type</tt>, e.g.
+<tt>file_time_type::min()</tt>.
+</p>
+
+  <p><i>[2014-02-13 LWG/SG-3 Issaquah: Proposed wording accepted.]</i></p>
+
+
+
+
+<p><b>Proposed resolution:</b></p>
+<p>This wording is relative to <a href="http://wiki.edg.com/twiki/pub/Wg21issaquah/SG3/working-draft.html">SG3 working draft</a>.</p>
+
+<ol>
+<li><p>Change the last write time prototype specification, 15.25 [fs.op.last_write_time], as indicated:</p>
+<blockquote><pre>
+file_time_type last_write_time(const path&amp; p);
+file_time_type last_write_time(const path&amp; p, error_code&amp; ec) noexcept;
+</pre>
+<blockquote>
+<p>
+<i>Returns</i>: The time of last data modification of <tt>p</tt>, determined as if by the value of the POSIX <tt>stat</tt> 
+structure member <tt>st_mtime</tt> obtained as if by POSIX <tt>stat()</tt>. The signature with argument <tt>ec</tt> returns 
+<tt><del>static_cast&lt;file_time_type&gt;(-1)</del><ins>file_time_type::min()</ins></tt> if an error occurs.
+</p>
+</blockquote></blockquote>
+</li>
+</ol>
+
+
+
+
+
+<hr>
+<h3><a name="50"></a>50. [PDTS] <tt>path::compare(const string&amp; s)</tt> wrong argument type</h3>
+<p><b>Section:</b> X 8 [class.path] <b>Status:</b> <a href="sg3-active.html#WP">WP</a>
+ <b>Submitter:</b> Stephan T. Lavavej <b>Opened:</b> 2014-02-03 <b>Last modified:</b> 2014-02-20</p>
+<p><b>View all other</b> <a href="sg3-index.html# [class.path">issues</a> in 8 [class.path].</p>
+<p><b>View all issues with</b> <a href="sg3-status.html#WP">WP</a> status.</p>
+<p><b>Discussion:</b></p>
+<p>
+<tt>path</tt> has "<tt>int compare(const string&amp; s) const;</tt>" but it should almost certainly take
+<tt>const string_type&amp;</tt>, since the third overload takes <tt>const value_type*</tt>.
+</p>
+
+<p><i>[2014-02-08 Daniel comments and provides wording]</i></p>
+
+
+<p>
+This issue is the same as <a href="sg3-closed.html#43">43</a> and resolves that issue as well.
+</p>
+
+  <p><i>[2014-02-13 LWG/SG-3 Issaquah: Proposed wording accepted.]</i></p>
+
+
+
+
+<p><b>Proposed resolution:</b></p>
+<p>This wording is relative to <a href="http://wiki.edg.com/twiki/pub/Wg21issaquah/SG3/working-draft.html">SG3 working draft</a>.</p>
+
+<ol>
+<li><p>Change class <tt>path</tt> synopsis, 8 [class.path], as indicated:</p>
+<blockquote><pre>
+<i>// compare</i>
+int compare(const path&amp; p) const noexcept;
+int compare(const string<ins>_type</ins>&amp; s) const;
+int compare(const value_type* s) const;
+</pre></blockquote>
+</li>
+
+<li><p>Change <tt>path compare</tt> prototype specification, 8.4.8 [path.compare], as indicated:</p>
+<blockquote><pre>
+int compare(const string<ins>_type</ins>&amp; s) const<ins>;</ins>
+</pre></blockquote>
+</li>
+</ol>
+
+
+
+
+
+<hr>
+<h3><a name="52"></a>52. [PDTS] Better to avoid deriving from <tt>std::iterator</tt></h3>
+<p><b>Section:</b> X 13 [class.directory_iterator], X 14 [class.rec.dir.itr] <b>Status:</b> <a href="sg3-active.html#WP">WP</a>
+ <b>Submitter:</b> Stephan T. Lavavej <b>Opened:</b> 2014-02-03 <b>Last modified:</b> 2014-02-20</p>
+<p><b>View all other</b> <a href="sg3-index.html#3 [class.directory_iterator">issues</a> in 13 [class.directory_iterator].</p>
+<p><b>View all issues with</b> <a href="sg3-status.html#WP">WP</a> status.</p>
+<p><b>Discussion:</b></p>
+<p>Although the Standard has made this mistake almost a dozen times, I recommend not
+depicting <tt>directory_iterator</tt> and <tt>recursive_directory_iterator</tt> as deriving from
+<tt>std::iterator</tt>, since that's a binding requirement on implementations.
+Instead they should be depicted as having the appropriate typedefs, and leave it up to
+implementers to decide how to provide them. (The difference is observable to users with
+<tt>is_base_of</tt>, not that they should be asking that question.)</p>
+
+<p><i>[2014-02-08 Daniel comments and provides wording]</i></p>
+
+<p>
+This issue is basically similar to the kind of solution that had been used to remove the
+requirement to derive from <tt>unary_function</tt> and friends as described by
+<a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2010/n3198.htm">N3198</a> and
+I'm strongly in favour to follow that spirit here as well. I'd like to add that basically all
+"newer" iterator types (such as the <tt>regex</tt> related iterator don't derive from
+<tt>std::iterator</tt> either.
+<p/>
+Another reason to change the current specification is the fact that it currently says that
+the member types <tt>pointer</tt> and <tt>reference</tt> would be determined to <tt>value_type*</tt>
+and <tt>value_type&amp;</tt> (that is mutable pointers and references), which conflicts with the specification 
+of the return types of the following members:
+</p>
+<blockquote><pre>
+const directory_entry&amp; operator*() const;
+const directory_entry* operator-&gt;() const;
+</pre></blockquote>
+<p>
+The proposed fording fixes this by correcting these <tt>typedef</tt> to corresponding <tt>const</tt> access.
+<p/>
+The very same objections had been expressed by issue <a href="sg3-closed.html#51">51</a> and the below given wording resolves this
+issue as well.
+</p>
+
+  <p><i>[2014-02-13 LWG/SG-3 Issaquah: Proposed wording accepted.]</i></p>
+
+
+
+<p><b>Proposed resolution:</b></p>
+<p>This wording is relative to <a href="http://wiki.edg.com/twiki/pub/Wg21issaquah/SG3/working-draft.html">SG3 working draft</a>.</p>
+
+<ol>
+<li><p>Change class <tt>directory_iterator</tt> synopsis, [class.directory_iterator], as indicated:</p>
+<blockquote><pre>
+namespace std { namespace tbd { namespace filesystem {
+
+      class directory_iterator <del>:
+        public iterator&lt;input_iterator_tag, directory_entry&gt;</del>
+      {
+      public:
+        <ins>typedef directory_entry        value_type;</ins>
+        <ins>typedef ptrdiff_t              difference_type;</ins>
+        <ins>typedef const directory_entry* pointer;</ins>
+        <ins>typedef const directory_entry&amp; reference;</ins>
+        <ins>typedef input_iterator_tag     iterator_category;</ins>
+
+        // member functions
+        [&hellip;]
+      };
+
+} } }  // namespaces std::tbd::filesystem
+</pre></blockquote>
+</li>
+
+<li><p>Change class <tt>recursive_directory_iterator</tt> synopsis, [class.rec.dir.itr], as indicated:</p>
+<blockquote><pre>
+namespace std { namespace tbd { namespace filesystem {
+
+      class recursive_directory_iterator <del>:
+        public iterator&lt;input_iterator_tag, directory_entry&gt;</del>
+      {
+      public:
+        <ins>typedef directory_entry        value_type;</ins>
+        <ins>typedef ptrdiff_t              difference_type;</ins>
+        <ins>typedef const directory_entry* pointer;</ins>
+        <ins>typedef const directory_entry&amp; reference;</ins>
+        <ins>typedef input_iterator_tag     iterator_category;</ins>
+
+        // constructors and destructor
+        [&hellip;]
+        
+        // modifiers
+        recursive_directory_iterator&amp; operator=(const recursive_directory_iterator&amp;) = default;
+        recursive_directory_iterator&amp; operator=(recursive_directory_iterator&amp;&amp;) = default;
+        
+        <ins>const directory_entry&amp; operator*() const;</ins>
+        <ins>const directory_entry* operator-&gt;() const;</ins>
+
+        recursive_directory_iterator&amp; operator++();
+        recursive_directory_iterator&amp; increment(error_code&amp; ec);
+
+        [&hellip;]
+      };
+
+} } }  // namespaces std::tbd::filesystem
+</pre></blockquote>
+</li>
+</ol>
+
+
+
+
+
+<hr>
+<h3><a name="55"></a>55. [PDTS] Clarify Error reporting</h3>
+<p><b>Section:</b> X 7 [fs.err.report] <b>Status:</b> <a href="sg3-active.html#WP">WP</a>
+ <b>Submitter:</b> Beman Dawes <b>Opened:</b> 2014-01-20 <b>Last modified:</b> 2014-02-20</p>
+<p><b>View all issues with</b> <a href="sg3-status.html#WP">WP</a> status.</p>
+<p><b>Discussion:</b></p>
+  <p>
+    The proposed change below was suggested in Issaquah as part of the resolution of issue 13 to clarify
+    the Error reporting section. LWG/SG3 liked the change, but since issue 13 was NAD requested that a separate
+    issue be opened.
+  </p>
+
+  <p><i>[2014-02-13 LWG/SG-3 Issaquah: Proposed wording accepted.]</i></p>
+
+  
+
+
+<p><b>Proposed resolution:</b></p>
+
+      <p>
+        <i>Change 7 [fs.err.report]:</i>
+      </p>
+
+      <blockquote>
+        <p>
+          Functions <b>not</b> having an argument of type <code>error_code&amp;</code> report errors as follows, unless otherwise specified:
+        </p>
+        <ul>
+          <li>
+            When a call by the
+            implementation to an operating system or other underlying API results in an
+            error that prevents the function from meeting its specifications, an exception
+            of type
+            <code>filesystem_error</code> shall be thrown. For functions with a single path
+            argument, that argument shall be passed to the
+            <code>filesystem_error</code> constructor with a single path argument.&nbsp; For
+            functions with two path arguments, the first of these arguments shall be
+            passed to the
+            <code>filesystem_error</code> constructor as the <code>path1</code> argument,
+            and the second shall be passed as the <code>path2</code> argument.
+            <ins>
+              The <code>filesystem_error</code> constructor's <code>error_code</code> argument is set as
+              appropriate for the specific operating system dependent error.
+            </ins><br/>
+            &nbsp;
+          </li>
+          <li>
+            Failure to allocate storage is reported by throwing an exception as described in C++11
+            &sect; 17.6.4.10.<br/>
+            &nbsp;
+          </li>
+          <li>Destructors throw nothing.</li>
+        </ul>
+        <p>
+          Functions having an argument of type <code>error_code&amp;</code> report errors as follows, unless otherwise
+          specified:
+        </p>
+        <ul>
+          <li>
+            If a call by the
+            implementation to an operating system or other underlying API results in an
+            error that prevents the function from meeting its specifications, the
+            <code>error_code&amp;</code> argument is set as
+            appropriate for the specific <ins>operating system dependent</ins> error.
+            Otherwise, <code>clear()</code> is called on the <code>error_code&amp;</code> argument.
+          </li>
+        </ul>
+      </blockquote>
+
+
+
+
+
+
+
+</body>
+</html>
