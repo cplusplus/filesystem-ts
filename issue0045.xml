@@ -17,10 +17,16 @@
 <tt>create_directory</tt> should refer to <tt>perms::all</tt> instead of the Posix
 <tt>S_IRWXU|S_IRWXG|S_IRWXO</tt>.
 </p>
+<note>2014-02-28 Beman provided proposed wording.</note>
 </discussion>
 
 <resolution>
-<p></p>
+<p><i>Effects:</i> Establishes the postcondition by attempting to create the 
+  directory <code>p</code> resolves to, as if by POSIX <code>
+  mkdir()</code> with a second argument of <del>S_IRWXU|S_IRWXG|S_IRWXO</del> <ins><code>perms::all</code></ins>. Creation 
+  failure because <code>p</code> resolves to an existing directory shall not be 
+  treated as an error. </p>
+
 </resolution>
 
 </issue>
