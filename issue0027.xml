@@ -3,9 +3,9 @@
   <!ENTITY nbsp "&#160;">
 ] >
 
-<issue num="27" status="Open">
+<issue num="27" status="Review">
 <title>[PDTS] Return value of <tt>uintmax_t</tt> on error?</title>
-<section><sref ref="15.15 [fs.op.hard_lk_ct]"/></section>
+<section><sref ref="15.14 [fs.op.file_size]"/></section>
 <submitter>FI-9</submitter>
 <date>20 Jan 2014</date>
 
@@ -18,7 +18,7 @@ occurs.", one would expect that <b>both</b> signatures return that if an error o
   
  <note>2014-02-13 LWG/SG-3 Issaquah:</note>
 
-  <p/>Discussion when around in circles for awhile, until someone suggested the reference was wrong,
+  <p/>Discussion when around in circles for a while, until someone suggested the reference to 15.15 was wrong,
   and that the issue applied to the previous function in the WP, 15.14 File size [fs.op.file_size].
   
   <p/>The NB Comment makes much more sense if it applies to file_size(), so the chair was directed
@@ -31,6 +31,23 @@ occurs.", one would expect that <b>both</b> signatures return that if an error o
 </discussion>
 
 <resolution>
+<p>Change 15.14 [fs.op.file_size]:</p>
+
+<pre>uintmax_t file_size(const path&amp; p);
+uintmax_t file_size(const path&amp; p, error_code&amp; ec) noexcept;</pre>
+<blockquote>
+  <p><i>Returns:</i> If <code>exists(p) &amp;&amp; is_regular_file(p)</code>, the size 
+  in bytes 
+  of the file <code>p</code> resolves to, determined as if by the value of the 
+  POSIX <code>stat</code> structure member <code>st_size</code> 
+  obtained as if by POSIX <code>stat()</code>. 
+  Otherwise<del>, <code>static_cast&lt;uintmax_t&gt;(-1)</code></del> <ins>an error is reported (7)</ins>. The signature with 
+  argument <code>ec</code> 
+  returns <code>static_cast&lt;uintmax_t&gt;(-1)</code> if an error occurs.</p>
+  <p><i>Throws:</i> As specified in <a href="#Error-reporting">Error reporting <ins>(7)</ins></a>.</p>
+</blockquote>
+
+
 </resolution>
 
 </issue>
