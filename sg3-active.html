@@ -26,7 +26,7 @@
 </tr>
 <tr>
   <td align="left">Date:</td>
-  <td align="left">2014-02-27</td>
+  <td align="left">2014-02-28</td>
 </tr>
 <tr>
   <td align="left">Project:</td>
@@ -38,7 +38,7 @@
 </tr>
 </table>
 <h1>Filesystem Study Group (SG3) Active Issues List (Revision D0)</h1>
-<p>Revised 2014-02-27 at 15:02:50 UTC</p>
+<p>Revised 2014-02-28 at 12:02:04 UTC</p>
 
   <p>Reference ISO/IEC PDTS 18822</p>
   <p>Also see:</p>
@@ -1288,28 +1288,43 @@ very very nice to have a note about this.</p>
 <hr>
 <h3><a name="56"></a>56. [PDTS] Feature test macro for TS version</h3>
 <p><b>Section:</b> X 5 [fs.req] <b>Status:</b> <a href="sg3-active.html#New">New</a>
- <b>Submitter:</b> Clark Nelson <b>Opened:</b> 2014-02-10 <b>Last modified:</b> 2014-02-27</p>
+ <b>Submitter:</b> Clark Nelson <b>Opened:</b> 2014-02-10 <b>Last modified:</b> 2014-02-28</p>
 <p><b>View all issues with</b> <a href="sg3-status.html#New">New</a> status.</p>
 <p><b>Discussion:</b></p>
 <p/><a href="http://isocpp.org/std/standing-documents/sd-6-sg10-feature-test-recommendations">
 SD-6: SG10 Feature Test Recommendations</a> recommends that each library header 
 provide feature test macros. For Technical Specifications, the TS itself should 
 specify recommended names for the feature test macros.
-<p><i>[Beman Dawes 2014-03-27 provided the proposed resolution.
-Thanks to Vicente J. Botet Escriba and Richard Smith for suggestions and corrections.]</i></p>
+<p><i>[Beman Dawes 2014-02-28 provided the proposed resolution.
+Thanks to Vicente J. Botet Escriba, Richard Smith, and Clark Nelson for suggestions and corrections.]</i></p>
 
 
 
 <p><b>Proposed resolution:</b></p>
 <p><i>Add a new sub-section:</i></p>
 <blockquote>
-  <p><ins>5.2 Feature test macros [fs.macros]</ins></p>
-  <p><ins>The header described in this Technical Specification shall supply the 
+  <p><ins>5.2 Feature test macros [fs.req.macros]</ins></p>
+  <p><ins>These macros allow users to determine which versions of this Technical Specification
+   are supported by header <code>&lt;experimental/filesystem&gt;</code>.</ins></p>
+  <p><ins>Header <code>&lt;experimental/filesystem&gt;</code> shall supply the 
   following macro definitions:</ins></p>
   <blockquote>
     <pre><ins>#define __cpp_lib_experimental_filesystem     201406</ins>
 <ins>#define __cpp_lib_experimental_filesystem_v1  201406</ins></pre>
   </blockquote>
+<p><ins>[<i>Note:</i> These macros follow  WG21 SD-6, Feature-testing 
+recommendations for C++.</ins></p>
+<p><ins>The value of macro <code>__cpp_lib_experimental_filesystem</code> is
+<i>yyyymm</i> where <i>yyyy</i> is the year and <i>mm</i> the month when the version
+of the Technical Specification was completed.</ins></p>
+
+<p><ins>A macro in the form <code>
+__cpp_lib_experimental_filesystem_v</code><i>n</i> is provided for each inner 
+namespace <code>v</code><i>n</i> supplied by the implementation. The value of each macro
+<code>__cpp_lib_experimental_filesystem_v</code><i>n</i> is the same as the value of macro
+<code>__cpp_lib_experimental_filesystem</code> for the corresponding version of the Technical
+Specification. <i>— end note</i>]</ins></p>
+
 </blockquote>
 
 
