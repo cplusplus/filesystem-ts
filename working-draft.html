@@ -33,7 +33,7 @@ del     { background-color:#FFD7D7 }
     <tr>
       <td>Date:</td>
       <td>
-      <!--webbot bot="Timestamp" S-Type="EDITED" S-Format="%Y-%m-%d" startspan -->2014-02-27<!--webbot bot="Timestamp" endspan i-checksum="12134" --></td>
+      <!--webbot bot="Timestamp" S-Type="EDITED" S-Format="%Y-%m-%d" startspan -->2014-03-01<!--webbot bot="Timestamp" endspan i-checksum="12184" --></td>
     </tr>
     <tr>
       <td>Revises:</td>
@@ -480,8 +480,7 @@ encoding. Since <code>signed char</code> and <code>unsigned char</code> have no
 implied encoding, they are not included as permitted types. <i>&mdash;end note</i>]</p>
 
 </blockquote>
-<h3>5.1 <a name="Namespaces-and-headers">Namespaces and headers</a> 
-[fs.req.namespace]</h3>
+<h3>5.1 <a name="Namespaces-and-headers">Namespaces and headers</a> [fs.req.namespace]</h3>
 
 
 <p><ins>The components described in this technical specification are experimental and 
@@ -1770,7 +1769,7 @@ fs::create_directory(fs::u8path(utf8_string));</pre>
         const char* <a href="#filesystem_error-what">what</a>() const noexcept;
       };
 } } } }  // namespaces std::experimental::filesystem::v1</pre>
-<p>The class template <code>filesystem_error</code> defines the type of 
+<p>The class <del>template</del> <code>filesystem_error</code> defines the type of 
 objects thrown as exceptions to report file system errors from functions described in this 
 Technical Specification.</p>
 <h3>9.1  <a name="filesystem_error-members"> <code>filesystem_error</code> members</a> 
@@ -2072,7 +2071,7 @@ group results in undefined behavior.</p>
 <p><del>This enumeration</del><ins>The <tt>enum class</tt> type <tt>perms</tt> 
 is a bitmask type (C++11 §17.5.2.1.3) that</ins> specifies bitmask constants used to identify file 
 permissions. <i><span style="background-color: #E0E0E0">POSIX 
-(POSIX) specifies actual values, and those values have been adopted here because 
+<del>(POSIX)</del> specifies actual values, and those values have been adopted here because 
 they are very familiar and ingrained for many  users.</span></i></p>
 <table border="1" cellpadding="5" cellspacing="0" style="border-collapse: collapse" bordercolor="#111111">
   <tr>
@@ -2528,7 +2527,7 @@ directory_iterator&amp; increment(error_code&amp; ec)<code> noexcept</code>;</pr
 [directory_iterator.nonmembers]</h3>
 <p>These functions enable use of <code>directory_iterator</code> with <del>C++11</del> 
 range-based for statements.</p>
-<pre><del>const</del> directory_iterator<del>&amp;</del> begin(<del>const</del> directory_iterato<del>&amp;</del> iter) noexcept;</pre>
+<pre><del>const</del> directory_iterator<del>&amp;</del> begin(<del>const</del> directory_iterator<del>&amp;</del> iter) noexcept;</pre>
 <blockquote>
   <p><i>Returns: </i><code>iter</code>.</p>
 </blockquote>
@@ -2807,12 +2806,15 @@ void copy(const path&amp; from, const path&amp; to, <a href="#copy_option">copy_
       create a symbolic link to the source file.</li>
       <li>Otherwise if <code>options &amp; copy_options::create_hard_links</code>, 
       then create a hard link to the source file.</li>
-      <li>Otherwise:<ul>
-        <li>If <code>is_directory(t)</code>, then <code>copy_file(from, to/from.filename(), 
-        options)</code>.</li>
-        <li>Otherwise, <code>copy_file(from, to, options)</code>.</li>
+      <li><del>Otherwise:</del><ul>
+        <li><del>If <code>is_directory(t)</code>, then <code>copy_file(from, to/from.filename(), 
+        options)</code>.</del></li>
+        <li><del>Otherwise, <code>copy_file(from, to, options)</code>.</del></li>
       </ul>
       </li>
+      <li><ins>Otherwise if <code>is_directory(t)</code>, then <code>copy_file(from, to/from.filename(), 
+        options)</code>.</ins></li>
+      <li><ins>Otherwise, <code>copy_file(from, to, options)</code>.</ins></li>
     </ul>
   </blockquote>
 </blockquote>
