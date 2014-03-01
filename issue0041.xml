@@ -1,4 +1,4 @@
-<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+﻿<?xml version='1.0' encoding='utf-8' standalone='no'?>
 <!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
   <!ENTITY nbsp "&#160;">
 ] >
@@ -22,6 +22,23 @@
 <a href="sg3-active.html#41">41</a>,
 and <a href="sg3-active.html#49">49</a> are concerned with signatures which should or should not
 be <tt>noexcept</tt>. I will provide unified proposed wording for these issues, possibly in a separate paper.
+
+<note>Daniel Krügler 2014-02-28</note>
+
+<pre>directory_iterator begin(directory_iterator iter) noexcept;
+directory_iterator end(const directory_iterator&amp;) noexcept;</pre>
+
+<p/>are noexcept, but we have no guarantee that at least the
+move-constructor is noexcept:
+
+<pre>directory_iterator(const directory_iterator&amp;) = default;
+directory_iterator(directory_iterator&amp;&amp;) = default;</pre>
+
+<p/>This means that either the above noexcept specifications are not
+warranted or that at least the move-constructor of <tt>directory_iterator</tt>
+is required to be noexcept.
+
+<p/>The same applies to <tt>recursive_directory_iterator</tt>.
 
 </discussion>
 
