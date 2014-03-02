@@ -3334,16 +3334,16 @@ void permissions(const path&amp; p, <a href="#symlink_perms">perms</a> prms, err
     </tr>
     <tr>
       <td>Neither <code>add_perms</code> nor <code>remove_perms</code></td>
-      <td><code>prms &amp; perms_mask</code></td>
+      <td><code>prms &amp; perms<del>_</del><ins>::</ins>mask</code></td>
     </tr>
     <tr>
       <td><code>add_perms</code></td>
       <td>
-      <p><code>status(p).permissions() | (prms &amp; <a href="#perms_mask">perms_mask</a>)</code> </td>
+      <p><code>status(p).permissions() | (prms &amp; <a href="#perms_mask">perms<del>_</del><ins>::</ins>mask</a>)</code> </td>
     </tr>
     <tr>
       <td><code>remove_perms</code></td>
-      <td><code>status(p)</code><code>.permissions() &amp; ~(prms &amp; <a href="#perms_mask">perms_mask</a>) </code></td>
+      <td><code>status(p)</code><code>.permissions() &amp; ~(prms &amp; <a href="#perms_mask">perms<del>_</del><ins>::</ins>mask</a>) </code></td>
     </tr>
   </table>
   <p>[<i>Note:</i> Conceptually permissions are viewed as bits, but the actual 
