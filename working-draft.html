@@ -33,7 +33,7 @@ del     { background-color:#FFD7D7 }
     <tr>
       <td>Date:</td>
       <td>
-      <!--webbot bot="Timestamp" S-Type="EDITED" S-Format="%Y-%m-%d" startspan -->2014-03-01<!--webbot bot="Timestamp" endspan i-checksum="12184" --></td>
+      <!--webbot bot="Timestamp" S-Type="EDITED" S-Format="%Y-%m-%d" startspan -->2014-03-02<!--webbot bot="Timestamp" endspan i-checksum="12186" --></td>
     </tr>
     <tr>
       <td>Revises:</td>
@@ -2097,7 +2097,7 @@ they are very familiar and ingrained for many  users.</span></i></p>
   <td> Execute/search permission, owner</td>
 </tr>
 <tr><td><code>owner_all</code></td><td><code>0700</code></td><td>  <code>S_IRWXU</code></td>
-  <td> Read, write, execute/search by owner; <code>owner_read | owner_write | owner_exe</code></td>
+  <td> Read, write, execute/search by owner; <code>owner_read | owner_write | owner_exe<ins>c</ins></code></td>
 </tr>
 <tr><td><code>group_read</code></td><td><code>040</code></td><td>  <code>S_IRGRP</code></td>
   <td> Read permission, group</td>
@@ -2109,7 +2109,7 @@ they are very familiar and ingrained for many  users.</span></i></p>
   <td> Execute/search permission, group</td>
 </tr>
 <tr><td><code>group_all</code></td><td><code>070</code></td><td>   <code>S_IRWXG</code></td>
-  <td> Read, write, execute/search by group; <code>group_read | group_write | group_exe</code></td>
+  <td> Read, write, execute/search by group; <code>group_read | group_write | group_exe<ins>c</ins></code></td>
 </tr>
 <tr><td><code>others_read</code></td><td><code>04</code></td><td>  <code>S_IROTH</code></td>
   <td> Read permission, others</td>
@@ -2121,7 +2121,7 @@ they are very familiar and ingrained for many  users.</span></i></p>
   <td> Execute/search permission, others</td>
 </tr>
 <tr><td><code>others_all</code></td><td><code>07</code></td><td>   <code>S_IRWXO</code></td>
-  <td>Read, write, execute/search by others; <code>others_read | others_write | others_exe</code></td>
+  <td>Read, write, execute/search by others; <code>others_read | others_write | others_exe<ins>c</ins></code></td>
 </tr>
 <tr><td><code>all</code></td><td><code>0777</code></td><td> </td><td><code>owner_all | group_all | others_all</code></td>
 </tr>
@@ -2197,9 +2197,10 @@ and permissions of a file.</p>
 [file_status.cons]</h3>
 <pre>explicit file_status() noexcept;</pre>
 <blockquote>
-  <p><i>Postconditions:</i> <code>type() == file_type::none</code>, <code>permissions() == perms_not_known</code>.</p>
+  <p><i>Postconditions:</i> <code>type() == file_type::none</code>, <code>permissions() == 
+  <del>perms_not_known</del> <ins>perms::unknown</ins></code>.</p>
 </blockquote>
-<pre>explicit file_status(<a href="#file_type">file_type</a> ft, <a href="#Enum.perms">perms</a> prms = perms_not_known) noexcept;</pre>
+<pre>explicit file_status(<a href="#file_type">file_type</a> ft, <a href="#Enum.perms">perms</a> prms = <del>perms_not_known</del> <ins>perms::unknown</ins>) noexcept;</pre>
 <blockquote>
   <p><i>Postconditions:</i> <code>type() == ft</code>, <code>permissions() == prms</code>.</p>
 </blockquote>
