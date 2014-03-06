@@ -28,17 +28,17 @@ del     { background-color:#FFD7D7 }
   <table border="0">
     <tr>
       <td>Document number:&nbsp;&nbsp; </td>
-      <td>N3940</td>
+      <td><span style="background-color: #FFFF00">DXXXX</span></td>
     </tr>
     <tr>
       <td>Date:</td>
       <td>
-      <!--webbot bot="Timestamp" S-Type="EDITED" S-Format="%Y-%m-%d" startspan -->2014-03-02<!--webbot bot="Timestamp" endspan i-checksum="12186" --></td>
+      <!--webbot bot="Timestamp" S-Type="EDITED" S-Format="%Y-%m-%d" startspan -->2014-03-06<!--webbot bot="Timestamp" endspan i-checksum="12194" --></td>
     </tr>
     <tr>
       <td>Revises:</td>
       <td>
-      N3790</td>
+      N3940</td>
     </tr>
     <tr>
       <td>
@@ -256,13 +256,9 @@ POSIX. Implementations shall document any behavior that differs from the
 behavior defined by POSIX. Implementations that do not support exact POSIX 
 behavior are encouraged to provide behavior as close to POSIX behavior as is reasonable given the 
 limitations of actual operating systems and file systems. If an implementation cannot provide any 
-reasonable behavior, the implementation shall report an error <del>in an 
-implementation-defined manner</del> <ins>as specified in § 7 [fs.err.report].
+reasonable behavior, the implementation shall report an error <ins>as specified in § 7 [fs.err.report].
 </ins></p>
 <blockquote>
-<p><del>[<i>Note:</i> Such errors might be reported by an <del>#error</del> <ins><code>#error</code></ins> directive, a <code>
-static_assert</code>, a <code>filesystem_error</code> exception, a special 
-return value, or some other manner. <i>&mdash;end note</i>]</del></p>
 <p><ins>[<i>Note:</i> This allows users to rely on an exception being thrown or 
 an error code being set when an implementation cannot provide any reasonable 
 behavior. — <i>end note</i>]</ins></p>
@@ -317,7 +313,7 @@ described in ISO/IEC 9945 is herein called <i>POSIX</i>. <i>&mdash;end note</i>]
 Technical Specification  mentions commercially 
 available operating systems for purposes of exposition.<sup> <a href="#footnote">
 [footnote]</a></sup><p>Unless otherwise specified, the whole of the C++ 
-Standard&#39;s Library introduction <del>[lib.library]</del> <ins>(C++11 §17)</ins> is included into this Technical 
+Standard&#39;s Library introduction <ins>(C++11 §17)</ins> is included into this Technical 
 Specification by reference.<p><i><span style="background-color: #E0E0E0">This footnote 
 is required by ISO/IEC Directives, Part2, section 6.6.3 Use of trade names and 
 trademarks:</span></i><blockquote>
@@ -399,7 +395,7 @@ symbolic link ([fs.def.symlink]).</p>
 <h3>4.10  native encoding [<a name="fs.def.native.encode">fs.def.native.encode</a>]</h3>
 <p>For narrow character strings, the operating system dependent current encoding 
 for path names. For wide character strings, the implementation defined execution 
-wide-character set encoding (<del>C++ standard [lex.charset]</del> <ins>C++11 §2.3</ins>).</p>
+wide-character set encoding (<ins>C++11 §2.3</ins>).</p>
 
 <h3>4.11  native pathname format [<a name="fs.def.native">fs.def.native</a>]</h3>
 <p>The operating system dependent pathname format accepted by the host operating system.</p>
@@ -470,8 +466,7 @@ encoded character types</i>.</p>
 encoded character types.</p>
 
 <p>Template parameters named <code>InputIterator</code> shall meet the 
-C++ Standard&#39;s library input iterator requirements (<del>[input.iterators]</del> <ins>
-C++11 §24.2.3</ins>) and shall 
+C++ Standard&#39;s library input iterator requirements (<ins>C++11 §24.2.3</ins>) and shall 
 have a value type that is one of the encoded character types.</p>
 
 <blockquote>
@@ -533,7 +528,7 @@ with <code>std::</code>.</ins></p>
     template &lt;class <a href="#Source">Source</a>&gt;  
       path u8path(Source const&amp; source);
     template &lt;class InputIterator&gt;
-      path u8path(InputIterator <del>begin</del><ins>first</ins>, InputIterator <del>end</del><ins>last</ins>);
+      path u8path(InputIterator <ins>first</ins>, InputIterator <ins>last</ins>);
 
     class <a href="#Class-filesystem_error">filesystem_error</a>;      
     class <a href="#Class-directory_entry">directory_entry</a>;
@@ -541,13 +536,13 @@ with <code>std::</code>.</ins></p>
     class <a href="#Class-directory_iterator">directory_iterator</a>;
 
     // enable directory_iterator range-based for statements
-    <del>const</del> directory_iterator<del>&amp;</del> <a href="#directory_iterator-non-member-functions">begin</a>(<del>const</del> directory_iterator<del>&amp;</del> iter) noexcept;
+    directory_iterator <a href="#directory_iterator-non-member-functions">begin</a>(directory_iterator iter) noexcept;
     directory_iterator <a href="#directory_iterator-non-member-functions">end</a>(const directory_iterator&amp;) noexcept;
 
     class <a href="#Class-recursive_directory_iterator">recursive_directory_iterator</a>;
 
     // enable recursive_directory_iterator range-based for statements
-    <del>const</del> recursive_directory_iterator<del>&amp;</del> <a href="#rec.dir.itr.nonmembers">begin</a>(<del>const</del> recursive_directory_iterator<del>&amp;</del> iter) noexcept;
+    recursive_directory_iterator <a href="#rec.dir.itr.nonmembers">begin</a>(recursive_directory_iterator iter) noexcept;
     recursive_directory_iterator <a href="#rec.dir.itr.nonmembers">end</a>(const recursive_directory_iterator&amp;) noexcept;
 
     enum class file_type;  // [<a href="#Enum-file_type">enum.file_type</a>]
@@ -560,7 +555,7 @@ with <code>std::</code>.</ins></p>
     {
       uintmax_t capacity;
       uintmax_t free; 
-      uintmax_t available; <del>// free space available to a non-privileged process</del>
+      uintmax_t available;
     };
 
     enum class <a name="copy_option" href="#enum.copy_options">copy_options</a>;  // [<a href="#enum.copy_options">enum.copy_options</a>]
@@ -572,7 +567,7 @@ with <code>std::</code>.</ins></p>
       skip_permission_denied
     };
 
-    typedef chrono::time_point&lt;<b><i><del>unspecified-</del>trivial-clock</i></b>&gt;  file_time_type;
+    typedef chrono::time_point&lt;<b><i>trivial-clock</i></b>&gt;  file_time_type;
 
     // <a href="#Operational-functions">operational functions</a>
 
@@ -604,8 +599,8 @@ with <code>std::</code>.</ins></p>
     bool         <a href="#create_directory">create_directory</a>(const path&amp; p);
     bool         <a href="#create_directory">create_directory</a>(const path&amp; p, error_code&amp; ec) noexcept;
 
-   <del>void</del> <ins>bool</ins>     <a href="#create_directory2">create_directory</a>(const path&amp; p, const path&amp; attributes);
-   <del>void</del> <ins>bool</ins>     <a href="#create_directory2">create_directory</a>(const path&amp; p, const path&amp; attributes, error_code&amp; ec) noexcept;
+   <ins>bool</ins>     <a href="#create_directory2">create_directory</a>(const path&amp; p, const path&amp; attributes);
+   <ins>bool</ins>     <a href="#create_directory2">create_directory</a>(const path&amp; p, const path&amp; attributes, error_code&amp; ec) noexcept;
 
     void         <a href="#create_directory_symlink">create_directory_symlink</a>(const path&amp; to, const path&amp; new_symlink);
     void         <a href="#create_directory_symlink">create_directory_symlink</a>(const path&amp; to, const path&amp; new_symlink,
@@ -713,14 +708,10 @@ with <code>std::</code>.</ins></p>
     path         <a href="#temp_directory_path">temp_directory_path</a>();
     path         <a href="#temp_directory_path">temp_directory_path</a>(error_code&amp; ec);
 
-    <del>path         <a href="#unique_path">unique_path</a>(const path&amp; model=&quot;%%%%-%%%%-%%%%-%%%%&quot;);</del>
-    <del>path         <a href="#unique_path">unique_path</a>(const path&amp; model, error_code&amp; ec);</del>
-
 } } } }  // namespaces std::experimental::filesystem::v1</pre>
 
- <p><b><i><code><del>unspecified-</del>trivial-clock</code></i></b> is an <del>unspecified type 
-provided by the implementation</del> <ins>implementation-defined type</ins> that satisfies the
-<code>TrivialClock</code> requirements (<del>[time.clock.req]</del> <ins>C++11 §20.12.3</ins>) 
+ <p><b><i><code>trivial-clock</code></i></b> is an <ins>implementation-defined type</ins> that satisfies the
+<code>TrivialClock</code> requirements (<ins>C++11 §20.12.3</ins>) 
  and that is capable of representing and measuring file time values. <ins>
  Implementations should ensure that the resolution and range of <tt>
  file_time_type</tt> reflect the operating system dependent resolution and range 
@@ -758,8 +749,8 @@ errors are truly exceptional and indicate a serious failure. Throwing an
   <code>filesystem_error</code> constructor&#39;s <code>error_code</code> argument 
   is set as appropriate for the specific operating system dependent error. </ins><br>
 &nbsp;</li>
-  <li>Failure to allocate storage is reported by throwing an exception as described in <del>the C++ standard,</del><ins>C++11 
-  §</ins>17.6.4.10<del> [res.on.exception.handling]</del>.<br>
+  <li>Failure to allocate storage is reported by throwing an exception as described in <ins>C++11 
+  §</ins>17.6.4.10.<br>
 &nbsp;</li>
   <li>Destructors throw nothing.</li>
   </ul>
@@ -797,12 +788,12 @@ system or for a particular file system.</p>
         template &lt;class <a href="#Source">Source</a>&gt;
           path(Source const&amp; source);
         template &lt;class InputIterator&gt;
-          path(InputIterator <del>begin</del><ins>first</ins>, InputIterator <del>end</del><ins>last</ins>);
+          path(InputIterator <ins>first</ins>, InputIterator <ins>last</ins>);
         template &lt;class <a href="#Source">Source</a>&gt;  
           path(Source const&amp; source, const locale&amp; loc);
         template &lt;class InputIterator&gt;
-          path(InputIterator <del>begin</del><ins>first</ins>, InputIterator <del>end</del><ins>last</ins>, const locale&amp; loc);
-       ~path()<del> = default</del>;
+          path(InputIterator <ins>first</ins>, InputIterator <ins>last</ins>, const locale&amp; loc);
+       ~path(;
 
         // <a href="#path-assignments">assignments</a>
         path&amp; operator=(const path&amp; p);
@@ -812,7 +803,7 @@ system or for a particular file system.</p>
         template &lt;class <a href="#Source">Source</a>&gt;
           path&amp; assign(Source const&amp; source)
         template &lt;class InputIterator&gt;
-          path&amp; assign(InputIterator <del>begin</del><ins>first</ins>, InputIterator <del>end</del><ins>last</ins>);
+          path&amp; assign(InputIterator <ins>first</ins>, InputIterator <ins>last</ins>);
 
         // <a href="#path-appends">appends</a>
         path&amp; operator/=(const path&amp; p);
@@ -821,7 +812,7 @@ system or for a particular file system.</p>
         template &lt;class <a href="#Source">Source</a>&gt;
           path&amp; append(Source const&amp; source);
         template &lt;class InputIterator&gt;
-          path&amp; append(InputIterator <del>begin</del><ins>first</ins>, InputIterator <del>end</del><ins>last</ins>);
+          path&amp; append(InputIterator <ins>first</ins>, InputIterator <ins>last</ins>);
 
         // <a href="#path-concatenation">concatenation</a>
         path&amp; operator+=(const path&amp; x);
@@ -835,7 +826,7 @@ system or for a particular file system.</p>
         template &lt;class Source&gt;
           path&amp; concat(Source const&amp; x);
         template &lt;class InputIterator&gt;
-          path&amp; concat(InputIterator <del>begin</del><ins>first</ins>, InputIterator <del>end</del><ins>last</ins>);
+          path&amp; concat(InputIterator <ins>first</ins>, InputIterator <ins>last</ins>);
         
         // <a href="#path-modifiers">modifiers</a>
         void  <a href="#path-clear">clear</a>() noexcept;
@@ -1130,27 +1121,26 @@ path(path&amp;&amp; p) noexcept;</pre>
   <p><i>Effects:</i> Constructs an object of class <code>path</code> with <code>
   pathname</code> having the original value of <code>p.pathname</code>. In the 
   second form, <code>p</code> is left in a valid but unspecified state.</p>
-  <p><del><i>Postconditions:</i> empty().</del></p>
 </blockquote>
 <pre>template &lt;class <a href="#Source">Source</a>&gt;
   path(Source const&amp; source);
 template &lt;class InputIterator&gt;
-  path(InputIterator <del>begin</del><ins>first</ins>, InputIterator <del>end</del><ins>last</ins>);</pre>
+  path(InputIterator <ins>first</ins>, InputIterator <ins>last</ins>);</pre>
 <blockquote>
   <p><i>Effects:</i> Constructs an object of class <code>path</code>, storing the effective range of <code>source</code> ([<a href="#path-Requirements">path.req</a>]) 
-  or the range [<code><del>begin</del><ins>first</ins></code>,<code><del>end</del><ins>last</ins></code>) in <code>pathname</code>, converting format and 
+  or the range [<code><ins>first</ins></code>,<code><ins>last</ins></code>) in <code>pathname</code>, converting format and 
   encoding if required ([<a href="#path.arg.convert">path.arg.convert</a>]).</p>
 </blockquote>
 <pre>template &lt;class <a href="#Source">Source</a>&gt;
   path(Source const&amp; source, const locale&amp; loc);
 template &lt;class InputIterator&gt;
-  path(InputIterator <del>begin</del><ins>first</ins>, InputIterator <del>end</del><ins>last</ins>, const locale&amp; loc);</pre>
+  path(InputIterator <ins>first</ins>, InputIterator <ins>last</ins>, const locale&amp; loc);</pre>
   <blockquote>
   <p><i>Requires:</i> The value type of <code>Source</code> and <code>InputIterator</code> is <code>
   char</code>.</p>
   <p><i>Effects:</i> Constructs an object of class <code>path</code>, storing the effective range of <code>
   source</code> 
-  or the range [<code><del>begin</del><ins>first</ins></code>,<code><del>end</del><ins>last</ins></code>) in <code>pathname</code>, 
+  or the range [<code><ins>first</ins></code>,<code><ins>last</ins></code>) in <code>pathname</code>, 
   after converting format if required and after converting the encoding as 
   follows:</p>
   <blockquote>
@@ -1211,10 +1201,10 @@ fs::create_directory(fs::path(latin1_string, latin1_locale)<ins>)</ins>;</pre>
 template &lt;class <a href="#Source">Source</a>&gt;
   path&amp; assign(Source const&amp; source);
 template &lt;class InputIterator&gt;
-  path&amp; assign(InputIterator <del>begin</del><ins>first</ins>, InputIterator <del>end</del><ins>last</ins>);</pre>
+  path&amp; assign(InputIterator <ins>first</ins>, InputIterator <ins>last</ins>);</pre>
 <blockquote>
   <p><i>Effects:</i> Stores the effective range of <code>source</code> ([<a href="#path-Requirements">path.req</a>]) 
-  or the range [<code><del>begin</del><ins>first</ins></code>,<code><del>end</del><ins>last</ins></code>) in <code>pathname</code>, converting format and 
+  or the range [<code><ins>first</ins></code>,<code><ins>last</ins></code>) in <code>pathname</code>, converting format and 
   encoding if required ([<a href="#path.arg.convert">path.arg.convert</a>]). </p>
   <p>
   <i>Returns: </i><code>*this</code></p>
@@ -1231,7 +1221,7 @@ template &lt;class InputIterator&gt;
     Appends <code>path::preferred_separator</code> to <code>pathname</code> unless:<ul>
     <li>an added separator 
     would be redundant, or</li>
-    <li>would change a<del>n</del> relative path to a<del>n</del> absolute path
+    <li>would change a relative path to a absolute path
     <ins>[<i>Note</i>: An empty path is relative. — <i>end note</i>]</ins>, or</li>
     <li><code>p.empty()</code>, or</li>
     <li><code>*p.native().cbegin()</code> is a directory separator.</li>
@@ -1245,7 +1235,7 @@ template &lt;class InputIterator&gt;
 template &lt;class <a href="#Source">Source</a>&gt;
   path&amp; append(Source const&amp; source);
 template &lt;class InputIterator&gt;
-  path&amp; append(InputIterator <del>begin</del><ins>first</ins>, InputIterator <del>end</del><ins>last</ins>);</pre>
+  path&amp; append(InputIterator <ins>first</ins>, InputIterator <ins>last</ins>);</pre>
 <blockquote>
   <p><i>Effects:</i></p>
   <blockquote>
@@ -1259,7 +1249,7 @@ template &lt;class InputIterator&gt;
     <li><code>*p.native().cbegin()</code> is a separator.</li>
   </ul>
     <p>Appends the effective range of <code>source</code> ([<a href="#path-Requirements">path.req</a>]) 
-    or the range [<code><del>begin</del><ins>first</ins></code>,<code><del>end</del><ins>last</ins></code>) to <code>pathname</code>, converting format and 
+    or the range [<code><ins>first</ins></code>,<code><ins>last</ins></code>) to <code>pathname</code>, converting format and 
     encoding if required ([<a href="#path.arg.convert">path.arg.convert</a>]).</p>
   </blockquote>
   <p><i>Returns: </i><code>*this</code></p>
@@ -1277,23 +1267,23 @@ template &lt;class charT&gt;
 template &lt;class Source&gt;
   path&amp; concat(Source const&amp; x);
 template &lt;class InputIterator&gt;
-  path&amp; concat(InputIterator <del>begin</del><ins>first</ins>, InputIterator <del>end</del><ins>last</ins>);</pre>
+  path&amp; concat(InputIterator <ins>first</ins>, InputIterator <ins>last</ins>);</pre>
 <blockquote><p><i>Postcondition:</i> <code>native() == prior_native + <i>effective-argument</i></code>,
  where <code>prior_native</code> is <code>native()</code> prior to the call to <code>operator+=</code>,
  and <code><i>effective-argument</i></code> is:</p>
  <ul><li><code>x.native()</code> if <code>x</code> is present and is <code>const path&amp;</code>, otherwise</li>
  <li>the effective range <code>source</code> ([<a href="#path-Requirements">path.req</a>]), 
  if <code>source</code> is present, otherwise,</li>
- <li>the range [<code><del>begin</del><ins>first</ins></code>,<code><del>end</del><ins>last</ins></code>),
- if <code><del>begin</del><ins>first</ins></code> and
- <code><del>end</del><ins>last</ins></code> are present, otherwise,</li>
+ <li>the range [<code><ins>first</ins></code>,<code><ins>last</ins></code>),
+ if <code><ins>first</ins></code> and
+ <code><ins>last</ins></code> are present, otherwise,</li>
  <li><code>x</code>.</li></ul><p>If the value type of <code><i>effective-argument</i></code> would not be <code>path::value_type</code>, the actual argument or argument range is first
    converted ([<a href="#path.arg.convert">path.arg.convert</a>]) so that <code><i>effective-argument</i></code> has value type <code>path::value_type</code>.</li> </p>
  <p><i>Returns: </i><code>*this</code></p>
  </blockquote>
 <h4>8.4.5  <a name="path-modifiers"> <code>path</code> modifiers</a> [path.modifiers]</h4><pre>void <a name="path-clear">clear</a>() noexcept;</pre>
 <blockquote>
-<p><i>Postcondition:</i> <code><del>this-&gt;</del>empty()</code><del> is true.</del></p>
+<p><i>Postcondition:</i> <code>empty()</code></p>
 </blockquote>
 <pre>path&amp; <a name="path-make_preferred">make_preferred</a>();</pre>
 <blockquote>
@@ -1358,7 +1348,7 @@ std::cout &lt;&lt; path(&quot;/&quot;).<code>replace_</code>filename(<code>&quot
     <li>If <code>replacement</code> is not empty and does not begin with a dot 
     character, a dot character is appended to the stored path, then</li>
     <li>
-  <code>replacement</code> is <del>concatinated</del><ins>concatenated</ins> to the stored path.</li>
+  <code>replacement</code> is <ins>concatenated</ins> to the stored path.</li>
   </ul>
   <p><i>Returns:</i> <code>*this</code></p>
 </blockquote>
@@ -1514,8 +1504,8 @@ std::cout &lt;&lt; path(&quot;..&quot;).filename();           // outputs &quot;.
 </blockquote>
 <pre>path <a name="path-stem">stem</a>() const;</pre>
 <blockquote>
-  <p dir="ltr"><i>Returns:</i> if <code>filename()</code> contains a <del>character</del> <ins>period</ins> but does not 
-  consist solely of one or <del>to</del> two periods, returns 
+  <p dir="ltr"><i>Returns:</i> if <code>filename()</code> contains a <ins>period</ins> but does not 
+  consist solely of one or two periods, returns 
   the substring of <code>filename()</code> starting at its beginning and 
   ending with the character before the last period. Otherwise, 
   returns <code>filename()</code>.</p>
@@ -1534,7 +1524,7 @@ for (; !p.extension().empty(); p = p.stem())
 <pre>path <a name="path-extension">extension</a>() const;</pre>
 <blockquote>
   <p><i>Returns:</i> if <code>filename()</code> contains a period but does not 
-  consist solely of one or <del>to</del> two periods, returns 
+  consist solely of one or two periods, returns 
   the substring of <code>filename()</code> starting at the rightmost period 
   and for the remainder of the path. Otherwise, returns an empty <code>path</code> object. </p>
   <p><i>Remarks:</i> Implementations are permitted to define additional 
@@ -1553,7 +1543,7 @@ for (; !p.extension().empty(); p = p.stem())
 <h4>8.4.10  <a name="path-query"> <code>path</code> query</a> [path.query]</h4>
 <pre>bool <a name="path-empty">empty</a>() const noexcept;</pre>
 <blockquote>
-  <p><i>Returns:</i> <code><del>m_</del>pathname.empty()</code>.</p>
+  <p><i>Returns:</i> <code>pathname.empty()</code>.</p>
 </blockquote>
 <pre>bool <a name="path-has_root_path">has_root_path</a>() const;</pre>
 <blockquote>
@@ -1589,8 +1579,7 @@ for (; !p.extension().empty(); p = p.stem())
 </blockquote>
 <pre>bool <a name="path-is_absolute">is_absolute</a>() const;</pre>
 <blockquote>
-  <p><i>Returns:</i> <code>true</code> if <del>the elements of <code>root_path()</code> 
-  uniquely identify a file system location </del><ins><code>pathname</code> 
+  <p><i>Returns:</i> <code>true</code> if <ins><code>pathname</code> 
   contains an absolute path (4.1 [fs.def.absolute-path]) </ins>, else <code>false</code>.</p>
 </blockquote>
 <blockquote>
@@ -1604,9 +1593,9 @@ operating systems.&nbsp; <i>&mdash;end example</i>]
 </blockquote>
 <h3>8.5  <a name="path-iterators"> <code>path</code> iterators</a> [path.itr]</h3>
 <p> Path iterators iterate over the elements of the stored pathname.</p>
-<p> A <code>path::iterator</code> is a constant iterator satisfying all 
-the requirements of a bidirectional iterator (C++<del> Std,</del><ins>C++11 §</ins>24.1.4 Bidirectional 
-iterators<del> [lib.bidirectional.iterators]</del>). Its <code>value_type</code> is <code>path</code>.</p>
+<p> A <code>path::iterator</code> is a constant iterator satisfying all the 
+requirements of a bidirectional iterator (<ins>C++11 §</ins>24.1.4 Bidirectional 
+iterators). Its <code>value_type</code> is <code>path</code>.</p>
   <p>Calling any non-const member function of a <code>path</code> object 
   invalidates all iterators referring to elements of that object.</p>
 <p> The forward traversal order is as follows:</p>
@@ -1684,9 +1673,6 @@ operator&lt;&lt;(basic_ostream&lt;charT, traits&gt;&amp; os, const path&amp; p);
 <blockquote>
   <p><i>Effects:</i> <code>os </code>
   <tt>&lt;&lt; <ins>quoted(</ins>p.string&lt;charT, traits&gt;()<ins>)</ins></tt>. </p>
-  <p><del>[<i>Note</i>: Pathnames containing spaces require special handling by 
-  the user to avoid truncation when read by the extractor. — <i>end note</i>]
-  </del></p>
   <p><ins>[<i>Note</i>: The <code>quoted</code> function is described in ISO 
   14882:2014 §27.7.6. — <i>end note</i>] </ins></p>
   <p><i>Returns:</i> <code>os</code></p>
@@ -1707,9 +1693,9 @@ p = tmp;</pre>
 <pre>template &lt;class <a href="#Source">Source</a>&gt;  
   path u8path(Source const&amp; source);
 template &lt;class InputIterator&gt;
-  path u8path(InputIterator <del>begin</del><ins>first</ins>, InputIterator <del>end</del><ins>last</ins>);</pre>
+  path u8path(InputIterator <ins>first</ins>, InputIterator <ins>last</ins>);</pre>
 <blockquote>
-  <p><i>Requires:</i> The <code>source</code> and [<code><del>begin</del><ins>first</ins></code>,<code><del>end</del><ins>last</ins></code>) 
+  <p><i>Requires:</i> The <code>source</code> and [<code><ins>first</ins></code>,<code><ins>last</ins></code>) 
   sequences are UTF-8 encoded. The value type of <code>
   Source</code> and <code>
   InputIterator</code> is <code>char</code>. </p>
@@ -1717,15 +1703,15 @@ template &lt;class InputIterator&gt;
   <blockquote>
     <ul>
       <li>If <code>value_type</code> is <code>char</code> and the current native 
-      narrow encoding ([fs.def.native.encode]) is UTF-8, <code>path(source)</code> or <code>path(<del>begin, end</del> <ins>first, last</ins>)</code>, 
+      narrow encoding ([fs.def.native.encode]) is UTF-8, <code>path(source)</code> or <code>path(<ins>first, last</ins>)</code>, 
       else</li>
       <li>if <code>value_type</code> is <code>wchar_t </code>and the 
       native wide encoding is UTF-16, or if <code>value_type</code> is <code>char16_t</code> 
-      or <code>char32_t</code>,&nbsp; convert <code>source</code> or [<code><del>begin</del><ins>first</ins></code>,<code><del>end</del><ins>last</ins></code>) 
+      or <code>char32_t</code>,&nbsp; convert <code>source</code> or [<code><ins>first</ins></code>,<code><ins>last</ins></code>) 
       to a temporary, <code>tmp</code>, of type <code>string_type</code> and 
       return <code>path(tmp)</code>, 
       else</li>
-      <li>convert <code>source</code> or [<code><del>begin</del><ins>first</ins></code>,<code><del>end</del><ins>last</ins></code>) 
+      <li>convert <code>source</code> or [<code><ins>first</ins></code>,<code><ins>last</ins></code>) 
       to a temporary, <code>tmp</code>, of type <code>u32string</code> and 
       return <code>path(tmp)</code>.</li>
     </ul>
@@ -1769,7 +1755,7 @@ fs::create_directory(fs::u8path(utf8_string));</pre>
         const char* <a href="#filesystem_error-what">what</a>() const noexcept;
       };
 } } } }  // namespaces std::experimental::filesystem::v1</pre>
-<p>The class <del>template</del> <code>filesystem_error</code> defines the type of 
+<p>The class <code>filesystem_error</code> defines the type of 
 objects thrown as exceptions to report file system errors from functions described in this 
 Technical Specification.</p>
 <h3>9.1  <a name="filesystem_error-members"> <code>filesystem_error</code> members</a> 
@@ -1944,7 +1930,7 @@ an error.</p>
   </tr>
 </table>
 <h3>10.2  Enum class <code>copy_options</code> [<a name="enum.copy_options">enum.copy_options</a>]</h3>
-<p><del>This enumeration</del><ins>The <tt>enum class</tt> type <tt>copy_options</tt> 
+<p><ins>The <tt>enum class</tt> type <tt>copy_options</tt> 
 is a bitmask type (C++11 §17.5.2.1.3) that</ins> specifies bitmask constants used to control the semantics of 
 copy operations.&nbsp; The constants are specified in option groups. Constant
 <code>none</code> is shown in each option group for purposes of exposition; 
@@ -2005,7 +1991,7 @@ group results in undefined behavior.</p>
   <tr>
     <td colspan="3">
     <p align="center"><b>Option group controlling <code>copy</code> <ins>function</ins> effects <ins>for</ins> 
-    symbolic link<ins>s</ins> <del>actions</del></b></td>
+    symbolic link<ins>s</ins></b></td>
   </tr>
   <tr>
     <td><b>Constant</b></td>
@@ -2068,10 +2054,9 @@ group results in undefined behavior.</p>
   </tr>
 </table>
 <h3>10.3  Enum class <code>perms</code> [<a name="enum.perms">enum.perms</a>]</h3>
-<p><del>This enumeration</del><ins>The <tt>enum class</tt> type <tt>perms</tt> 
+<p><ins>The <tt>enum class</tt> type <tt>perms</tt> 
 is a bitmask type (C++11 §17.5.2.1.3) that</ins> specifies bitmask constants used to identify file 
-permissions. <i><span style="background-color: #E0E0E0">POSIX 
-<del>(POSIX)</del> specifies actual values, and those values have been adopted here because 
+permissions. <i><span style="background-color: #E0E0E0">POSIX&nbsp; specifies actual values, and those values have been adopted here because 
 they are very familiar and ingrained for many  users.</span></i></p>
 <table border="1" cellpadding="5" cellspacing="0" style="border-collapse: collapse" bordercolor="#111111">
   <tr>
@@ -2177,7 +2162,7 @@ involved. Input from security experts is needed.</span></i></p>
                              <a href="#Enum.perms">perms</a> prms = perms::unknown) noexcept;
         file_status(const file_status&amp;) noexcept = default;
         file_status(file_status&amp;&amp;) noexcept = default;
-       ~file_status()<del> = default</del>;
+       ~file_status();
 
         file_status&amp; operator=(const file_status&amp;) noexcept = default;
         file_status&amp; operator=(file_status&amp;&amp;) noexcept = default;
@@ -2197,10 +2182,9 @@ and permissions of a file.</p>
 [file_status.cons]</h3>
 <pre>explicit file_status() noexcept;</pre>
 <blockquote>
-  <p><i>Postconditions:</i> <code>type() == file_type::none</code>, <code>permissions() == 
-  <del>perms_not_known</del> <ins>perms::unknown</ins></code>.</p>
+  <p><i>Postconditions:</i> <code>type() == file_type::none</code>, <code>permissions() == <ins>perms::unknown</ins></code>.</p>
 </blockquote>
-<pre>explicit file_status(<a href="#file_type">file_type</a> ft, <a href="#Enum.perms">perms</a> prms = <del>perms_not_known</del> <ins>perms::unknown</ins>) noexcept;</pre>
+<pre>explicit file_status(<a href="#file_type">file_type</a> ft, <a href="#Enum.perms">perms</a> prms = <ins>perms::unknown</ins>) noexcept;</pre>
 <blockquote>
   <p><i>Postconditions:</i> <code>type() == ft</code>, <code>permissions() == prms</code>.</p>
 </blockquote>
@@ -2235,7 +2219,7 @@ and permissions of a file.</p>
         directory_entry(directory_entry&amp;&amp;) noexcept = default;
         explicit directory_entry(const path&amp; p, file_status st=file_status(),
           file_status symlink_st=file_status());
-       ~directory_entry()<del> = default</del>; 
+       ~directory_entry(); 
 
         // <a href="#directory_entry-modifiers">modifiers</a>
         directory_entry&amp; operator=(const directory_entry&amp;) = default;
@@ -2334,7 +2318,7 @@ non-cached results may differ in the presence of file system races. <i>&mdash;en
     </tr>
     <tr>
       <td width="18%"><code>path()</code></td>
-      <td width="82%"><code>path().parent_path() / <del>s</del> <ins>p</ins></code></td>
+      <td width="82%"><code>path().parent_path() / <ins>p</ins></code></td>
     </tr>
     <tr>
       <td width="18%"><code>status()</code></td>
@@ -2421,8 +2405,7 @@ directory.&nbsp;
 
 <pre>namespace std { namespace experimental { namespace filesystem { inline namespace v1 {
 
-      class directory_iterator <del>:</del>
-        <del>public iterator&lt;input_iterator_tag, directory_entry&gt;</del>
+      class directory_iterator
       {
       public:
         <ins>typedef directory_entry        value_type;</ins>
@@ -2437,7 +2420,7 @@ directory.&nbsp;
         directory_iterator(const path&amp; p, error_code&amp; ec) noexcept;
         directory_iterator(const directory_iterator&amp;) = default;
         directory_iterator(directory_iterator&amp;&amp;) = default;
-       ~directory_iterator()<del> = default</del>;
+       ~directory_iterator();
 
         directory_iterator&amp; operator=(const directory_iterator&amp;) = default;
         directory_iterator&amp; operator=(directory_iterator&amp;&amp;) = default;
@@ -2448,13 +2431,13 @@ directory.&nbsp;
         directory_iterator&amp;    increment(error_code&amp; ec) noexcept;
 
         // other members as required by
-        //  C++<del> Std, </del><ins>11 § </ins>24.1.1 Input iterators <del>[input.iterators]</del>
+        //  C++<ins>11 § </ins>24.1.1 Input iterators 
       };
 
 } } } }  // namespaces std::experimental::filesystem::v1</pre>
 
 <p> <code>directory_iterator</code> satisfies the requirements of an input 
-iterator (<del>[input.iterators]</del> <ins>C++11 §24.2.3</ins>).</p>
+iterator&nbsp; <ins>C++11 §24.2.3</ins>).</p>
 <p>If an iterator of type <code>directory_iterator</code> is advanced past the 
 last directory element, that iterator shall become equal to the end iterator 
 value. The <code>directory_iterator</code> default constructor&nbsp;shall 
@@ -2517,7 +2500,7 @@ elements representing the files in the directory, if any; otherwise the end iter
 directory_iterator&amp; increment(error_code&amp; ec)<code> noexcept</code>;</pre>
 <blockquote>
 
-<p><i>Effects:</i> As specified by <del>the C++ Standard,</del> <ins>C++11 §</ins>24.1.1 Input iterators <del>[input.iterators]</del><ins>.</ins></p>
+<p><i>Effects:</i> As specified by <ins>C++11 §</ins>24.1.1 Input iterators<ins>.</ins></p>
 
 <p><i>Returns:</i> <code>*this</code>.</p>
 
@@ -2526,9 +2509,9 @@ directory_iterator&amp; increment(error_code&amp; ec)<code> noexcept</code>;</pr
 </blockquote>
 <h3>13.2  <a name="directory_iterator-non-member-functions"><code>directory_iterator</code> non-member functions</a> 
 [directory_iterator.nonmembers]</h3>
-<p>These functions enable use of <code>directory_iterator</code> with <del>C++11</del> 
+<p>These functions enable use of <code>directory_iterator</code> with 
 range-based for statements.</p>
-<pre><del>const</del> directory_iterator<del>&amp;</del> begin(<del>const</del> directory_iterator<del>&amp;</del> iter) noexcept;</pre>
+<pre>directory_iterator begin(directory_iterator iter) noexcept;</pre>
 <blockquote>
   <p><i>Returns: </i><code>iter</code>.</p>
 </blockquote>
@@ -2543,8 +2526,7 @@ a sequence of <code>directory_entry</code> elements representing the files in a
 directory and its sub-directories.</p>
 <pre>namespace std { namespace experimental { namespace filesystem { inline namespace v1 {
 
-      class recursive_directory_iterator <del>:</del>
-        <del>public iterator&lt;input_iterator_tag, directory_entry&gt;</del>
+      class recursive_directory_iterator 
       {
       public:
         <ins>typedef directory_entry        value_type;</ins>
@@ -2562,7 +2544,7 @@ directory and its sub-directories.</p>
           <a href="#symlink_option">directory_options</a> options, error_code&amp; ec) noexcept;
         recursive_directory_iterator(const path&amp; p, error_code&amp; ec) noexcept;
         recursive_directory_iterator(recursive_directory_iterator&amp;&amp;) = default;
-       ~recursive_directory_iterator()<del> = default</del>;
+       ~recursive_directory_iterator();
 
         // observers
         directory_options  options() const;
@@ -2582,7 +2564,6 @@ directory and its sub-directories.</p>
         void pop();
         void disable_recursion_pending();
 
-       <del>// ... other members as required for Input iterators [input.iterators]</del>
        <ins>// other members as required by C++11 § 24.1.1 Input iterators</ins>
       
      };
@@ -2651,8 +2632,8 @@ recursive_directory_iterator&amp; increment(error_code&amp; ec);</pre>
 
   <p><i>Requires:</i> <code>*this != recursive_directory_iterator()</code>.</p>
 
-<p><i>Effects:</i> As specified by <del>the C++ Standard,</del><ins>C++11 § </ins>
- 24.1.1 Input iterators<del> [input.iterators]</del>, 
+<p><i>Effects:</i> As specified by <ins>C++11 § </ins>
+ 24.1.1 Input iterators, 
 except that:</p>
 
 <ul>
@@ -2693,8 +2674,8 @@ directory_options::follow_directory_symlink) != 0)</code> then&nbsp;directory <c
 <h3>14.2  <code>recursive_directory_iterator</code> non-member functions 
 [<a name="rec.dir.itr.nonmembers">rec.dir.itr.nonmembers</a>]</h3>
 <p>These functions enable use of <code>recursive_directory_iterator</code> 
-with <del>C++11</del> range-based for statements.</p>
-<pre><del>const</del> recursive_directory_iterator<del>&amp;</del> begin(<del>const</del> recursive_directory_iterator<del>&amp;</del> iter) noexcept;</pre>
+with range-based for statements.</p>
+<pre>recursive_directory_iterator begin(recursive_directory_iterator iter) noexcept;</pre>
 <blockquote>
   <p><i>Returns: </i><code>iter</code>.</p>
 </blockquote>
@@ -2786,9 +2767,9 @@ void copy(const path&amp; from, const path&amp; to, <a href="#copy_option">copy_
   if:</p>
   
     <ul>
-      <li><code>!exists(f)</code><del>.</del> <ins>, or</ins></li>
-      <li><code>equivalent(<del>f, t</del> <ins>from, to</ins>)</code><del>.</del> <ins>, or</ins></li>
-      <li><code>is_other(f) || is_other(t)</code><del>.</del> <ins>, or</ins></li>
+      <li><code>!exists(f)</code><ins>, or</ins></li>
+      <li><code>equivalent(<ins>from, to</ins>)</code><ins>, or</ins></li>
+      <li><code>is_other(f) || is_other(t)</code><ins>, or</ins></li>
       <li><code>is_directory(f) &amp;&amp; is_regular_file(t)</code>.</li>
     </ul>
   <p>If <code>is_symlink(f)</code>, then:</p>
@@ -2807,12 +2788,6 @@ void copy(const path&amp; from, const path&amp; to, <a href="#copy_option">copy_
       create a symbolic link to the source file.</li>
       <li>Otherwise if <code>options &amp; copy_options::create_hard_links</code>, 
       then create a hard link to the source file.</li>
-      <li><del>Otherwise:</del><ul>
-        <li><del>If <code>is_directory(t)</code>, then <code>copy_file(from, to/from.filename(), 
-        options)</code>.</del></li>
-        <li><del>Otherwise, <code>copy_file(from, to, options)</code>.</del></li>
-      </ul>
-      </li>
       <li><ins>Otherwise if <code>is_directory(t)</code>, then <code>copy_file(from, to/from.filename(), 
         options)</code>.</ins></li>
       <li><ins>Otherwise, <code>copy_file(from, to, options)</code>.</ins></li>
@@ -3301,7 +3276,7 @@ file_time_type <a name="last_write_time2">last_write_time</a>(const path&amp; p<
   <p><i>Returns:</i> The time of last data modification of <code>p</code>, 
   determined as if by the value of the POSIX <code><a href="http://www.opengroup.org/onlinepubs/000095399/basedefs/sys/stat.h.html">stat</a></code> structure member <code>st_mtime</code>&nbsp; 
   obtained as if by POSIX <code><a href="http://www.opengroup.org/onlinepubs/000095399/functions/stat.html">stat()</a></code>. 
-  The signature with argument <code>ec</code> returns <tt><del>static_cast&lt;file_time_type&gt;(-1)</del><ins>file_time_type::min()</ins></tt> 
+  The signature with argument <code>ec</code> returns <tt><ins>file_time_type::min()</ins></tt> 
   if an error occurs.</p>
   <p><i>Throws:</i> As specified in <a href="#Error-reporting">Error reporting <ins>(7)</ins></a>.</p>
 </blockquote>
@@ -3334,16 +3309,16 @@ void permissions(const path&amp; p, <a href="#symlink_perms">perms</a> prms, err
     </tr>
     <tr>
       <td>Neither <code>add_perms</code> nor <code>remove_perms</code></td>
-      <td><code>prms &amp; perms<del>_</del><ins>::</ins>mask</code></td>
+      <td><code>prms &amp; perms<ins>::</ins>mask</code></td>
     </tr>
     <tr>
       <td><code>add_perms</code></td>
       <td>
-      <p><code>status(p).permissions() | (prms &amp; <a href="#perms_mask">perms<del>_</del><ins>::</ins>mask</a>)</code> </td>
+      <p><code>status(p).permissions() | (prms &amp; <a href="#perms_mask">perms<ins>::</ins>mask</a>)</code> </td>
     </tr>
     <tr>
       <td><code>remove_perms</code></td>
-      <td><code>status(p)</code><code>.permissions() &amp; ~(prms &amp; <a href="#perms_mask">perms<del>_</del><ins>::</ins>mask</a>) </code></td>
+      <td><code>status(p)</code><code>.permissions() &amp; ~(prms &amp; <a href="#perms_mask">perms<ins>::</ins>mask</a>) </code></td>
     </tr>
   </table>
   <p>[<i>Note:</i> Conceptually permissions are viewed as bits, but the actual 
@@ -3358,7 +3333,7 @@ path read_symlink(const path&amp; p, error_code&amp; ec);</pre>
 <blockquote>
   <p><i>Returns:</i>&nbsp; If <code>p</code> resolves to a symbolic 
   link, a <code>path</code> object containing the contents of that symbolic 
-  link. <del>Otherwise <code>path()</code>.</del> The signature with argument <code>ec</code> 
+  link. The signature with argument <code>ec</code> 
   returns <code>path()</code> if an error occurs.</p>
   <p><i>Throws:</i> As specified in <a href="#Error-reporting">Error reporting <ins>(7)</ins></a>. [<i>Note:</i> It is an error if <code>p</code> does not 
   resolve to a symbolic link. <i>&mdash;end note</i>]</p>
@@ -3610,9 +3585,9 @@ path <a name="system_complete2">system_complete</a>(const path&amp; p, error_cod
   
 <blockquote>
 [<i>Example:</i> For POSIX based operating systems, <code>system_complete(p)</code>
-  has the same semantics as <code><del>complete</del><ins>absolute</ins>(p, current_path())</code>.</p>
+  has the same semantics as <code><ins>absolute</ins>(p, current_path())</code>.</p>
   <p>For Windows based operating systems, <code>system_complete(p)</code> has the 
-  same semantics as <code>absolute(p<del>h</del>, current_path())</code> if <code>p.is_absolute() ||
+  same semantics as <code>absolute(p, current_path())</code> if <code>p.is_absolute() ||
   !p.has_root_name()</code> or <code>p</code> and <code>base</code> have the same
   <code>root_name()</code>. 
   Otherwise it acts like <code>absolute(p, kinky)</code>, where <code>kinky</code> is
@@ -3649,37 +3624,6 @@ path temp_directory_path(error_code&amp; ec);</pre>
 </blockquote>
 </blockquote>
 
-<h3><del>15.38  Unique path&nbsp; [fs.op.unique_path]</del></h3>
-
-<pre><del>path <a name="unique_path">unique_path</a>(const path&amp; model=&quot;%%%%-%%%%-%%%%-%%%%&quot;);</del>
-<del>path unique_path(const path&amp; model, error_code&amp; ec);</del></pre>
-<blockquote>
-  <p><del>The <code>unique_path</code> function generates a name suitable for temporary files, including directories. The name is based 
-  on a model that uses the percent sign character to specify replacement by a 
-  random hexadecimal digit.</del></p>
-  <p><del>[<i>Note:</i> The more bits of randomness in the 
-  generated name, the less likelihood of prior existence or being guessed. 
-  Each replacement hexadecimal digit in the model adds four bits of randomness. 
-  The default model thus provides 64 bits of randomness. <i>&mdash;end note</i>]</del></p>
-  <p><del><i>Returns:</i> A path identical to <code>model</code>, except that each 
-  occurrence of the percent sign character is replaced by a random hexadecimal 
-  digit character in the range 0-9, a-f. The signature with argument <code>ec</code> 
-  returns <code>path()</code> if an error occurs.</del></p>
-  <p><del><i>Throws:</i> As specified in Error reporting.</del></p>
-  <p><del><i>Remarks:</i> Implementations are encouraged to obtain the required 
-  randomness via a cryptographically secure pseudo-random number generator, such as one 
-  provided by the operating system. [<i>Note</i>: Such generators may block 
-  until sufficient entropy develops. <i>&mdash;end note</i>]</del></p>
-  <p><del>[<i>Example</i>:</del></p>
-  <blockquote>
-    <pre><del>cout &lt;&lt; unique_path(&quot;test-%%%%%%%%%%%.txt&quot;) &lt;&lt; endl;</del></pre>
-  </blockquote>
-  <p><del>Typical output would be <code>&quot;test-0db7f2bf57a.txt&quot;</code>. Because 11 
-  hexadecimal output characters are specified, 44 bits of randomness are 
-  supplied.&nbsp; <i>&mdash;end example</i>]</del></p>
-</blockquote>
-
-<p></p>
 <hr>
 
 
