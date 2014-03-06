@@ -1,0 +1,49 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="44" status="WP">
+<title>[PDTS] enum classes <tt>copy_options</tt> and <tt>perms</tt> should be bitmask types</title>
+<section><sref ref="10.2 [enum.copy_options]"/>, <sref ref="10.3 [enum.perms]"/></section>
+<submitter>P.J. Plauger</submitter>
+<date>30 Jan 2014</date>
+
+<discussion>
+<p>
+enum classes <tt>copy_options</tt> and <tt>perms</tt> should be bitmask types.
+</p>
+
+<note>2014-02-08 Daniel comments and suggests wording</note>
+<p>
+Since both enum types contain enumeration values that denote the value zero, they are currently not
+allowed to be described as <i>bitmask types</i>. This issue depends on LWG issue 1450, which &mdash; if it would
+be accepted &mdash; would allow for applying this concept to these enumeration types.
+</p>
+
+  <note>2014-02-13 LWG/SG-3 Issaquah: Proposed wording accepted.</note>
+
+</discussion>
+
+<resolution>
+<p>This wording is relative to <a href="http://wiki.edg.com/twiki/pub/Wg21issaquah/SG3/working-draft.html">SG3 working draft</a> <em>and 
+assumes that LWG 1450 has been resolved</em>.</p>
+
+<ol>
+<li><p>Change [enum.copy_options] as indicated:</p>
+<blockquote><p>
+<del>This enumeration</del><ins>The <tt>enum class</tt> type <tt>copy_options</tt> is a bitmask type (C++11 &sect;17.5.2.1.3) that</ins> 
+specifies bitmask constants used to control the semantics of copy operations. The constants are specified in option groups. [&hellip;]
+</p></blockquote>
+</li>
+
+<li><p>Change [enum.perms] as indicated:</p>
+<blockquote><p>
+<del>This enumeration</del><ins>The <tt>enum class</tt> type <tt>perms</tt> is a bitmask type (C++11 &sect;17.5.2.1.3) that</ins> 
+specifies bitmask constants used to identify file permissions.
+</p></blockquote>
+</li>
+</ol>
+</resolution>
+
+</issue>

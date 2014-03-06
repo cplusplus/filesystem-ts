@@ -1,0 +1,78 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="55" status="WP">
+<title>[PDTS] Clarify Error reporting</title>
+<section><sref ref="7 [fs.err.report]"/></section>
+<submitter>Beman Dawes</submitter>
+<date>20 Jan 2014</date>
+
+<discussion>
+  <p>
+    The proposed change below was suggested in Issaquah as part of the resolution of issue 13 to clarify
+    the Error reporting section. LWG/SG3 liked the change, but since issue 13 was NAD requested that a separate
+    issue be opened.
+  </p>
+
+  <note>2014-02-13 LWG/SG-3 Issaquah: Proposed wording accepted.</note>
+  
+</discussion>
+
+<resolution>
+
+      <p>
+        <i>Change 7 [fs.err.report]:</i>
+      </p>
+
+      <blockquote>
+        <p>
+          Functions <b>not</b> having an argument of type <code>error_code&amp;</code> report errors as follows, unless otherwise specified:
+        </p>
+        <ul>
+          <li>
+            When a call by the
+            implementation to an operating system or other underlying API results in an
+            error that prevents the function from meeting its specifications, an exception
+            of type
+            <code>filesystem_error</code> shall be thrown. For functions with a single path
+            argument, that argument shall be passed to the
+            <code>filesystem_error</code> constructor with a single path argument.&nbsp; For
+            functions with two path arguments, the first of these arguments shall be
+            passed to the
+            <code>filesystem_error</code> constructor as the <code>path1</code> argument,
+            and the second shall be passed as the <code>path2</code> argument.
+            <ins>
+              The <code>filesystem_error</code> constructor's <code>error_code</code> argument is set as
+              appropriate for the specific operating system dependent error.
+            </ins><br/>
+            &nbsp;
+          </li>
+          <li>
+            Failure to allocate storage is reported by throwing an exception as described in C++11
+            &sect; 17.6.4.10.<br/>
+            &nbsp;
+          </li>
+          <li>Destructors throw nothing.</li>
+        </ul>
+        <p>
+          Functions having an argument of type <code>error_code&amp;</code> report errors as follows, unless otherwise
+          specified:
+        </p>
+        <ul>
+          <li>
+            If a call by the
+            implementation to an operating system or other underlying API results in an
+            error that prevents the function from meeting its specifications, the
+            <code>error_code&amp;</code> argument is set as
+            appropriate for the specific <ins>operating system dependent</ins> error.
+            Otherwise, <code>clear()</code> is called on the <code>error_code&amp;</code> argument.
+          </li>
+        </ul>
+      </blockquote>
+
+
+</resolution>
+
+</issue>

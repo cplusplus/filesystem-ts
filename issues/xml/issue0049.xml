@@ -1,0 +1,32 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="49" status="New">
+<title>[PDTS] <tt>path</tt> and <tt>directory_entry</tt> move ctors should not be <tt>noexcept</tt></title>
+<section><sref ref="8.4.1 [path.construct]"/>, <sref ref="12 [class.directory_entry]"/></section>
+<submitter>Stephan T. Lavavej</submitter>
+<date>3 Feb 2014</date>
+
+<discussion>
+<p>
+<tt>path</tt>'s move ctor is marked <tt>noexcept</tt>, but it contains a <tt>basic_string</tt>.
+Similarly, <tt>directory_entry</tt>'s move ctor is marked <tt>noexcept</tt>, but it contains a <tt>path</tt>.
+This is affected by LWG 2319 "<tt>basic_string</tt>'s move constructor should not be <tt>noexcept</tt>".
+</p>
+
+<note>Beman Dawes 2014-02-27</note>
+
+<p/>Issues <a href="sg3-active.html#37">37</a>,
+<a href="sg3-active.html#38">38</a>,
+<a href="sg3-active.html#41">41</a>,
+and <a href="sg3-active.html#49">49</a> are concerned with signatures which should or should not
+be <tt>noexcept</tt>. I will provide unified proposed wording for these issues, possibly in a separate paper.
+
+</discussion>
+
+<resolution>
+</resolution>
+
+</issue>

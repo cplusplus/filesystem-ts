@@ -1,0 +1,31 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="53" status="Open">
+<title>[PDTS] <tt>directory_entry</tt> multithreading concerns</title>
+<section><sref ref="12 [class.directory_entry]"/></section>
+<submitter>Stephan T. Lavavej</submitter>
+<date>3 Feb 2014</date>
+
+<discussion>
+<p>12 [class.directory_entry] depicts <tt>directory_entry</tt> as having <tt>mutable m_status</tt> and
+<tt>m_symlink_status</tt> data members.  This is problematic because of C++11's multithreading
+guarantees, which say that <tt>const</tt> member functions are simultaneously callable.
+As a result, <tt>mutable</tt> data members must be protected with synchronization, which was
+probably not considered during this design.  The complexity and expense may be acceptable
+in <tt>directory_entry</tt> (since it can save filesystem queries, apparently) but it would be
+very very nice to have a note about this.</p>
+
+  <note>2014-02-13 LWG/SG-3 discussed in Issaquah: Beman and STL will work together to better
+  understand the concerns, and to formulate a solution. This is not a blocking issue for
+  finishing the TS, but is a blocking issue for merging into the IS</note>
+
+</discussion>
+
+<resolution>
+<p></p>
+</resolution>
+
+</issue>

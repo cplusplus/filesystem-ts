@@ -1,0 +1,130 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="33" status="WP">
+<title>[PDTS] <tt>unique_path()</tt> is a security vulnerability</title>
+<section><sref ref="15.38 [fs.op.unique_path]"/></section>
+<submitter>CH-19</submitter>
+<date>20 Jan 2014</date>
+
+<discussion>
+<p><tt>unique_path()</tt> is a security vulnerability. As the Linux manual page for the similar
+function <tt>tmpnam()</tt> writes in the "BUGS" section: "Never use this function. Use <tt>mkstemp</tt>(3)
+or <tt>tmpfile</tt>(3) instead." <tt>mkstemp()</tt> and <tt>tmpfile()</tt> avoid the inherent race condition of
+<tt>unique_path()</tt> by returning an open file descriptor or <tt>FILE*</tt>.</p>
+
+<p/><i>[Beman Dawes comments: 10 Feb 2014:]</i>
+  <blockquote>
+    <p>There are two issues here:</p>
+    <ul>
+      <li>
+        Confusion over what unique_path does and how it is used. The function is
+        misleadingly named. These issue have arisen in the past, but apparently not
+        been fully corrected. The suggested fix is to (1) rename the function and (2)
+        provide an example of how to use the function safely with fstreams or even C I/O.
+        See below for proposed wording.
+      </li>
+      <li>
+        Very real security concerns. See <a href="#54">issue 54</a>. The security
+        concerns are probably best dealt with in the next File System TS, since a
+        full-blown proposal is needed and will likely take several years to develop.
+      </li>
+    </ul>
+
+  </blockquote>
+  
+  <note>
+    2014-02-11 Issaquah: Strike the function.
+  </note>
+
+  <note>2014-02-12 The following Proposed resolution from CH-19 was moved here
+  to avoid confusion with the final Proposed resolution wording from the WG/SG3.</note>
+  <p>
+    Remove this function. Consider providing a function <tt>create_unique_directory()</tt>.
+    If it fits the scope of the proposed TS, consider providing functions
+    <tt>create_unique_file()</tt> that returns <tt>ifstream</tt>, <tt>ofstream</tt> and <tt>iofstream</tt>.
+  </p>
+  <note>
+    2014-02-12 The following Proposed wording was moved here
+    to avoid confusion with the final Proposed resolution wording from the WG/SG3.
+  </note>
+  <note>2014-02-10 Beman Dawes</note>
+
+  <p><strong>Previous resolution from Beman [SUPERSEDED]:</strong></p>
+  <blockquote class="note">
+  <p>
+  <i>Change 15.38 [fs.op.unique_path]:</i>
+  </p>
+  <pre>
+    path <del>unique_path</del><ins>generate_random_filename</ins>(const path&amp; model=&quot;%%%%-%%%%-%%%%-%%%%&quot;);
+    path <del>unique_path</del><ins>generate_random_filename</ins>(const path&amp; model, error_code&amp; ec);
+  </pre>
+  <blockquote>
+    <p>
+      The <code>
+        <del>unique_path</del>
+        <ins>generate_random_filename</ins>
+      </code> function generates a name suitable for temporary files, including directories. The name is based
+      on a model that uses the percent sign character to specify replacement by a
+      random hexadecimal digit.
+    </p>
+    <p>
+      [<i>Note:</i> The more bits of randomness in the
+      generated name, the less likelihood of prior existence or being guessed.
+      Each replacement hexadecimal digit in the model adds four bits of randomness.
+      The default model thus provides 64 bits of randomness. <i>--end note</i>]
+    </p>
+    <p>
+      <i>Returns:</i> A path identical to <code>model</code>, except that each
+      occurrence of the percent sign character is replaced by a random hexadecimal
+      digit character in the range 0-9, a-f. The signature with argument <code>ec</code>
+      returns <code>path()</code> if an error occurs.
+    </p>
+    <p>
+      <i>Throws:</i> As specified in <a href="#Error-reporting">Error reporting</a>.
+    </p>
+    <p>
+      <i>Remarks:</i> Implementations are encouraged to obtain the required
+      randomness via a <a href="http://en.wikipedia.org/wiki/Cryptographically_secure_pseudorandom_number_generator">cryptographically secure pseudo-random number generator</a>, such as one
+      provided by the operating system. [<i>Note</i>: Such generators may block
+      until sufficient entropy develops. <i>--end note</i>]
+    </p>
+    <p>
+      <p>
+        <i>
+          <span style="background-color: #e0e0e0">
+            Replace this example with one
+            that opens a std::ofstream:
+          </span>
+        </i>
+      </p>
+      [<i>Example</i>:
+    </p>
+    <blockquote>
+      <pre>
+        cout &lt;&lt; <del>unique_path</del><ins>generate_random_filename</ins>(&quot;test-%%%%%%%%%%%.txt&quot;) &lt;&lt; endl;
+      </pre>
+    </blockquote>
+    <p>
+      Typical output would be <code>&quot;test-0db7f2bf57a.txt&quot;</code>. Because 11
+      hexadecimal output characters are specified, 44 bits of randomness are
+      supplied.&nbsp; <i>-- end example</i>]
+    </p>
+  </blockquote>
+</blockquote>
+
+</discussion>
+
+<resolution>
+
+  <p/>Remove the two <code>unique_path</code> function signatures from 6 [fs.filesystem.synopsis].
+
+  <p/>Remove 15.38 [fs.op.unique_path] in its entirety.
+  
+  <note>This removes all references the function from the working draft.</note>
+ 
+</resolution>
+
+</issue>

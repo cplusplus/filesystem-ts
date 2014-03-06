@@ -1,0 +1,22 @@
+﻿<?xml version='1.0' encoding='utf-8' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="58" status="New">
+<title>[PDTS] POSIX <tt>utime()</tt> is obsolescent</title>
+<section><sref ref="15.25 [fs.op.last_write_time]"/></section>
+<submitter>LWG/SG-3</submitter>
+<date>13 Feb 2014</date>
+
+<discussion>
+<p>POSIX now says: "Since the <tt>utimbuf</tt> structure only contains <tt>time_t</tt> variables
+and is not accurate to fractions of a second, applications
+should use the <tt>utimensat()</tt> function instead of the obsolescent <tt>utime()</tt> function."</p>
+</discussion>
+
+<resolution>
+<p>Rewrite the <tt>last_write_time</tt> setter description to utilize <tt>utimensat() or similar.</tt></p>
+</resolution>
+
+</issue>

@@ -1,0 +1,90 @@
+﻿<?xml version='1.0' encoding='utf-8' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="59" status="New">
+<title>[PDTS] Invalid expressions for bitmask types</title>
+<section><sref ref="10 [fs.enum]"/></section>
+<submitter>Daniel Krügler</submitter>
+<date>1 Mar 2014</date>
+
+<discussion>
+<p/><code>copy_options</code> is declared as <code>enum class</code> type that is a bismask type, but the 
+specification repeatedly uses expressions that are invalid for scoped 
+enums, such as:
+
+<blockquote>
+
+<p/><code>!(options)</code>
+
+</blockquote>
+
+<p/>because there is no contextual conversion to bool, not even the || operator in:
+
+<blockquote>
+<p/><code>((options &amp; copy_options::recursive) || !(options)) </code>
+</blockquote>
+
+<p/>Affected are basically all formulations in the form:
+
+<blockquote>
+
+<p/>&quot;if <code>options &amp; copy_options::create_symlinks</code> [..]&quot;
+
+</blockquote>
+
+<p/>because all rely on contextual conversion to bool. The only other specifically 
+mention scoped enumeration in the standard that is also a bit mask type is the 
+<code>launch</code> enum and 
+the wording there always uses forms such as:
+
+<blockquote>
+
+<p/>&quot;if <code>policy &amp; launch::deferred</code> is non-zero&quot;
+
+</blockquote>
+
+<p/>which better acknowledges the fact that the obtained values does not necessarily 
+undergo an implicit conversion.
+
+<p/>I think the current wording in the file system spec. must be changed, especially for 
+invalid expressions of the form:
+
+<blockquote>
+
+<p/><code>((options &amp; copy_options::recursive) || !(options)) </code>
+</blockquote>
+
+<p/>A similar problem arises in the usage of the bitmask type <code>perms</code> for the 
+expression:
+
+<blockquote>
+
+<p/><code>((prms &amp; add_perms) &amp;&amp; (prms &amp; remove_perms)) </code>
+</blockquote>
+
+<p/>The only way how to describe this with a scoped enum is the lengthier form
+
+<blockquote>
+
+<p/><code>((prms &amp; perms::add_perms) != perms::none &amp;&amp; (prms &amp; perms::remove_perms) != 
+perms::none) </code>
+</blockquote>
+
+<p/>thus fixing several problems:
+
+<ul>
+  <li>The unscoped access to <code>add_perms</code> and <code>remove_perms</code> is incorrect</li>
+  <li>The result of &amp; is the bitmask type again and cannot be implicitly 
+  converted to bool</li>
+</ul>
+
+
+</discussion>
+
+<resolution>
+<p></p>
+</resolution>
+
+</issue>

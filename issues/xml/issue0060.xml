@@ -1,0 +1,48 @@
+﻿<?xml version='1.0' encoding='utf-8' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="60" status="New">
+<title>[PDTS] Incorrect <i>Throws</i> specification for <tt>absolute()</tt></title>
+<section><sref ref="15.1 [fs.op.absolute]"/></section>
+<submitter>Daniel Krügler</submitter>
+<date>28 Feb 2014</date>
+
+<discussion>
+<p>The <i>Throws</i> element [fs.op.absolute] says:</p>
+<blockquote>
+  <p>&quot;If <code>base.is_absolute()</code> is true, throws only if memory 
+  allocation fails.&quot;</p>
+</blockquote>
+<p>We can strike:</p>
+<blockquote>
+  <p>&quot;If <code>base.is_absolute()</code> is true,&quot; and the wording will still 
+  hold. Note that:</p>
+  <ol>
+    <li>None of the involved functions has requirements.</li>
+    <li>In *every* case potentially memory allocation occurs, even for &quot;<code>return 
+    p</code>&quot;, so this allocation can fail.</li>
+  </ol>
+</blockquote>
+
+<note>02-03-2014 Beman Dawes comments and provides P/R</note>
+
+<p/>The <i>Throws</i> element should follow the same form as similar <i>Throws</i>
+elements in the TS. There isn't enough special about this function to justify special
+wording and by referencing Error reporting (7) we ensure <tt>absolute()</tt> follows
+the overall policy for handling memory allocation failures.
+
+</discussion>
+
+<resolution>
+<note>Change 15.1 [fs.op.absolute]:</note>
+
+<blockquote>
+  <p><i>Throws:</i> <del>If <code>base.is_absolute()</code> is true, throws only if 
+  memory allocation fails.</del> <ins>As specified in <a href="#Error-reporting">Error reporting (7)</a>.</ins></p>
+</blockquote>
+  
+</resolution>
+
+</issue>

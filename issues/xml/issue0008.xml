@@ -1,0 +1,48 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="8" status="WP">
+<title>[PDTS] <tt>file_time_type</tt> underspecified</title>
+<section><sref ref="[fs.filesystem.synopsis]"/></section>
+<submitter>CH-7</submitter>
+<date>20 Jan 2014</date>
+
+<discussion>
+<p>Must the <tt>file_time_type</tt> hold times before 1960 and after 2050?</p>
+
+<p>Specify the requirements to <i>unspecified-trivial-clock</i> for <tt>file_time_type</tt>.</p>
+
+<note>2014-02-10, Daniel suggests wording</note>
+  <note>
+    2014-02-11 Issaquah: (1)Implementation-defined. See wiki notes for rationale.
+    (2) Leave other additions in place, but insert "the" before "resolution"
+    (3) Strike "unspecified-" from "unspecified-trivial-type" in two places.
+    Beman to provide wording for review next meeting.
+  </note>
+
+  <note>2014-02-13 LWG/SG-3 Issaquah: Proposed wording accepted.</note>
+
+</discussion>
+
+<resolution>
+<ol>
+<li><p>Modify 6 [fs.filesystem.synopsis] as indicated:</p>
+
+<blockquote>
+  <pre>
+    typedef chrono::time_point&lt;<b><i><del>unspecified-</del>trivial-clock</i></b>&gt;  file_time_type;
+  </pre> 
+<p>
+<em><del>unspecified-</del>trivial-clock</em> is an <del>unspecified type provided by the implementation</del>
+<ins>implementation-defined type</ins> that satisfies the TrivialClock requirements 
+(<del>C++11</del><ins>ISO 14882:2011</ins> &sect;20.12.3) and that is capable of representing and measuring file time values. 
+<ins>Implementations should ensure that the resolution and range of <tt>file_time_type</tt> reflect the operating system dependent 
+resolution and range of file time values.</ins>
+</p></blockquote>
+</li>
+</ol>
+</resolution>
+
+</issue>

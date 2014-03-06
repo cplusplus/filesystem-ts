@@ -1,0 +1,35 @@
+﻿<?xml version='1.0' encoding='utf-8' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="57" status="Review">
+<title>[PDTS] Inappropriate use of "No diagnostic is required"</title>
+<section><sref ref="2.1 [fs.conform.9945]"/></section>
+<submitter>LWG/SG-3</submitter>
+<date>13 Feb 2014</date>
+
+<discussion>
+<p/>§ 2.1 [fs.conform.9945] specifes "No diagnostic is required" for races. That prescription is
+used by the standard for the core language; it is not appropriate in library specifications.
+LWG/SG-3 wishes this be changed to undefined behavior.
+
+<note>Beman comments: The replacment wording is similar to that used by C++14 17.6.4.10</note>
+</discussion>
+
+<resolution>
+<p/>Change the following paragraph from § 2.1 [fs.conform.9945]
+<blockquote>
+<del>The behavior of functions described in this Technical Specification may differ
+from their specification in the presence of file system races ([fs.def.race]).
+No diagnostic is required.</del>
+<p/><ins>Behavior is undefined if calls to functions provided
+by this Technical Specification introduce a file system race (4.6 [fs.def.race]).</ins>
+</blockquote>
+
+<p/>Insert a new sub-section head before the modified paragraph:
+<blockquote>2.1 File system race behavior [fs.race.behavior]</blockquote>
+
+</resolution>
+
+</issue>

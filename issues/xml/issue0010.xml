@@ -1,0 +1,37 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="10" status="NAD">
+<title>[PDTS] Apparently inconsistent return types from several functions</title>
+<section><sref ref="6 [fs.filesystem.synopsis]"/></section>
+<submitter>FI-4</submitter>
+<date>20 Jan 2014</date>
+
+<discussion>
+<p>
+It is unclear why <tt>copy</tt>, <tt>copy_file</tt> and <tt>copy_symlink</tt> have different return types,
+and why the attribute-version of <tt>create_directory</tt> has a different return type than the
+<tt>create_directory</tt> that takes no attributes. The status/error reporting in these functions
+seems inconsistent.
+<p/>
+Resolution:
+<p/>
+Make the status/error reporting consistent or add a note explaining why it's different.
+</p>
+
+  <note>
+    2014-02-11 Issaquah: NAD. LWG/SG-3 reviewed each function and return type, and found that since they
+    have different functionality different return types are warranted. <tt>create_directory</tt> has
+    an inconsistent return type between the synopsis and the description.
+    This has subsequently been corrected editorially.
+  </note>
+
+
+</discussion>
+
+<resolution>
+</resolution>
+
+</issue>

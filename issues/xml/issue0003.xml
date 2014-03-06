@@ -1,0 +1,47 @@
+<?xml version='1.0' encoding='iso-8859-1' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="3" status="WP">
+<title>[PDTS] Filename length needs bullet item</title>
+<section><sref ref="4.7 [fs.def.filename]"/></section>
+<submitter>CH-2</submitter>
+<date>20 Jan 2014</date>
+
+<discussion>
+<p>Filename lengths are also implementation dependent. This is not the same as
+<tt>FILENAME_MAX</tt> that specifies the maximum length of pathnames.</p>
+
+<p>Add a bullet: "Length of filenames."</p>
+
+<note>2014-02-07, Beman Dawes provides wording</note>
+</discussion>
+
+<resolution>
+<p>Change 4.7 [fs.def.filename]:</p>
+  <p>The name of a file. Filenames dot&nbsp; and dot-dot&nbsp; have special meaning. The following characteristics of 
+  filenames are operating system dependent:</p>
+<ul>
+  <li>
+  <p>The permitted characters. [<i>Example</i>: Some operating systems prohibit the ASCII control characters (0x00-0x1F) 
+    in filenames. &mdash; <i>end example</i>].</p>
+  </li>
+  <li><ins>The maximum permitted length.</ins></li>
+  <li>
+  <p>Filenames that are not permitted.</p>
+  </li>
+  <li>
+  <p>Filenames that have special meaning.</p>
+  </li>
+  <li>
+  <p>Case awareness and sensitivity during path resolution.</p>
+  </li>
+  <li>
+  <p>Special rules that may apply to file types other than regular 
+  files, such as directories.</p>
+  </li>
+</ul>
+</resolution>
+
+</issue>
