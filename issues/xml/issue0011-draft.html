@@ -1,0 +1,61 @@
+<html>
+
+<head>
+<meta http-equiv="Content-Language" content="en-us">
+<meta name="GENERATOR" content="Microsoft FrontPage 5.0">
+<meta name="ProgId" content="FrontPage.Editor.Document">
+<meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
+<title>Draft issue 11 wording</title>
+</head>
+
+<body>
+
+  <h4>8.6.3  <code>path</code> 
+  <a name="path.relative" style="text-decoration: none">relative</a> function [path.relative]</h4>
+<pre style="background-color: #D7EEFF">path relative(const path&amp; p, const path&amp; base);</pre>
+<blockquote>
+  <p>Creates a path from the trailing elements of <code>p</code> that are 
+  relative to <code>base</code>, which must be a prefix of <code>p</code>.</p>
+  <p><i>Effects:</i> If the number of elements in [<code>p.begin(), 
+  p.end()</code>) is less than or equal to the number of elements in [<code>base.begin(), 
+  base.end()</code>), or if any element in [<code>base.begin(), base.end()</code>) 
+  is not equal to the corresponding element in [<code>p.begin(), p.end()</code>), 
+  throw an exception of type <code>filesystem_error</code>.</p>
+  <p><i>Remarks: </i>Equality or inequality are determined by <code>
+  path::operator==</code> or <code>path::operator!=</code> respectively.</p>
+<p><i>Returns: </i>An object of class <code>path</code> containing the first element of <code>p</code> that does not have a 
+corresponding element in <code>base,</code> followed by the subsequent elements 
+of <code>p</code> appended as if by <code>path::operator/=</code>. </p>
+<p><i>Throws:</i> <code>filesystem_error</code>.</p>
+<p>[<i>Note:</i> The behavior of <code>relative</code> is determined by the 
+lexical value of the elements of <code>p</code> and <code>base</code> - the 
+external file system is not accessed. The&nbsp;case where an element of <code>
+base</code> 
+is not equal to corresponding element of <code>p</code> is treated as an error to avoid returning an incorrect result 
+in the event of symlinks.&nbsp; <i>--end note</i>]</p>
+</blockquote>
+<p><i><span style="background-color: #CCCCCC">A possible implementation would 
+be:</span></i></p>
+<blockquote>
+    <pre><span style="background-color: #CCCCCC">auto mm = mismatch( p.begin(), p.end(), base.begin(), base.end());
+if (mm.first == p.end() || mm.second != base.end())
+{
+  throw filesystem_error(
+    &quot;p does not begin with base, so can not be made relative to base&quot;,
+    p, base,
+    error_code(errc::invalid_argument, generic_category()));
+}
+path tmp(*mm.first++);
+for (; mm.first != p.end(); ++mm.first)
+  tmp /= *mm.first;
+return tmp;</span></pre>
+
+</blockquote>
+
+  <h4>Acknowledgements</h4>
+  <p>The design of <code>relative()</code> benefited from discussions with Jamie 
+  Allsop. Thanks to Bjorn Reese for corrections and suggestions.</p>
+
+</body>
+
+</html>
