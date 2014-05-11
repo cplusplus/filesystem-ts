@@ -1,0 +1,38 @@
+<?xml version='1.0' encoding='utf-8' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="32" status="WP">
+<title>[PDTS] <tt>system_complete()</tt> example needs clarification</title>
+<section><sref ref="15.36 [fs.op.system_complete]"/></section>
+<submitter>FI-10</submitter>
+<date>20 Jan 2014</date>
+
+<discussion>
+<p>"[Example: For POSIX based operating systems, <tt>system_complete(p)</tt>
+has the same semantics as <tt>complete(p, current_path())</tt>." What is this
+<tt>complete</tt> that is referred here?</p>
+
+<p>Clarify the example.</p>
+
+<note>2014-02-10 Beman Dawes suggests wording</note>
+
+  <note>2014-02-13 LWG/SG-3 Issaquah: Proposed wording accepted.</note>
+
+</discussion>
+
+<resolution>
+  <p>
+  <i>Change 15.36 [fs.op.system_complete]:</i>
+  </p> 
+  <blockquote>
+    [<i>Example:</i> For POSIX based operating systems, <code>system_complete(p)</code>
+    has the same semantics as <code>
+      <del>complete</del><ins>absolute</ins>(p, current_path())</code>.
+
+  </blockquote>
+
+</resolution>
+
+</issue>

@@ -1,0 +1,110 @@
+<?xml version='1.0' encoding='utf-8' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="52" status="WP">
+<title>[PDTS] Better to avoid deriving from <tt>std::iterator</tt></title>
+<section><sref ref="13 [class.directory_iterator]"/>, <sref ref="14 [class.rec.dir.itr]"/></section>
+<submitter>Stephan T. Lavavej</submitter>
+<date>3 Feb 2014</date>
+
+<discussion>
+<p>Although the Standard has made this mistake almost a dozen times, I recommend not
+depicting <tt>directory_iterator</tt> and <tt>recursive_directory_iterator</tt> as deriving from
+<tt>std::iterator</tt>, since that's a binding requirement on implementations.
+Instead they should be depicted as having the appropriate typedefs, and leave it up to
+implementers to decide how to provide them. (The difference is observable to users with
+<tt>is_base_of</tt>, not that they should be asking that question.)</p>
+
+<note>2014-02-08 Daniel comments and provides wording</note>
+<p>
+This issue is basically similar to the kind of solution that had been used to remove the
+requirement to derive from <tt>unary_function</tt> and friends as described by
+<a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2010/n3198.htm">N3198</a> and
+I'm strongly in favour to follow that spirit here as well. I'd like to add that basically all
+"newer" iterator types (such as the <tt>regex</tt> related iterator don't derive from
+<tt>std::iterator</tt> either.
+<p/>
+Another reason to change the current specification is the fact that it currently says that
+the member types <tt>pointer</tt> and <tt>reference</tt> would be determined to <tt>value_type*</tt>
+and <tt>value_type&amp;</tt> (that is mutable pointers and references), which conflicts with the specification 
+of the return types of the following members:
+</p>
+<blockquote><pre>
+const directory_entry&amp; operator*() const;
+const directory_entry* operator-&gt;() const;
+</pre></blockquote>
+<p>
+The proposed fording fixes this by correcting these <tt>typedef</tt> to corresponding <tt>const</tt> access.
+<p/>
+The very same objections had been expressed by issue <iref ref="51"/> and the below given wording resolves this
+issue as well.
+</p>
+
+  <note>2014-02-13 LWG/SG-3 Issaquah: Proposed wording accepted.</note>
+</discussion>
+
+<resolution>
+<p>This wording is relative to <a href="http://wiki.edg.com/twiki/pub/Wg21issaquah/SG3/working-draft.html">SG3 working draft</a>.</p>
+
+<ol>
+<li><p>Change class <tt>directory_iterator</tt> synopsis, [class.directory_iterator], as indicated:</p>
+<blockquote><pre>
+namespace std { namespace tbd { namespace filesystem {
+
+      class directory_iterator <del>:
+        public iterator&lt;input_iterator_tag, directory_entry&gt;</del>
+      {
+      public:
+        <ins>typedef directory_entry        value_type;</ins>
+        <ins>typedef ptrdiff_t              difference_type;</ins>
+        <ins>typedef const directory_entry* pointer;</ins>
+        <ins>typedef const directory_entry&amp; reference;</ins>
+        <ins>typedef input_iterator_tag     iterator_category;</ins>
+
+        // member functions
+        [&hellip;]
+      };
+
+} } }  // namespaces std::tbd::filesystem
+</pre></blockquote>
+</li>
+
+<li><p>Change class <tt>recursive_directory_iterator</tt> synopsis, [class.rec.dir.itr], as indicated:</p>
+<blockquote><pre>
+namespace std { namespace tbd { namespace filesystem {
+
+      class recursive_directory_iterator <del>:
+        public iterator&lt;input_iterator_tag, directory_entry&gt;</del>
+      {
+      public:
+        <ins>typedef directory_entry        value_type;</ins>
+        <ins>typedef ptrdiff_t              difference_type;</ins>
+        <ins>typedef const directory_entry* pointer;</ins>
+        <ins>typedef const directory_entry&amp; reference;</ins>
+        <ins>typedef input_iterator_tag     iterator_category;</ins>
+
+        // constructors and destructor
+        [&hellip;]
+        
+        // modifiers
+        recursive_directory_iterator&amp; operator=(const recursive_directory_iterator&amp;) = default;
+        recursive_directory_iterator&amp; operator=(recursive_directory_iterator&amp;&amp;) = default;
+        
+        <ins>const directory_entry&amp; operator*() const;</ins>
+        <ins>const directory_entry* operator-&gt;() const;</ins>
+
+        recursive_directory_iterator&amp; operator++();
+        recursive_directory_iterator&amp; increment(error_code&amp; ec);
+
+        [&hellip;]
+      };
+
+} } }  // namespaces std::tbd::filesystem
+</pre></blockquote>
+</li>
+</ol>
+</resolution>
+
+</issue>

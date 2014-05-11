@@ -28,17 +28,17 @@ del     { background-color:#FFD7D7 }
   <table border="0">
     <tr>
       <td>Document number:&nbsp;&nbsp; </td>
-      <td>Dnnnn</td>
+      <td><span style="background-color: #FFFF00">DXXXX</span></td>
     </tr>
     <tr>
       <td>Date:</td>
       <td>
-      <!--webbot bot="Timestamp" S-Type="EDITED" S-Format="%Y-%m-%d" startspan -->2014-02-12<!--webbot bot="Timestamp" endspan i-checksum="12123" --></td>
+      <!--webbot bot="Timestamp" S-Type="EDITED" S-Format="%Y-%m-%d" startspan -->2014-04-18<!--webbot bot="Timestamp" endspan i-checksum="12263" --></td>
     </tr>
     <tr>
       <td>Revises:</td>
       <td>
-      N3693</td>
+      N3940</td>
     </tr>
     <tr>
       <td>
@@ -63,7 +63,7 @@ del     { background-color:#FFD7D7 }
 <!-- generate-section-numbers=false -->
 
 <h1 align="center">Working Draft,<br>
-Technical Specification <font face="Times New Roman">—</font> File System</h1>
+Technical Specification &mdash; File System</h1>
 
 
 <p>© ISO/IEC</p>
@@ -106,8 +106,9 @@ Specification document.</span></i></p>
       &nbsp;&nbsp;&nbsp;<a href="#fs.def.pathres">4.17  pathname resolution </a><br>
       &nbsp;&nbsp;&nbsp;<a href="#Relative-path">4.18  relative path </a><br>
       &nbsp;&nbsp;&nbsp;<a href="#symbolic-link">4.19  symbolic link </a><br>
-      <a href="#fs.req">5  Requirements </a><br>
-      <a href="#Header-filesystem-synopsis">6  Header <code>&lt;filesystem&gt;</code> synopsis 
+      <a href="#fs.req">5  Requirements</a><br>
+&nbsp;&nbsp; <a href="#Namespaces-and-headers">5.1 Namespaces and headers</a><a href="#fs.req"> </a><br>
+      <a href="#Header-filesystem-synopsis">6  Header <code>&lt;experimental/filesystem&gt;</code> synopsis 
 </a><br>
       <a href="#Error-reporting">7  Error reporting </a><br>
       <a href="#class-path">8  Class <code>path</code> </a><br>
@@ -206,8 +207,8 @@ conversions </a><br>
       &nbsp;&nbsp;&nbsp;<a href="#fs.op.status_known">15.34  Status known&nbsp; </a><br>
       &nbsp;&nbsp;&nbsp;<a href="#fs.op.symlink_status">15.35  Symlink status&nbsp; </a><br>
       &nbsp;&nbsp;&nbsp;<a href="#fs.op.system_complete">15.36  System complete&nbsp; </a><br>
-      &nbsp;&nbsp;&nbsp;<a href="#fs.op.temp_dir_path">15.37  Temporary directory path&nbsp; </a><br>
-      &nbsp;&nbsp;&nbsp;<a href="#fs.op.unique_path">15.38 Unique path</a></p>
+      &nbsp;&nbsp;&nbsp;<a href="#fs.op.temp_dir_path">15.37 Temporary directory 
+      path</a></p>
 </blockquote>
       
 <hr>
@@ -248,19 +249,19 @@ implementable, so the conformance sub-clauses take that into account.</p>
 <blockquote>
 <p>[<i>Note:</i> This constitutes an &quot;as if&quot; rule allowing implementations 
 to call native 
-operating system or other API's. <i>--end note</i>]</p>
+operating system or other API's. <i>&mdash;end note</i>]</p>
 </blockquote>
 <p>Implementations are encouraged to provide such behavior as it is defined by 
 POSIX. Implementations shall document any behavior that differs from the 
 behavior defined by POSIX. Implementations that do not support exact POSIX 
 behavior are encouraged to provide behavior as close to POSIX behavior as is reasonable given the 
 limitations of actual operating systems and file systems. If an implementation cannot provide any 
-reasonable behavior, the implementation shall report an error in an 
-implementation-defined manner.</p>
+reasonable behavior, the implementation shall report an error as specified in § 7 [fs.err.report].
+</p>
 <blockquote>
-<p>[<i>Note:</i> Such errors might be reported by an <del>#error</del> <ins><code>#error</code></ins> directive, a <code>
-static_assert</code>, a <code>filesystem_error</code> exception, a special 
-return value, or some other manner. <i>--end note</i>]</p>
+<p>[<i>Note:</i> This allows users to rely on an exception being thrown or 
+an error code being set when an implementation cannot provide any reasonable 
+behavior. — <i>end note</i>]</p>
 </blockquote>
 <p>Implementations are not required to provide behavior that is not supported by 
 a particular file system.</p>
@@ -269,7 +270,7 @@ a particular file system.</p>
 FAT file system</a> used by some memory cards, camera memory, and floppy discs 
 does not support hard links, symlinks, and many other features of more capable 
 file systems, so implementations are not required to support those features 
-on the FAT file system. <i>-- end example</i>]</p>
+on the FAT file system. <i>&mdash;end example</i>]</p>
 </blockquote>
 <p>The behavior of functions described in this 
 Technical Specification 
@@ -281,7 +282,7 @@ Requires</i> is not specified for the function.</p>
 <blockquote>
 <p>[<i>Note:</i> As a design practice, preconditions are not specified when it 
 is unreasonable for a program to detect them prior to calling the function. <i>
--- end note</i>]</p>
+&mdash;end note</i>]</p>
 </blockquote>
 <h3>2.2  Operating system dependent behavior conformance [<a name="fs.conform.os">fs.conform.os</a>]</h3>
 <p>Some behavior is specified as being 
@@ -306,13 +307,13 @@ wording.</i></span></p>
 </ul>
 
 <p>[<i>Note:</i> The programming language and library described in ISO/IEC 14882 
-is herein called <i>the C++ Standard</i>. <ins>References to clauses within the C++ 
-Standard are written as &quot;C++11 §3.2&quot;.</ins><p>The operating system interface 
-described in ISO/IEC 9945 is herein called <i>POSIX</i>. <i>-- end note</i>]<p>This 
+is herein called <i>the C++ Standard</i>. References to clauses within the C++ 
+Standard are written as &quot;C++11 §3.2&quot;.<p>The operating system interface 
+described in ISO/IEC 9945 is herein called <i>POSIX</i>. <i>&mdash;end note</i>]<p>This 
 Technical Specification  mentions commercially 
 available operating systems for purposes of exposition.<sup> <a href="#footnote">
 [footnote]</a></sup><p>Unless otherwise specified, the whole of the C++ 
-Standard&#39;s Library introduction <del>[lib.library]</del> <ins>(C++11 §17)</ins> is included into this Technical 
+Standard&#39;s Library introduction (C++11 §17) is included into this Technical 
 Specification by reference.<p><i><span style="background-color: #E0E0E0">This footnote 
 is required by ISO/IEC Directives, Part2, section 6.6.3 Use of trade names and 
 trademarks:</span></i><blockquote>
@@ -361,8 +362,9 @@ and dot-dot&nbsp; have special meaning. The following characteristics of
 <ul>
   <li>
   <p>The permitted characters. [<i>Example</i>: Some operating systems prohibit the ASCII control characters (0x00-0x1F) 
-    in filenames. <i>--end example</i>].</p>
+    in filenames. <i>&mdash;end example</i>].</p>
   </li>
+  <li>The maximum permitted length.</li>
   <li>
   <p>Filenames that are not permitted.</p>
   </li>
@@ -383,7 +385,7 @@ file systems support multiple hard links to a file. If the last hard link to a
 file is removed, the file itself is removed.</p>
 <blockquote>
 <p>[<i>Note:</i> A hard link can be thought of as a shared-ownership smart 
-pointer to a file.<i> -- end note</i>]<i> </i></p>
+pointer to a file.<i> &mdash;end note</i>]<i> </i></p>
 </blockquote>
 <h3>4.9  <a name="link">link</a> [fs.def.link]</h3>
 <p>A directory entry object that associates a 
@@ -393,7 +395,7 @@ symbolic link ([fs.def.symlink]).</p>
 <h3>4.10  native encoding [<a name="fs.def.native.encode">fs.def.native.encode</a>]</h3>
 <p>For narrow character strings, the operating system dependent current encoding 
 for path names. For wide character strings, the implementation defined execution 
-wide-character set encoding (<del>C++ standard [lex.charset]</del> <ins>C++11 §2.3</ins>).</p>
+wide-character set encoding (C++11 §2.3).</p>
 
 <h3>4.11  native pathname format [<a name="fs.def.native">fs.def.native</a>]</h3>
 <p>The operating system dependent pathname format accepted by the host operating system.</p>
@@ -418,7 +420,9 @@ entry for the file under discussion.</p>
 <h3>4.15  <a name="path">path</a> [fs.def.path]</h3>
 <p>A sequence of elements that identify 
 the location of a file within a filesystem. The elements are the <i>root-name<sub>opt</sub></i>, <i>
-root-directory<sub>opt</sub></i>, and an optional sequence of filenames.</p>
+root-directory<sub>opt</sub></i>, and an optional sequence of filenames. 
+The maximum number of elements in the sequence is operating system dependent.
+</p>
 
 <h3>4.16  pathname [<a name="fs.def.pathname">fs.def.pathname</a>]</h3>
 <p>A character string that represents 
@@ -433,7 +437,7 @@ native pathname format.</p>
 <p>Pathname resolution is the operating system dependent mechanism for resolving 
 a pathname to a particular file in a file hierarchy. There may be multiple 
 pathnames that resolve to the same file.&nbsp; [<i>Example:</i> POSIX specifies the mechanism in section 4.11, Pathname resolution. <i>
---end example]</i></p>
+&mdash;end example]</i></p>
 
 <h3>4.18  <a name="Relative-path">relative path</a> [fs.def.relative-path]</h3>
 <p>A path that 
@@ -442,7 +446,7 @@ unambiguously
 identifies the location of a file when resolved relative to 
 an implied starting location. The elements of a path that determine if it is 
 relative are operating system dependent.&nbsp; [<i>Note:</i> 
-Paths <code>&quot;.&quot;</code> and <code>&quot;..&quot;</code> are relative paths. <i>--end note</i>]</p>
+Paths <code>&quot;.&quot;</code> and <code>&quot;..&quot;</code> are relative paths. <i>&mdash;end note</i>]</p>
 <h3>4.19  <a name="symbolic-link">symbolic link</a> [fs.def.symlink]</h3>
 <p>A link ([fs.def.link]) with the 
 property that when the file is encountered during pathname resolution, a string 
@@ -450,7 +454,7 @@ stored by the file is used to modify the pathname resolution.</p>
 <blockquote>
 <p>[<i>Note:</i> Symbolic links are often called symlinks. A symbolic link can be thought of as a raw pointer to a file. 
 If the file pointed to does not exist, the symbolic link is said to be a 
-&quot;dangling&quot; symbolic link.<i> -- end note</i>]<i> </i></p>
+&quot;dangling&quot; symbolic link.<i> &mdash;end note</i>]<i> </i></p>
 </blockquote>
 
 <h2>5  Requirements [<a name="fs.req">fs.req</a>]</h2>
@@ -462,19 +466,42 @@ encoded character types</i>.</p>
 encoded character types.</p>
 
 <p>Template parameters named <code>InputIterator</code> shall meet the 
-C++ Standard&#39;s library input iterator requirements (<del>[input.iterators]</del> <ins>
-C++11 §24.2.3</ins>) and shall 
+C++ Standard&#39;s library input iterator requirements (C++11 §24.2.3) and shall 
 have a value type that is one of the encoded character types.</p>
 
 <blockquote>
 <p>[<i>Note:</i> Use of an encoded character type implies an associated 
 encoding. Since <code>signed char</code> and <code>unsigned char</code> have no 
-implied encoding, they are not included as permitted types. <i>--end note</i>]</p>
+implied encoding, they are not included as permitted types. <i>&mdash;end note</i>]</p>
 
 </blockquote>
-<h2>6  <a name="Header-filesystem-synopsis">Header <code>&lt;filesystem&gt;</code> synopsis</a> 
+<h3>5.1 <a name="Namespaces-and-headers">Namespaces and headers</a> [fs.req.namespace]</h3>
+
+
+<p>The components described in this technical specification are experimental and 
+not part of the C++ standard library. All components described in this technical 
+specification are declared in namespace <code>std::experimental::filesystem::v1</code> 
+or a sub-namespace thereof unless otherwise specified. The header described in 
+this technical specification shall import the contents of <code>
+std::experimental::filesystem::v1</code> into <code>std::experimental::filesystem</code> as 
+if by</p>
+<blockquote>
+<pre>namespace std {
+  namespace experimental {
+    namespace filesystem {
+      inline namespace v1 {}
+    }
+  }
+}</pre>
+</blockquote>
+<p>Unless otherwise specified, references to other entities described in this 
+technical specification are assumed to be qualified with <code>std::experimental::</code><code>filesystem::v1::</code>, 
+and references to entities described in the C++ standard are assumed to be qualified 
+with <code>std::</code>.</p>
+
+<h2>6  <a name="Header-filesystem-synopsis">Header <code>&lt;experimental/filesystem&gt;</code> synopsis</a> 
 [fs.filesystem.synopsis]</h2>
-<pre>namespace std { namespace tbd { namespace filesystem {
+<pre>namespace std { namespace experimental { namespace filesystem { inline namespace v1 {
 
     class <a href="#class-path">path</a>;
     
@@ -501,7 +528,7 @@ implied encoding, they are not included as permitted types. <i>--end note</i>]</
     template &lt;class <a href="#Source">Source</a>&gt;  
       path u8path(Source const&amp; source);
     template &lt;class InputIterator&gt;
-      path u8path(InputIterator <del>begin</del><ins>first</ins>, InputIterator <del>end</del><ins>last</ins>);
+      path u8path(InputIterator first, InputIterator last);
 
     class <a href="#Class-filesystem_error">filesystem_error</a>;      
     class <a href="#Class-directory_entry">directory_entry</a>;
@@ -509,13 +536,13 @@ implied encoding, they are not included as permitted types. <i>--end note</i>]</
     class <a href="#Class-directory_iterator">directory_iterator</a>;
 
     // enable directory_iterator range-based for statements
-    const directory_iterator&amp; <a href="#directory_iterator-non-member-functions">begin</a>(const directory_iterator&amp; iter) noexcept;
+    directory_iterator <a href="#directory_iterator-non-member-functions">begin</a>(directory_iterator iter) noexcept;
     directory_iterator <a href="#directory_iterator-non-member-functions">end</a>(const directory_iterator&amp;) noexcept;
 
     class <a href="#Class-recursive_directory_iterator">recursive_directory_iterator</a>;
 
     // enable recursive_directory_iterator range-based for statements
-    const recursive_directory_iterator&amp; <a href="#rec.dir.itr.nonmembers">begin</a>(const recursive_directory_iterator&amp; iter) noexcept;
+    recursive_directory_iterator <a href="#rec.dir.itr.nonmembers">begin</a>(recursive_directory_iterator iter) noexcept;
     recursive_directory_iterator <a href="#rec.dir.itr.nonmembers">end</a>(const recursive_directory_iterator&amp;) noexcept;
 
     enum class file_type;  // [<a href="#Enum-file_type">enum.file_type</a>]
@@ -528,7 +555,7 @@ implied encoding, they are not included as permitted types. <i>--end note</i>]</
     {
       uintmax_t capacity;
       uintmax_t free; 
-      uintmax_t available; // free space available to a non-privileged process
+      uintmax_t available;
     };
 
     enum class <a name="copy_option" href="#enum.copy_options">copy_options</a>;  // [<a href="#enum.copy_options">enum.copy_options</a>]
@@ -540,7 +567,7 @@ implied encoding, they are not included as permitted types. <i>--end note</i>]</
       skip_permission_denied
     };
 
-    typedef chrono::time_point&lt;<b><i>unspecified-trivial-clock</i></b>&gt;  file_time_type;
+    typedef chrono::time_point&lt;<b><i>trivial-clock</i></b>&gt;  file_time_type;
 
     // <a href="#Operational-functions">operational functions</a>
 
@@ -572,8 +599,9 @@ implied encoding, they are not included as permitted types. <i>--end note</i>]</
     bool         <a href="#create_directory">create_directory</a>(const path&amp; p);
     bool         <a href="#create_directory">create_directory</a>(const path&amp; p, error_code&amp; ec) noexcept;
 
-   <del>void</del> <ins>bool</ins>     <a href="#create_directory2">create_directory</a>(const path&amp; p, const path&amp; attributes);
-   <del>void</del> <ins>bool</ins>     <a href="#create_directory2">create_directory</a>(const path&amp; p, const path&amp; attributes, error_code&amp; ec) noexcept;
+    bool         <a href="#create_directory2">create_directory</a>(const path&amp; p, const path&amp; attributes);
+    bool         <a href="#create_directory2">create_directory</a>(const path&amp; p, const path&amp; attributes,
+                                  error_code&amp; ec) noexcept;
 
     void         <a href="#create_directory_symlink">create_directory_symlink</a>(const path&amp; to, const path&amp; new_symlink);
     void         <a href="#create_directory_symlink">create_directory_symlink</a>(const path&amp; to, const path&amp; new_symlink,
@@ -646,8 +674,8 @@ implied encoding, they are not included as permitted types. <i>--end note</i>]</
     void         <a href="#last_write_time2">last_write_time</a>(const path&amp; p, file_time_type new_time,
                                  error_code&amp; ec) noexcept;
                                  
-    <ins>void         <a href="#fs.op.permissions">permissions</a>(const path&amp; p, perms prms);</ins>
-    <ins>void         <a href="#fs.op.permissions">permissions</a>(const path&amp; p, perms prms, error_code&amp; ec) noexcept;</ins>
+    void         <a href="#fs.op.permissions">permissions</a>(const path&amp; p, perms prms);
+    void         <a href="#fs.op.permissions">permissions</a>(const path&amp; p, perms prms, error_code&amp; ec) noexcept;
 
     path         <a href="#read_symlink">read_symlink</a>(const path&amp; p);
     path         <a href="#read_symlink">read_symlink</a>(const path&amp; p, error_code&amp; ec);
@@ -681,14 +709,14 @@ implied encoding, they are not included as permitted types. <i>--end note</i>]</
     path         <a href="#temp_directory_path">temp_directory_path</a>();
     path         <a href="#temp_directory_path">temp_directory_path</a>(error_code&amp; ec);
 
-    path         <a href="#unique_path">unique_path</a>(const path&amp; model=&quot;%%%%-%%%%-%%%%-%%%%&quot;);
-    path         <a href="#unique_path">unique_path</a>(const path&amp; model, error_code&amp; ec);
+} } } }  // namespaces std::experimental::filesystem::v1</pre>
 
-} } }  // namespaces std::tbd::filesystem</pre>
-
- <p><b><i><code>unspecified-trivial-clock</code></i></b> is an unspecified type 
-provided by the implementation that satisfies the <code>TrivialClock</code> requirements (<del>[time.clock.req]</del> <ins>C++11 §20.12.3</ins>) 
- and that is capable of representing and measuring file time values.</p>
+ <p><b><i><code>trivial-clock</code></i></b> is an implementation-defined type that satisfies the
+<code>TrivialClock</code> requirements (C++11 §20.12.3) 
+ and that is capable of representing and measuring file time values. 
+ Implementations should ensure that the resolution and range of <tt>
+ file_time_type</tt> reflect the operating system dependent resolution and range 
+ of file time values.</p>
 <h2>7  <a name="Error-reporting">Error reporting</a> [fs.err.report]</h2>
 <p>Filesystem library functions often provide two overloads, one that 
 throws an exception to report file system errors, and another that sets an <code>error_code</code>.</p>
@@ -700,11 +728,11 @@ errors are truly exceptional and indicate a serious failure. Throwing an
   exception is the most appropriate response. This is the preferred default for 
   most everyday programming.<br>
 &nbsp;</li>
-  <li>Uses where file system system errors are routine and do not necessarily represent 
+  <li>Uses where file system <del>system</del> errors are routine and do not necessarily represent 
   failure. Returning an error code is the most appropriate response. This allows 
   application specific error handling, including simply ignoring the error.</li>
 </ul>
-  <p><i>--end note</i>]</p>
+  <p><i>&mdash;end note</i>]</p>
 </blockquote>
 <p>Functions <b>not</b> having an argument of type <code>error_code&amp;</code> report errors as follows, unless otherwise specified:</p>
   <ul>
@@ -718,10 +746,12 @@ errors are truly exceptional and indicate a serious failure. Throwing an
   functions with two path arguments, the first of these arguments shall be 
   passed to the
 <code>filesystem_error</code> constructor as the <code>path1</code> argument, 
-  and the second shall be passed as the <code>path2</code> argument.<br>
+  and the second shall be passed as the <code>path2</code> argument. The
+  <code>filesystem_error</code> constructor&#39;s <code>error_code</code> argument 
+  is set as appropriate for the specific operating system dependent error. <br>
 &nbsp;</li>
-  <li>Failure to allocate storage is reported by throwing an exception as described in <del>the C++ standard,</del><ins>C++11 
-  §</ins>17.6.4.10<del> [res.on.exception.handling]</del>.<br>
+  <li>Failure to allocate storage is reported by throwing an exception as described in C++11 
+  §17.6.4.10.<br>
 &nbsp;</li>
   <li>Destructors throw nothing.</li>
   </ul>
@@ -732,7 +762,7 @@ errors are truly exceptional and indicate a serious failure. Throwing an
   implementation to an operating system or other underlying API results in an 
   error that prevents the function from meeting its specifications, the
 <code>error_code&amp;</code> argument is set as 
-  appropriate<del> appropriate</del> for the specific error. Otherwise, <code>clear()</code> 
+  appropriate for the specific operating system dependent error. Otherwise, <code>clear()</code> 
   is called on the
 <code>error_code&amp;</code> argument.</li>
 </ul>
@@ -743,7 +773,7 @@ of a path. The path does not necessarily exist in external storage, and the
 pathname is not necessarily valid for the current operating 
 system or for a particular file system.</p>
 <blockquote>
-<pre>namespace std { namespace tbd { namespace filesystem {
+<pre>namespace std { namespace experimental { namespace filesystem { inline namespace v1 {
 
       class path
       {
@@ -759,12 +789,12 @@ system or for a particular file system.</p>
         template &lt;class <a href="#Source">Source</a>&gt;
           path(Source const&amp; source);
         template &lt;class InputIterator&gt;
-          path(InputIterator <del>begin</del><ins>first</ins>, InputIterator <del>end</del><ins>last</ins>);
+          path(InputIterator first, InputIterator last);
         template &lt;class <a href="#Source">Source</a>&gt;  
           path(Source const&amp; source, const locale&amp; loc);
         template &lt;class InputIterator&gt;
-          path(InputIterator <del>begin</del><ins>first</ins>, InputIterator <del>end</del><ins>last</ins>, const locale&amp; loc);
-       ~path()<del> = default</del>;
+          path(InputIterator first, InputIterator last, const locale&amp; loc);
+       ~path(;
 
         // <a href="#path-assignments">assignments</a>
         path&amp; operator=(const path&amp; p);
@@ -774,7 +804,7 @@ system or for a particular file system.</p>
         template &lt;class <a href="#Source">Source</a>&gt;
           path&amp; assign(Source const&amp; source)
         template &lt;class InputIterator&gt;
-          path&amp; assign(InputIterator <del>begin</del><ins>first</ins>, InputIterator <del>end</del><ins>last</ins>);
+          path&amp; assign(InputIterator first, InputIterator last);
 
         // <a href="#path-appends">appends</a>
         path&amp; operator/=(const path&amp; p);
@@ -783,7 +813,7 @@ system or for a particular file system.</p>
         template &lt;class <a href="#Source">Source</a>&gt;
           path&amp; append(Source const&amp; source);
         template &lt;class InputIterator&gt;
-          path&amp; append(InputIterator <del>begin</del><ins>first</ins>, InputIterator <del>end</del><ins>last</ins>);
+          path&amp; append(InputIterator first, InputIterator last);
 
         // <a href="#path-concatenation">concatenation</a>
         path&amp; operator+=(const path&amp; x);
@@ -797,7 +827,7 @@ system or for a particular file system.</p>
         template &lt;class Source&gt;
           path&amp; concat(Source const&amp; x);
         template &lt;class InputIterator&gt;
-          path&amp; concat(InputIterator <del>begin</del><ins>first</ins>, InputIterator <del>end</del><ins>last</ins>);
+          path&amp; concat(InputIterator first, InputIterator last);
         
         // <a href="#path-modifiers">modifiers</a>
         void  <a href="#path-clear">clear</a>() noexcept;
@@ -835,7 +865,7 @@ system or for a particular file system.</p>
 
         // <a href="#path-compare">compare</a>
         int  <a href="#path-compare">compare</a>(const path&amp; p) const noexcept;
-        int  <a href="#path-compare">compare</a>(const string&amp; s) const;
+        int  <a href="#path-compare">compare</a>(const string_type&amp; s) const;
         int  <a href="#path-compare">compare</a>(const value_type* s) const;
 
         // <a href="#path-decomposition">decomposition</a>
@@ -872,7 +902,7 @@ system or for a particular file system.</p>
         string_type pathname;  // <b><i>exposition only</i></b>
       };
 
-} } }  // namespaces std::tbd::filesystem</pre>
+} } } }  // namespaces std::experimental::filesystem::v1</pre>
 
 </blockquote>
 <p><code><a name="value_type">value_type</a></code> is a <code>typedef</code> for the 
@@ -884,7 +914,7 @@ is the operating system dependent <i>preferred-separator</i> character ([path.ge
       systems, <code>value_type</code> is <code>char</code> and <code>
       preferred_separator</code> is the slash character (/).&nbsp; For Windows based 
 operating systems, <code>value_type</code> is <code>wchar_t</code> and <code>
-      preferred_separator</code> is the backslash character (\).&nbsp; <i>--end example</i>]
+      preferred_separator</code> is the backslash character (\).&nbsp; <i>&mdash;end example</i>]
 </blockquote>
 <h3>8.1  <code>path</code> generic pathname format grammar [<a name="path.generic">path.generic</a>]</h3>
 <p><i>pathname:<br>
@@ -901,7 +931,7 @@ absolute paths. </p>
 <p>[<i>Note:</i> Many operating systems define a name 
 beginning with two <i>directory-separator</i> characters as a <i>root-name</i> 
 that identifies network or other resource locations. Some operating systems define a single letter followed by a colon as a drive 
-specifier - a <i>root-name</i> identifying a specific device such as a disc drive. <i>--end note</i>]</p>
+specifier - a <i>root-name</i> identifying a specific device such as a disc drive. <i>&mdash;end note</i>]</p>
   </blockquote>
 </blockquote>
 <p><i>root-directory:<br>
@@ -932,8 +962,8 @@ sequence of characters other than <i>directory-separator</i> characters.</p>
       <br>
       <tt>A B C D E F G H I J K L M N O P Q R S T U V W X Y Z<br>
       a b c d e f g h i j k l m n o p q r s t u v w x y z<br>
-      0 1 2 3 4 5 6 7 8 9 . _ -
-      </tt> <i>--end note</i>]
+      0 1 2 3 4 5 6 7 8 9 . _ -</tt>
+      <p><i>&mdash;end note</i>]</p>
 </blockquote>
 </blockquote>
 <p><i>dot:<br>
@@ -979,7 +1009,7 @@ conversions</a> [path.fmt.cvt]</h4>
         <li>Paths for regular files and paths for directories share the same 
         syntax.</li>
       </ul>
-      <p>&nbsp;<i>-- end note</i>]
+      <p>&nbsp;<i>&mdash;end note</i>]
 </blockquote>
 
 <p>Functions arguments that take character sequences representing paths 
@@ -994,7 +1024,7 @@ This is by design as it simplifies use for operating systems that do not require
 disambiguation. An implementation for an operating system where disambiguation 
 is required is permitted 
 as an extension to distinguish between the formats. <i>
--- end note</i>]</p>
+&mdash;end note</i>]</p>
 </blockquote>
 
 <p>If the native format requires paths for regular files to be formatted 
@@ -1017,12 +1047,12 @@ by its value type:</p>
 For POSIX based operating systems <code>path::value_type</code> is <code>char</code> 
 so no conversion from <code>char</code> value type arguments or to <code>char</code> 
 value type returns is performed.<p>For Windows based operating systems, the 
-native narrow  encoding is determined by calling a  Windows API function. <i>-- end note</i>]<p><i><span style="background-color: #E0E0E0">On Windows, the encoding is determined by testing <code>AreFileApisANSI()</code>; if true, the <code>CP_ACP</code> 
+native narrow  encoding is determined by calling a  Windows API function. <i>&mdash;end note</i>]<p><i><span style="background-color: #E0E0E0">On Windows, the encoding is determined by testing <code>AreFileApisANSI()</code>; if true, the <code>CP_ACP</code> 
         codepage applies, otherwise the <code>CP_OEMCP</code> codepage applies. </span></i><p>[<i>Note:</i> 
 This results in behavior identical to other C and C++ 
 standard library functions that perform file operations using narrow character 
 strings to identify paths. Changing this  behavior would be surprising and error 
-prone. <i>--end note</i>]<br>
+prone. <i>&mdash;end note</i>]<br>
 &nbsp;<p>
 </p>
     </li>
@@ -1031,7 +1061,7 @@ prone. <i>--end note</i>]<br>
     <p>[<i>Note:</i> 
 For Windows based operating systems <code>path::value_type</code> is <code>wchar_t</code> 
 so no conversion from <code>wchar_t</code> value type arguments or to <code>wchar_t</code> 
-    value type returns is performed. <i>-- end note</i>]<br>
+    value type returns is performed. <i>&mdash;end note</i>]<br>
 &nbsp;</li>
     <li>
 <p><code>char16_t</code>: Encoding is UTF-16. Conversion method 
@@ -1044,6 +1074,9 @@ is unspecified.</p>
     </li>
   </ul>
 </blockquote>
+<p>If the encoding being converted to has no representation for source 
+characters, the resulting converted characters, if any, are unspecified.</p>
+
 <h3>8.3  <a name="path-Requirements"><code>path</code> requirements</a> [path.req]</h3>
 <p>In addition to the [fs.req] requirements, function template parameters named <code><a name="Source">Source</a></code> 
 shall be one of:</p>
@@ -1069,7 +1102,7 @@ shall be one of:</p>
 <blockquote>
   <p>[<i>Note:</i> See <a href="#path-Conversions">path conversions</a> ([path.cvt]) 
   for how these value types and their encodings convert to <code>
-  path::value_type</code> and its encoding. <i>-- end note</i>]</p>
+  path::value_type</code> and its encoding. <i>&mdash;end note</i>]</p>
 </blockquote>
 
   <p>Arguments of type <code>Source</code> 
@@ -1089,27 +1122,26 @@ path(path&amp;&amp; p) noexcept;</pre>
   <p><i>Effects:</i> Constructs an object of class <code>path</code> with <code>
   pathname</code> having the original value of <code>p.pathname</code>. In the 
   second form, <code>p</code> is left in a valid but unspecified state.</p>
-  <p><i>Postconditions:</i> empty().</p>
 </blockquote>
 <pre>template &lt;class <a href="#Source">Source</a>&gt;
   path(Source const&amp; source);
 template &lt;class InputIterator&gt;
-  path(InputIterator <del>begin</del><ins>first</ins>, InputIterator <del>end</del><ins>last</ins>);</pre>
+  path(InputIterator first, InputIterator last);</pre>
 <blockquote>
   <p><i>Effects:</i> Constructs an object of class <code>path</code>, storing the effective range of <code>source</code> ([<a href="#path-Requirements">path.req</a>]) 
-  or the range [<code><del>begin</del><ins>first</ins></code>,<code><del>end</del><ins>last</ins></code>) in <code>pathname</code>, converting format and 
+  or the range [<code>first</code>,<code>last</code>) in <code>pathname</code>, converting format and 
   encoding if required ([<a href="#path.arg.convert">path.arg.convert</a>]).</p>
 </blockquote>
 <pre>template &lt;class <a href="#Source">Source</a>&gt;
   path(Source const&amp; source, const locale&amp; loc);
 template &lt;class InputIterator&gt;
-  path(InputIterator <del>begin</del><ins>first</ins>, InputIterator <del>end</del><ins>last</ins>, const locale&amp; loc);</pre>
+  path(InputIterator first, InputIterator last, const locale&amp; loc);</pre>
   <blockquote>
   <p><i>Requires:</i> The value type of <code>Source</code> and <code>InputIterator</code> is <code>
   char</code>.</p>
   <p><i>Effects:</i> Constructs an object of class <code>path</code>, storing the effective range of <code>
   source</code> 
-  or the range [<code><del>begin</del><ins>first</ins></code>,<code><del>end</del><ins>last</ins></code>) in <code>pathname</code>, 
+  or the range [<code>first</code>,<code>last</code>) in <code>pathname</code>, 
   after converting format if required and after converting the encoding as 
   follows:</p>
   <blockquote>
@@ -1123,11 +1155,11 @@ template &lt;class InputIterator&gt;
     <blockquote>
   <p>A string is to be read from a database 
   that is encoded in ISO/IEC 8859-1, and used to create a directory:</p>
-      <pre>namespace fs = std::tbd::filesystem;
+      <pre>namespace fs = std::experimental::filesystem;
 std::string latin1_string = read_latin1_data();
 codecvt_8859_1&lt;wchar_t&gt; latin1_facet;
 std::locale latin1_locale(std::locale(), latin1_facet);
-fs::create_directory(fs::path(latin1_string, latin1_locale)<ins>)</ins>;</pre>
+fs::create_directory(fs::path(latin1_string, latin1_locale));</pre>
     <p>For POSIX based operating systems the path is constructed by first using <code>
     latin1_facet</code> to convert ISO/IEC 8859-1 encoded
     <code>latin1_string</code> to a wide character string in the native wide 
@@ -1144,7 +1176,7 @@ fs::create_directory(fs::path(latin1_string, latin1_locale)<ins>)</ins>;</pre>
     string. All of the characters in the ISO/IEC 8859-1 character set will be 
     converted to their Unicode representation.</p>                                                   
     </blockquote>
-<p> <i>--end example]</i> </p>
+<p> <i>&mdash;end example]</i> </p>
 </blockquote>
 <h4>8.4.2  <a name="path-assignments"><code>path</code> assignments</a> [path.assign]</h4>
 <pre>path&amp; operator=(const path&amp; p);</pre>
@@ -1170,10 +1202,10 @@ fs::create_directory(fs::path(latin1_string, latin1_locale)<ins>)</ins>;</pre>
 template &lt;class <a href="#Source">Source</a>&gt;
   path&amp; assign(Source const&amp; source);
 template &lt;class InputIterator&gt;
-  path&amp; assign(InputIterator <del>begin</del><ins>first</ins>, InputIterator <del>end</del><ins>last</ins>);</pre>
+  path&amp; assign(InputIterator first, InputIterator last);</pre>
 <blockquote>
   <p><i>Effects:</i> Stores the effective range of <code>source</code> ([<a href="#path-Requirements">path.req</a>]) 
-  or the range [<code><del>begin</del><ins>first</ins></code>,<code><del>end</del><ins>last</ins></code>) in <code>pathname</code>, converting format and 
+  or the range [<code>first</code>,<code>last</code>) in <code>pathname</code>, converting format and 
   encoding if required ([<a href="#path.arg.convert">path.arg.convert</a>]). </p>
   <p>
   <i>Returns: </i><code>*this</code></p>
@@ -1190,7 +1222,8 @@ template &lt;class InputIterator&gt;
     Appends <code>path::preferred_separator</code> to <code>pathname</code> unless:<ul>
     <li>an added separator 
     would be redundant, or</li>
-    <li>would change an relative path to an absolute path, or</li>
+    <li>would change a relative path to a absolute path
+    [<i>Note</i>: An empty path is relative. — <i>end note</i>], or</li>
     <li><code>p.empty()</code>, or</li>
     <li><code>*p.native().cbegin()</code> is a directory separator.</li>
   </ul>
@@ -1203,7 +1236,7 @@ template &lt;class InputIterator&gt;
 template &lt;class <a href="#Source">Source</a>&gt;
   path&amp; append(Source const&amp; source);
 template &lt;class InputIterator&gt;
-  path&amp; append(InputIterator <del>begin</del><ins>first</ins>, InputIterator <del>end</del><ins>last</ins>);</pre>
+  path&amp; append(InputIterator first, InputIterator last);</pre>
 <blockquote>
   <p><i>Effects:</i></p>
   <blockquote>
@@ -1217,7 +1250,7 @@ template &lt;class InputIterator&gt;
     <li><code>*p.native().cbegin()</code> is a separator.</li>
   </ul>
     <p>Appends the effective range of <code>source</code> ([<a href="#path-Requirements">path.req</a>]) 
-    or the range [<code><del>begin</del><ins>first</ins></code>,<code><del>end</del><ins>last</ins></code>) to <code>pathname</code>, converting format and 
+    or the range [<code>first</code>,<code>last</code>) to <code>pathname</code>, converting format and 
     encoding if required ([<a href="#path.arg.convert">path.arg.convert</a>]).</p>
   </blockquote>
   <p><i>Returns: </i><code>*this</code></p>
@@ -1235,23 +1268,23 @@ template &lt;class charT&gt;
 template &lt;class Source&gt;
   path&amp; concat(Source const&amp; x);
 template &lt;class InputIterator&gt;
-  path&amp; concat(InputIterator <del>begin</del><ins>first</ins>, InputIterator <del>end</del><ins>last</ins>);</pre>
+  path&amp; concat(InputIterator first, InputIterator last);</pre>
 <blockquote><p><i>Postcondition:</i> <code>native() == prior_native + <i>effective-argument</i></code>,
  where <code>prior_native</code> is <code>native()</code> prior to the call to <code>operator+=</code>,
  and <code><i>effective-argument</i></code> is:</p>
  <ul><li><code>x.native()</code> if <code>x</code> is present and is <code>const path&amp;</code>, otherwise</li>
  <li>the effective range <code>source</code> ([<a href="#path-Requirements">path.req</a>]), 
  if <code>source</code> is present, otherwise,</li>
- <li>the range [<code><del>begin</del><ins>first</ins></code>,<code><del>end</del><ins>last</ins></code>),
- if <code><del>begin</del><ins>first</ins></code> and
- <code><del>end</del><ins>last</ins></code> are present, otherwise,</li>
+ <li>the range [<code>first</code>,<code>last</code>),
+ if <code>first</code> and
+ <code>last</code> are present, otherwise,</li>
  <li><code>x</code>.</li></ul><p>If the value type of <code><i>effective-argument</i></code> would not be <code>path::value_type</code>, the actual argument or argument range is first
    converted ([<a href="#path.arg.convert">path.arg.convert</a>]) so that <code><i>effective-argument</i></code> has value type <code>path::value_type</code>.</li> </p>
  <p><i>Returns: </i><code>*this</code></p>
  </blockquote>
 <h4>8.4.5  <a name="path-modifiers"> <code>path</code> modifiers</a> [path.modifiers]</h4><pre>void <a name="path-clear">clear</a>() noexcept;</pre>
 <blockquote>
-<p><i>Postcondition:</i> <code><del>this-&gt;</del>empty()</code><del> is true.</del></p>
+<p><i>Postcondition:</i> <code>empty()</code></p>
 </blockquote>
 <pre>path&amp; <a name="path-make_preferred">make_preferred</a>();</pre>
 <blockquote>
@@ -1277,7 +1310,7 @@ std::cout &lt;&lt; p &lt;&lt; '\n';
     <pre>&quot;foo/bar&quot;
 &quot;foo\bar&quot;</pre>
   </blockquote>
-  <p> <i>-- end example</i>]</p>
+  <p> <i>&mdash;end example</i>]</p>
 </blockquote>
 
 <pre>path&amp; <a name="path-remove_filename">remove_filename</a>();</pre>
@@ -1289,7 +1322,7 @@ std::cout &lt;&lt; p &lt;&lt; '\n';
     <pre><code>std::cout &lt;&lt; path(&quot;/foo&quot;).remove_filename();</code>  // outputs &quot;<code>/</code>&quot;
 std::cout &lt;&lt; path(&quot;/&quot;).<code>remove_</code>filename();     // outputs &quot;&quot;</pre>
   </blockquote>
-  <p> <i>--end example</i>]</p>
+  <p> <i>&mdash;end example</i>]</p>
 </blockquote>
 
 <pre>path&amp; <a name="replace_filename">replace_filename</a>(const path&amp; replacement);</pre>
@@ -1305,7 +1338,7 @@ std::cout &lt;&lt; path(&quot;/&quot;).<code>remove_</code>filename();     // ou
     <pre><code>std::cout &lt;&lt; path(&quot;/foo&quot;).replace_filename(&quot;bar&quot;);</code>  // outputs &quot;<code>/bar</code>&quot;
 std::cout &lt;&lt; path(&quot;/&quot;).<code>replace_</code>filename(<code>&quot;bar&quot;</code>);     // outputs &quot;bar&quot;</pre>
   </blockquote>
-  <p> <i>--end example</i>]</p>
+  <p> <i>&mdash;end example</i>]</p>
 </blockquote>
 <pre>path&amp; <a name="path-replace_extension">replace_extension</a>(const path&amp; replacement = path());</pre>
 <blockquote>
@@ -1316,7 +1349,7 @@ std::cout &lt;&lt; path(&quot;/&quot;).<code>replace_</code>filename(<code>&quot
     <li>If <code>replacement</code> is not empty and does not begin with a dot 
     character, a dot character is appended to the stored path, then</li>
     <li>
-  <code>replacement</code> is <del>concatinated</del><ins>concatenated</ins> to the stored path.</li>
+  <code>replacement</code> is concatenated to the stored path.</li>
   </ul>
   <p><i>Returns:</i> <code>*this</code></p>
 </blockquote>
@@ -1346,7 +1379,7 @@ std::cout &lt;&lt; path(&quot;/&quot;).<code>replace_</code>filename(<code>&quot
   object of class <code>path</code> can be given as an argument to existing 
   standard library file stream constructors and open functions. This provides 
   basic interoperability without the need to modify existing standard library 
-  classes or headers. <i>--end note</i>]</p>
+  classes or headers. <i>&mdash;end note</i>]</p>
   <p><i><span style="background-color: #E0E0E0">Implementations of the standard 
   library for systems where string_type is wstring, such as Windows, are 
   encouraged to provide an extension to existing standard library file stream 
@@ -1387,7 +1420,7 @@ directory-separator</i> character.</p>
 <blockquote>
 <p>[<i>Example:</i> On an operating system that uses backslash as 
 its preferred-separator,&nbsp; <code>path(&quot;foo\\bar&quot;).generic_string()</code> 
-returns <code>&quot;foo/bar&quot;</code>. <i>-- end example</i>]</p>
+returns <code>&quot;foo/bar&quot;</code>. <i>&mdash;end example</i>]</p>
 </blockquote>
 
 <pre>template &lt;class charT, class traits = char_traits&lt;charT&gt;,
@@ -1424,7 +1457,7 @@ UTF-8.</p>
   <p>Remark: The elements are determined as if by iteration over the half-open 
   range [<code>begin()</code>, <code>end()</code>) for <code>*this</code> and&nbsp; <code>p</code>.</p>
 </blockquote>
-<pre>int compare(const string&amp; s) const</pre>
+<pre>int compare(const string_type&amp; s) const</pre>
 <blockquote>
   <p><i>Returns:</i> <code>compare(path(s))</code>.</p>
 </blockquote>
@@ -1455,12 +1488,12 @@ with the first <i>filename</i> after <i>root-path</i>. Otherwise, <code>path()</
 </blockquote>
 <pre>path <a name="path-parent_path">parent_path</a>() const;</pre>
 <blockquote>
-  <p><i>Returns:</i> <code>(empty() || begin() == --end()) ? path() : <i>pp</i></code>, where <code><i>pp</i></code> is constructed as if by 
-  starting with an empty <code>path</code> and successively applying <code>operator/=</code> for each element in the range <code>begin()</code>, <code>--end()</code>.</p>
+  <p><i>Returns:</i> <code>(empty() || begin() == <del>&mdash;</del><ins>--</ins>end()) ? path() : <i>pp</i></code>, where <code><i>pp</i></code> is constructed as if by 
+  starting with an empty <code>path</code> and successively applying <code>operator/=</code> for each element in the range <code>begin()</code>, <code><del>&mdash;</del><ins>--</ins>end()</code>.</p>
 </blockquote>
 <pre>path <a name="path-filename">filename</a>() const;</pre>
 <blockquote>
-  <p><i>Returns:</i> <code>empty() ? path() : *--end()</code></p>
+  <p><i>Returns:</i> <code>empty() ? path() : *<del>&mdash;</del><ins>--</ins>end()</code></p>
   <p>[<i>Example:</i></p>
   <blockquote>
     <pre><code>std::cout &lt;&lt; path(&quot;/foo/bar.txt&quot;).filename();</code> // outputs &quot;<code>bar.txt</code>&quot;
@@ -1468,12 +1501,12 @@ std::cout &lt;&lt; path(&quot;/&quot;).filename();            // outputs &quot;/
 std::cout &lt;&lt; path(&quot;.&quot;).filename();            // outputs &quot;.&quot;
 std::cout &lt;&lt; path(&quot;..&quot;).filename();           // outputs &quot;..&quot;</pre>
   </blockquote>
-  <p> <i>--end example</i>]</p>
+  <p> <i>&mdash;end example</i>]</p>
 </blockquote>
 <pre>path <a name="path-stem">stem</a>() const;</pre>
 <blockquote>
-  <p dir="ltr"><i>Returns:</i> if <code>filename()</code> contains a <del>character</del> <ins>period</ins> but does not 
-  consist solely of one or <del>to</del> two periods, returns 
+  <p><i>Returns:</i> if <code>filename()</code> contains a period but does not 
+  consist solely of one or two periods, returns 
   the substring of <code>filename()</code> starting at its beginning and 
   ending with the character before the last period. Otherwise, 
   returns <code>filename()</code>.</p>
@@ -1487,12 +1520,12 @@ for (; !p.extension().empty(); p = p.stem())
   //          .baz
   //          .bar</pre>
   </blockquote>
-  <p> <i>--end example</i>]</p>
+  <p> <i>&mdash;end example</i>]</p>
 </blockquote>
 <pre>path <a name="path-extension">extension</a>() const;</pre>
 <blockquote>
   <p><i>Returns:</i> if <code>filename()</code> contains a period but does not 
-  consist solely of one or <del>to</del> two periods, returns 
+  consist solely of one or two periods, returns 
   the substring of <code>filename()</code> starting at the rightmost period 
   and for the remainder of the path. Otherwise, returns an empty <code>path</code> object. </p>
   <p><i>Remarks:</i> Implementations are permitted to define additional 
@@ -1502,16 +1535,16 @@ for (; !p.extension().empty(); p = p.stem())
   <blockquote>
     <pre><code>std::cout &lt;&lt; path(&quot;/foo/bar.txt&quot;).extension(); //</code> outputs &quot;<code>.txt</code>&quot;</pre>
   </blockquote>
-  <p> <i>--end example</i>]</p>
+  <p> <i>&mdash;end example</i>]</p>
   <p>[<i>Note:<b> </b></i>The period is included in the return value so that it is 
   possible to distinguish between no extension and an empty extension. Also note 
   that for a path <code>p</code>, <code>p.stem()+p.extension() == p</code>. <i>
-  -- end note</i>]</p>
+  &mdash;end note</i>]</p>
 </blockquote>
 <h4>8.4.10  <a name="path-query"> <code>path</code> query</a> [path.query]</h4>
 <pre>bool <a name="path-empty">empty</a>() const noexcept;</pre>
 <blockquote>
-  <p><i>Returns:</i> <code><del>m_</del>pathname.empty()</code>.</p>
+  <p><i>Returns:</i> <code>pathname.empty()</code>.</p>
 </blockquote>
 <pre>bool <a name="path-has_root_path">has_root_path</a>() const;</pre>
 <blockquote>
@@ -1547,13 +1580,13 @@ for (; !p.extension().empty(); p = p.stem())
 </blockquote>
 <pre>bool <a name="path-is_absolute">is_absolute</a>() const;</pre>
 <blockquote>
-  <p><i>Returns:</i> <code>true</code> if the elements of <code>root_path()</code> uniquely identify a 
-  file system location, else <code>false</code>.</p>
+  <p><i>Returns:</i> <code>true</code> if <code>pathname</code> 
+  contains an absolute path (4.1 [fs.def.absolute-path]) , else <code>false</code>.</p>
 </blockquote>
 <blockquote>
 [<i>Example:</i> <code>path(&quot;/&quot;).is_absolute()</code> is
       <code>true</code> for  POSIX based operating systems, and <code>false</code> for Windows based 
-operating systems.&nbsp; <i>--end example</i>]
+operating systems.&nbsp; <i>&mdash;end example</i>]
 </blockquote>
 <pre>bool <a name="path-is_relative">is_relative</a>() const;</pre>
 <blockquote>
@@ -1561,9 +1594,9 @@ operating systems.&nbsp; <i>--end example</i>]
 </blockquote>
 <h3>8.5  <a name="path-iterators"> <code>path</code> iterators</a> [path.itr]</h3>
 <p> Path iterators iterate over the elements of the stored pathname.</p>
-<p> A <code>path::iterator</code> is a constant iterator satisfying all 
-the requirements of a bidirectional iterator (C++<del> Std,</del><ins>C++11 §</ins>24.1.4 Bidirectional 
-iterators<del> [lib.bidirectional.iterators]</del>). Its <code>value_type</code> is <code>path</code>.</p>
+<p> A <code>path::iterator</code> is a constant iterator satisfying all the 
+requirements of a bidirectional iterator (C++11 §24.1.4 Bidirectional 
+iterators). Its <code>value_type</code> is <code>path</code>.</p>
   <p>Calling any non-const member function of a <code>path</code> object 
   invalidates all iterators referring to elements of that object.</p>
 <p> The forward traversal order is as follows:</p>
@@ -1571,7 +1604,7 @@ iterators<del> [lib.bidirectional.iterators]</del>). Its <code>value_type</code>
   <li>The <i>root-name</i> element, if present.</li>
   <li>The <i>root-directory</i> element, if present, in the generic format. <i>
   [note:</i> the generic format is required to ensure lexicographical 
-  comparison works correctly. <i>-- end note</i>]</li>
+  comparison works correctly. <i>&mdash;end note</i>]</li>
   <li>Each successive <i>filename</i> element, if present.</li>
   <li><i>Dot</i>, if one or more trailing non-root <i>slash</i> 
   characters are present.</li>
@@ -1624,7 +1657,7 @@ iterators<del> [lib.bidirectional.iterators]</del>). Its <code>value_type</code>
   Thus <code>equivalent(&quot;foo&quot;, &quot;bar&quot;)</code> will be <code>true</code> when both paths resolve to the same file.</p>
   <p>Programmers wishing to determine if two paths are &quot;the same&quot; must decide if 
   &quot;the same&quot; means &quot;the same representation&quot; or &quot;resolve to the same actual 
-  file&quot;, and choose the appropriate function accordingly. <i>-- end note</i>]</p>
+  file&quot;, and choose the appropriate function accordingly. <i>&mdash;end note</i>]</p>
 </blockquote>
 <pre>bool operator!=(const path&amp; lhs, const path&amp; rhs) noexcept;</pre>
 <blockquote>
@@ -1639,16 +1672,10 @@ iterators<del> [lib.bidirectional.iterators]</del>). Its <code>value_type</code>
 basic_ostream&lt;charT, traits&gt;&amp;
 operator&lt;&lt;(basic_ostream&lt;charT, traits&gt;&amp; os, const path&amp; p);</pre>
 <blockquote>
-  <p><i>Effects:</i> <code>os &lt;&lt; p.string&lt;charT, traits&gt;()</code>.</p>
-  <p>[<i>Note:</i> Pathnames containing spaces require special handling by the 
-  user to avoid truncation when read by the extractor. <i>--end note</i>]</p>
-  <p><span style="background-color: #E0E0E0"><i>The Boost inserter outputs 
-  quoted strings, which are recognized as such by the extractor. There is a 
-  sentiment within the Filesystem Study Group that supplying a quoted and/or 
-  escaped string manipulator as a string extension would be a better solution than a 
-  path specific feature. See proposal 
-  <a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2012/n3431.html">N3431</a>, Quoted Strings 
-  Library Proposal.</i></span></p>
+  <p><i>Effects:</i> <code>os </code>
+  <tt>&lt;&lt; quoted(p.string&lt;charT, traits&gt;())</tt>. </p>
+  <p>[<i>Note</i>: The <code>quoted</code> function is described in ISO 
+  14882:2014 §27.7.6. — <i>end note</i>] </p>
   <p><i>Returns:</i> <code>os</code></p>
   </blockquote>
 <pre>template &lt;class charT, class traits&gt;
@@ -1658,7 +1685,7 @@ operator&gt;&gt;(basic_istream&lt;charT, traits&gt;&amp; is, path&amp; p);</pre>
   <p><i>Effects:&nbsp; </i></p>
   <blockquote>
     <pre>basic_string&lt;charT, traits&gt; tmp;
-is &gt;&gt; tmp;
+is &gt;&gt; quoted(tmp);
 p = tmp;</pre>
   </blockquote>
   <p><i>Returns:</i> <code>is</code></p>
@@ -1667,9 +1694,9 @@ p = tmp;</pre>
 <pre>template &lt;class <a href="#Source">Source</a>&gt;  
   path u8path(Source const&amp; source);
 template &lt;class InputIterator&gt;
-  path u8path(InputIterator <del>begin</del><ins>first</ins>, InputIterator <del>end</del><ins>last</ins>);</pre>
+  path u8path(InputIterator first, InputIterator last);</pre>
 <blockquote>
-  <p><i>Requires:</i> The <code>source</code> and [<code><del>begin</del><ins>first</ins></code>,<code><del>end</del><ins>last</ins></code>) 
+  <p><i>Requires:</i> The <code>source</code> and [<code>first</code>,<code>last</code>) 
   sequences are UTF-8 encoded. The value type of <code>
   Source</code> and <code>
   InputIterator</code> is <code>char</code>. </p>
@@ -1677,15 +1704,15 @@ template &lt;class InputIterator&gt;
   <blockquote>
     <ul>
       <li>If <code>value_type</code> is <code>char</code> and the current native 
-      narrow encoding ([fs.def.native.encode]) is UTF-8, <code>path(source)</code> or <code>path(<del>begin, end</del> <ins>first, last</ins>)</code>, 
+      narrow encoding ([fs.def.native.encode]) is UTF-8, <code>path(source)</code> or <code>path(first, last)</code>, 
       else</li>
       <li>if <code>value_type</code> is <code>wchar_t </code>and the 
       native wide encoding is UTF-16, or if <code>value_type</code> is <code>char16_t</code> 
-      or <code>char32_t</code>,&nbsp; convert <code>source</code> or [<code><del>begin</del><ins>first</ins></code>,<code><del>end</del><ins>last</ins></code>) 
+      or <code>char32_t</code>,&nbsp; convert <code>source</code> or [<code>first</code>,<code>last</code>) 
       to a temporary, <code>tmp</code>, of type <code>string_type</code> and 
       return <code>path(tmp)</code>, 
       else</li>
-      <li>convert <code>source</code> or [<code><del>begin</del><ins>first</ins></code>,<code><del>end</del><ins>last</ins></code>) 
+      <li>convert <code>source</code> or [<code>first</code>,<code>last</code>) 
       to a temporary, <code>tmp</code>, of type <code>u32string</code> and 
       return <code>path(tmp)</code>.</li>
     </ul>
@@ -1697,7 +1724,7 @@ template &lt;class InputIterator&gt;
   <blockquote>
     <p>A string is to be read from a database that is encoded in UTF-8, and used 
     to create a directory using the native encoding for filenames:</p>
-    <pre>namespace fs = std::tbd::filesystem;
+    <pre>namespace fs = std::experimental::filesystem;
 std::string utf8_string = read_utf8_data();
 fs::create_directory(fs::u8path(utf8_string));</pre>
     <p>For POSIX based operating systems with the native narrow encoding set 
@@ -1709,11 +1736,11 @@ fs::create_directory(fs::u8path(utf8_string));</pre>
     <p>For Windows based operating systems a conversion from UTF-8 to 
     UTF-16 occurs.</p>
   </blockquote>
-  <p><i>--end example]</i></p>
+  <p><i>&mdash;end example]</i></p>
 </blockquote>
 <h2>9  <a name="Class-filesystem_error">Class <code>filesystem_error</code> 
 [class.filesystem_error]</a></h2>
-<pre>namespace std { namespace tbd { namespace filesystem {
+<pre>namespace std { namespace experimental { namespace filesystem { inline namespace v1 {
 
       class filesystem_error : public system_error
       {
@@ -1728,8 +1755,8 @@ fs::create_directory(fs::u8path(utf8_string));</pre>
         const path&amp; <a href="#filesystem_error-path2">path2</a>() const noexcept;
         const char* <a href="#filesystem_error-what">what</a>() const noexcept;
       };
-} } }  // namespaces std::tbd::filesystem</pre>
-<p>The class template <code>filesystem_error</code> defines the type of 
+} } } }  // namespaces std::experimental::filesystem::v1</pre>
+<p>The class <code>filesystem_error</code> defines the type of 
 objects thrown as exceptions to report file system errors from functions described in this 
 Technical Specification.</p>
 <h3>9.1  <a name="filesystem_error-members"> <code>filesystem_error</code> members</a> 
@@ -1858,7 +1885,7 @@ an error.</p>
     <td align="center"><code>-1</code></td>
     <td>Pseudo-type indicating the file was not found. [<i>Note:</i> The file 
     not being found is not considered an error while determining the 
-    type of a file. <i>--end note</i>]</td>
+    type of a file. <i>&mdash;end note</i>]</td>
   </tr>
   <tr>
     <td><code>regular</code></td>
@@ -1904,7 +1931,8 @@ an error.</p>
   </tr>
 </table>
 <h3>10.2  Enum class <code>copy_options</code> [<a name="enum.copy_options">enum.copy_options</a>]</h3>
-<p>This enumeration specifies bitmask constants used to control the semantics of 
+<p>The <tt>enum class</tt> type <tt>copy_options</tt> 
+is a bitmask type (C++11 §17.5.2.1.3) that specifies bitmask constants used to control the semantics of 
 copy operations.&nbsp; The constants are specified in option groups. Constant
 <code>none</code> is shown in each option group for purposes of exposition; 
 implementations shall provide only a single definition.&nbsp; Calling a 
@@ -1914,7 +1942,7 @@ group results in undefined behavior.</p>
   <tr>
     <td colspan="3">
     <p align="center"><b>Option group controlling <code>copy_file</code> 
-    <ins>function</ins> effects for existing target files</b></td>
+    function effects for existing target files</b></td>
   </tr>
   <tr>
     <td><b>Constant</b></td>
@@ -1943,7 +1971,7 @@ group results in undefined behavior.</p>
   </tr>
   <tr>
     <td colspan="3">
-    <p align="center"><b>Option group controlling <code>copy</code> <ins>function</ins> effects for 
+    <p align="center"><b>Option group controlling <code>copy</code> function effects for 
     sub-directories</b></td>
   </tr>
   <tr>
@@ -1963,8 +1991,8 @@ group results in undefined behavior.</p>
   </tr>
   <tr>
     <td colspan="3">
-    <p align="center"><b>Option group controlling <code>copy</code> <ins>function</ins> effects <ins>for</ins> 
-    symbolic link<ins>s</ins> <del>actions</del></b></td>
+    <p align="center"><b>Option group controlling <code>copy</code> function effects for 
+    symbolic links</b></td>
   </tr>
   <tr>
     <td><b>Constant</b></td>
@@ -1992,7 +2020,7 @@ group results in undefined behavior.</p>
   </tr>
   <tr>
     <td colspan="3">
-    <p align="center"><b>Option group controlling <code>copy</code> <ins>function</ins> effects <ins>for</ins>
+    <p align="center"><b>Option group controlling <code>copy</code> function effects for
     choosing the form of copying</b></td>
   </tr>
   <tr>
@@ -2027,9 +2055,9 @@ group results in undefined behavior.</p>
   </tr>
 </table>
 <h3>10.3  Enum class <code>perms</code> [<a name="enum.perms">enum.perms</a>]</h3>
-<p>This enumeration specifies bitmask constants used to identify file 
-permissions. <i><span style="background-color: #E0E0E0">POSIX 
-(POSIX) specifies actual values, and those values have been adopted here because 
+<p>The <tt>enum class</tt> type <tt>perms</tt> 
+is a bitmask type (C++11 §17.5.2.1.3) that specifies bitmask constants used to identify file 
+permissions. <i><span style="background-color: #E0E0E0">POSIX&nbsp; specifies actual values, and those values have been adopted here because 
 they are very familiar and ingrained for many  users.</span></i></p>
 <table border="1" cellpadding="5" cellspacing="0" style="border-collapse: collapse" bordercolor="#111111">
   <tr>
@@ -2055,7 +2083,7 @@ they are very familiar and ingrained for many  users.</span></i></p>
   <td> Execute/search permission, owner</td>
 </tr>
 <tr><td><code>owner_all</code></td><td><code>0700</code></td><td>  <code>S_IRWXU</code></td>
-  <td> Read, write, execute/search by owner; <code>owner_read | owner_write | owner_exe</code></td>
+  <td> Read, write, execute/search by owner; <code>owner_read | owner_write | owner_exec</code></td>
 </tr>
 <tr><td><code>group_read</code></td><td><code>040</code></td><td>  <code>S_IRGRP</code></td>
   <td> Read permission, group</td>
@@ -2067,7 +2095,7 @@ they are very familiar and ingrained for many  users.</span></i></p>
   <td> Execute/search permission, group</td>
 </tr>
 <tr><td><code>group_all</code></td><td><code>070</code></td><td>   <code>S_IRWXG</code></td>
-  <td> Read, write, execute/search by group; <code>group_read | group_write | group_exe</code></td>
+  <td> Read, write, execute/search by group; <code>group_read | group_write | group_exec</code></td>
 </tr>
 <tr><td><code>others_read</code></td><td><code>04</code></td><td>  <code>S_IROTH</code></td>
   <td> Read permission, others</td>
@@ -2079,7 +2107,7 @@ they are very familiar and ingrained for many  users.</span></i></p>
   <td> Execute/search permission, others</td>
 </tr>
 <tr><td><code>others_all</code></td><td><code>07</code></td><td>   <code>S_IRWXO</code></td>
-  <td>Read, write, execute/search by others; <code>others_read | others_write | others_exe</code></td>
+  <td>Read, write, execute/search by others; <code>others_read | others_write | others_exec</code></td>
 </tr>
 <tr><td><code>all</code></td><td><code>0777</code></td><td> </td><td><code>owner_all | group_all | others_all</code></td>
 </tr>
@@ -2124,7 +2152,7 @@ removing write permission for owner, group, or others removes write permission
 for all. The Cygwin users guide has extensive discussion of the problems 
 involved. Input from security experts is needed.</span></i></p>
 <h2>11  <a name="file_status">Class <code>file_status</code></a> [class.file_status]</h2>
-<pre>namespace std { namespace tbd { namespace filesystem {
+<pre>namespace std { namespace experimental { namespace filesystem { inline namespace v1 {
 
       class file_status
       {
@@ -2135,7 +2163,7 @@ involved. Input from security experts is needed.</span></i></p>
                              <a href="#Enum.perms">perms</a> prms = perms::unknown) noexcept;
         file_status(const file_status&amp;) noexcept = default;
         file_status(file_status&amp;&amp;) noexcept = default;
-       ~file_status()<del> = default</del>;
+       ~file_status();
 
         file_status&amp; operator=(const file_status&amp;) noexcept = default;
         file_status&amp; operator=(file_status&amp;&amp;) noexcept = default;
@@ -2148,16 +2176,16 @@ involved. Input from security experts is needed.</span></i></p>
         void       type(<a href="#file_type">file_type</a> ft) noexcept;
         void       permissions(<a href="#Enum.perms">perms</a> prms) noexcept;
       };
-} } }  // namespaces std::tbd::filesystem</pre>
+} } } }  // namespaces std::experimental::filesystem::v1</pre>
 <p>An object of type <code>file_status</code> stores information about the type 
 and permissions of a file.</p>
 <h3>11.1  <a name="file_status-constructors"><code>file_status</code> constructors</a> 
 [file_status.cons]</h3>
 <pre>explicit file_status() noexcept;</pre>
 <blockquote>
-  <p><i>Postconditions:</i> <code>type() == file_type::none</code>, <code>permissions() == perms_not_known</code>.</p>
+  <p><i>Postconditions:</i> <code>type() == file_type::none</code>, <code>permissions() == perms::unknown</code>.</p>
 </blockquote>
-<pre>explicit file_status(<a href="#file_type">file_type</a> ft, <a href="#Enum.perms">perms</a> prms = perms_not_known) noexcept;</pre>
+<pre>explicit file_status(<a href="#file_type">file_type</a> ft, <a href="#Enum.perms">perms</a> prms = perms::unknown) noexcept;</pre>
 <blockquote>
   <p><i>Postconditions:</i> <code>type() == ft</code>, <code>permissions() == prms</code>.</p>
 </blockquote>
@@ -2180,7 +2208,7 @@ and permissions of a file.</p>
   <p><i>Postconditions:</i> <code>permissions() == prms</code>.</p>
 </blockquote>
 <h2>12  <a name="Class-directory_entry">Class <code>directory_entry</code></a> [class.directory_entry]</h2>
-<pre>namespace std { namespace tbd { namespace filesystem {
+<pre>namespace std { namespace experimental { namespace filesystem { inline namespace v1 {
 
       class directory_entry
       {
@@ -2192,7 +2220,7 @@ and permissions of a file.</p>
         directory_entry(directory_entry&amp;&amp;) noexcept = default;
         explicit directory_entry(const path&amp; p, file_status st=file_status(),
           file_status symlink_st=file_status());
-       ~directory_entry()<del> = default</del>; 
+       ~directory_entry(); 
 
         // <a href="#directory_entry-modifiers">modifiers</a>
         directory_entry&amp; operator=(const directory_entry&amp;) = default;
@@ -2221,14 +2249,15 @@ and permissions of a file.</p>
         mutable file_status  m_symlink_status; // for exposition only; lstat()-like
       };
 
-} } }  // namespaces std::tbd::filesystem</pre>
+} } } }  // namespaces std::experimental::filesystem::v1</pre>
 <p>A <code>directory_entry</code> object stores a <code>path object</code>, 
-a <code>file_status</code> object for non-symbolic link status, and a <code>file_status</code> object for symbolic link status. The <code>file_status</code> objects act as value caches.</p>
+a <code>file_status</code> object for non-symbolic link status, and a <code>file_status</code> object for symbolic link status.
+The <code>file_status</code> objects act as value caches.</p>
 <blockquote>
 <p>[<i>Note:</i> Because <code>status()</code>on a pathname may be a relatively expensive operation, 
 some operating systems provide status information as a byproduct of directory 
 iteration. Caching such status information can result in significant time savings. Cached and 
-non-cached results may differ in the presence of file system races. <i>-- end note</i>]</p>
+non-cached results may differ in the presence of file system races. <i>&mdash;end note</i>]</p>
 </blockquote>
 <h3>12.1  <a name="directory_entry-constructors"><code>directory_entry</code> constructors</a> 
 [directory_entry.cons]</h3>
@@ -2291,7 +2320,7 @@ non-cached results may differ in the presence of file system races. <i>-- end no
     </tr>
     <tr>
       <td width="18%"><code>path()</code></td>
-      <td width="82%"><code>path().parent_path() / <del>s</del> <ins>p</ins></code></td>
+      <td width="82%"><code>path().parent_path() / p</code></td>
     </tr>
     <tr>
       <td width="18%"><code>status()</code></td>
@@ -2323,7 +2352,7 @@ file_status status(error_code&amp; ec) const noexcept;</pre>
   </blockquote>
   <p><i>Returns:</i> <code>m_status</code></p>
   
-  <p><i>Throws:</i> As specified in <a href="#Error-reporting">Error reporting</a>.</p>
+  <p><i>Throws:</i> As specified in <a href="#Error-reporting">Error reporting (7)</a>.</p>
   
 </blockquote>
 <pre>file_status  symlink_status() const;
@@ -2339,12 +2368,14 @@ file_status  symlink_status(error_code&amp; ec) const noexcept;</pre>
   </blockquote>
   <p><i>Returns:</i> <code>m_symlink_status</code></p>
   
-  <p><i>Throws:</i> As specified in <a href="#Error-reporting">Error reporting</a>.</p>
+  <p><i>Throws:</i> As specified in <a href="#Error-reporting">Error reporting (7)</a>.</p>
   
 </blockquote>
 <pre>bool operator==(const directory_entry&amp; rhs) const noexcept;</pre>
 <blockquote>
   <p><i>Returns:</i> <code>m_path == rhs.m_path</code>.</p>
+  <p>[<i>Note:</i> Status members do not participate in determining 
+  equality. — end note] </p>
 </blockquote>
 <pre>bool operator!=(const directory_entry&amp; rhs) const noexcept;</pre>
 <blockquote>
@@ -2372,20 +2403,26 @@ file_status  symlink_status(error_code&amp; ec) const noexcept;</pre>
 sequence of <code>directory_entry</code> elements representing the files in a 
 directory.&nbsp; 
 [<i>Note:</i> For iteration into sub-directories,&nbsp; see class <code><a href="#Class-recursive_directory_iterator">recursive_directory_iterator</a></code> 
-([class.rec.dir.itr]). <i>--end note</i>]</p>
-<pre>namespace std { namespace tbd { namespace filesystem {
+([class.rec.dir.itr]). <i>&mdash;end note</i>]</p>
 
-      class directory_iterator :
-        public iterator&lt;input_iterator_tag, directory_entry&gt;
+<pre>namespace std { namespace experimental { namespace filesystem { inline namespace v1 {
+
+      class directory_iterator
       {
       public:
+        typedef directory_entry        value_type;
+        typedef ptrdiff_t              difference_type;
+        typedef const directory_entry* pointer;
+        typedef const directory_entry&amp; reference;
+        typedef input_iterator_tag     iterator_category;
+
         // <a href="#directory_iterator-members">member functions</a>
         directory_iterator() noexcept;
         explicit directory_iterator(const path&amp; p);
         directory_iterator(const path&amp; p, error_code&amp; ec) noexcept;
         directory_iterator(const directory_iterator&amp;) = default;
         directory_iterator(directory_iterator&amp;&amp;) = default;
-       ~directory_iterator()<del> = default</del>;
+       ~directory_iterator();
 
         directory_iterator&amp; operator=(const directory_iterator&amp;) = default;
         directory_iterator&amp; operator=(directory_iterator&amp;&amp;) = default;
@@ -2396,12 +2433,13 @@ directory.&nbsp;
         directory_iterator&amp;    increment(error_code&amp; ec) noexcept;
 
         // other members as required by
-        //  C++<del> Std, </del><ins>11 §</ins>24.1.1 Input iterators <del>[input.iterators]</del>
+        //  C++11 § 24.1.1 Input iterators 
       };
 
-} } }  // namespaces std::tbd::filesystem</pre>
+} } } }  // namespaces std::experimental::filesystem::v1</pre>
+
 <p> <code>directory_iterator</code> satisfies the requirements of an input 
-iterator (<del>[input.iterators]</del> <ins>C++11 §24.2.3</ins>).</p>
+iterator&nbsp; C++11 §24.2.3).</p>
 <p>If an iterator of type <code>directory_iterator</code> is advanced past the 
 last directory element, that iterator shall become equal to the end iterator 
 value. The <code>directory_iterator</code> default constructor&nbsp;shall 
@@ -2434,7 +2472,7 @@ to avoid following symbolic links.</p>
 construction of a <code>directory_iterator</code> for the directory, it is 
 unspecified whether or not subsequently incrementing the iterator will ever 
 result in an iterator referencing the removed or added directory entry. See 
-POSIX <code><a href="http://www.opengroup.org/onlinepubs/000095399/functions/readdir_r.html">readdir_r()</a></code>. <i>--end note</i>]</p>
+POSIX <code><a href="http://www.opengroup.org/onlinepubs/000095399/functions/readdir_r.html">readdir_r()</a></code>. <i>&mdash;end note</i>]</p>
 </blockquote>
 <h3>13.1  <a name="directory_iterator-members"><code>directory_iterator</code> members</a> 
 [directory_iterator.members]</h3>
@@ -2456,26 +2494,26 @@ directory_iterator(</code>const path&amp; p, error_code&amp; ec<code>) noexcept;
 iterator for the first element in a sequence of <code>directory_entry</code> 
 elements representing the files in the directory, if any; otherwise the end iterator.</p>
 
-<p><i>Throws:</i> As specified in <a href="#Error-reporting">Error reporting</a>.</p>
+<p><i>Throws:</i> As specified in <a href="#Error-reporting">Error reporting (7)</a>.</p>
 
-<p>[<i>Note:</i> To iterate over the current directory, use <code>directory_iterator(&quot;.&quot;)</code> rather than <code>directory_iterator(&quot;&quot;)</code>. <i>-- end note</i>]</p>
+<p>[<i>Note:</i> To iterate over the current directory, use <code>directory_iterator(&quot;.&quot;)</code> rather than <code>directory_iterator(&quot;&quot;)</code>. <i>&mdash;end note</i>]</p>
 </blockquote>
 <pre>directory_iterator&amp; <a name="directory_iterator-increment">operator++</a>();
 directory_iterator&amp; increment(error_code&amp; ec)<code> noexcept</code>;</pre>
 <blockquote>
 
-<p><i>Effects:</i> As specified by <del>the C++ Standard,</del> <ins>C++11 §</ins>24.1.1 Input iterators <del>[input.iterators]</del><ins>.</ins></p>
+<p><i>Effects:</i> As specified by C++11 §24.1.1 Input iterators.</p>
 
 <p><i>Returns:</i> <code>*this</code>.</p>
 
-<p><i>Throws:</i> As specified in <a href="#Error-reporting">Error reporting</a>.</p>
+<p><i>Throws:</i> As specified in <a href="#Error-reporting">Error reporting (7)</a>.</p>
 
 </blockquote>
 <h3>13.2  <a name="directory_iterator-non-member-functions"><code>directory_iterator</code> non-member functions</a> 
 [directory_iterator.nonmembers]</h3>
-<p>These functions enable use of <code>directory_iterator</code> with C++11 
+<p>These functions enable use of <code>directory_iterator</code> with 
 range-based for statements.</p>
-<pre>const directory_iterator&amp; begin(const directory_iterator&amp; iter) noexcept;</pre>
+<pre>directory_iterator begin(directory_iterator iter) noexcept;</pre>
 <blockquote>
   <p><i>Returns: </i><code>iter</code>.</p>
 </blockquote>
@@ -2488,12 +2526,16 @@ range-based for statements.</p>
 <p>An object of type <code>recursive_directory_iterator</code> provides an iterator for 
 a sequence of <code>directory_entry</code> elements representing the files in a 
 directory and its sub-directories.</p>
-<pre>namespace std { namespace tbd { namespace filesystem {
+<pre>namespace std { namespace experimental { namespace filesystem { inline namespace v1 {
 
-      class recursive_directory_iterator :
-        public iterator&lt;input_iterator_tag, directory_entry&gt;
+      class recursive_directory_iterator 
       {
       public:
+        typedef directory_entry        value_type;
+        typedef ptrdiff_t              difference_type;
+        typedef const directory_entry* pointer;
+        typedef const directory_entry&amp; reference;
+        typedef input_iterator_tag     iterator_category;
 
         // constructors and destructor
         recursive_directory_iterator() noexcept;
@@ -2504,7 +2546,7 @@ directory and its sub-directories.</p>
           <a href="#symlink_option">directory_options</a> options, error_code&amp; ec) noexcept;
         recursive_directory_iterator(const path&amp; p, error_code&amp; ec) noexcept;
         recursive_directory_iterator(recursive_directory_iterator&amp;&amp;) = default;
-       ~recursive_directory_iterator()<del> = default</del>;
+       ~recursive_directory_iterator();
 
         // observers
         directory_options  options() const;
@@ -2515,16 +2557,20 @@ directory and its sub-directories.</p>
         recursive_directory_iterator&amp; operator=(const recursive_directory_iterator&amp;) = default;
         recursive_directory_iterator&amp; operator=(recursive_directory_iterator&amp;&amp;) = default;
 
+        const directory_entry&amp; operator*() const;
+        const directory_entry* operator-&gt;() const;
+
         recursive_directory_iterator&amp; operator++();
         recursive_directory_iterator&amp; increment(error_code&amp; ec);
 
         void pop();
         void disable_recursion_pending();
 
-        // ... other members as required for Input iterators [input.iterators]
-      };
+       // other members as required by C++11 § 24.1.1 Input iterators
+      
+     };
 
-} } }  // namespaces std::tbd::filesystem</pre>
+} } } }  // namespaces std::experimental::filesystem::v1</pre>
 
 <p>The behavior of a <code>recursive_directory_iterator</code> is the same 
 as a <code>directory_iterator</code> unless otherwise specified.</p>
@@ -2540,8 +2586,8 @@ as a <code>directory_iterator</code> unless otherwise specified.</p>
 
 <pre>explicit recursive_directory_iterator(const path&amp; p,
   <a href="#symlink_option">directory_options</a> options = directory_options::none);
-recursive_directory_iterator(const path&amp; p, <a href="#symlink_option">directory_options</a> options, error_code&amp; ec) <ins>noexcept</ins>;
-recursive_<code>directory_iterator(</code>const path&amp; p, error_code&amp; ec<code>) <ins>noexcept</ins>;</code></pre>
+recursive_directory_iterator(const path&amp; p, <a href="#symlink_option">directory_options</a> options, error_code&amp; ec) noexcept;
+recursive_<code>directory_iterator(</code>const path&amp; p, error_code&amp; ec<code>) noexcept;</code></pre>
 <blockquote>
 
 <p><i>Effects:</i>&nbsp; Constructs a iterator representing the first 
@@ -2551,13 +2597,13 @@ entry in the directory <code>p</code> resolves to, if any; otherwise, the end it
 directory_options</code> argument, otherwise <code>options() == 
 directory_options::none</code>.</p>
 
-<p><i>Throws:</i> As specified in <a href="#Error-reporting">Error reporting</a>.</p>
+<p><i>Throws:</i> As specified in <a href="#Error-reporting">Error reporting (7)</a>.</p>
 
-<p>[<i>Note:</i> To iterate over the current directory, use <code>recursive_directory_iterator(&quot;.&quot;)</code> rather than <code>recursive_directory_iterator(&quot;&quot;)</code>. <i>-- end note</i>]</p>
+<p>[<i>Note:</i> To iterate over the current directory, use <code>recursive_directory_iterator(&quot;.&quot;)</code> rather than <code>recursive_directory_iterator(&quot;&quot;)</code>. <i>&mdash;end note</i>]</p>
 
 <p>[<i>Note:</i> By default, <code>recursive_directory_iterator</code> does not 
 follow directory symlinks. To follow directory symlinks, specify <code>options</code> as <code>
-directory_options::follow_directory_symlink</code> <i>-- end note</i>]</p>
+directory_options::follow_directory_symlink</code> <i>&mdash;end note</i>]</p>
 </blockquote>
 <pre>directory_options options() const;</pre>
 <blockquote>
@@ -2571,7 +2617,7 @@ if present, otherwise <code>directory_options::none</code>.</p>
   <p><i>Requires:</i> <code>*this != recursive_directory_iterator()</code>.</p>
   <p><i>Returns:</i> The current depth of the directory tree being traversed. [<i>Note:</i> 
   The initial directory is depth 0, its immediate subdirectories are depth 1, 
-  and so forth. <i>-- end note</i>]</p>
+  and so forth. <i>&mdash;end note</i>]</p>
 <p><i>Throws:</i> Nothing.</p>
 </blockquote>
 <pre>bool <code>recursion_pending</code>() const;</pre>
@@ -2588,8 +2634,8 @@ recursive_directory_iterator&amp; increment(error_code&amp; ec);</pre>
 
   <p><i>Requires:</i> <code>*this != recursive_directory_iterator()</code>.</p>
 
-<p><i>Effects:</i> As specified by <del>the C++ Standard,</del><ins>C++11 § </ins>
- 24.1.1 Input iterators<del> [input.iterators]</del>, 
+<p><i>Effects:</i> As specified by C++11 § 
+ 24.1.1 Input iterators, 
 except that:</p>
 
 <ul>
@@ -2610,7 +2656,7 @@ directory_options::follow_directory_symlink) != 0)</code> then&nbsp;directory <c
 
 <p><i>Returns:</i> <code>*this</code>.</p>
 
-<p><i>Throws:</i> As specified in <a href="#Error-reporting">Error reporting</a>.</p>
+<p><i>Throws:</i> As specified in <a href="#Error-reporting">Error reporting (7)</a>.</p>
 
 </blockquote>
 <pre>void pop();</pre>
@@ -2625,13 +2671,13 @@ directory_options::follow_directory_symlink) != 0)</code> then&nbsp;directory <c
   <p><i>Requires:</i> <code>*this != recursive_directory_iterator()</code>.</p>
 <p><i>Postcondition:</i> <code>recursion_pending() == false</code>.</p>
   <p>[<i>Note:</i> <code>disable_recursion_pending</code><code>()</code> is used to prevent 
-  unwanted recursion into a directory. <i>--end note</i>]</p>
+  unwanted recursion into a directory. <i>&mdash;end note</i>]</p>
 </blockquote>
 <h3>14.2  <code>recursive_directory_iterator</code> non-member functions 
 [<a name="rec.dir.itr.nonmembers">rec.dir.itr.nonmembers</a>]</h3>
 <p>These functions enable use of <code>recursive_directory_iterator</code> 
-with C++11 range-based for statements.</p>
-<pre>const recursive_directory_iterator&amp; begin(const recursive_directory_iterator&amp; iter) noexcept;</pre>
+with range-based for statements.</p>
+<pre>recursive_directory_iterator begin(recursive_directory_iterator iter) noexcept;</pre>
 <blockquote>
   <p><i>Returns: </i><code>iter</code>.</p>
 </blockquote>
@@ -2645,7 +2691,7 @@ storage.</p>
 <p>[<i>Note: </i>Because hardware failures, network failures, <a href="#file-system-race">file system races</a>, and many 
 other kinds of errors occur frequently in file system operations, users should be aware 
 that any filesystem operational function, no matter how apparently innocuous, may encounter 
-an error.&nbsp;See <a href="#Error-reporting">Error reporting</a>. <i>-- end note</i>]</p>
+an error.&nbsp;See <a href="#Error-reporting">Error reporting (7)</a>. <i>&mdash;end note</i>]</p>
 <h3>15.1  Absolute&nbsp; [<a name="fs.op.absolute">fs.op.absolute</a>]</h3>
 <pre>path <a name="absolute">absolute</a>(const path&amp; p, const path&amp; base=current_path());</pre>
   <blockquote>
@@ -2670,7 +2716,7 @@ an error.&nbsp;See <a href="#Error-reporting">Error reporting</a>. <i>-- end not
       <td align="center"><code>return absolute(base) / p</code></td>
     </tr>
   </table>
-  <p>[<i>Note:</i> For the returned path, <code>rp,</code> <code>rp.is_absolute()</code> is true. <i>-- end note</i>]</p>
+  <p>[<i>Note:</i> For the returned path, <code>rp,</code> <code>rp.is_absolute()</code> is true. <i>&mdash;end note</i>]</p>
   <p><i>Throws:</i> If <code>base.is_absolute()</code> is true, throws only if 
   memory allocation fails.</p>
 </blockquote>
@@ -2686,12 +2732,12 @@ or <code>&quot;..&quot;</code> elements. </p>
 the same file system object as <code>absolute(p,base)</code>. For the overload 
 without a <code>base</code> argument, <code>base</code> is <code>current_path()</code>. 
 Signatures with argument <code>ec</code> return <code>path()</code> if an error occurs.</p>
-  <p><i>Throws:</i>&nbsp; As specified in <a href="#Error-reporting">Error reporting</a>.</p>
+  <p><i>Throws:</i>&nbsp; As specified in <a href="#Error-reporting">Error reporting (7)</a>.</p>
   
   <p><i>Remarks:</i> <code>!exists(p)</code> is an error.</p>
   
   <p>[<i>Note:</i> Canonical pathnames allow security checking of a path (e.g. 
-  does this path live in /home/goodguy or /home/badguy?)&nbsp; <i>-- end note</i>]</p>
+  does this path live in /home/goodguy or /home/badguy?)&nbsp; <i>&mdash;end note</i>]</p>
   
 </blockquote>
 <h3>15.3  Copy&nbsp; [<a name="fs.op.copy">fs.op.copy</a>]</h3>
@@ -2719,13 +2765,13 @@ void copy(const path&amp; from, const path&amp; to, <a href="#copy_option">copy_
       <li>Otherwise, <code>auto f = status(from)</code> and if needed <code>auto 
       t = status(to)</code>.</li>
     </ul>
-  <p>Report an error as specified in <a href="#Error-reporting">Error reporting</a> 
+  <p>Report an error as specified in <a href="#Error-reporting">Error reporting (7)</a> 
   if:</p>
   
     <ul>
-      <li><code>!exists(f)</code>.</li>
-      <li><code>equivalent(f, t)</code>.</li>
-      <li><code>is_other(f) || is_other(t)</code>.</li>
+      <li><code>!exists(f)</code>, or</li>
+      <li><code>equivalent(from, to)</code>, or</li>
+      <li><code>is_other(f) || is_other(t)</code>, or</li>
       <li><code>is_directory(f) &amp;&amp; is_regular_file(t)</code>.</li>
     </ul>
   <p>If <code>is_symlink(f)</code>, then:</p>
@@ -2734,7 +2780,7 @@ void copy(const path&amp; from, const path&amp; to, <a href="#copy_option">copy_
       <li>If <code>options &amp; copy_options::skip_symlinks</code>, then return.</li>
       <li>Otherwise if <code>!exists(t)</code>, then <code>copy_symlink(from, 
       to, options)</code>.</li>
-      <li>Otherwise report an error as specified in <a href="#Error-reporting">Error reporting</a>.</li>
+      <li>Otherwise report an error as specified in <a href="#Error-reporting">Error reporting (7)</a>.</li>
     </ul>
   <p>Otherwise if <code>is_regular_file(f)</code>, then:</p>
   
@@ -2744,12 +2790,9 @@ void copy(const path&amp; from, const path&amp; to, <a href="#copy_option">copy_
       create a symbolic link to the source file.</li>
       <li>Otherwise if <code>options &amp; copy_options::create_hard_links</code>, 
       then create a hard link to the source file.</li>
-      <li>Otherwise:<ul>
-        <li>If <code>is_directory(t)</code>, then <code>copy_file(from, to/from.filename(), 
+      <li>Otherwise if <code>is_directory(t)</code>, then <code>copy_file(from, to/from.filename(), 
         options)</code>.</li>
-        <li>Otherwise, <code>copy_file(from, to, options)</code>.</li>
-      </ul>
-      </li>
+      <li>Otherwise, <code>copy_file(from, to, options)</code>.</li>
     </ul>
   </blockquote>
 </blockquote>
@@ -2770,7 +2813,7 @@ void copy(const path&amp; from, const path&amp; to, <a href="#copy_option">copy_
   <p>Otherwise no effects.</p>
   
   </blockquote>
-  <p><i>Throws:</i> As specified in <a href="#Error-reporting">Error reporting</a>.</p>
+  <p><i>Throws:</i> As specified in <a href="#Error-reporting">Error reporting (7)</a>.</p>
   
   <p><i>Remarks: </i>For the signature with argument <code>ec</code>, any 
   Filesystem library functions called by the implementation shall have an <code>
@@ -2807,7 +2850,7 @@ void copy(const path&amp; from, const path&amp; to, <a href="#copy_option">copy_
   dir2
     file3</pre>
 
-<p><i>-- end example</i>]</p>
+<p><i>&mdash;end example</i>]</p>
   
 </blockquote>
 
@@ -2817,7 +2860,7 @@ bool copy_file(const path&amp; from, const path&amp; to, error_code&amp; ec) noe
 <blockquote>
   <p><i>Returns: </i><code>copy_file(from, to, copy_options::none</code><i>[</i><code>, ec</code><i>]</i><code>)</code>.</p>
   
-  <p><i>Throws:</i> As specified in <a href="#Error-reporting">Error reporting</a>.</p>
+  <p><i>Throws:</i> As specified in <a href="#Error-reporting">Error reporting (7)</a>.</p>
   
 </blockquote>
 <pre>bool <a name="copy_file">copy_file</a>(const path&amp; from, const path&amp; to, <a href="#copy_option">copy_options</a> options);
@@ -2831,7 +2874,7 @@ bool <a name="copy_file2">copy_file</a>(const path&amp; from, const path&amp; to
   <blockquote>
   <p>If&nbsp; <code>exists(to) &amp;&amp;</code> <code>!(options &amp; (copy_options::skip_existing 
   | copy_options::overwrite_existing | copy_options::update_existing))</code> report a 
-      file already exists error as specified in <a href="#Error-reporting">Error reporting</a>.</p>
+      file already exists error as specified in <a href="#Error-reporting">Error reporting (7)</a>.</p>
   <p>If <code>!exists(to) || (options &amp; copy_options::overwrite_existing) || ((options &amp; copy_options::update_existing) 
   &amp;&amp; last_write_time(from) &gt; last_write_time(to)) || !(options &amp; (copy_options::skip_existing 
   | copy_options::overwrite_existing | copy_options::update_existing))</code> copy the contents and attributes of the file <code>from</code> resolves to  the file <code>to</code> resolves to.</p>
@@ -2839,7 +2882,7 @@ bool <a name="copy_file2">copy_file</a>(const path&amp; from, const path&amp; to
   <p><i>Returns</i>: <code>true</code> if the <code>from</code> file 
   was copied, otherwise <code>false</code>. The signature with argument <code>ec</code> return
   <code>false</code> if an error occurs.</p>
-  <p><i>Throws:</i> As specified in <a href="#Error-reporting">Error reporting</a>.</p>
+  <p><i>Throws:</i> As specified in <a href="#Error-reporting">Error reporting (7)</a>.</p>
   <p><i>Complexity:</i> At most one direct or indirect invocation of <code>
   status(to)</code>.</p>
 </blockquote>
@@ -2852,7 +2895,7 @@ void copy_symlink(const path&amp; existing_symlink, const path&amp; new_symlink,
   where <i><code>function</code></i> is <code>create_symlink</code> or <code>
   create_directory_symlink</code>, as appropriate.</p>
   
-  <p><i>Throws:</i> As specified in <a href="#Error-reporting">Error reporting</a>.</p>
+  <p><i>Throws:</i> As specified in <a href="#Error-reporting">Error reporting (7)</a>.</p>
   
 </blockquote>
 
@@ -2868,7 +2911,7 @@ bool <a name="create_directories2">create_directories</a>(const path&amp; p, err
   <p><i>Returns:</i> <code>true</code> if a new directory was created, otherwise <code>
   false</code>. The signature with argument <code>ec</code> returns false if an 
   error occurs.</p>
-  <p><i>Throws:</i> As specified in <a href="#Error-reporting">Error reporting</a>.</p>
+  <p><i>Throws:</i> As specified in <a href="#Error-reporting">Error reporting (7)</a>.</p>
   <p><i>Complexity:</i> <i>O(n+1)</i> where <i>n</i> is the number of elements 
   of <code>p</code> that do not exist.</p>
 </blockquote>
@@ -2886,7 +2929,7 @@ bool create_directory(const path&amp; p, error_code&amp; ec) noexcept;</pre>
   <p><i>Postcondition:</i> <code>is_directory(p)</code></p>
   <p><i>Returns:</i> <code>true</code> if a new directory was created, otherwise <code>false</code>. 
   The signature with argument <code>ec</code> returns false if an error occurs.</p>
-  <p><i>Throws:</i> As specified in <a href="#Error-reporting">Error reporting</a>.</p>
+  <p><i>Throws:</i> As specified in <a href="#Error-reporting">Error reporting (7)</a>.</p>
 </blockquote>
 
 <pre>bool <a name="create_directory2">create_directory</a>(const path&amp; p, const path&amp; existing_p);
@@ -2905,14 +2948,14 @@ bool create_directory(const path&amp; p, const path&amp; existing_p, error_code&
       followed by <code>mkdir(p.c_str(), attributes_stat.st_mode)</code>.&nbsp; For 
       Windows based operating systems the attributes are those copied by native 
       API <code>CreateDirectoryExW(existing_p.c_str(), p.c_str(), 0)</code>.&nbsp; <i>
-      --end note</i>]
+      &mdash;end note</i>]
 </blockquote>
   
   <p><i>Postcondition:</i> <code>is_directory(p)</code></p>
   <p><i>Returns:</i> <code>true</code> if a new directory was created, otherwise <code>false</code>. 
   The signature with argument <code>ec</code> returns false if an error occurs.</p>
   
-  <p><i>Throws:</i> As specified in <a href="#Error-reporting">Error reporting</a>.</p>
+  <p><i>Throws:</i> As specified in <a href="#Error-reporting">Error reporting (7)</a>.</p>
 
 </blockquote>
 
@@ -2926,15 +2969,15 @@ void create_directory_symlink(const path&amp; to, const path&amp; new_symlink,
   <p><i>
   Postcondition:</i> <code>new_symlink</code> resolves to a symbolic link file that 
   contains an unspecified representation of <code>to</code>.</p>
-  <p><i>Throws:</i> As specified in <a href="#Error-reporting">Error reporting</a>.</p>
+  <p><i>Throws:</i> As specified in <a href="#Error-reporting">Error reporting (7)</a>.</p>
   <p>[<i>Note:</i> Some operating systems require symlink creation to 
-  identify that the link is to a directory. Portable code should use <code>create_directory_symlink()</code> to create directory symlinks rather than <code>create_symlink()</code> <i>-- end note</i>]</p>
+  identify that the link is to a directory. Portable code should use <code>create_directory_symlink()</code> to create directory symlinks rather than <code>create_symlink()</code> <i>&mdash;end note</i>]</p>
   <p>[<i>Note:</i> Some operating systems do not support symbolic links at all or support 
   them only for regular files. 
   Some file systems do not 
   support 
   symbolic links regardless of the operating system - the FAT file system used on 
-  memory cards and flash drives, for example. <i>-- end note</i>]</p>
+  memory cards and flash drives, for example. <i>&mdash;end note</i>]</p>
   </blockquote>
 
 <h3>15.9  Create hard link&nbsp; [<a name="fs.op.create_hard_lk">fs.op.create_hard_lk</a>]</h3>
@@ -2953,12 +2996,12 @@ void <a name="create_hard_link2">create_hard_link</a>(const path&amp; to, const 
     <li>The contents of the file or directory
     <code>to</code> resolves to are unchanged.</li>
   </ul>
-  <p><i>Throws:</i> As specified in <a href="#Error-reporting">Error reporting</a>.</p>
+  <p><i>Throws:</i> As specified in <a href="#Error-reporting">Error reporting (7)</a>.</p>
   <p>[<i>Note:</i> Some operating systems do not support hard links at all or support 
   them only for regular files. Some file systems do not support hard 
   links regardless of the operating system - the FAT file system used on memory 
   cards and flash drives, for example. Some file systems limit the number of 
-  links per file. <i>-- end note</i>]</p>
+  links per file. <i>&mdash;end note</i>]</p>
   </blockquote>
 
 <h3>15.10  Create symlink&nbsp; [<a name="fs.op.create_symlink">fs.op.create_symlink</a>]</h3>
@@ -2971,13 +3014,13 @@ void <a name="create_symlink2">create_symlink</a>(const path&amp; to, const path
   <p><i>
   Postcondition:</i> <code>new_symlink</code> resolves to a symbolic link file that 
   contains an unspecified representation of <code>to</code>.</p>
-  <p><i>Throws:</i> As specified in <a href="#Error-reporting">Error reporting</a>.</p>
+  <p><i>Throws:</i> As specified in <a href="#Error-reporting">Error reporting (7)</a>.</p>
   <p>[<i>Note:</i> Some operating systems do not support symbolic links at all or support 
   them only for regular files. 
   Some file systems do not 
   support 
   symbolic links regardless of the operating system - the FAT system used on 
-  memory cards and flash drives, for example. <i>-- end note</i>]</p>
+  memory cards and flash drives, for example. <i>&mdash;end note</i>]</p>
   </blockquote>
 
 <h3>15.11  Current path&nbsp; [<a name="fs.op.current_path">fs.op.current_path</a>]</h3>
@@ -2989,7 +3032,7 @@ path <a name="current_path2">current_path</a>(error_code&amp; ec);</pre>
   obtained as if by POSIX <code><a href="http://www.opengroup.org/onlinepubs/000095399/functions/getcwd.html">getcwd()</a></code>. 
   The signature with argument <code>ec</code> returns <code>path()</code> if an 
   error occurs.</p>
-  <p><i>Throws:</i> As specified in <a href="#Error-reporting">Error reporting</a>.</p>
+  <p><i>Throws:</i> As specified in <a href="#Error-reporting">Error reporting (7)</a>.</p>
   <p><i>Remarks: </i>The current working directory is the directory, associated 
   with the process, that is used as the starting location in pathname resolution 
   for relative paths.</p>
@@ -2997,7 +3040,7 @@ path <a name="current_path2">current_path</a>(error_code&amp; ec);</pre>
   path, not just a single directory name.</p>
   <p>The current path as returned by many operating systems is a dangerous 
   global variable. It may be changed unexpectedly by a third-party or system 
-  library functions, or by another thread.&nbsp; <i>-- end note</i>]</p>
+  library functions, or by another thread.&nbsp; <i>&mdash;end note</i>]</p>
 </blockquote>
 
 <pre>void current_path(const path&amp; p);
@@ -3005,10 +3048,10 @@ void current_path(const path&amp; p, error_code&amp; ec) noexcept;</pre>
 <blockquote>
   <p><i>Effects:</i> Establishes the postcondition, as if by POSIX <code><a href="http://www.opengroup.org/onlinepubs/000095399/functions/chdir.html">chdir()</a></code>.</p>
 <p><i>Postcondition:</i> <code>equivalent(p, current_path())</code>.</p>
-<p><i>Throws:</i> As specified in <a href="#Error-reporting">Error reporting</a>.</p>
+<p><i>Throws:</i> As specified in <a href="#Error-reporting">Error reporting (7)</a>.</p>
   <p>[<i>Note: </i>The current path for many operating systems is a dangerous 
   global state. It may be changed unexpectedly by a third-party or system 
-  library functions, or by another thread.&nbsp; <i>-- end note</i>]</p>
+  library functions, or by another thread.&nbsp; <i>&mdash;end note</i>]</p>
 </blockquote>
 
 <h3>15.12  Exists&nbsp; [<a name="fs.op.exists">fs.op.exists</a>]</h3>
@@ -3024,7 +3067,7 @@ bool <a name="exists3">exists</a>(const path&amp; p, error_code&amp; ec) noexcep
   <p><i>Returns:</i> <code>exists(status(p))</code> or <code>exists(status(p, ec))</code>, 
   respectively. The signature with argument <code>ec</code> returns <code>false</code> 
   if an error occurs.</p>
-<p><i>Throws:</i> As specified in <a href="#Error-reporting">Error reporting</a>.</p>
+<p><i>Throws:</i> As specified in <a href="#Error-reporting">Error reporting (7)</a>.</p>
 </blockquote>
 
 <h3>15.13  Equivalent&nbsp; [<a name="fs.op.equivalent">fs.op.equivalent</a>]</h3>
@@ -3034,8 +3077,8 @@ bool <a name="equivalent2">equivalent</a>(const path&amp; p1, const path&amp; p2
 <blockquote>
   <p><i>Effects:</i> Determines <code>file_status s1</code> and <code>s2</code>, as if by <code>status(p1)</code> and&nbsp; <code>status(p2)</code>, 
   respectively.</p>
-  <p><i>Returns:</i> <code>true</code>, if <code>sf1 == 
-  sf2</code> and <code>p1</code> and <code>p2</code> resolve to the same file 
+  <p><i>Returns:</i> <code>true</code>, if <code><del>sf1</del> <ins>s1</ins> == 
+  <del>sf2</del> <ins>s2</ins></code> and <code>p1</code> and <code>p2</code> resolve to the same file 
   system entity, else <code>false</code>. The signature with argument <code>ec</code> 
   returns <code>false</code> if an error occurs.</p>
   <blockquote>
@@ -3045,10 +3088,10 @@ bool <a name="equivalent2">equivalent</a>(const path&amp; p1, const path&amp; p2
   and equal <code>st_ino</code> values.</p>
   <p><i><span style="background-color: #E0E0E0">[Note: POSIX requires that &quot;st_dev 
   must be unique within a Local Area Network&quot;. Conservative POSIX implementations may also wish to check for equal <code>st_size</code> and <code>st_mtime</code> values. Windows implementations may use <code>GetFileInformationByHandle()</code> as a surrogate for <code>stat()</code>, 
-  and consider &quot;same&quot; to be equal values for <code>dwVolumeSerialNumber</code>, <code>nFileIndexHigh</code>, <code>nFileIndexLow</code>, <code>nFileSizeHigh</code>, <code>nFileSizeLow</code>, <code>ftLastWriteTime.dwLowDateTime</code>, and <code>ftLastWriteTime.dwHighDateTime</code>. -- end note]</span></i></p>
+  and consider &quot;same&quot; to be equal values for <code>dwVolumeSerialNumber</code>, <code>nFileIndexHigh</code>, <code>nFileIndexLow</code>, <code>nFileSizeHigh</code>, <code>nFileSizeLow</code>, <code>ftLastWriteTime.dwLowDateTime</code>, and <code>ftLastWriteTime.dwHighDateTime</code>. &mdash;end note]</span></i></p>
   </blockquote>
   <p><i>Throws:</i> <code>filesystem_error</code> if <code>(!exists(s1) &amp;&amp; !exists(s2)) || (is_other(s1) &amp;&amp; is_other(s2))</code>, 
-  otherwise as specified in <a href="#Error-reporting">Error reporting</a>.</p>
+  otherwise as specified in <a href="#Error-reporting">Error reporting (7)</a>.</p>
 </blockquote>
 
 <h3>15.14  File size&nbsp; [<a name="fs.op.file_size">fs.op.file_size</a>]</h3>
@@ -3064,7 +3107,7 @@ uintmax_t <a name="file_size2">file_size</a>(const path&amp; p, error_code&amp; 
   Otherwise, <code>static_cast&lt;uintmax_t&gt;(-1)</code>. The signature with 
   argument <code>ec</code> 
   returns <code>static_cast&lt;uintmax_t&gt;(-1)</code> if an error occurs.</p>
-  <p><i>Throws:</i> As specified in <a href="#Error-reporting">Error reporting</a>.</p>
+  <p><i>Throws:</i> As specified in <a href="#Error-reporting">Error reporting (7)</a>.</p>
 </blockquote>
 
 <h3>15.15  Hard link count&nbsp; [<a name="fs.op.hard_lk_ct">fs.op.hard_lk_ct</a>]</h3>
@@ -3076,7 +3119,7 @@ uintmax_t hard_link_count(const path&amp; p, error_code&amp; ec) noexcept;</pre>
   <p><i>Returns:</i> The number of hard links for <code>p</code>. The signature 
   with argument <code>ec</code> returns <code>static_cast&lt;uintmax_t&gt;(-1)</code> 
   if an error occurs.</p>
-  <p><i>Throws:</i> As specified in <a href="#Error-reporting">Error reporting</a>.</p>
+  <p><i>Throws:</i> As specified in <a href="#Error-reporting">Error reporting (7)</a>.</p>
 
 </blockquote>
 
@@ -3093,7 +3136,7 @@ bool is_block_file</a>(const path&amp; p, error_code&amp; ec) noexcept;</code></
   <p><i>Returns:</i> <code>is_block_file(status(p))</code> or <code>
   is_block_file(status(p, ec))</code>, respectively. The signature with argument <code>
   ec</code> returns <code>false</code> if an error occurs.</p>
-<p><i>Throws:</i> As specified in <a href="#Error-reporting">Error reporting</a>.</p>
+<p><i>Throws:</i> As specified in <a href="#Error-reporting">Error reporting (7)</a>.</p>
 </blockquote>
 
 
@@ -3110,7 +3153,7 @@ bool is_character_file</a>(const path&amp; p, error_code&amp; ec) noexcept;</cod
   or <code>is_character_file(status(p, ec))</code>, 
   respectively. The signature with argument <code>ec</code> returns <code>false</code> 
   if an error occurs.</p>
-<p><i>Throws:</i> As specified in <a href="#Error-reporting">Error reporting</a>.</p>
+<p><i>Throws:</i> As specified in <a href="#Error-reporting">Error reporting (7)</a>.</p>
 </blockquote>
 
 <h3>15.18  Is directory&nbsp; [<a name="fs.op.is_directory">fs.op.is_directory</a>]</h3>
@@ -3125,7 +3168,7 @@ bool <a name="is_directory3">is_directory</a>(const path&amp; p, error_code&amp;
   <p><i>Returns:</i> <code>is_directory(status(p))</code> or <code>
   is_directory(status(p, ec))</code>, respectively. The signature with argument <code>
   ec</code> returns <code>false</code> if an error occurs.</p>
-<p><i>Throws:</i> As specified in <a href="#Error-reporting">Error reporting</a>.</p>
+<p><i>Throws:</i> As specified in <a href="#Error-reporting">Error reporting (7)</a>.</p>
 </blockquote>
 
 <h3>15.19  Is empty&nbsp; [<a name="fs.op.is_empty">fs.op.is_empty</a>]</h3>
@@ -3142,7 +3185,7 @@ bool <a name="is_empty2">is_empty</a></a>(const path&amp; p, error_code&amp; ec)
   an error occurs.</p>
   </blockquote>
 
-<p><i>Throws:</i> As specified in <a href="#Error-reporting">Error reporting</a>.</p>
+<p><i>Throws:</i> As specified in <a href="#Error-reporting">Error reporting (7)</a>.</p>
 </blockquote>
 
 <h3>15.20  Is fifo&nbsp; [<a name="fs.op.is_fifo">fs.op.is_fifo</a>]</h3>
@@ -3158,7 +3201,7 @@ bool is_fifo(const path&amp; p, error_code&amp; ec) noexcept;</code></pre>
   <p><i>Returns:</i> <code>is_fifo(status(p))</code> or <code>is_fifo(status(p, 
   ec))</code>, respectively. The signature with argument <code>ec</code> returns <code>
   false</code> if an error occurs.</p>
-<p><i>Throws:</i> As specified in <a href="#Error-reporting">Error reporting</a>.</p>
+<p><i>Throws:</i> As specified in <a href="#Error-reporting">Error reporting (7)</a>.</p>
 </blockquote>
 
 <h3>15.21  Is other&nbsp; [<a name="fs.op.is_other">fs.op.is_other</a>]</h3>
@@ -3173,7 +3216,7 @@ bool <a name="is_other3">is_other</a>(const path&amp; p, error_code&amp; ec) noe
   <p><i>Returns:</i> <code>is_other(status(p))</code> or <code>is_other(status(p, ec))</code>, 
   respectively. The signature with argument <code>ec</code> returns <code>false</code> 
   if an error occurs.</p>
-  <p><i>Throws:</i> As specified in <a href="#Error-reporting">Error reporting</a>.</p>
+  <p><i>Throws:</i> As specified in <a href="#Error-reporting">Error reporting (7)</a>.</p>
 </blockquote>
 
 <h3>15.22  Is regular file&nbsp; [<a name="fs.op.is_regular_file">fs.op.is_regular_file</a>]</h3>
@@ -3191,7 +3234,7 @@ bool <a name="is_other3">is_other</a>(const path&amp; p, error_code&amp; ec) noe
 <blockquote>
   <p><i>Effects:</i> Sets <code>ec</code> as if by <code>status(p, ec)</code>. [<i>Note:</i> <code>
   file_type::none</code>, <code>file_type::not_found</code> and <code>
-  file_type::unknown</code> cases set <code>ec</code> to error values. To distinguish between cases, call the <code>status</code> function directly. <i>-- end 
+  file_type::unknown</code> cases set <code>ec</code> to error values. To distinguish between cases, call the <code>status</code> function directly. <i>&mdash;end 
   note</i>] </p>
   <p><i>Returns:</i> <code>is_regular_file(status(p, ec))</code>. Returns <code>
   false</code> if an error occurs.</p>
@@ -3209,7 +3252,7 @@ bool is_socket(const path&amp; p, error_code&amp; ec) noexcept;</code></pre>
   <p><i>Returns:</i> <code>is_socket(status(p))</code> or <code>
   is_socket(status(p, ec))</code>, respectively. The signature with argument <code>
   ec</code> returns <code>false</code> if an error occurs.</p>
-<p><i>Throws:</i> As specified in <a href="#Error-reporting">Error reporting</a>.</p>
+<p><i>Throws:</i> As specified in <a href="#Error-reporting">Error reporting (7)</a>.</p>
 </blockquote>
 
 <h3>15.24  Is symlink&nbsp; [<a name="fs.op.is_symlink">fs.op.is_symlink</a>]</h3>
@@ -3224,7 +3267,7 @@ bool <a name="is_symlink3">is_symlink</a>(const path&amp; p, error_code&amp; ec)
   <p><i>Returns:</i> <code>is_symlink(symlink_status(p))</code> or <code>is_symlink(symlink_status(p, ec))</code>, 
   respectively. The signature with argument <code>ec</code> returns <code>false</code> 
   if an error occurs.</p>
-  <p><i>Throws:</i> As specified in <a href="#Error-reporting">Error reporting</a>.</p>
+  <p><i>Throws:</i> As specified in <a href="#Error-reporting">Error reporting (7)</a>.</p>
 </blockquote>
 
 <h3>15.25  Last write time&nbsp; [<a name="fs.op.last_write_time">fs.op.last_write_time</a>]</h3>
@@ -3235,9 +3278,9 @@ file_time_type <a name="last_write_time2">last_write_time</a>(const path&amp; p<
   <p><i>Returns:</i> The time of last data modification of <code>p</code>, 
   determined as if by the value of the POSIX <code><a href="http://www.opengroup.org/onlinepubs/000095399/basedefs/sys/stat.h.html">stat</a></code> structure member <code>st_mtime</code>&nbsp; 
   obtained as if by POSIX <code><a href="http://www.opengroup.org/onlinepubs/000095399/functions/stat.html">stat()</a></code>. 
-  The signature with argument <code>ec</code> returns <code>static_cast&lt;file_time_type&gt;(-1)</code> 
+  The signature with argument <code>ec</code> returns <tt>file_time_type::min()</tt> 
   if an error occurs.</p>
-  <p><i>Throws:</i> As specified in <a href="#Error-reporting">Error reporting</a>.</p>
+  <p><i>Throws:</i> As specified in <a href="#Error-reporting">Error reporting (7)</a>.</p>
 </blockquote>
 <pre>void <a name="last_write_time3">last_write_time</a>(const path&amp; p, file_time_type new_time);
 void <a name="last_write_time4">last_write_time</a>(const path&amp; p, file_time_type new_time<code>,
@@ -3246,9 +3289,9 @@ void <a name="last_write_time4">last_write_time</a>(const path&amp; p, file_time
   <p><i>Effects:</i> Sets the time of last data modification of the file 
   resolved to by <code>p</code> to <code>new_time</code>, as if by POSIX <code><a href="http://www.opengroup.org/onlinepubs/000095399/functions/stat.html">stat()</a></code> 
   followed by POSIX <a href="http://www.opengroup.org/onlinepubs/000095399/functions/utime.html"><code>utime()</code></a>.</p>
-  <p><i>Throws:</i> As specified in <a href="#Error-reporting">Error reporting</a>.</p>
+  <p><i>Throws:</i> As specified in <a href="#Error-reporting">Error reporting (7)</a>.</p>
   <p>[<i>Note:</i> A postcondition of <code>last_write_time(p) == new_time</code> is not specified since it might not hold for file systems 
-  with coarse time granularity. <i>-- end note</i>]</p>
+  with coarse time granularity. <i>&mdash;end note</i>]</p>
 </blockquote>
 
 <h3>15.26  Permissions&nbsp; [<a name="fs.op.permissions">fs.op.permissions</a>]</h3>
@@ -3268,21 +3311,21 @@ void permissions(const path&amp; p, <a href="#symlink_perms">perms</a> prms, err
     </tr>
     <tr>
       <td>Neither <code>add_perms</code> nor <code>remove_perms</code></td>
-      <td><code>prms &amp; perms_mask</code></td>
+      <td><code>prms &amp; perms::mask</code></td>
     </tr>
     <tr>
       <td><code>add_perms</code></td>
       <td>
-      <p><code>status(p).permissions() | (prms &amp; <a href="#perms_mask">perms_mask</a>)</code> </td>
+      <p><code>status(p).permissions() | (prms &amp; <a href="#perms_mask">perms::mask</a>)</code> </td>
     </tr>
     <tr>
       <td><code>remove_perms</code></td>
-      <td><code>status(p)</code><code>.permissions() &amp; ~(prms &amp; <a href="#perms_mask">perms_mask</a>) </code></td>
+      <td><code>status(p)</code><code>.permissions() &amp; ~(prms &amp; <a href="#perms_mask">perms::mask</a>) </code></td>
     </tr>
   </table>
   <p>[<i>Note:</i> Conceptually permissions are viewed as bits, but the actual 
   implementation may use some other mechanism. -- <i>end note</i>]</p>
-  <p><i>Throws:</i> As specified in <a href="#Error-reporting">Error reporting</a>.</p>
+  <p><i>Throws:</i> As specified in <a href="#Error-reporting">Error reporting (7)</a>.</p>
 </blockquote>
 
 <h3>15.27  Read symlink&nbsp; [<a name="fs.op.read_symlink">fs.op.read_symlink</a>]</h3>
@@ -3292,10 +3335,10 @@ path read_symlink(const path&amp; p, error_code&amp; ec);</pre>
 <blockquote>
   <p><i>Returns:</i>&nbsp; If <code>p</code> resolves to a symbolic 
   link, a <code>path</code> object containing the contents of that symbolic 
-  link. Otherwise <code>path()</code>. The signature with argument <code>ec</code> 
+  link. The signature with argument <code>ec</code> 
   returns <code>path()</code> if an error occurs.</p>
-  <p><i>Throws:</i> As specified in <a href="#Error-reporting">Error reporting</a>. [<i>Note:</i> It is an error if <code>p</code> does not 
-  resolve to a symbolic link. <i>-- end note</i>]</p>
+  <p><i>Throws:</i> As specified in <a href="#Error-reporting">Error reporting (7)</a>. [<i>Note:</i> It is an error if <code>p</code> does not 
+  resolve to a symbolic link. <i>&mdash;end note</i>]</p>
 </blockquote>
 
 <h3>15.28  Remove&nbsp; [<a name="fs.op.remove">fs.op.remove</a>]</h3>
@@ -3307,13 +3350,13 @@ bool <a name="remove2">remove</a>(const path&amp; p, error_code&amp; ec) noexcep
   removed as if by POSIX <code><a href="http://www.opengroup.org/onlinepubs/000095399/functions/remove.html">remove()</a></code>.</p>
   <blockquote>
   <p>[<i>Note:</i> A symbolic link is itself removed, rather than the file it 
-  resolves to being removed. <i>-- end note</i>]</p>
+  resolves to being removed. <i>&mdash;end note</i>]</p>
   </blockquote>
   <p><i>Postcondition:</i> <code>!exists(symlink_status(p))</code>.</p>
   <p><i>Returns:</i>&nbsp; <code>false</code> if p did not exist in the first 
   place, otherwise <code>true</code>. The signature with argument <code>ec</code> 
   returns <code>false</code> if an error occurs.</p>
-  <p><i>Throws:</i> As specified in <a href="#Error-reporting">Error reporting</a>.</p>
+  <p><i>Throws:</i> As specified in <a href="#Error-reporting">Error reporting (7)</a>.</p>
 </blockquote>
 
 <h3>15.29  Remove all&nbsp; [<a name="fs.op.remove_all">fs.op.remove_all</a>]</h3>
@@ -3325,13 +3368,13 @@ uintmax_t <a name="remove_all2">remove_all</a>(const path&amp; p, error_code&amp
   then deletes file <code>p</code> itself, as if by POSIX <code><a href="http://www.opengroup.org/onlinepubs/000095399/functions/remove.html">remove()</a></code>.</p>
   <blockquote>
   <p>[<i>Note:</i> A symbolic link is itself removed, rather than the file it 
-  resolves to being removed. <i>-- end note</i>]</p>
+  resolves to being removed. <i>&mdash;end note</i>]</p>
   </blockquote>
   <p><i>Postcondition:</i> <code>!exists(p)</code></p>
   <p><i>Returns:</i> The number of files removed. The signature with argument
   <code>ec</code> returns <code>static_cast&lt;uintmax_t&gt;(-1)</code> if an error 
   occurs.</p>
-  <p><i>Throws:</i> As specified in <a href="#Error-reporting">Error reporting</a>.</p>
+  <p><i>Throws:</i> As specified in <a href="#Error-reporting">Error reporting (7)</a>.</p>
 </blockquote>
 
 <h3>15.30  Rename&nbsp; [<a name="fs.op.rename">fs.op.rename</a>]</h3>
@@ -3347,9 +3390,9 @@ void <a name="rename2">rename</a>(const path&amp; old_p, const path&amp; new_p, 
   existing non-directory file, it is removed, while if <code>new_p</code> 
   resolves to an existing directory, it is removed if empty on POSIX compliant operating 
   systems but is an error on some other operating systems. A symbolic link is itself renamed, rather than 
-  the file it resolves to being renamed. <i>-- end note</i>]</p>
+  the file it resolves to being renamed. <i>&mdash;end note</i>]</p>
   </blockquote>
-  <p><i>Throws:</i> As specified in <a href="#Error-reporting">Error reporting</a>.</p>
+  <p><i>Throws:</i> As specified in <a href="#Error-reporting">Error reporting (7)</a>.</p>
 </blockquote>
 
 <h3>15.31  Resize file&nbsp; [<a name="fs.op.resize_file">fs.op.resize_file</a>]</h3>
@@ -3358,7 +3401,7 @@ void <a name="rename2">rename</a>(const path&amp; old_p, const path&amp; new_p, 
 void <a name="resize_file2">resize_file</a>(const path&amp; p, uintmax_t new_size, error_code&amp; ec) noexcept;</pre>
 <blockquote>
 <p><i>Postcondition:</i> <code>file_size() == new_size</code>.</p>
-<p><i>Throws:</i> As specified in <a href="#Error-reporting">Error reporting</a>.</p>
+<p><i>Throws:</i> As specified in <a href="#Error-reporting">Error reporting (7)</a>.</p>
   <p><i>Remarks:</i> Achieves its postconditions as if by POSIX <code><a href="http://www.opengroup.org/onlinepubs/000095399/functions/truncate.html">truncate()</a></code>.</p>
 </blockquote>
 
@@ -3378,7 +3421,10 @@ space_info <a name="space2">space</a>(const path&amp; p, error_code&amp; ec) noe
   value cannot be determined shall be set to <code>static_cast&lt;uintmax_t&gt;(-1)</code>. 
   For the signature with argument <code>ec</code>, all members are set to <code>
   static_cast&lt;uintmax_t&gt;(-1)</code> if an error occurs.</p>
-  <p><i>Throws:</i> As specified in <a href="#Error-reporting">Error reporting</a>.</p>
+  <p><i>Throws:</i> As specified in <a href="#Error-reporting">Error reporting (7)</a>.</p>
+      <p><i>Remarks:</i> The value of member <code>space_info::available</code> 
+      is operating system dependent. [<i>Note:</i> <code>available</code> may be 
+      less than <code>free</code>. <i>— end note</i>] </p>
 </blockquote>
 
 <h3>15.33  Status&nbsp; [<a name="fs.op.status">fs.op.status</a>]</h3>
@@ -3399,7 +3445,7 @@ return result;</pre>
   file_status(file_type::not_found)</code> 
   and <code>file_status(file_type::unknown)</code> are not considered failures and do not 
   cause an exception to be 
-thrown.<i> -- end note</i>] </p>
+thrown.<i> &mdash;end note</i>] </p>
   </blockquote>
 <pre><a href="#file_status">file_status</a> <a name="status2">status</a>(const path&amp; p, error_code&amp; ec) noexcept;</pre>
 <blockquote>
@@ -3412,7 +3458,7 @@ thrown.<i> -- end note</i>] </p>
     Otherwise, <code>ec.clear()</code>.<blockquote>
       <p>[<i>Note:</i> This allows users to inspect the specifics of underlying 
       API errors even when the value returned by <code>status()</code> is not <code>
-      file_status(file_type::none)</code>.&nbsp; <i>--end note</i>]</p>
+      file_status(file_type::none)</code>.&nbsp; <i>&mdash;end note</i>]</p>
     </blockquote>
     </blockquote>
   <p><i>Returns:</i></p>
@@ -3445,7 +3491,7 @@ thrown.<i> -- end note</i>] </p>
         <blockquote>
         <p>[<i>Note:</i> These semantics distinguish between <code>p</code> being known not to exist, <code>p</code> existing but not being able to determine its attributes, 
         and there being an error that prevents even knowing if <code>p</code> exists. These 
-        distinctions are important to some use cases.&nbsp;<i>--end note</i>]</p>
+        distinctions are important to some use cases.&nbsp;<i>&mdash;end note</i>]</p>
     </blockquote>
     <p>Otherwise,</p>
     <ul>
@@ -3458,7 +3504,7 @@ thrown.<i> -- end note</i>] </p>
       errors. Lack of
 <code>file_type::regular</code> does not necessarily imply <code>&lt;fstream&gt;</code> operations would 
 fail on a directory.
-<i>-- end note</i>]<br>
+<i>&mdash;end note</i>]<br>
 &nbsp;</li>
       <li>Otherwise, if the attributes indicate a directory, as if by POSIX
       <a href="http://www.opengroup.org/onlinepubs/000095399/basedefs/sys/stat.h.html">S_ISDIR()</a>, 
@@ -3466,7 +3512,7 @@ fail on a directory.
       file_status(file_type::directory)</code>. [<i>Note:</i> <code>
       file_type::directory</code> implies <code>
 directory_iterator(p)</code>would succeed.
-<i>-- end note</i>]<br>
+<i>&mdash;end note</i>]<br>
 &nbsp;</li>
       <li>Otherwise, if the attributes indicate a block special file, as if by 
       POSIX
@@ -3523,7 +3569,7 @@ file_status <a name="symlink_status2">symlink_status</a>(const path&amp; p, erro
       The signature with argument <code>ec</code> returns <code>
       file_status(file_type::none)</code> if an error occurs.</p>
       <p><i>Remarks:</i> Pathname resolution terminates if <code>p</code> names a symbolic link.</p>
-  <p><i>Throws:</i> As specified in <a href="#Error-reporting">Error reporting</a>.</p>
+  <p><i>Throws:</i> As specified in <a href="#Error-reporting">Error reporting (7)</a>.</p>
 </blockquote>
 
 <h3>15.36  System complete&nbsp; [<a name="fs.op.system_complete">fs.op.system_complete</a>]</h3>
@@ -3537,13 +3583,13 @@ path <a name="system_complete2">system_complete</a>(const path&amp; p, error_cod
   <p><i>Returns:</i> The composed path. The signature with argument <code>ec</code> 
   returns <code>path()</code> if an error occurs.</p>
   <p><i>Postcondition:</i> For the returned path, <code>rp,</code> <code>rp.is_absolute()</code> is true.</p>
-  <p><i>Throws:</i> As specified in <a href="#Error-reporting">Error reporting</a>.</p>
+  <p><i>Throws:</i> As specified in <a href="#Error-reporting">Error reporting (7)</a>.</p>
   
 <blockquote>
 [<i>Example:</i> For POSIX based operating systems, <code>system_complete(p)</code>
-  has the same semantics as <code>complete(p, current_path())</code>.</p>
+  has the same semantics as <code>absolute(p, current_path())</code>.</p>
   <p>For Windows based operating systems, <code>system_complete(p)</code> has the 
-  same semantics as <code>absolute(ph, current_path())</code> if <code>p.is_absolute() ||
+  same semantics as <code>absolute(p, current_path())</code> if <code>p.is_absolute() ||
   !p.has_root_name()</code> or <code>p</code> and <code>base</code> have the same
   <code>root_name()</code>. 
   Otherwise it acts like <code>absolute(p, kinky)</code>, where <code>kinky</code> is
@@ -3551,7 +3597,7 @@ path <a name="system_complete2">system_complete</a>(const path&amp; p, error_cod
   be the current directory for that drive the last time it was set, and thus may 
   be <b>residue left over from a prior program</b> run by the command 
   processor! Although these semantics are useful, they are very 
-  error-prone. <i>-- end example</i>]
+  error-prone. <i>&mdash;end example</i>]
 </blockquote>
   
 </blockquote>
@@ -3565,7 +3611,7 @@ path temp_directory_path(error_code&amp; ec);</pre>
   || !is_directory(p)</code>, where <code>p</code> is the path to be returned. 
   The signature with argument <code>ec</code> returns <code>path()</code> if an 
   error occurs.</p>
-  <p><i>Throws:</i> As specified in <a href="#Error-reporting">Error reporting</a>.</p>
+  <p><i>Throws:</i> As specified in <a href="#Error-reporting">Error reporting (7)</a>.</p>
   <p><i><span style="background-color: #E0E0E0">The <code>temp_directory_path()</code> 
   name was chosen to emphasize that the return is a path, not just a single 
   directory name.</span></i></p>
@@ -3575,42 +3621,11 @@ path temp_directory_path(error_code&amp; ec);</pre>
   supplied by the first environment variable found in the list TMPDIR, TMP, TEMP, TEMPDIR, 
   or if none of these are found, <code>&quot;/tmp&quot;</code>.</p>
   <p>For Windows based operating systems, an implementation might return the path
-  reported by the <i>Windows</i> <code>GetTempPath</code> API function.<i> -- end example</i>] </p> 
+  reported by the <i>Windows</i> <code>GetTempPath</code> API function.<i> &mdash;end example</i>] </p> 
   
 </blockquote>
 </blockquote>
 
-<h3>15.38  Unique path&nbsp; [<a name="fs.op.unique_path">fs.op.unique_path</a>]</h3>
-
-<pre>path <a name="unique_path">unique_path</a>(const path&amp; model=&quot;%%%%-%%%%-%%%%-%%%%&quot;);
-path unique_path(const path&amp; model, error_code&amp; ec);</pre>
-<blockquote>
-  <p>The <code>unique_path</code> function generates a name suitable for temporary files, including directories. The name is based 
-  on a model that uses the percent sign character to specify replacement by a 
-  random hexadecimal digit.</p>
-  <p>[<i>Note:</i> The more bits of randomness in the 
-  generated name, the less likelihood of prior existence or being guessed. 
-  Each replacement hexadecimal digit in the model adds four bits of randomness. 
-  The default model thus provides 64 bits of randomness. <i>--end note</i>]</p>
-  <p><i>Returns:</i> A path identical to <code>model</code>, except that each 
-  occurrence of the percent sign character is replaced by a random hexadecimal 
-  digit character in the range 0-9, a-f. The signature with argument <code>ec</code> 
-  returns <code>path()</code> if an error occurs.</p>
-  <p><i>Throws:</i> As specified in <a href="#Error-reporting">Error reporting</a>.</p>
-  <p><i>Remarks:</i> Implementations are encouraged to obtain the required 
-  randomness via a <a href="http://en.wikipedia.org/wiki/Cryptographically_secure_pseudorandom_number_generator">cryptographically secure pseudo-random number generator</a>, such as one 
-  provided by the operating system. [<i>Note</i>: Such generators may block 
-  until sufficient entropy develops. <i>--end note</i>]</p>
-  <p>[<i>Example</i>:</p>
-  <blockquote>
-    <pre>cout &lt;&lt; unique_path(&quot;test-%%%%%%%%%%%.txt&quot;) &lt;&lt; endl;</pre>
-  </blockquote>
-  <p>Typical output would be <code>&quot;test-0db7f2bf57a.txt&quot;</code>. Because 11 
-  hexadecimal output characters are specified, 44 bits of randomness are 
-  supplied.&nbsp; <i>-- end example</i>] </p>
-</blockquote>
-
-<p></p>
 <hr>
 
 

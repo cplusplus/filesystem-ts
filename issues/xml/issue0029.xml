@@ -1,0 +1,48 @@
+<?xml version='1.0' encoding='utf-8' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="29" status="WP">
+<title>[PDTS] Unclear semantics of <tt>read_symlink</tt> on error</title>
+<section><sref ref="15.27 [fs.op.read_symlink]"/></section>
+<submitter>GB-16</submitter>
+<date>20 Jan 2014</date>
+
+<discussion>
+<p>Unclear semantics of read_symlink on error: 15.27 [fs.op.read_symlink] has:
+Returns: If p resolves to a symbolic link, a path object containing the contents of
+that symbolic link. Otherwise path(). and also [Note: It is an error if p does not
+resolve to a symbolic link. -- end note]</p>
+<p>I do not believe path() can be a valid return for the overload not taking error_code.</p>
+
+<p>Strike "Otherwise <tt>path()</tt>."</p>
+
+  <note>2014-02-09, Beman Dawes provides wording</note>
+
+  <p/>
+
+  <note>2014-02-13 LWG/SG-3 Issaquah: Proposed wording accepted.</note>
+
+</discussion>
+
+<resolution>
+  <i>Change 15.27 [fs.op.read_symlink]:</i>
+
+  <blockquote>
+    <p>
+      <i>Returns:</i>&nbsp; If <code>p</code> resolves to a symbolic
+      link, a <code>path</code> object containing the contents of that symbolic
+      link. <del>Otherwise <code>path()</code>.</del> The signature with argument <code>ec</code>
+      returns <code>path()</code> if an error occurs.
+    </p>
+    <p>
+      <i>Throws:</i> As specified in <a href="#Error-reporting">Error reporting</a>. [<i>Note:</i> It is an error if 
+      <code>p</code> does not resolve to a symbolic link. &mdash; <i>end note</i>]
+    </p>
+  </blockquote>
+
+
+</resolution>
+
+</issue>

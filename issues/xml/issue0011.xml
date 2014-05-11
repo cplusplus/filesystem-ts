@@ -1,0 +1,282 @@
+<?xml version='1.0' encoding='utf-8' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="11" status="Open">
+<title>[PDTS] Lack of <tt>relative()</tt> operation function</title>
+<section><sref ref="6 &amp; 15"/></section>
+<submitter>GB-1</submitter>
+<date>20 Jan 2014</date>
+
+<discussion>
+<p>
+There is no <tt>relative()</tt> operation, to complement both <tt>absolute()</tt> and <tt>canonical()</tt>
+</p>
+<p>
+The TS introduces relative paths. 
+</p>
+
+<ul>
+  <li>
+    <p>
+      They are defined in section 4.18
+      relative path [fs.def.relative-path]
+    </p> </li>
+  <li>
+    <p>
+      A decomposition method
+
+      <tt>relative_path()</tt>
+      is described in section 8.4.9 path decomposition [path.decompose]
+    </p> 
+  </li>
+  <li>
+  <p>
+  
+  Two query methods to determine if a path 
+  either <tt>has_relative_path()</tt> or 
+  <tt>is_relative()</tt> described in 8.4.10 path query [path.query] </p>
+</li>
+</ul>
+<p>
+However there is no way to create a relative path as a path relative to another. 
+Methods are provided to create absolute and canonical paths.
+</p>
+<p>
+
+In section 15.1 Absolute [fs.op.absolute]:</p>
+<p>
+
+path absolute(const 
+path&amp; 
+p,
+const 
+path&amp; 
+base=current_path());</p>
+<p>
+
+and in section 15.2 Canonical [fs.op.canonical]</p>
+<p>
+
+path canonical(const 
+path&amp; 
+p,
+const 
+path&amp; 
+base = 
+current_path());</p>
+<p>
+
+path canonical(const 
+path&amp; 
+p, 
+error_code&amp; 
+ec);</p>
+<p>
+
+path canonical(const 
+path&amp; 
+p,
+const 
+path&amp; 
+base, 
+error_code&amp; 
+ec);</p>
+<p>
+By providing a 
+operations to achieve absolute and canonical paths there is no impediment to 
+providing a similar operation 
+
+relative() 
+that
+attempts to return a new path relative to 
+some base path.</p>
+<p>
+
+For example:</p>
+<p>
+
+path relative(const 
+path&amp; 
+p,
+const 
+path&amp; 
+to = 
+current_path());</p>
+<p>
+
+path relative(const 
+path&amp; 
+p, 
+error_code&amp; 
+ec);</p>
+<p>
+
+path relative(const 
+path&amp; 
+p,
+const 
+path&amp; 
+to, 
+error_code&amp; 
+ec);</p>
+<p>
+
+This would return a 
+path, if possible, that is relative to 
+
+to. 
+The implementation can make use of 
+
+absolute() 
+and 
+canonical() 
+to determine the relative path, if it exists.</p>
+<p>
+
+The File System TS is 
+based on the 
+<a href="http://www.boost.org/doc/libs/1_55_0/libs/filesystem/doc/index.htm">
+
+<u>&#8203;</u></a><a href="http://www.boost.org/doc/libs/1_55_0/libs/filesystem/doc/index.htm">boost::filesystem 
+library</a> and it too suffers from this anomaly. There are open tickets for 
+this in 
+<a href="https://svn.boost.org/">
+
+<u>&#8203;</u></a><a href="https://svn.boost.org/">Boost 
+Trac</a>:</p>
+<ul>
+  <li>
+  <p>
+  
+  <a href="https://svn.boost.org/trac/boost/ticket/5897">
+  <u>&#8203;</u></a><a href="https://svn.boost.org/trac/boost/ticket/5897">#5897 
+  Make path relative function</a>
+  </p>
+</li>
+  <li>
+  <p>
+  
+  <a href="https://svn.boost.org/trac/boost/ticket/1976">
+  <u>&#8203;</u></a><a href="https://svn.boost.org/trac/boost/ticket/1976">#1976 
+  Inverse function for complete</a>
+  </p>
+</li>
+</ul>
+<p>
+
+and it is the subject of several posts on StackOverflow for example:</p>
+<ul>
+  <li>
+  <p>
+  
+  <a href="http://stackoverflow.com/questions/10167382/boostfilesystem-get-relative-path">
+  <u>&#8203;</u></a><a href="http://stackoverflow.com/questions/10167382/boostfilesystem-get-relative-path">http://stackoverflow.com/questions/10167382/boostfilesystem-get-relative-path</a>
+  </p>
+</li>
+  <li>
+  <p>
+  
+  <a href="http://stackoverflow.com/questions/5772992/get-relative-path-from-two-absolute-paths">
+  <u>&#8203;</u></a><a href="http://stackoverflow.com/questions/5772992/get-relative-path-from-two-absolute-paths">http://stackoverflow.com/questions/5772992/get-relative-path-from-two-absolute-paths</a>
+  </p>
+</li>
+</ul>
+<p>
+
+Other languages typically provide a similar function. For example python 
+provides:</p>
+<p>
+
+os.path.relpath(path[, 
+start])</p>
+<p>
+
+Return a relative 
+filepath to 
+path 
+either from the current directory or from an optional 
+
+start 
+directory. This is a path computation: the filesystem is not accessed to confirm 
+the existence or nature of 
+path 
+or 
+start.
+start 
+defaults to 
+os.curdir.</p>
+
+  <note>2014-02-07, Beman Dawes comments</note>
+
+<p>A <code>relative()</code> function is useful and much requested.
+I've seen such a function provided by users and have written it myself in app code.
+It is one of those things I've been meaning to do for years, and have just never gotten around to.</p>
+
+  <p>That said, my mild preference is to treat this as "NAD, Future" for File System TS1,
+  but treat it as a priority for TS2.</p>
+
+  <note>
+    2014-02-11 Issaquah
+  </note>
+<p>
+ The LWG/SG-3 voted strongly in favor of adding this functionality, and doing so in
+    this TS. That implies quite a bit of work before the next meeting to validate that the proposed interface
+    works as desired for various platforms. There was general agreement not to hold FS STS1 if this functionality
+    isn't ready when the rest of the TS is ready.
+</p>
+
+
+</discussion>
+
+<resolution>
+<ol>
+<li>
+<p>Modify header <tt>&lt;filesystem&gt;</tt> synopsis, 6 [fs.filesystem.synopsis],
+by adding the operational functions after <tt>canonical</tt>:</p>
+<blockquote><pre>
+path relative(const path&amp; p, const path&amp; to = current_path());
+path relative(const path&amp; p, error_code&amp; ec);
+path relative(const path&amp; p, const path&amp; to, error_code&amp; ec);
+</pre></blockquote>
+</li>
+<li><p>Insert the section:</p>
+<blockquote><p>
+15.3 Relative [fs.op.relative]
+</p>
+<pre>
+path relative(const path&amp; p, const path&amp; to = current_path());
+path relative(const path&amp; p, error_code&amp; ec);
+path relative(const path&amp; p, const path&amp; to, error_code&amp; ec);</pre>
+<blockquote>
+<p><i>Overview</i>: Return a relative path of p to the current directory or from an optional to path.</p>
+<p><i>Returns</i>: A relative path such that <tt>canonical(to)/relative(p,to) == canonical(p)</tt>,
+otherwise <tt>path()</tt>. If <tt>canonical(to) == canonical(p)</tt> the path <tt>path(".")</tt> is returned. For the
+overload without a <tt>to</tt> argument, <tt>to</tt> is <tt>current_path()</tt>. Signatures with argument <tt>ec</tt> return
+<tt>path()</tt> if an error occurs.
+</p>
+<p>
+<i>Throws</i>: As specified in Error reporting.</p>
+<p>
+<i>Remarks</i>: <tt>!exists(p) or !exists(to) or !is_directory(to)</tt> is an error.
+</p>
+</blockquote></blockquote>
+<p>
+and bump all following sections up by 0.1. Update the contents and any cross-references
+accordingly.
+</p>
+</li>
+</ol>
+<p>
+Question: Should Returns be specified in terms of equivalence? For example:
+<tt>equivalent( canonical(to)/relative(p,to), canonical(p) )</tt>
+</p>
+<p>
+Question: Should <tt>canonical(to) == canonical(p)</tt> return <tt>path(".")</tt> or <tt>path()</tt>? Why?
+</p>
+<p>
+
+Question: Should <tt>to</tt> be spelt start?</p></resolution>
+
+</issue>

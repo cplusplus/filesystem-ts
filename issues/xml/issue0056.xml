@@ -1,0 +1,49 @@
+﻿<?xml version='1.0' encoding='utf-8' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="56" status="New">
+<title>[PDTS] Feature test macro for TS version</title>
+<section><sref ref="5 [fs.req]"/></section>
+<submitter>Clark Nelson</submitter>
+<date>10 Feb 2014</date>
+
+<discussion>
+<p/><a href="http://isocpp.org/std/standing-documents/sd-6-sg10-feature-test-recommendations">
+SD-6: SG10 Feature Test Recommendations</a> recommends that each library header 
+provide feature test macros. For Technical Specifications, the TS itself should 
+specify recommended names for the feature test macros.
+<note>Beman Dawes 2014-02-28 provided the proposed resolution.
+Thanks to Vicente J. Botet Escriba, Richard Smith, and Clark Nelson for suggestions and corrections.</note>
+</discussion>
+
+<resolution>
+<p><i>Add a new sub-section:</i></p>
+<blockquote>
+  <p><ins>5.2 Feature test macros [fs.req.macros]</ins></p>
+  <p><ins>These macros allow users to determine which versions of this Technical Specification
+   are supported by header <code>&lt;experimental/filesystem&gt;</code>.</ins></p>
+  <p><ins>Header <code>&lt;experimental/filesystem&gt;</code> shall supply the 
+  following macro definitions:</ins></p>
+  <blockquote>
+    <pre><ins>#define __cpp_lib_experimental_filesystem     201406</ins>
+<ins>#define __cpp_lib_experimental_filesystem_v1  201406</ins></pre>
+  </blockquote>
+<p><ins>[<i>Note:</i> These macros follow  WG21 SD-6, Feature-testing 
+recommendations for C++.</ins></p>
+<p><ins>The value of macro <code>__cpp_lib_experimental_filesystem</code> is
+<i>yyyymm</i> where <i>yyyy</i> is the year and <i>mm</i> the month when the version
+of the Technical Specification was completed.</ins></p>
+
+<p><ins>A macro in the form <code>
+__cpp_lib_experimental_filesystem_v</code><i>n</i> is provided for each inner 
+namespace <code>v</code><i>n</i> supplied by the implementation. The value of each macro
+<code>__cpp_lib_experimental_filesystem_v</code><i>n</i> is the same as the value of macro
+<code>__cpp_lib_experimental_filesystem</code> for the corresponding version of the Technical
+Specification. <i>— end note</i>]</ins></p>
+
+</blockquote>
+</resolution>
+
+</issue>

@@ -1,0 +1,71 @@
+<?xml version='1.0' encoding='utf-8' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="2" status="WP">
+<title>[PDTS] Tighten specification when there is no reasonable behavior</title>
+<section><sref ref="2.1 [fs.conform.9945]"/></section>
+<submitter>FI-1</submitter>
+<date>20 Jan 2014</date>
+
+<discussion>
+<p>It is unfortunate that error reporting for inability to provide reasonable behaviour is
+completely implementation-defined. This hurts portability in the sense that programmers have no
+idea how errors will be reported and cannot anticipate anything.</p>
+
+<p>Change "If an implementation cannot provide any reasonable behavior, the implementation
+shall report an error in an implementation-defined manner." to "If an implementation cannot
+provide any reasonable behavior, the code using the facilities for which reasonable behaviour
+cannot be provided shall be ill-formed." and strike the note.</p>
+
+  <note>2014-02-07, Beman Dawes suggests wording</note>
+
+  <note>2014-02-12, Daniel Krügler comments:</note>
+
+  <blockquote>
+  <p/>In our code bases we routinely have to target different filesystems,
+  notably POSIX-based and Windows. While on Windows there is no meaning
+  in setting the <tt>owner_exec</tt> permission, for example, this is required on
+  POSIX systems when the corresponding file should be executable. Still,
+  attempting to invoke this operation should be possible. It would be
+  OK, if we got a defined runtime response to this, such as a
+  specifically defined error code value that could be tested either via
+  the error_code&amp; overload, but it would be IMO unacceptable for
+  end-users to tell them "Well, this code may not compile". I don't
+  think that we can teach people that code written using the filesystem
+  operations might or might not compile. It would be very valuable to
+  have at least a clear indication that implementers are required to
+  give a defined runtime-response if they do believe that this operation
+  cannot be implemented resulting in "reasonable behaviour".
+  </blockquote>
+
+  <note>2014-02-12, Proposed wording updated to reflect LWG/SG-3 discussion in Issaquah.
+  <p/>Since the standardese to carry out the LWG/SG-3 "throw or error code" intent is
+  best achieved by reference to the Error reporting section, a note was added by the project
+  editor. Please review carefully.
+  </note>
+
+  <note>2014-02-13 LWG/SG-3 Issaquah: Proposed wording accepted.</note>
+
+
+</discussion>
+
+<resolution>
+
+<ol>
+<li><p>Change 2.1:</p>
+<blockquote><p>
+If an implementation cannot provide any reasonable behavior,
+the implementation shall report an error <del>in an implementation-defined manner</del>
+<ins>as specified in &sect; 7 [fs.err.report]. [<i>Note:</i> This allows users
+to rely on an exception being thrown or an error code being set when an
+implementation cannot provide any reasonable behavior. &mdash; <i>end note</i>]
+</ins>.
+</p></blockquote>
+</li>
+</ol>
+
+</resolution>
+
+</issue>

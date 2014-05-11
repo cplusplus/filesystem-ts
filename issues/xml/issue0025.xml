@@ -1,0 +1,137 @@
+<?xml version='1.0' encoding='utf-8' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="25" status="Review">
+<title>[PDTS] Copying equivalent paths effects not specified</title>
+<section><sref ref="15.4 [fs.op.copy_file]"/></section>
+<submitter>CH-15</submitter>
+<date>20 Jan 2014</date>
+
+<discussion>
+<p>Even if <tt>to</tt> and <tt>from</tt> are different paths, they may be equivalent.</p>
+
+<p>Specify what happens if <tt>(options &amp; copy_options::overwrite_existing)</tt> but <tt>from</tt> and <tt>to</tt>
+resolve to the same file.</p>
+
+  <note>2014-02-09, Beman Dawes: Need advice on this issue:</note>
+
+  <p/>What do existing implentations do?
+
+  <p/>Possible resolutions:
+  <ol>
+    <li>Treat it as an error.</li>
+    <li>Once equivalence is determined, take no further action and return true? false?</li>
+    <li>Don't bother to detect a file overwriting itself. This will likely result in an error, anyhow.</li>
+  </ol>
+  <note>2014-02-13 LWG/SG-3 Issaquah: LWG/SG-3 decided to treat equivalence in this case as an error.
+  Beman to provide wording.</note>
+
+  <note>2014-04-09 Beman provided wording as requested. The Effects were rewritten to increase
+  clarity. Behavior remains unchanged except for treating equivalence as an error.</note>
+
+</discussion>
+
+<resolution>
+  <p/>
+  <i>Change 15.4 [fs.op.copy_file]:</i>
+
+  <blockquote>
+    <p>
+      <i>Precondition:</i> At most one constant from each <code>copy_options</code>
+      option group ([<a href="#enum.copy_options">enum.copy_options</a>]) is present
+      in <code>options</code>.
+    </p>
+
+    <p>
+      <i>Effects:</i>
+    </p>
+    <blockquote>
+      
+        <p><del>
+          If&nbsp; <code>exists(to) &amp;&amp;</code> <code>
+            !(options &amp; (copy_options::skip_existing
+            | copy_options::overwrite_existing | copy_options::update_existing))
+          </code> report a
+          file already exists error as specified in <a href="#Error-reporting">Error reporting (7)</a>.
+        </del></p>
+      
+      
+        <p><del>
+          If <code>
+            !exists(to) || (options &amp; copy_options::overwrite_existing) || ((options &amp; copy_options::update_existing)
+            &amp;&amp; last_write_time(from) &gt; last_write_time(to)) || !(options &amp; (copy_options::skip_existing
+            | copy_options::overwrite_existing | copy_options::update_existing))
+          </code> copy the contents and attributes of the file <code>from</code>
+          resolves to  the file <code>to</code> resolves to.
+        </del></p>
+      
+    </blockquote>
+    <blockquote>
+      
+        <p>
+          <ins>
+            Report a file already exists error as specified in
+            <a href="file:///C:/dot16/filesystem-ts/working-draft.html#Error-reporting">
+              Error reporting (7)
+            </a> if:
+          </ins>
+        </p>
+        <ul>
+          <li><ins>
+              <ins><code>exists(to)</code> and <code>equivalent(from, to)</code>,
+              or</ins>
+          </ins></li>
+          <li><ins>
+              <code>exists(to)</code> and <code>
+                (options &amp; (copy_options::skip_existing
+                | copy_options::overwrite_existing | copy_options::update_existing)) == 0.
+              </code>
+          </ins></li>
+        </ul>
+        <p><ins>
+          Otherwise copy the contents and attributes of the file <code>from</code>
+          resolves to the file <code>to</code> resolves to if:
+          </ins></p>
+        <ul>
+          <li><ins>
+              <code>!exists(to)</code>, or
+          </ins></li>
+          <li><ins>
+            <code>exists(to)</code> and <code>
+              (options &amp;
+              copy_options::overwrite_existing) != 0
+            </code>, or
+          </ins></li>
+          <li><ins>
+            <code>exists(to)</code> and <code>
+              (options &amp;
+              copy_options::update_existing) != 0
+            </code> and <code>from</code> is more
+            recent than <code>to</code>, determined as if by use of the <code>
+              last_write_time
+            </code> function.
+          </ins></li>
+        </ul>
+        <p><ins>Otherwise no effects.</ins></p>
+      
+    </blockquote>
+
+    <p>
+      <i>Returns</i>: <code>true</code> if the <code>from</code> file
+      was copied, otherwise <code>false</code>. The signature with argument <code>ec</code> return
+      <code>false</code> if an error occurs.
+    </p>
+    <p>
+      <i>Throws:</i> As specified in <a href="#Error-reporting">Error reporting (7)</a>.
+    </p>
+    <p>
+      <i>Complexity:</i> At most one direct or indirect invocation of <code>
+        status(to)</code>.
+    </p>
+  </blockquote>
+  
+</resolution>
+
+</issue>
