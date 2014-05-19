@@ -11,7 +11,8 @@
 
 <discussion>
 <p>
-There is no <tt>relative()</tt> operation, to complement both <tt>absolute()</tt> and <tt>canonical()</tt>
+There is no <tt>relative()</tt> operation, to complement both <tt>absolute()</tt>
+ and <tt>canonical()</tt>
 </p>
 <p>
 The TS introduces relative paths. 
@@ -227,10 +228,16 @@ It is one of those things I've been meaning to do for years, and have just never
     isn't ready when the rest of the TS is ready.
 </p>
 
-
+<note>2014-05-19 Beman Dawes supplied wording. The design benefited from discussions with Jamie Allsop, who was
+the source of the original NB comment.
+Thanks to Bjorn Reese for corrections and suggestions.  Although there was also discussion and experimentation with additional
+relative functions that took into account symlinks and normalization, these are not proposed here since even the proponents
+of such functions were unsure of appropriate semantics.</note>
 </discussion>
 
-<resolution>
+  <p>
+    <b>Original proposed resolution:</b>
+  </p>
 <ol>
 <li>
 <p>Modify header <tt>&lt;filesystem&gt;</tt> synopsis, 6 [fs.filesystem.synopsis],
@@ -277,6 +284,98 @@ Question: Should <tt>canonical(to) == canonical(p)</tt> return <tt>path(".")</tt
 </p>
 <p>
 
-Question: Should <tt>to</tt> be spelt start?</p></resolution>
+Question: Should <tt>to</tt> be spelled <tt>start</tt>?</p>
+  
+<resolution>
+
+  <p>
+    <i>
+      To 6 Header &lt;experimental/filesystem&gt; synopsis [fs.filesystem.synopsis],
+      add:
+    </i>
+  </p>
+  <blockquote>
+    <pre style="background-color: #D7EEFF">path lexically_relative(const path&amp; p, const path&amp; base);</pre>
+  </blockquote>
+
+  <p>
+    <i>At the end of 8.6 path non-member functions [path.non-member], add </i>
+  </p>
+  <blockquote>
+
+    <h4>
+      8.6.3  <code>path</code>
+      <a style="text-decoration: none" name="path-lexically-relative">lexically_relative</a> function [path.lexically.relative]
+    </h4>
+    <pre style="background-color: #D7EEFF">path lexically_relative(const path&amp; p, const path&amp; base);</pre>
+    <blockquote>
+      <p>
+        Creates a path from the trailing elements of <code>p</code> that are
+        lexically relative to <code>base</code>, which must be a prefix of <code>p</code>.
+      </p>
+      <p>
+        <i>Effects:</i> If the number of elements in [<code>
+          p.begin(),
+          p.end()
+        </code>) is less than or equal to the number of elements in [<code>
+          base.begin(),
+          base.end()
+        </code>), or if any element in [<code>base.begin(), base.end()</code>)
+        is not equal to the corresponding element in [<code>p.begin(), p.end()</code>),
+        throw an exception of type <code>filesystem_error</code>.
+      </p>
+      <p>
+        <i>Remarks: </i>Equality or inequality are determined by <code>
+          path::operator==
+        </code> or <code>path::operator!=</code> respectively.
+      </p>
+      <p>
+        <i>Returns: </i>An object of class <code>path</code> containing the first element of <code>p</code> that does not have a
+        corresponding element in <code>base,</code> followed by the subsequent elements
+        of <code>p</code> appended as if by <code>path::operator/=</code>.
+      </p>
+      <p>
+        <i>Throws:</i> <code>filesystem_error</code>.
+      </p>
+      <p>
+        [<i>Note:</i> Behavior is determined by the
+        lexical value of the elements of <code>p</code> and <code>base</code> - the
+        external file system is not accessed. The&nbsp;case where an element of <code>
+          base
+        </code>
+        is not equal to corresponding element of <code>p</code> is treated as an error to avoid returning an incorrect result
+        in the event of symlinks.&nbsp; <i>--end note</i>]
+      </p>
+    </blockquote>
+    <p>
+      <i>
+        <span style="background-color: #CCCCCC">
+          A possible implementation would
+          be:
+        </span>
+      </i>
+    </p>
+    <blockquote>
+      <pre>
+        <span style="background-color: #CCCCCC">
+auto mm = std::mismatch( p.begin(), p.end(), base.begin(), base.end());
+if (mm.first == p.end() || mm.second != base.end())
+{
+throw filesystem_error(
+&quot;p does not begin with base, so can not be made relative to base&quot;,
+p, base,
+error_code(errc::invalid_argument, generic_category()));
+}
+path tmp(*mm.first++);
+for (; mm.first != p.end(); ++mm.first)
+tmp /= *mm.first;
+return tmp;</span></pre>
+
+    </blockquote>
+
+  </blockquote>
+
+
+</resolution>
 
 </issue>
