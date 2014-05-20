@@ -13,10 +13,37 @@
 <p>POSIX now says: "Since the <tt>utimbuf</tt> structure only contains <tt>time_t</tt> variables
 and is not accurate to fractions of a second, applications
 should use the <tt>utimensat()</tt> function instead of the obsolescent <tt>utime()</tt> function."</p>
+
+  <p>
+    Suggested resolution: Rewrite the <tt>last_write_time</tt> setter description to utilize <tt>utimensat() or similar.</tt>
+  </p>
+
+  <note>20 May 2014 Beman Dawes supplies proposed wording. He comments:</note>
+
+  <p>POSIX supplies two functions, <code>futimens()</code> and <code>utimensat()</code>,
+  as replacements for <code>utime()</code>.
+  <code>futimens()</code> is appropriate for the current TS.
+  <code>utimensat()</code> will be appropriate for a future File System TS that adds the
+  functionality of the whole family of POSIX *<code>at()</code> functions.
+</p>
+
 </discussion>
 
 <resolution>
-<p>Rewrite the <tt>last_write_time</tt> setter description to utilize <tt>utimensat() or similar.</tt></p>
+  <p>
+    <i>Change 15.25 Last write time [fs.op.last_write_time]:</i>
+  </p>
+  <blockquote>
+    <p>
+      <i>Effects:</i> Sets the time of last data modification of the file resolved
+      to by <code>p</code> to <code>new_time</code>, as if by POSIX <del>
+        <code>stat()</code>
+        followed by POSIX <code>utime()</code>
+      </del> <ins>
+        <code>futimens()</code>
+      </ins>.
+    </p>
+  </blockquote>
 </resolution>
 
 </issue>
