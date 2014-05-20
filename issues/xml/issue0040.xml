@@ -13,10 +13,38 @@
 <p>  
 <tt>class directory_entry</tt> should retain <tt>operator const path&amp;()</tt> from V2.
 </p>
+
+  <note>2014-05-19 Beman Dawes supplied proposed wording.</note>
 </discussion>
 
 <resolution>
-<p></p>
+  <p>
+    <i>Change 12 Class directory_entry [class.directory_entry]:</i>
+  </p>
+  <blockquote>
+    <pre>// observers
+const path&amp;  path() const noexcept;
+<ins>operator const path&amp;() const noexcept;</ins>
+file_status  status() const;
+file_status  status(error_code&amp; ec) const noexcept;
+file_status  symlink_status() const;
+file_status  symlink_status(error_code&amp; ec) const noexcept;</pre>
+  </blockquote>
+
+  <p>
+    <i>Change 12.3 directory_entry observers [directory_entry.obs]:</i>
+  </p>
+  <blockquote>
+    <pre>const path&amp; path() const noexcept;
+<ins>operator const path&amp;() const noexcept;</ins></pre>
+    <blockquote>
+      <p>
+        <i>Returns:</i>
+        <code>m_path</code>
+      </p>
+    </blockquote>
+  </blockquote>
+
 </resolution>
 
 </issue>
