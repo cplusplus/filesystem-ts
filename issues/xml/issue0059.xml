@@ -84,7 +84,149 @@ perms::none) </code>
 </discussion>
 
 <resolution>
-<p></p>
+  <p>
+    <i>Change 15.3 Copy [fs.op.copy]:</i>
+  </p>
+
+  <blockquote>
+
+    <blockquote>
+      <p>
+        Before the first use of <code>f</code> and <code>t</code>:
+      </p>
+
+      <ul>
+        <li>
+          If <code>
+            (options &amp; copy_options::create_symlinks) <ins>
+              !=
+              copy_options::none
+            </ins> || (options &amp; copy_options::skip_symlinks) <ins>
+              !=
+              copy_options::none</ins></code>, then <code>
+            auto f =
+            symlink_status(from)
+          </code> and if needed <code>auto t = symlink_status(to)</code>.
+        </li>
+        <li>
+          Otherwise, <code>auto f = status(from)</code> and if needed <code>
+            auto
+            t = status(to)
+          </code>.
+        </li>
+      </ul>
+      <p>
+        Report an error as specified in
+        <a href="#Error-reporting" style="color: #2020FF; text-decoration: none">Error reporting (7)</a>
+        if:
+      </p>
+
+      <ul>
+        <li>
+          <code>!exists(f)</code>, or
+        </li>
+        <li>
+          <code>equivalent(from, to)</code>, or
+        </li>
+        <li>
+          <code>is_other(f) || is_other(t)</code>, or
+        </li>
+        <li>
+          <code>is_directory(f) &amp;&amp; is_regular_file(t)</code>.
+        </li>
+      </ul>
+      <p>
+        If <code>is_symlink(f)</code>, then:
+      </p>
+
+      <ul>
+        <li>
+          If <code>
+            <ins>(</ins>options &amp; copy_options::skip_symlinks<ins>) !=
+              copy_options::none</ins></code>, then return.
+        </li>
+        <li>
+          Otherwise if <code>!exists(t)</code>, then <code>
+            copy_symlink(from,
+            to, options)
+          </code>.
+        </li>
+        <li>
+          Otherwise report an error as specified in
+          <a href="#Error-reporting" style="color: #2020FF; text-decoration: none">Error reporting (7)</a>.
+        </li>
+      </ul>
+      <p>
+        Otherwise if <code>is_regular_file(f)</code>, then:
+      </p>
+
+      <ul>
+        <li>
+          If <code>
+            <ins>(</ins>options &amp; copy_options::directories_only<ins>) !=
+              copy_options::none</ins></code>, then return.
+        </li>
+        <li>
+          Otherwise if <code>
+            <ins>(</ins>options &amp; copy_options::create_symlinks<ins>
+              ) !=
+              copy_options::none</ins></code>, then
+          create a symbolic link to the source file.
+        </li>
+        <li>
+          Otherwise if <code>
+            <ins>(</ins>options &amp; copy_options::create_hard_links<ins>) !=
+              copy_options::none</ins></code>,
+          then create a hard link to the source file.
+        </li>
+        <li>
+          Otherwise if <code>is_directory(t)</code>, then <code>
+            copy_file(from, to/from.filename(),
+            options)
+          </code>.
+        </li>
+        <li>
+          Otherwise, <code>copy_file(from, to, options)</code>.
+        </li>
+      </ul>
+    </blockquote>
+  </blockquote>
+  <blockquote>
+    <blockquote>
+      <p>
+        Otherwise if <code>
+          is_directory(f) &amp;&amp; ((options &amp;
+          copy_options::recursive)<ins> != copy_options::none</ins> || <del>!(</del>options <ins>
+            ==
+            copy_options::none</ins><del>)</del>)
+        </code>
+        then:
+      </p>
+
+      <ul>
+        <li>
+          If&nbsp; <code>!exists(t)</code>, then <code>
+            create_directory(to,
+            from)
+          </code>.
+        </li>
+        <li>
+          Then, iterate over the files in <code>from</code>, as if by <code>
+            for
+            (directory_entry&amp; x : directory_iterator(from))
+          </code>, and for each
+          iteration <code>
+            copy(x.path(), to/x.path().filename(), options |
+            copy_options::<i>unspecified</i>)
+          </code>.
+        </li>
+      </ul>
+
+    </blockquote>
+
+  </blockquote>
+
+
 </resolution>
 
 </issue>
