@@ -226,6 +226,36 @@ perms::none) </code>
 
   </blockquote>
 
+  <p>
+    <i>Change 15.4 Copy file [fs.op.copy_file]:</i>
+  </p>
+  <blockquote>
+    <p>
+      If&nbsp; <code>exists(to) &amp;&amp;</code> <code>
+        <del>!</del>(options &amp; (copy_options::skip_existing
+        | copy_options::overwrite_existing | copy_options::update_existing)) <ins>
+          ==
+          copy_options::none
+        </ins>
+      </code> report a
+      file already exists error as specified in
+      <a href="#Error-reporting" style="color: #2020FF; text-decoration: none">Error reporting (7)</a>.
+    </p>
+    <p>
+      If <code>
+        !exists(to) || (options &amp; copy_options::overwrite_existing)<ins>
+          != copy_options::none
+        </ins> || ((options &amp; copy_options::update_existing)<ins>
+          != copy_options::none
+        </ins>
+        &amp;&amp; last_write_time(from) &gt; last_write_time(to)) || <del>!</del>(options &amp;
+        (copy_options::skip_existing
+        | copy_options::overwrite_existing | copy_options::update_existing))<ins> == copy_options::none</ins>
+      </code>
+      copy the contents and attributes of the file <code>from</code> resolves to
+      the file <code>to</code> resolves to.
+    </p>
+  </blockquote>
 
 </resolution>
 
