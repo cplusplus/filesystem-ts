@@ -13,10 +13,44 @@
 <p>
 <tt>copy_options::copy_symlinks</tt> is not used (should test it before calling <tt>copy_symlinks</tt> in <tt>copy</tt>).
 </p>
+  <note>20 May 2014 Beman Dawes provides proposed wording.</note>
 </discussion>
 
 <resolution>
-<p></p>
+  <p>
+    <i>Change 15.3 Copy [fs.op.copy]:</i>
+  </p>
+  <blockquote>
+    <blockquote>
+      <p>
+        If <code>is_symlink(f)</code>, then:
+      </p>
+      <ul>
+        <li>
+          If <code>options &amp; copy_options::skip_symlinks</code>, then return.&nbsp;
+          <span style="font-style: italic; background-color: #C0C0C0">See issue 59</span>
+        </li>
+        <li>
+          Otherwise if <code>
+            !exists(t) <ins>
+              &amp;&amp; (options &amp; copy_options::copy_symlinks)
+              != copy_options::none
+            </ins>
+          </code>, then <code>
+            copy_symlink(from,
+            to, options)
+          </code>.
+        </li>
+        <li>
+          Otherwise report an error as specified in
+          <a href="file:///C:/dot16/filesystem-ts/issues/mailing/active.html#Error-reporting"
+           style="color: #2020FF; text-decoration: none">
+            Error reporting (7)
+          </a>.
+        </li>
+      </ul>
+    </blockquote>
+  </blockquote>
 </resolution>
 
 </issue>
