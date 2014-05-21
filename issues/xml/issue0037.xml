@@ -55,10 +55,26 @@ Basically this requirement conflicts with the section "Adopted Guidelines", seco
 and <a href="sg3-active.html#49">49</a> are concerned with signatures which should or should not
 be <tt>noexcept</tt>. I will provide unified proposed wording for these issues, possibly in a separate paper.
 
+<note>21 May 2014 Beman Dawes reviewed all functions with <code>error_code&amp;</code> arguments,
+  and provided proposed wording for the one case found where the above guidelines were not met.
+  This was the case previously identified by Stephan T. Lavavej.
+</note>
+
 </discussion>
 
 <resolution>
-<p></p>
+  <p>
+    <i>Change 14 Class recursive_directory_iterator [class.rec.dir.itr]:</i>
+  </p>
+  <blockquote>
+    <pre>recursive_directory_iterator&amp; increment(error_code&amp; ec) <ins>noexcept</ins>;</pre>
+  </blockquote>
+  <p>
+    <i>Change 14.1 recursive_directory_iterator members [rec.dir.itr.members]:</i>
+  </p>
+  <blockquote>
+    <pre>recursive_directory_iterator&amp; increment(error_code&amp; ec) <ins>noexcept</ins>;</pre>
+  </blockquote>
 </resolution>
 
 </issue>
