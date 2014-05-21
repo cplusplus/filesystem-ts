@@ -40,10 +40,28 @@ is required to be noexcept.
 
 <p/>The same applies to <tt>recursive_directory_iterator</tt>.
 
+<note>21 May 2014 Beman Dawes provided proposed resolution wording.</note>
+
 </discussion>
 
 <resolution>
-<p></p>
+<p>
+  <i>Change 13 Class directory_iterator [class.directory_iterator]:</i></p>
+  <blockquote>
+    <pre>directory_iterator(directory_iterator&amp;&amp;) <ins>noexcept</ins> = default;
+...
+directory_iterator&amp; operator=(directory_iterator&amp;&amp;) <ins>noexcept</ins> = default;</pre>
+  </blockquote>
+
+  <p>
+    <i>Change 14 Class recursive_directory_iterator [class.rec.dir.itr]:</i>
+  </p>
+  <blockquote>
+    <pre>recursive_directory_iterator(recursive_directory_iterator&amp;&amp;) <ins>noexcept</ins> = default;
+...
+recursive_directory_iterator&amp; operator=(recursive_directory_iterator&amp;&amp;) <ins>noexcept</ins> = default;</pre>
+  </blockquote>
+  
 </resolution>
 
 </issue>
