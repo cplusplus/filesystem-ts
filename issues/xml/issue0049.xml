@@ -24,9 +24,28 @@ This is affected by LWG 2319 "<tt>basic_string</tt>'s move constructor should no
 and <a href="sg3-active.html#49">49</a> are concerned with signatures which should or should not
 be <tt>noexcept</tt>. I will provide unified proposed wording for these issues, possibly in a separate paper.
 
+<note>21 May 2014 Beman Dawes provides wording.
+See <a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2014/n3944.html#2319">LWG 2319</a> for rationale.
+</note>
+
 </discussion>
 
 <resolution>
+  <i>Change 8 Class path [class.path]:</i>
+  <blockquote>
+    <pre>path(path&amp;&amp; p) <del>noexcept</del>;</pre>
+  </blockquote>
+
+  <i>Change 8.4.1 path constructors [path.construct]:</i>
+  <blockquote>
+    <pre>path(path&amp;&amp; p) <del>noexcept</del>;</pre>
+  </blockquote>
+
+  <i>Change 12 Class directory_entry [class.directory_entry]:</i>
+  <blockquote>
+    <pre>directory_entry(directory_entry&amp;&amp;) <del>noexcept</del> = default;</pre>
+  </blockquote>
+  
 </resolution>
 
 </issue>
