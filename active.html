@@ -23,11 +23,11 @@
 <table>
 <tr>
   <td align="left">Doc. no.</td>
-  <td align="left">D????</td>
+  <td align="left">D4003</td>
 </tr>
 <tr>
   <td align="left">Date:</td>
-  <td align="left">2014-05-19</td>
+  <td align="left">2014-05-23</td>
 </tr>
 <tr>
   <td align="left">Project:</td>
@@ -39,7 +39,7 @@
 </tr>
 </table>
 <h1>File System TS Active Issues List (Revision R1)</h1>
-<p><p>Revised 2014-05-19 at 17:05:46 UTC</p>
+<p><p>Revised 2014-05-23 at 18:05:11 UTC</p>
 </p>
   <p>Reference ISO/IEC TS 18822</p>
   <p>Also see:</p>
@@ -151,7 +151,7 @@ ownership of it.
 
 <h2>Revision History</h2>
 <ul>
-<li>R1: 2014-04-09 SG-3 File System TS<ul>
+<li>R1: 2014-05-23 SG-3 File System TS<ul>
 <li><b>Summary:</b><ul>
 <li>26 open issues, up by 26.</li>
 <li>35 closed issues, up by 35.</li>
@@ -370,7 +370,7 @@ ownership of it.
 <hr>
 <h3><a name="4"></a>4. [PDTS] Need definition of dot and dot-dot</h3>
 <p><b>Section:</b> X 4.14 [fs.def.parent] <b>Status:</b> <a href="active.html#Open">Open</a>
- <b>Submitter:</b> CH-3 <b>Opened:</b> 2014-01-20 <b>Last modified:</b> 2014-04-18</p>
+ <b>Submitter:</b> CH-3 <b>Opened:</b> 2014-01-20 <b>Last modified:</b> 2014-05-22</p>
 <p><b>View all issues with</b> <a href="status-index.html#Open">Open</a> status.</p>
 <p><b>Discussion:</b></p>
 <p>The concept of a parent directory for dot or dotdot exists, but the definition doesn't apply.</p>
@@ -388,6 +388,17 @@ ownership of it.
   ]</i></p>
 
 
+  <p><i>[22 May 2014 Beman Dawes comments:]</i></p>
+
+  <blockquote>
+    <p>I've now reviewed this issue carefully and believe it is NAD. "parent" is used in four places in the WP,
+    and so deserves a definition. The current definition is copied word-for-word and in its entirety from the
+    POSIX definition. I believe strongly that the File System TS needs to stay in alignment with POSIX on
+    this matter,
+    and that the best way to do that is simply to use the POSIX wording.</p>
+  </blockquote>
+  
+
 
 <p><b>Proposed resolution:</b></p>
 
@@ -398,7 +409,7 @@ ownership of it.
 <hr>
 <h3><a name="5"></a>5. [PDTS] Parent of root directory unspecified</h3>
 <p><b>Section:</b> X 8.1 [path.generic] <b>Status:</b> <a href="active.html#Open">Open</a>
- <b>Submitter:</b> CH-4 <b>Opened:</b> 2014-01-20 <b>Last modified:</b> 2014-04-08</p>
+ <b>Submitter:</b> CH-4 <b>Opened:</b> 2014-01-20 <b>Last modified:</b> 2014-05-22</p>
 <p><b>View all issues with</b> <a href="status-index.html#Open">Open</a> status.</p>
 <p><b>Discussion:</b></p>
 <p>8.1 [path.generic] says:
@@ -416,6 +427,8 @@ specified what "/.." and "/../.." refer to.</p>
   ]</i></p>
 
 
+  <p><i>[22 May 2014 Beman provides wording, taken directly from POSIX.]</i></p>
+
 
 
 
@@ -428,7 +441,7 @@ specified what "/.." and "/../.." refer to.</p>
 <blockquote><p>
 The filename <i>dot</i> is treated as a reference to the current directory.
 The filename <i>dot-dot</i> is treated as a reference to the parent directory.
-<ins>[<i>Note:</i> The <i>root-directory</i> has no parent directory.<i>&mdash; end note</i>]</ins>
+<ins>What the filename <i>dot-dot</i> refers to relative to the root directory is implementation-defined.</ins>
 Specific filenames may have special meanings for a particular operating system.
 </p></blockquote>
 </li>
@@ -1233,17 +1246,52 @@ recursive_directory_iterator&amp; increment(error_code&amp; ec);</pre>
 <hr>
 <h3><a name="36"></a>36. [PDTS] <tt>copy_options::copy_symlinks</tt> is not used</h3>
 <p><b>Section:</b> X 10.2 [enum.copy_options] <b>Status:</b> <a href="active.html#New">New</a>
- <b>Submitter:</b> P.J. Plauger <b>Opened:</b> 2014-01-30 <b>Last modified:</b> 2014-04-18</p>
+ <b>Submitter:</b> P.J. Plauger <b>Opened:</b> 2014-01-30 <b>Last modified:</b> 2014-05-20</p>
 <p><b>View all other</b> <a href="section-index.html#0.2 [enum.copy_options">issues</a> in 10.2 [enum.copy_options].</p>
 <p><b>View all issues with</b> <a href="status-index.html#New">New</a> status.</p>
 <p><b>Discussion:</b></p>
 <p>
 <tt>copy_options::copy_symlinks</tt> is not used (should test it before calling <tt>copy_symlinks</tt> in <tt>copy</tt>).
 </p>
+  <p><i>[20 May 2014 Beman Dawes provides proposed wording.]</i></p>
+
 
 
 <p><b>Proposed resolution:</b></p>
-<p></p>
+  <p>
+    <i>Change 15.3 Copy [fs.op.copy]:</i>
+  </p>
+  <blockquote>
+    <blockquote>
+      <p>
+        If <code>is_symlink(f)</code>, then:
+      </p>
+      <ul>
+        <li>
+          If <code>options &amp; copy_options::skip_symlinks</code>, then return.&nbsp;
+          <span style="font-style: italic; background-color: #C0C0C0">See issue 59</span>
+        </li>
+        <li>
+          Otherwise if <code>
+            !exists(t) <ins>
+              &amp;&amp; (options &amp; copy_options::copy_symlinks)
+              != copy_options::none
+            </ins>
+          </code>, then <code>
+            copy_symlink(from,
+            to, options)
+          </code>.
+        </li>
+        <li>
+          Otherwise report an error as specified in
+          <a href="file:///C:/dot16/filesystem-ts/issues/mailing/active.html#Error-reporting"
+           style="color: #2020FF; text-decoration: none">
+            Error reporting (7)
+          </a>.
+        </li>
+      </ul>
+    </blockquote>
+  </blockquote>
 
 
 
@@ -1252,7 +1300,7 @@ recursive_directory_iterator&amp; increment(error_code&amp; ec);</pre>
 <hr>
 <h3><a name="37"></a>37. [PDTS] All functions with <tt>error_code</tt> arguments should be <tt>noexcept</tt></h3>
 <p><b>Section:</b> X 15.2 [fs.op.canonical], X 15.11 [fs.op.current_path], X 15.27 [fs.op.read_symlink], X 15.36 [fs.op.system_complete], X 15.37 [fs.op.temp_dir_path], X 15.38 [fs.op.unique_path], X 8.4 [path.member] <b>Status:</b> <a href="active.html#New">New</a>
- <b>Submitter:</b> P.J. Plauger <b>Opened:</b> 2014-01-30 <b>Last modified:</b> 2014-04-18</p>
+ <b>Submitter:</b> P.J. Plauger <b>Opened:</b> 2014-01-30 <b>Last modified:</b> 2014-05-23</p>
 <p><b>View all issues with</b> <a href="status-index.html#New">New</a> status.</p>
 <p><b>Discussion:</b></p>
 <p>
@@ -1288,16 +1336,33 @@ Basically this requirement conflicts with the section "Adopted Guidelines", seco
 <p><i>[Beman Dawes 2014-02-27]</i></p>
 
 
-<p/>Issues <a href="sg3-active.html#37">37</a>,
-<a href="sg3-active.html#38">38</a>,
-<a href="sg3-active.html#41">41</a>,
-and <a href="sg3-active.html#49">49</a> are concerned with signatures which should or should not
+<p/>Issues <a href="active.html#37">37</a>,
+<a href="active.html#38">38</a>,
+<a href="active.html#41">41</a>,
+and <a href="active.html#49">49</a> are concerned with signatures which should or should not
 be <tt>noexcept</tt>. I will provide unified proposed wording for these issues, possibly in a separate paper.
+
+<p><i>[21 May 2014 Beman Dawes reviewed all functions with <code>error_code&amp;</code> arguments,
+  and provided proposed wording for the one case found where the above guidelines were not met.
+  This was the case previously identified by Stephan T. Lavavej.
+]</i></p>
+
 
 
 
 <p><b>Proposed resolution:</b></p>
-<p></p>
+  <p>
+    <i>Change 14 Class recursive_directory_iterator [class.rec.dir.itr]:</i>
+  </p>
+  <blockquote>
+    <pre>recursive_directory_iterator&amp; increment(error_code&amp; ec) <ins>noexcept</ins>;</pre>
+  </blockquote>
+  <p>
+    <i>Change 14.1 recursive_directory_iterator members [rec.dir.itr.members]:</i>
+  </p>
+  <blockquote>
+    <pre>recursive_directory_iterator&amp; increment(error_code&amp; ec) <ins>noexcept</ins>;</pre>
+  </blockquote>
 
 
 
@@ -1306,7 +1371,7 @@ be <tt>noexcept</tt>. I will provide unified proposed wording for these issues, 
 <hr>
 <h3><a name="38"></a>38. [PDTS] Make certain functions <tt>noexcept</tt> and drop <tt>error_code</tt> version</h3>
 <p><b>Section:</b> X 12.3 [directory_entry.obs], X 15.12 [fs.op.exists], X 15.16 [fs.op.is_block_file], X 15.17 [fs.op.is_char_file], X 15.18 [fs.op.is_directory], X 15.19 [fs.op.is_empty], X 15.20 [fs.op.is_fifo], X 15.21 [fs.op.is_other], X 15.22 [fs.op.is_regular_file], X 15.23 [fs.op.is_socket], X 15.24 [fs.op.is_symlink], X 15.33 [fs.op.status], X 15.35 [fs.op.symlink_status], X 15.38 [fs.op.unique_path] <b>Status:</b> <a href="active.html#New">New</a>
- <b>Submitter:</b> P.J. Plauger <b>Opened:</b> 2014-01-30 <b>Last modified:</b> 2014-04-18</p>
+ <b>Submitter:</b> P.J. Plauger <b>Opened:</b> 2014-01-30 <b>Last modified:</b> 2014-05-23</p>
 <p><b>View all other</b> <a href="section-index.html#2.3 [directory_entry.obs">issues</a> in 12.3 [directory_entry.obs].</p>
 <p><b>View all issues with</b> <a href="status-index.html#New">New</a> status.</p>
 <p><b>Discussion:</b></p>
@@ -1344,12 +1409,11 @@ Based on this interpretation of the issue discussion I recommend to resolve this
 <p><i>[Beman Dawes 2014-02-27]</i></p>
 
 
-<p/>Issues <a href="sg3-active.html#37">37</a>,
-<a href="sg3-active.html#38">38</a>,
-<a href="sg3-active.html#41">41</a>,
-and <a href="sg3-active.html#49">49</a> are concerned with signatures which should or should not
-be <tt>noexcept</tt>. I will provide unified proposed wording for these issues, possibly in a separate paper.
-
+  <p/>Issues <a href="active.html#37">37</a>,
+  <a href="active.html#38">38</a>,
+  <a href="active.html#41">41</a>,
+  and <a href="active.html#49">49</a> are concerned with signatures which should or should not
+  be <tt>noexcept</tt>. I will provide unified proposed wording for these issues, possibly in a separate paper.
 
 
 <p><b>Proposed resolution:</b></p>
@@ -1362,7 +1426,7 @@ be <tt>noexcept</tt>. I will provide unified proposed wording for these issues, 
 <hr>
 <h3><a name="40"></a>40. [PDTS] <tt>class directory_entry</tt> should retain <tt>operator const path&amp;()</tt> from V2</h3>
 <p><b>Section:</b> X 12 [class.directory_entry] <b>Status:</b> <a href="active.html#New">New</a>
- <b>Submitter:</b> P.J. Plauger <b>Opened:</b> 2014-01-30 <b>Last modified:</b> 2014-04-18</p>
+ <b>Submitter:</b> P.J. Plauger <b>Opened:</b> 2014-01-30 <b>Last modified:</b> 2014-05-19</p>
 <p><b>View other</b> <a href="open-index.html#2 [class.directory_entry">active issues</a> in 12 [class.directory_entry].</p>
 <p><b>View all other</b> <a href="section-index.html#2 [class.directory_entry">issues</a> in 12 [class.directory_entry].</p>
 <p><b>View all issues with</b> <a href="status-index.html#New">New</a> status.</p>
@@ -1371,9 +1435,38 @@ be <tt>noexcept</tt>. I will provide unified proposed wording for these issues, 
 <tt>class directory_entry</tt> should retain <tt>operator const path&amp;()</tt> from V2.
 </p>
 
+  <p><i>[2014-05-19 Beman Dawes supplied proposed wording.]</i></p>
+
+
 
 <p><b>Proposed resolution:</b></p>
-<p></p>
+  <p>
+    <i>Change 12 Class directory_entry [class.directory_entry]:</i>
+  </p>
+  <blockquote>
+    <pre>// observers
+const path&amp;  path() const noexcept;
+<ins>operator const path&amp;() const noexcept;</ins>
+file_status  status() const;
+file_status  status(error_code&amp; ec) const noexcept;
+file_status  symlink_status() const;
+file_status  symlink_status(error_code&amp; ec) const noexcept;</pre>
+  </blockquote>
+
+  <p>
+    <i>Change 12.3 directory_entry observers [directory_entry.obs]:</i>
+  </p>
+  <blockquote>
+    <pre>const path&amp; path() const noexcept;
+<ins>operator const path&amp;() const noexcept;</ins></pre>
+    <blockquote>
+      <p>
+        <i>Returns:</i>
+        <code>m_path</code>
+      </p>
+    </blockquote>
+  </blockquote>
+
 
 
 
@@ -1382,7 +1475,7 @@ be <tt>noexcept</tt>. I will provide unified proposed wording for these issues, 
 <hr>
 <h3><a name="41"></a>41. [PDTS] <tt>directory_iterator</tt>, <tt>recursive_directory_iterator</tt>, move construct/assign should be <tt>noexcept</tt></h3>
 <p><b>Section:</b> X 13 [class.directory_iterator], X 14 [class.rec.dir.itr] <b>Status:</b> <a href="active.html#New">New</a>
- <b>Submitter:</b> P.J. Plauger <b>Opened:</b> 2014-01-30 <b>Last modified:</b> 2014-04-08</p>
+ <b>Submitter:</b> P.J. Plauger <b>Opened:</b> 2014-01-30 <b>Last modified:</b> 2014-05-23</p>
 <p><b>View all other</b> <a href="section-index.html#3 [class.directory_iterator">issues</a> in 13 [class.directory_iterator].</p>
 <p><b>View all issues with</b> <a href="status-index.html#New">New</a> status.</p>
 <p><b>Discussion:</b></p>
@@ -1394,13 +1487,12 @@ be <tt>noexcept</tt>. I will provide unified proposed wording for these issues, 
 <p><i>[Beman Dawes 2014-02-27]</i></p>
 
 
-<p/>Issues <a href="sg3-active.html#37">37</a>,
-<a href="sg3-active.html#38">38</a>,
-<a href="sg3-active.html#41">41</a>,
-and <a href="sg3-active.html#49">49</a> are concerned with signatures which should or should not
-be <tt>noexcept</tt>. I will provide unified proposed wording for these issues, possibly in a separate paper.
-
-<p><i>[Daniel Krügler 2014-02-28]</i></p>
+  <p/>Issues <a href="active.html#37">37</a>,
+  <a href="active.html#38">38</a>,
+  <a href="active.html#41">41</a>,
+  and <a href="active.html#49">49</a> are concerned with signatures which should or should not
+  be <tt>noexcept</tt>. I will provide unified proposed wording for these issues, possibly in a separate paper.
+  <p><i>[Daniel Krügler 2014-02-28]</i></p>
 
 
 <pre>directory_iterator begin(directory_iterator iter) noexcept;
@@ -1418,10 +1510,29 @@ is required to be noexcept.
 
 <p/>The same applies to <tt>recursive_directory_iterator</tt>.
 
+<p><i>[21 May 2014 Beman Dawes provided proposed resolution wording.]</i></p>
+
+
 
 
 <p><b>Proposed resolution:</b></p>
-<p></p>
+<p>
+  <i>Change 13 Class directory_iterator [class.directory_iterator]:</i></p>
+  <blockquote>
+    <pre>directory_iterator(directory_iterator&amp;&amp;) <ins>noexcept</ins> = default;
+...
+directory_iterator&amp; operator=(directory_iterator&amp;&amp;) <ins>noexcept</ins> = default;</pre>
+  </blockquote>
+
+  <p>
+    <i>Change 14 Class recursive_directory_iterator [class.rec.dir.itr]:</i>
+  </p>
+  <blockquote>
+    <pre>recursive_directory_iterator(recursive_directory_iterator&amp;&amp;) <ins>noexcept</ins> = default;
+...
+recursive_directory_iterator&amp; operator=(recursive_directory_iterator&amp;&amp;) <ins>noexcept</ins> = default;</pre>
+  </blockquote>
+  
 
 
 
@@ -1580,7 +1691,7 @@ encoded character types.</blockquote>
 <hr>
 <h3><a name="49"></a>49. [PDTS] <tt>path</tt> and <tt>directory_entry</tt> move ctors should not be <tt>noexcept</tt></h3>
 <p><b>Section:</b> X 8.4.1 [path.construct], X 12 [class.directory_entry] <b>Status:</b> <a href="active.html#New">New</a>
- <b>Submitter:</b> Stephan T. Lavavej <b>Opened:</b> 2014-02-03 <b>Last modified:</b> 2014-04-18</p>
+ <b>Submitter:</b> Stephan T. Lavavej <b>Opened:</b> 2014-02-03 <b>Last modified:</b> 2014-05-23</p>
 <p><b>View all other</b> <a href="section-index.html#.4.1 [path.construct">issues</a> in 8.4.1 [path.construct].</p>
 <p><b>View all issues with</b> <a href="status-index.html#New">New</a> status.</p>
 <p><b>Discussion:</b></p>
@@ -1593,15 +1704,35 @@ This is affected by LWG 2319 "<tt>basic_string</tt>'s move constructor should no
 <p><i>[Beman Dawes 2014-02-27]</i></p>
 
 
-<p/>Issues <a href="sg3-active.html#37">37</a>,
-<a href="sg3-active.html#38">38</a>,
-<a href="sg3-active.html#41">41</a>,
-and <a href="sg3-active.html#49">49</a> are concerned with signatures which should or should not
-be <tt>noexcept</tt>. I will provide unified proposed wording for these issues, possibly in a separate paper.
+  <p/>Issues <a href="active.html#37">37</a>,
+  <a href="active.html#38">38</a>,
+  <a href="active.html#41">41</a>,
+  and <a href="active.html#49">49</a> are concerned with signatures which should or should not
+  be <tt>noexcept</tt>. I will provide unified proposed wording for these issues, possibly in a separate paper.
+  
+  <p><i>[21 May 2014 Beman Dawes provides wording.
+See <a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2014/n3944.html#2319">LWG 2319</a> for rationale.
+]</i></p>
+
 
 
 
 <p><b>Proposed resolution:</b></p>
+  <i>Change 8 Class path [class.path]:</i>
+  <blockquote>
+    <pre>path(path&amp;&amp; p) <del>noexcept</del>;</pre>
+  </blockquote>
+
+  <i>Change 8.4.1 path constructors [path.construct]:</i>
+  <blockquote>
+    <pre>path(path&amp;&amp; p) <del>noexcept</del>;</pre>
+  </blockquote>
+
+  <i>Change 12 Class directory_entry [class.directory_entry]:</i>
+  <blockquote>
+    <pre>directory_entry(directory_entry&amp;&amp;) <del>noexcept</del> = default;</pre>
+  </blockquote>
+  
 
 
 
@@ -1832,7 +1963,7 @@ by this Technical Specification introduce a file system race (4.6 [fs.def.race])
 <hr>
 <h3><a name="58"></a>58. [PDTS] POSIX <tt>utime()</tt> is obsolescent</h3>
 <p><b>Section:</b> X 15.25 [fs.op.last_write_time] <b>Status:</b> <a href="active.html#New">New</a>
- <b>Submitter:</b> LWG/SG-3 <b>Opened:</b> 2014-02-13 <b>Last modified:</b> 2014-04-08</p>
+ <b>Submitter:</b> LWG/SG-3 <b>Opened:</b> 2014-02-13 <b>Last modified:</b> 2014-05-20</p>
 <p><b>View all other</b> <a href="section-index.html#5.25 [fs.op.last_write_time">issues</a> in 15.25 [fs.op.last_write_time].</p>
 <p><b>View all issues with</b> <a href="status-index.html#New">New</a> status.</p>
 <p><b>Discussion:</b></p>
@@ -1840,9 +1971,37 @@ by this Technical Specification introduce a file system race (4.6 [fs.def.race])
 and is not accurate to fractions of a second, applications
 should use the <tt>utimensat()</tt> function instead of the obsolescent <tt>utime()</tt> function."</p>
 
+  <p>
+    Suggested resolution: Rewrite the <tt>last_write_time</tt> setter description to utilize <tt>utimensat() or similar.</tt>
+  </p>
+
+  <p><i>[20 May 2014 Beman Dawes supplies proposed wording. He comments:]</i></p>
+
+
+  <p>POSIX supplies two functions, <code>futimens()</code> and <code>utimensat()</code>,
+  as replacements for <code>utime()</code>.
+  <code>futimens()</code> is appropriate for the current TS.
+  <code>utimensat()</code> will be appropriate for a future File System TS that adds the
+  functionality of the whole family of POSIX *<code>at()</code> functions.
+</p>
+
+
 
 <p><b>Proposed resolution:</b></p>
-<p>Rewrite the <tt>last_write_time</tt> setter description to utilize <tt>utimensat() or similar.</tt></p>
+  <p>
+    <i>Change 15.25 Last write time [fs.op.last_write_time]:</i>
+  </p>
+  <blockquote>
+    <p>
+      <i>Effects:</i> Sets the time of last data modification of the file resolved
+      to by <code>p</code> to <code>new_time</code>, as if by POSIX <del>
+        <code>stat()</code>
+        followed by POSIX <code>utime()</code>
+      </del> <ins>
+        <code>futimens()</code>
+      </ins>.
+    </p>
+  </blockquote>
 
 
 
@@ -1851,7 +2010,7 @@ should use the <tt>utimensat()</tt> function instead of the obsolescent <tt>utim
 <hr>
 <h3><a name="59"></a>59. [PDTS] Invalid expressions for bitmask types</h3>
 <p><b>Section:</b> X 10 [fs.enum] <b>Status:</b> <a href="active.html#New">New</a>
- <b>Submitter:</b> Daniel Krügler <b>Opened:</b> 2014-03-01 <b>Last modified:</b> 2014-04-08</p>
+ <b>Submitter:</b> Daniel Krügler <b>Opened:</b> 2014-03-01 <b>Last modified:</b> 2014-05-23</p>
 <p><b>View all issues with</b> <a href="status-index.html#New">New</a> status.</p>
 <p><b>Discussion:</b></p>
 <p/><code>copy_options</code> is declared as <code>enum class</code> type that is a bismask type, but the 
@@ -1928,7 +2087,188 @@ perms::none) </code>
 
 
 <p><b>Proposed resolution:</b></p>
-<p></p>
+  <p>
+    <i>Change 15.3 Copy [fs.op.copy]:</i>
+  </p>
+
+  <blockquote>
+
+    <blockquote>
+      <p>
+        Before the first use of <code>f</code> and <code>t</code>:
+      </p>
+
+      <ul>
+        <li>
+          If <code>
+            (options &amp; copy_options::create_symlinks) <ins>
+              !=
+              copy_options::none
+            </ins> || (options &amp; copy_options::skip_symlinks) <ins>
+              !=
+              copy_options::none</ins></code>, then <code>
+            auto f =
+            symlink_status(from)
+          </code> and if needed <code>auto t = symlink_status(to)</code>.
+        </li>
+        <li>
+          Otherwise, <code>auto f = status(from)</code> and if needed <code>
+            auto
+            t = status(to)
+          </code>.
+        </li>
+      </ul>
+      <p>
+        Report an error as specified in
+        <a href="#Error-reporting" style="color: #2020FF; text-decoration: none">Error reporting (7)</a>
+        if:
+      </p>
+
+      <ul>
+        <li>
+          <code>!exists(f)</code>, or
+        </li>
+        <li>
+          <code>equivalent(from, to)</code>, or
+        </li>
+        <li>
+          <code>is_other(f) || is_other(t)</code>, or
+        </li>
+        <li>
+          <code>is_directory(f) &amp;&amp; is_regular_file(t)</code>.
+        </li>
+      </ul>
+      <p>
+        If <code>is_symlink(f)</code>, then:
+      </p>
+
+      <ul>
+        <li>
+          If <code>
+            <ins>(</ins>options &amp; copy_options::skip_symlinks<ins>) !=
+              copy_options::none</ins></code>, then return.
+        </li>
+        <li>
+          Otherwise if <code>!exists(t)</code>, then <code>
+            copy_symlink(from,
+            to, options)
+          </code>.
+        </li>
+        <li>
+          Otherwise report an error as specified in
+          <a href="#Error-reporting" style="color: #2020FF; text-decoration: none">Error reporting (7)</a>.
+        </li>
+      </ul>
+      <p>
+        Otherwise if <code>is_regular_file(f)</code>, then:
+      </p>
+
+      <ul>
+        <li>
+          If <code>
+            <ins>(</ins>options &amp; copy_options::directories_only<ins>) !=
+              copy_options::none</ins></code>, then return.
+        </li>
+        <li>
+          Otherwise if <code>
+            <ins>(</ins>options &amp; copy_options::create_symlinks<ins>
+              ) !=
+              copy_options::none</ins></code>, then
+          create a symbolic link to the source file.
+        </li>
+        <li>
+          Otherwise if <code>
+            <ins>(</ins>options &amp; copy_options::create_hard_links<ins>) !=
+              copy_options::none</ins></code>,
+          then create a hard link to the source file.
+        </li>
+        <li>
+          Otherwise if <code>is_directory(t)</code>, then <code>
+            copy_file(from, to/from.filename(),
+            options)
+          </code>.
+        </li>
+        <li>
+          Otherwise, <code>copy_file(from, to, options)</code>.
+        </li>
+      </ul>
+    </blockquote>
+  </blockquote>
+  <blockquote>
+    <blockquote>
+      <p>
+        Otherwise if <code>
+          is_directory(f) &amp;&amp; ((options &amp;
+          copy_options::recursive)<ins> != copy_options::none</ins> || <del>!(</del>options <ins>
+            ==
+            copy_options::none</ins><del>)</del>)
+        </code>
+        then:
+      </p>
+
+      <ul>
+        <li>
+          If&nbsp; <code>!exists(t)</code>, then <code>
+            create_directory(to,
+            from)
+          </code>.
+        </li>
+        <li>
+          Then, iterate over the files in <code>from</code>, as if by <code>
+            for
+            (directory_entry&amp; x : directory_iterator(from))
+          </code>, and for each
+          iteration <code>
+            copy(x.path(), to/x.path().filename(), options |
+            copy_options::<i>unspecified</i>)
+          </code>.
+        </li>
+      </ul>
+
+    </blockquote>
+
+  </blockquote>
+
+  <p>
+    <i>Change 15.4 Copy file [fs.op.copy_file]:</i>
+  </p>
+  <blockquote>
+    <p>
+      If&nbsp; <code>exists(to) &amp;&amp;</code> <code>
+        <del>!</del>(options &amp; (copy_options::skip_existing
+        | copy_options::overwrite_existing | copy_options::update_existing)) <ins>
+          ==
+          copy_options::none
+        </ins>
+      </code> report a
+      file already exists error as specified in
+      <a href="#Error-reporting" style="color: #2020FF; text-decoration: none">Error reporting (7)</a>.
+    </p>
+    <p>
+      If <code>
+        !exists(to) || (options &amp; copy_options::overwrite_existing)<ins>
+          != copy_options::none
+        </ins> || ((options &amp; copy_options::update_existing)<ins>
+          != copy_options::none
+        </ins>
+        &amp;&amp; last_write_time(from) &gt; last_write_time(to)) || <del>!</del>(options &amp;
+        (copy_options::skip_existing
+        | copy_options::overwrite_existing | copy_options::update_existing))<ins> == copy_options::none</ins>
+      </code>
+      copy the contents and attributes of the file <code>from</code> resolves to
+      the file <code>to</code> resolves to.
+    </p>
+  </blockquote>
+
+  <p>
+    <i>Change 15.26 Permissions  [fs.op.permissions]:</i>
+  </p>
+  <blockquote>
+    <p>
+      <i>Requires:</i> <code>!((prms &amp; <ins>perms::</ins>add_perms) <ins>!= perms::none</ins> &amp;&amp; (prms &amp; <ins>perms::</ins>remove_perms) <ins>!= perms::none</ins>)</code>.
+    </p>
+  </blockquote>
+
 
 
 
@@ -1981,14 +2321,26 @@ the overall policy for handling memory allocation failures.
 
 
 <hr>
-<h3><a name="61"></a>61. [PDTS] Surprising <tt>equivalent()</tt> behavior if neither file exists</h3>
+<h3><a name="61"></a>61. Surprising <tt>equivalent()</tt> behavior if neither file exists</h3>
 <p><b>Section:</b> X 6 [fs.filesystem.synopsis] <b>Status:</b> <a href="active.html#New">New</a>
- <b>Submitter:</b> Beman Dawes <b>Opened:</b> 2014-04-12 <b>Last modified:</b> 2014-04-18</p>
+ <b>Submitter:</b> Beman Dawes <b>Opened:</b> 2014-04-12 <b>Last modified:</b> 2014-05-23</p>
 <p><b>View other</b> <a href="open-index.html# [fs.filesystem.synopsis">active issues</a> in 6 [fs.filesystem.synopsis].</p>
 <p><b>View all other</b> <a href="section-index.html# [fs.filesystem.synopsis">issues</a> in 6 [fs.filesystem.synopsis].</p>
 <p><b>View all issues with</b> <a href="status-index.html#New">New</a> status.</p>
 <p><b>Discussion:</b></p>
-<p></p>
+<p>
+  <code>
+    bool equivalent(const path&amp; p1, const path&amp; p2);
+  </code> has always thrown a exception if neither file exists,
+   with rationale that if they don't exist, it isn't possible to tell
+   if two paths are equivalent. Dave Abrahams has reported that this
+   is counter-intuitive and hard to teach.
+</p>
+  <p>An alternative if neither path exists would be to return true
+  if they are lexically equal (operator==), otherwise return false.</p>
+  <p>This was not a national body comment, and Dave is the only one
+  I can recall ever complaining about the current behavior. On the
+  other hand, any complaint from Dave deserves serious consideration.</p>
 
 
 <p><b>Proposed resolution:</b></p>
