@@ -4,13 +4,25 @@
 ] >
 
 <issue num="61" status="New">
-<title>[PDTS] Surprising <tt>equivalent()</tt> behavior if neither file exists</title>
+<title>Surprising <tt>equivalent()</tt> behavior if neither file exists</title>
 <section><sref ref="6 [fs.filesystem.synopsis]"/></section>
 <submitter>Beman Dawes</submitter>
 <date>12 Apr 2014</date>
 
 <discussion>
-<p></p>
+<p>
+  <code>
+    bool equivalent(const path&amp; p1, const path&amp; p2);
+  </code> has always thrown a exception if neither file exists,
+   with rationale that if they don't exist, it isn't possible to tell
+   if two paths are equivalent. Dave Abrahams has reported that this
+   is counter-intuitive and hard to teach.
+</p>
+  <p>An alternative if neither path exists would be to return true
+  if they are lexically equal (operator==), otherwise return false.</p>
+  <p>This was not a national body comment, and Dave is the only one
+  I can recall ever complaining about the current behavior. On the
+  other hand, any complaint from Dave deserves serious consideration.</p>
 </discussion>
 
 <resolution>
