@@ -23,11 +23,11 @@
 <table>
 <tr>
   <td align="left">Doc. no.</td>
-  <td align="left">D4003</td>
+  <td align="left">N4003</td>
 </tr>
 <tr>
   <td align="left">Date:</td>
-  <td align="left">2014-05-23</td>
+  <td align="left">2014-05-24</td>
 </tr>
 <tr>
   <td align="left">Project:</td>
@@ -39,7 +39,7 @@
 </tr>
 </table>
 <h1>File System TS Active Issues List (Revision R1)</h1>
-<p><p>Revised 2014-05-23 at 18:05:11 UTC</p>
+<p><p>Revised 2014-05-24 at 12:05:47 UTC</p>
 </p>
   <p>Reference ISO/IEC TS 18822</p>
   <p>Also see:</p>
@@ -153,13 +153,13 @@ ownership of it.
 <ul>
 <li>R1: 2014-05-23 SG-3 File System TS<ul>
 <li><b>Summary:</b><ul>
-<li>26 open issues, up by 26.</li>
+<li>27 open issues, up by 27.</li>
 <li>35 closed issues, up by 35.</li>
-<li>61 issues total, up by 61.</li>
+<li>62 issues total, up by 62.</li>
 </ul></li>
 <li><b>Details:</b><ul>
 <li>Added the following 3 Review issues: <a href="active.html#25">25</a>, <a href="active.html#27">27</a>, <a href="active.html#57">57</a>.</li>
-<li>Added the following 18 New issues: <a href="active.html#34">34</a>, <a href="active.html#35">35</a>, <a href="active.html#36">36</a>, <a href="active.html#37">37</a>, <a href="active.html#38">38</a>, <a href="active.html#40">40</a>, <a href="active.html#41">41</a>, <a href="active.html#42">42</a>, <a href="active.html#45">45</a>, <a href="active.html#48">48</a>, <a href="active.html#49">49</a>, <a href="active.html#54">54</a>, <a href="active.html#56">56</a>, <a href="active.html#58">58</a>, <a href="active.html#59">59</a>, <a href="active.html#60">60</a>, <a href="active.html#61">61</a>, <a href="active.html#62">62</a>.</li>
+<li>Added the following 19 New issues: <a href="active.html#34">34</a>, <a href="active.html#35">35</a>, <a href="active.html#36">36</a>, <a href="active.html#37">37</a>, <a href="active.html#38">38</a>, <a href="active.html#40">40</a>, <a href="active.html#41">41</a>, <a href="active.html#42">42</a>, <a href="active.html#45">45</a>, <a href="active.html#48">48</a>, <a href="active.html#49">49</a>, <a href="active.html#54">54</a>, <a href="active.html#56">56</a>, <a href="active.html#58">58</a>, <a href="active.html#59">59</a>, <a href="active.html#60">60</a>, <a href="active.html#61">61</a>, <a href="active.html#62">62</a>, <a href="active.html#63">63</a>.</li>
 <li>Added the following 5 Open issues: <a href="active.html#4">4</a>, <a href="active.html#5">5</a>, <a href="active.html#11">11</a>, <a href="active.html#22">22</a>, <a href="active.html#53">53</a>.</li>
 <li>Added the following NAD Future issue: <a href="closed.html#12">12</a>.</li>
 <li>Added the following 22 WP issues: <a href="defects.html#1">1</a>, <a href="defects.html#2">2</a>, <a href="defects.html#3">3</a>, <a href="defects.html#6">6</a>, <a href="defects.html#7">7</a>, <a href="defects.html#8">8</a>, <a href="defects.html#9">9</a>, <a href="defects.html#14">14</a>, <a href="defects.html#15">15</a>, <a href="defects.html#16">16</a>, <a href="defects.html#18">18</a>, <a href="defects.html#19">19</a>, <a href="defects.html#21">21</a>, <a href="defects.html#24">24</a>, <a href="defects.html#29">29</a>, <a href="defects.html#32">32</a>, <a href="defects.html#33">33</a>, <a href="defects.html#44">44</a>, <a href="defects.html#47">47</a>, <a href="defects.html#50">50</a>, <a href="defects.html#52">52</a>, <a href="defects.html#55">55</a>.</li>
@@ -860,7 +860,7 @@ possible race conditions?</p>
 <hr>
 <h3><a name="25"></a>25. [PDTS] Copying equivalent paths effects not specified</h3>
 <p><b>Section:</b> X 15.4 [fs.op.copy_file] <b>Status:</b> <a href="active.html#Review">Review</a>
- <b>Submitter:</b> CH-15 <b>Opened:</b> 2014-01-20 <b>Last modified:</b> 2014-04-18</p>
+ <b>Submitter:</b> CH-15 <b>Opened:</b> 2014-01-20 <b>Last modified:</b> 2014-05-24</p>
 <p><b>View all issues with</b> <a href="status-index.html#Review">Review</a> status.</p>
 <p><b>Discussion:</b></p>
 <p>Even if <tt>to</tt> and <tt>from</tt> are different paths, they may be equivalent.</p>
@@ -942,7 +942,7 @@ resolve to the same file.</p>
           <li><ins>
               <code>exists(to)</code> and <code>
                 (options &amp; (copy_options::skip_existing
-                | copy_options::overwrite_existing | copy_options::update_existing)) == 0.
+                | copy_options::overwrite_existing | copy_options::update_existing)) == copy_options::none.
               </code>
           </ins></li>
         </ul>
@@ -957,13 +957,13 @@ resolve to the same file.</p>
           <li><ins>
             <code>exists(to)</code> and <code>
               (options &amp;
-              copy_options::overwrite_existing) != 0
+              copy_options::overwrite_existing) != copy_options::none
             </code>, or
           </ins></li>
           <li><ins>
             <code>exists(to)</code> and <code>
               (options &amp;
-              copy_options::update_existing) != 0
+              copy_options::update_existing) != copy_options::none
             </code> and <code>from</code> is more
             recent than <code>to</code>, determined as if by use of the <code>
               last_write_time
@@ -1136,7 +1136,7 @@ uintmax_t file_size(const path&amp; p, error_code&amp; ec) noexcept;</pre>
 <hr>
 <h3><a name="35"></a>35. [PDTS] <tt>directory_options::skip_permission_denied</tt> is not used</h3>
 <p><b>Section:</b> X 6 [fs.filesystem.synopsis] <b>Status:</b> <a href="active.html#New">New</a>
- <b>Submitter:</b> P.J. Plauger <b>Opened:</b> 2014-01-30 <b>Last modified:</b> 2014-04-18</p>
+ <b>Submitter:</b> P.J. Plauger <b>Opened:</b> 2014-01-30 <b>Last modified:</b> 2014-05-24</p>
 <p><b>View other</b> <a href="open-index.html# [fs.filesystem.synopsis">active issues</a> in 6 [fs.filesystem.synopsis].</p>
 <p><b>View all other</b> <a href="section-index.html# [fs.filesystem.synopsis">issues</a> in 6 [fs.filesystem.synopsis].</p>
 <p><b>View all issues with</b> <a href="status-index.html#New">New</a> status.</p>
@@ -1182,7 +1182,7 @@ directory_iteratorconst path&amp; p,
     </p>
     <p>
       <ins>
-        However, if <code>options &amp; directory_options::skip_permissions_denied != 0</code>
+        However, if <code>options &amp; directory_options::skip_permissions_denied != directory_options::none</code>
         and construction encounters an error indicating that permission to access&nbsp;
         <code>p</code> is denied, construct the end iterator and do not report an
         error.
@@ -1203,7 +1203,7 @@ recursive_directory_iterator(const path&amp; p, directory_options options, error
     </p>
     <p>
       <ins>
-        However, if <code>options &amp; directory_options::skip_permissions_denied != 0</code>
+        However, if <code>options &amp; directory_options::skip_permissions_denied != directory_options::none</code>
         and construction encounters an error indicating that permission to access&nbsp;
         <code>p</code> is denied, construct the end iterator and do not report an
         error.
@@ -1230,9 +1230,10 @@ recursive_directory_iterator&amp; increment(error_code&amp; ec);</pre>
           recursive_directory_iterator()</code>.</li>
       <li>Otherwise if <code>recursion_pending() &amp;&amp; is_directory(this-&gt;status())
           &amp;&amp; (!is_symlink(this-&gt;symlink_status()) || (options() &amp;
-          directory_options::follow_directory_symlink) != 0)</code> then <ins>either</ins> directory
+        directory_options::follow_directory_symlink) != <del>0</del> <ins>directory_options::none</ins>)</code> then <ins>either</ins> directory
         <code>(*this)-&gt;path()</code> is recursively iterated into
-        <ins>or, if <code>options() &amp; directory_options::skip_permissions_denied != 0</code>
+        <ins>or, if <code>options() &amp; directory_options::skip_permissions_denied != directory_options::none
+      </code>
           and an error indicating that permission to access directory
           <code>(*this)-&gt;path()</code> is denied, then directory <code>(*this)-&gt;path()</code> is
           treated as an empty directory and no error is reported</ins>.</li>
@@ -1246,7 +1247,7 @@ recursive_directory_iterator&amp; increment(error_code&amp; ec);</pre>
 <hr>
 <h3><a name="36"></a>36. [PDTS] <tt>copy_options::copy_symlinks</tt> is not used</h3>
 <p><b>Section:</b> X 10.2 [enum.copy_options] <b>Status:</b> <a href="active.html#New">New</a>
- <b>Submitter:</b> P.J. Plauger <b>Opened:</b> 2014-01-30 <b>Last modified:</b> 2014-05-20</p>
+ <b>Submitter:</b> P.J. Plauger <b>Opened:</b> 2014-01-30 <b>Last modified:</b> 2014-05-24</p>
 <p><b>View all other</b> <a href="section-index.html#0.2 [enum.copy_options">issues</a> in 10.2 [enum.copy_options].</p>
 <p><b>View all issues with</b> <a href="status-index.html#New">New</a> status.</p>
 <p><b>Discussion:</b></p>
@@ -1269,7 +1270,7 @@ recursive_directory_iterator&amp; increment(error_code&amp; ec);</pre>
       <ul>
         <li>
           If <code>options &amp; copy_options::skip_symlinks</code>, then return.&nbsp;
-          <span style="font-style: italic; background-color: #C0C0C0">See issue 59</span>
+          <span style="font-style: italic; background-color: #C0C0C0">Missing != copy_options::none fixed by issue 59</span>
         </li>
         <li>
           Otherwise if <code>
@@ -2010,7 +2011,7 @@ should use the <tt>utimensat()</tt> function instead of the obsolescent <tt>utim
 <hr>
 <h3><a name="59"></a>59. [PDTS] Invalid expressions for bitmask types</h3>
 <p><b>Section:</b> X 10 [fs.enum] <b>Status:</b> <a href="active.html#New">New</a>
- <b>Submitter:</b> Daniel Krügler <b>Opened:</b> 2014-03-01 <b>Last modified:</b> 2014-05-23</p>
+ <b>Submitter:</b> Daniel Krügler <b>Opened:</b> 2014-03-01 <b>Last modified:</b> 2014-05-24</p>
 <p><b>View all issues with</b> <a href="status-index.html#New">New</a> status.</p>
 <p><b>Discussion:</b></p>
 <p/><code>copy_options</code> is declared as <code>enum class</code> type that is a bismask type, but the 
@@ -2083,6 +2084,8 @@ perms::none) </code>
   converted to bool</li>
 </ul>
 
+  <p><i>[20 May 2014 Beman Dawes provides proposed wording. Fixing invalid C++ is editorial, but treating
+  this as an issue ensures more people review the proposed changes.]</i></p>
 
 
 
@@ -2370,6 +2373,65 @@ the overall policy for handling memory allocation failures.
       <ins>Template parameters named <code>Allocator</code> shall meet the C++ Standard's
       library Allocator requirements (C++11 §17.6.3.5)</ins></p>
   </blockquote>  
+
+
+
+
+
+<hr>
+<h3><a name="63"></a>63. Enable efficient retrieval of file size from <code>directory_entry</code></h3>
+<p><b>Section:</b> X [fs.op.file_size] <b>Status:</b> <a href="active.html#New">New</a>
+ <b>Submitter:</b> Gor Nishanov <b>Opened:</b> 2014-05-22 <b>Last modified:</b> 2014-05-24</p>
+<p><b>View all issues with</b> <a href="status-index.html#New">New</a> status.</p>
+<p><b>Discussion:</b></p>
+<p>
+  On Windows, the <code>FindFileData</code> structure, which is the underlying data type for <code>directory_entry</code>, contains the file size as one of the fields.
+
+  Thus efficient enumeration of files and getting their sizes is possible without doing a separate query for the file size.
+
+</p>
+
+
+<p><b>Proposed resolution:</b></p>
+  <p>
+    <i>
+      In section 12 Class <code>directory_entry</code> [class.directory_entry] add the
+      following observer declarations:
+    </i>
+  </p>
+  <p></p>
+  <blockquote>
+    <pre>
+      uintmax_t file_size();
+      uintmax_t file_size(error_code&amp; ec) noexcept;
+    </pre>
+  </blockquote>
+  <p>
+    <i>
+      In section 12.3 <code>directory_entry</code> observers [directory_entry.obs]
+      add the following:
+    </i>
+  </p>
+  <p></p>
+  <blockquote>
+    <pre>
+      uintmax_t file_size();
+      uintmax_t file_size(error_code&amp; ec) noexcept;
+    </pre>
+    <p></p>
+    <blockquote>
+      <p>
+        <i>Returns:</i> if <code>*this</code> contains a cached file size, return
+        it.
+        Otherwise return <code>file_size(path())</code> or <code>file_size(path(), ec)</code>
+        respectively.
+      </p>
+      <p>
+        <i>Throws:</i> As specified in Error reporting (7).
+      </p>
+    </blockquote>
+  </blockquote>
+
 
 
 
