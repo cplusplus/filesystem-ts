@@ -86,7 +86,7 @@ resolve to the same file.</p>
           <li><ins>
               <code>exists(to)</code> and <code>
                 (options &amp; (copy_options::skip_existing
-                | copy_options::overwrite_existing | copy_options::update_existing)) == 0.
+                | copy_options::overwrite_existing | copy_options::update_existing)) == copy_options::none.
               </code>
           </ins></li>
         </ul>
@@ -101,13 +101,13 @@ resolve to the same file.</p>
           <li><ins>
             <code>exists(to)</code> and <code>
               (options &amp;
-              copy_options::overwrite_existing) != 0
+              copy_options::overwrite_existing) != copy_options::none
             </code>, or
           </ins></li>
           <li><ins>
             <code>exists(to)</code> and <code>
               (options &amp;
-              copy_options::update_existing) != 0
+              copy_options::update_existing) != copy_options::none
             </code> and <code>from</code> is more
             recent than <code>to</code>, determined as if by use of the <code>
               last_write_time
