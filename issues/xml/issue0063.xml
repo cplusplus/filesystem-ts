@@ -1,0 +1,63 @@
+<?xml version='1.0' encoding='utf-8' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="63" status="New">
+<title>Enable efficient retrieval of file size from <code>directory_entry</code></title>
+<section><sref ref="[fs.op.file_size]"/></section>
+<submitter>Gor Nishanov</submitter>
+<date>22 May 2014</date>
+
+<discussion>
+<p>
+  On Windows, the <code>FindFileData</code> structure, which is the underlying data type for <code>directory_entry</code>, contains the file size as one of the fields.
+
+  Thus efficient enumeration of files and getting their sizes is possible without doing a separate query for the file size.
+
+</p>
+</discussion>
+
+<resolution>
+  <p>
+    <i>
+      In section 12 Class <code>directory_entry</code> [class.directory_entry] add the
+      following observer declarations:
+    </i>
+  </p>
+  <p></p>
+  <blockquote>
+    <pre>
+      uintmax_t file_size();
+      uintmax_t file_size(error_code&amp; ec) noexcept;
+    </pre>
+  </blockquote>
+  <p>
+    <i>
+      In section 12.3 <code>directory_entry</code> observers [directory_entry.obs]
+      add the following:
+    </i>
+  </p>
+  <p></p>
+  <blockquote>
+    <pre>
+      uintmax_t file_size();
+      uintmax_t file_size(error_code&amp; ec) noexcept;
+    </pre>
+    <p></p>
+    <blockquote>
+      <p>
+        <i>Returns:</i> if <code>*this</code> contains a cached file size, return
+        it.
+        Otherwise return <code>file_size(path())</code> or <code>file_size(path(), ec)</code>
+        respectively.
+      </p>
+      <p>
+        <i>Throws:</i> As specified in Error reporting (7).
+      </p>
+    </blockquote>
+  </blockquote>
+
+</resolution>
+
+</issue>
