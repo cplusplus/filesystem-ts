@@ -23,7 +23,7 @@
 <resolution>
 <p><i>Effects:</i> Establishes the postcondition by attempting to create the 
   directory <code>p</code> resolves to, as if by POSIX <code>
-  mkdir()</code> with a second argument of <del>S_IRWXU|S_IRWXG|S_IRWXO</del> <ins><code>perms::all</code></ins>. Creation 
+  mkdir()</code> with a second argument of <del>S_IRWXU|S_IRWXG|S_IRWXO</del> <ins><code>static_cast&lt;int&gt;(perms::all)</code></ins>. Creation 
   failure because <code>p</code> resolves to an existing directory shall not be 
   treated as an error. </p>
 

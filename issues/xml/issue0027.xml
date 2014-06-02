@@ -38,12 +38,13 @@ occurs.", one would expect that <b>both</b> signatures return that if an error o
 <pre>uintmax_t file_size(const path&amp; p);
 uintmax_t file_size(const path&amp; p, error_code&amp; ec) noexcept;</pre>
 <blockquote>
-  <p><i>Returns:</i> If <code>exists(p) &amp;&amp; is_regular_file(p)</code>, the size 
-  in bytes 
+  <p><i>Returns:</i> If <code>
+    <ins>!</ins>exists(p) <del>&amp;&amp;</del>  <ins>|| !</ins>is_regular_file(p)</code><ins>
+      an error is reported (7). Otherwise</ins>, the size in bytes 
   of the file <code>p</code> resolves to, determined as if by the value of the 
   POSIX <code>stat</code> structure member <code>st_size</code> 
   obtained as if by POSIX <code>stat()</code>. 
-  Otherwise<del>, <code>static_cast&lt;uintmax_t&gt;(-1)</code></del> <ins>an error is reported (7)</ins>. The signature with 
+  <del>Otherwise, <code>static_cast&lt;uintmax_t&gt;(-1)</code>.</del> The signature with 
   argument <code>ec</code> 
   returns <code>static_cast&lt;uintmax_t&gt;(-1)</code> if an error occurs.</p>
   <p><i>Throws:</i> As specified in <a href="#Error-reporting">Error reporting <ins>(7)</ins></a>.</p>
