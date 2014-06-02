@@ -27,7 +27,7 @@
 </tr>
 <tr>
   <td align="left">Date:</td>
-  <td align="left">2014-05-24</td>
+  <td align="left">2014-06-02</td>
 </tr>
 <tr>
   <td align="left">Project:</td>
@@ -39,7 +39,7 @@
 </tr>
 </table>
 <h1>File System TS Active Issues List (Revision R1)</h1>
-<p><p>Revised 2014-05-24 at 12:05:47 UTC</p>
+<p><p>Revised 2014-06-02 at 17:06:20 UTC</p>
 </p>
   <p>Reference ISO/IEC TS 18822</p>
   <p>Also see:</p>
@@ -370,7 +370,7 @@ ownership of it.
 <hr>
 <h3><a name="4"></a>4. [PDTS] Need definition of dot and dot-dot</h3>
 <p><b>Section:</b> X 4.14 [fs.def.parent] <b>Status:</b> <a href="active.html#Open">Open</a>
- <b>Submitter:</b> CH-3 <b>Opened:</b> 2014-01-20 <b>Last modified:</b> 2014-05-22</p>
+ <b>Submitter:</b> CH-3 <b>Opened:</b> 2014-01-20 <b>Last modified:</b> 2014-05-24</p>
 <p><b>View all issues with</b> <a href="status-index.html#Open">Open</a> status.</p>
 <p><b>Discussion:</b></p>
 <p>The concept of a parent directory for dot or dotdot exists, but the definition doesn't apply.</p>
@@ -409,7 +409,7 @@ ownership of it.
 <hr>
 <h3><a name="5"></a>5. [PDTS] Parent of root directory unspecified</h3>
 <p><b>Section:</b> X 8.1 [path.generic] <b>Status:</b> <a href="active.html#Open">Open</a>
- <b>Submitter:</b> CH-4 <b>Opened:</b> 2014-01-20 <b>Last modified:</b> 2014-05-22</p>
+ <b>Submitter:</b> CH-4 <b>Opened:</b> 2014-01-20 <b>Last modified:</b> 2014-06-02</p>
 <p><b>View all issues with</b> <a href="status-index.html#Open">Open</a> status.</p>
 <p><b>Discussion:</b></p>
 <p>8.1 [path.generic] says:
@@ -427,7 +427,10 @@ specified what "/.." and "/../.." refer to.</p>
   ]</i></p>
 
 
-  <p><i>[22 May 2014 Beman provides wording, taken directly from POSIX.]</i></p>
+  <p><i>[
+    22 May 2014 Beman provides wording, taken directly from POSIX.
+    See pubs.opengroup.org/onlinepubs/9699919799/xrat/V4_xbd_chap04.html#tag_21_04_12
+  ]</i></p>
 
 
 
@@ -455,7 +458,7 @@ Specific filenames may have special meanings for a particular operating system.
 <hr>
 <h3><a name="11"></a>11. [PDTS] Lack of <tt>relative()</tt> operation function</h3>
 <p><b>Section:</b> X 6 &amp; 15 <b>Status:</b> <a href="active.html#Open">Open</a>
- <b>Submitter:</b> GB-1 <b>Opened:</b> 2014-01-20 <b>Last modified:</b> 2014-05-19</p>
+ <b>Submitter:</b> GB-1 <b>Opened:</b> 2014-01-20 <b>Last modified:</b> 2014-05-24</p>
 <p><b>View all issues with</b> <a href="status-index.html#Open">Open</a> status.</p>
 <p><b>Discussion:</b></p>
 <p>
@@ -835,7 +838,7 @@ return tmp;</span></pre>
 <hr>
 <h3><a name="22"></a>22. [PDTS] <tt>directory_iterator</tt> underspecified</h3>
 <p><b>Section:</b> X 13.1 [directory_iterator.members] <b>Status:</b> <a href="active.html#Open">Open</a>
- <b>Submitter:</b> CH-13 <b>Opened:</b> 2014-01-20 <b>Last modified:</b> 2014-04-18</p>
+ <b>Submitter:</b> CH-13 <b>Opened:</b> 2014-01-20 <b>Last modified:</b> 2014-05-24</p>
 <p><b>View all issues with</b> <a href="status-index.html#Open">Open</a> status.</p>
 <p><b>Discussion:</b></p>
 <p>The behaviour of increment is underspecified: What happens if the implementation
@@ -996,7 +999,7 @@ resolve to the same file.</p>
 <hr>
 <h3><a name="27"></a>27. [PDTS] Return value of <tt>uintmax_t</tt> on error?</h3>
 <p><b>Section:</b> X 15.14 [fs.op.file_size] <b>Status:</b> <a href="active.html#Review">Review</a>
- <b>Submitter:</b> FI-9 <b>Opened:</b> 2014-01-20 <b>Last modified:</b> 2014-04-18</p>
+ <b>Submitter:</b> FI-9 <b>Opened:</b> 2014-01-20 <b>Last modified:</b> 2014-06-02</p>
 <p><b>View all issues with</b> <a href="status-index.html#Review">Review</a> status.</p>
 <p><b>Discussion:</b></p>
 <p>"The signature with argument <tt>ec</tt> returns <tt>static_cast&lt;uintmax_t&gt;(-1)</tt> if an error
@@ -1028,12 +1031,13 @@ occurs.", one would expect that <b>both</b> signatures return that if an error o
 <pre>uintmax_t file_size(const path&amp; p);
 uintmax_t file_size(const path&amp; p, error_code&amp; ec) noexcept;</pre>
 <blockquote>
-  <p><i>Returns:</i> If <code>exists(p) &amp;&amp; is_regular_file(p)</code>, the size 
-  in bytes 
+  <p><i>Returns:</i> If <code>
+    <ins>!</ins>exists(p) <del>&amp;&amp;</del>  <ins>|| !</ins>is_regular_file(p)</code><ins>
+      an error is reported (7). Otherwise</ins>, the size in bytes 
   of the file <code>p</code> resolves to, determined as if by the value of the 
   POSIX <code>stat</code> structure member <code>st_size</code> 
   obtained as if by POSIX <code>stat()</code>. 
-  Otherwise<del>, <code>static_cast&lt;uintmax_t&gt;(-1)</code></del> <ins>an error is reported (7)</ins>. The signature with 
+  <del>Otherwise, <code>static_cast&lt;uintmax_t&gt;(-1)</code>.</del> The signature with 
   argument <code>ec</code> 
   returns <code>static_cast&lt;uintmax_t&gt;(-1)</code> if an error occurs.</p>
   <p><i>Throws:</i> As specified in <a href="#Error-reporting">Error reporting <ins>(7)</ins></a>.</p>
@@ -1050,7 +1054,7 @@ uintmax_t file_size(const path&amp; p, error_code&amp; ec) noexcept;</pre>
     [PDTS] <tt>enum class directory_options</tt> has no summary
   </h3>
 <p><b>Section:</b> X 6 [fs.filesystem.synopsis] <b>Status:</b> <a href="active.html#New">New</a>
- <b>Submitter:</b> P.J. Plauger <b>Opened:</b> 2014-01-30 <b>Last modified:</b> 2014-04-18</p>
+ <b>Submitter:</b> P.J. Plauger <b>Opened:</b> 2014-01-30 <b>Last modified:</b> 2014-06-02</p>
 <p><b>View other</b> <a href="open-index.html# [fs.filesystem.synopsis">active issues</a> in 6 [fs.filesystem.synopsis].</p>
 <p><b>View all other</b> <a href="section-index.html# [fs.filesystem.synopsis">issues</a> in 6 [fs.filesystem.synopsis].</p>
 <p><b>View all issues with</b> <a href="status-index.html#New">New</a> status.</p>
@@ -1094,7 +1098,7 @@ uintmax_t file_size(const path&amp; p, error_code&amp; ec) noexcept;</pre>
           <b>Value</b>
         </td>
         <td>
-          <b>Definition or notes</b>
+          <b>Meaning</b>
         </td>
       </tr>
 
@@ -1105,7 +1109,7 @@ uintmax_t file_size(const path&amp; p, error_code&amp; ec) noexcept;</pre>
         <td align="center">
           <code>0</code>
         </td>
-        <td>&nbsp;</td>
+        <td>(Default) Skip directory symlinks, permission denied is error.</td>
       </tr>
       <tr>
         <td>
@@ -1301,7 +1305,7 @@ recursive_directory_iterator&amp; increment(error_code&amp; ec);</pre>
 <hr>
 <h3><a name="37"></a>37. [PDTS] All functions with <tt>error_code</tt> arguments should be <tt>noexcept</tt></h3>
 <p><b>Section:</b> X 15.2 [fs.op.canonical], X 15.11 [fs.op.current_path], X 15.27 [fs.op.read_symlink], X 15.36 [fs.op.system_complete], X 15.37 [fs.op.temp_dir_path], X 15.38 [fs.op.unique_path], X 8.4 [path.member] <b>Status:</b> <a href="active.html#New">New</a>
- <b>Submitter:</b> P.J. Plauger <b>Opened:</b> 2014-01-30 <b>Last modified:</b> 2014-05-23</p>
+ <b>Submitter:</b> P.J. Plauger <b>Opened:</b> 2014-01-30 <b>Last modified:</b> 2014-05-24</p>
 <p><b>View all issues with</b> <a href="status-index.html#New">New</a> status.</p>
 <p><b>Discussion:</b></p>
 <p>
@@ -1372,7 +1376,7 @@ be <tt>noexcept</tt>. I will provide unified proposed wording for these issues, 
 <hr>
 <h3><a name="38"></a>38. [PDTS] Make certain functions <tt>noexcept</tt> and drop <tt>error_code</tt> version</h3>
 <p><b>Section:</b> X 12.3 [directory_entry.obs], X 15.12 [fs.op.exists], X 15.16 [fs.op.is_block_file], X 15.17 [fs.op.is_char_file], X 15.18 [fs.op.is_directory], X 15.19 [fs.op.is_empty], X 15.20 [fs.op.is_fifo], X 15.21 [fs.op.is_other], X 15.22 [fs.op.is_regular_file], X 15.23 [fs.op.is_socket], X 15.24 [fs.op.is_symlink], X 15.33 [fs.op.status], X 15.35 [fs.op.symlink_status], X 15.38 [fs.op.unique_path] <b>Status:</b> <a href="active.html#New">New</a>
- <b>Submitter:</b> P.J. Plauger <b>Opened:</b> 2014-01-30 <b>Last modified:</b> 2014-05-23</p>
+ <b>Submitter:</b> P.J. Plauger <b>Opened:</b> 2014-01-30 <b>Last modified:</b> 2014-05-24</p>
 <p><b>View all other</b> <a href="section-index.html#2.3 [directory_entry.obs">issues</a> in 12.3 [directory_entry.obs].</p>
 <p><b>View all issues with</b> <a href="status-index.html#New">New</a> status.</p>
 <p><b>Discussion:</b></p>
@@ -1427,7 +1431,7 @@ Based on this interpretation of the issue discussion I recommend to resolve this
 <hr>
 <h3><a name="40"></a>40. [PDTS] <tt>class directory_entry</tt> should retain <tt>operator const path&amp;()</tt> from V2</h3>
 <p><b>Section:</b> X 12 [class.directory_entry] <b>Status:</b> <a href="active.html#New">New</a>
- <b>Submitter:</b> P.J. Plauger <b>Opened:</b> 2014-01-30 <b>Last modified:</b> 2014-05-19</p>
+ <b>Submitter:</b> P.J. Plauger <b>Opened:</b> 2014-01-30 <b>Last modified:</b> 2014-06-02</p>
 <p><b>View other</b> <a href="open-index.html#2 [class.directory_entry">active issues</a> in 12 [class.directory_entry].</p>
 <p><b>View all other</b> <a href="section-index.html#2 [class.directory_entry">issues</a> in 12 [class.directory_entry].</p>
 <p><b>View all issues with</b> <a href="status-index.html#New">New</a> status.</p>
@@ -1438,6 +1442,15 @@ Based on this interpretation of the issue discussion I recommend to resolve this
 
   <p><i>[2014-05-19 Beman Dawes supplied proposed wording.]</i></p>
 
+  <p><i>[2014-06-02 Beman Dawes provides rationale:]</i></p>
+
+  <blockquote>
+    This conversion operator was removed when <code>status()</code> and <code>symlink_status()</code>
+    were added during the transition from V2 to V3 as it seemed a bit unusual to have a conversion
+    operator for one of the several values held. Users complained as they had found the
+    automatic conversion convenient in the most common <code>directory_entry</code> use case.
+  </blockquote>
+  
 
 
 <p><b>Proposed resolution:</b></p>
@@ -1476,7 +1489,7 @@ file_status  symlink_status(error_code&amp; ec) const noexcept;</pre>
 <hr>
 <h3><a name="41"></a>41. [PDTS] <tt>directory_iterator</tt>, <tt>recursive_directory_iterator</tt>, move construct/assign should be <tt>noexcept</tt></h3>
 <p><b>Section:</b> X 13 [class.directory_iterator], X 14 [class.rec.dir.itr] <b>Status:</b> <a href="active.html#New">New</a>
- <b>Submitter:</b> P.J. Plauger <b>Opened:</b> 2014-01-30 <b>Last modified:</b> 2014-05-23</p>
+ <b>Submitter:</b> P.J. Plauger <b>Opened:</b> 2014-01-30 <b>Last modified:</b> 2014-05-24</p>
 <p><b>View all other</b> <a href="section-index.html#3 [class.directory_iterator">issues</a> in 13 [class.directory_iterator].</p>
 <p><b>View all issues with</b> <a href="status-index.html#New">New</a> status.</p>
 <p><b>Discussion:</b></p>
@@ -1544,7 +1557,7 @@ recursive_directory_iterator&amp; operator=(recursive_directory_iterator&amp;&am
 [PDTS] <tt>class path</tt> should have defaulted constructors/destructor/assignments.
 </h3>
 <p><b>Section:</b> X 8 [class.path] <b>Status:</b> <a href="active.html#New">New</a>
- <b>Submitter:</b> P.J. Plauger <b>Opened:</b> 2014-01-30 <b>Last modified:</b> 2014-04-18</p>
+ <b>Submitter:</b> P.J. Plauger <b>Opened:</b> 2014-01-30 <b>Last modified:</b> 2014-05-24</p>
 <p><b>View all other</b> <a href="section-index.html# [class.path">issues</a> in 8 [class.path].</p>
 <p><b>View all issues with</b> <a href="status-index.html#New">New</a> status.</p>
 <p><b>Discussion:</b></p>
@@ -1588,7 +1601,7 @@ I'd remove it and add proper wording.
 <tt>S_IRWXU|S_IRWXG|S_IRWXO</tt>
 </h3>
 <p><b>Section:</b> X 15.7 [fs.op.create_directory] <b>Status:</b> <a href="active.html#New">New</a>
- <b>Submitter:</b> P.J. Plauger <b>Opened:</b> 2014-01-30 <b>Last modified:</b> 2014-04-18</p>
+ <b>Submitter:</b> P.J. Plauger <b>Opened:</b> 2014-01-30 <b>Last modified:</b> 2014-06-02</p>
 <p><b>View all issues with</b> <a href="status-index.html#New">New</a> status.</p>
 <p><b>Discussion:</b></p>
 <p>
@@ -1602,7 +1615,7 @@ I'd remove it and add proper wording.
 <p><b>Proposed resolution:</b></p>
 <p><i>Effects:</i> Establishes the postcondition by attempting to create the 
   directory <code>p</code> resolves to, as if by POSIX <code>
-  mkdir()</code> with a second argument of <del>S_IRWXU|S_IRWXG|S_IRWXO</del> <ins><code>perms::all</code></ins>. Creation 
+  mkdir()</code> with a second argument of <del>S_IRWXU|S_IRWXG|S_IRWXO</del> <ins><code>static_cast&lt;int&gt;(perms::all)</code></ins>. Creation 
   failure because <code>p</code> resolves to an existing directory shall not be 
   treated as an error. </p>
 
@@ -1614,7 +1627,7 @@ I'd remove it and add proper wording.
 <hr>
 <h3><a name="48"></a>48. [PDTS] <tt>path::template&lt;class charT&gt;string()</tt> conversion rules</h3>
 <p><b>Section:</b> X 8.4.6  [path.native.obs] <b>Status:</b> <a href="active.html#New">New</a>
- <b>Submitter:</b> P.J. Plauger <b>Opened:</b> 2014-01-30 <b>Last modified:</b> 2014-04-18</p>
+ <b>Submitter:</b> P.J. Plauger <b>Opened:</b> 2014-01-30 <b>Last modified:</b> 2014-06-02</p>
 <p><b>View all issues with</b> <a href="status-index.html#New">New</a> status.</p>
 <p><b>Discussion:</b></p>
 <p>
@@ -1680,8 +1693,9 @@ and any other implementation-defined character types that satisfy the requiremen
 
 
 <p><b>Proposed resolution:</b></p>
-<p>In the entire Working Paper, change each instance of "<code>charT</code>" to "<code>C</code>".</p>
-<p>For example, in 5 [fs.req]:</p>
+<p><i>In the entire Working Paper, except in 8.6.1 path inserter and extractor [path.io],
+    change each instance of "<code>charT</code>" to "<code>C</code>".</i></p>
+<p><i>For example, in 5 [fs.req]:</i></p>
 <blockquote>Template parameters named <del><code>charT</code></del> <ins><code>C</code></ins> shall be one of the 
 encoded character types.</blockquote>
 
@@ -1692,7 +1706,7 @@ encoded character types.</blockquote>
 <hr>
 <h3><a name="49"></a>49. [PDTS] <tt>path</tt> and <tt>directory_entry</tt> move ctors should not be <tt>noexcept</tt></h3>
 <p><b>Section:</b> X 8.4.1 [path.construct], X 12 [class.directory_entry] <b>Status:</b> <a href="active.html#New">New</a>
- <b>Submitter:</b> Stephan T. Lavavej <b>Opened:</b> 2014-02-03 <b>Last modified:</b> 2014-05-23</p>
+ <b>Submitter:</b> Stephan T. Lavavej <b>Opened:</b> 2014-02-03 <b>Last modified:</b> 2014-05-24</p>
 <p><b>View all other</b> <a href="section-index.html#.4.1 [path.construct">issues</a> in 8.4.1 [path.construct].</p>
 <p><b>View all issues with</b> <a href="status-index.html#New">New</a> status.</p>
 <p><b>Discussion:</b></p>
@@ -1742,7 +1756,7 @@ See <a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2014/n3944.html#
 <hr>
 <h3><a name="53"></a>53. [PDTS] <tt>directory_entry</tt> multithreading concerns</h3>
 <p><b>Section:</b> X 12 [class.directory_entry] <b>Status:</b> <a href="active.html#Open">Open</a>
- <b>Submitter:</b> Stephan T. Lavavej <b>Opened:</b> 2014-02-03 <b>Last modified:</b> 2014-04-18</p>
+ <b>Submitter:</b> Stephan T. Lavavej <b>Opened:</b> 2014-02-03 <b>Last modified:</b> 2014-05-24</p>
 <p><b>View other</b> <a href="open-index.html#2 [class.directory_entry">active issues</a> in 12 [class.directory_entry].</p>
 <p><b>View all other</b> <a href="section-index.html#2 [class.directory_entry">issues</a> in 12 [class.directory_entry].</p>
 <p><b>View all issues with</b> <a href="status-index.html#Open">Open</a> status.</p>
@@ -1834,7 +1848,7 @@ file_status  symlink_status(error_code&amp; ec) const noexcept;</pre>
 <hr>
 <h3><a name="54"></a>54. [PDTS] Concerns with security and testability</h3>
 <p><b>Section:</b> X all <b>Status:</b> <a href="active.html#New">New</a>
- <b>Submitter:</b> Google <b>Opened:</b> 2014-01-20 <b>Last modified:</b> 2014-04-18</p>
+ <b>Submitter:</b> Google <b>Opened:</b> 2014-01-20 <b>Last modified:</b> 2014-05-24</p>
 <p><b>View all issues with</b> <a href="status-index.html#New">New</a> status.</p>
 <p><b>Discussion:</b></p>
   <p>We have two primary concerns with the interface as specified: </p>
@@ -1885,7 +1899,7 @@ file_status  symlink_status(error_code&amp; ec) const noexcept;</pre>
 <hr>
 <h3><a name="56"></a>56. [PDTS] Feature test macro for TS version</h3>
 <p><b>Section:</b> X 5 [fs.req] <b>Status:</b> <a href="active.html#New">New</a>
- <b>Submitter:</b> Clark Nelson <b>Opened:</b> 2014-02-10 <b>Last modified:</b> 2014-04-08</p>
+ <b>Submitter:</b> Clark Nelson <b>Opened:</b> 2014-02-10 <b>Last modified:</b> 2014-05-24</p>
 <p><b>View all issues with</b> <a href="status-index.html#New">New</a> status.</p>
 <p><b>Discussion:</b></p>
 <p/><a href="http://isocpp.org/std/standing-documents/sd-6-sg10-feature-test-recommendations">
@@ -1931,7 +1945,7 @@ Specification. <i>— end note</i>]</ins></p>
 <hr>
 <h3><a name="57"></a>57. [PDTS] Inappropriate use of "No diagnostic is required"</h3>
 <p><b>Section:</b> X 2.1 [fs.conform.9945] <b>Status:</b> <a href="active.html#Review">Review</a>
- <b>Submitter:</b> LWG/SG-3 <b>Opened:</b> 2014-02-13 <b>Last modified:</b> 2014-04-08</p>
+ <b>Submitter:</b> LWG/SG-3 <b>Opened:</b> 2014-02-13 <b>Last modified:</b> 2014-05-24</p>
 <p><b>View all other</b> <a href="section-index.html#.1 [fs.conform.9945">issues</a> in 2.1 [fs.conform.9945].</p>
 <p><b>View all issues with</b> <a href="status-index.html#Review">Review</a> status.</p>
 <p><b>Discussion:</b></p>
@@ -1964,7 +1978,7 @@ by this Technical Specification introduce a file system race (4.6 [fs.def.race])
 <hr>
 <h3><a name="58"></a>58. [PDTS] POSIX <tt>utime()</tt> is obsolescent</h3>
 <p><b>Section:</b> X 15.25 [fs.op.last_write_time] <b>Status:</b> <a href="active.html#New">New</a>
- <b>Submitter:</b> LWG/SG-3 <b>Opened:</b> 2014-02-13 <b>Last modified:</b> 2014-05-20</p>
+ <b>Submitter:</b> LWG/SG-3 <b>Opened:</b> 2014-02-13 <b>Last modified:</b> 2014-05-24</p>
 <p><b>View all other</b> <a href="section-index.html#5.25 [fs.op.last_write_time">issues</a> in 15.25 [fs.op.last_write_time].</p>
 <p><b>View all issues with</b> <a href="status-index.html#New">New</a> status.</p>
 <p><b>Discussion:</b></p>
@@ -2280,7 +2294,7 @@ perms::none) </code>
 <hr>
 <h3><a name="60"></a>60. [PDTS] Incorrect <i>Throws</i> specification for <tt>absolute()</tt></h3>
 <p><b>Section:</b> X 15.1 [fs.op.absolute] <b>Status:</b> <a href="active.html#New">New</a>
- <b>Submitter:</b> Daniel Krügler <b>Opened:</b> 2014-02-28 <b>Last modified:</b> 2014-04-08</p>
+ <b>Submitter:</b> Daniel Krügler <b>Opened:</b> 2014-02-28 <b>Last modified:</b> 2014-05-24</p>
 <p><b>View all issues with</b> <a href="status-index.html#New">New</a> status.</p>
 <p><b>Discussion:</b></p>
 <p>The <i>Throws</i> element [fs.op.absolute] says:</p>
@@ -2326,7 +2340,7 @@ the overall policy for handling memory allocation failures.
 <hr>
 <h3><a name="61"></a>61. Surprising <tt>equivalent()</tt> behavior if neither file exists</h3>
 <p><b>Section:</b> X 6 [fs.filesystem.synopsis] <b>Status:</b> <a href="active.html#New">New</a>
- <b>Submitter:</b> Beman Dawes <b>Opened:</b> 2014-04-12 <b>Last modified:</b> 2014-05-23</p>
+ <b>Submitter:</b> Beman Dawes <b>Opened:</b> 2014-04-12 <b>Last modified:</b> 2014-05-24</p>
 <p><b>View other</b> <a href="open-index.html# [fs.filesystem.synopsis">active issues</a> in 6 [fs.filesystem.synopsis].</p>
 <p><b>View all other</b> <a href="section-index.html# [fs.filesystem.synopsis">issues</a> in 6 [fs.filesystem.synopsis].</p>
 <p><b>View all issues with</b> <a href="status-index.html#New">New</a> status.</p>
@@ -2356,7 +2370,7 @@ the overall policy for handling memory allocation failures.
 <hr>
 <h3><a name="62"></a>62. Allocator requirements unspecified</h3>
 <p><b>Section:</b> X 5 Requirements [fs.req] <b>Status:</b> <a href="active.html#New">New</a>
- <b>Submitter:</b> Daniel Krügler <b>Opened:</b> 2014-05-19 <b>Last modified:</b> 2014-05-19</p>
+ <b>Submitter:</b> Daniel Krügler <b>Opened:</b> 2014-05-19 <b>Last modified:</b> 2014-05-24</p>
 <p><b>View all issues with</b> <a href="status-index.html#New">New</a> status.</p>
 <p><b>Discussion:</b></p>
 <p>
