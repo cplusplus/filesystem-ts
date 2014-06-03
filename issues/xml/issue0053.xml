@@ -61,8 +61,8 @@ file_status status(error_code&amp; ec) const noexcept;</pre>
   </blockquote>
   <p><i>Returns:</i> <code>m_status</code></p>
   
-  <p><ins><i>Remarks:</i> These functions shall not introduce
-     a data race (C++std 17.6.5.9).</ins></p>
+  <p><ins><i>Note:</i> The <code>status</code> functions do not introduce
+    a data race (C++std 17.6.5.9) provided that nothing modifies the <code>directory_entry</code> object. <i>--end note</i></ins></p>
   
   <p><i>Throws:</i> As specified in <a href="#Error-reporting">Error reporting (7)</a>.</p>
   
@@ -79,10 +79,14 @@ file_status  symlink_status(error_code&amp; ec) const noexcept;</pre>
 }</pre>
   </blockquote>
   <p><i>Returns:</i> <code>m_symlink_status</code></p>
-  
-  <p><ins><i>Remarks:</i> These functions shall not introduce
-     a data race (C++std 17.6.5.9).</ins></p>
-  
+
+  <p>
+    <ins>
+      <i>Note:</i> The <code>symlink_status</code> functions do not introduce
+      a data race (C++std 17.6.5.9) provided that nothing modifies the <code>directory_entry</code> object. <i>--end note</i>
+    </ins>
+  </p>
+
   <p><i>Throws:</i> As specified in <a href="#Error-reporting">Error reporting (7)</a>.</p>
   
 </blockquote>
