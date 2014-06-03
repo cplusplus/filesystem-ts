@@ -39,7 +39,7 @@
 </tr>
 </table>
 <h1>File System TS Active Issues List (Revision R1)</h1>
-<p><p>Revised 2014-06-03 at 13:06:52 UTC</p>
+<p><p>Revised 2014-06-03 at 15:06:56 UTC</p>
 </p>
   <p>Reference ISO/IEC TS 18822</p>
   <p>Also see:</p>
@@ -1756,7 +1756,7 @@ See <a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2014/n3944.html#
 <hr>
 <h3><a name="53"></a>53. [PDTS] <tt>directory_entry</tt> multithreading concerns</h3>
 <p><b>Section:</b> X 12 [class.directory_entry] <b>Status:</b> <a href="active.html#Open">Open</a>
- <b>Submitter:</b> Stephan T. Lavavej <b>Opened:</b> 2014-02-03 <b>Last modified:</b> 2014-05-24</p>
+ <b>Submitter:</b> Stephan T. Lavavej <b>Opened:</b> 2014-02-03 <b>Last modified:</b> 2014-06-03</p>
 <p><b>View other</b> <a href="open-index.html#2 [class.directory_entry">active issues</a> in 12 [class.directory_entry].</p>
 <p><b>View all other</b> <a href="section-index.html#2 [class.directory_entry">issues</a> in 12 [class.directory_entry].</p>
 <p><b>View all issues with</b> <a href="status-index.html#Open">Open</a> status.</p>
@@ -1814,8 +1814,8 @@ file_status status(error_code&amp; ec) const noexcept;</pre>
   </blockquote>
   <p><i>Returns:</i> <code>m_status</code></p>
   
-  <p><ins><i>Remarks:</i> These functions shall not introduce
-     a data race (C++std 17.6.5.9).</ins></p>
+  <p><ins><i>Note:</i> The <code>status</code> functions do not introduce
+    a data race (C++std 17.6.5.9) provided that nothing modifies the <code>directory_entry</code> object. <i>--end note</i></ins></p>
   
   <p><i>Throws:</i> As specified in <a href="#Error-reporting">Error reporting (7)</a>.</p>
   
@@ -1832,10 +1832,14 @@ file_status  symlink_status(error_code&amp; ec) const noexcept;</pre>
 }</pre>
   </blockquote>
   <p><i>Returns:</i> <code>m_symlink_status</code></p>
-  
-  <p><ins><i>Remarks:</i> These functions shall not introduce
-     a data race (C++std 17.6.5.9).</ins></p>
-  
+
+  <p>
+    <ins>
+      <i>Note:</i> The <code>symlink_status</code> functions do not introduce
+      a data race (C++std 17.6.5.9) provided that nothing modifies the <code>directory_entry</code> object. <i>--end note</i>
+    </ins>
+  </p>
+
   <p><i>Throws:</i> As specified in <a href="#Error-reporting">Error reporting (7)</a>.</p>
   
 </blockquote>
