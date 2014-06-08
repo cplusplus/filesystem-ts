@@ -1,0 +1,54 @@
+<?xml version='1.0' encoding='utf-8' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="65" status="New">
+<title>
+  <code>remove_filename()</code> post condition is incorrect</title>
+<section><sref ref="4.8.5 [path.modifiers.remove_filename]"/></section>
+<submitter>Eric Fiselier</submitter>
+<date>7 Jun 2014</date>
+
+<discussion>
+<p>
+  <code>remove_filename()</code> specifies <code>!has_filename()</code> as the post condition.
+This post condition is not correct. For example the path <code>"/foo"</code>
+has a filename of <code>"foo"</code>. If we remove the filename we get <code>"/"</code>,
+and <code>"/"</code> has a filename of <code>"/"</code>.</p>
+
+  <note>2014-06-08 Beman supplies an <i>Effects:</i> element.</note>
+</discussion>
+
+<resolution>
+  <pre>
+    path&amp; <a name="path-remove_filename">remove_filename</a>();
+  </pre>
+  <blockquote>
+    <p>
+      <del><i>Postcondition:</i> <code>!has_filename()</code>.</del>
+    </p>
+    <p/>
+    <ins>
+      <i>Effects:</i> <code>*this = parent_path()</code>, except that if <code>parent_path() == root_path()</code>, <code>clear()</code>.
+    </ins>
+    <p>
+      <i>Returns: </i> <code>*this</code>.
+    </p>
+    <p>
+      [<i>Example:</i>
+    </p>
+    <blockquote>
+      <pre>
+        <code>std::cout &lt;&lt; path(&quot;/foo&quot;).remove_filename();</code>  // outputs &quot;<code>/</code>&quot;
+        std::cout &lt;&lt; path(&quot;/&quot;).<code>remove_</code>filename();     // outputs &quot;&quot;
+      </pre>
+    </blockquote>
+    <p>
+      <i>&mdash;end example</i>]
+    </p>
+  </blockquote>
+
+</resolution>
+
+</issue>
