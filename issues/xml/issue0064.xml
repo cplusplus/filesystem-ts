@@ -1,0 +1,49 @@
+<?xml version='1.0' encoding='utf-8' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="64" status="New">
+<title>
+  <code>operator /</code> (and other append) semantics not useful unless <code>source</code> argument is relative</title>
+<section><sref ref="8.4.3 [8.4.3], 8.6 [path.non-member]"/></section>
+<submitter>Peter Dimov</submitter>
+<date>30 May 2014</date>
+
+<discussion>
+<p>
+  In a recent discussion on the Boost developers mailing list, the semantics of <code>operator /</code>
+  and other append operations were questioned:
+</p>
+
+  <p/>In brief, currently <code>p1 / p2</code> is required to concatenate the
+  lexical representation of <code>p1</code> and <code>p2</code>, inserting a
+  preferred separator as needed.
+
+  <p/>This means that, for example, <code>&quot;c:\x&quot; / &quot;d:\y&quot;</code> gives <code>
+    &quot;c:\x\d:\y&quot;</code>, and that <code>&quot;c:\x&quot; / &quot;\\server\share&quot;</code>
+    gives <code>&quot;c:\x\\server\share&quot;</code>. This is rarely, if ever, useful.
+
+  <p/>An alternative interpretation of <code>p1 / p2</code> could be that it yields a
+  path that is the approximation of what <code>p2</code> would mean if interpreted
+  in an environment in which <code>p1</code> is the starting directory. 
+  Under this interpretation, <code>&quot;c:\x&quot; / &quot;d:\y&quot;</code> gives <code>&quot;d:\y&quot;</code>,
+  which is more likely to match what was intended.
+
+  <p/>I am not saying that this second interpretation is the right one, but I do say
+  that we have reasons to suspect that the first one (lexical concatenation using
+  a separator) may not be entirely correct.
+  This leads me to think that the behavior of <code>p1 / p2</code>, when <code>p2</code>
+  has a root, needs to be left implementation-defined, so that implementations are
+  not required to do the wrong thing, as above.
+
+  <p/>This change will not affect the ordinary use case in which <code>p2</code> is a
+  relative, root-less, path.
+
+</discussion>
+
+<resolution>
+<p></p>
+</resolution>
+
+</issue>
