@@ -3,7 +3,7 @@
   <!ENTITY nbsp "&#160;">
 ] >
 
-<issue num="35" status="New">
+<issue num="35" status="Review">
 <title>[PDTS] <tt>directory_options::skip_permission_denied</tt> is not used</title>
 <section><sref ref="6 [fs.filesystem.synopsis]"/></section>
 <submitter>P.J. Plauger</submitter>
@@ -17,6 +17,7 @@
   symptom of a more serious problem; two <tt>directory_itorator</tt> constructors
   are missing <tt>directory_options</tt> arguments and a description of how they
   are used. Proposed wording provided.</note>
+  <note>17 Jun 2014 LWG requests two signatures rather than one with default argument. Beman updates wording.</note>
 </discussion>
 
 <resolution>
@@ -24,23 +25,29 @@
     <i>Change 13  [class.directory_iterator]:</i>
   </p>
   <blockquote>
-    <pre>directory_iterator() noexcept;
-explicit directory_iterator(const path&amp; p<ins>,</ins>
-  <ins>directory_options options = directory_options::none</ins>);
-directory_iterator(const path&amp; p,
-  <ins>directory_options options,</ins> error_code&amp; ec) noexcept;
-directory_iterator(const directory_iterator&amp;) = default;
-directory_iterator(directory_iterator&amp;&amp;) = default;
-~directory_iterator();</pre>
+    <pre>
+      directory_iterator() noexcept;
+      explicit directory_iterator(const path&amp; p);
+      <ins>directory_iterator(const path&amp; p, directory_options options</ins>);
+      directory_iterator(const path&amp; p, error_code&amp; ec) noexcept;
+      <ins>directory_iterator(const path&amp; p,</ins>
+      <ins>directory_options options, error_code&amp; ec) noexcept;</ins>
+      directory_iterator(const directory_iterator&amp;) = default;
+      directory_iterator(directory_iterator&amp;&amp;) = default;
+      ~directory_iterator();
+    </pre>
   </blockquote>
   <p>
     <i>Change 13.1 directory_iterator members [directory_iterator.members]:</i>
   </p>
   <blockquote>
-    <pre>explicit directory_iterator(const path&amp; p<ins>,</ins>
-  <ins>directory_options options = directory_options::none</ins>);
-directory_iteratorconst path&amp; p,
-  <ins>directory_options options,</ins> error_code&amp; ec) noexcept;</pre>
+    <pre>
+      explicit directory_iterator(const path&amp; p);
+      <ins>directory_iterator(const path&amp; p, directory_options options</ins>);
+      directory_iterator(const path&amp; p, error_code&amp; ec) noexcept;
+      <ins>directory_iterator(const path&amp; p,</ins>
+      <ins>directory_options options, error_code&amp; ec) noexcept;</ins>
+    </pre>
     <p>
       <i>Effects:</i> For the directory that <code>p</code> resolves to,
       constructs an iterator for the first element in a sequence of <code>
@@ -58,13 +65,35 @@ directory_iteratorconst path&amp; p,
     </p>
   </blockquote>
   <p>
+    <i>
+      Change 14  <a name="Class-recursive_directory_iterator">
+        Class <code>recursive_directory_iterator</code>
+        [class.rec.dir.itr]
+      </a>:
+    </i>
+  </p>
+  <blockquote>
+    <pre>
+      explicit recursive_directory_iterator(const path&amp; p<del>,</del>
+      <del>directory_options options = directory_options::none</del>);
+      <ins>recursive_directory_iterator(const path&amp; p, directory_options options);</ins>
+      recursive_directory_iterator(const path&amp; p,
+      directory_options options, error_code&amp; ec) noexcept;
+      recursive_directory_iterator(const path&amp; p, error_code&amp; ec) noexcept;
+    </pre>
+  </blockquote>
+  <p>
     <i>Change 14.1 recursive_directory_iterator members [rec.dir.itr.members]:</i>
   </p>
   <blockquote>
-    <pre>explicit recursive_directory_iterator(const path&amp; p,
-  directory_options options = directory_options::none);
-recursive_directory_iterator(const path&amp; p, directory_options options, error_code&amp; ec) noexcept;
-  recursive_<code>directory_iterator(</code>const path&amp; p, error_code&amp; ec<code>) noexcept;</code></pre>
+    <pre>
+      explicit recursive_directory_iterator(const path&amp; p<del>,</del>
+      <del>directory_options options = directory_options::none</del>);
+      <ins>recursive_directory_iterator(const path&amp; p, directory_options options);</ins>
+      recursive_directory_iterator(const path&amp; p,
+      directory_options options, error_code&amp; ec) noexcept;
+      recursive_directory_iterator(const path&amp; p, error_code&amp; ec) noexcept;
+    </pre>
     <p>
       <i>Effects:</i>&nbsp; Constructs a iterator representing the first entry in the
       directory <code>p</code> resolves to, if any; otherwise, the end iterator.
@@ -82,8 +111,10 @@ recursive_directory_iterator(const path&amp; p, directory_options options, error
     <i>Change 14.1 recursive_directory_iterator members [rec.dir.itr.members]:</i>
   </p>
   <blockquote>
-    <pre>recursive_directory_iterator&amp; operator++();
-recursive_directory_iterator&amp; increment(error_code&amp; ec);</pre>
+    <pre>
+      recursive_directory_iterator&amp; operator++();
+      recursive_directory_iterator&amp; increment(error_code&amp; ec);
+    </pre>
     <p>
       <i>Requires:</i> <code>*this != recursive_directory_iterator()</code>.
     </p>
@@ -92,19 +123,29 @@ recursive_directory_iterator&amp; increment(error_code&amp; ec);</pre>
       that:
     </p>
     <ul>
-      <li>If there are no more entries at this depth, then if <code>depth()!= 0</code>
+      <li>
+        If there are no more entries at this depth, then if <code>depth()!= 0</code>
         iteration over the parent directory resumes; otherwise <code>
           *this =
-          recursive_directory_iterator()</code>.</li>
-      <li>Otherwise if <code>recursion_pending() &amp;&amp; is_directory(this-&gt;status())
+          recursive_directory_iterator()
+        </code>.
+      </li>
+      <li>
+        Otherwise if <code>
+          recursion_pending() &amp;&amp; is_directory(this-&gt;status())
           &amp;&amp; (!is_symlink(this-&gt;symlink_status()) || (options() &amp;
-        directory_options::follow_directory_symlink) != <del>0</del> <ins>directory_options::none</ins>)</code> then <ins>either</ins> directory
+          directory_options::follow_directory_symlink) != <del>0</del> <ins>directory_options::none</ins>)
+        </code> then <ins>either</ins> directory
         <code>(*this)-&gt;path()</code> is recursively iterated into
-        <ins>or, if <code>options() &amp; directory_options::skip_permissions_denied != directory_options::none
-      </code>
+        <ins>
+          or, if <code>
+            options() &amp; directory_options::skip_permissions_denied != directory_options::none
+          </code>
           and an error indicating that permission to access directory
           <code>(*this)-&gt;path()</code> is denied, then directory <code>(*this)-&gt;path()</code> is
-          treated as an empty directory and no error is reported</ins>.</li>
+          treated as an empty directory and no error is reported
+        </ins>.
+      </li>
     </ul>
   </blockquote>
 </resolution>
