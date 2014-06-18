@@ -101,8 +101,58 @@ very very nice to have a note about this.</p>
     </a>
     [directory_entry.cons]
   </h3>
-  <pre>explicit directory_entry(const path&amp; p, file_status st=file_status(),
-file_status symlink_st=file_status());</pre>
+
+   <p>
+      <i>
+        <span style="background-color: #C0C0C0">
+          Add the description of this
+          constructor in its entirety:
+        </span>
+      </i>
+    </p>
+   <pre>explicit directory_entry(const path&amp; p);</pre>
+  <blockquote>
+
+    <p>
+      <i>Postcondition:</i>
+    </p>
+    <table border="1" cellpadding="5" cellspacing="0" style="border-collapse: collapse" bordercolor="#111111" width="36%">
+      <tr>
+        <td width="18%">
+          <b>Expression</b>
+        </td>
+        <td width="82%">
+          <b>Value</b>
+        </td>
+      </tr>
+      <tr>
+        <td width="18%">
+          <code>path()</code>
+        </td>
+        <td width="82%">
+          <code>p</code>
+        </td>
+      </tr>
+      <tr>
+        <td width="18%">
+          <code>status()</code>
+        </td>
+        <td width="82%">
+          <code>status(p)</code>
+        </td>
+      </tr>
+      <tr>
+        <td width="18%">
+          <code>symlink_status()</code>
+        </td>
+        <td width="82%">
+          <code>symlink_status(p)</code>
+        </td>
+      </tr>
+    </table>
+  </blockquote>
+  <pre><del>explicit</del> directory_entry(const path&amp; p, file_status st<del>=file_status()</del>,
+    file_status symlink_st<del>=file_status()</del>);</pre>
   <blockquote>
     <p>
       <i>Postcondition:</i>
@@ -148,8 +198,57 @@ file_status symlink_st=file_status());</pre>
     </a>
     [directory_entry.mods]
   </h3>
-  <pre>void assign(const path&amp; p, file_status st=file_status(),
-file_status symlink_st=file_status());</pre>
+
+  <p>
+    <i>
+      <span style="background-color: #C0C0C0">
+        Add the description of this
+        function in its entirety:
+      </span>
+    </i>
+  </p>
+  <pre>void assign(const path&amp; p);</pre>
+  <blockquote>
+    <p>
+      <i>Postcondition:</i>
+    </p>
+    <table border="1" cellpadding="5" cellspacing="0" style="border-collapse: collapse" bordercolor="#111111" width="36%">
+      <tr>
+        <td width="18%">
+          <b>Expression</b>
+        </td>
+        <td width="82%">
+          <b>Value</b>
+        </td>
+      </tr>
+      <tr>
+        <td width="18%">
+          <code>path()</code>
+        </td>
+        <td width="82%">
+          <code>p</code>
+        </td>
+      </tr>
+      <tr>
+        <td width="18%">
+          <code>status()</code>
+        </td>
+        <td width="82%">
+          <code>status(p)</code>
+        </td>
+      </tr>
+      <tr>
+        <td width="18%">
+          <code>symlink_status()</code>
+        </td>
+        <td width="82%">
+          <code>symlink_status(p)</code>
+        </td>
+      </tr>
+    </table>
+  </blockquote>
+  <pre>void assign(const path&amp; p, file_status st<del>=file_status()</del>,
+  file_status symlink_st<del>=file_status()</del>);</pre>
   <blockquote>
     <p>
       <i>Postcondition:</i>
@@ -189,8 +288,57 @@ file_status symlink_st=file_status());</pre>
       </tr>
     </table>
   </blockquote>
-  <pre>void replace_filename(const path&amp; p, file_status st=file_status(),
-file_status symlink_st=file_status());</pre>
+
+  <p>
+    <i>
+      <span style="background-color: #C0C0C0">
+        Add the description of this
+        function in its entirety:
+      </span>
+    </i>
+  </p>
+  <pre>void replace_filename(const path&amp; p);</pre>
+  <blockquote>
+    <p>
+      <i>Postcondition:</i>
+    </p>
+    <table border="1" cellpadding="5" cellspacing="0" style="border-collapse: collapse" bordercolor="#111111" width="43%">
+      <tr>
+        <td width="18%">
+          <b>Expression</b>
+        </td>
+        <td width="82%">
+          <b>Value</b>
+        </td>
+      </tr>
+      <tr>
+        <td width="18%">
+          <code>path()</code>
+        </td>
+        <td width="82%">
+          <code>path().parent_path() / p</code>
+        </td>
+      </tr>
+      <tr>
+        <td width="18%">
+          <code>status()</code>
+        </td>
+        <td width="82%">
+          <code>status(p)</code>
+        </td>
+      </tr>
+      <tr>
+        <td width="18%">
+          <code>symlink_status()</code>
+        </td>
+        <td width="82%">
+          <code>symlink_status(p)</code>
+        </td>
+      </tr>
+    </table>
+  </blockquote>
+  <pre>void replace_filename(const path&amp; p, file_status st<del>=file_status()</del>,
+  file_status symlink_st<del>=file_status()</del>);</pre>
   <blockquote>
     <p>
       <i>Postcondition:</i>
