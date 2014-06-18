@@ -3,7 +3,7 @@
   <!ENTITY nbsp "&#160;">
 ] >
 
-<issue num="22" status="Open">
+<issue num="22" status="Review">
 <title>[PDTS] <tt>directory_iterator</tt> underspecified</title>
 <section><sref ref="13.1 [directory_iterator.members]"/></section>
 <submitter>CH-13</submitter>
@@ -20,9 +20,24 @@ possible race conditions?</p>
   <note>2014-02-13 LWG/SG-3 Issaquah: STL will provide wording for next meeting for
   the endless loop case. The other cases are covered by existing wording in the front matter.</note>
 
+  <note>17 Jun 2014 At the request of the LWG, Beman provides wording for a note.</note>  
+
 </discussion>
 
 <resolution>
+  <p>
+    <i>In 14 Class recursive_directory_iterator [class.rec.dir.itr], add:</i>
+  </p>
+  <blockquote>
+    <p>
+      <ins>
+        [<i>Note: </i>If the directory structure being iterated over contains
+        cycles then
+        the end iterator may be unreachable. <i>--end note</i>]
+      </ins>
+    </p>
+  </blockquote>
+
 </resolution>
 
 </issue>
