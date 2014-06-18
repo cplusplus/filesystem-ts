@@ -3,7 +3,7 @@
   <!ENTITY nbsp "&#160;">
 ] >
 
-<issue num="41" status="New">
+<issue num="41" status="Review">
 <title>[PDTS] <tt>directory_iterator</tt>, <tt>recursive_directory_iterator</tt>, move construct/assign should be <tt>noexcept</tt></title>
 <section><sref ref="13 [class.directory_iterator]"/>, <sref ref="14 [class.rec.dir.itr]"/></section>
 <submitter>P.J. Plauger</submitter>
@@ -40,27 +40,91 @@ is required to be noexcept.
 <p/>The same applies to <tt>recursive_directory_iterator</tt>.
 
 <note>21 May 2014 Beman Dawes provided proposed resolution wording.</note>
-
+  <note>18 Jun 2014 "= default" removed per LWG discussion</note>
+<
 </discussion>
 
 <resolution>
 <p>
   <i>Change 13 Class directory_iterator [class.directory_iterator]:</i></p>
   <blockquote>
-    <pre>directory_iterator(directory_iterator&amp;&amp;) <ins>noexcept</ins> = default;
+    <pre>directory_iterator(const directory_iterator&amp; <ins>other</ins>) <del>= default</del>;
+directory_iterator(directory_iterator&amp;&amp; <ins>other</ins>) <ins>noexcept</ins> <del>= default</del>;
 ...
-directory_iterator&amp; operator=(directory_iterator&amp;&amp;) <ins>noexcept</ins> = default;</pre>
+directory_iterator&amp; operator=(const directory_iterator&amp; <ins>other</ins>) <del>= default</del>;
+directory_iterator&amp; operator=(directory_iterator&amp;&amp; <ins>other</ins>) <ins>noexcept</ins> <del>= default</del>;</pre>
+  </blockquote>
+
+  <p/><i>To 13.1 directory_iterator members [directory_iterator.members] add:</i>
+  <blockquote>
+    <pre>directory_iterator(const directory_iterator&amp; other) noexcept;
+directory_iterator(directory_iterator&amp;&amp; other) noexcept;</pre>
+    <blockquote>
+      <p>
+        <i>Effects:</i> Constructs an object of class <code>directory_iterator</code> 
+        having the original value of <code>other</code>. In the
+        second form, <code>other</code> is left in a valid but unspecified state.
+      </p>
+
+    </blockquote>
+    <pre>directory_iterator&amp; operator=(const directory_iterator&amp; other);
+directory_iterator&amp; operator=(directory_iterator&amp;&amp; other) noexcept;</pre>
+    <blockquote>
+      <p>
+        <i>Effects:</i> If <code>*this</code> and <code>other</code> are not the same object, <code>*this</code>
+        is set equal to the original value of <code>other</code>. In the second form, <code>other</code> is
+        left in a valid but unspecified state.
+      </p>
+      <p>  
+      If <code>*this</code> and <code>other</code> are the same object, the member has no effect.
+    </p>
+      <p/><i>Returns:</i>
+      <code>*this</code>.
+
+    </blockquote>
   </blockquote>
 
   <p>
     <i>Change 14 Class recursive_directory_iterator [class.rec.dir.itr]:</i>
   </p>
   <blockquote>
-    <pre>recursive_directory_iterator(recursive_directory_iterator&amp;&amp;) <ins>noexcept</ins> = default;
+    <pre>recursive_directory_iterator(const recursive_directory_iterator&amp; <ins>other</ins>) <del>= default</del>;
+recursive_directory_iterator(recursive_directory_iterator&amp;&amp; <ins>other</ins>) <ins>noexcept</ins> <del>= default</del>;
 ...
-recursive_directory_iterator&amp; operator=(recursive_directory_iterator&amp;&amp;) <ins>noexcept</ins> = default;</pre>
+recursive_directory_iterator&amp; operator=(const recursive_directory_iterator&amp; <ins>other</ins>) <del>= default</del>;
+recursive_directory_iterator&amp; operator=(recursive_directory_iterator&amp;&amp; <ins>other</ins>) <ins>noexcept</ins> <del>= default</del>;</pre>
   </blockquote>
-  
+  <p/>
+  <i>To 14.1 recursive_directory_iterator members [rec.dir.itr.members] add:</i>
+  <blockquote>
+    <pre>recursive_directory_iterator(const recursive_directory_iterator&amp; other) noexcept;
+recursive_directory_iterator(recursive_directory_iterator&amp;&amp; other) noexcept; </pre>
+    <blockquote>
+      <p>
+        <i>Effects:</i> Constructs an object of class <code>recursive_directory_iterator</code>
+        having the original value of <code>other</code>. In the
+        second form, <code>other</code> is left in a valid but unspecified state.
+      </p>
+
+    </blockquote>
+    <pre>recursive_directory_iterator&amp; operator=(const recursive_directory_iterator&amp; other);
+recursive_directory_iterator&amp; operator=(recursive_directory_iterator&amp;&amp; other) noexcept;</pre>
+    <blockquote>
+      <p>
+        <i>Effects:</i> If <code>*this</code> and <code>other</code> are not the same object, <code>*this</code>
+        is set equal to the original value of <code>other</code>. In the second form, <code>other</code> is
+        left in a valid but unspecified state.
+      </p>
+      <p>
+        If <code>*this</code> and <code>other</code> are the same object, the member has no effect.
+      </p>
+      <p/><i>Returns:</i>
+      <code>*this</code>.
+
+    </blockquote>
+  </blockquote>
+
+
 </resolution>
 
 </issue>
