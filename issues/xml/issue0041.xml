@@ -3,7 +3,7 @@
   <!ENTITY nbsp "&#160;">
 ] >
 
-<issue num="41" status="Review">
+<issue num="41" status="Immediate">
 <title>[PDTS] <tt>directory_iterator</tt>, <tt>recursive_directory_iterator</tt>, move construct/assign should be <tt>noexcept</tt></title>
 <section><sref ref="13 [class.directory_iterator]"/>, <sref ref="14 [class.rec.dir.itr]"/></section>
 <submitter>P.J. Plauger</submitter>
@@ -41,43 +41,42 @@ is required to be noexcept.
 
 <note>21 May 2014 Beman Dawes provided proposed resolution wording.</note>
   <note>18 Jun 2014 "= default" removed per LWG discussion</note>
-<
 </discussion>
 
 <resolution>
 <p>
   <i>Change 13 Class directory_iterator [class.directory_iterator]:</i></p>
   <blockquote>
-    <pre>directory_iterator(const directory_iterator&amp; <ins>other</ins>) <del>= default</del>;
-directory_iterator(directory_iterator&amp;&amp; <ins>other</ins>) <ins>noexcept</ins> <del>= default</del>;
+    <pre>directory_iterator(const directory_iterator&amp; <ins>rhs</ins>) <del>= default</del>;
+directory_iterator(directory_iterator&amp;&amp; <ins>rhs</ins>) <ins>noexcept</ins> <del>= default</del>;
 ...
-directory_iterator&amp; operator=(const directory_iterator&amp; <ins>other</ins>) <del>= default</del>;
-directory_iterator&amp; operator=(directory_iterator&amp;&amp; <ins>other</ins>) <ins>noexcept</ins> <del>= default</del>;</pre>
+directory_iterator&amp; operator=(const directory_iterator&amp; <ins>rhs</ins>) <del>= default</del>;
+directory_iterator&amp; operator=(directory_iterator&amp;&amp; <ins>rhs</ins>) <ins>noexcept</ins> <del>= default</del>;</pre>
   </blockquote>
 
   <p/><i>To 13.1 directory_iterator members [directory_iterator.members] add:</i>
   <blockquote>
-    <pre>directory_iterator(const directory_iterator&amp; other) noexcept;
-directory_iterator(directory_iterator&amp;&amp; other) noexcept;</pre>
+    <pre>directory_iterator(const directory_iterator&amp; rhs);
+directory_iterator(directory_iterator&amp;&amp; rhs) noexcept;</pre>
     <blockquote>
       <p>
-        <i>Effects:</i> Constructs an object of class <code>directory_iterator</code> 
-        having the original value of <code>other</code>. In the
-        second form, <code>other</code> is left in a valid but unspecified state.
+        <i>Effects:</i> Constructs an object of class <code>directory_iterator</code>.
+      </p>
+      <p>
+        <i>Postconditions:</i> <code>*this</code> has the original value of <code>rhs</code>.
       </p>
 
     </blockquote>
-    <pre>directory_iterator&amp; operator=(const directory_iterator&amp; other);
-directory_iterator&amp; operator=(directory_iterator&amp;&amp; other) noexcept;</pre>
+    <pre>directory_iterator&amp; operator=(const directory_iterator&amp; rhs);
+directory_iterator&amp; operator=(directory_iterator&amp;&amp; rhs) noexcept;</pre>
     <blockquote>
       <p>
-        <i>Effects:</i> If <code>*this</code> and <code>other</code> are not the same object, <code>*this</code>
-        is set equal to the original value of <code>other</code>. In the second form, <code>other</code> is
-        left in a valid but unspecified state.
+        <i>Effects:</i>  
+        If <code>*this</code> and <code>rhs</code> are the same object, the member has no effect.
       </p>
-      <p>  
-      If <code>*this</code> and <code>other</code> are the same object, the member has no effect.
-    </p>
+      <p>
+        <i>Postconditions:</i> <code>*this</code> has the original value of <code>rhs</code>.
+      </p>
       <p/><i>Returns:</i>
       <code>*this</code>.
 
@@ -88,47 +87,51 @@ directory_iterator&amp; operator=(directory_iterator&amp;&amp; other) noexcept;<
     <i>Change 14 Class recursive_directory_iterator [class.rec.dir.itr]:</i>
   </p>
   <blockquote>
-    <pre>recursive_directory_iterator(const recursive_directory_iterator&amp; <ins>other</ins>) <del>= default</del>;
-recursive_directory_iterator(recursive_directory_iterator&amp;&amp; <ins>other</ins>) <ins>noexcept</ins> <del>= default</del>;
+    <pre>recursive_directory_iterator(const recursive_directory_iterator&amp; <ins>rhs</ins>) <del>= default</del>;
+recursive_directory_iterator(recursive_directory_iterator&amp;&amp; <ins>rhs</ins>) <ins>noexcept</ins> <del>= default</del>;
 ...
-recursive_directory_iterator&amp; operator=(const recursive_directory_iterator&amp; <ins>other</ins>) <del>= default</del>;
-recursive_directory_iterator&amp; operator=(recursive_directory_iterator&amp;&amp; <ins>other</ins>) <ins>noexcept</ins> <del>= default</del>;</pre>
+recursive_directory_iterator&amp; operator=(const recursive_directory_iterator&amp; <ins>rhs</ins>) <del>= default</del>;
+recursive_directory_iterator&amp; operator=(recursive_directory_iterator&amp;&amp; <ins>rhs</ins>) <ins>noexcept</ins> <del>= default</del>;</pre>
   </blockquote>
   <p/>
   <i>To 14.1 recursive_directory_iterator members [rec.dir.itr.members] add:</i>
   <blockquote>
-    <pre>recursive_directory_iterator(const recursive_directory_iterator&amp; other) noexcept;</pre>
+    <pre>recursive_directory_iterator(const recursive_directory_iterator&amp; rhs);</pre>
     <blockquote>
       <p>
         <i>Effects:</i> Constructs an object of class <code>recursive_directory_iterator</code>.
       </p>
       <p>
-        <i>Postconditions:</i> <code>this->options() == other.options() &amp;&amp; this->depth() ==
-        other.depth() &amp;&amp; this->recursion_pending() ==
-        other.recursion_pending()</code>.
+        <i>Postconditions:</i> <code>this->options() == rhs.options() &amp;&amp; this->depth() ==
+        rhs.depth() &amp;&amp; this->recursion_pending() ==
+        rhs.recursion_pending()</code>.
       </p>
     </blockquote>
 
-    <pre>recursive_directory_iterator(recursive_directory_iterator&amp;&amp; other) noexcept;</pre>
+    <pre>recursive_directory_iterator(recursive_directory_iterator&amp;&amp; rhs) noexcept;</pre>
     <blockquote>
       <p>
         <i>Effects:</i> Constructs an object of class <code>recursive_directory_iterator</code>.
       </p>
       <p>
         <i>Postconditions:</i> <code>this->options()</code>, <code>this->depth()</code>, and
-        <code>this->recursion_pending()</code>, respectively, return the values that
-        <code>other.options()</code>, <code>other.depth()</code>, and <code>other.recursion_pending()</code>,
-        respectively, had before the function call. <code>other</code> is in a valid but unspecified state.
+        <code>this->recursion_pending()</code> return the values that
+        <code>rhs.options()</code>, <code>rhs.depth()</code>, and <code>rhs.recursion_pending()</code>,
+        respectively, had before the function call.
       </p>
     </blockquote>
 
-    <pre>recursive_directory_iterator&amp; operator=(const recursive_directory_iterator&amp; other);</pre>
+    <pre>recursive_directory_iterator&amp; operator=(const recursive_directory_iterator&amp; rhs);</pre>
     <blockquote>
       <p>
+        <i>Effects:</i> 
+        If <code>*this</code> and <code>rhs</code> are the same object, the member has no effect.
+      </p>
+      <p>
       <i>Postconditions:</i> <code>
-        this->options() == other.options() &amp;&amp; this->depth() ==
-        other.depth() &amp;&amp; this->recursion_pending() ==
-        other.recursion_pending()
+        this->options() == rhs.options() &amp;&amp; this->depth() ==
+        rhs.depth() &amp;&amp; this->recursion_pending() ==
+        rhs.recursion_pending()
       </code>.
       </p>
 
@@ -137,14 +140,18 @@ recursive_directory_iterator&amp; operator=(recursive_directory_iterator&amp;&am
 
     </blockquote>
 
-    <pre>recursive_directory_iterator&amp; operator=(recursive_directory_iterator&amp;&amp; other) noexcept;</pre>
+    <pre>recursive_directory_iterator&amp; operator=(recursive_directory_iterator&amp;&amp; rhs) noexcept;</pre>
     <blockquote>
+      <p>
+        <i>Effects:</i> 
+        If <code>*this</code> and <code>rhs</code> are the same object, the member has no effect.
+      </p>
       <p>
         <i>Postconditions:</i>
         <code>this->options()</code>, <code>this->depth()</code>, and
-        <code>this->recursion_pending()</code>, respectively, return the values that
-        <code>other.options()</code>, <code>other.depth()</code>, and <code>other.recursion_pending()</code>,
-        respectively, had before the function call. <code>other</code> is in a valid but unspecified state.
+        <code>this->recursion_pending()</code> return the values that
+        <code>rhs.options()</code>, <code>rhs.depth()</code>, and <code>rhs.recursion_pending()</code>,
+        respectively, had before the function call.
       </p>
       <p/><i>Returns:</i> <code>*this</code>.
 
