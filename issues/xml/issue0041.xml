@@ -97,29 +97,56 @@ recursive_directory_iterator&amp; operator=(recursive_directory_iterator&amp;&am
   <p/>
   <i>To 14.1 recursive_directory_iterator members [rec.dir.itr.members] add:</i>
   <blockquote>
-    <pre>recursive_directory_iterator(const recursive_directory_iterator&amp; other) noexcept;
-recursive_directory_iterator(recursive_directory_iterator&amp;&amp; other) noexcept; </pre>
+    <pre>recursive_directory_iterator(const recursive_directory_iterator&amp; other) noexcept;</pre>
     <blockquote>
       <p>
-        <i>Effects:</i> Constructs an object of class <code>recursive_directory_iterator</code>
-        having the original value of <code>other</code>. In the
-        second form, <code>other</code> is left in a valid but unspecified state.
+        <i>Effects:</i> Constructs an object of class <code>recursive_directory_iterator</code>.
+      </p>
+      <p>
+        <i>Postconditions:</i> <code>this->options() == other.options() &amp;&amp; this->depth() ==
+        other.depth() &amp;&amp; this->recursion_pending() ==
+        other.recursion_pending()</code>.
+      </p>
+    </blockquote>
+
+    <pre>recursive_directory_iterator(recursive_directory_iterator&amp;&amp; other) noexcept;</pre>
+    <blockquote>
+      <p>
+        <i>Effects:</i> Constructs an object of class <code>recursive_directory_iterator</code>.
+      </p>
+      <p>
+        <i>Postconditions:</i> <code>this->options()</code>, <code>this->depth()</code>, and
+        <code>this->recursion_pending()</code>, respectively, return the values that
+        <code>other.options()</code>, <code>other.depth()</code>, and <code>other.recursion_pending()</code>,
+        respectively, had before the function call. <code>other</code> is in a valid but unspecified state.
+      </p>
+    </blockquote>
+
+    <pre>recursive_directory_iterator&amp; operator=(const recursive_directory_iterator&amp; other);</pre>
+    <blockquote>
+      <p>
+      <i>Postconditions:</i> <code>
+        this->options() == other.options() &amp;&amp; this->depth() ==
+        other.depth() &amp;&amp; this->recursion_pending() ==
+        other.recursion_pending()
+      </code>.
       </p>
 
-    </blockquote>
-    <pre>recursive_directory_iterator&amp; operator=(const recursive_directory_iterator&amp; other);
-recursive_directory_iterator&amp; operator=(recursive_directory_iterator&amp;&amp; other) noexcept;</pre>
-    <blockquote>
-      <p>
-        <i>Effects:</i> If <code>*this</code> and <code>other</code> are not the same object, <code>*this</code>
-        is set equal to the original value of <code>other</code>. In the second form, <code>other</code> is
-        left in a valid but unspecified state.
-      </p>
-      <p>
-        If <code>*this</code> and <code>other</code> are the same object, the member has no effect.
-      </p>
       <p/><i>Returns:</i>
       <code>*this</code>.
+
+    </blockquote>
+
+    <pre>recursive_directory_iterator&amp; operator=(recursive_directory_iterator&amp;&amp; other) noexcept;</pre>
+    <blockquote>
+      <p>
+        <i>Postconditions:</i>
+        <code>this->options()</code>, <code>this->depth()</code>, and
+        <code>this->recursion_pending()</code>, respectively, return the values that
+        <code>other.options()</code>, <code>other.depth()</code>, and <code>other.recursion_pending()</code>,
+        respectively, had before the function call. <code>other</code> is in a valid but unspecified state.
+      </p>
+      <p/><i>Returns:</i> <code>*this</code>.
 
     </blockquote>
   </blockquote>
