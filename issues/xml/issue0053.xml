@@ -23,6 +23,7 @@ very very nice to have a note about this.</p>
   finishing the TS, but is a blocking issue for merging into the IS</note>
   
   <note>2014-04-17 Beman provides proposed wording</note>
+  <note>2014-06-19 Rapperswil LWG decides to remove mutable private members. Beman provides wording.</note>
 
 </discussion>
 
@@ -43,26 +44,26 @@ very very nice to have a note about this.</p>
     directory_entry(const directory_entry&amp;) = default;
     directory_entry(directory_entry&amp;&amp;) noexcept = default;
     <ins>explicit directory_entry(const path&amp; p);</ins>
-    <del>explicit</del> directory_entry(const path&amp; p, file_status st<del>=file_status()</del>,
-      file_status symlink_st<del>=file_status()</del>);
+    <del>explicit directory_entry(const path&amp; p, file_status st=file_status(),</del>
+      <del>file_status symlink_st=file_status());</del>
     ~directory_entry();
 
     // <a href="#directory_entry-modifiers">modifiers</a>
     directory_entry&amp; operator=(const directory_entry&amp;) = default;
     directory_entry&amp; operator=(directory_entry&amp;&amp;) noexcept = default;
     <ins>void assign(const path&amp; p);</ins>
-    void assign(const path&amp; p, file_status st<del>=file_status()</del>,
-      file_status symlink_st<del>=file_status()</del>);
+    <del>void assign(const path&amp; p, file_status st=file_status()</del>,
+      <del>file_status symlink_st=file_status()</del>);
     <ins>void replace_filename(const path&amp; p);</ins>
-    void replace_filename(const path&amp; p, file_status st<del>=file_status()</del>,
-      file_status symlink_st<del>=file_status()</del>);
+    <del>void replace_filename(const path&amp; p, file_status st=file_status()</del>,
+      <del>file_status symlink_st=file_status()</del>);
 
     // <a href="#directory_entry-observers">observers</a>
     const path&amp;  path() const noexcept;
-    file_status  status() const <ins>noexcept</ins>;
-    <del>file_status  status(error_code&amp; ec) const noexcept;</del>
-    file_status  symlink_status() const <ins>noexcept</ins>;
-    <del>file_status  symlink_status(error_code&amp; ec) const noexcept;</del>
+    file_status  status() const;
+    file_status  status(error_code&amp; ec) const noexcept;
+    file_status  symlink_status() const;
+    file_status  symlink_status(error_code&amp; ec) const noexcept;
 
     bool operator&lt; (const directory_entry&amp; rhs) const noexcept;
     bool operator==(const directory_entry&amp; rhs) const noexcept;
@@ -72,15 +73,15 @@ very very nice to have a note about this.</p>
     bool operator&gt;=(const directory_entry&amp; rhs) const noexcept;
     private:
     path                 m_path;           // for exposition only
-    <del>mutable</del> file_status  m_status;         // for exposition only; stat()-like
-    <del>mutable</del> file_status  m_symlink_status; // for exposition only; lstat()-like
+    <del>mutable file_status  m_status;         // for exposition only; stat()-like</del>
+    <del>mutable file_status  m_symlink_status; // for exposition only; lstat()-like</del>
     };
 
     } } } }  // namespaces std::experimental::filesystem::v1
   </pre>
   <p>
-    A <code>directory_entry</code> object stores a <code>path object</code>,
-    a <code>file_status</code> object for non-symbolic link status, and a <code>file_status</code> object for symbolic link status.
+    A <code>directory_entry</code> object stores a <code>path object</code><del>,</del>
+    <del>a <code>file_status</code> object for non-symbolic link status, and a <code>file_status</code> object for symbolic link status</del>.
     <del>
       The <code>file_status</code> objects act as value caches.
     </del>
@@ -112,85 +113,24 @@ very very nice to have a note about this.</p>
     </p>
    <pre>explicit directory_entry(const path&amp; p);</pre>
   <blockquote>
-
+    <p/><i>Effects: </i>Constructs an object of type <code>directory_entry</code>
+    
     <p>
       <i>Postcondition:</i>
+      <code>path() == p</code>.
     </p>
-    <table border="1" cellpadding="5" cellspacing="0" style="border-collapse: collapse" bordercolor="#111111" width="36%">
-      <tr>
-        <td width="18%">
-          <b>Expression</b>
-        </td>
-        <td width="82%">
-          <b>Value</b>
-        </td>
-      </tr>
-      <tr>
-        <td width="18%">
-          <code>path()</code>
-        </td>
-        <td width="82%">
-          <code>p</code>
-        </td>
-      </tr>
-      <tr>
-        <td width="18%">
-          <code>status()</code>
-        </td>
-        <td width="82%">
-          <code>status(p)</code>
-        </td>
-      </tr>
-      <tr>
-        <td width="18%">
-          <code>symlink_status()</code>
-        </td>
-        <td width="82%">
-          <code>symlink_status(p)</code>
-        </td>
-      </tr>
-    </table>
+
   </blockquote>
-  <pre><del>explicit</del> directory_entry(const path&amp; p, file_status st<del>=file_status()</del>,
-    file_status symlink_st<del>=file_status()</del>);</pre>
+  <pre><del>explicit directory_entry(const path&amp; p, file_status st=file_status()</del>,
+    <del>file_status symlink_st=file_status()</del>);</pre>
   <blockquote>
     <p>
-      <i>Postcondition:</i>
+      <span style="background-color: #C0C0C0">
+        <i>Strike the description</i>
+      </span>
     </p>
-    <table border="1" cellpadding="5" cellspacing="0" style="border-collapse: collapse" bordercolor="#111111" width="36%">
-      <tr>
-        <td width="18%">
-          <b>Expression</b>
-        </td>
-        <td width="82%">
-          <b>Value</b>
-        </td>
-      </tr>
-      <tr>
-        <td width="18%">
-          <code>path()</code>
-        </td>
-        <td width="82%">
-          <code>p</code>
-        </td>
-      </tr>
-      <tr>
-        <td width="18%">
-          <code>status()</code>
-        </td>
-        <td width="82%">
-          <code>st</code>
-        </td>
-      </tr>
-      <tr>
-        <td width="18%">
-          <code>symlink_status()</code>
-        </td>
-        <td width="82%">
-          <code>symlink_st</code>
-        </td>
-      </tr>
-    </table>
+
+    
   </blockquote>
   <h3>
     12.2  <a name="directory_entry-modifiers">
@@ -211,82 +151,18 @@ very very nice to have a note about this.</p>
   <blockquote>
     <p>
       <i>Postcondition:</i>
+      <code>path() == p</code>.
     </p>
-    <table border="1" cellpadding="5" cellspacing="0" style="border-collapse: collapse" bordercolor="#111111" width="36%">
-      <tr>
-        <td width="18%">
-          <b>Expression</b>
-        </td>
-        <td width="82%">
-          <b>Value</b>
-        </td>
-      </tr>
-      <tr>
-        <td width="18%">
-          <code>path()</code>
-        </td>
-        <td width="82%">
-          <code>p</code>
-        </td>
-      </tr>
-      <tr>
-        <td width="18%">
-          <code>status()</code>
-        </td>
-        <td width="82%">
-          <code>status(p)</code>
-        </td>
-      </tr>
-      <tr>
-        <td width="18%">
-          <code>symlink_status()</code>
-        </td>
-        <td width="82%">
-          <code>symlink_status(p)</code>
-        </td>
-      </tr>
-    </table>
+ 
   </blockquote>
-  <pre>void assign(const path&amp; p, file_status st<del>=file_status()</del>,
-  file_status symlink_st<del>=file_status()</del>);</pre>
+  <pre><del>void assign(const path&amp; p, file_status st=file_status()</del>,
+  <del>file_status symlink_st=file_status());</del></pre>
   <blockquote>
     <p>
-      <i>Postcondition:</i>
+      <span style="background-color: #C0C0C0">
+        <i>Strike the description</i>
+      </span>
     </p>
-    <table border="1" cellpadding="5" cellspacing="0" style="border-collapse: collapse" bordercolor="#111111" width="36%">
-      <tr>
-        <td width="18%">
-          <b>Expression</b>
-        </td>
-        <td width="82%">
-          <b>Value</b>
-        </td>
-      </tr>
-      <tr>
-        <td width="18%">
-          <code>path()</code>
-        </td>
-        <td width="82%">
-          <code>p</code>
-        </td>
-      </tr>
-      <tr>
-        <td width="18%">
-          <code>status()</code>
-        </td>
-        <td width="82%">
-          <code>st</code>
-        </td>
-      </tr>
-      <tr>
-        <td width="18%">
-          <code>symlink_status()</code>
-        </td>
-        <td width="82%">
-          <code>symlink_st</code>
-        </td>
-      </tr>
-    </table>
   </blockquote>
 
   <p>
@@ -300,83 +176,17 @@ very very nice to have a note about this.</p>
   <pre>void replace_filename(const path&amp; p);</pre>
   <blockquote>
     <p>
-      <i>Postcondition:</i>
+      <i>Postcondition:</i> <code>path() == path().parent_path() / p</code>.
     </p>
-    <table border="1" cellpadding="5" cellspacing="0" style="border-collapse: collapse" bordercolor="#111111" width="43%">
-      <tr>
-        <td width="18%">
-          <b>Expression</b>
-        </td>
-        <td width="82%">
-          <b>Value</b>
-        </td>
-      </tr>
-      <tr>
-        <td width="18%">
-          <code>path()</code>
-        </td>
-        <td width="82%">
-          <code>path().parent_path() / p</code>
-        </td>
-      </tr>
-      <tr>
-        <td width="18%">
-          <code>status()</code>
-        </td>
-        <td width="82%">
-          <code>status(p)</code>
-        </td>
-      </tr>
-      <tr>
-        <td width="18%">
-          <code>symlink_status()</code>
-        </td>
-        <td width="82%">
-          <code>symlink_status(p)</code>
-        </td>
-      </tr>
-    </table>
   </blockquote>
-  <pre>void replace_filename(const path&amp; p, file_status st<del>=file_status()</del>,
-  file_status symlink_st<del>=file_status()</del>);</pre>
+  <pre><del>void replace_filename(const path&amp; p, file_status st=file_status()</del>,
+  <del>file_status symlink_st=file_status());</del></pre>
   <blockquote>
     <p>
-      <i>Postcondition:</i>
+      <span style="background-color: #C0C0C0">
+        <i>Strike the description</i>
+      </span>
     </p>
-    <table border="1" cellpadding="5" cellspacing="0" style="border-collapse: collapse" bordercolor="#111111" width="43%">
-      <tr>
-        <td width="18%">
-          <b>Expression</b>
-        </td>
-        <td width="82%">
-          <b>Value</b>
-        </td>
-      </tr>
-      <tr>
-        <td width="18%">
-          <code>path()</code>
-        </td>
-        <td width="82%">
-          <code>path().parent_path() / p</code>
-        </td>
-      </tr>
-      <tr>
-        <td width="18%">
-          <code>status()</code>
-        </td>
-        <td width="82%">
-          <code>st</code>
-        </td>
-      </tr>
-      <tr>
-        <td width="18%">
-          <code>symlink_status()</code>
-        </td>
-        <td width="82%">
-          <code>symlink_st</code>
-        </td>
-      </tr>
-    </table>
   </blockquote>
   <h3>
     12.3  <a name="directory_entry-observers">
@@ -391,8 +201,8 @@ very very nice to have a note about this.</p>
       <code>m_path</code>
     </p>
   </blockquote>
-  <pre>file_status status() const <ins>noexcept</ins>;
-<del>file_status status(error_code&amp; ec) const noexcept;</del></pre>
+  <pre>file_status status() const;
+file_status status(error_code&amp; ec) const noexcept;</pre>
   <blockquote>
     <p>
       <del><i>Effects:</i> As if,</del>
@@ -407,16 +217,19 @@ very very nice to have a note about this.</p>
     </blockquote>
     <p>
       <i>Returns:</i>
-      <code>m_status</code>
+      <code>
+        <del>m_status</del>
+        <ins>status(path()<i>[, ec]</i>)</ins>
+      </code>.
     </p>
 
     <p>
-      <del> <i>Throws:</i> As specified in <a href="#Error-reporting">Error reporting (7)</a></del>.
+      <i>Throws:</i> As specified in <a href="#Error-reporting">Error reporting (7)</a>.
     </p>
 
   </blockquote>
-  <pre>file_status  symlink_status() const <ins>noexcept</ins>;
-<del>file_status  symlink_status(error_code&amp; ec) const noexcept;</del></pre>
+  <pre>file_status  symlink_status() const;
+file_status  symlink_status(error_code&amp; ec) const noexcept;</pre>
   <blockquote>
     <p>
       <del><i>Effects:</i> As if,</del>
@@ -430,11 +243,14 @@ very very nice to have a note about this.</p>
     </blockquote>
     <p>
       <i>Returns:</i>
-      <code>m_symlink_status</code>
+      <code>
+        <del>m_symlink_status</del>
+        <ins>symlink_status(path()<i>[, ec]</i>)</ins>
+      </code>.
     </p>
 
     <p>
-      <del><i>Throws:</i> As specified in <a href="#Error-reporting">Error reporting (7)</a></del>.
+      <i>Throws:</i> As specified in <a href="#Error-reporting">Error reporting (7)</a>.
     </p>
 
   </blockquote>
