@@ -3,7 +3,7 @@
   <!ENTITY nbsp "&#160;">
 ] >
 
-<issue num="49" status="New">
+<issue num="49" status="Review">
 <title>[PDTS] <tt>path</tt> and <tt>directory_entry</tt> move ctors should not be <tt>noexcept</tt></title>
 <section><sref ref="8.4.1 [path.construct]"/>, <sref ref="12 [class.directory_entry]"/></section>
 <submitter>Stephan T. Lavavej</submitter>
@@ -28,24 +28,26 @@ This is affected by LWG 2319 "<tt>basic_string</tt>'s move constructor should no
 See <a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2014/n3944.html#2319">LWG 2319</a> for rationale.
 </note>
 
+  <note>19 Jun 2014 LWG revises P/R to stay consistent with LWG issues.</note>
+
 </discussion>
 
 <resolution>
   <i>Change 8 Class path [class.path]:</i>
   <blockquote>
-    <pre>path(path&amp;&amp; p) <del>noexcept</del>;</pre>
+    <pre>path() <ins>noexcept</ins>;</pre>
   </blockquote>
 
   <i>Change 8.4.1 path constructors [path.construct]:</i>
   <blockquote>
-    <pre>path(path&amp;&amp; p) <del>noexcept</del>;</pre>
+    <pre>path() <ins>noexcept</ins>;</pre>
   </blockquote>
 
   <i>Change 12 Class directory_entry [class.directory_entry]:</i>
   <blockquote>
-    <pre>directory_entry(directory_entry&amp;&amp;) <del>noexcept</del> = default;</pre>
+    <pre>directory_entry() <ins>noexcept</ins> = default;</pre>
   </blockquote>
-  
+
 </resolution>
 
 </issue>
