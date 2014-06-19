@@ -44,18 +44,18 @@ very very nice to have a note about this.</p>
     directory_entry(directory_entry&amp;&amp;) noexcept = default;
     <ins>explicit directory_entry(const path&amp; p);</ins>
     <del>explicit</del> directory_entry(const path&amp; p, file_status st<del>=file_status()</del>,
-    file_status symlink_st<del>=file_status()</del>);
+      file_status symlink_st<del>=file_status()</del>);
     ~directory_entry();
 
     // <a href="#directory_entry-modifiers">modifiers</a>
     directory_entry&amp; operator=(const directory_entry&amp;) = default;
     directory_entry&amp; operator=(directory_entry&amp;&amp;) noexcept = default;
     <ins>void assign(const path&amp; p);</ins>
-    void assign(const path&amp; p, file_status st<del>=file_status(),</del>
-    file_status symlink_st<del>=file_status()</del>);
+    void assign(const path&amp; p, file_status st<del>=file_status()</del>,
+      file_status symlink_st<del>=file_status()</del>);
     <ins>void replace_filename(const path&amp; p);</ins>
-    void replace_filename(const path&amp; p, file_status st<del>=file_status(),</del>
-    file_status symlink_st<del>=file_status()</del>);
+    void replace_filename(const path&amp; p, file_status st<del>=file_status()</del>,
+      file_status symlink_st<del>=file_status()</del>);
 
     // <a href="#directory_entry-observers">observers</a>
     const path&amp;  path() const noexcept;
