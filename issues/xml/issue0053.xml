@@ -80,7 +80,7 @@ very very nice to have a note about this.</p>
     } } } }  // namespaces std::experimental::filesystem::v1
   </pre>
   <p>
-    A <code>directory_entry</code> object stores a <code>path object</code><del>,</del>
+    A <code>directory_entry</code> object stores a <code>path</code> object<del>,</del>
     <del>a <code>file_status</code> object for non-symbolic link status, and a <code>file_status</code> object for symbolic link status</del>.
     <del>
       The <code>file_status</code> objects act as value caches.
@@ -176,7 +176,9 @@ very very nice to have a note about this.</p>
   <pre>void replace_filename(const path&amp; p);</pre>
   <blockquote>
     <p>
-      <i>Postcondition:</i> <code>path() == path().parent_path() / p</code>.
+      <i>Postcondition:</i> <code>path() == x.parent_path() / p</code>
+      where <code>x</code> is the value of <code>path()</code>
+      before the function is called.
     </p>
   </blockquote>
   <pre><del>void replace_filename(const path&amp; p, file_status st=file_status()</del>,
@@ -260,8 +262,8 @@ file_status  symlink_status(error_code&amp; ec) const noexcept;</pre>
       <i>Returns:</i> <code>m_path == rhs.m_path</code>.
     </p>
     <p>
-      [<i>Note:</i> Status members do not participate in determining
-      equality. — end note]
+      <del>[<i>Note:</i> Status members do not participate in determining
+      equality. — end note]</del>
     </p>
   </blockquote>
   <pre>bool operator!=(const directory_entry&amp; rhs) const noexcept;</pre>
