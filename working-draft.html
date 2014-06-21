@@ -3013,7 +3013,8 @@ bool create_directory(const path&amp; p, error_code&amp; ec) noexcept;</pre>
 <blockquote>
   <p><i>Effects:</i> Establishes the postcondition by attempting to create the 
   directory <code>p</code> resolves to, as if by POSIX <code><a href="http://www.opengroup.org/onlinepubs/000095399/functions/mkdir.html">
-  mkdir()</a></code> with a second argument of S_IRWXU|S_IRWXG|S_IRWXO. Creation 
+  mkdir()</a></code> with a second argument of <del>S_IRWXU|S_IRWXG|S_IRWXO</del>
+  <ins><code>static_cast&lt;int&gt;(perms::all)</code></ins>. Creation 
   failure because <code>p</code> resolves to an existing directory shall not be 
   treated as an error. </p>
   <p><i>Postcondition:</i> <code>is_directory(p)</code></p>
