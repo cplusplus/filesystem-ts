@@ -560,12 +560,12 @@ with <code>std::</code>.</p>
 
     enum class <a name="copy_option" href="#enum.copy_options">copy_options</a>;  // [<a href="#enum.copy_options">enum.copy_options</a>]
 
-    enum class <a name="symlink_option">directory_options</a>
-    {
-      none,
-      follow_directory_symlink,
-      skip_permission_denied
-    };
+    enum class <a name="symlink_option">directory_options</a><ins>;</ins>
+    <del>{</del>
+      <del>none,</del>
+      <del>follow_directory_symlink,</del>
+      <del>skip_permission_denied</del>
+    <del>};</del>
 
     typedef chrono::time_point&lt;<b><i>trivial-clock</i></b>&gt;  file_time_type;
 
@@ -2152,6 +2152,36 @@ write permission for owner, group, or others sets write permission for all, and
 removing write permission for owner, group, or others removes write permission 
 for all. The Cygwin users guide has extensive discussion of the problems 
 involved. Input from security experts is needed.</span></i></p>
+
+  <ins><h3>10.4 Enum class <code>directory_options</code> [<a name="enum.directory_options">enum.directory_options</a>]
+  </h3></ins>
+  <ins><p>The <tt>enum class</tt> type <code>directory_options</code> is a bitmask 
+  type (C++11 §17.5.2.1.3) that specifies bitmask constants used to identify 
+  directory traversal options. </p></ins>
+  <ins><table style="border-collapse: collapse" border="1" bordercolor="#111111" cellpadding="5" cellspacing="0">
+    <tr>
+      <td><b>Name</b> </td>
+      <td align="center"><b>Value</b> </td>
+      <td><b>Meaning</b> </td>
+    </tr>
+    <tr>
+      <td><code>none</code> </td>
+      <td align="center"><code>0</code> </td>
+      <td>(Default) Skip directory symlinks, permission denied is error.</td>
+    </tr>
+    <tr>
+      <td><code>follow_directory_symlink</code> </td>
+      <td align="center"><code>1</code> </td>
+      <td>Follow rather than skip directory symlinks.</td>
+    </tr>
+    <tr>
+      <td><code>skip_permission_denied</code> </td>
+      <td align="center"><code>2</code> </td>
+      <td>Skip directories that would otherwise result in permission denied 
+      errors.</td>
+    </tr>
+  </table></ins>
+
 <h2>11  <a name="file_status">Class <code>file_status</code></a> [class.file_status]</h2>
 <pre>namespace std { namespace experimental { namespace filesystem { inline namespace v1 {
 
