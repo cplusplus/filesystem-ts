@@ -2837,7 +2837,8 @@ void copy(const path&amp; from, const path&amp; to, <a href="#copy_option">copy_
   
     <ul>
       <li>If <code>options &amp; copy_options::skip_symlinks</code>, then return.</li>
-      <li>Otherwise if <code>!exists(t)</code>, then <code>copy_symlink(from, 
+      <li>Otherwise if <code>!exists(t)<ins> &amp;&amp; (options &amp; 
+      copy_options::copy_symlinks) != copy_options::none</ins></code>, then <code>copy_symlink(from, 
       to, options)</code>.</li>
       <li>Otherwise report an error as specified in <a href="#Error-reporting">Error reporting (7)</a>.</li>
     </ul>
