@@ -2605,7 +2605,7 @@ directory and its sub-directories.</p>
         const directory_entry* operator-&gt;() const;
 
         recursive_directory_iterator&amp; operator++();
-        recursive_directory_iterator&amp; increment(error_code&amp; ec);
+        recursive_directory_iterator&amp; increment(error_code&amp; ec) <ins>noexcept</ins>;
 
         void pop();
         void disable_recursion_pending();
@@ -2682,7 +2682,7 @@ if present, otherwise <code>directory_options::none</code>.</p>
   <p><i>Throws:</i> Nothing.</p>
 </blockquote>
 <pre><code>recursive_directory_iterator</code>&amp; <a name="recursive_directory_iterator-increment">operator++</a>();
-recursive_directory_iterator&amp; increment(error_code&amp; ec);</pre>
+recursive_directory_iterator&amp; increment(error_code&amp; ec) <ins>noexcept</ins>;</pre>
 <blockquote>
 
   <p><i>Requires:</i> <code>*this != recursive_directory_iterator()</code>.</p>
