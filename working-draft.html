@@ -783,7 +783,7 @@ system or for a particular file system.</p>
         static constexpr value_type            preferred_separator = <b><i><a href="#value_type">see below</a></i></b>;
 
         // <a href="#path-constructors">constructors</a> and destructor
-        path();
+        path() <ins>noexcept</ins>;
         path(const path& p);
         path(path&amp;&amp; p) noexcept;
         template &lt;class <a href="#Source">Source</a>&gt;
@@ -1112,7 +1112,7 @@ shall be one of:</p>
   <h3>8.4  <code>path</code> members&nbsp; [<a name="path.member">path.member</a>]</h3>
 
 <h4>8.4.1  <a name="path-constructors"> <code>path</code> constructors</a> [path.construct]</h4>
-<pre>path();</pre>
+<pre>path() <ins>noexcept</ins>;</pre>
 <blockquote>
   <p><i>Effects:</i> Constructs an object of class <code>path</code>.</p>
   <p><i>Postconditions:</i> <code>empty()</code>.</p>
@@ -2246,7 +2246,7 @@ and permissions of a file.</p>
       public:
 
         // <a href="#directory_entry-constructors">constructors</a> and destructor
-        directory_entry() = default;
+        directory_entry() <ins>noexcept</ins> = default;
         directory_entry(const directory_entry&amp;) = default;
         directory_entry(directory_entry&amp;&amp;) noexcept = default;
         explicit directory_entry(const path&amp; p, file_status st=file_status(),
