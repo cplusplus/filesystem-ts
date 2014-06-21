@@ -3133,14 +3133,13 @@ bool <a name="equivalent2">equivalent</a>(const path&amp; p1, const path&amp; p2
 <pre>uintmax_t <a name="file_size">file_size</a>(const path&amp; p);
 uintmax_t <a name="file_size2">file_size</a>(const path&amp; p, error_code&amp; ec) noexcept;</pre>
 <blockquote>
-  <p><i>Returns:</i> If <code>exists(p) &amp;&amp; is_regular_file(p)</code>, the size 
-  in bytes 
-  of the file <code>p</code> resolves to, determined as if by the value of the 
-  POSIX <code><a href="http://www.opengroup.org/onlinepubs/000095399/basedefs/sys/stat.h.html">stat</a></code> structure member <code>st_size</code> 
-  obtained as if by POSIX <code><a href="http://www.opengroup.org/onlinepubs/000095399/functions/stat.html">stat()</a></code>. 
-  Otherwise, <code>static_cast&lt;uintmax_t&gt;(-1)</code>. The signature with 
-  argument <code>ec</code> 
-  returns <code>static_cast&lt;uintmax_t&gt;(-1)</code> if an error occurs.</p>
+  <p><i>Returns:</i> If <code><ins>!</ins>exists(p) <del>&amp;&amp;</del> <ins>|| !</ins>is_regular_file(p)</code><ins> 
+  an error is reported (7). Otherwise</ins>, the size in bytes of the file <code>
+  p</code> resolves to, determined as if by the value of the POSIX <code>stat</code> 
+  structure member <code>st_size</code> obtained as if by POSIX <code>stat()</code>.
+  <del>Otherwise, <code>static_cast&lt;uintmax_t&gt;(-1)</code>.</del> The signature 
+  with argument <code>ec</code> returns <code>static_cast&lt;uintmax_t&gt;(-1)</code> 
+  if an error occurs.</p>
   <p><i>Throws:</i> As specified in <a href="#Error-reporting">Error reporting (7)</a>.</p>
 </blockquote>
 
