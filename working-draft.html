@@ -2874,14 +2874,44 @@ bool <a name="copy_file2">copy_file</a>(const path&amp; from, const path&amp; to
   <p><i>Precondition:</i> At most one constant from each <code>copy_options</code> 
   option group ([<a href="#enum.copy_options">enum.copy_options</a>]) is present 
   in <code>options</code>.</p>
-  <p><i>Effects:</i></p>
+  <p><i>Effects:</i> </p>
   <blockquote>
-  <p>If&nbsp; <code>exists(to) &amp;&amp;</code> <code>!(options &amp; (copy_options::skip_existing 
-  | copy_options::overwrite_existing | copy_options::update_existing))</code> report a 
-      file already exists error as specified in <a href="#Error-reporting">Error reporting (7)</a>.</p>
-  <p>If <code>!exists(to) || (options &amp; copy_options::overwrite_existing) || ((options &amp; copy_options::update_existing) 
-  &amp;&amp; last_write_time(from) &gt; last_write_time(to)) || !(options &amp; (copy_options::skip_existing 
-  | copy_options::overwrite_existing | copy_options::update_existing))</code> copy the contents and attributes of the file <code>from</code> resolves to  the file <code>to</code> resolves to.</p>
+    <p><del>If&nbsp; <code>exists(to) &amp;&amp;</code> <code>!(options &amp; (copy_options::skip_existing 
+    | copy_options::overwrite_existing | copy_options::update_existing)) </code>
+    report a file already exists error as specified in
+    <a href="file:///C:/dot16/filesystem-ts/n4080.html#Error-reporting">Error 
+    reporting (7)</a>. </del></p>
+    <p><del>If <code>!exists(to) || (options &amp; copy_options::overwrite_existing) 
+    || ((options &amp; copy_options::update_existing) &amp;&amp; last_write_time(from) &gt; 
+    last_write_time(to)) || !(options &amp; (copy_options::skip_existing | 
+    copy_options::overwrite_existing | copy_options::update_existing)) </code>
+    copy the contents and attributes of the file <code>from</code> resolves to 
+    the file <code>to</code> resolves to. </del></p>
+  </blockquote>
+  <blockquote>
+    <p><ins>Report a file already exists error as specified in
+    <a href="file:///C:/dot16/filesystem-ts/working-draft.html#Error-reporting">
+    Error reporting (7) </a>if: </ins></p>
+    <ul>
+      <li><ins><code>exists(to)</code> and <code>equivalent(from, to)</code>, or
+      </ins></li>
+      <li><ins><code>exists(to)</code> and <code>(options &amp; (copy_options::skip_existing 
+      | copy_options::overwrite_existing | copy_options::update_existing)) == 
+      copy_options::none. </code></ins></li>
+    </ul>
+    <p><ins>Otherwise copy the contents and attributes of the file <code>from</code> 
+    resolves to to the file <code>to</code> resolves to if: </ins></p>
+    <ul>
+      <li><ins><code>!exists(to)</code>, or </ins></li>
+      <li><ins><code>exists(to)</code> and <code>(options &amp; 
+      copy_options::overwrite_existing) != copy_options::none </code>, or </ins>
+      </li>
+      <li><ins><code>exists(to)</code> and <code>(options &amp; 
+      copy_options::update_existing) != copy_options::none </code>and <code>from</code> 
+      is more recent than <code>to</code>, determined as if by use of the <code>
+      last_write_time </code>function. </ins></li>
+    </ul>
+    <p><ins>Otherwise no effects.</ins></p>
   </blockquote>
   <p><i>Returns</i>: <code>true</code> if the <code>from</code> file 
   was copied, otherwise <code>false</code>. The signature with argument <code>ec</code> return
