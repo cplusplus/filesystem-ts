@@ -2507,14 +2507,14 @@ directory.&nbsp;
         <ins>directory_iterator(const path&amp; p, directory_options options);</ins>
         directory_iterator(const path&amp; p, error_code&amp; ec) noexcept;
         <ins>directory_iterator(const path&amp; p,</ins>
-        <ins>directory_options options, error_code&amp; ec) noexcept;</ins>
-        directory_iterator(const directory_iterator&amp;) = default;
-        directory_iterator(directory_iterator&amp;&amp;) = default;
+          <ins>directory_options options, error_code&amp; ec) noexcept;</ins>
+        directory_iterator(const directory_iterator&amp; <ins>rhs</ins>) <del>= default</del>;
+        directory_iterator(directory_iterator&amp;&amp; <ins>rhs</ins>) <ins>noexcept</ins> <del>= default</del>;
        ~directory_iterator();
 
-        directory_iterator&amp; operator=(const directory_iterator&amp;) = default;
-        directory_iterator&amp; operator=(directory_iterator&amp;&amp;) = default;
-
+        directory_iterator&amp; operator=(const directory_iterator&amp; <ins>rhs</ins>) <del>= default</del>;
+        directory_iterator&amp; operator=(directory_iterator&amp;&amp; <ins>rhs</ins>) <ins>noexcept</ins> <del>= default</del>;
+        
         const directory_entry&amp; operator*() const;
         const directory_entry* operator-&gt;() const;
         directory_iterator&amp;    operator++();
@@ -2579,7 +2579,7 @@ noexcept;</code></p>
 <ins>directory_iterator(const path&amp; p, directory_options options</ins>);
 directory_iterator(const path&amp; p, error_code&amp; ec) noexcept;
 <ins>directory_iterator(const path&amp; p,</ins>
-<ins>directory_options options, error_code&amp; ec) noexcept;</ins>
+  <ins>directory_options options, error_code&amp; ec) noexcept;</ins>
 </pre>
 <blockquote>
 
@@ -2594,6 +2594,23 @@ and does not report an error.</ins></p>
 <p><i>Throws:</i> As specified in <a href="#Error-reporting">Error reporting (7)</a>.</p>
 
 <p>[<i>Note:</i> To iterate over the current directory, use <code>directory_iterator(&quot;.&quot;)</code> rather than <code>directory_iterator(&quot;&quot;)</code>. <i>&mdash;end note</i>]</p>
+</blockquote>
+<pre><ins>directory_iterator(const directory_iterator&amp; rhs);</ins>
+<ins>directory_iterator(directory_iterator&amp;&amp; rhs) noexcept;</ins></pre>
+<blockquote>
+  <p><ins><i>Effects:</i> Constructs an object of class <code>directory_iterator</code></ins>.
+  </p>
+  <p><ins><i>Postconditions:</i> <code>*this</code> has the original value of <code>
+  rhs</code>.</ins> </p>
+</blockquote>
+<pre><ins>directory_iterator&amp; operator=(const directory_iterator&amp; rhs);</ins>
+<ins>directory_iterator&amp; operator=(directory_iterator&amp;&amp; rhs) noexcept;</ins></pre>
+<blockquote>
+  <p><ins><i>Effects:</i> If <code>*this</code> and <code>rhs</code> are the same 
+  object, the member has no effect.</ins> </p>
+  <p><ins><i>Postconditions:</i> <code>*this</code> has the original value of <code>
+  rhs</code>.</ins> </p>
+  <p><ins><i>Returns:</i> <code>*this</code>. </ins></p>
 </blockquote>
 <pre>directory_iterator&amp; <a name="directory_iterator-increment">operator++</a>();
 directory_iterator&amp; increment(error_code&amp; ec)<code> noexcept</code>;</pre>
@@ -2636,27 +2653,27 @@ directory and its sub-directories.</p>
 
         // constructors and destructor
         recursive_directory_iterator() noexcept;
-        recursive_directory_iterator(const recursive_directory_iterator&amp;) = default;
         explicit recursive_directory_iterator(const path&amp; p<del>,</del>
           <del>directory_options options = directory_options::none</del>);
         <ins>recursive_directory_iterator(const path&amp; p, directory_options options);</ins>
         recursive_directory_iterator(const path&amp; p,
           <a href="#symlink_option">directory_options</a> options, error_code&amp; ec) noexcept;
         recursive_directory_iterator(const path&amp; p, error_code&amp; ec) noexcept;
-        recursive_directory_iterator(recursive_directory_iterator&amp;&amp;) = default;
+        recursive_directory_iterator(const recursive_directory_iterator&amp; <ins>rhs</ins>) <del>= default</del>;
+        recursive_directory_iterator(recursive_directory_iterator&amp;&amp; <ins>rhs</ins>) <ins>noexcept</ins> <del>= default</del>;
        ~recursive_directory_iterator();
 
         // observers
         directory_options  options() const;
         int                depth() const;
-        bool               recursion<code>_pending</code>() const;
-
-        // modifiers
-        recursive_directory_iterator&amp; operator=(const recursive_directory_iterator&amp;) = default;
-        recursive_directory_iterator&amp; operator=(recursive_directory_iterator&amp;&amp;) = default;
+        bool               recursion_pending() const;
 
         const directory_entry&amp; operator*() const;
         const directory_entry* operator-&gt;() const;
+
+        // modifiers
+        recursive_directory_iterator&amp; operator=(const recursive_directory_iterator&amp; <ins>rhs</ins>) <del>= default</del>;
+        recursive_directory_iterator&amp; operator=(recursive_directory_iterator&amp;&amp; <ins>rhs</ins>) <ins>noexcept</ins> <del>= default</del>;
 
         recursive_directory_iterator&amp; operator++();
         recursive_directory_iterator&amp; increment(error_code&amp; ec) <ins>noexcept</ins>;
@@ -2669,6 +2686,7 @@ directory and its sub-directories.</p>
      };
 
 } } } }  // namespaces std::experimental::filesystem::v1</pre>
+
 
 <p>The behavior of a <code>recursive_directory_iterator</code> is the same 
 as a <code>directory_iterator</code> unless otherwise specified.</p>
