@@ -33,7 +33,7 @@ del     { background-color:#FFD7D7 }
     <tr>
       <td>Date:</td>
       <td>
-      <!--webbot bot="Timestamp" S-Type="EDITED" S-Format="%Y-%m-%d" startspan -->2014-06-21<!--webbot bot="Timestamp" endspan i-checksum="12378" --></td>
+      <!--webbot bot="Timestamp" S-Type="EDITED" S-Format="%Y-%m-%d" startspan -->2014-06-23<!--webbot bot="Timestamp" endspan i-checksum="12382" --></td>
     </tr>
     <tr>
       <td>Revises:</td>
@@ -2255,194 +2255,218 @@ and permissions of a file.</p>
   <p><i>Postconditions:</i> <code>permissions() == prms</code>.</p>
 </blockquote>
 <h2>12  <a name="Class-directory_entry">Class <code>directory_entry</code></a> [class.directory_entry]</h2>
+
 <pre>namespace std { namespace experimental { namespace filesystem { inline namespace v1 {
 
-      class directory_entry
-      {
-      public:
+  class directory_entry
+  {
+  public:
 
-        // <a href="#directory_entry-constructors">constructors</a> and destructor
-        directory_entry() <ins>noexcept</ins> = default;
-        directory_entry(const directory_entry&amp;) = default;
-        directory_entry(directory_entry&amp;&amp;) noexcept = default;
-        explicit directory_entry(const path&amp; p, file_status st=file_status(),
-          file_status symlink_st=file_status());
-       ~directory_entry(); 
+    // <a href="#directory_entry-constructors">constructors</a> and destructor
+    directory_entry() <ins>noexcept</ins> = default;
+    directory_entry(const directory_entry&amp;) = default;
+    directory_entry(directory_entry&amp;&amp;) noexcept = default;
+    <ins>explicit directory_entry(const path&amp; p);</ins>
+    <del>explicit directory_entry(const path&amp; p, file_status st=file_status(),</del>
+      <del>file_status symlink_st=file_status());</del>
+    ~directory_entry();
 
-        // <a href="#directory_entry-modifiers">modifiers</a>
-        directory_entry&amp; operator=(const directory_entry&amp;) = default;
-        directory_entry&amp; operator=(directory_entry&amp;&amp;) noexcept = default;
-        void assign(const path&amp; p, file_status st=file_status(),
-          file_status symlink_st=file_status());
-        void replace_filename(const path&amp; p, file_status st=file_status(),
-          file_status symlink_st=file_status());
+    // <a href="#directory_entry-modifiers">modifiers</a>
+    directory_entry&amp; operator=(const directory_entry&amp;) = default;
+    directory_entry&amp; operator=(directory_entry&amp;&amp;) noexcept = default;
+    <ins>void assign(const path&amp; p);</ins>
+    <del>void assign(const path&amp; p, file_status st=file_status()</del>,
+      <del>file_status symlink_st=file_status()</del>);
+    <ins>void replace_filename(const path&amp; p);</ins>
+    <del>void replace_filename(const path&amp; p, file_status st=file_status()</del>,
+      <del>file_status symlink_st=file_status()</del>);
 
-        // <a href="#directory_entry-observers">observers</a>
-        const path&amp;  path() const noexcept;
-        file_status  status() const;
-        file_status  status(error_code&amp; ec) const noexcept;
-        file_status  symlink_status() const;
-        file_status  symlink_status(error_code&amp; ec) const noexcept;
+    // <a href="#directory_entry-observers">observers</a>
+    const path&amp;  path() const noexcept;
+    file_status  status() const;
+    file_status  status(error_code&amp; ec) const noexcept;
+    file_status  symlink_status() const;
+    file_status  symlink_status(error_code&amp; ec) const noexcept;
 
-        bool operator&lt; (const directory_entry&amp; rhs) const noexcept;
-        bool operator==(const directory_entry&amp; rhs) const noexcept; 
-        bool operator!=(const directory_entry&amp; rhs) const noexcept; 
-        bool operator&lt;=(const directory_entry&amp; rhs) const noexcept;
-        bool operator&gt; (const directory_entry&amp; rhs) const noexcept;
-        bool operator&gt;=(const directory_entry&amp; rhs) const noexcept;
-      private:
-        path                 m_path;           // for exposition only
-        mutable file_status  m_status;         // for exposition only; stat()-like
-        mutable file_status  m_symlink_status; // for exposition only; lstat()-like
-      };
+    bool operator&lt; (const directory_entry&amp; rhs) const noexcept;
+    bool operator==(const directory_entry&amp; rhs) const noexcept;
+    bool operator!=(const directory_entry&amp; rhs) const noexcept;
+    bool operator&lt;=(const directory_entry&amp; rhs) const noexcept;
+    bool operator&gt; (const directory_entry&amp; rhs) const noexcept;
+    bool operator&gt;=(const directory_entry&amp; rhs) const noexcept;
+    private:
+    path                 m_path;           // for exposition only
+    <del>mutable file_status  m_status;         // for exposition only; stat()-like</del>
+    <del>mutable file_status  m_symlink_status; // for exposition only; lstat()-like</del>
+  };
 
-} } } }  // namespaces std::experimental::filesystem::v1</pre>
-<p>A <code>directory_entry</code> object stores a <code>path object</code>, 
-a <code>file_status</code> object for non-symbolic link status, and a <code>file_status</code> object for symbolic link status.
-The <code>file_status</code> objects act as value caches.</p>
+} } } }  // namespaces std::experimental::filesystem::v1  </pre>
+<p>A <code>directory_entry</code> object stores a <code>path</code> object<del>,</del>
+<del>a <code>file_status</code> object for non-symbolic link status, and a <code>
+file_status</code> object for symbolic link status</del>. <del>The <code>
+file_status</code> objects act as value caches. </del></p>
 <blockquote>
-<p>[<i>Note:</i> Because <code>status()</code>on a pathname may be a relatively expensive operation, 
-some operating systems provide status information as a byproduct of directory 
-iteration. Caching such status information can result in significant time savings. Cached and 
-non-cached results may differ in the presence of file system races. <i>&mdash;end note</i>]</p>
+  <p><del>[<i>Note:</i> Because <code>status()</code>on a pathname may be a 
+  relatively expensive operation, some operating systems provide status 
+  information as a byproduct of directory iteration. Caching such status 
+  information can result in significant time savings. Cached and non-cached 
+  results may differ in the presence of file system races. <i>—end note</i>]
+  </del></p>
 </blockquote>
-<h3>12.1  <a name="directory_entry-constructors"><code>directory_entry</code> constructors</a> 
-[directory_entry.cons]</h3>
-<pre>explicit directory_entry(const path&amp; p, file_status st=file_status(),
-                         file_status symlink_st=file_status());</pre>
+<h3>12.1 <a name="directory_entry-constructors"><code>directory_entry</code> 
+constructors </a>[directory_entry.cons] </h3>
+<pre><ins>explicit directory_entry(const path&amp; p);</ins></pre>
 <blockquote>
-  <p><i>Postcondition:</i></p>
+  <p><ins><i>Effects: </i>Constructs an object of type <code>directory_entry</code>.</ins>
+  </p>
+  <p><ins><i>Postcondition:</i> <code>path() == p</code>.</ins></p>
+</blockquote>
+<pre><del>explicit directory_entry(const path&amp; p, file_status st=file_status()</del>,
+    <del>file_status symlink_st=file_status()</del>);</pre>
+<blockquote>
+  <p><del><i>Postcondition:</i></del></p>
   <table border="1" cellpadding="5" cellspacing="0" style="border-collapse: collapse" bordercolor="#111111" width="36%">
     <tr>
-      <td width="18%"><b>Expression</b></td>
-      <td width="82%"><b>Value</b></td>
+      <td width="18%"><del><b>Expression</b></del></td>
+      <td width="82%"><del><b>Value</b></del></td>
     </tr>
     <tr>
-      <td width="18%"><code>path()</code></td>
-      <td width="82%"><code>p</code></td>
+      <td width="18%"><del><code>path()</code></del></td>
+      <td width="82%"><del><code>p</code></del></td>
     </tr>
     <tr>
-      <td width="18%"><code>status()</code></td>
-      <td width="82%"><code>st</code></td>
+      <td width="18%"><del><code>status()</code></del></td>
+      <td width="82%"><del><code>st</code></del></td>
     </tr>
     <tr>
-      <td width="18%"><code>symlink_status()</code></td>
-      <td width="82%"><code>symlink_st</code></td>
+      <td width="18%"><del><code>symlink_status()</code></del></td>
+      <td width="82%"><del><code>symlink_st</code></del></td>
     </tr>
   </table>
 </blockquote>
-<h3>12.2  <a name="directory_entry-modifiers"><code>directory_entry</code> modifiers</a> 
-[directory_entry.mods]</h3>
-<pre>void assign(const path&amp; p, file_status st=file_status(),
-            file_status symlink_st=file_status());</pre>
+<h3>12.2 <a name="directory_entry-modifiers"><code>directory_entry</code> 
+modifiers </a>[directory_entry.mods] </h3>
+<pre><ins>void assign(const path&amp; p);</ins></pre>
 <blockquote>
-  <p><i>Postcondition:</i></p>
-  <table border="1" cellpadding="5" cellspacing="0" style="border-collapse: collapse" bordercolor="#111111" width="36%">
-    <tr>
-      <td width="18%"><b>Expression</b></td>
-      <td width="82%"><b>Value</b></td>
-    </tr>
-    <tr>
-      <td width="18%"><code>path()</code></td>
-      <td width="82%"><code>p</code></td>
-    </tr>
-    <tr>
-      <td width="18%"><code>status()</code></td>
-      <td width="82%"><code>st</code></td>
-    </tr>
-    <tr>
-      <td width="18%"><code>symlink_status()</code></td>
-      <td width="82%"><code>symlink_st</code></td>
-    </tr>
-  </table>
+  <p><ins><i>Postcondition:</i> <code>path() == p</code>.</ins> </p>
 </blockquote>
-<pre>void replace_filename(const path&amp; p, file_status st=file_status(),
-                      file_status symlink_st=file_status());</pre>
+<pre><del>void assign(const path&amp; p, file_status st=file_status(),</del>
+  <del>file_status symlink_st=file_status());</del></pre>
 <blockquote>
-  <p><i>Postcondition:</i></p>
-  <table border="1" cellpadding="5" cellspacing="0" style="border-collapse: collapse" bordercolor="#111111" width="43%">
+  <p><del><i>Postcondition:</i></del></p>
+  <del><table border="1" cellpadding="5" cellspacing="0" style="border-collapse: collapse" bordercolor="#111111" width="36%">
     <tr>
-      <td width="18%"><b>Expression</b></td>
-      <td width="82%"><b>Value</b></td>
+      <td width="18%"><del><b>Expression</b></del></td>
+      <td width="82%"><del><b>Value</b></del></td>
     </tr>
     <tr>
-      <td width="18%"><code>path()</code></td>
-      <td width="82%"><code>path().parent_path() / p</code></td>
+      <td width="18%"><del><code>path()</code></del></td>
+      <td width="82%"><del><code>p</code></del></td>
     </tr>
     <tr>
-      <td width="18%"><code>status()</code></td>
-      <td width="82%"><code>st</code></td>
+      <td width="18%"><del><code>status()</code></del></td>
+      <td width="82%"><del><code>st</code></del></td>
     </tr>
     <tr>
-      <td width="18%"><code>symlink_status()</code></td>
-      <td width="82%"><code>symlink_st</code></td>
+      <td width="18%"><del><code>symlink_status()</code></del></td>
+      <td width="82%"><del><code>symlink_st</code></del></td>
     </tr>
-  </table>
+  </table></del>
 </blockquote>
-<h3>12.3  <a name="directory_entry-observers"><code>directory_entry</code> observers</a> 
-[directory_entry.obs]</h3>
+<pre><ins>void replace_filename(const path&amp; p);</ins></pre>
+<blockquote>
+  <p><ins><i>Postcondition:</i> <code>path() == x.parent_path() / p</code> where
+  <code>x</code> is the value of <code>path()</code> before the function is 
+  called.</ins> </p>
+</blockquote>
+<pre><del>void replace_filename(const path&amp; p, file_status st=file_status()</del>,
+  <del>file_status symlink_st=file_status());</del></pre>
+<blockquote>
+  <p><del><i>Postcondition:</i></del></p>
+  <del><table border="1" cellpadding="5" cellspacing="0" style="border-collapse: collapse" bordercolor="#111111" width="43%">
+    <tr>
+      <td width="18%"><del><b>Expression</b></del></td>
+      <td width="82%"><del><b>Value</b></del></td>
+    </tr>
+    <tr>
+      <td width="18%"><del><code>path()</code></del></td>
+      <td width="82%"><del><code>path().parent_path() / p</code></del></td>
+    </tr>
+    <tr>
+      <td width="18%"><del><code>status()</code></del></td>
+      <td width="82%"><del><code>st</code></del></td>
+    </tr>
+    <tr>
+      <td width="18%"><del><code>symlink_status()</code></del></td>
+      <td width="82%"><del><code>symlink_st</code></del></td>
+    </tr>
+  </table></del>
+</blockquote>
+<h3>12.3 <a name="directory_entry-observers"><code>directory_entry</code> 
+observers </a>[directory_entry.obs] </h3>
 <pre>const path&amp; path() const noexcept;</pre>
 <blockquote>
-  <p><i>Returns:</i> <code>m_path</code></p>
+  <p><i>Returns:</i> <code>m_path</code> </p>
 </blockquote>
 <pre>file_status status() const;
 file_status status(error_code&amp; ec) const noexcept;</pre>
 <blockquote>
-<p><i>Effects:</i> As if,</p>
+  <p><del><i>Effects:</i> As if,</del> </p>
   <blockquote>
-    <pre>if (!status_known(m_status))
+    <pre><del>if (!status_known(m_status))
 {
   if (status_known(m_symlink_status) &amp;&amp; !is_symlink(m_symlink_status))
     { m_status = m_symlink_status; }
   else { m_status = status(m_path<i>[, ec]</i>); }
-}</pre>
+}</del></pre>
   </blockquote>
-  <p><i>Returns:</i> <code>m_status</code></p>
-  
-  <p><i>Throws:</i> As specified in <a href="#Error-reporting">Error reporting (7)</a>.</p>
-  
+  <p><i>Returns:</i> <code><del>m_status</del> <ins>status(path()<i>[, ec]</i>)</ins></code>.
+  </p>
+  <p><i>Throws:</i> As specified in
+  <a href="file:///C:/dot16/filesystem-ts/n4080.html#Error-reporting">Error 
+  reporting (7)</a>. </p>
 </blockquote>
 <pre>file_status  symlink_status() const;
 file_status  symlink_status(error_code&amp; ec) const noexcept;</pre>
 <blockquote>
-<p>
-  <i>Effects:</i> As if,</p>
+  <p><del><i>Effects:</i> As if,</del> </p>
   <blockquote>
-    <pre>if (!status_known(m_symlink_status))
-{
-  m_symlink_status = symlink_status(m_path<i>[, ec]</i>);
-}</pre>
+    <pre><del>        if (!status_known(m_symlink_status))
+        {
+        m_symlink_status = symlink_status(m_path<i>[, ec]</i>);
+        }</del></pre>
   </blockquote>
-  <p><i>Returns:</i> <code>m_symlink_status</code></p>
-  
-  <p><i>Throws:</i> As specified in <a href="#Error-reporting">Error reporting (7)</a>.</p>
-  
+  <p><i>Returns:</i> <code><del>m_symlink_status</del> <ins>symlink_status(path()<i>[, 
+  ec]</i>)</ins></code>. </p>
+  <p><i>Throws:</i> As specified in
+  <a href="file:///C:/dot16/filesystem-ts/n4080.html#Error-reporting">Error 
+  reporting (7)</a>. </p>
 </blockquote>
 <pre>bool operator==(const directory_entry&amp; rhs) const noexcept;</pre>
 <blockquote>
-  <p><i>Returns:</i> <code>m_path == rhs.m_path</code>.</p>
-  <p>[<i>Note:</i> Status members do not participate in determining 
-  equality. — end note] </p>
+  <p><i>Returns:</i> <code>m_path == rhs.m_path</code>. </p>
+  <p><del>[<i>Note:</i> Status members do not participate in determining 
+  equality. — end note]</del> </p>
 </blockquote>
 <pre>bool operator!=(const directory_entry&amp; rhs) const noexcept;</pre>
 <blockquote>
-  <p><i>Returns:</i> <code>m_path != rhs.m_path</code>.</p>
+  <p><i>Returns:</i> <code>m_path != rhs.m_path</code>. </p>
 </blockquote>
 <pre>bool operator&lt; (const directory_entry&amp; rhs) const noexcept;</pre>
 <blockquote>
-  <p><i>Returns:</i> <code>m_path &lt; rhs.m_path</code>.</p>
+  <p><i>Returns:</i> <code>m_path &lt; rhs.m_path</code>. </p>
 </blockquote>
 <pre>bool operator&lt;=(const directory_entry&amp; rhs) const noexcept;</pre>
 <blockquote>
-  <p><i>Returns:</i> <code>m_path &lt;= rhs.m_path</code>.</p>
+  <p><i>Returns:</i> <code>m_path &lt;= rhs.m_path</code>. </p>
 </blockquote>
 <pre>bool operator&gt; (const directory_entry&amp; rhs) const noexcept;</pre>
 <blockquote>
-  <p><i>Returns:</i> <code>m_path &gt; rhs.m_path</code>.</p>
+  <p><i>Returns:</i> <code>m_path &gt; rhs.m_path</code>. </p>
 </blockquote>
 <pre>bool operator&gt;=(const directory_entry&amp; rhs) const noexcept;</pre>
 <blockquote>
-  <p><i>Returns:</i> <code>m_path &gt;= rhs.m_path</code>.</p>
+  <p><i>Returns:</i> <code>m_path &gt;= rhs.m_path</code>. </p>
 </blockquote>
 <h2>13  <a name="Class-directory_iterator">Class <code>directory_iterator</code> 
 [class.directory_iterator]</a></h2>
