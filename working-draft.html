@@ -83,7 +83,9 @@ Specification document.</span></i></p>
       <a href="#Scope">1  Scope&nbsp; </a><br>
       <a href="#Conformance">2  Conformance </a><br>
       &nbsp;&nbsp;&nbsp;<a href="#fs.conform.9945">2.1  POSIX conformance </a><br>
-      &nbsp;&nbsp;&nbsp;<a href="#fs.conform.os">2.2  Operating system dependent behavior conformance </a><br>
+      &nbsp;&nbsp;&nbsp;<a href="#fs.conform.os">2.2  Operating system dependent behavior conformance</a><br>
+      &nbsp;&nbsp; <ins><a href="#fs.race.behavior">2.3 File system race 
+      behavior</a></ins><br>
       <a href="#Normative-references">3  Normative references&nbsp; </a><br>
       <a href="#Definitions">4  Terms and definitions </a><br>
       &nbsp;&nbsp;&nbsp;<a href="#Absolute-path">4.1  absolute path </a><br>
@@ -273,24 +275,31 @@ does not support hard links, symlinks, and many other features of more capable
 file systems, so implementations are not required to support those features 
 on the FAT file system. <i>&mdash;end example</i>]</p>
 </blockquote>
-<p>The behavior of functions described in this 
-Technical Specification 
-may differ from their specification in 
-the presence of <a href="#file-system-race">file system races</a> ([fs.def.race]). No diagnostic is required.</p>
-<p>If the possibility of a file system race would make it unreliable for a program to 
-test for a precondition before calling a function described herein, <i>
-Requires</i> is not specified for the function.</p>
-<blockquote>
-<p>[<i>Note:</i> As a design practice, preconditions are not specified when it 
-is unreasonable for a program to detect them prior to calling the function. <i>
-&mdash;end note</i>]</p>
-</blockquote>
+
 <h3>2.2  Operating system dependent behavior conformance [<a name="fs.conform.os">fs.conform.os</a>]</h3>
 <p>Some behavior is specified as being 
 operating system dependent ([fs.def.osdep]). The operating system an 
 implementation is dependent upon is implementation defined.</p>
 <p>It is permissible for an implementation to be dependent upon an operating 
 system emulator rather than the actual underlying operating system.</p>
+
+<h3><ins>2.3 File system race behavior [<a name="fs.race.behavior">fs.race.behavior</a>]</ins></h3>
+
+<p><del>The behavior of functions described in this Technical Specification may 
+differ from their specification in the presence of <a href="#file-system-race">
+file system races</a> ([fs.def.race]). No diagnostic is required.</del></p>
+
+<p><ins>Behavior is undefined if calls to functions provided by this Technical 
+Specification introduce a <a href="#file-system-race">file system race</a> (4.6 
+[fs.def.race]).</ins></p>
+<p>If the possibility of a file system race would make it unreliable for a 
+program to test for a precondition before calling a function described herein, <i>
+Requires</i> is not specified for the function.</p>
+<blockquote>
+<p>[<i>Note:</i> As a design practice, preconditions are not specified when it 
+is unreasonable for a program to detect them prior to calling the function. <i>
+—end note</i>]</p>
+</blockquote>
 
 <h2>3  <a name="Normative-references">Normative references</a>&nbsp; [fs.norm.ref]</h2>
 
