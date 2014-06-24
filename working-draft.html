@@ -2931,9 +2931,10 @@ void copy(const path&amp; from, const path&amp; to, <a href="#copy_option">copy_
   <p>Before the first use of <code>f</code> and <code>t</code>:</p>
   
     <ul>
-      <li>If <code>(options &amp; copy_options::create_symlinks) || (options &amp; 
-      copy_options::skip_symlinks)</code>, then <code>auto f = 
-      symlink_status(from)</code> and if needed <code>auto t = symlink_status(to)</code>.</li>
+      <li>If <code>(options &amp; copy_options::create_symlinks) <ins>!= 
+      copy_options::none </ins>|| (options &amp; copy_options::skip_symlinks) <ins>
+      != copy_options::none</ins></code>, then <code>auto f = 
+      symlink_status(from) </code>and if needed <code>auto t = symlink_status(to)</code>.</li>
       <li>Otherwise, <code>auto f = status(from)</code> and if needed <code>auto 
       t = status(to)</code>.</li>
     </ul>
@@ -2949,7 +2950,8 @@ void copy(const path&amp; from, const path&amp; to, <a href="#copy_option">copy_
   <p>If <code>is_symlink(f)</code>, then:</p>
   
     <ul>
-      <li>If <code>options &amp; copy_options::skip_symlinks</code>, then return.</li>
+      <li>If <code><ins>(</ins>options &amp; copy_options::skip_symlinks<ins>) != 
+      copy_options::none</ins></code>, then return.</li>
       <li>Otherwise if <code>!exists(t)<ins> &amp;&amp; (options &amp; 
       copy_options::copy_symlinks) != copy_options::none</ins></code>, then <code>copy_symlink(from, 
       to, options)</code>.</li>
@@ -2958,11 +2960,14 @@ void copy(const path&amp; from, const path&amp; to, <a href="#copy_option">copy_
   <p>Otherwise if <code>is_regular_file(f)</code>, then:</p>
   
     <ul>
-      <li>If <code>options &amp; copy_options::directories_only</code>, then return.</li>
-      <li>Otherwise if <code>options &amp; copy_options::create_symlinks</code>, then 
-      create a symbolic link to the source file.</li>
-      <li>Otherwise if <code>options &amp; copy_options::create_hard_links</code>, 
-      then create a hard link to the source file.</li>
+      <li>If <code><ins>(</ins>options &amp; copy_options::directories_only<ins>) != 
+      copy_options::none</ins></code>, then return. </li>
+      <li>Otherwise if <code><ins>(</ins>options &amp; copy_options::create_symlinks<ins> 
+      ) != copy_options::none</ins></code>, then create a symbolic link to the 
+      source file. </li>
+      <li>Otherwise if <code><ins>(</ins>options &amp; 
+      copy_options::create_hard_links<ins>) != copy_options::none</ins></code>, 
+      then create a hard link to the source file. </li>
       <li>Otherwise if <code>is_directory(t)</code>, then <code>copy_file(from, to/from.filename(), 
         options)</code>.</li>
       <li>Otherwise, <code>copy_file(from, to, options)</code>.</li>
@@ -2971,9 +2976,9 @@ void copy(const path&amp; from, const path&amp; to, <a href="#copy_option">copy_
 </blockquote>
 <blockquote>
   <blockquote>
-  <p>Otherwise if <code>is_directory(f) &amp;&amp; ((options &amp; 
-  copy_options::recursive) || !(options))</code> 
-  then:</p>
+  <p>Otherwise if <code>is_directory(f) &amp;&amp; ((options &amp; copy_options::recursive)<ins> 
+  != copy_options::none</ins> || <del>!(</del>options <ins>== copy_options::none</ins><del>)</del>)
+  </code>then:</p>
   
     <ul>
       <li>If&nbsp; <code>!exists(t)</code>, then <code>create_directory(to, 
@@ -3504,7 +3509,9 @@ void <a name="last_write_time4">last_write_time</a>(const path&amp; p, file_time
 void permissions(const path&amp; p, <a href="#symlink_perms">perms</a> prms, error_code&amp; ec) noexcept;</pre>
 <blockquote>
   <p>
-  <i>Requires:</i> <code>!((prms &amp; add_perms) &amp;&amp; (prms &amp; remove_perms))</code>.</p>
+  <i>Requires:</i> <code>!((prms &amp; <ins>perms::</ins>add_perms) <ins>!= 
+  perms::none</ins> &amp;&amp; (prms &amp; <ins>perms::</ins>remove_perms) <ins>!= 
+  perms::none</ins>)</code>.</p>
   <p><i>Effects:</i> Applies the effective permissions bits from <code>prms</code> to the file <code>p</code> 
   resolves to, as if by POSIX <code><a href="http://pubs.opengroup.org/onlinepubs/9699919799/functions/fchmodat.html">fchmodat()</a></code>. The effective permission bits are determined as 
   specified by the following table. </p>
@@ -3528,7 +3535,7 @@ void permissions(const path&amp; p, <a href="#symlink_perms">perms</a> prms, err
     </tr>
   </table>
   <p>[<i>Note:</i> Conceptually permissions are viewed as bits, but the actual 
-  implementation may use some other mechanism. -- <i>end note</i>]</p>
+  implementation may use some other mechanism. <i>—end note</i>]</p>
   <p><i>Throws:</i> As specified in <a href="#Error-reporting">Error reporting (7)</a>.</p>
 </blockquote>
 
