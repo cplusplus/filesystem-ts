@@ -2730,6 +2730,45 @@ directory_options::none</code>.</p>
 follow directory symlinks. To follow directory symlinks, specify <code>options</code> as <code>
 directory_options::follow_directory_symlink</code> <i>&mdash;end note</i>]</p>
 </blockquote>
+
+<pre><ins>recursive_directory_iterator(const recursive_directory_iterator&amp; rhs);</ins></pre>
+<ins><blockquote>
+  <p><i>Effects:</i> Constructs an object of class <code>
+  recursive_directory_iterator</code>. </p>
+  <p><i>Postconditions:</i> <code>this-&gt;options() == rhs.options() &amp;&amp; 
+  this-&gt;depth() == rhs.depth() &amp;&amp; this-&gt;recursion_pending() == 
+  rhs.recursion_pending()</code>. </p>
+</blockquote></ins>
+<pre><ins>recursive_directory_iterator(recursive_directory_iterator&amp;&amp; rhs) noexcept;</ins></pre>
+<ins><blockquote>
+  <p><i>Effects:</i> Constructs an object of class <code>
+  recursive_directory_iterator</code>. </p>
+  <p><i>Postconditions:</i> <code>this-&gt;options()</code>, <code>this-&gt;depth()</code>, 
+  and <code>this-&gt;recursion_pending()</code> return the values that <code>
+  rhs.options()</code>, <code>rhs.depth()</code>, and <code>
+  rhs.recursion_pending()</code>, respectively, had before the function call.
+  </p>
+</blockquote></ins>
+<pre><ins>recursive_directory_iterator&amp; operator=(const recursive_directory_iterator&amp; rhs);</ins></pre>
+<ins><blockquote>
+  <p><i>Effects:</i> If <code>*this</code> and <code>rhs</code> are the same 
+  object, the member has no effect. </p>
+  <p><i>Postconditions:</i> <code>this-&gt;options() == rhs.options() &amp;&amp; 
+  this-&gt;depth() == rhs.depth() &amp;&amp; this-&gt;recursion_pending() == 
+  rhs.recursion_pending() </code>. </p>
+  <p><i>Returns:</i> <code>*this</code>. </p>
+</blockquote></ins>
+<pre><ins>recursive_directory_iterator&amp; operator=(recursive_directory_iterator&amp;&amp; rhs) noexcept;</ins></pre>
+<ins><blockquote>
+  <p><i>Effects:</i> If <code>*this</code> and <code>rhs</code> are the same 
+  object, the member has no effect. </p>
+  <p><i>Postconditions:</i> <code>this-&gt;options()</code>, <code>this-&gt;depth()</code>, 
+  and <code>this-&gt;recursion_pending()</code> return the values that <code>
+  rhs.options()</code>, <code>rhs.depth()</code>, and <code>
+  rhs.recursion_pending()</code>, respectively, had before the function call.
+  </p>
+  <p><i>Returns:</i> <code>*this</code>. </p>
+</blockquote></ins>
 <pre>directory_options options() const;</pre>
 <blockquote>
   <p><i>Requires:</i> <code>*this != recursive_directory_iterator()</code>.</p>
