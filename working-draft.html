@@ -807,7 +807,6 @@ and contains a <a href="#fs.def.pathname">pathname</a> Such an object is concern
 of a path. The path does not necessarily exist in external storage, and the 
 pathname is not necessarily valid for the current operating 
 system or for a particular file system.</p>
-<blockquote>
 <pre>namespace std { namespace experimental { namespace filesystem { inline namespace v1 {
 
       class path
@@ -939,7 +938,6 @@ system or for a particular file system.</p>
 
 } } } }  // namespaces std::experimental::filesystem::v1</pre>
 
-</blockquote>
 <p><code><a name="value_type">value_type</a></code> is a <code>typedef</code> for the 
 operating system dependent encoded character type used  to represent pathnames.</p>
 <p>The value of <a name="preferred_separator"><code>preferred_separator</code></a> 
@@ -2666,8 +2664,10 @@ directory and its sub-directories.</p>
         recursive_directory_iterator(const path&amp; p,
           <a href="#symlink_option">directory_options</a> options, error_code&amp; ec) noexcept;
         recursive_directory_iterator(const path&amp; p, error_code&amp; ec) noexcept;
-        recursive_directory_iterator(const recursive_directory_iterator&amp; <ins>rhs</ins>) <del>= default</del>;
-        recursive_directory_iterator(recursive_directory_iterator&amp;&amp; <ins>rhs</ins>) <ins>noexcept</ins> <del>= default</del>;
+        recursive_directory_iterator(const recursive_directory_iterator&amp; <ins>rhs</ins>)
+          <del>= default</del>;
+        recursive_directory_iterator(recursive_directory_iterator&amp;&amp; <ins>rhs</ins>) <ins>noexcept</ins>
+          <del>= default</del>;
        ~recursive_directory_iterator();
 
         // observers
@@ -2679,8 +2679,10 @@ directory and its sub-directories.</p>
         const directory_entry* operator-&gt;() const;
 
         // modifiers
-        recursive_directory_iterator&amp; operator=(const recursive_directory_iterator&amp; <ins>rhs</ins>) <del>= default</del>;
-        recursive_directory_iterator&amp; operator=(recursive_directory_iterator&amp;&amp; <ins>rhs</ins>) <ins>noexcept</ins> <del>= default</del>;
+        recursive_directory_iterator&amp;
+          operator=(const recursive_directory_iterator&amp; <ins>rhs</ins>) <del>= default</del>;
+        recursive_directory_iterator&amp;
+          operator=(recursive_directory_iterator&amp;&amp; <ins>rhs</ins>) <ins>noexcept</ins> <del>= default</del>;
 
         recursive_directory_iterator&amp; operator++();
         recursive_directory_iterator&amp; increment(error_code&amp; ec) <ins>noexcept</ins>;
