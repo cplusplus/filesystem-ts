@@ -11,7 +11,14 @@
   </title>
 <style type="text/css">
 
-body  { max-width : 7.5in; }
+body  { max-width : 7in;
+          margin-left: 2em; /* Make room for paragraph numbers. */
+         }
+
+[para_num]::before { content: attr(para_num); float: left;
+                              font-size: 70%; margin-left: -2.5em; width: 1.5em; text-align: right;
+                           }
+                           
 pre    { background-color:#D7EEFF }
 a       { text-decoration: none}
 a:link {COLOR: #2020FF;}
@@ -50,7 +57,7 @@ del     { background-color:#FFD7D7 }
     <tr>
       <td>Date:</td>
       <td>
-      <!--webbot bot="Timestamp" S-Type="EDITED" S-Format="%Y-%m-%d" startspan -->2014-03-11<!--webbot bot="Timestamp" endspan i-checksum="12185" --></td>
+      <!--webbot bot="Timestamp" S-Type="EDITED" S-Format="%Y-%m-%d" startspan -->2014-06-24<!--webbot bot="Timestamp" endspan i-checksum="12384" --></td>
     </tr>
     <tr>
       <td>Revises:</td>
@@ -247,7 +254,7 @@ prompting its preparation. It shall not contain requirements.&quot;</i></span></
 
 <h2>1  <a name="Scope">Scope</a>&nbsp; [fs.scope]</h2>
 
-<p>This Technical Specification specifies requirements for implementations of an 
+<p para_num="1">This Technical Specification specifies requirements for implementations of an 
 interface that computer programs written in the C++ programming language may use 
 to perform operations on file systems and their components, such as paths, 
 regular files, and directories. This Technical Specification is applicable to 
@@ -255,6 +262,8 @@ information technology systems that can access hierarchical file systems, such
 as those with operating systems that conform to the POSIX ([fs.norm.ref]) 
 interface. This Technical Specification is applicable only to vendors who wish 
 to provide the interface it describes.</p>
+
+<pre para_num="2">// some code</pre>
 
 <h2>2  <a name="Conformance">Conformance</a> [fs.conformance]</h2>
 
@@ -504,11 +513,11 @@ std::experimental::filesystem::v1</code> into <code>std::experimental::filesyste
 if by</p>
 <blockquote>
 <pre>namespace std {
-  namespace experimental {
-    namespace filesystem {
-      inline namespace v1 {}
-    }
-  }
+&nbsp; namespace experimental {
+&nbsp;&nbsp;&nbsp; namespace filesystem {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; inline namespace v1 {}
+&nbsp;&nbsp;&nbsp; }
+&nbsp; }
 }</pre>
 </blockquote>
 <p>Unless otherwise specified, references to other entities described in this 
@@ -520,213 +529,224 @@ with <code>std::</code>.</p>
 [fs.filesystem.synopsis]</h2>
 <pre>namespace std { namespace experimental { namespace filesystem { inline namespace v1 {
 
-    class <a href="#class-path">path</a>;
-    
-    void swap(path&amp; lhs, path&amp; rhs) noexcept;
-    size_t <a href="#hash_value">hash_value</a>(const path&amp; p) noexcept;
+&nbsp;&nbsp;&nbsp; class <a href="#class-path">path</a>;
+&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp; void swap(path&amp; lhs, path&amp; rhs) noexcept;
+&nbsp;&nbsp;&nbsp; size_t <a href="#hash_value">hash_value</a>(const path&amp; p) noexcept;
 
-    bool operator==(const path&amp; lhs, const path&amp; rhs) noexcept;
-    bool operator!=(const path&amp; lhs, const path&amp; rhs) noexcept;
-    bool operator&lt; (const path&amp; lhs, const path&amp; rhs) noexcept;
-    bool operator&lt;=(const path&amp; lhs, const path&amp; rhs) noexcept;
-    bool operator&gt; (const path&amp; lhs, const path&amp; rhs) noexcept;
-    bool operator&gt;=(const path&amp; lhs, const path&amp; rhs) noexcept;
+&nbsp;&nbsp;&nbsp; bool operator==(const path&amp; lhs, const path&amp; rhs) noexcept;
+&nbsp;&nbsp;&nbsp; bool operator!=(const path&amp; lhs, const path&amp; rhs) noexcept;
+&nbsp;&nbsp;&nbsp; bool operator&lt; (const path&amp; lhs, const path&amp; rhs) noexcept;
+&nbsp;&nbsp;&nbsp; bool operator&lt;=(const path&amp; lhs, const path&amp; rhs) noexcept;
+&nbsp;&nbsp;&nbsp; bool operator&gt; (const path&amp; lhs, const path&amp; rhs) noexcept;
+&nbsp;&nbsp;&nbsp; bool operator&gt;=(const path&amp; lhs, const path&amp; rhs) noexcept;
 
-    path operator/ (const path&amp; lhs, const path&amp; rhs);
+&nbsp;&nbsp;&nbsp; path operator/ (const path&amp; lhs, const path&amp; rhs);
 
-    template &lt;class charT, class traits&gt;
-    basic_ostream&lt;charT, traits&gt;&amp;
-    operator&lt;&lt;(basic_ostream&lt;charT, traits&gt;&amp; os, const path&amp; p);
+&nbsp;&nbsp;&nbsp; template &lt;class charT, class traits&gt;
+&nbsp;&nbsp;&nbsp; basic_ostream&lt;charT, traits&gt;&amp;
+&nbsp;&nbsp;&nbsp; operator&lt;&lt;(basic_ostream&lt;charT, traits&gt;&amp; os, const path&amp; p);
 
-    template &lt;class charT, class traits&gt;
-    basic_istream&lt;charT, traits&gt;&amp;
-    operator&gt;&gt;(basic_istream&lt;charT, traits&gt;&amp; is, path&amp; p);
+&nbsp;&nbsp;&nbsp; template &lt;class charT, class traits&gt;
+&nbsp;&nbsp;&nbsp; basic_istream&lt;charT, traits&gt;&amp;
+&nbsp;&nbsp;&nbsp; operator&gt;&gt;(basic_istream&lt;charT, traits&gt;&amp; is, path&amp; p);
 
-    template &lt;class <a href="#Source">Source</a>&gt;  
-      path u8path(Source const&amp; source);
-    template &lt;class InputIterator&gt;
-      path u8path(InputIterator first, InputIterator last);
+&nbsp;&nbsp;&nbsp; template &lt;class <a href="#Source">Source</a>&gt;&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; path u8path(Source const&amp; source);
+&nbsp;&nbsp;&nbsp; template &lt;class InputIterator&gt;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; path u8path(InputIterator first, InputIterator last);
 
-    class <a href="#Class-filesystem_error">filesystem_error</a>;      
-    class <a href="#Class-directory_entry">directory_entry</a>;
+&nbsp;&nbsp;&nbsp; class <a href="#Class-filesystem_error">filesystem_error</a>;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp; class <a href="#Class-directory_entry">directory_entry</a>;
 
-    class <a href="#Class-directory_iterator">directory_iterator</a>;
+&nbsp;&nbsp;&nbsp; class <a href="#Class-directory_iterator">directory_iterator</a>;
 
-    // enable directory_iterator range-based for statements
-    directory_iterator <a href="#directory_iterator-non-member-functions">begin</a>(directory_iterator iter) noexcept;
-    directory_iterator <a href="#directory_iterator-non-member-functions">end</a>(const directory_iterator&amp;) noexcept;
+&nbsp;&nbsp;&nbsp; // enable directory_iterator range-based for statements
+&nbsp;&nbsp;&nbsp; directory_iterator <a href="#directory_iterator-non-member-functions">begin</a>(directory_iterator iter) noexcept;
+&nbsp;&nbsp;&nbsp; directory_iterator <a href="#directory_iterator-non-member-functions">end</a>(const directory_iterator&amp;) noexcept;
 
-    class <a href="#Class-recursive_directory_iterator">recursive_directory_iterator</a>;
+&nbsp;&nbsp;&nbsp; class <a href="#Class-recursive_directory_iterator">recursive_directory_iterator</a>;
 
-    // enable recursive_directory_iterator range-based for statements
-    recursive_directory_iterator <a href="#rec.dir.itr.nonmembers">begin</a>(recursive_directory_iterator iter) noexcept;
-    recursive_directory_iterator <a href="#rec.dir.itr.nonmembers">end</a>(const recursive_directory_iterator&amp;) noexcept;
+&nbsp;&nbsp;&nbsp; // enable recursive_directory_iterator range-based for statements
+&nbsp;&nbsp;&nbsp; recursive_directory_iterator <a href="#rec.dir.itr.nonmembers">begin</a>(recursive_directory_iterator iter) noexcept;
+&nbsp;&nbsp;&nbsp; recursive_directory_iterator <a href="#rec.dir.itr.nonmembers">end</a>(const recursive_directory_iterator&amp;) noexcept;
 
-    enum class file_type;  // [<a href="#Enum-file_type">enum.file_type</a>]
+&nbsp;&nbsp;&nbsp; enum class file_type;&nbsp; // [<a href="#Enum-file_type">enum.file_type</a>]
 
-    enum class perms;  // [<a href="#enum.perms">enum.perms</a>]
+&nbsp;&nbsp;&nbsp; enum class perms;&nbsp; // [<a href="#enum.perms">enum.perms</a>]
 
-    class <a href="#file_status">file_status</a>;
+&nbsp;&nbsp;&nbsp; class <a href="#file_status">file_status</a>;
 
-    struct <a name="space_info">space_info</a>  // returned by <a href="#space" style="text-decoration: none">space</a> function
-    {
-      uintmax_t capacity;
-      uintmax_t free; 
-      uintmax_t available;
-    };
+&nbsp;&nbsp;&nbsp; struct <a name="space_info">space_info</a>&nbsp; // returned by <a href="#space" style="text-decoration: none">space</a> function
+&nbsp;&nbsp;&nbsp; {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; uintmax_t capacity;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; uintmax_t free;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; uintmax_t available;
+&nbsp;&nbsp;&nbsp; };
 
-    enum class <a name="copy_option" href="#enum.copy_options">copy_options</a>;  // [<a href="#enum.copy_options">enum.copy_options</a>]
+&nbsp;&nbsp;&nbsp; enum class <a name="copy_option" href="#enum.copy_options">copy_options</a>;&nbsp; // [<a href="#enum.copy_options">enum.copy_options</a>]
 
-    enum class <a name="symlink_option">directory_options</a>
-    {
-      none,
-      follow_directory_symlink,
-      skip_permission_denied
-    };
+&nbsp;&nbsp;&nbsp; enum class <a name="symlink_option">directory_options</a>
+&nbsp;&nbsp;&nbsp; {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; none,
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; follow_directory_symlink,
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; skip_permission_denied
+&nbsp;&nbsp;&nbsp; };
 
-    typedef chrono::time_point&lt;<b><i>trivial-clock</i></b>&gt;  file_time_type;
+&nbsp;&nbsp;&nbsp; typedef chrono::time_point&lt;<b><i>trivial-clock</i></b>&gt;&nbsp; file_time_type;
 
-    // <a href="#Operational-functions">operational functions</a>
+&nbsp;&nbsp;&nbsp; // <a href="#Operational-functions">operational functions</a>
 
-    path         <a href="#absolute">absolute</a>(const path&amp; p, const path&amp; base=current_path());
+&nbsp;&nbsp;&nbsp;
 
-    path         <a href="#canonical">canonical</a>(const path&amp; p, const path&amp; base = current_path());
-    path         <a href="#canonical">canonical</a>(const path&amp; p, error_code&amp; ec);
-    path         <a href="#canonical">canonical</a>(const path&amp; p, const path&amp; base, error_code&amp; ec);
+    path&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;         <a href="#absolute">absolute</a>(const path&amp; p, const path&amp; base=current_path());
 
-    void         <a href="#copy">copy</a>(const path&amp; from, const path&amp; to);
-    void         <a href="#copy">copy</a>(const path&amp; from, const path&amp; to, error_code&amp; ec) noexcept;
-    void         copy(const path&amp; from, const path&amp; to, copy_options options);
-    void         copy(const path&amp; from, const path&amp; to, copy_options options,  
-                   error_code&amp; ec) noexcept;
+&nbsp;&nbsp;&nbsp; path&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;         <a href="#canonical">canonical</a>(const path&amp; p, const path&amp; base = current_path());
+&nbsp;&nbsp;&nbsp; path&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;         <a href="#canonical">canonical</a>(const path&amp; p, error_code&amp; ec);
+&nbsp;&nbsp;&nbsp; path&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;         <a href="#canonical">canonical</a>(const path&amp; p, const path&amp; base, error_code&amp; ec);
 
-    bool         <a href="#copy_file">copy_file</a>(const path&amp; from, const path&amp; to);
-    bool         <a href="#copy_file">copy_file</a>(const path&amp; from, const path&amp; to, error_code&amp; ec) noexcept;
-    bool         <a href="#copy_file">copy_file</a>(const path&amp; from, const path&amp; to, <a href="#copy_option">copy_options</a> option);
-    bool         <a href="#copy_file">copy_file</a>(const path&amp; from, const path&amp; to, <a href="#copy_option">copy_options</a> option,
-                           error_code&amp; ec) noexcept;
+&nbsp;&nbsp;&nbsp; void&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;         <a href="#copy">copy</a>(const path&amp; from, const path&amp; to);
+&nbsp;&nbsp;&nbsp; void&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;         <a href="#copy">copy</a>(const path&amp; from, const path&amp; to, error_code&amp; ec) noexcept;
+&nbsp;&nbsp;&nbsp; void&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; copy(const path&amp; from, const path&amp; to, copy_options options);
+&nbsp;&nbsp;&nbsp; void&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; copy(const path&amp; from, const path&amp; to, copy_options options,&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; error_code&amp; ec) noexcept;
 
-    void         <a href="#copy_symlink">copy_symlink</a>(const path&amp; existing_symlink, const path&amp; new_symlink);
-    void         <a href="#copy_symlink">copy_symlink</a>(const path&amp; existing_symlink, const path&amp; new_symlink,
-                              error_code&amp; ec) noexcept;
+&nbsp;&nbsp;&nbsp; bool&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;         <a href="#copy_file">copy_file</a>(const path&amp; from, const path&amp; to);
+&nbsp;&nbsp;&nbsp; bool&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;         <a href="#copy_file">copy_file</a>(const path&amp; from, const path&amp; to, error_code&amp; ec) noexcept;
+&nbsp;&nbsp;&nbsp; bool&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;         <a href="#copy_file">copy_file</a>(const path&amp; from, const path&amp; to, <a href="#copy_option">copy_options</a> option);
+&nbsp;&nbsp;&nbsp; bool&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;         <a href="#copy_file">copy_file</a>(const path&amp; from, const path&amp; to, <a href="#copy_option">copy_options</a> option,
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; error_code&amp; ec) noexcept;
 
-    bool         <a href="#create_directories">create_directories</a>(const path&amp; p);
-    bool         <a href="#create_directories">create_directories</a>(const path&amp; p, error_code&amp; ec) noexcept;
+&nbsp;&nbsp;&nbsp; void&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;         <a href="#copy_symlink">copy_symlink</a>(const path&amp; existing_symlink, const path&amp; new_symlink);
+&nbsp;&nbsp;&nbsp; void&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;         <a href="#copy_symlink">copy_symlink</a>(const path&amp; existing_symlink, const path&amp; new_symlink,
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; error_code&amp; ec) noexcept;
 
-    bool         <a href="#create_directory">create_directory</a>(const path&amp; p);
-    bool         <a href="#create_directory">create_directory</a>(const path&amp; p, error_code&amp; ec) noexcept;
+&nbsp;&nbsp;&nbsp; bool&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;         <a href="#create_directories">create_directories</a>(const path&amp; p);
+&nbsp;&nbsp;&nbsp; bool&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;         <a href="#create_directories">create_directories</a>(const path&amp; p, error_code&amp; ec) noexcept;
 
-    bool         <a href="#create_directory2">create_directory</a>(const path&amp; p, const path&amp; attributes);
-    bool         <a href="#create_directory2">create_directory</a>(const path&amp; p, const path&amp; attributes,
-                                  error_code&amp; ec) noexcept;
+&nbsp;&nbsp;&nbsp; bool&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;         <a href="#create_directory">create_directory</a>(const path&amp; p);
+&nbsp;&nbsp;&nbsp; bool&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;         <a href="#create_directory">create_directory</a>(const path&amp; p, error_code&amp; ec) noexcept;
 
-    void         <a href="#create_directory_symlink">create_directory_symlink</a>(const path&amp; to, const path&amp; new_symlink);
-    void         <a href="#create_directory_symlink">create_directory_symlink</a>(const path&amp; to, const path&amp; new_symlink,
-                                          error_code&amp; ec) noexcept;
+&nbsp;&nbsp;&nbsp; bool&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;         <a href="#create_directory2">create_directory</a>(const path&amp; p, const path&amp; attributes);
+&nbsp;&nbsp;&nbsp; bool&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;         <a href="#create_directory2">create_directory</a>(const path&amp; p, const path&amp; attributes,
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; error_code&amp; ec) noexcept;
 
-    void         <a href="#create_hard_link">create_hard_link</a>(const path&amp; to, const path&amp; new_hard_link);
-    void         <a href="#create_hard_link">create_hard_link</a>(const path&amp; to, const path&amp; new_hard_link,
-                                  error_code&amp; ec) noexcept;
+&nbsp;&nbsp;&nbsp; void&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;         <a href="#create_directory_symlink">create_directory_symlink</a>(const path&amp; to, const path&amp; new_symlink);
+&nbsp;&nbsp;&nbsp; void&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;         <a href="#create_directory_symlink">create_directory_symlink</a>(const path&amp; to, const path&amp; new_symlink,
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; error_code&amp; ec) noexcept;
 
-    void         <a href="#create_symlink">create_symlink</a>(const path&amp; to, const path&amp; new_symlink);
-    void         <a href="#create_symlink">create_symlink</a>(const path&amp; to, const path&amp; new_symlink,
-                                error_code&amp; ec) noexcept;
+&nbsp;&nbsp;&nbsp; void&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;         <a href="#create_hard_link">create_hard_link</a>(const path&amp; to, const path&amp; new_hard_link);
+&nbsp;&nbsp;&nbsp; void&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;         <a href="#create_hard_link">create_hard_link</a>(const path&amp; to, const path&amp; new_hard_link,
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; error_code&amp; ec) noexcept;
 
-    path         <a href="#current_path">current_path</a>();
-    path         <a href="#current_path">current_path</a>(error_code&amp; ec);
-    void         <a href="#current_path">current_path</a>(const path&amp; p);
-    void         <a href="#current_path">current_path</a>(const path&amp; p, error_code&amp; ec) noexcept;
+&nbsp;&nbsp;&nbsp; void&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;         <a href="#create_symlink">create_symlink</a>(const path&amp; to, const path&amp; new_symlink);
+&nbsp;&nbsp;&nbsp; void&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;         <a href="#create_symlink">create_symlink</a>(const path&amp; to, const path&amp; new_symlink,
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; error_code&amp; ec) noexcept;
 
-    bool         <a href="#exists">exists</a>(file_status s) noexcept;
-    bool         <a href="#exists">exists</a>(const path&amp; p);
-    bool         <a href="#exists">exists</a>(const path&amp; p, error_code&amp; ec) noexcept;
+&nbsp;&nbsp;&nbsp; path&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;         <a href="#current_path">current_path</a>();
+&nbsp;&nbsp;&nbsp; path&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;         <a href="#current_path">current_path</a>(error_code&amp; ec);
+&nbsp;&nbsp;&nbsp; void&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;         <a href="#current_path">current_path</a>(const path&amp; p);
+&nbsp;&nbsp;&nbsp; void&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;         <a href="#current_path">current_path</a>(const path&amp; p, error_code&amp; ec) noexcept;
 
-    bool         <a href="#equivalent">equivalent</a>(const path&amp; p1, const path&amp; p2);
-    bool         <a href="#equivalent">equivalent</a>(const path&amp; p1, const path&amp; p2, error_code&amp; ec) noexcept;
+&nbsp;&nbsp;&nbsp; bool&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;         <a href="#exists">exists</a>(file_status s) noexcept;
+&nbsp;&nbsp;&nbsp; bool&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;         <a href="#exists">exists</a>(const path&amp; p);
+&nbsp;&nbsp;&nbsp; bool&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;         <a href="#exists">exists</a>(const path&amp; p, error_code&amp; ec) noexcept;
 
-    uintmax_t    <a href="#file_size">file_size</a>(const path&amp; p);
-    uintmax_t    <a href="#file_size">file_size</a>(const path&amp; p, error_code&amp; ec) noexcept;
+&nbsp;&nbsp;&nbsp; bool&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;         <a href="#equivalent">equivalent</a>(const path&amp; p1, const path&amp; p2);
+&nbsp;&nbsp;&nbsp; bool&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;         <a href="#equivalent">equivalent</a>(const path&amp; p1, const path&amp; p2, error_code&amp; ec) noexcept;
 
-    uintmax_t    <a href="#hard_link_count">hard_link_count</a>(const path&amp; p);
-    uintmax_t    <a href="#hard_link_count">hard_link_count</a>(const path&amp; p, error_code&amp; ec) noexcept;
+&nbsp;&nbsp;&nbsp; uintmax_t&nbsp;&nbsp;&nbsp;    <a href="#file_size">file_size</a>(const path&amp; p);
+&nbsp;&nbsp;&nbsp; uintmax_t&nbsp;&nbsp;&nbsp;    <a href="#file_size">file_size</a>(const path&amp; p, error_code&amp; ec) noexcept;
 
-    bool         <a href="#is_block_file">is_block_file</a>(file_status s) noexcept;
-    bool         <a href="#is_block_file">is_block_file</a>(const path&amp; p);
-    bool         <a href="#is_block_file">is_block_file</a>(const path&amp; p, error_code&amp; ec) noexcept;
+&nbsp;&nbsp;&nbsp; uintmax_t&nbsp;&nbsp;&nbsp;    <a href="#hard_link_count">hard_link_count</a>(const path&amp; p);
+&nbsp;&nbsp;&nbsp; uintmax_t&nbsp;&nbsp;&nbsp;    <a href="#hard_link_count">hard_link_count</a>(const path&amp; p, error_code&amp; ec) noexcept;
 
-    bool         <a href="#is_character_file">is_character_file</a>(file_status s) noexcept;
-    bool         <a href="#is_character_file">is_character_file</a>(const path&amp; p);
-    bool         <a href="#is_character_file">is_character_file</a>(const path&amp; p, error_code&amp; ec) noexcept;
+&nbsp;&nbsp;&nbsp; bool&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;         <a href="#is_block_file">is_block_file</a>(file_status s) noexcept;
+&nbsp;&nbsp;&nbsp; bool&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;         <a href="#is_block_file">is_block_file</a>(const path&amp; p);
+&nbsp;&nbsp;&nbsp; bool&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;         <a href="#is_block_file">is_block_file</a>(const path&amp; p, error_code&amp; ec) noexcept;
 
-    bool         <a href="#is_directory">is_directory</a>(file_status s) noexcept;
-    bool         <a href="#is_directory">is_directory</a>(const path&amp; p);
-    bool         <a href="#is_directory">is_directory</a>(const path&amp; p, error_code&amp; ec) noexcept;
+&nbsp;&nbsp;&nbsp; bool&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;         <a href="#is_character_file">is_character_file</a>(file_status s) noexcept;
+&nbsp;&nbsp;&nbsp; bool&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;         <a href="#is_character_file">is_character_file</a>(const path&amp; p);
+&nbsp;&nbsp;&nbsp; bool&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;         <a href="#is_character_file">is_character_file</a>(const path&amp; p, error_code&amp; ec) noexcept;
 
-    bool         <a href="#is_empty">is_empty</a>(const path&amp; p);
-    bool         <a href="#is_empty">is_empty</a>(const path&amp; p, error_code&amp; ec) noexcept;
+&nbsp;&nbsp;&nbsp; bool&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;         <a href="#is_directory">is_directory</a>(file_status s) noexcept;
+&nbsp;&nbsp;&nbsp; bool&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;         <a href="#is_directory">is_directory</a>(const path&amp; p);
+&nbsp;&nbsp;&nbsp; bool&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;         <a href="#is_directory">is_directory</a>(const path&amp; p, error_code&amp; ec) noexcept;
 
-    bool         <a href="#is_fifo">is_fifo</a>(file_status s) noexcept;
-    bool         <a href="#is_fifo">is_fifo</a>(const path&amp; p);
-    bool         <a href="#is_fifo">is_fifo</a>(const path&amp; p, error_code&amp; ec) noexcept;
+&nbsp;&nbsp;&nbsp; bool&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;         <a href="#is_empty">is_empty</a>(const path&amp; p);
+&nbsp;&nbsp;&nbsp; bool&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;         <a href="#is_empty">is_empty</a>(const path&amp; p, error_code&amp; ec) noexcept;
 
-    bool         <a href="#is_other">is_other</a>(file_status s) noexcept;
-    bool         <a href="#is_other2">is_other</a>(const path&amp; p);
-    bool         <a href="#is_other2">is_other</a>(const path&amp; p, error_code&amp; ec) noexcept;
+&nbsp;&nbsp;&nbsp; bool&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;         <a href="#is_fifo">is_fifo</a>(file_status s) noexcept;
+&nbsp;&nbsp;&nbsp; bool&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;         <a href="#is_fifo">is_fifo</a>(const path&amp; p);
+&nbsp;&nbsp;&nbsp; bool&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;         <a href="#is_fifo">is_fifo</a>(const path&amp; p, error_code&amp; ec) noexcept;
 
-    bool         <a href="#is_regular_file">is_regular_file</a>(file_status s) noexcept; 
-    bool         i<a href="#is_regular_file2">s_regular_file</a>(const path&amp; p);
-    bool         i<a href="#is_regular_file2">s_regular_file</a>(const path&amp; p, error_code&amp; ec) noexcept;
+&nbsp;&nbsp;&nbsp; bool&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;         <a href="#is_other">is_other</a>(file_status s) noexcept;
+&nbsp;&nbsp;&nbsp; bool&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;         <a href="#is_other2">is_other</a>(const path&amp; p);
+&nbsp;&nbsp;&nbsp; bool&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;         <a href="#is_other2">is_other</a>(const path&amp; p, error_code&amp; ec) noexcept;
 
-    bool         <a href="#is_socket">is_socket</a>(file_status s) noexcept;
-    bool         <a href="#is_socket">is_socket</a>(const path&amp; p);
-    bool         <a href="#is_socket">is_socket</a>(const path&amp; p, error_code&amp; ec) noexcept;
+&nbsp;&nbsp;&nbsp; bool&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;         <a href="#is_regular_file">is_regular_file</a>(file_status s) noexcept;
+&nbsp;&nbsp;&nbsp; bool&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; i<a href="#is_regular_file2">s_regular_file</a>(const path&amp; p);
+&nbsp;&nbsp;&nbsp; bool&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; i<a href="#is_regular_file2">s_regular_file</a>(const path&amp; p, error_code&amp; ec) noexcept;
 
-    bool         <a href="#is_symlink">is_symlink</a>(file_status s) noexcept;
-    bool         <a href="#is_symlink2">is_symlink</a>(const path&amp; p);
-    bool         <a href="#is_symlink2">is_symlink</a>(const path&amp; p, error_code&amp; ec) noexcept;
+&nbsp;&nbsp;&nbsp; bool&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;         <a href="#is_socket">is_socket</a>(file_status s) noexcept;
+&nbsp;&nbsp;&nbsp; bool&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;         <a href="#is_socket">is_socket</a>(const path&amp; p);
+&nbsp;&nbsp;&nbsp; bool&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;         <a href="#is_socket">is_socket</a>(const path&amp; p, error_code&amp; ec) noexcept;
 
-    file_time_type  <a href="#last_write_time">last_write_time</a>(const path&amp; p);
-    file_time_type  <a href="#last_write_time">last_write_time</a>(const path&amp; p, error_code&amp; ec) noexcept;
-    void         <a href="#last_write_time2">last_write_time</a>(const path&amp; p, file_time_type new_time);
-    void         <a href="#last_write_time2">last_write_time</a>(const path&amp; p, file_time_type new_time,
-                                 error_code&amp; ec) noexcept;
-                                 
-    void         <a href="#fs.op.permissions">permissions</a>(const path&amp; p, perms prms);
-    void         <a href="#fs.op.permissions">permissions</a>(const path&amp; p, perms prms, error_code&amp; ec) noexcept;
+&nbsp;&nbsp;&nbsp; bool&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;         <a href="#is_symlink">is_symlink</a>(file_status s) noexcept;
+&nbsp;&nbsp;&nbsp; bool&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;         <a href="#is_symlink2">is_symlink</a>(const path&amp; p);
+&nbsp;&nbsp;&nbsp; bool&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;         <a href="#is_symlink2">is_symlink</a>(const path&amp; p, error_code&amp; ec) noexcept;
 
-    path         <a href="#read_symlink">read_symlink</a>(const path&amp; p);
-    path         <a href="#read_symlink">read_symlink</a>(const path&amp; p, error_code&amp; ec);
+&nbsp;&nbsp;&nbsp; file_time_type&nbsp;  <a href="#last_write_time">last_write_time</a>(const path&amp; p);
+&nbsp;&nbsp;&nbsp; file_time_type&nbsp;  <a href="#last_write_time">last_write_time</a>(const path&amp; p, error_code&amp; ec) noexcept;
+&nbsp;&nbsp;&nbsp; void&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;         <a href="#last_write_time2">last_write_time</a>(const path&amp; p, file_time_type new_time);
+&nbsp;&nbsp;&nbsp; void&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;         <a href="#last_write_time2">last_write_time</a>(const path&amp; p, file_time_type new_time,
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; error_code&amp; ec) noexcept;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp; void&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;         <a href="#fs.op.permissions">permissions</a>(const path&amp; p, perms prms);
+&nbsp;&nbsp;&nbsp; void&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;         <a href="#fs.op.permissions">permissions</a>(const path&amp; p, perms prms, error_code&amp; ec) noexcept;
 
-    bool         <a href="#remove">remove</a>(const path&amp; p);
-    bool         <a href="#remove">remove</a>(const path&amp; p, error_code&amp; ec) noexcept;
+&nbsp;&nbsp;&nbsp; path&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;         <a href="#read_symlink">read_symlink</a>(const path&amp; p);
+&nbsp;&nbsp;&nbsp; path&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;         <a href="#read_symlink">read_symlink</a>(const path&amp; p, error_code&amp; ec);
 
-    uintmax_t    <a href="#remove_all">remove_all</a>(const path&amp; p);
-    uintmax_t    <a href="#remove_all">remove_all</a>(const path&amp; p, error_code&amp; ec) noexcept;
+&nbsp;&nbsp;&nbsp; bool&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;         <a href="#remove">remove</a>(const path&amp; p);
+&nbsp;&nbsp;&nbsp; bool&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;         <a href="#remove">remove</a>(const path&amp; p, error_code&amp; ec) noexcept;
 
-    void         <a href="#rename">rename</a>(const path&amp; from, const path&amp; to);
-    void         <a href="#rename">rename</a>(const path&amp; from, const path&amp; to, error_code&amp; ec) noexcept;
+&nbsp;&nbsp;&nbsp; uintmax_t&nbsp;&nbsp;&nbsp;    <a href="#remove_all">remove_all</a>(const path&amp; p);
+&nbsp;&nbsp;&nbsp; uintmax_t&nbsp;&nbsp;&nbsp;    <a href="#remove_all">remove_all</a>(const path&amp; p, error_code&amp; ec) noexcept;
 
-    void         <a href="#resize_file">resize_file</a>(const path&amp; p, uintmax_t size);
-    void         <a href="#resize_file2">resize_file</a>(const path&amp; p, uintmax_t size, error_code&amp; ec) noexcept;
+&nbsp;&nbsp;&nbsp; void&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;         <a href="#rename">rename</a>(const path&amp; from, const path&amp; to);
+&nbsp;&nbsp;&nbsp; void&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;         <a href="#rename">rename</a>(const path&amp; from, const path&amp; to, error_code&amp; ec) noexcept;
 
-    <a href="#space_info">space_info</a>   <a href="#space">space</a>(const path&amp; p);
-    <a href="#space_info">space_info</a>   <a href="#space">space</a>(const path&amp; p, error_code&amp; ec) noexcept;
+&nbsp;&nbsp;&nbsp; void&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;         <a href="#resize_file">resize_file</a>(const path&amp; p, uintmax_t size);
+&nbsp;&nbsp;&nbsp; void&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;         <a href="#resize_file2">resize_file</a>(const path&amp; p, uintmax_t size, error_code&amp; ec) noexcept;
 
-    <a href="#file_status">file_status</a>  <a href="#status">status</a>(const path&amp; p);
-    <a href="#file_status">file_status</a>  <a href="#status">status</a>(const path&amp; p, error_code&amp; ec) noexcept;
+&nbsp;&nbsp;&nbsp;
 
-    bool         <a href="#status_known">status_known</a>(file_status s) noexcept;
+    <a href="#space_info">space_info</a>&nbsp;&nbsp;   <a href="#space">space</a>(const path&amp; p);
+&nbsp;&nbsp;&nbsp;
+    <a href="#space_info">space_info</a>&nbsp;&nbsp;   <a href="#space">space</a>(const path&amp; p, error_code&amp; ec) noexcept;
 
-    <a href="#file_status">file_status</a>  <a href="#symlink_status">symlink_status</a>(const path&amp; p);
-    <a href="#file_status">file_status</a>  <a href="#symlink_status">symlink_status</a>(const path&amp; p, error_code&amp; ec) noexcept;
+&nbsp;&nbsp;&nbsp;
 
-    path         <a href="#system_complete">system_complete</a>(const path&amp; p);
-    path         <a href="#system_complete">system_complete</a>(const path&amp; p, error_code&amp; ec);
+    <a href="#file_status">file_status</a>&nbsp;  <a href="#status">status</a>(const path&amp; p);
+&nbsp;&nbsp;&nbsp;
+    <a href="#file_status">file_status</a>&nbsp;  <a href="#status">status</a>(const path&amp; p, error_code&amp; ec) noexcept;
 
-    path         <a href="#temp_directory_path">temp_directory_path</a>();
-    path         <a href="#temp_directory_path">temp_directory_path</a>(error_code&amp; ec);
+&nbsp;&nbsp;&nbsp; bool&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;         <a href="#status_known">status_known</a>(file_status s) noexcept;
 
-} } } }  // namespaces std::experimental::filesystem::v1</pre>
+&nbsp;&nbsp;&nbsp;
+
+    <a href="#file_status">file_status</a>&nbsp;  <a href="#symlink_status">symlink_status</a>(const path&amp; p);
+&nbsp;&nbsp;&nbsp;
+    <a href="#file_status">file_status</a>&nbsp;  <a href="#symlink_status">symlink_status</a>(const path&amp; p, error_code&amp; ec) noexcept;
+
+&nbsp;&nbsp;&nbsp; path&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;         <a href="#system_complete">system_complete</a>(const path&amp; p);
+&nbsp;&nbsp;&nbsp; path&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;         <a href="#system_complete">system_complete</a>(const path&amp; p, error_code&amp; ec);
+
+&nbsp;&nbsp;&nbsp; path&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;         <a href="#temp_directory_path">temp_directory_path</a>();
+&nbsp;&nbsp;&nbsp; path&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;         <a href="#temp_directory_path">temp_directory_path</a>(error_code&amp; ec);
+
+} } } }&nbsp; // namespaces std::experimental::filesystem::v1</pre>
 
  <p><b><i><code>trivial-clock</code></i></b> is an implementation-defined type that satisfies the
 <code>TrivialClock</code> requirements (C++11 §20.12.3) 
@@ -792,134 +812,141 @@ system or for a particular file system.</p>
 <blockquote>
 <pre>namespace std { namespace experimental { namespace filesystem { inline namespace v1 {
 
-      class path
-      {
-      public:
-        typedef <b><i><a href="#value_type">see below</a></i></b>                      value_type;
-        typedef basic_string&lt;value_type&gt;       string_type;
-        static constexpr value_type            preferred_separator = <b><i><a href="#value_type">see below</a></i></b>;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; class path
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; public:
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; typedef <b><i><a href="#value_type">see below</a></i></b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; value_type;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; typedef basic_string&lt;value_type&gt;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; string_type;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; static constexpr value_type&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; preferred_separator = <b><i><a href="#value_type">see below</a></i></b>;
 
-        // <a href="#path-constructors">constructors</a> and destructor
-        path();
-        path(const path& p);
-        path(path&amp;&amp; p) noexcept;
-        template &lt;class <a href="#Source">Source</a>&gt;
-          path(Source const&amp; source);
-        template &lt;class InputIterator&gt;
-          path(InputIterator first, InputIterator last);
-        template &lt;class <a href="#Source">Source</a>&gt;  
-          path(Source const&amp; source, const locale&amp; loc);
-        template &lt;class InputIterator&gt;
-          path(InputIterator first, InputIterator last, const locale&amp; loc);
-       ~path(;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // <a href="#path-constructors">constructors</a> and destructor
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; path();
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; path(const path& p);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; path(path&amp;&amp; p) noexcept;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; template &lt;class <a href="#Source">Source</a>&gt;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; path(Source const&amp; source);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; template &lt;class InputIterator&gt;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; path(InputIterator first, InputIterator last);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; template &lt;class <a href="#Source">Source</a>&gt;&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; path(Source const&amp; source, const locale&amp; loc);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; template &lt;class InputIterator&gt;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; path(InputIterator first, InputIterator last, const locale&amp; loc);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ~path(;
 
-        // <a href="#path-assignments">assignments</a>
-        path&amp; operator=(const path&amp; p);
-        path&amp; operator=(path&amp;&amp; p) noexcept;
-        template &lt;class <a href="#Source">Source</a>&gt;
-          path&amp; operator=(Source const&amp; source);
-        template &lt;class <a href="#Source">Source</a>&gt;
-          path&amp; assign(Source const&amp; source)
-        template &lt;class InputIterator&gt;
-          path&amp; assign(InputIterator first, InputIterator last);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // <a href="#path-assignments">assignments</a>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; path&amp; operator=(const path&amp; p);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; path&amp; operator=(path&amp;&amp; p) noexcept;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; template &lt;class <a href="#Source">Source</a>&gt;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; path&amp; operator=(Source const&amp; source);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; template &lt;class <a href="#Source">Source</a>&gt;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; path&amp; assign(Source const&amp; source)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; template &lt;class InputIterator&gt;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; path&amp; assign(InputIterator first, InputIterator last);
 
-        // <a href="#path-appends">appends</a>
-        path&amp; operator/=(const path&amp; p);
-        template &lt;class <a href="#Source">Source</a>&gt;
-          path&amp; operator/=(Source const&amp; source);
-        template &lt;class <a href="#Source">Source</a>&gt;
-          path&amp; append(Source const&amp; source);
-        template &lt;class InputIterator&gt;
-          path&amp; append(InputIterator first, InputIterator last);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // <a href="#path-appends">appends</a>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; path&amp; operator/=(const path&amp; p);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; template &lt;class <a href="#Source">Source</a>&gt;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; path&amp; operator/=(Source const&amp; source);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; template &lt;class <a href="#Source">Source</a>&gt;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; path&amp; append(Source const&amp; source);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; template &lt;class InputIterator&gt;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; path&amp; append(InputIterator first, InputIterator last);
 
-        // <a href="#path-concatenation">concatenation</a>
-        path&amp; operator+=(const path&amp; x);
-        path&amp; operator+=(const string_type&amp; x);
-        path&amp; operator+=(const value_type* x);
-        path&amp; operator+=(value_type x);
-        template &lt;class Source&gt;
-          path&amp; operator+=(Source const&amp; x);
-        template &lt;class charT&gt;
-          path&amp; operator+=(charT x);
-        template &lt;class Source&gt;
-          path&amp; concat(Source const&amp; x);
-        template &lt;class InputIterator&gt;
-          path&amp; concat(InputIterator first, InputIterator last);
-        
-        // <a href="#path-modifiers">modifiers</a>
-        void  <a href="#path-clear">clear</a>() noexcept;
-        path&amp; <a href="#path-make_preferred">make_preferred</a>();
-        path&amp; <a href="#path-remove_filename">remove_filename</a>();
-        path&amp; <a href="#replace_filename">replace_filename</a>(const path&amp; replacement);
-        path&amp; <a href="#path-replace_extension">replace_extension</a>(const path&amp; replacement = path());
-        void  <a href="#path-swap">swap</a>(path&amp; rhs) noexcept;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // <a href="#path-concatenation">concatenation</a>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; path&amp; operator+=(const path&amp; x);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; path&amp; operator+=(const string_type&amp; x);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; path&amp; operator+=(const value_type* x);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; path&amp; operator+=(value_type x);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; template &lt;class Source&gt;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; path&amp; operator+=(Source const&amp; x);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; template &lt;class charT&gt;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; path&amp; operator+=(charT x);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; template &lt;class Source&gt;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; path&amp; concat(Source const&amp; x);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; template &lt;class InputIterator&gt;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; path&amp; concat(InputIterator first, InputIterator last);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // <a href="#path-modifiers">modifiers</a>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        void&nbsp;  <a href="#path-clear">clear</a>() noexcept;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; path&amp; <a href="#path-make_preferred">make_preferred</a>();
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; path&amp; <a href="#path-remove_filename">remove_filename</a>();
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; path&amp; <a href="#replace_filename">replace_filename</a>(const path&amp; replacement);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; path&amp; <a href="#path-replace_extension">replace_extension</a>(const path&amp; replacement = path());
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; void&nbsp;  <a href="#path-swap">swap</a>(path&amp; rhs) noexcept;
 
-        // <a href="#path-native-format-observers">native format observers</a>
-        const string_type&amp;  <a href="#native">native</a>() const noexcept;
-        const value_type*   <a href="#c_str">c_str</a>() const noexcept;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // <a href="#path-native-format-observers">native format observers</a>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; const string_type&amp;&nbsp;  <a href="#native">native</a>() const noexcept;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; const value_type*&nbsp;&nbsp;   <a href="#c_str">c_str</a>() const noexcept;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
         <a href="#operator-string_type">operator string_type</a>() const;
 
-        template &lt;class charT, class traits = char_traits&lt;charT&gt;,
-                  class Allocator = allocator&lt;charT&gt; &gt;
-        basic_string&lt;charT, traits, Allocator&gt;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; template &lt;class charT, class traits = char_traits&lt;charT&gt;,
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; class Allocator = allocator&lt;charT&gt; &gt;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; basic_string&lt;charT, traits, Allocator&gt;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
           <a href="#string-template">string</a>(const Allocator&amp; a = Allocator()) const;
-        string    <a href="#string">string</a>() const;
-        wstring   <a href="#wstring">wstring</a>() const;
-        string    u8string() const;
-        u16string <a href="#u16string">u16string</a>() const;
-        u32string <a href="#u32string">u32string</a>() const;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; string&nbsp;&nbsp;&nbsp;    <a href="#string">string</a>() const;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; wstring&nbsp;&nbsp;   <a href="#wstring">wstring</a>() const;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; string&nbsp;&nbsp;&nbsp; u8string() const;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; u16string <a href="#u16string">u16string</a>() const;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; u32string <a href="#u32string">u32string</a>() const;
 
-        // <a href="#path-generic-format-observers">generic format observers</a>
-        template &lt;class charT, class traits = char_traits&lt;charT&gt;,
-                  class Allocator = allocator&lt;charT&gt; &gt;
-        basic_string&lt;charT, traits, Allocator&gt;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // <a href="#path-generic-format-observers">generic format observers</a>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; template &lt;class charT, class traits = char_traits&lt;charT&gt;,
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; class Allocator = allocator&lt;charT&gt; &gt;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; basic_string&lt;charT, traits, Allocator&gt;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
           <a href="#generic_string-template">generic_string</a>(const Allocator&amp; a = Allocator()) const;
-        string    <a href="#generic_string">generic_string</a>() const;
-        wstring   <a href="#generic_wstring">generic_wstring</a>() const;
-        string    generic_u8string() const;
-        u16string <a href="#generic_u16string">generic_u16string</a>() const;
-        u32string <a href="#generic_u32string">generic_u32string</a>() const;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; string&nbsp;&nbsp;&nbsp;    <a href="#generic_string">generic_string</a>() const;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; wstring&nbsp;&nbsp;   <a href="#generic_wstring">generic_wstring</a>() const;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; string&nbsp;&nbsp;&nbsp; generic_u8string() const;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; u16string <a href="#generic_u16string">generic_u16string</a>() const;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; u32string <a href="#generic_u32string">generic_u32string</a>() const;
 
-        // <a href="#path-compare">compare</a>
-        int  <a href="#path-compare">compare</a>(const path&amp; p) const noexcept;
-        int  <a href="#path-compare">compare</a>(const string_type&amp; s) const;
-        int  <a href="#path-compare">compare</a>(const value_type* s) const;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // <a href="#path-compare">compare</a>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        int&nbsp;  <a href="#path-compare">compare</a>(const path&amp; p) const noexcept;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; int&nbsp;  <a href="#path-compare">compare</a>(const string_type&amp; s) const;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; int&nbsp;  <a href="#path-compare">compare</a>(const value_type* s) const;
 
-        // <a href="#path-decomposition">decomposition</a>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // <a href="#path-decomposition">decomposition</a>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
         path <a href="#path-root_name">root_name</a>() const;
-        path <a href="#path-root_directory">root_directory</a>() const;
-        path <a href="#path-root_path">root_path</a>() const;
-        path <a href="#path-relative_path">relative_path</a>() const;
-        path <a href="#path-parent_path">parent_path</a>() const;
-        path <a href="#path-filename">filename</a>() const;
-        path <a href="#path-stem">stem</a>() const;
-        path <a href="#path-extension">extension</a>() const;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; path <a href="#path-root_directory">root_directory</a>() const;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; path <a href="#path-root_path">root_path</a>() const;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; path <a href="#path-relative_path">relative_path</a>() const;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; path <a href="#path-parent_path">parent_path</a>() const;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; path <a href="#path-filename">filename</a>() const;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; path <a href="#path-stem">stem</a>() const;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; path <a href="#path-extension">extension</a>() const;
 
-        // <a href="#path-query">query</a>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // <a href="#path-query">query</a>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
         bool <a href="#path-query">empty</a>() const noexcept;
-        bool <a href="#path-has_root_name">has_root_name</a>() const;
-        bool <a href="#path-has_root_directory">has_root_directory</a>() const;
-        bool <a href="#path-has_root_path">has_root_path</a>() const;
-        bool <a href="#path-has_relative_path">has_relative_path</a>() const;
-        bool <a href="#path-has_parent_path">has_parent_path</a>() const;
-        bool <a href="#path-has_filename">has_filename</a>() const;
-        bool <a href="#path-has_stem">has_stem</a>() const;
-        bool <a href="#path-has_extension">has_extension</a>() const;
-        bool <a href="#path-is_absolute">is_absolute</a>() const;
-        bool <a href="#path-is_relative">is_relative</a>() const;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; bool <a href="#path-has_root_name">has_root_name</a>() const;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; bool <a href="#path-has_root_directory">has_root_directory</a>() const;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; bool <a href="#path-has_root_path">has_root_path</a>() const;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; bool <a href="#path-has_relative_path">has_relative_path</a>() const;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; bool <a href="#path-has_parent_path">has_parent_path</a>() const;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; bool <a href="#path-has_filename">has_filename</a>() const;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; bool <a href="#path-has_stem">has_stem</a>() const;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; bool <a href="#path-has_extension">has_extension</a>() const;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; bool <a href="#path-is_absolute">is_absolute</a>() const;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; bool <a href="#path-is_relative">is_relative</a>() const;
 
-        // <a href="#path-iterators">iterators</a>
-        class iterator;
-        typedef iterator const_iterator;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // <a href="#path-iterators">iterators</a>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; class iterator;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; typedef iterator const_iterator;
 
-        iterator begin() const;
-        iterator end() const;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; iterator begin() const;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; iterator end() const;
 
-      private:
-        string_type pathname;  // <b><i>exposition only</i></b>
-      };
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; private:
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; string_type pathname;&nbsp; // <b><i>exposition only</i></b>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; };
 
-} } } }  // namespaces std::experimental::filesystem::v1</pre>
+} } } }&nbsp; // namespaces std::experimental::filesystem::v1</pre>
 
 </blockquote>
 <p><code><a name="value_type">value_type</a></code> is a <code>typedef</code> for the 
@@ -1141,18 +1168,18 @@ path(path&amp;&amp; p) noexcept;</pre>
   second form, <code>p</code> is left in a valid but unspecified state.</p>
 </blockquote>
 <pre>template &lt;class <a href="#Source">Source</a>&gt;
-  path(Source const&amp; source);
+&nbsp; path(Source const&amp; source);
 template &lt;class InputIterator&gt;
-  path(InputIterator first, InputIterator last);</pre>
+&nbsp; path(InputIterator first, InputIterator last);</pre>
 <blockquote>
   <p><i>Effects:</i> Constructs an object of class <code>path</code>, storing the effective range of <code>source</code> ([<a href="#path-Requirements">path.req</a>]) 
   or the range [<code>first</code>,<code>last</code>) in <code>pathname</code>, converting format and 
   encoding if required ([<a href="#path.arg.convert">path.arg.convert</a>]).</p>
 </blockquote>
 <pre>template &lt;class <a href="#Source">Source</a>&gt;
-  path(Source const&amp; source, const locale&amp; loc);
+&nbsp; path(Source const&amp; source, const locale&amp; loc);
 template &lt;class InputIterator&gt;
-  path(InputIterator first, InputIterator last, const locale&amp; loc);</pre>
+&nbsp; path(InputIterator first, InputIterator last, const locale&amp; loc);</pre>
   <blockquote>
   <p><i>Requires:</i> The value type of <code>Source</code> and <code>InputIterator</code> is <code>
   char</code>.</p>
@@ -1173,10 +1200,10 @@ template &lt;class InputIterator&gt;
   <p>A string is to be read from a database 
   that is encoded in ISO/IEC 8859-1, and used to create a directory:</p>
       <pre>namespace fs = std::experimental::filesystem;
-std::string latin1_string = read_latin1_data();
-codecvt_8859_1&lt;wchar_t&gt; latin1_facet;
-std::locale latin1_locale(std::locale(), latin1_facet);
-fs::create_directory(fs::path(latin1_string, latin1_locale));</pre>
+  std::string latin1_string = read_latin1_data();
+  codecvt_8859_1&lt;wchar_t&gt; latin1_facet;
+  std::locale latin1_locale(std::locale(), latin1_facet);
+  fs::create_directory(fs::path(latin1_string, latin1_locale));</pre>
     <p>For POSIX based operating systems the path is constructed by first using <code>
     latin1_facet</code> to convert ISO/IEC 8859-1 encoded
     <code>latin1_string</code> to a wide character string in the native wide 
@@ -1215,11 +1242,11 @@ fs::create_directory(fs::path(latin1_string, latin1_locale));</pre>
   <i>Returns: </i><code>*this</code></p>
 </blockquote>
 <pre>template &lt;class <a href="#Source">Source</a>&gt;
-  path&amp; operator=(Source const&amp; source);
+&nbsp; path&amp; operator=(Source const&amp; source);
 template &lt;class <a href="#Source">Source</a>&gt;
-  path&amp; assign(Source const&amp; source);
+&nbsp; path&amp; assign(Source const&amp; source);
 template &lt;class InputIterator&gt;
-  path&amp; assign(InputIterator first, InputIterator last);</pre>
+&nbsp; path&amp; assign(InputIterator first, InputIterator last);</pre>
 <blockquote>
   <p><i>Effects:</i> Stores the effective range of <code>source</code> ([<a href="#path-Requirements">path.req</a>]) 
   or the range [<code>first</code>,<code>last</code>) in <code>pathname</code>, converting format and 
@@ -1249,11 +1276,11 @@ template &lt;class InputIterator&gt;
   <p><i>Returns: </i><code>*this</code></p>
 </blockquote>
 <pre>template &lt;class <a href="#Source">Source</a>&gt;
-  path&amp; operator/=(Source const&amp; source);
+&nbsp; path&amp; operator/=(Source const&amp; source);
 template &lt;class <a href="#Source">Source</a>&gt;
-  path&amp; append(Source const&amp; source);
+&nbsp; path&amp; append(Source const&amp; source);
 template &lt;class InputIterator&gt;
-  path&amp; append(InputIterator first, InputIterator last);</pre>
+&nbsp; path&amp; append(InputIterator first, InputIterator last);</pre>
 <blockquote>
   <p><i>Effects:</i></p>
   <blockquote>
@@ -1279,13 +1306,13 @@ path&amp; operator+=(const string_type&amp; x);
 path&amp; operator+=(const value_type* x);
 path&amp; operator+=(value_type x);
 template &lt;class Source&gt;
-  path&amp; operator+=(Source const&amp; x);
+&nbsp; path&amp; operator+=(Source const&amp; x);
 template &lt;class charT&gt;
-  path&amp; operator+=(charT x);
+&nbsp; path&amp; operator+=(charT x);
 template &lt;class Source&gt;
-  path&amp; concat(Source const&amp; x);
+&nbsp; path&amp; concat(Source const&amp; x);
 template &lt;class InputIterator&gt;
-  path&amp; concat(InputIterator first, InputIterator last);</pre>
+&nbsp; path&amp; concat(InputIterator first, InputIterator last);</pre>
 <blockquote><p><i>Postcondition:</i> <code>native() == prior_native + <i>effective-argument</i></code>,
  where <code>prior_native</code> is <code>native()</code> prior to the call to <code>operator+=</code>,
  and <code><i>effective-argument</i></code> is:</p>
@@ -1311,7 +1338,7 @@ template &lt;class InputIterator&gt;
 <p>[<i>Example:</i></p>
   <blockquote>
     <pre><code>path p(&quot;foo/bar&quot;);
-std::cout &lt;&lt; p &lt;&lt; '\n';
+    std::cout &lt;&lt; p &lt;&lt; '\n';
 </code>p.make_preferred();
 <code>std::cout &lt;&lt; p &lt;&lt; '\n';</code></pre>
   </blockquote>
@@ -1319,13 +1346,13 @@ std::cout &lt;&lt; p &lt;&lt; '\n';
   directory-separator</i>, the output is:</p>
   <blockquote>
     <pre>&quot;foo/bar&quot;
-&quot;foo/bar&quot;</pre>
+    &quot;foo/bar&quot;</pre>
   </blockquote>
   <p>On an operating system where <i>preferred-separator</i> is a backslash, the 
   output is:</p>
   <blockquote>
     <pre>&quot;foo/bar&quot;
-&quot;foo\bar&quot;</pre>
+    &quot;foo\bar&quot;</pre>
   </blockquote>
   <p> <i>&mdash;end example</i>]</p>
 </blockquote>
@@ -1336,8 +1363,8 @@ std::cout &lt;&lt; p &lt;&lt; '\n';
   <p><i>Returns: </i> <code>*this</code>.</p>
   <p>[<i>Example:</i></p>
   <blockquote>
-    <pre><code>std::cout &lt;&lt; path(&quot;/foo&quot;).remove_filename();</code>  // outputs &quot;<code>/</code>&quot;
-std::cout &lt;&lt; path(&quot;/&quot;).<code>remove_</code>filename();     // outputs &quot;&quot;</pre>
+    <pre><code>std::cout &lt;&lt; path(&quot;/foo&quot;).remove_filename();</code>&nbsp; // outputs &quot;<code>/</code>&quot;
+    std::cout &lt;&lt; path(&quot;/&quot;).<code>remove_</code>filename();&nbsp;&nbsp;&nbsp;&nbsp; // outputs &quot;&quot;</pre>
   </blockquote>
   <p> <i>&mdash;end example</i>]</p>
 </blockquote>
@@ -1352,8 +1379,8 @@ std::cout &lt;&lt; path(&quot;/&quot;).<code>remove_</code>filename();     // ou
   <p><i>Returns: </i> <code>*this</code>.</p>
   <p>[<i>Example:</i></p>
   <blockquote>
-    <pre><code>std::cout &lt;&lt; path(&quot;/foo&quot;).replace_filename(&quot;bar&quot;);</code>  // outputs &quot;<code>/bar</code>&quot;
-std::cout &lt;&lt; path(&quot;/&quot;).<code>replace_</code>filename(<code>&quot;bar&quot;</code>);     // outputs &quot;bar&quot;</pre>
+    <pre><code>std::cout &lt;&lt; path(&quot;/foo&quot;).replace_filename(&quot;bar&quot;);</code>&nbsp; // outputs &quot;<code>/bar</code>&quot;
+    std::cout &lt;&lt; path(&quot;/&quot;).<code>replace_</code>filename(<code>&quot;bar&quot;</code>);&nbsp;&nbsp;&nbsp;&nbsp; // outputs &quot;bar&quot;</pre>
   </blockquote>
   <p> <i>&mdash;end example</i>]</p>
 </blockquote>
@@ -1381,7 +1408,7 @@ std::cout &lt;&lt; path(&quot;/&quot;).<code>replace_</code>filename(<code>&quot
 <h4>8.4.6  <a name="path-native-format-observers"><code>path</code> native format observers</a> 
 [path.native.obs]</h4>
 <p>The string returned by all native format observers is in the <a href="#fs.def.native">native pathname format</a>.</p>
-<pre>const string_type&amp;  <a name="native">native</a>() const noexcept;</pre>
+<pre>const string_type&amp;&nbsp;  <a name="native">native</a>() const noexcept;</pre>
 <blockquote>
 <p><i>Returns:</i> <code>pathname</code>.</p>
 </blockquote>
@@ -1406,8 +1433,9 @@ std::cout &lt;&lt; path(&quot;/&quot;).<code>replace_</code>filename(<code>&quot
 </blockquote>
 <p>
 <pre>template &lt;class charT, class traits = char_traits&lt;charT&gt;,
-          class Allocator = allocator&lt;charT&gt; &gt;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; class Allocator = allocator&lt;charT&gt; &gt;
 basic_string&lt;charT, traits, Allocator&gt;
+&nbsp;
   <a name="string-template">string</a>(const Allocator& a = Allocator()) const;</pre>
 
 
@@ -1441,8 +1469,9 @@ returns <code>&quot;foo/bar&quot;</code>. <i>&mdash;end example</i>]</p>
 </blockquote>
 
 <pre>template &lt;class charT, class traits = char_traits&lt;charT&gt;,
-          class Allocator = allocator&lt;charT&gt; &gt;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; class Allocator = allocator&lt;charT&gt; &gt;
 basic_string&lt;charT, traits, Allocator&gt;
+&nbsp;
   <a name="generic_string-template">generic_string</a>(const Allocator& a = Allocator()) const;</pre>
 
 <blockquote>
@@ -1514,9 +1543,9 @@ with the first <i>filename</i> after <i>root-path</i>. Otherwise, <code>path()</
   <p>[<i>Example:</i></p>
   <blockquote>
     <pre><code>std::cout &lt;&lt; path(&quot;/foo/bar.txt&quot;).filename();</code> // outputs &quot;<code>bar.txt</code>&quot;
-std::cout &lt;&lt; path(&quot;/&quot;).filename();            // outputs &quot;/&quot;
-std::cout &lt;&lt; path(&quot;.&quot;).filename();            // outputs &quot;.&quot;
-std::cout &lt;&lt; path(&quot;..&quot;).filename();           // outputs &quot;..&quot;</pre>
+    std::cout &lt;&lt; path(&quot;/&quot;).filename();&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // outputs &quot;/&quot;
+    std::cout &lt;&lt; path(&quot;.&quot;).filename();&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // outputs &quot;.&quot;
+    std::cout &lt;&lt; path(&quot;..&quot;).filename();&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // outputs &quot;..&quot;</pre>
   </blockquote>
   <p> <i>&mdash;end example</i>]</p>
 </blockquote>
@@ -1530,12 +1559,12 @@ std::cout &lt;&lt; path(&quot;..&quot;).filename();           // outputs &quot;.
   <p>[<i>Example:</i></p>
   <blockquote>
     <pre><code>std::cout &lt;&lt; path(&quot;/foo/bar.txt&quot;).stem();</code> // outputs &quot;<code>bar</code>&quot;
-path p = &quot;foo.bar.baz.tar&quot;;
-for (; !p.extension().empty(); p = p.stem())
-  std::cout &lt;&lt; p.extension() &lt;&lt; '\n';
-  // outputs: .tar
-  //          .baz
-  //          .bar</pre>
+    path p = &quot;foo.bar.baz.tar&quot;;
+    for (; !p.extension().empty(); p = p.stem())
+&nbsp; std::cout &lt;&lt; p.extension() &lt;&lt; '\n';
+&nbsp; // outputs: .tar
+&nbsp; //&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; .baz
+&nbsp; //&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; .bar</pre>
   </blockquote>
   <p> <i>&mdash;end example</i>]</p>
 </blockquote>
@@ -1702,16 +1731,16 @@ operator&gt;&gt;(basic_istream&lt;charT, traits&gt;&amp; is, path&amp; p);</pre>
   <p><i>Effects:&nbsp; </i></p>
   <blockquote>
     <pre>basic_string&lt;charT, traits&gt; tmp;
-is &gt;&gt; quoted(tmp);
-p = tmp;</pre>
+    is &gt;&gt; quoted(tmp);
+    p = tmp;</pre>
   </blockquote>
   <p><i>Returns:</i> <code>is</code></p>
   </blockquote>
 <h4>8.6.2  <a name="path.factory"><code>path</code> factory functions [path.factory]</a></h4>
-<pre>template &lt;class <a href="#Source">Source</a>&gt;  
-  path u8path(Source const&amp; source);
+<pre>template &lt;class <a href="#Source">Source</a>&gt;&nbsp;
+&nbsp; path u8path(Source const&amp; source);
 template &lt;class InputIterator&gt;
-  path u8path(InputIterator first, InputIterator last);</pre>
+&nbsp; path u8path(InputIterator first, InputIterator last);</pre>
 <blockquote>
   <p><i>Requires:</i> The <code>source</code> and [<code>first</code>,<code>last</code>) 
   sequences are UTF-8 encoded. The value type of <code>
@@ -1742,8 +1771,8 @@ template &lt;class InputIterator&gt;
     <p>A string is to be read from a database that is encoded in UTF-8, and used 
     to create a directory using the native encoding for filenames:</p>
     <pre>namespace fs = std::experimental::filesystem;
-std::string utf8_string = read_utf8_data();
-fs::create_directory(fs::u8path(utf8_string));</pre>
+    std::string utf8_string = read_utf8_data();
+    fs::create_directory(fs::u8path(utf8_string));</pre>
     <p>For POSIX based operating systems with the native narrow encoding set 
     to UTF-8, no encoding or type conversion occurs.</p>
     <p>For POSIX based operating systems with the native narrow encoding not 
@@ -1759,20 +1788,23 @@ fs::create_directory(fs::u8path(utf8_string));</pre>
 [class.filesystem_error]</a></h2>
 <pre>namespace std { namespace experimental { namespace filesystem { inline namespace v1 {
 
-      class filesystem_error : public system_error
-      {
-      public:
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; class filesystem_error : public system_error
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; public:
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
         <a href="#filesystem_error-2-arg">filesystem_error</a>(const string&amp; what_arg, error_code ec);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
         <a href="#filesystem_error-3-arg">filesystem_error</a>(const string&amp; what_arg,
-          const path&amp; p1, error_code ec);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; const path&amp; p1, error_code ec);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
         <a href="#filesystem_error-4-arg">filesystem_error</a>(const string&amp; what_arg,
-          const path&amp; p1, const path&amp; p2, error_code ec);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; const path&amp; p1, const path&amp; p2, error_code ec);
 
-        const path&amp; <a href="#filesystem_error-path1">path1</a>() const noexcept;
-        const path&amp; <a href="#filesystem_error-path2">path2</a>() const noexcept;
-        const char* <a href="#filesystem_error-what">what</a>() const noexcept;
-      };
-} } } }  // namespaces std::experimental::filesystem::v1</pre>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; const path&amp; <a href="#filesystem_error-path1">path1</a>() const noexcept;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; const path&amp; <a href="#filesystem_error-path2">path2</a>() const noexcept;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; const char* <a href="#filesystem_error-what">what</a>() const noexcept;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; };
+} } } }&nbsp; // namespaces std::experimental::filesystem::v1</pre>
 <p>The class <code>filesystem_error</code> defines the type of 
 objects thrown as exceptions to report file system errors from functions described in this 
 Technical Specification.</p>
@@ -2171,29 +2203,32 @@ involved. Input from security experts is needed.</span></i></p>
 <h2>11  <a name="file_status">Class <code>file_status</code></a> [class.file_status]</h2>
 <pre>namespace std { namespace experimental { namespace filesystem { inline namespace v1 {
 
-      class file_status
-      {
-      public:
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; class file_status
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; public:
 
-        // <a href="#file_status-constructors">constructors</a>
-        explicit file_status(<a href="#file_type">file_type</a> ft = file_type::none,
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // <a href="#file_status-constructors">constructors</a>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; explicit file_status(<a href="#file_type">file_type</a> ft = file_type::none,
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                              <a href="#Enum.perms">perms</a> prms = perms::unknown) noexcept;
-        file_status(const file_status&amp;) noexcept = default;
-        file_status(file_status&amp;&amp;) noexcept = default;
-       ~file_status();
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; file_status(const file_status&amp;) noexcept = default;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; file_status(file_status&amp;&amp;) noexcept = default;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ~file_status();
 
-        file_status&amp; operator=(const file_status&amp;) noexcept = default;
-        file_status&amp; operator=(file_status&amp;&amp;) noexcept = default;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; file_status&amp; operator=(const file_status&amp;) noexcept = default;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; file_status&amp; operator=(file_status&amp;&amp;) noexcept = default;
 
-        // <a href="#file_status-observers">observers</a>
-        <a href="#file_type">file_type</a>  type() const noexcept;
-        <a href="#Enum.perms">perms</a>      permissions() const noexcept;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // <a href="#file_status-observers">observers</a>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        <a href="#file_type">file_type</a>&nbsp; type() const noexcept;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        <a href="#Enum.perms">perms</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; permissions() const noexcept;
 
-        // <a href="#file_status-modifiers">modifiers</a>
-        void       type(<a href="#file_type">file_type</a> ft) noexcept;
-        void       permissions(<a href="#Enum.perms">perms</a> prms) noexcept;
-      };
-} } } }  // namespaces std::experimental::filesystem::v1</pre>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // <a href="#file_status-modifiers">modifiers</a>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; void&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; type(<a href="#file_type">file_type</a> ft) noexcept;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; void&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; permissions(<a href="#Enum.perms">perms</a> prms) noexcept;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; };
+} } } }&nbsp; // namespaces std::experimental::filesystem::v1</pre>
 <p>An object of type <code>file_status</code> stores information about the type 
 and permissions of a file.</p>
 <h3>11.1  <a name="file_status-constructors"><code>file_status</code> constructors</a> 
@@ -2227,46 +2262,46 @@ and permissions of a file.</p>
 <h2>12  <a name="Class-directory_entry">Class <code>directory_entry</code></a> [class.directory_entry]</h2>
 <pre>namespace std { namespace experimental { namespace filesystem { inline namespace v1 {
 
-      class directory_entry
-      {
-      public:
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; class directory_entry
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; public:
 
-        // <a href="#directory_entry-constructors">constructors</a> and destructor
-        directory_entry() = default;
-        directory_entry(const directory_entry&amp;) = default;
-        directory_entry(directory_entry&amp;&amp;) noexcept = default;
-        explicit directory_entry(const path&amp; p, file_status st=file_status(),
-          file_status symlink_st=file_status());
-       ~directory_entry(); 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // <a href="#directory_entry-constructors">constructors</a> and destructor
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; directory_entry() = default;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; directory_entry(const directory_entry&amp;) = default;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; directory_entry(directory_entry&amp;&amp;) noexcept = default;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; explicit directory_entry(const path&amp; p, file_status st=file_status(),
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; file_status symlink_st=file_status());
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ~directory_entry();
 
-        // <a href="#directory_entry-modifiers">modifiers</a>
-        directory_entry&amp; operator=(const directory_entry&amp;) = default;
-        directory_entry&amp; operator=(directory_entry&amp;&amp;) noexcept = default;
-        void assign(const path&amp; p, file_status st=file_status(),
-          file_status symlink_st=file_status());
-        void replace_filename(const path&amp; p, file_status st=file_status(),
-          file_status symlink_st=file_status());
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // <a href="#directory_entry-modifiers">modifiers</a>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; directory_entry&amp; operator=(const directory_entry&amp;) = default;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; directory_entry&amp; operator=(directory_entry&amp;&amp;) noexcept = default;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; void assign(const path&amp; p, file_status st=file_status(),
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; file_status symlink_st=file_status());
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; void replace_filename(const path&amp; p, file_status st=file_status(),
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; file_status symlink_st=file_status());
 
-        // <a href="#directory_entry-observers">observers</a>
-        const path&amp;  path() const noexcept;
-        file_status  status() const;
-        file_status  status(error_code&amp; ec) const noexcept;
-        file_status  symlink_status() const;
-        file_status  symlink_status(error_code&amp; ec) const noexcept;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // <a href="#directory_entry-observers">observers</a>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; const path&amp;&nbsp; path() const noexcept;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; file_status&nbsp; status() const;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; file_status&nbsp; status(error_code&amp; ec) const noexcept;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; file_status&nbsp; symlink_status() const;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; file_status&nbsp; symlink_status(error_code&amp; ec) const noexcept;
 
-        bool operator&lt; (const directory_entry&amp; rhs) const noexcept;
-        bool operator==(const directory_entry&amp; rhs) const noexcept; 
-        bool operator!=(const directory_entry&amp; rhs) const noexcept; 
-        bool operator&lt;=(const directory_entry&amp; rhs) const noexcept;
-        bool operator&gt; (const directory_entry&amp; rhs) const noexcept;
-        bool operator&gt;=(const directory_entry&amp; rhs) const noexcept;
-      private:
-        path                 m_path;           // for exposition only
-        mutable file_status  m_status;         // for exposition only; stat()-like
-        mutable file_status  m_symlink_status; // for exposition only; lstat()-like
-      };
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; bool operator&lt; (const directory_entry&amp; rhs) const noexcept;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; bool operator==(const directory_entry&amp; rhs) const noexcept;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; bool operator!=(const directory_entry&amp; rhs) const noexcept;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; bool operator&lt;=(const directory_entry&amp; rhs) const noexcept;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; bool operator&gt; (const directory_entry&amp; rhs) const noexcept;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; bool operator&gt;=(const directory_entry&amp; rhs) const noexcept;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; private:
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; path&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; m_path;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // for exposition only
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; mutable file_status&nbsp; m_status;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // for exposition only; stat()-like
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; mutable file_status&nbsp; m_symlink_status; // for exposition only; lstat()-like
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; };
 
-} } } }  // namespaces std::experimental::filesystem::v1</pre>
+} } } }&nbsp; // namespaces std::experimental::filesystem::v1</pre>
 <p>A <code>directory_entry</code> object stores a <code>path object</code>, 
 a <code>file_status</code> object for non-symbolic link status, and a <code>file_status</code> object for symbolic link status. The <code>file_status</code> objects act as value caches.</p>
 <blockquote>
@@ -2278,7 +2313,7 @@ non-cached results may differ in the presence of file system races. <i>&mdash;en
 <h3>12.1  <a name="directory_entry-constructors"><code>directory_entry</code> constructors</a> 
 [directory_entry.cons]</h3>
 <pre>explicit directory_entry(const path&amp; p, file_status st=file_status(),
-                         file_status symlink_st=file_status());</pre>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; file_status symlink_st=file_status());</pre>
 <blockquote>
   <p><i>Postcondition:</i></p>
   <table border="1" cellpadding="5" cellspacing="0" style="border-collapse: collapse" bordercolor="#111111" width="36%">
@@ -2303,7 +2338,7 @@ non-cached results may differ in the presence of file system races. <i>&mdash;en
 <h3>12.2  <a name="directory_entry-modifiers"><code>directory_entry</code> modifiers</a> 
 [directory_entry.mods]</h3>
 <pre>void assign(const path&amp; p, file_status st=file_status(),
-            file_status symlink_st=file_status());</pre>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; file_status symlink_st=file_status());</pre>
 <blockquote>
   <p><i>Postcondition:</i></p>
   <table border="1" cellpadding="5" cellspacing="0" style="border-collapse: collapse" bordercolor="#111111" width="36%">
@@ -2326,7 +2361,7 @@ non-cached results may differ in the presence of file system races. <i>&mdash;en
   </table>
 </blockquote>
 <pre>void replace_filename(const path&amp; p, file_status st=file_status(),
-                      file_status symlink_st=file_status());</pre>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; file_status symlink_st=file_status());</pre>
 <blockquote>
   <p><i>Postcondition:</i></p>
   <table border="1" cellpadding="5" cellspacing="0" style="border-collapse: collapse" bordercolor="#111111" width="43%">
@@ -2360,27 +2395,27 @@ file_status status(error_code&amp; ec) const noexcept;</pre>
 <p><i>Effects:</i> As if,</p>
   <blockquote>
     <pre>if (!status_known(m_status))
-{
-  if (status_known(m_symlink_status) &amp;&amp; !is_symlink(m_symlink_status))
-    { m_status = m_symlink_status; }
-  else { m_status = status(m_path<i>[, ec]</i>); }
-}</pre>
+    {
+&nbsp; if (status_known(m_symlink_status) &amp;&amp; !is_symlink(m_symlink_status))
+&nbsp;&nbsp;&nbsp; { m_status = m_symlink_status; }
+&nbsp; else { m_status = status(m_path<i>[, ec]</i>); }
+    }</pre>
   </blockquote>
   <p><i>Returns:</i> <code>m_status</code></p>
   
   <p><i>Throws:</i> As specified in <a href="#Error-reporting">Error reporting (7)</a>.</p>
   
 </blockquote>
-<pre>file_status  symlink_status() const;
-file_status  symlink_status(error_code&amp; ec) const noexcept;</pre>
+<pre>file_status&nbsp; symlink_status() const;
+file_status&nbsp; symlink_status(error_code&amp; ec) const noexcept;</pre>
 <blockquote>
 <p>
   <i>Effects:</i> As if,</p>
   <blockquote>
     <pre>if (!status_known(m_symlink_status))
-{
-  m_symlink_status = symlink_status(m_path<i>[, ec]</i>);
-}</pre>
+    {
+&nbsp; m_symlink_status = symlink_status(m_path<i>[, ec]</i>);
+    }</pre>
   </blockquote>
   <p><i>Returns:</i> <code>m_symlink_status</code></p>
   
@@ -2423,36 +2458,36 @@ directory.&nbsp;
 
 <pre>namespace std { namespace experimental { namespace filesystem { inline namespace v1 {
 
-      class directory_iterator
-      {
-      public:
-        typedef directory_entry        value_type;
-        typedef ptrdiff_t              difference_type;
-        typedef const directory_entry* pointer;
-        typedef const directory_entry&amp; reference;
-        typedef input_iterator_tag     iterator_category;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; class directory_iterator
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; public:
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; typedef directory_entry&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; value_type;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; typedef ptrdiff_t&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; difference_type;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; typedef const directory_entry* pointer;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; typedef const directory_entry&amp; reference;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; typedef input_iterator_tag&nbsp;&nbsp;&nbsp;&nbsp; iterator_category;
 
-        // <a href="#directory_iterator-members">member functions</a>
-        directory_iterator() noexcept;
-        explicit directory_iterator(const path&amp; p);
-        directory_iterator(const path&amp; p, error_code&amp; ec) noexcept;
-        directory_iterator(const directory_iterator&amp;) = default;
-        directory_iterator(directory_iterator&amp;&amp;) = default;
-       ~directory_iterator();
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // <a href="#directory_iterator-members">member functions</a>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; directory_iterator() noexcept;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; explicit directory_iterator(const path&amp; p);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; directory_iterator(const path&amp; p, error_code&amp; ec) noexcept;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; directory_iterator(const directory_iterator&amp;) = default;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; directory_iterator(directory_iterator&amp;&amp;) = default;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ~directory_iterator();
 
-        directory_iterator&amp; operator=(const directory_iterator&amp;) = default;
-        directory_iterator&amp; operator=(directory_iterator&amp;&amp;) = default;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; directory_iterator&amp; operator=(const directory_iterator&amp;) = default;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; directory_iterator&amp; operator=(directory_iterator&amp;&amp;) = default;
 
-        const directory_entry&amp; operator*() const;
-        const directory_entry* operator-&gt;() const;
-        directory_iterator&amp;    operator++();
-        directory_iterator&amp;    increment(error_code&amp; ec) noexcept;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; const directory_entry&amp; operator*() const;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; const directory_entry* operator-&gt;() const;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; directory_iterator&amp;&nbsp;&nbsp;&nbsp; operator++();
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; directory_iterator&amp;&nbsp;&nbsp;&nbsp; increment(error_code&amp; ec) noexcept;
 
-        // other members as required by
-        //  C++11 § 24.1.1 Input iterators 
-      };
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // other members as required by
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; //&nbsp; C++11 § 24.1.1 Input iterators
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; };
 
-} } } }  // namespaces std::experimental::filesystem::v1</pre>
+} } } }&nbsp; // namespaces std::experimental::filesystem::v1</pre>
 
 <p> <code>directory_iterator</code> satisfies the requirements of an input 
 iterator&nbsp; C++11 §24.2.3).</p>
@@ -2544,49 +2579,51 @@ a sequence of <code>directory_entry</code> elements representing the files in a
 directory and its sub-directories.</p>
 <pre>namespace std { namespace experimental { namespace filesystem { inline namespace v1 {
 
-      class recursive_directory_iterator 
-      {
-      public:
-        typedef directory_entry        value_type;
-        typedef ptrdiff_t              difference_type;
-        typedef const directory_entry* pointer;
-        typedef const directory_entry&amp; reference;
-        typedef input_iterator_tag     iterator_category;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; class recursive_directory_iterator
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; public:
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; typedef directory_entry&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; value_type;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; typedef ptrdiff_t&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; difference_type;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; typedef const directory_entry* pointer;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; typedef const directory_entry&amp; reference;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; typedef input_iterator_tag&nbsp;&nbsp;&nbsp;&nbsp; iterator_category;
 
-        // constructors and destructor
-        recursive_directory_iterator() noexcept;
-        recursive_directory_iterator(const recursive_directory_iterator&amp;) = default;
-        explicit recursive_directory_iterator(const path&amp; p,
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // constructors and destructor
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; recursive_directory_iterator() noexcept;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; recursive_directory_iterator(const recursive_directory_iterator&amp;) = default;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; explicit recursive_directory_iterator(const path&amp; p,
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
           <a href="#symlink_option">directory_options</a> options = directory_options::none);
-        recursive_directory_iterator(const path&amp; p,
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; recursive_directory_iterator(const path&amp; p,
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
           <a href="#symlink_option">directory_options</a> options, error_code&amp; ec) noexcept;
-        recursive_directory_iterator(const path&amp; p, error_code&amp; ec) noexcept;
-        recursive_directory_iterator(recursive_directory_iterator&amp;&amp;) = default;
-       ~recursive_directory_iterator();
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; recursive_directory_iterator(const path&amp; p, error_code&amp; ec) noexcept;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; recursive_directory_iterator(recursive_directory_iterator&amp;&amp;) = default;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ~recursive_directory_iterator();
 
-        // observers
-        directory_options  options() const;
-        int                depth() const;
-        bool               recursion<code>_pending</code>() const;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // observers
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; directory_options&nbsp; options() const;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; int&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; depth() const;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; bool&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; recursion<code>_pending</code>() const;
 
-        // modifiers
-        recursive_directory_iterator&amp; operator=(const recursive_directory_iterator&amp;) = default;
-        recursive_directory_iterator&amp; operator=(recursive_directory_iterator&amp;&amp;) = default;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // modifiers
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; recursive_directory_iterator&amp; operator=(const recursive_directory_iterator&amp;) = default;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; recursive_directory_iterator&amp; operator=(recursive_directory_iterator&amp;&amp;) = default;
 
-        const directory_entry&amp; operator*() const;
-        const directory_entry* operator-&gt;() const;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; const directory_entry&amp; operator*() const;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; const directory_entry* operator-&gt;() const;
 
-        recursive_directory_iterator&amp; operator++();
-        recursive_directory_iterator&amp; increment(error_code&amp; ec);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; recursive_directory_iterator&amp; operator++();
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; recursive_directory_iterator&amp; increment(error_code&amp; ec);
 
-        void pop();
-        void disable_recursion_pending();
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; void pop();
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; void disable_recursion_pending();
 
-       // other members as required by C++11 § 24.1.1 Input iterators
-      
-     };
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // other members as required by C++11 § 24.1.1 Input iterators
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp; };
 
-} } } }  // namespaces std::experimental::filesystem::v1</pre>
+} } } }&nbsp; // namespaces std::experimental::filesystem::v1</pre>
 
 <p>The behavior of a <code>recursive_directory_iterator</code> is the same 
 as a <code>directory_iterator</code> unless otherwise specified.</p>
@@ -2601,6 +2638,7 @@ as a <code>directory_iterator</code> unless otherwise specified.</p>
 </blockquote>
 
 <pre>explicit recursive_directory_iterator(const path&amp; p,
+&nbsp;
   <a href="#symlink_option">directory_options</a> options = directory_options::none);
 recursive_directory_iterator(const path&amp; p, <a href="#symlink_option">directory_options</a> options, error_code&amp; ec) noexcept;
 recursive_<code>directory_iterator(</code>const path&amp; p, error_code&amp; ec<code>) noexcept;</code></pre>
@@ -2838,33 +2876,33 @@ void copy(const path&amp; from, const path&amp; to, <a href="#copy_option">copy_
   <p>[<i>Example:</i> Given this directory structure:</p>
   
   <pre>/dir1
-  file1
-  file2
-  dir2
-    file3</pre>
+&nbsp; file1
+&nbsp; file2
+&nbsp; dir2
+&nbsp;&nbsp;&nbsp; file3</pre>
   <p>Calling <code>copy(&quot;/dir1&quot;, &quot;/dir3&quot;)</code> would result in: </p>
   <pre>/dir1
-  file1
-  file2
-  dir2
-    file3
-/dir3
-  file1
-  file2
+&nbsp; file1
+&nbsp; file2
+&nbsp; dir2
+&nbsp;&nbsp;&nbsp; file3
+  /dir3
+&nbsp; file1
+&nbsp; file2
 </pre>
   <p>Alternatively, calling <code>copy(&quot;/dir1&quot;, &quot;/dir3&quot;, 
   copy_options::recursive)</code> would result in: </p>
   
   <pre>/dir1
-  file1
-  file2
-  dir2
-    file3  
-/dir3
-  file1
-  file2
-  dir2
-    file3</pre>
+&nbsp; file1
+&nbsp; file2
+&nbsp; dir2
+&nbsp;&nbsp;&nbsp; file3&nbsp;
+  /dir3
+&nbsp; file1
+&nbsp; file2
+&nbsp; dir2
+&nbsp;&nbsp;&nbsp; file3</pre>
 
 <p><i>&mdash;end example</i>]</p>
   
@@ -2881,7 +2919,7 @@ bool copy_file(const path&amp; from, const path&amp; to, error_code&amp; ec) noe
 </blockquote>
 <pre>bool <a name="copy_file">copy_file</a>(const path&amp; from, const path&amp; to, <a href="#copy_option">copy_options</a> options);
 bool <a name="copy_file2">copy_file</a>(const path&amp; from, const path&amp; to, <a href="#copy_option">copy_options</a> options,
-               error_code&amp; ec) noexcept;</pre>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; error_code&amp; ec) noexcept;</pre>
 <blockquote>
   <p><i>Precondition:</i> At most one constant from each <code>copy_options</code> 
   option group ([<a href="#enum.copy_options">enum.copy_options</a>]) is present 
@@ -2905,7 +2943,7 @@ bool <a name="copy_file2">copy_file</a>(const path&amp; from, const path&amp; to
 <h3>15.5  Copy symlink&nbsp; [<a name="fs.op.copy_symlink">fs.op.copy_symlink</a>]</h3>
 <pre>void <a name="copy_symlink">copy_symlink</a>(const path&amp; existing_symlink, const path&amp; new_symlink);
 void copy_symlink(const path&amp; existing_symlink, const path&amp; new_symlink,
-                  error_code&amp; ec) noexcept;</pre>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; error_code&amp; ec) noexcept;</pre>
 <blockquote>
   <p><i>Effects: </i><code><i>function</i>(read_symlink(existing_symlink</code><i>[</i><code>, ec</code><i>]</i><code>), new_symlink</code><i>[</i><code>, ec</code><i>]</i><code>)</code>, 
   where <i><code>function</code></i> is <code>create_symlink</code> or <code>
@@ -2979,7 +3017,7 @@ bool create_directory(const path&amp; p, const path&amp; existing_p, error_code&
 
 <pre>void <a name="create_directory_symlink">create_directory_symlink</a>(const path&amp; to, const path&amp; new_symlink);
 void create_directory_symlink(const path&amp; to, const path&amp; new_symlink,
-                              error_code&amp; ec) noexcept;</pre>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; error_code&amp; ec) noexcept;</pre>
 <blockquote>
   <p><i>Effects:</i> Establishes the postcondition, as if by POSIX <code><a href="http://www.opengroup.org/onlinepubs/000095399/functions/symlink.html">symlink()</a></code>.</p>
   <p><i>
@@ -3000,7 +3038,7 @@ void create_directory_symlink(const path&amp; to, const path&amp; new_symlink,
 
 <pre>void <a name="create_hard_link">create_hard_link</a>(const path&amp; to, const path&amp; new_hard_link);
 void <a name="create_hard_link2">create_hard_link</a>(const path&amp; to, const path&amp; new_hard_link,
-                                      error_code&amp; ec) noexcept;</pre>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; error_code&amp; ec) noexcept;</pre>
 <blockquote>
   <p><i>Effects:</i> Establishes the postcondition, as if by POSIX <code><a href="http://www.opengroup.org/onlinepubs/000095399/functions/link.html">link()</a></code>.</p>
   <p><i>Postcondition:</i></p>
@@ -3024,7 +3062,7 @@ void <a name="create_hard_link2">create_hard_link</a>(const path&amp; to, const 
 
 <pre>void <a name="create_symlink">create_symlink</a>(const path&amp; to, const path&amp; new_symlink);
 void <a name="create_symlink2">create_symlink</a>(const path&amp; to, const path&amp; new_symlink,
-                    error_code&amp; ec) noexcept;</pre>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; error_code&amp; ec) noexcept;</pre>
 <blockquote>
   <p><i>Effects:</i> Establishes the postcondition, as if by POSIX <code><a href="http://www.opengroup.org/onlinepubs/000095399/functions/symlink.html">symlink()</a></code>.</p>
   <p><i>
@@ -3300,7 +3338,7 @@ file_time_type <a name="last_write_time2">last_write_time</a>(const path&amp; p<
 </blockquote>
 <pre>void <a name="last_write_time3">last_write_time</a>(const path&amp; p, file_time_type new_time);
 void <a name="last_write_time4">last_write_time</a>(const path&amp; p, file_time_type new_time<code>,
-                     error_code&amp; ec</code>) noexcept;</pre>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; error_code&amp; ec</code>) noexcept;</pre>
 <blockquote>
   <p><i>Effects:</i> Sets the time of last data modification of the file 
   resolved to by <code>p</code> to <code>new_time</code>, as if by POSIX <code><a href="http://www.opengroup.org/onlinepubs/000095399/functions/stat.html">stat()</a></code> 
@@ -3450,10 +3488,10 @@ space_info <a name="space2">space</a>(const path&amp; p, error_code&amp; ec) noe
   <p><i>Effects: </i>As if:</p>
   <blockquote>
     <pre>error_code ec;
-file_status result = status(p, ec);
-if (result == file_type::none)
-  throw filesystem_error(<i>implementation-supplied-message</i>, p, ec);
-return result;</pre>
+    file_status result = status(p, ec);
+    if (result == file_type::none)
+&nbsp; throw filesystem_error(<i>implementation-supplied-message</i>, p, ec);
+    return result;</pre>
   </blockquote>
   <p><i>Returns:</i> See above.</p>
   <p><i>Throws:</i> <code>filesystem_error</code>. 
