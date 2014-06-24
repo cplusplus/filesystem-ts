@@ -412,8 +412,8 @@ wide-character set encoding (C++11 §2.3).</p>
 <h3>4.12  <a name="NTCTS">NTCTS</a> [<a name="fs.def.ntcts">fs.def.ntcts</a>]</h3>
 <p>Acronym for &quot;null-terminated character-type sequence&quot;. Describes a sequence 
 of values of a given encoded character type terminated by that type's null character. If 
-the encoded character type is <code>charT</code>, the null character can be constructed 
-by <code>charT()</code>. <span style="background-color: #E0E0E0"><i>This is an 
+the encoded character type is <code>EcharT</code>, the null character can be constructed 
+by <code>EcharT()</code>. <span style="background-color: #E0E0E0"><i>This is an 
 expansion of the definition in chapter 17; that definition is very hard to 
 parse. A request for clarification has been sent to the C++ standard project editor.</i></span></p>
 <h3>4.13  <a name="operating system dependent">operating system dependent</a> behavior 
@@ -472,7 +472,7 @@ If the file pointed to does not exist, the symbolic link is said to be a
 <code>char16_t</code>, and <code>char32_t</code> are collectively called <i>
 encoded character types</i>.</p>
 
-<p>Template parameters named <code>charT</code> shall be one of the 
+<p>Template parameters named <code>EcharT</code> shall be one of the 
 encoded character types.</p>
 
 <p>Template parameters named <code>InputIterator</code> shall meet the 
@@ -850,8 +850,8 @@ system or for a particular file system.</p>
         path&amp; operator+=(value_type x);
         template &lt;class Source&gt;
           path&amp; operator+=(Source const&amp; x);
-        template &lt;class charT&gt;
-          path&amp; operator+=(charT x);
+        template &lt;class EcharT&gt;
+          path&amp; operator+=(EcharT x);
         template &lt;class Source&gt;
           path&amp; concat(Source const&amp; x);
         template &lt;class InputIterator&gt;
@@ -870,9 +870,9 @@ system or for a particular file system.</p>
         const value_type*   <a href="#c_str">c_str</a>() const noexcept;
         <a href="#operator-string_type">operator string_type</a>() const;
 
-        template &lt;class charT, class traits = char_traits&lt;charT&gt;,
-                  class Allocator = allocator&lt;charT&gt; &gt;
-        basic_string&lt;charT, traits, Allocator&gt;
+        template &lt;class EcharT, class traits = char_traits&lt;EcharT&gt;,
+                  class Allocator = allocator&lt;EcharT&gt; &gt;
+        basic_string&lt;EcharT, traits, Allocator&gt;
           <a href="#string-template">string</a>(const Allocator&amp; a = Allocator()) const;
         string    <a href="#string">string</a>() const;
         wstring   <a href="#wstring">wstring</a>() const;
@@ -881,9 +881,9 @@ system or for a particular file system.</p>
         u32string <a href="#u32string">u32string</a>() const;
 
         // <a href="#path-generic-format-observers">generic format observers</a>
-        template &lt;class charT, class traits = char_traits&lt;charT&gt;,
-                  class Allocator = allocator&lt;charT&gt; &gt;
-        basic_string&lt;charT, traits, Allocator&gt;
+        template &lt;class EcharT, class traits = char_traits&lt;EcharT&gt;,
+                  class Allocator = allocator&lt;EcharT&gt; &gt;
+        basic_string&lt;EcharT, traits, Allocator&gt;
           <a href="#generic_string-template">generic_string</a>(const Allocator&amp; a = Allocator()) const;
         string    <a href="#generic_string">generic_string</a>() const;
         wstring   <a href="#generic_wstring">generic_wstring</a>() const;
@@ -1111,8 +1111,8 @@ characters, the resulting converted characters, if any, are unspecified.</p>
 shall be one of:</p>
 <ul>
   <li>
-  <p> <code>basic_string&lt;charT, traits, Allocator&gt;</code>. The type <code>
-  charT</code> shall be an encoded character type ([fs.req]).&nbsp; A function 
+  <p> <code>basic_string&lt;EcharT, traits, Allocator&gt;</code>. The type <code>
+  EcharT</code> shall be an encoded character type ([fs.req]).&nbsp; A function 
   argument <code>Source const&amp;</code> <code>source</code> shall have an 
   effective range [<code>source.begin()</code>, <code>source.end()</code>).</li>
   <li>
@@ -1292,8 +1292,8 @@ path&amp; operator+=(const value_type* x);
 path&amp; operator+=(value_type x);
 template &lt;class Source&gt;
   path&amp; operator+=(Source const&amp; x);
-template &lt;class charT&gt;
-  path&amp; operator+=(charT x);
+template &lt;class EcharT&gt;
+  path&amp; operator+=(EcharT x);
 template &lt;class Source&gt;
   path&amp; concat(Source const&amp; x);
 template &lt;class InputIterator&gt;
@@ -1417,9 +1417,9 @@ std::cout &lt;&lt; path(&quot;/&quot;).<code>replace_</code>filename(<code>&quot
   </i></p>
 </blockquote>
 <p>
-<pre>template &lt;class charT, class traits = char_traits&lt;charT&gt;,
-          class Allocator = allocator&lt;charT&gt; &gt;
-basic_string&lt;charT, traits, Allocator&gt;
+<pre>template &lt;class EcharT, class traits = char_traits&lt;EcharT&gt;,
+          class Allocator = allocator&lt;EcharT&gt; &gt;
+basic_string&lt;EcharT, traits, Allocator&gt;
   <a name="string-template">string</a>(const Allocator& a = Allocator()) const;</pre>
 
 
@@ -1452,9 +1452,9 @@ its preferred-separator,&nbsp; <code>path(&quot;foo\\bar&quot;).generic_string()
 returns <code>&quot;foo/bar&quot;</code>. <i>&mdash;end example</i>]</p>
 </blockquote>
 
-<pre>template &lt;class charT, class traits = char_traits&lt;charT&gt;,
-          class Allocator = allocator&lt;charT&gt; &gt;
-basic_string&lt;charT, traits, Allocator&gt;
+<pre>template &lt;class EcharT, class traits = char_traits&lt;EcharT&gt;,
+          class Allocator = allocator&lt;EcharT&gt; &gt;
+basic_string&lt;EcharT, traits, Allocator&gt;
   <a name="generic_string-template">generic_string</a>(const Allocator& a = Allocator()) const;</pre>
 
 <blockquote>
