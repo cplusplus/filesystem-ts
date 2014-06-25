@@ -237,24 +237,24 @@ prompting its preparation. It shall not contain requirements.&quot;</i></span></
 <!-- generate-paragraph-numbers=true -->
 
 
-<h2>1  <a name="Scope">Scope</a>&nbsp; [fs.scope]</h2>
+<h2>1  <a name="Scope">Scope</a>&nbsp; [<a name="fs.scope">fs.scope</a>]</h2>
 
 <p>This Technical Specification specifies requirements for implementations of an 
 interface that computer programs written in the C++ programming language may use 
 to perform operations on file systems and their components, such as paths, 
 regular files, and directories. This Technical Specification is applicable to 
 information technology systems that can access hierarchical file systems, such 
-as those with operating systems that conform to the POSIX ([fs.norm.ref]) 
+as those with operating systems that conform to the POSIX (<a href="#fs.norm.ref">3</a>) 
 interface. This Technical Specification is applicable only to vendors who wish 
 to provide the interface it describes.</p>
 
-<h2>2  <a name="Conformance">Conformance</a> [fs.conformance]</h2>
+<h2>2  <a name="Conformance">Conformance</a> [<a name="fs.conformance">fs.conformance</a>]</h2>
 
 <p>Conformance is specified in terms of behavior. Ideal behavior is not always 
 implementable, so the conformance sub-clauses take that into account.</p>
 
 <h3>2.1  POSIX conformance [<a name="fs.conform.9945">fs.conform.9945</a>]</h3>
-<p>Some behavior is specified by reference to POSIX ([fs.norm.ref]). How such behavior is actually implemented is unspecified.</p>
+<p>Some behavior is specified by reference to POSIX (<a href="#fs.norm.ref">3</a>). How such behavior is actually implemented is unspecified.</p>
 <blockquote>
 <p>[<i>Note:</i> This constitutes an &quot;as if&quot; rule allowing implementations 
 to call native 
@@ -265,7 +265,8 @@ POSIX. Implementations shall document any behavior that differs from the
 behavior defined by POSIX. Implementations that do not support exact POSIX 
 behavior are encouraged to provide behavior as close to POSIX behavior as is reasonable given the 
 limitations of actual operating systems and file systems. If an implementation cannot provide any 
-reasonable behavior, the implementation shall report an error as specified in § 7 [fs.err.report].
+reasonable behavior, the implementation shall report an error as specified in § 
+<a href="#fs.err.report">7</a>.
 </p>
 <blockquote>
 <p>[<i>Note:</i> This allows users to rely on an exception being thrown or 
@@ -284,7 +285,7 @@ on the FAT file system. <i>&mdash;end example</i>]</p>
 
 <h3>2.2  Operating system dependent behavior conformance [<a name="fs.conform.os">fs.conform.os</a>]</h3>
 <p>Some behavior is specified as being 
-operating system dependent ([fs.def.osdep]). The operating system an 
+operating system dependent (<a href="#fs.def.osdep">4.13</a>). The operating system an 
 implementation is dependent upon is implementation defined.</p>
 <p>It is permissible for an implementation to be dependent upon an operating 
 system emulator rather than the actual underlying operating system.</p>
@@ -296,8 +297,7 @@ differ from their specification in the presence of <a href="#file-system-race">
 file system races</a> ([fs.def.race]). No diagnostic is required.</del></p>
 
 <p><ins>Behavior is undefined if calls to functions provided by this Technical 
-Specification introduce a <a href="#file-system-race">file system race</a> (4.6 
-[fs.def.race]).</ins></p>
+Specification introduce a file system race (<a href="#fs.def.race">4.6</a>).</ins></p>
 <p>If the possibility of a file system race would make it unreliable for a 
 program to test for a precondition before calling a function described herein, <i>
 Requires</i> is not specified for the function.</p>
@@ -307,7 +307,7 @@ is unreasonable for a program to detect them prior to calling the function. <i>
 —end note</i>]</p>
 </blockquote>
 
-<h2>3  <a name="Normative-references">Normative references</a>&nbsp; [fs.norm.ref]</h2>
+<h2>3  <a name="Normative-references">Normative references</a>&nbsp; [<a name="fs.norm.ref">fs.norm.ref</a>]</h2>
 
 <p>The following referenced documents are indispensable for the application of 
 this document. For dated references, only the edition cited applies. For undated 
@@ -339,38 +339,38 @@ Inc. Windows® is a registered trademark of Microsoft Corporation. This informat
 users of this document and does not constitute an endorsement by ISO or IEC of 
 these products.</blockquote>
 
-<h2>4  <a name="Definitions">Terms and definitions</a> [fs.definitions]</h2>
+<h2>4  <a name="Definitions">Terms and definitions</a> [<a name="fs.definitions">fs.definitions</a>]</h2>
 <p>For the purposes of this document, the terms and definitions given in the C++ 
 Standard and the following apply.</p>
 
-<h3>4.1  <a name="Absolute-path">absolute path</a> [fs.def.absolute-path]</h3>
+<h3>4.1  <a name="Absolute-path">absolute path</a> [<a name="fs.def.absolute-path">fs.def.absolute-path</a>]</h3>
 <p>A path that 
 unambiguously 
 identifies the location of a file without reference to an additional starting 
 location. The elements of a path that determine if it is absolute are 
 operating system dependent.</p>
 
-<h3>4.2  <a name="canonical-path">canonical path</a> [fs.def.cannonical-path]</h3>
-<p>An absolute path that has 
-no elements that are symbolic links, and no dot or dot-dot elements ([<a href="#path.generic">path.generic</a>]).</p>
-<h3>4.3  <a name="directory">directory</a> [fs.def.directory]</h3>
+<h3>4.2  <a name="canonical-path">canonical path</a> [<a name="fs.def.cannonical-path">fs.def.cannonical-path</a>]</h3>
+<p>An absolute path that has no elements that are symbolic links, and no dot or 
+dot-dot elements (<a href="#path.generic">8.1</a>).</p>
+<h3>4.3  <a name="directory">directory</a> [<a name="fs.def.directory">fs.def.directory</a>]</h3>
 <p>A file within a file system that acts as a container of directory entries 
 that contain information about 
 other files, possibly including other directory files.</p>
-<h3>4.4  <a name="file">file</a> [fs.def.file]</h3>
+<h3>4.4  <a name="file">file</a> [<a name="fs.def.file">fs.def.file</a>]</h3>
 <p>An object within a file system that holds user or system data. Files can be written to, or read from, or both. A file 
 has certain attributes, including type. File types include regular files 
 and directories. Other types of files, such as symbolic links, may be supported by the 
 implementation.</p>
-<h3>4.5  <a name="file-system">file system</a> [fs.def.filesystem]</h3>
+<h3>4.5  <a name="file-system">file system</a> [<a name="fs.def.filesystem">fs.def.filesystem</a>]</h3>
 <p>A collection of files and certain of their attributes.</p>
-<h3>4.6  <a name="file-system-race">file system race</a> [fs.def.race]</h3>
+<h3>4.6  <a name="file-system-race">file system race</a> [<a name="fs.def.race">fs.def.race</a>]</h3>
 <p>The condition that occurs 
 when multiple threads, processes, or computers interleave access and 
 modification of 
 the same object within a file system.</p>
 
-<h3>4.7  <a name="filename">filename</a> [fs.def.filename]</h3>
+<h3>4.7  <a name="filename">filename</a> [<a name="fs.def.filename">fs.def.filename</a>]</h3>
   <p>The name of a file. Filenames dot&nbsp; 
 and dot-dot&nbsp; have special meaning. The following characteristics of 
   filenames are operating system dependent:</p>
@@ -394,18 +394,18 @@ and dot-dot&nbsp; have special meaning. The following characteristics of
   files, such as directories.</p>
   </li>
 </ul>
-<h3>4.8  <a name="hard-link">hard link</a> [fs.def.hardlink]</h3>
-<p>A link ([fs.def.link]) to an existing file. Some 
+<h3>4.8  <a name="hard-link">hard link</a> [<a name="fs.def.hardlink">fs.def.hardlink</a>]</h3>
+<p>A link (<a href="#fs.def.link">4.9</a>) to an existing file. Some 
 file systems support multiple hard links to a file. If the last hard link to a 
 file is removed, the file itself is removed.</p>
 <blockquote>
 <p>[<i>Note:</i> A hard link can be thought of as a shared-ownership smart 
 pointer to a file.<i> &mdash;end note</i>]<i> </i></p>
 </blockquote>
-<h3>4.9  <a name="link">link</a> [fs.def.link]</h3>
+<h3>4.9  <a name="link">link</a> [<a name="fs.def.link">fs.def.link</a>]</h3>
 <p>A directory entry object that associates a 
-filename with a file. A link is either a hard link ([fs.def.hardlink]) or a 
-symbolic link ([fs.def.symlink]).</p>
+filename with a file. A link is either a hard link (<a href="#fs.def.hardlink">4.8</a>) or a 
+symbolic link (<a href="#fs.def.symlink">4.19</a>).</p>
 
 <h3>4.10  native encoding [<a name="fs.def.native.encode">fs.def.native.encode</a>]</h3>
 <p>For narrow character strings, the operating system dependent current encoding 
@@ -422,7 +422,7 @@ by <code>EcharT()</code>. <span style="background-color: #E0E0E0"><i>This is an
 expansion of the definition in chapter 17; that definition is very hard to 
 parse. A request for clarification has been sent to the C++ standard project editor.</i></span></p>
 <h3>4.13  <a name="operating system dependent">operating system dependent</a> behavior 
-[fs.def.osdep]</h3>
+[<a name="fs.def.osdep">fs.def.osdep</a>]</h3>
 <p>Behavior  that is dependent upon the behavior 
 and characteristics of an operating system. See [fs.conform.os].</p>
 <h3>4.14  parent directory [<a name="fs.def.parent">fs.def.parent</a>]</h3>
@@ -432,7 +432,7 @@ dot-dot in the given directory.</p>
 <p>When discussing other types of files, a directory containing a directory 
 entry for the file under discussion.</p>
 <p>This concept does not apply to dot and dot-dot.</p>
-<h3>4.15  <a name="path">path</a> [fs.def.path]</h3>
+<h3>4.15  <a name="path">path</a> [<a name="fs.def.path">fs.def.path</a>]</h3>
 <p>A sequence of elements that identify 
 the location of a file within a filesystem. The elements are the <i>root-name<sub>opt</sub></i>, <i>
 root-directory<sub>opt</sub></i>, and an optional sequence of filenames. 
@@ -440,10 +440,8 @@ The maximum number of elements in the sequence is operating system dependent.
 </p>
 
 <h3>4.16  pathname [<a name="fs.def.pathname">fs.def.pathname</a>]</h3>
-<p>A character string that represents 
-the name of a 
-path. Pathnames are formatted according to the generic pathname format grammar 
-([<a href="#path.generic">path.generic</a>]) or an 
+<p>A character string that represents the name of a path. Pathnames are 
+formatted according to the generic pathname format grammar (<a href="#path.generic">8.1</a>) or an 
 operating system dependent 
 native pathname format.</p>
 
@@ -454,7 +452,7 @@ a pathname to a particular file in a file hierarchy. There may be multiple
 pathnames that resolve to the same file.&nbsp; [<i>Example:</i> POSIX specifies the mechanism in section 4.11, Pathname resolution. <i>
 &mdash;end example]</i></p>
 
-<h3>4.18  <a name="Relative-path">relative path</a> [fs.def.relative-path]</h3>
+<h3>4.18  <a name="Relative-path">relative path</a> [<a name="fs.def.relative-path">fs.def.relative-path</a>]</h3>
 <p>A path that 
 is not absolute, and so only 
 unambiguously 
@@ -462,8 +460,8 @@ identifies the location of a file when resolved relative to
 an implied starting location. The elements of a path that determine if it is 
 relative are operating system dependent.&nbsp; [<i>Note:</i> 
 Paths <code>&quot;.&quot;</code> and <code>&quot;..&quot;</code> are relative paths. <i>&mdash;end note</i>]</p>
-<h3>4.19  <a name="symbolic-link">symbolic link</a> [fs.def.symlink]</h3>
-<p>A link ([fs.def.link]) with the 
+<h3>4.19  <a name="symbolic-link">symbolic link</a> [<a name="fs.def.symlink">fs.def.symlink</a>]</h3>
+<p>A link (<a href="#fs.def.link">4.9</a>) with the 
 property that when the file is encountered during pathname resolution, a string 
 stored by the file is used to modify the pathname resolution.</p>
 <blockquote>
@@ -493,7 +491,7 @@ implied encoding, they are not included as permitted types. <i>&mdash;end note</
 <p><ins>Template parameters named <code>Allocator</code> shall meet the C++ 
 Standard&#39;s library Allocator requirements (C++11 §17.6.3.5).</ins></p>
 
-<h3>5.1 <a name="Namespaces-and-headers">Namespaces and headers</a> [fs.req.namespace]</h3>
+<h3>5.1 <a name="Namespaces-and-headers">Namespaces and headers</a> [<a name="fs.req.namespace">fs.req.namespace</a>]</h3>
 
 
 <p>The components described in this technical specification are experimental and 
@@ -533,7 +531,7 @@ version of the Technical Specification was completed. <i>— end note</i>]</ins>
 <p>&nbsp;</p>
 
 <h2>6  <a name="Header-filesystem-synopsis">Header <code>&lt;experimental/filesystem&gt;</code> synopsis</a> 
-[fs.filesystem.synopsis]</h2>
+[<a name="fs.filesystem.synopsis">fs.filesystem.synopsis</a>]</h2>
 <pre>namespace std { namespace experimental { namespace filesystem { inline namespace v1 {
 
     class <a href="#class-path">path</a>;
@@ -939,7 +937,7 @@ system or for a particular file system.</p>
 <p><code><a name="value_type">value_type</a></code> is a <code>typedef</code> for the 
 operating system dependent encoded character type used  to represent pathnames.</p>
 <p>The value of <a name="preferred_separator"><code>preferred_separator</code></a> 
-is the operating system dependent <i>preferred-separator</i> character ([path.generic]).</p>
+is the operating system dependent <i>preferred-separator</i> character (<a href="#path.generic">8.1</a>).</p>
 <blockquote>
   [<i>Example:</i> For  POSIX based operating 
       systems, <code>value_type</code> is <code>char</code> and <code>
@@ -1025,9 +1023,9 @@ parent
 directory.<ins> What the filename <i>dot-dot</i> refers to relative to <i>
 root-directory</i> is implementation-defined.</ins> Specific filenames may have special meanings for a particular 
 operating system.</p>
-<h3>8.2  <a name="path-Conversions"><code>path</code> conversions</a> [path.cvt]</h3>
+<h3>8.2  <a name="path-Conversions"><code>path</code> conversions</a> [<a name="path.cvt">path.cvt</a>]</h3>
 <h4>8.2.1  <a name="path-Conversions-to-native-format"><code>path</code> argument format 
-conversions</a> [path.fmt.cvt]</h4>
+conversions</a> [<a name="path.fmt.cvt">path.fmt.cvt</a>]</h4>
 
 <blockquote>
 <p>[<i>Note:</i> The format conversions described in this 
@@ -1042,8 +1040,8 @@ conversions</a> [path.fmt.cvt]</h4>
       <p>&nbsp;<i>&mdash;end note</i>]
 </blockquote>
 
-<p>Functions arguments that take character sequences representing paths 
-may use the generic pathname format grammar ([<a href="#path.generic">path.generic</a>]) or 
+<p dir="ltr">Functions arguments that take character sequences representing 
+paths may use the generic pathname format grammar (<a href="#path.generic">8.1</a>) or 
 the <a href="#fs.def.native">native pathname format</a>. If and only if such 
 arguments are in the generic format and the generic format is not acceptable to 
 the operating system as a native path, conversion to native format shall be 
@@ -1072,7 +1070,7 @@ to be converted to is determined
 by its value type:</p>
 <blockquote>
   <ul>
-    <li><code>char</code>: Encoding is the native narrow encoding ([fs.def.native.encode]). Conversion, if any, is operating system dependent.<p>[<i>Note:</i> 
+    <li><code>char</code>: Encoding is the native narrow encoding (<a href="#fs.def.native.encode">4.10</a>). Conversion, if any, is operating system dependent.<p>[<i>Note:</i> 
 For POSIX based operating systems <code>path::value_type</code> is <code>char</code> 
 so no conversion from <code>char</code> value type arguments or to <code>char</code> 
 value type returns is performed.<p>For Windows based operating systems, the 
@@ -1082,7 +1080,7 @@ This results in behavior identical to other C and C++
 standard library functions that perform file operations using narrow character 
 strings to identify paths. Changing this  behavior would be surprising and error 
 prone. <i>&mdash;end note</i>]</li>
-    <li><code>wchar_t</code>: Encoding is the native wide encoding ([fs.def.native.encode]). Conversion method is unspecified.
+    <li><code>wchar_t</code>: Encoding is the native wide encoding (<a href="#fs.def.native.encode">4.10</a>). Conversion method is unspecified.
     <p>[<i>Note:</i> 
 For Windows based operating systems <code>path::value_type</code> is <code>wchar_t</code> 
 so no conversion from <code>wchar_t</code> value type arguments or to <code>wchar_t</code> 
@@ -1097,12 +1095,12 @@ is unspecified.
 <p>If the encoding being converted to has no representation for source 
 characters, the resulting converted characters, if any, are unspecified.</p>
 
-<h3>8.3  <a name="path-Requirements"><code>path</code> requirements</a> [path.req]</h3>
-<p>In addition to the [fs.req] requirements, function template parameters named <code><a name="Source">Source</a></code> 
+<h3>8.3  <a name="path-Requirements"><code>path</code> requirements</a> [<a name="path.req">path.req</a>]</h3>
+<p>In addition to the requirements (<a href="#fs.req">5</a>), function template parameters named <code><a name="Source">Source</a></code> 
 shall be one of:</p>
 <ul>
   <li><code>basic_string&lt;EcharT, traits, Allocator&gt;</code>. The type <code>
-  EcharT</code> shall be an encoded character type ([fs.req]).&nbsp; A function 
+  EcharT</code> shall be an encoded character type (<a href="#fs.req">5</a>).&nbsp; A function 
   argument <code>Source const&amp;</code> <code>source</code> shall have an 
   effective range [<code>source.begin()</code>, <code>source.end()</code>).</li>
   <li>A type meeting the input iterator requirements that iterates over a NTCTS. 
@@ -1118,7 +1116,7 @@ shall be one of:</p>
 </ul>
 
 <blockquote>
-  <p>[<i>Note:</i> See <a href="#path-Conversions">path conversions</a> ([path.cvt]) 
+  <p>[<i>Note:</i> See path conversions (<a href="#path.cvt">8.2</a>) 
   for how these value types and their encodings convert to <code>
   path::value_type</code> and its encoding. <i>&mdash;end note</i>]</p>
 </blockquote>
@@ -1128,7 +1126,7 @@ shall be one of:</p>
 
   <h3>8.4  <code>path</code> members&nbsp; [<a name="path.member">path.member</a>]</h3>
 
-<h4>8.4.1  <a name="path-constructors"> <code>path</code> constructors</a> [path.construct]</h4>
+<h4>8.4.1  <a name="path-constructors"> <code>path</code> constructors</a> [<a name="path.construct">path.construct</a>]</h4>
 <pre>path() <ins>noexcept</ins>;</pre>
 <blockquote>
   <p><i>Effects:</i> Constructs an object of class <code>path</code>.</p>
@@ -1146,9 +1144,10 @@ path(path&amp;&amp; p) noexcept;</pre>
 template &lt;class InputIterator&gt;
   path(InputIterator first, InputIterator last);</pre>
 <blockquote>
-  <p><i>Effects:</i> Constructs an object of class <code>path</code>, storing the effective range of <code>source</code> ([<a href="#path-Requirements">path.req</a>]) 
-  or the range [<code>first</code>,<code>last</code>) in <code>pathname</code>, converting format and 
-  encoding if required ([<a href="#path.arg.convert">path.arg.convert</a>]).</p>
+  <p><i>Effects:</i> Constructs an object of class <code>path</code>, storing the effective range of <code>source</code> 
+  (<a href="#path.req">8.3</a>) 
+  or the range [<code>first</code>,<code>last</code>) in <code>pathname</code>, 
+  converting format and encoding if required (<a href="#path.fmt.cvt">8.2.1</a>).</p>
 </blockquote>
 <pre>template &lt;class <a href="#Source">Source</a>&gt;
   path(Source const&amp; source, const locale&amp; loc);
@@ -1163,8 +1162,8 @@ template &lt;class InputIterator&gt;
   after converting format if required and after converting the encoding as 
   follows:</p>
   <blockquote>
-  <p>If <code>value_type</code> is <code>wchar_t</code>, converts to the 
-  native wide encoding ([fs.def.native.encode]) using the <code>codecvt&lt;wchar_t, char&gt;</code> 
+  <p>If <code>value_type</code> is <code>wchar_t</code>, converts to the native 
+  wide encoding (<a href="#fs.def.native.encode">4.10</a>) using the <code>codecvt&lt;wchar_t, char&gt;</code> 
   facet of <code>loc</code>. Otherwise a conversion is performed using the <code>
   codecvt&lt;wchar_t, char&gt;</code> facet of <code>loc</code>, and then a second 
   conversion to the current narrow encoding. </p>
@@ -1181,7 +1180,7 @@ fs::create_directory(fs::path(latin1_string, latin1_locale));</pre>
     <p>For POSIX based operating systems the path is constructed by first using <code>
     latin1_facet</code> to convert ISO/IEC 8859-1 encoded
     <code>latin1_string</code> to a wide character string in the native wide 
-    encoding ([fs.def.native.encode]). The resulting wide string is then 
+    encoding (<a href="#fs.def.native.encode">4.10</a>). The resulting wide string is then 
     converted to a narrow character
     <code>pathname</code> string in the current native narrow encoding. If the 
     native wide encoding is UTF-16 or UTF-32, and the current native narrow 
@@ -1222,9 +1221,9 @@ template &lt;class <a href="#Source">Source</a>&gt;
 template &lt;class InputIterator&gt;
   path&amp; assign(InputIterator first, InputIterator last);</pre>
 <blockquote>
-  <p><i>Effects:</i> Stores the effective range of <code>source</code> ([<a href="#path-Requirements">path.req</a>]) 
-  or the range [<code>first</code>,<code>last</code>) in <code>pathname</code>, converting format and 
-  encoding if required ([<a href="#path.arg.convert">path.arg.convert</a>]). </p>
+  <p><i>Effects:</i> Stores the effective range of <code>source</code> (<a href="#path.req">8.3</a>) 
+  or the range [<code>first</code>,<code>last</code>) in <code>pathname</code>, 
+  converting format and encoding if required (<a href="#path.arg.convert">8.2.1</a>). </p>
   <p>
   <i>Returns: </i><code>*this</code></p>
   </blockquote>
@@ -1258,8 +1257,8 @@ template &lt;class InputIterator&gt;
 <blockquote>
   <p><i>Effects:</i></p>
   <blockquote>
-    <p>Appends <code>path::preferred_separator</code> to <code>pathname</code>, converting 
-    format and encoding if required ([<a href="#path.arg.convert">path.arg.convert</a>]), unless:</p>
+    <p>Appends <code>path::preferred_separator</code> to <code>pathname</code>, 
+    converting format and encoding if required (<a href="#path.arg.convert">8.2.1</a>), unless:</p>
     <ul>
     <li>an added separator 
     would be redundant, or</li>
@@ -1267,9 +1266,9 @@ template &lt;class InputIterator&gt;
     <li><code><del>p</del><ins>source</ins>.empty()</code>, or</li>
     <li><code>*<del>p</del><ins>source</ins>.native().cbegin()</code> is a separator.</li>
   </ul>
-    <p>Appends the effective range of <code>source</code> ([<a href="#path-Requirements">path.req</a>]) 
-    or the range [<code>first</code>,<code>last</code>) to <code>pathname</code>, converting format and 
-    encoding if required ([<a href="#path.arg.convert">path.arg.convert</a>]).</p>
+    <p>Appends the effective range of <code>source</code> (<a href="#path.req">8.3</a>) 
+    or the range [<code>first</code>,<code>last</code>) to <code>pathname</code>, 
+    converting format and encoding if required (<a href="#path.arg.convert">8.2.1</a>).</p>
   </blockquote>
   <p><i>Returns: </i><code>*this</code></p>
   </blockquote>
@@ -1291,13 +1290,13 @@ template &lt;class InputIterator&gt;
  where <code>prior_native</code> is <code>native()</code> prior to the call to <code>operator+=</code>,
  and <code><i>effective-argument</i></code> is:</p>
  <ul><li><code>x.native()</code> if <code>x</code> is present and is <code>const path&amp;</code>, otherwise</li>
- <li>the effective range <code>source</code> ([<a href="#path-Requirements">path.req</a>]), 
+ <li>the effective range <code>source</code> (<a href="#path.req">8.3</a>), 
  if <code>source</code> is present, otherwise,</li>
  <li>the range [<code>first</code>,<code>last</code>),
  if <code>first</code> and
  <code>last</code> are present, otherwise,</li>
- <li><code>x</code>.</li></ul><p>If the value type of <code><i>effective-argument</i></code> would not be <code>path::value_type</code>, the actual argument or argument range is first
-   converted ([<a href="#path.arg.convert">path.arg.convert</a>]) so that <code><i>effective-argument</i></code> has value type <code>path::value_type</code>.</li> </p>
+ <li><code>x</code>.</li></ul><p>If the value type of <code><i>effective-argument</i></code> would not be <code>path::value_type</code>, 
+  the actual argument or argument range is first converted (<a href="#path.arg.convert">8.2.1</a>) so that <code><i>effective-argument</i></code> has value type <code>path::value_type</code>.</li> </p>
  <p><i>Returns: </i><code>*this</code></p>
  </blockquote>
 <h4>8.4.5  <a name="path-modifiers"> <code>path</code> modifiers</a> [path.modifiers]</h4><pre>void <a name="path-clear">clear</a>() noexcept;</pre>
@@ -1430,9 +1429,8 @@ The encoding of the string returned by <code>u8string()</code> is always UTF-8.<
 
 <h4>8.4.7  <a name="path-generic-format-observers"><code>path</code> generic format observers</a> 
 [path.generic.obs]</h4>
-<p>Generic format observer functions 
- 
-return strings formatted according to the generic pathname format ([<a href="#path.generic">path.generic</a>]). 
+<p>Generic format observer functions return strings formatted according to the 
+generic pathname format (<a href="#path.generic">8.1</a>). 
 The forward slash (<code>'/'</code>) character is used as the <i>
 directory-separator</i> character.</p>
 <blockquote>
@@ -1448,7 +1446,7 @@ basic_string&lt;EcharT, traits, Allocator&gt;
 
 <blockquote>
   <p><i>Returns:</i> <code>pathname</code>, reformatted according to the generic 
-  pathname format ([<a href="#path.generic">path.generic</a>]). </p>
+  pathname format (<a href="#path.generic">8.1</a>). </p>
 <p><i>Remarks:</i> All memory allocation, including for the return value, shall 
 be performed by <code>a</code>. Conversion, if any, is  specified by [<a href="#path-Conversions">path.cvt</a>].</p>
 </blockquote>
@@ -1459,8 +1457,9 @@ u16string <a name="generic_u16string">generic_u16string</a>() const;
 u32string <a name="generic_u32string">generic_u32string</a>() const; </pre>
 <blockquote>
 <p><i>Returns:</i> <code>pathname</code>, reformatted according to the generic 
-pathname format ([<a href="#path.generic">path.generic</a>]).</p>
-<p><i>Remarks:</i>&nbsp; Conversion, if any, is  specified by [<a href="#path-Conversions">path.cvt</a>]. 
+pathname format (<a href="#path.generic">8.1</a>).</p>
+<p><i>Remarks:</i>&nbsp; Conversion, if any, is specified by
+<a href="#path-Conversions">8.2</a>. 
 The encoding of the string returned by <code>generic_u8string()</code> is always 
 UTF-8.</p>
 </blockquote>
