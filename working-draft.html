@@ -1721,7 +1721,7 @@ template &lt;class InputIterator&gt;
   <blockquote>
     <ul>
       <li>If <code>value_type</code> is <code>char</code> and the current native 
-      narrow encoding ([fs.def.native.encode]) is UTF-8, <code>path(source)</code> or <code>path(first, last)</code>, 
+      narrow encoding (<a href="#fs.def.native.encode">4.11</a>) is UTF-8, <code>path(source)</code> or <code>path(first, last)</code>, 
       else</li>
       <li>if <code>value_type</code> is <code>wchar_t </code>and the 
       native wide encoding is UTF-16, or if <code>value_type</code> is <code>char16_t</code> 
@@ -1734,7 +1734,7 @@ template &lt;class InputIterator&gt;
       return <code>path(tmp)</code>.</li>
     </ul>
   </blockquote>
-  <p><i>Remarks: </i>Argument format conversion ([path.fmt.cvt]) applies to the 
+  <p><i>Remarks: </i>Argument format conversion (<a href="#path.fmt.cvt">8.2.1</a>) applies to the 
   arguments for these functions. How Unicode encoding conversions are performed is 
   unspecified. </p>
   <p>[<i>Example</i>:</p>
@@ -2475,8 +2475,8 @@ file_status  symlink_status(error_code&amp; ec) const noexcept;</pre>
 <p>An object of type <code>directory_iterator</code> provides an iterator for a 
 sequence of <code>directory_entry</code> elements representing the files in a 
 directory.&nbsp; 
-[<i>Note:</i> For iteration into sub-directories,&nbsp; see class <code><a href="#Class-recursive_directory_iterator">recursive_directory_iterator</a></code> 
-([class.rec.dir.itr]). <i>&mdash;end note</i>]</p>
+[<i>Note:</i> For iteration into sub-directories,&nbsp; see class <code>recursive_directory_iterator</code> 
+(<a href="#class.rec.dir.itr">14</a>). <i>&mdash;end note</i>]</p>
 
 <pre>namespace std { namespace experimental { namespace filesystem { inline namespace v1 {
 
@@ -2915,7 +2915,7 @@ void copy(const path&amp; from, const path&amp; to, error_code&amp; ec) noexcept
 <pre>void <a name="copy2">copy</a>(const path&amp; from, const path&amp; to, <a href="#copy_option">copy_options</a> options);
 void copy(const path&amp; from, const path&amp; to, <a href="#copy_option">copy_options</a> options, error_code&amp; ec) noexcept;</pre>
 <blockquote>
-  <p><i>Precondition:</i> At most one constant from each option group ([<a href="#enum.copy_options">enum.copy_options</a>]) 
+  <p><i>Precondition:</i> At most one constant from each option group (<a href="#enum.copy_options">10.2</a>) 
   is present in <code>options</code>.</p>
   <p><i>Effects:</i></p>
   
@@ -3038,7 +3038,7 @@ bool <a name="copy_file2">copy_file</a>(const path&amp; from, const path&amp; to
                error_code&amp; ec) noexcept;</pre>
 <blockquote>
   <p><i>Precondition:</i> At most one constant from each <code>copy_options</code> 
-  option group ([<a href="#enum.copy_options">enum.copy_options</a>]) is present 
+  option group (<a href="#enum.copy_options">10.2</a>) is present 
   in <code>options</code>.</p>
   <p><i>Effects:</i> </p>
   <blockquote>
