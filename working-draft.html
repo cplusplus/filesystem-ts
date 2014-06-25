@@ -3801,12 +3801,12 @@ path <a name="system_complete2">system_complete</a>(const path&amp; p, error_cod
   same semantics as <code>absolute(p, current_path())</code> if <code>p.is_absolute() ||
   !p.has_root_name()</code> or <code>p</code> and <code>base</code> have the same
   <code>root_name()</code>. 
-  Otherwise it acts like <code>absolute(p, kinky)</code>, where <code>kinky</code> is
+  Otherwise it acts like <code>absolute(p, <del>kinky</del><ins>cwd</ins>)</code>, where <code><del>kinky</del><ins>cwd</ins></code> is
   the current directory for the <code>p.root_name()</code> drive. This will 
   be the current directory for that drive the last time it was set, and thus may 
-  be <b>residue left over from a prior program</b> run by the command 
-  processor! Although these semantics are useful, they are very 
-  error-prone. <i>&mdash;end example</i>]
+  be residue left over from a prior program run by the command 
+  processor<del>!</del><ins>.</ins> Although these semantics are useful, they <del>are very error-prone</del> <ins>may be surprising</ins>.
+   <i>&mdash;end example</i>]
 </blockquote>
   
 </blockquote>
