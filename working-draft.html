@@ -5,32 +5,30 @@
 <meta name="GENERATOR" content="Microsoft FrontPage 5.0">
 <meta name="ProgId" content="FrontPage.Editor.Document">
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-<title>
-
-  Draft Filesystem Technical Specification
-  </title>
+<title>Draft Filesystem Technical Specification</title>
 <style type="text/css">
 
-body  { max-width : 7in;
-          margin-left: 2em; /* Make room for paragraph numbers. */
-         }
+  body  { max-width : 7in;
+             margin-left: 2em; /* Make room for paragraph numbers. */
+           }
 
-[para_num]::before { content: attr(para_num); float: left;
-                              font-size: 70%; margin-left: -2.5em; width: 1.5em; text-align: right;
-                           }
+  [para_num]::before { content: attr(para_num); float: left;
+                              font-size: 70%; margin-left: -3.0em; width: 1.5em; text-align: right;
+                             }
                            
-pre    { background-color:#D7EEFF }
-a       { text-decoration: none}
-a:link {COLOR: #2020FF;}
-a:visited {COLOR: #2020FF;}
-a:hover {COLOR: #FF2020;}
-a:active {COLOR: #009933;}
-ins     { background-color:#E8FFE8 }
-del     { background-color:#FFD7D7 }
+  pre    { background-color:#D7EEFF }
+  a       { text-decoration: none}
+  a:link {COLOR: #2020FF;}
+  a:visited {COLOR: #2020FF;}
+  a:hover {COLOR: #FF2020;}
+  a:active {COLOR: #009933;}
+  ins     { background-color:#E8FFE8 }
+  del     { background-color:#FFD7D7 }
 </style>
 </head>
 
 <body>
+<!-- generate-paragraph-numbers=false -->
 <p>
   <table border="0">
     <tr>
@@ -40,7 +38,7 @@ del     { background-color:#FFD7D7 }
     <tr>
       <td>Date:</td>
       <td>
-      <!--webbot bot="Timestamp" S-Type="EDITED" S-Format="%Y-%m-%d" startspan -->2014-06-24<!--webbot bot="Timestamp" endspan i-checksum="12384" --></td>
+      <!--webbot bot="Timestamp" S-Type="EDITED" S-Format="%Y-%m-%d" startspan -->2014-06-25<!--webbot bot="Timestamp" endspan i-checksum="12386" --></td>
     </tr>
     <tr>
       <td>Revises:</td>
@@ -236,6 +234,7 @@ or commentary about the technical content of the document, and about the reasons
 prompting its preparation. It shall not contain requirements.&quot;</i></span></p>
 
 <!-- generate-section-numbers=true -->
+<!-- generate-paragraph-numbers=true -->
 
 
 <h2>1  <a name="Scope">Scope</a>&nbsp; [fs.scope]</h2>
@@ -339,7 +338,6 @@ a registered trademark of The IEEE. MAC OS® is a registered trademark of Apple
 Inc. Windows® is a registered trademark of Microsoft Corporation. This information is given for the convenience of 
 users of this document and does not constitute an endorsement by ISO or IEC of 
 these products.</blockquote>
-<p></p>
 
 <h2>4  <a name="Definitions">Terms and definitions</a> [fs.definitions]</h2>
 <p>For the purposes of this document, the terms and definitions given in the C++ 
@@ -969,55 +967,53 @@ specifier - a <i>root-name</i> identifying a specific device such as a disc driv
 </blockquote>
 <p><i>root-directory:<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
-directory-separator<br>
-<br>
-relative-path:<br>
+directory-separator</i></p>
+<p><i>relative-path:<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
 filename<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; relative-path 
 directory-separator<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; relative-path 
-directory-separator filename<br>
-<br>
-filename:<br>
+directory-separator filename</i></p>
+<p><i>filename:<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; name<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; dot<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; dot-dot<br>
-<br>
-name:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; dot-dot</i></p>
+<p><i>name:<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </i>A 
 sequence of characters other than <i>directory-separator</i> characters.</p>
 <blockquote>
 <blockquote>
-[<i>Note:</i> Operating systems often place restrictions 
+<p>[<i>Note:</i> Operating systems often place restrictions 
       on the characters that may be used in a <i>filename</i>. For wide 
-      portability, users may wish to limit <i>filename</i> characters to the  POSIX Portable Filename Character Set: <br>
-      <br>
+      portability, users may wish to limit <i>filename</i> characters to the  POSIX Portable Filename Character Set:
+      <p>
       <tt>A B C D E F G H I J K L M N O P Q R S T U V W X Y Z<br>
       a b c d e f g h i j k l m n o p q r s t u v w x y z<br>
-      0 1 2 3 4 5 6 7 8 9 . _ -</tt>
-      <p><i>&mdash;end note</i>]</p>
+      0 1 2 3 4 5 6 7 8 9 . _ -</tt> <i><br>
+      <br>
+      &mdash;end note</i>]</p>
 </blockquote>
 </blockquote>
 <p><i>dot:<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </i>The 
-filename consisting solely of a single period character (.).<br>
-<br>
+filename consisting solely of a single period character (.).</p>
+<p>
 <i>dot-dot:<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </i>The 
-filename consisting solely of two period characters (..).<br>
-<br>
+filename consisting solely of two period characters (..).</p>
+<p>
 <i>directory-separator:<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; slash<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; slash directory-separator<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; preferred-separator<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; preferred-separator directory-separator<br>
-<br>
-preferred-separator:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; preferred-separator directory-separator</i></p>
+<p>
+<i>preferred-separator:<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </i>An 
 operating system dependent directory separator character. May be a synonym for
-<i>slash</i>.<br>
-<br>
+<i>slash</i>.</p>
+<p>
 <i>slash:<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </i>The slash 
 character (/). </p>
@@ -1034,7 +1030,7 @@ operating system.</p>
 conversions</a> [path.fmt.cvt]</h4>
 
 <blockquote>
-[<i>Note:</i> The format conversions described in this 
+<p>[<i>Note:</i> The format conversions described in this 
       section are not applied on POSIX or Windows based operating systems 
       because on these systems:<ul>
         <li>The generic format is acceptable as a native path.</li>
@@ -1076,8 +1072,7 @@ to be converted to is determined
 by its value type:</p>
 <blockquote>
   <ul>
-    <li>
-<p><code>char</code>: Encoding is the native narrow encoding ([fs.def.native.encode]). Conversion, if any, is operating system dependent.<p>[<i>Note:</i> 
+    <li><code>char</code>: Encoding is the native narrow encoding ([fs.def.native.encode]). Conversion, if any, is operating system dependent.<p>[<i>Note:</i> 
 For POSIX based operating systems <code>path::value_type</code> is <code>char</code> 
 so no conversion from <code>char</code> value type arguments or to <code>char</code> 
 value type returns is performed.<p>For Windows based operating systems, the 
@@ -1086,25 +1081,16 @@ native narrow  encoding is determined by calling a  Windows API function. <i>&md
 This results in behavior identical to other C and C++ 
 standard library functions that perform file operations using narrow character 
 strings to identify paths. Changing this  behavior would be surprising and error 
-prone. <i>&mdash;end note</i>]<br>
-&nbsp;<p>
-</p>
-    </li>
-    <li>
-<p><code>wchar_t</code>: Encoding is the native wide encoding ([fs.def.native.encode]). Conversion method is unspecified.</p>
+prone. <i>&mdash;end note</i>]</li>
+    <li><code>wchar_t</code>: Encoding is the native wide encoding ([fs.def.native.encode]). Conversion method is unspecified.
     <p>[<i>Note:</i> 
 For Windows based operating systems <code>path::value_type</code> is <code>wchar_t</code> 
 so no conversion from <code>wchar_t</code> value type arguments or to <code>wchar_t</code> 
-    value type returns is performed. <i>&mdash;end note</i>]<br>
-&nbsp;</li>
-    <li>
-<p><code>char16_t</code>: Encoding is UTF-16. Conversion method 
-is unspecified. <br>
-&nbsp;</p>
-    </li>
-    <li>
-<p><code>char32_t</code>: Encoding is UTF-32. Conversion method 
-is unspecified.</p>
+    value type returns is performed. <i>&mdash;end note</i>]</li>
+    <li><code>char16_t</code>: Encoding is UTF-16. Conversion method 
+is unspecified.</li><br>
+    <li><code>char32_t</code>: Encoding is UTF-32. Conversion method 
+is unspecified.
     </li>
   </ul>
 </blockquote>
@@ -1115,13 +1101,11 @@ characters, the resulting converted characters, if any, are unspecified.</p>
 <p>In addition to the [fs.req] requirements, function template parameters named <code><a name="Source">Source</a></code> 
 shall be one of:</p>
 <ul>
-  <li>
-  <p> <code>basic_string&lt;EcharT, traits, Allocator&gt;</code>. The type <code>
+  <li><code>basic_string&lt;EcharT, traits, Allocator&gt;</code>. The type <code>
   EcharT</code> shall be an encoded character type ([fs.req]).&nbsp; A function 
   argument <code>Source const&amp;</code> <code>source</code> shall have an 
   effective range [<code>source.begin()</code>, <code>source.end()</code>).</li>
-  <li>
-  <p>A type meeting the input iterator requirements that iterates over a NTCTS. 
+  <li>A type meeting the input iterator requirements that iterates over a NTCTS. 
   The value type shall be an encoded character type. A function argument <code>
   Source const&amp;</code> <code>source</code> shall have an effective range&nbsp; 
   [<code>source</code>, <code>end</code>) where <code>end</code> is the first 
