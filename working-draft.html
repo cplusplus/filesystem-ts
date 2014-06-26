@@ -8,13 +8,17 @@
 <title>Draft Filesystem Technical Specification</title>
 <style type="text/css">
 
+  /* Make room for paragraph numbers. */
   body  { max-width : 7in;
-             margin-left: 2em; /* Make room for paragraph numbers. */
+             margin-left: 2em; 
            }
 
   [para_num]::before { content: attr(para_num); float: left;
                               font-size: 70%; margin-left: -3.0em; width: 1.5em; text-align: right;
                              }
+                             
+  /* Make inline code avoid line wraps unless we override it with <br>. */                           
+  code  { white-space: nowrap; }                          
                            
   pre    { background-color:#D7EEFF }
   a       { text-decoration: none}
@@ -1344,7 +1348,7 @@ std::cout &lt;&lt; path(&quot;/&quot;).<code>replace_</code>filename(<code>&quot
 <blockquote>
   <p para_num="26"><i>Effects:</i></p>
   <ul>
-    <li para_num="27">Any existing <code>extension()</code> is removed from the stored path, 
+    <li para_num="27">Any existing <code><a href="#path-extension">extension()</a>(</code><a href="#path.decompose">8.4.9</a><code>)</code> is removed from the stored path, 
     then</li>
     <li para_num="28">If <code>replacement</code> is not empty and does not begin with a dot 
     character, a dot character is appended to the stored path, then</li>
@@ -1460,7 +1464,7 @@ UTF-8.</p>
   <p para_num="7"><i>Returns:</i> <code>compare(path(s))</code>.</p>
 </blockquote>
 <h4>8.4.9  <a name="path-decomposition"> <code>path</code> decomposition</a> 
-[path.decompose]</h4>
+[<a name="path.decompose">path.decompose</a>]</h4>
 <pre para_num="1">path <a name="path-root_name">root_name</a>() const;</pre>
 <blockquote>
 <p para_num="2"><i>Returns:</i> <i>root-name,</i> if <code>pathname</code> includes <i>root-name</i>, otherwise <code>path()</code>. </p>
@@ -2681,7 +2685,8 @@ directory_options::none</code>.</p>
 
 <p para_num="6"><i>Throws:</i> As specified in <a href="#Error-reporting">Error reporting (7)</a>.</p>
 
-<p para_num="7">[<i>Note:</i> To iterate over the current directory, use <code>recursive_directory_iterator(&quot;.&quot;)</code> rather than <code>recursive_directory_iterator(&quot;&quot;)</code>. <i>&mdash;end note</i>]</p>
+<p para_num="7">[<i>Note:</i> To iterate over the current directory, use <code>recursive_directory_iterator(&quot;.&quot;)</code>
+ rather than <code>recursive_directory_iterator(&quot;&quot;)</code>. <i>&mdash;end note</i>]</p>
 
 <p para_num="8">[<i>Note:</i> By default, <code>recursive_directory_iterator</code> does not 
 follow directory symlinks. To follow directory symlinks, specify <code>options</code> as <code>
@@ -2693,8 +2698,7 @@ directory_options::follow_directory_symlink</code> <i>&mdash;end note</i>]</p>
   <p para_num="10"><ins><i>Effects:</i> Constructs an object of class <code>
   recursive_directory_iterator</code>.</ins></p>
   <p para_num="11"><ins><i>Postconditions:</i> <code>this-&gt;options() == rhs.options() &amp;&amp; 
-  this-&gt;depth() == rhs.depth() &amp;&amp; this-&gt;recursion_pending() == 
-  rhs.recursion_pending()</code>. </p>
+  this-&gt;depth() == rhs.depth()<br> &amp;&amp; this-&gt;recursion_pending() == rhs.recursion_pending()</code>. </p>
 </blockquote></ins>
 <pre para_num="12"><ins>recursive_directory_iterator(recursive_directory_iterator&amp;&amp; rhs) noexcept;</ins></pre>
 <ins><blockquote>
@@ -2711,8 +2715,8 @@ directory_options::follow_directory_symlink</code> <i>&mdash;end note</i>]</p>
   <p para_num="16"><ins><i>Effects:</i> If <code>*this</code> and <code>rhs</code> are the same 
   object, the member has no effect.</ins></p>
   <p para_num="17"><ins><i>Postconditions:</i> <code>this-&gt;options() == rhs.options() &amp;&amp; 
-  this-&gt;depth() == rhs.depth() &amp;&amp; this-&gt;recursion_pending() == 
-  rhs.recursion_pending() </code>. </ins></p>
+  this-&gt;depth() == rhs.depth()<br> &amp;&amp; this-&gt;recursion_pending() == 
+  rhs.recursion_pending()</code>. </ins></p>
   <p para_num="18"><ins><i>Returns:</i> <code>*this</code>.</ins></p>
 </blockquote></ins>
 <pre para_num="19"><ins>recursive_directory_iterator&amp; operator=(recursive_directory_iterator&amp;&amp; rhs) noexcept;</ins></pre>
@@ -2767,12 +2771,14 @@ iteration over the parent directory resumes; otherwise <code>*this = recursive_d
   </li>
   <li para_num="40">
 
-<p para_num="41">Otherwise if <code>recursion_pending() &amp;&amp; is_directory(this-&gt;status()) 
-&amp;&amp; (!is_symlink(this-&gt;symlink_status()) || (options() &amp; 
-directory_options::follow_directory_symlink) != <del>0</del> <ins>
-directory_options::none</ins>) </code>then <ins>either</ins> directory <code>
+<p para_num="41">Otherwise if <code>recursion_pending() &amp;&amp; is_directory(this-&gt;status())<br>
+ &nbsp;
+ &amp;&amp; (!is_symlink(this-&gt;symlink_status())<br>
+&nbsp; || (options() &amp; directory_options::follow_directory_symlink) != <del>0<br>
+</del>&nbsp;<ins>directory_options::none</ins>) </code>then <ins>either</ins> directory <code>
 (*this)-&gt;path()</code> is recursively iterated into <ins>or, if <code>options() 
-&amp; directory_options::skip_permissions_denied != directory_options::none </code>
+&amp; directory_options::skip_permissions_denied<br>
+&nbsp;!= directory_options::none </code>
 and an error occurs indicating that permission to access directory <code>
 (*this)-&gt;path()</code> is denied, then directory <code>(*this)-&gt;path()</code> is 
 treated as an empty directory and no error is reported </ins>.</p>
@@ -2832,14 +2838,13 @@ an error.&nbsp;See <a href="#Error-reporting">Error reporting (7)</a>. <i>&mdash
     <tr>
       <td align="center"><b><code>p.has_root_name()</code></b></td>
       <td align="center"><code>return p</code></td>
-      <td align="center"><code>return p.root_name() / absolute(base).root_directory()<br>
-      / absolute(base).relative_path() / p.relative_path()</code></td>
+      <td align="center"><code>return p.root_name()<br>/ absolute(base).root_directory()<br>
+      / absolute(base).relative_path()<br>/ p.relative_path()</code></td>
     </tr>
     <tr>
       <td align="center"><b><code>!p.has_root_name()</code></b></td>
-      <td align="center"><code>return absolute(base).root_name()<br>
-      / p</code></td>
-      <td align="center"><code>return absolute(base) / p</code></td>
+      <td align="center"><code>return<br>absolute(base).root_name()<br>/ p</code></td>
+      <td align="center"><code>return<br>absolute(base) / p</code></td>
     </tr>
   </table>
   <p para_num="3">[<i>Note:</i> For the returned path, <code>rp,</code> <code>rp.is_absolute()</code> is true. <i>&mdash;end note</i>]</p>
@@ -2877,7 +2882,8 @@ void copy(const path&amp; from, const path&amp; to, error_code&amp; ec) noexcept
 </blockquote>
 
 <pre para_num="3">void <a name="copy2">copy</a>(const path&amp; from, const path&amp; to, <a href="#copy_option">copy_options</a> options);
-void copy(const path&amp; from, const path&amp; to, <a href="#copy_option">copy_options</a> options, error_code&amp; ec) noexcept;</pre>
+void copy(const path&amp; from, const path&amp; to, <a href="#copy_option">copy_options</a> options,
+  error_code&amp; ec) noexcept;</pre>
 <blockquote>
   <p para_num="4"><i>Precondition:</i> At most one constant from each option group (<a href="#enum.copy_options">10.2</a>) 
   is present in <code>options</code>.</p>
@@ -2888,7 +2894,8 @@ void copy(const path&amp; from, const path&amp; to, <a href="#copy_option">copy_
   
     <ul>
       <li para_num="7">If <code>(options &amp; copy_options::create_symlinks) <ins>!= 
-      copy_options::none </ins>|| (options &amp; copy_options::skip_symlinks) <ins>
+      copy_options::none<br>
+      </ins>|| (options &amp; copy_options::skip_symlinks) <ins>
       != copy_options::none</ins></code>, then <code>auto f = 
       symlink_status(from) </code>and if needed <code>auto t = symlink_status(to)</code>.</li>
       <li para_num="8">Otherwise, <code>auto f = status(from)</code> and if needed <code>auto 
@@ -2908,7 +2915,8 @@ void copy(const path&amp; from, const path&amp; to, <a href="#copy_option">copy_
     <ul>
       <li para_num="15">If <code><ins>(</ins>options &amp; copy_options::skip_symlinks<ins>) != 
       copy_options::none</ins></code>, then return.</li>
-      <li para_num="16">Otherwise if <code>!exists(t)<ins> &amp;&amp; (options &amp; 
+      <li para_num="16">Otherwise if <code>!exists(t)<ins><br>
+&nbsp; &amp;&amp; (options &amp; 
       copy_options::copy_symlinks) != copy_options::none</ins></code>, then <code>copy_symlink(from, 
       to, options)</code>.</li>
       <li para_num="17">Otherwise report an error as specified in <a href="#Error-reporting">Error reporting (7)</a>.</li>
@@ -2916,13 +2924,15 @@ void copy(const path&amp; from, const path&amp; to, <a href="#copy_option">copy_
   <p para_num="18">Otherwise if <code>is_regular_file(f)</code>, then:</p>
   
     <ul>
-      <li para_num="19">If <code><ins>(</ins>options &amp; copy_options::directories_only<ins>) != 
-      copy_options::none</ins></code>, then return. </li>
+      <li para_num="19">If <code><ins>(</ins>options &amp; copy_options::directories_only<ins>)<br>
+&nbsp;!= copy_options::none</ins></code>, then return. </li>
       <li para_num="20">Otherwise if <code><ins>(</ins>options &amp; copy_options::create_symlinks<ins> 
-      ) != copy_options::none</ins></code>, then create a symbolic link to the 
+      )<br>
+&nbsp;!= copy_options::none</ins></code>, then create a symbolic link to the 
       source file. </li>
       <li para_num="21">Otherwise if <code><ins>(</ins>options &amp; 
-      copy_options::create_hard_links<ins>) != copy_options::none</ins></code>, 
+      copy_options::create_hard_links<ins>)<br>
+&nbsp;!= copy_options::none</ins></code>, 
       then create a hard link to the source file. </li>
       <li para_num="22">Otherwise if <code>is_directory(t)</code>, then <code>copy_file(from, to/from.filename(), 
         options)</code>.</li>
@@ -2932,7 +2942,8 @@ void copy(const path&amp; from, const path&amp; to, <a href="#copy_option">copy_
 </blockquote>
 <blockquote>
   <blockquote>
-  <p para_num="24">Otherwise if <code>is_directory(f) &amp;&amp; ((options &amp; copy_options::recursive)<ins> 
+  <p para_num="24">Otherwise if <code>is_directory(f) &amp;&amp; ((options &amp; copy_options::recursive)<ins><br>
+&nbsp; 
   != copy_options::none</ins> || <del>!(</del>options <ins>== copy_options::none</ins><del>)</del>)
   </code>then:</p>
   
@@ -3006,14 +3017,15 @@ bool <a name="copy_file2">copy_file</a>(const path&amp; from, const path&amp; to
   in <code>options</code>.</p>
   <p para_num="6"><i>Effects:</i> </p>
   <blockquote>
-    <p para_num="7"><del>If&nbsp; <code>exists(to) &amp;&amp;</code> <code>!(options &amp; (copy_options::skip_existing 
-    | copy_options::overwrite_existing | copy_options::update_existing)) </code>
+    <p para_num="7"><del>If&nbsp; <code>exists(to) &amp;&amp;</code> <code>!(options &amp; (copy_options::skip_existing<br>
+&nbsp;| copy_options::overwrite_existing | copy_options::update_existing)) </code>
     report a file already exists error as specified in
     <a href="#Error-reporting">Error 
     reporting (7)</a>. </del></p>
-    <p para_num="8"><del>If <code>!exists(to) || (options &amp; copy_options::overwrite_existing) 
-    || ((options &amp; copy_options::update_existing) &amp;&amp; last_write_time(from) &gt; 
-    last_write_time(to)) || !(options &amp; (copy_options::skip_existing | 
+    <p para_num="8"><del>If <code>!exists(to) || (options &amp; copy_options::overwrite_existing)</code></del></p>
+    <p para_num="8"><del> <code>&nbsp;|| ((options &amp; copy_options::update_existing) &amp;&amp; last_write_time(from)<br>
+&nbsp;&nbsp; &gt; last_write_time(to)) || !(options &amp; (copy_options::skip_existing<br>
+&nbsp;| 
     copy_options::overwrite_existing | copy_options::update_existing)) </code>
     copy the contents and attributes of the file <code>from</code> resolves to 
     the file <code>to</code> resolves to. </del></p>
@@ -3025,9 +3037,10 @@ bool <a name="copy_file2">copy_file</a>(const path&amp; from, const path&amp; to
     <ul>
       <li para_num="10"><ins><code>exists(to)</code> and <code>equivalent(from, to)</code>, or
       </ins></li>
-      <li para_num="11"><ins><code>exists(to)</code> and <code>(options &amp; (copy_options::skip_existing 
-      | copy_options::overwrite_existing | copy_options::update_existing)) == 
-      copy_options::none. </code></ins></li>
+      <li para_num="11" dir="ltr">
+      <p dir="ltr"><ins><code>exists(to)</code> and <code>(options &amp; (copy_options::skip_existing<br>
+&nbsp;| copy_options::overwrite_existing | copy_options::update_existing))<br>
+&nbsp;&nbsp; == copy_options::none. </code></ins></li>
     </ul>
     <p para_num="12"><ins>Otherwise copy the contents and attributes of the file <code>from</code> 
     resolves to to the file <code>to</code> resolves to if: </ins></p>
@@ -3237,8 +3250,8 @@ bool <a name="exists3">exists</a>(const path&amp; p, error_code&amp; ec) noexcep
 
 <h3>15.13  Equivalent&nbsp; [<a name="fs.op.equivalent">fs.op.equivalent</a>]</h3>
 
-<pre para_num="1"><code>bool <a name="equivalent">equivalent</a>(const path&amp; p1, const path&amp; p2);
-bool <a name="equivalent2">equivalent</a>(const path&amp; p1, const path&amp; p2, error_code&amp; ec)</code> noexcept<code>;</code></pre>
+<pre para_num="1">bool <a name="equivalent">equivalent</a>(const path&amp; p1, const path&amp; p2);
+bool <a name="equivalent2">equivalent</a>(const path&amp; p1, const path&amp; p2, error_code&amp; ec) noexcept;</pre>
 <blockquote>
   <p para_num="2"><i>Effects:</i> Determines <code>file_status s1</code> and <code>s2</code>, as if by <code>status(p1)</code> and&nbsp; <code>status(p2)</code>, 
   respectively.</p>
@@ -3291,8 +3304,8 @@ uintmax_t hard_link_count(const path&amp; p, error_code&amp; ec) noexcept;</pre>
   <p para_num="2"><i>Returns:</i> <code>s.type() == file_type::block</code></p>
 </blockquote>
 
-<pre para_num="3"><code>bool is_block_file(const path&amp; p);
-bool is_block_file</a>(const path&amp; p, error_code&amp; ec) noexcept;</code></pre>
+<pre para_num="3">bool is_block_file(const path&amp; p);
+bool is_block_file</a>(const path&amp; p, error_code&amp; ec) noexcept;</pre>
 <blockquote>
   <p para_num="4"><i>Returns:</i> <code>is_block_file(status(p))</code> or <code>
   is_block_file(status(p, ec))</code>, respectively. The signature with argument <code>
@@ -3307,8 +3320,8 @@ bool is_block_file</a>(const path&amp; p, error_code&amp; ec) noexcept;</code></
 <blockquote>
   <p para_num="2"><i>Returns:</i> <code>s.type() == file_type::character</code></p>
 </blockquote>
-<pre para_num="3"><code>bool is_character_file</a>(const path&amp; p);
-bool is_character_file</a>(const path&amp; p, error_code&amp; ec) noexcept;</code></pre>
+<pre para_num="3">bool is_character_file</a>(const path&amp; p);
+bool is_character_file</a>(const path&amp; p, error_code&amp; ec) noexcept;</pre>
 <blockquote>
   <p para_num="4"><i>Returns:</i> <code>is_character_file(status(p))</code> 
   or <code>is_character_file(status(p, ec))</code>, 
@@ -3319,12 +3332,12 @@ bool is_character_file</a>(const path&amp; p, error_code&amp; ec) noexcept;</cod
 
 <h3>15.18  Is directory&nbsp; [<a name="fs.op.is_directory">fs.op.is_directory</a>]</h3>
 
-<pre para_num="1">bool <code><a name="is_directory">is_directory</a></code>(file_status s) noexcept;</pre>
+<pre para_num="1">bool <a name="is_directory">is_directory</a>(file_status s) noexcept;</pre>
 <blockquote>
   <p para_num="2"><i>Returns:</i> <code>s.type() == file_type::directory</code></p>
 </blockquote>
-<pre para_num="3"><code>bool <a name="is_directory2">is_directory</a>(const path&amp; p);
-bool <a name="is_directory3">is_directory</a>(const path&amp; p, error_code&amp; ec) noexcept;</code></pre>
+<pre para_num="3">bool <a name="is_directory2">is_directory</a>(const path&amp; p);
+bool <a name="is_directory3">is_directory</a>(const path&amp; p, error_code&amp; ec) noexcept;</pre>
 <blockquote>
   <p para_num="4"><i>Returns:</i> <code>is_directory(status(p))</code> or <code>
   is_directory(status(p, ec))</code>, respectively. The signature with argument <code>
@@ -3334,8 +3347,8 @@ bool <a name="is_directory3">is_directory</a>(const path&amp; p, error_code&amp;
 
 <h3>15.19  Is empty&nbsp; [<a name="fs.op.is_empty">fs.op.is_empty</a>]</h3>
 
-<pre para_num="1"><code>bool <a name="is_empty">is_empty</a>(const path&amp; p);
-bool <a name="is_empty2">is_empty</a></a>(const path&amp; p, error_code&amp; ec)</code> noexcept<code>;</code></pre>
+<pre para_num="1">bool <a name="is_empty">is_empty</a>(const path&amp; p);
+bool <a name="is_empty2">is_empty</a></a>(const path&amp; p, error_code&amp; ec) noexcept;</pre>
 <blockquote>
   <p para_num="2"><i>Effects:</i> Determines <code>file_status s</code>, as if by <code>status(p, ec)</code>.</p>
   <p para_num="3"><i>Returns:</i> <code>is_directory(s)<br>
@@ -3356,8 +3369,8 @@ bool <a name="is_empty2">is_empty</a></a>(const path&amp; p, error_code&amp; ec)
   <p para_num="2"><i>Returns:</i> <code>s.type() == file_type::fifo</code></p>
 </blockquote>
 
-<pre para_num="3"><code>bool is_fifo(const path&amp; p);
-bool is_fifo(const path&amp; p, error_code&amp; ec) noexcept;</code></pre>
+<pre para_num="3">bool is_fifo(const path&amp; p);
+bool is_fifo(const path&amp; p, error_code&amp; ec) noexcept;</pre>
 <blockquote>
   <p para_num="4"><i>Returns:</i> <code>is_fifo(status(p))</code> or <code>is_fifo(status(p, 
   ec))</code>, respectively. The signature with argument <code>ec</code> returns <code>
@@ -3371,8 +3384,8 @@ bool is_fifo(const path&amp; p, error_code&amp; ec) noexcept;</code></pre>
 <blockquote>
   <p para_num="2"><i>Returns:</i> <code>return exists(s) &amp;&amp; !is_regular_file(s) &amp;&amp; !is_directory(s) &amp;&amp; !is_symlink(s)</code></p>
 </blockquote>
-<pre para_num="3"><code>bool <a name="is_other2">is_other</a>(const path&amp; p);
-bool <a name="is_other3">is_other</a>(const path&amp; p, error_code&amp; ec) noexcept;</code></pre>
+<pre para_num="3">bool <a name="is_other2">is_other</a>(const path&amp; p);
+bool <a name="is_other3">is_other</a>(const path&amp; p, error_code&amp; ec) noexcept;</pre>
 <blockquote>
   <p para_num="4"><i>Returns:</i> <code>is_other(status(p))</code> or <code>is_other(status(p, ec))</code>, 
   respectively. The signature with argument <code>ec</code> returns <code>false</code> 
@@ -3386,12 +3399,12 @@ bool <a name="is_other3">is_other</a>(const path&amp; p, error_code&amp; ec) noe
 <blockquote>
   <p para_num="2"><i>Returns:</i> <code>s.type() == file_type::regular</code>.</p>
 </blockquote>
-<pre para_num="3"><code>bool <a name="is_regular_file2">is_regular_file</a>(const path&amp; p);</code></pre>
+<pre para_num="3">bool <a name="is_regular_file2">is_regular_file</a>(const path&amp; p);</pre>
 <blockquote>
   <p para_num="4"><i>Returns:</i> <code>is_regular_file(status(p))</code>.</p>
   <p para_num="5"><i>Throws:</i> <code>filesystem_error</code> if <code>status(p)</code> would throw <code>filesystem_error.</code></p>
   </blockquote>
-<pre para_num="6"><code>bool <a name="is_regular_file3">is_regular_file</a>(const path&amp; p, error_code&amp; ec) noexcept;</code></pre>
+<pre para_num="6">bool <a name="is_regular_file3">is_regular_file</a>(const path&amp; p, error_code&amp; ec) noexcept;</pre>
 <blockquote>
   <p para_num="7"><i>Effects:</i> Sets <code>ec</code> as if by <code>status(p, ec)</code>. [<i>Note:</i> <code>
   file_type::none</code>, <code>file_type::not_found</code> and <code>
@@ -3407,8 +3420,8 @@ bool <a name="is_other3">is_other</a>(const path&amp; p, error_code&amp; ec) noe
 <blockquote>
   <p para_num="2"><i>Returns:</i> <code>s.type() == file_type::socket</code></p>
 </blockquote>
-<pre para_num="3"><code>bool is_socket(const path&amp; p);
-bool is_socket(const path&amp; p, error_code&amp; ec) noexcept;</code></pre>
+<pre para_num="3">bool is_socket(const path&amp; p);
+bool is_socket(const path&amp; p, error_code&amp; ec) noexcept;</pre>
 <blockquote>
   <p para_num="4"><i>Returns:</i> <code>is_socket(status(p))</code> or <code>
   is_socket(status(p, ec))</code>, respectively. The signature with argument <code>
@@ -3422,8 +3435,8 @@ bool is_socket(const path&amp; p, error_code&amp; ec) noexcept;</code></pre>
 <blockquote>
   <p para_num="2"><i>Returns:</i> <code>s.type() == file_type::symlink</code></p>
 </blockquote>
-<pre para_num="3"><code>bool <a name="is_symlink2">is_symlink</a>(const path&amp; p);
-bool <a name="is_symlink3">is_symlink</a>(const path&amp; p, error_code&amp; ec) noexcept;</code></pre>
+<pre para_num="3">bool <a name="is_symlink2">is_symlink</a>(const path&amp; p);
+bool <a name="is_symlink3">is_symlink</a>(const path&amp; p, error_code&amp; ec) noexcept;</pre>
 <blockquote>
   <p para_num="4"><i>Returns:</i> <code>is_symlink(symlink_status(p))</code> or <code>is_symlink(symlink_status(p, ec))</code>, 
   respectively. The signature with argument <code>ec</code> returns <code>false</code> 
@@ -3434,7 +3447,7 @@ bool <a name="is_symlink3">is_symlink</a>(const path&amp; p, error_code&amp; ec)
 <h3>15.25  Last write time&nbsp; [<a name="fs.op.last_write_time">fs.op.last_write_time</a>]</h3>
 
 <pre para_num="1">file_time_type <a name="last_write_time">last_write_time</a>(const path&amp; p);
-file_time_type <a name="last_write_time2">last_write_time</a>(const path&amp; p<code>, error_code&amp; ec</code>) noexcept;</pre>
+file_time_type <a name="last_write_time2">last_write_time</a>(const path&amp; p, error_code&amp; ec) noexcept;</pre>
 <blockquote>
   <p para_num="2"><i>Returns:</i> The time of last data modification of <code>p</code>, 
   determined as if by the value of the POSIX <code><a href="http://www.opengroup.org/onlinepubs/000095399/basedefs/sys/stat.h.html">stat</a></code> structure member <code>st_mtime</code>&nbsp; 
@@ -3444,8 +3457,8 @@ file_time_type <a name="last_write_time2">last_write_time</a>(const path&amp; p<
   <p para_num="3"><i>Throws:</i> As specified in <a href="#Error-reporting">Error reporting (7)</a>.</p>
 </blockquote>
 <pre para_num="4">void <a name="last_write_time3">last_write_time</a>(const path&amp; p, file_time_type new_time);
-void <a name="last_write_time4">last_write_time</a>(const path&amp; p, file_time_type new_time<code>,
-                     error_code&amp; ec</code>) noexcept;</pre>
+void <a name="last_write_time4">last_write_time</a>(const path&amp; p, file_time_type new_time,
+                     error_code&amp; ec) noexcept;</pre>
 <blockquote>
   <p para_num="5"><i>Effects:</i> Sets the time of last data modification of the file 
   resolved to by <code>p</code> to <code>new_time</code>, as if by POSIX <del>
@@ -3463,7 +3476,8 @@ void permissions(const path&amp; p, <a href="#symlink_perms">perms</a> prms, err
 <blockquote>
   <p para_num="2">
   <i>Requires:</i> <code>!((prms &amp; <ins>perms::</ins>add_perms) <ins>!= 
-  perms::none</ins> &amp;&amp; (prms &amp; <ins>perms::</ins>remove_perms) <ins>!= 
+  perms::none<br>
+  </ins>&nbsp;&amp;&amp; (prms &amp; <ins>perms::</ins>remove_perms) <ins>!= 
   perms::none</ins>)</code>.</p>
   <p para_num="3"><i>Effects:</i> Applies the effective permissions bits from <code>prms</code> to the file <code>p</code> 
   resolves to, as if by POSIX <code><a href="http://pubs.opengroup.org/onlinepubs/9699919799/functions/fchmodat.html">fchmodat()</a></code>. The effective permission bits are determined as 
