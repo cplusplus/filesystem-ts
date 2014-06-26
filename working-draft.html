@@ -558,22 +558,19 @@ version of the Technical Specification was completed. <i>— end note</i>]</ins>
     recursive_directory_iterator <a href="#rec.dir.itr.nonmembers">begin</a>(recursive_directory_iterator iter) noexcept;
     recursive_directory_iterator <a href="#rec.dir.itr.nonmembers">end</a>(const recursive_directory_iterator&amp;) noexcept;
 
-    enum class file_type;  // [<a href="#Enum-file_type">enum.file_type</a>]
-
-    enum class perms;  // [<a href="#enum.perms">enum.perms</a>]
-
     class <a href="#file_status">file_status</a>;
 
-    struct <a name="space_info">space_info</a>  // returned by <a href="#space" style="text-decoration: none">space</a> function
+    struct <a name="space_info">space_info</a>
     {
       uintmax_t capacity;
       uintmax_t free; 
       uintmax_t available;
     };
 
-    enum class <a name="copy_option" href="#enum.copy_options">copy_options</a>;  // [<a href="#enum.copy_options">enum.copy_options</a>]
-
-    enum class <a name="symlink_option">directory_options</a><ins>;</ins>
+    enum class <a href="#enum.file_type">file_type</a>;
+    enum class <a href="#enum.perms">perms</a>;
+    enum class <a name="copy_option" href="#enum.copy_options">copy_options</a>;
+    enum class <a name="symlink_option" href="#enum.directory_options">directory_options</a><ins>;</ins>
     <del>{</del>
       <del>none,</del>
       <del>follow_directory_symlink,</del>
@@ -592,8 +589,8 @@ version of the Technical Specification was completed. <i>— end note</i>]</ins>
 
     void         <a href="#copy">copy</a>(const path&amp; from, const path&amp; to);
     void         <a href="#copy">copy</a>(const path&amp; from, const path&amp; to, error_code&amp; ec) noexcept;
-    void         copy(const path&amp; from, const path&amp; to, copy_options options);
-    void         copy(const path&amp; from, const path&amp; to, copy_options options,  
+    void         <a href="#copy">copy</a>(const path&amp; from, const path&amp; to, <a href="#copy_option">copy_options</a> options);
+    void         <a href="#copy">copy</a>(const path&amp; from, const path&amp; to, <a href="#copy_option">copy_options</a> options,  
                    error_code&amp; ec) noexcept;
 
     bool         <a href="#copy_file">copy_file</a>(const path&amp; from, const path&amp; to);
@@ -861,7 +858,7 @@ system or for a particular file system.</p>
           <a href="#string-template">string</a>(const Allocator&amp; a = Allocator()) const;
         string    <a href="#string">string</a>() const;
         wstring   <a href="#wstring">wstring</a>() const;
-        string    u8string() const;
+        string    <a href="#u8string">u8string</a>() const;
         u16string <a href="#u16string">u16string</a>() const;
         u32string <a href="#u32string">u32string</a>() const;
 
@@ -872,7 +869,7 @@ system or for a particular file system.</p>
           <a href="#generic_string-template">generic_string</a>(const Allocator&amp; a = Allocator()) const;
         string    <a href="#generic_string">generic_string</a>() const;
         wstring   <a href="#generic_wstring">generic_wstring</a>() const;
-        string    generic_u8string() const;
+        string    <a href="#generic_u8string">generic_u8string</a>() const;
         u16string <a href="#generic_u16string">generic_u16string</a>() const;
         u32string <a href="#generic_u32string">generic_u32string</a>() const;
 
@@ -1025,7 +1022,7 @@ conversions</a> [<a name="path.fmt.cvt">path.fmt.cvt</a>]</h4>
 
 <p para_num="6" dir="ltr">Functions arguments that take character sequences representing 
 paths may use the generic pathname format grammar (<a href="#path.generic">8.1</a>) or 
-the <a href="#fs.def.native">native pathname format</a>. If and only if such 
+the native pathname format (<a href="#fs.def.native">4.11</a>). If and only if such 
 arguments are in the generic format and the generic format is not acceptable to 
 the operating system as a native path, conversion to native format shall be 
 performed during the processing of the argument. </p>
@@ -1181,7 +1178,7 @@ fs::create_directory(fs::path(latin1_string, latin1_locale));</pre>
     </blockquote>
 <p para_num="17"> <i>&mdash;end example]</i> </p>
 </blockquote>
-<h4>8.4.2  <a name="path-assignments"><code>path</code> assignments</a> [path.assign]</h4>
+<h4>8.4.2  <a name="path-assignments"><code>path</code> assignments</a> [<a name="path.assign">path.assign</a>]</h4>
 <pre para_num="1">path&amp; operator=(const path&amp; p);</pre>
 <blockquote>
   <p para_num="2"><i>Effects: </i>If <code>*this</code> and <code>p</code> are the same 
@@ -1218,7 +1215,7 @@ template &lt;class InputIterator&gt;
   <p para_num="1">The append operations use <code>
   operator/=</code> to denote their semantic effect of appending <i>
   preferred-separator</i> when needed. </p>
-<pre para_num="2">path&amp; operator/=(const path&amp; p);</pre>
+<pre para_num="2">path&amp; <a name="operator-slash-eq">operator/=</a>(const path&amp; p);</pre>
 <blockquote>
   <p para_num="3"><i>Effects:</i></p>
   <blockquote>
@@ -1234,7 +1231,7 @@ template &lt;class InputIterator&gt;
   </blockquote>
   <p para_num="9"><i>Returns: </i><code>*this</code></p>
 </blockquote>
-<pre para_num="10">template &lt;class <a href="#Source">Source</a>&gt;
+<pre para_num="10"><a name="append-source">template</a> &lt;class <a href="#Source">Source</a>&gt;
   path&amp; operator/=(Source const&amp; source);
 template &lt;class <a href="#Source">Source</a>&gt;
   path&amp; append(Source const&amp; source);
@@ -1259,7 +1256,7 @@ template &lt;class InputIterator&gt;
   <p para_num="18"><i>Returns: </i><code>*this</code></p>
   </blockquote>
   
-<h4>8.4.4  <a name="path-concatenation"><code>path</code> concatenation</a> [path.concat]</h4>
+<h4>8.4.4  <a name="path-concatenation"><code>path</code> concatenation</a> [<a name="path.concat">path.concat</a>]</h4>
 <pre para_num="1">path&amp; operator+=(const path&amp; x);
 path&amp; operator+=(const string_type&amp; x);
 path&amp; operator+=(const value_type* x);
@@ -1432,7 +1429,7 @@ be performed by <code>a</code>. Conversion, if any, is specified by
 </blockquote>
 <pre para_num="6">string <a name="generic_string">generic_string</a>() const;
 wstring <a name="generic_wstring">generic_wstring</a>() const;
-string generic_u8string() const;
+string <a name="generic_u8string">generic_u8string</a>() const;
 u16string <a name="generic_u16string">generic_u16string</a>() const;
 u32string <a name="generic_u32string">generic_u32string</a>() const; </pre>
 <blockquote>
@@ -1735,7 +1732,7 @@ fs::create_directory(fs::u8path(utf8_string));</pre>
   </blockquote>
   <p para_num="14"><i>&mdash;end example]</i></p>
 </blockquote>
-<h2>9  <a name="Class-filesystem_error">Class <code>filesystem_error</code> 
+<h2>9 <a name="Class-filesystem_error">Class <code>filesystem_error</code> 
 [class.filesystem_error]</a></h2>
 <pre para_num="1">namespace std { namespace experimental { namespace filesystem { inline namespace v1 {
 
