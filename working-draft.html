@@ -38,7 +38,7 @@
     <tr>
       <td>Date:</td>
       <td>
-      <!--webbot bot="Timestamp" S-Type="EDITED" S-Format="%Y-%m-%d" startspan -->2014-06-25<!--webbot bot="Timestamp" endspan i-checksum="12386" --></td>
+      <!--webbot bot="Timestamp" S-Type="EDITED" S-Format="%Y-%m-%d" startspan -->2014-06-26<!--webbot bot="Timestamp" endspan i-checksum="12388" --></td>
     </tr>
     <tr>
       <td>Revises:</td>
@@ -74,17 +74,10 @@ Technical Specification &mdash; File System</h1>
 <p>© ISO/IEC</p>
 
 
-<p><i><span style="background-color: #E0E0E0">Gray-shaded italic text is 
-editorial commentary on the draft. It will be removed from the actual Technical 
-Specification document.</span></i></p>
-
-
 <h2> <a name="TOC">Contents</a></h2>
 
 <blockquote>
       <p>      <a href="#TOC"> Contents</a><br>
-      <a href="#Foreword">Foreword</a><br>
-      <a href="#Introduction">Introduction</a><br>
       <a href="#Scope">1  Scope&nbsp; </a><br>
       <a href="#Conformance">2  Conformance </a><br>
       &nbsp;&nbsp;&nbsp;<a href="#fs.conform.9945">2.1  POSIX conformance </a><br>
@@ -221,19 +214,6 @@ conversions </a><br>
 </blockquote>
       
 <hr>
-<h2><a name="Foreword">Foreword</a></h2>
-
-<p><span style="background-color: #E0E0E0"><i>ISO requires a foreword, with most 
-content supplied by the Central Secretariat of ISO. It will be added by the 
-editor before the final document is sent to ISO.</i></span></p>
-
-<h2><a name="Introduction">Introduction</a></h2>
-
-<p><span style="background-color: #E0E0E0"><i>ISO specifies &quot;The introduction is 
-an optional preliminary element used, if required, to give specific information 
-or commentary about the technical content of the document, and about the reasons 
-prompting its preparation. It shall not contain requirements.&quot;</i></span></p>
-
 <!-- generate-section-numbers=true -->
 <!-- generate-paragraph-numbers=true -->
 
@@ -313,8 +293,7 @@ is unreasonable for a program to detect them prior to calling the function. <i>
 <p para_num="1">The following referenced documents are indispensable for the application of 
 this document. For dated references, only the edition cited applies. For undated 
 references, the latest edition of the referenced document (including any 
-amendments) applies. <span style="background-color: #E0E0E0"><i>ISO required 
-wording.</i></span></p>
+amendments) applies. </p>
 
 <ul>
   <li para_num="2">ISO/IEC 14882, <i>Programming Language C++<br>
@@ -335,10 +314,10 @@ Technical Specification  mentions commercially
 available operating systems for purposes of exposition.<sup> <a href="#footnote">
 [footnote]</a></sup><p para_num="7">Unless otherwise specified, the whole of the C++ 
 Standard&#39;s Library introduction (C++14 §17) is included into this Technical 
-Specification by reference.<p para_num="8"><i><span style="background-color: #E0E0E0">This footnote 
-is required by ISO/IEC Directives, Part2, section 6.6.3 Use of trade names and 
-trademarks:</span></i><blockquote>
-  <p para_num="9"><sup>[<a name="footnote">footnote</a>]</sup> POSIX® is 
+Specification by reference.</p>
+
+<blockquote>
+  <p para_num="8"><sup>[<a name="footnote">footnote</a>]</sup> POSIX® is 
 a registered trademark of The IEEE. MAC OS® is a registered trademark of Apple 
 Inc. Windows® is a registered trademark of Microsoft Corporation. This information is given for the convenience of 
 users of this document and does not constitute an endorsement by ISO or IEC of 
@@ -423,9 +402,7 @@ wide-character set encoding (C++14 §2.3).</p>
 <p para_num="1">Acronym for &quot;null-terminated character-type sequence&quot;. Describes a sequence 
 of values of a given encoded character type terminated by that type's null character. If 
 the encoded character type is <code>EcharT</code>, the null character can be constructed 
-by <code>EcharT()</code>. <span style="background-color: #E0E0E0"><i>This is an 
-expansion of the definition in chapter 17; that definition is very hard to 
-parse. A request for clarification has been sent to the C++ standard project editor.</i></span></p>
+by <code>EcharT()</code>. </p>
 <h3>4.13  <a name="operating system dependent">operating system dependent</a> behavior 
 [<a name="fs.def.osdep">fs.def.osdep</a>]</h3>
 <p para_num="1">Behavior  that is dependent upon the behavior 
@@ -1079,26 +1056,29 @@ by its value type:</p>
     <li para_num="2"><code>char</code>: Encoding is the native narrow encoding (<a href="#fs.def.native.encode">4.10</a>). Conversion, if any, is operating system dependent.<p para_num="3">[<i>Note:</i> 
 For POSIX based operating systems <code>path::value_type</code> is <code>char</code> 
 so no conversion from <code>char</code> value type arguments or to <code>char</code> 
-value type returns is performed.<p para_num="4">For Windows based operating systems, the 
-native narrow  encoding is determined by calling a  Windows API function. <i>&mdash;end note</i>]<p para_num="5"><i><span style="background-color: #E0E0E0">On Windows, the encoding is determined by testing <code>AreFileApisANSI()</code>; if true, the <code>CP_ACP</code> 
-        codepage applies, otherwise the <code>CP_OEMCP</code> codepage applies. </span></i><p para_num="6">[<i>Note:</i> 
+value type returns is performed.
+
+<p para_num="4">For Windows based operating systems, the 
+native narrow encoding is determined by calling a Windows API function. <i>&mdash;end note</i>]
+
+<p para_num="5">[<i>Note:</i> 
 This results in behavior identical to other C and C++ 
 standard library functions that perform file operations using narrow character 
 strings to identify paths. Changing this  behavior would be surprising and error 
 prone. <i>&mdash;end note</i>]</li>
-    <li para_num="7"><code>wchar_t</code>: Encoding is the native wide encoding (<a href="#fs.def.native.encode">4.10</a>). Conversion method is unspecified.
-    <p para_num="8">[<i>Note:</i> 
+    <li para_num="6"><code>wchar_t</code>: Encoding is the native wide encoding (<a href="#fs.def.native.encode">4.10</a>). Conversion method is unspecified.
+    <p para_num="7">[<i>Note:</i> 
 For Windows based operating systems <code>path::value_type</code> is <code>wchar_t</code> 
 so no conversion from <code>wchar_t</code> value type arguments or to <code>wchar_t</code> 
     value type returns is performed. <i>&mdash;end note</i>]</li>
-    <li para_num="9"><code>char16_t</code>: Encoding is UTF-16. Conversion method 
+    <li para_num="8"><code>char16_t</code>: Encoding is UTF-16. Conversion method 
 is unspecified.</li><br>
-    <li para_num="10"><code>char32_t</code>: Encoding is UTF-32. Conversion method 
+    <li para_num="9"><code>char32_t</code>: Encoding is UTF-32. Conversion method 
 is unspecified.
     </li>
   </ul>
 </blockquote>
-<p para_num="11">If the encoding being converted to has no representation for source 
+<p para_num="10">If the encoding being converted to has no representation for source 
 characters, the resulting converted characters, if any, are unspecified.</p>
 
 <h3>8.3  <a name="path-Requirements"><code>path</code> requirements</a> [<a name="path.req">path.req</a>]</h3>
@@ -1380,8 +1360,6 @@ std::cout &lt;&lt; path(&quot;/&quot;).<code>replace_</code>filename(<code>&quot
 <blockquote>
   <p para_num="32"><i>Effects:</i> Swaps the contents of the two paths.</p>
   <p para_num="33"><i>Complexity: </i>constant time.</p>
-  <p para_num="34"><span style="background-color: #E0E0E0"><i>See 
-    [c++std-filesystem-44] from Daniel Krügler for <code>noexcept</code> rationale.</span></i></p>
 </blockquote>
 
 <h4>8.4.6  <a name="path-native-format-observers"><code>path</code> native format observers</a> 
@@ -1403,33 +1381,28 @@ std::cout &lt;&lt; path(&quot;/&quot;).<code>replace_</code>filename(<code>&quot
   standard library file stream constructors and open functions. This provides 
   basic interoperability without the need to modify existing standard library 
   classes or headers. <i>&mdash;end note</i>]</p>
-  <p para_num="9"><i><span style="background-color: #E0E0E0">Implementations of the standard 
-  library for systems where string_type is wstring, such as Windows, are 
-  encouraged to provide an extension to existing standard library file stream 
-  constructors and open functions that adds overloads that accept wstrings for 
-  file names. Microsoft and Dinkumware already provide such an extension. </span>
-  </i></p>
 </blockquote>
-<p para_num="10">
-<pre para_num="11">template &lt;class EcharT, class traits = char_traits&lt;EcharT&gt;,
+<pre para_num="9">template &lt;class EcharT, class traits = char_traits&lt;EcharT&gt;,
           class Allocator = allocator&lt;EcharT&gt; &gt;
 basic_string&lt;EcharT, traits, Allocator&gt;
   <a name="string-template">string</a>(const Allocator& a = Allocator()) const;</pre>
 
 
 <blockquote>
-  <p para_num="12"><i>Returns:</i> <code>pathname</code>.</p>
-<p para_num="13"><i>Remarks:</i> All memory allocation, including for the return value, shall 
-be performed by <code>a</code>. Conversion, if any, is  specified by [<a href="#path-Conversions">path.cvt</a>]).</p>
+  <p para_num="10"><i>Returns:</i> <code>pathname</code>.</p>
+<p para_num="11"><i>Remarks:</i> All memory allocation, including for the return value, shall 
+be performed by <code>a</code>. Conversion, if any, is specified by
+<a href="#path.cvt">8.2</a>.</p>
 </blockquote>
-<pre para_num="14">string <a name="string">string</a>() const;
+<pre para_num="12">string <a name="string">string</a>() const;
 wstring <a name="wstring">wstring</a>() const;
 string <a name="u8string">u8string</a>() const;
 u16string <a name="u16string">u16string</a>() const;
 u32string <a name="u32string">u32string</a>() const; </pre>
 <blockquote>
-<p para_num="15"><i>Returns:</i> <code>pathname</code>.</p>
-<p para_num="16"><i>Remarks:</i> Conversion, if any, is performed as specified by [<a href="#path-Conversions">path.cvt</a>]. 
+<p para_num="13"><i>Returns:</i> <code>pathname</code>.</p>
+<p para_num="14"><i>Remarks:</i> Conversion, if any, is performed as specified 
+by <a href="#path.cvt">8.2</a>. 
 The encoding of the string returned by <code>u8string()</code> is always UTF-8.</p>
 </blockquote>
 
@@ -1454,7 +1427,8 @@ basic_string&lt;EcharT, traits, Allocator&gt;
   <p para_num="4"><i>Returns:</i> <code>pathname</code>, reformatted according to the generic 
   pathname format (<a href="#path.generic">8.1</a>). </p>
 <p para_num="5"><i>Remarks:</i> All memory allocation, including for the return value, shall 
-be performed by <code>a</code>. Conversion, if any, is  specified by [<a href="#path-Conversions">path.cvt</a>].</p>
+be performed by <code>a</code>. Conversion, if any, is specified by
+<a href="#path.cvt">8.2</a>.</p>
 </blockquote>
 <pre para_num="6">string <a name="generic_string">generic_string</a>() const;
 wstring <a name="generic_wstring">generic_wstring</a>() const;
@@ -2080,8 +2054,7 @@ group results in undefined behavior.</p>
 <h3>10.3  Enum class <code>perms</code> [<a name="enum.perms">enum.perms</a>]</h3>
 <p para_num="1">The <tt>enum class</tt> type <tt>perms</tt> 
 is a bitmask type (C++14 §17.5.2.1.3) that specifies bitmask constants used to identify file 
-permissions. <i><span style="background-color: #E0E0E0">POSIX&nbsp; specifies actual values, and those values have been adopted here because 
-they are very familiar and ingrained for many  users.</span></i></p>
+permissions. </p>
 <table border="1" cellpadding="5" cellspacing="0" style="border-collapse: collapse" bordercolor="#111111">
   <tr>
     <td><b>Name</b></td>
@@ -2168,12 +2141,6 @@ they are very familiar and ingrained for many  users.</span></i></p>
 </tr>
 
 </table>
-<p para_num="3"><i><span style="background-color: #E0E0E0">Windows: All permissions except 
-write are currently ignored. There is only a single write permission; setting 
-write permission for owner, group, or others sets write permission for all, and 
-removing write permission for owner, group, or others removes write permission 
-for all. The Cygwin users guide has extensive discussion of the problems 
-involved. Input from security experts is needed.</span></i></p>
 
   <h3><ins>10.4 Enum class <code>directory_options</code> [<a name="enum.directory_options">enum.directory_options</a>]
   </ins></h3>
@@ -2533,24 +2500,20 @@ undefined behavior. For any other iterator value a <code>const directory_entry*<
 returned.</p>
 <p para_num="6">Two end iterators are always equal. An end iterator shall not be equal to a non-end 
 iterator.</p>
-<blockquote>
-<p para_num="7"><i><span style="background-color: #E0E0E0">The above wording is based on the 
-Standard Library's istream_iterator wording.</span></i></p>
-</blockquote>
-<p para_num="8">The result of calling the <code>path()</code> member of the <code>directory_entry</code> object obtained by dereferencing a <code>directory_iterator</code> is a reference to a <code>path</code> object composed of the directory argument from which the iterator was 
+<p para_num="7">The result of calling the <code>path()</code> member of the <code>directory_entry</code> object obtained by dereferencing a <code>directory_iterator</code> is a reference to a <code>path</code> object composed of the directory argument from which the iterator was 
 constructed with filename of the directory entry appended as if by <code>operator/=</code>. </p>
-<p para_num="9">Directory iteration shall not yield directory entries for the current (<i>dot</i>) 
+<p para_num="8">Directory iteration shall not yield directory entries for the current (<i>dot</i>) 
 and parent (<i>dot-dot</i>) directories.</p>
-<p para_num="10">The order of directory entries obtained by dereferencing successive 
+<p para_num="9">The order of directory entries obtained by dereferencing successive 
 increments of a <code>directory_iterator</code> is unspecified.</p>
 <blockquote>
-<p para_num="11">[<i>Note:</i> Programs performing directory iteration may wish to test if the 
+<p para_num="10">[<i>Note:</i> Programs performing directory iteration may wish to test if the 
 path obtained by dereferencing a directory iterator actually exists. It could be 
 a
 symbolic link to a non-existent file. Programs recursively 
 walking directory trees for purposes of removing and renaming entries may wish 
 to avoid following symbolic links.</p>
-<p para_num="12">If a file  is removed from or added to a directory after the 
+<p para_num="11">If a file  is removed from or added to a directory after the 
 construction of a <code>directory_iterator</code> for the directory, it is 
 unspecified whether or not subsequently incrementing the iterator will ever 
 result in an iterator referencing the removed or added directory entry. See 
@@ -3293,11 +3256,8 @@ bool <a name="equivalent2">equivalent</a>(const path&amp; p1, const path&amp; p2
   candidate entities reside on the same device at the same location. This is 
   determined as if by the values of the POSIX <code><a href="http://www.opengroup.org/onlinepubs/000095399/basedefs/sys/stat.h.html">stat</a></code> structure<code>,</code> obtained as if by <code><a href="http://www.opengroup.org/onlinepubs/000095399/functions/stat.html">stat()</a></code> for the two paths, having equal <code>st_dev</code> values 
   and equal <code>st_ino</code> values.</p>
-  <p para_num="5"><i><span style="background-color: #E0E0E0">[Note: POSIX requires that &quot;st_dev 
-  must be unique within a Local Area Network&quot;. Conservative POSIX implementations may also wish to check for equal <code>st_size</code> and <code>st_mtime</code> values. Windows implementations may use <code>GetFileInformationByHandle()</code> as a surrogate for <code>stat()</code>, 
-  and consider &quot;same&quot; to be equal values for <code>dwVolumeSerialNumber</code>, <code>nFileIndexHigh</code>, <code>nFileIndexLow</code>, <code>nFileSizeHigh</code>, <code>nFileSizeLow</code>, <code>ftLastWriteTime.dwLowDateTime</code>, and <code>ftLastWriteTime.dwHighDateTime</code>. &mdash;end note]</span></i></p>
   </blockquote>
-  <p para_num="6"><i>Throws:</i> <code>filesystem_error</code> if <code>(!exists(s1) &amp;&amp; !exists(s2)) || (is_other(s1) &amp;&amp; is_other(s2))</code>, 
+  <p para_num="5"><i>Throws:</i> <code>filesystem_error</code> if <code>(!exists(s1) &amp;&amp; !exists(s2)) || (is_other(s1) &amp;&amp; is_other(s2))</code>, 
   otherwise as specified in <a href="#Error-reporting">Error reporting (7)</a>.</p>
 </blockquote>
 
@@ -3676,24 +3636,10 @@ thrown.<i> &mdash;end note</i>] </p>
     <ul>
       <li para_num="12">If the specific error indicates that <code>p</code> cannot be resolved 
       because some element of the path does not exist, return <code>
-      file_status(file_type::not_found)</code>.<span style="font-style: italic; background-color: #E0E0E0"> </span><i><span style="background-color: #E0E0E0">
-      POSIX errors that 
-      indicate this are </span><span style="background-color: #E0E0E0">ENOENT</span><span style="background-color: #E0E0E0"> or 
-      </span><span style="background-color: #E0E0E0">ENOTDIR</span><span style="background-color: #E0E0E0">. Windows equivalents 
-      include </span><span style="background-color: #E0E0E0">
-      ERROR_FILE_NOT_FOUND</span><span style="background-color: #E0E0E0">, 
-      </span><span style="background-color: #E0E0E0">ERROR_PATH_NOT_FOUND</span><span style="background-color: #E0E0E0">, 
-      </span><span style="background-color: #E0E0E0">ERROR_INVALID_NAME</span><span style="background-color: #E0E0E0">, 
-      </span><span style="background-color: #E0E0E0">ERROR_INVALID_PARAMETER</span><span style="background-color: #E0E0E0">, 
-      </span><span style="background-color: #E0E0E0">ERROR_BAD_PATHNAME</span><span style="background-color: #E0E0E0">, and 
-      </span><span style="background-color: #E0E0E0">ERROR_BAD_NETPATH</span><span style="background-color: #E0E0E0">.</span></i><br>
-&nbsp;</li>
+      file_status(file_type::not_found)</code>.</li>
       <li para_num="13">Otherwise, if the specific error indicates that <code>p</code> can be resolved 
       but the attributes cannot be determined, return <code>
-      file_status(file_type::unknown)</code>. <i><span style="background-color: #E0E0E0">For example, Windows 
-      </span><span style="background-color: #E0E0E0">ERROR_SHARING_VIOLATION</span><span style="background-color: #E0E0E0"> 
-      errors. For POSIX, the case never arises.</span></i><br>
-&nbsp;</li>
+      file_status(file_type::unknown)</code>.</li>
       <li para_num="14">Otherwise, return <code>
       file_status(file_type::none)</code>.</li>
     </ul>
@@ -3713,39 +3659,33 @@ thrown.<i> &mdash;end note</i>] </p>
       errors. Lack of
 <code>file_type::regular</code> does not necessarily imply <code>&lt;fstream&gt;</code> operations would 
 fail on a directory.
-<i>&mdash;end note</i>]<br>
-&nbsp;</li>
+<i>&mdash;end note</i>]</li>
       <li para_num="18">Otherwise, if the attributes indicate a directory, as if by POSIX
       <a href="http://www.opengroup.org/onlinepubs/000095399/basedefs/sys/stat.h.html">S_ISDIR()</a>, 
       return <code>
       file_status(file_type::directory)</code>. [<i>Note:</i> <code>
       file_type::directory</code> implies <code>
 directory_iterator(p)</code>would succeed.
-<i>&mdash;end note</i>]<br>
-&nbsp;</li>
+<i>&mdash;end note</i>]</li>
       <li para_num="19">Otherwise, if the attributes indicate a block special file, as if by 
       POSIX
       <a href="http://www.opengroup.org/onlinepubs/000095399/basedefs/sys/stat.h.html">S_ISBLK()</a>, 
       return <code>
-      file_status(file_type::block)</code>.<br>
-&nbsp;</li>
+      file_status(file_type::block)</code>.</li>
       <li para_num="20">Otherwise, if the attributes indicate a character special file, as if 
       by POSIX
       <a href="http://www.opengroup.org/onlinepubs/000095399/basedefs/sys/stat.h.html">S_ISCHR()</a>, 
       return <code>
-      file_status(file_type::character)</code>.<br>
-&nbsp;</li>
+      file_status(file_type::character)</code>.</li>
       <li para_num="21">Otherwise, if the attributes indicate a fifo or pipe file, as if by 
       POSIX
       <a href="http://www.opengroup.org/onlinepubs/000095399/basedefs/sys/stat.h.html">S_ISFIFO()</a>, 
       return <code>
-      file_status(file_type::fifo)</code>.<br>
-&nbsp;</li>
+      file_status(file_type::fifo)</code>.</li>
       <li para_num="22">Otherwise, if the attributes indicate a socket, as if by POSIX
       <a href="http://www.opengroup.org/onlinepubs/000095399/basedefs/sys/stat.h.html">S_ISSOCK()</a>, 
       return <code>
-      file_status(file_type::socket)</code>.<br>
-&nbsp;</li>
+      file_status(file_type::socket)</code>.</li>
       <li para_num="23">Otherwise, return <code>
       file_status(file_type::unknown)</code>.</li>
     </ul>
@@ -3821,18 +3761,13 @@ path temp_directory_path(error_code&amp; ec);</pre>
   The signature with argument <code>ec</code> returns <code>path()</code> if an 
   error occurs.</p>
   <p para_num="3"><i>Throws:</i> As specified in <a href="#Error-reporting">Error reporting (7)</a>.</p>
-  <p para_num="4"><i><span style="background-color: #E0E0E0">The <code>temp_directory_path()</code> 
-  name was chosen to emphasize that the return is a path, not just a single 
-  directory name.</span></i></p>
-<blockquote>
-[<i>Example:</i> For POSIX based operating systems, an implementation might 
+  [<i>Example:</i> For POSIX based operating systems, an implementation might 
   return the path 
   supplied by the first environment variable found in the list TMPDIR, TMP, TEMP, TEMPDIR, 
   or if none of these are found, <code>&quot;/tmp&quot;</code>.</p>
-  <p para_num="5">For Windows based operating systems, an implementation might return the path
+  <p para_num="4">For Windows based operating systems, an implementation might return the path
   reported by the <i>Windows</i> <code>GetTempPath</code> API function.<i> &mdash;end example</i>] </p> 
   
-</blockquote>
 </blockquote>
 
 <hr>
