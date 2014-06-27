@@ -170,7 +170,7 @@ conversions </a><br>
 </a><br>
       &nbsp;&nbsp;&nbsp;<a href="#directory_iterator-non-member-functions">13.2  <code>directory_iterator</code> non-member functions 
 </a><br>
-      <a href="#Class-recursive_directory_iterator">14  Class <code>recursive_directory_iterator</code> 
+      <a href="#class.rec.dir.itr">14  Class <code>recursive_directory_iterator</code> 
 </a><br>
       &nbsp;&nbsp;&nbsp;<a href="#recursive_directory_iterator-members">14.1  <code>recursive_directory_iterator</code> members 
 </a><br>
@@ -556,7 +556,7 @@ version of the Technical Specification was completed. <i>— end note</i>]</ins>
     directory_iterator <a href="#directory_iterator-non-member-functions">begin</a>(directory_iterator iter) noexcept;
     directory_iterator <a href="#directory_iterator-non-member-functions">end</a>(const directory_iterator&amp;) noexcept;
 
-    class <a href="#Class-recursive_directory_iterator">recursive_directory_iterator</a>;
+    class <a href="#class.rec.dir.itr">recursive_directory_iterator</a>;
 
     // enable recursive_directory_iterator range-based for statements
     recursive_directory_iterator <a href="#rec.dir.itr.nonmembers">begin</a>(recursive_directory_iterator iter) noexcept;
@@ -731,7 +731,7 @@ version of the Technical Specification was completed. <i>— end note</i>]</ins>
  Implementations should ensure that the resolution and range of <tt>
  file_time_type</tt> reflect the operating system dependent resolution and range 
  of file time values.</p>
-<h2>7  <a name="Error-reporting">Error reporting</a> [fs.err.report]</h2>
+<h2>7  <a name="Error-reporting">Error reporting</a> [<a name="fs.err.report">fs.err.report</a>]</h2>
 <p para_num="1">Filesystem library functions often provide two overloads, one that 
 throws an exception to report file system errors, and another that sets an <code>error_code</code>.</p>
 <blockquote>
@@ -1864,7 +1864,7 @@ an error.</p>
   string.</p>
 </blockquote>
 <h2>10  Enumerations&nbsp; [<a name="fs.enum">fs.enum</a>]</h2>
-<h3>10.1  <a name="Enum-file_type">Enum class <code>file_type</code></a> [enum.file_type]</h3>
+<h3>10.1  <a name="Enum-file_type">Enum class <code>file_type</code></a> [<a name="enum.file_type">enum.file_type</a>]</h3>
 <p para_num="1">This enum class specifies constants used to identify file types.</p>
 <table border="1" cellpadding="5" cellspacing="0" style="border-collapse: collapse" bordercolor="#111111">
   <tr>
@@ -2124,12 +2124,12 @@ permissions. </p>
   The permissions are not known, such as when a <code>file_status</code> object 
   is created without specifying the permissions</td>
 </tr>
-<tr><td><code><a name="symlink_perms">add_perms</a></code></td><td><code>0x10000</code></td><td>&nbsp;</td><td>
+<tr><td><code><a name="add_perms">add_perms</a></code></td><td><code>0x10000</code></td><td>&nbsp;</td><td>
   <code>permissions()</code> shall bitwise <i>or</i> the <code>perm</code> argument&#39;s permission bits to the 
   file's current permission bits.</td>
 </tr>
 
-<tr><td><code><a name="symlink_perms">remove_perms</a></code></td><td><code>
+<tr><td><code><a name="remove_perms">remove_perms</a></code></td><td><code>
   0x20000</code></td><td>&nbsp;</td><td>
   <code>permissions()</code> shall bitwise <i>and</i> the complement of
     <code>perm</code> argument&#39;s permission bits to the 
@@ -2172,7 +2172,7 @@ permissions. </p>
     </tr>
   </table></ins>
 
-<h2>11  <a name="file_status">Class <code>file_status</code></a> [class.file_status]</h2>
+<h2>11  <a name="file_status">Class <code>file_status</code></a> [<a name="class.file_status">class.file_status</a>]</h2>
 <pre para_num="1">namespace std { namespace experimental { namespace filesystem { inline namespace v1 {
 
       class file_status
@@ -2180,8 +2180,8 @@ permissions. </p>
       public:
 
         // <a href="#file_status-constructors">constructors</a>
-        explicit file_status(<a href="#file_type">file_type</a> ft = file_type::none,
-                             <a href="#Enum.perms">perms</a> prms = perms::unknown) noexcept;
+        explicit file_status(<a href="#enum.file_type">file_type</a> ft = file_type::none,
+                             <a href="#enum.perms">perms</a> prms = perms::unknown) noexcept;
         file_status(const file_status&amp;) noexcept = default;
         file_status(file_status&amp;&amp;) noexcept = default;
        ~file_status();
@@ -2190,12 +2190,12 @@ permissions. </p>
         file_status&amp; operator=(file_status&amp;&amp;) noexcept = default;
 
         // <a href="#file_status-observers">observers</a>
-        <a href="#file_type">file_type</a>  type() const noexcept;
-        <a href="#Enum.perms">perms</a>      permissions() const noexcept;
+        <a href="#enum.file_type">file_type</a>  type() const noexcept;
+        <a href="#enum.perms">perms</a>      permissions() const noexcept;
 
         // <a href="#file_status-modifiers">modifiers</a>
-        void       type(<a href="#file_type">file_type</a> ft) noexcept;
-        void       permissions(<a href="#Enum.perms">perms</a> prms) noexcept;
+        void       type(<a href="#enum.file_type">file_type</a> ft) noexcept;
+        void       permissions(<a href="#enum.perms">perms</a> prms) noexcept;
       };
 } } } }  // namespaces std::experimental::filesystem::v1</pre>
 <p para_num="2">An object of type <code>file_status</code> stores information about the type 
@@ -2206,25 +2206,25 @@ and permissions of a file.</p>
 <blockquote>
   <p para_num="2"><i>Postconditions:</i> <code>type() == file_type::none</code>, <code>permissions() == perms::unknown</code>.</p>
 </blockquote>
-<pre para_num="3">explicit file_status(<a href="#file_type">file_type</a> ft, <a href="#Enum.perms">perms</a> prms = perms::unknown) noexcept;</pre>
+<pre para_num="3">explicit file_status(<a href="#enum.file_type">file_type</a> ft, <a href="#enum.perms">perms</a> prms = perms::unknown) noexcept;</pre>
 <blockquote>
   <p para_num="4"><i>Postconditions:</i> <code>type() == ft</code>, <code>permissions() == prms</code>.</p>
 </blockquote>
   <h3>11.2  <a name="file_status-observers"><code>file_status</code> observers</a> [file_status.obs]</h3>
-<pre para_num="1"><a href="#file_type">file_type</a> type() const noexcept;</pre>
+<pre para_num="1"><a href="#enum.file_type">file_type</a> type() const noexcept;</pre>
 <blockquote>
   <p para_num="2"><i>Returns: </i>The value of <code>type()</code> specified by the <i>postconditions</i> of the most recent call to a constructor, operator=, or <code>type(file_type)</code> function.</p>
 </blockquote>
-<pre para_num="3"><a href="#Enum.perms">perms</a> permissions() const noexcept;</pre>
+<pre para_num="3"><a href="#enum.perms">perms</a> permissions() const noexcept;</pre>
 <blockquote>
   <p para_num="4"><i>Returns: </i>The value of <code>permissions()</code> specified by the <i>postconditions</i> of the most recent call to a constructor, operator=, or <code>permissions(perms)</code> function.</p>
 </blockquote>
 <h3>11.3  <a name="file_status-modifiers"><code>file_status</code> modifiers</a> [file_status.mods]</h3>
-<pre para_num="1">void type(<a href="#file_type">file_type</a> ft) noexcept;</pre>
+<pre para_num="1">void type(<a href="#enum.file_type">file_type</a> ft) noexcept;</pre>
 <blockquote>
   <p para_num="2"><i>Postconditions:</i> <code>type() == ft</code>.</p>
 </blockquote>
-<pre para_num="3">void permissions(<a href="#Enum.perms">perms</a> prms) noexcept;</pre>
+<pre para_num="3">void permissions(<a href="#enum.perms">perms</a> prms) noexcept;</pre>
 <blockquote>
   <p para_num="4"><i>Postconditions:</i> <code>permissions() == prms</code>.</p>
 </blockquote>
@@ -2592,8 +2592,8 @@ range-based for statements.</p>
 <blockquote>
   <p para_num="5"><i>Returns: </i><code>directory_iterator()</code>.</p>
 </blockquote>
-<h2>14  <a name="Class-recursive_directory_iterator">Class <code>recursive_directory_iterator</code> 
-[class.rec.dir.itr]</a></h2>
+<h2>14 Class <code>recursive_directory_iterator</code> 
+[<a name="class.rec.dir.itr">class.rec.dir.itr</a>]</h2>
 <p para_num="1">An object of type <code>recursive_directory_iterator</code> provides an iterator for 
 a sequence of <code>directory_entry</code> elements representing the files in a 
 directory and its sub-directories.</p>
@@ -3032,7 +3032,7 @@ bool <a name="copy_file2">copy_file</a>(const path&amp; from, const path&amp; to
   </blockquote>
   <blockquote>
     <p para_num="9"><ins>Report a file already exists error as specified in
-    <a href="file:///C:/dot16/filesystem-ts/working-draft.html#Error-reporting">
+    <a href="#Error-reporting">
     Error reporting (7) </a>if: </ins></p>
     <ul>
       <li para_num="10"><ins><code>exists(to)</code> and <code>equivalent(from, to)</code>, or
