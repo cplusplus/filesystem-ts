@@ -1,0 +1,1576 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"
+    "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+<meta charset="utf-8"> 
+<title>File System Immediate Issues</title>
+<style type="text/css">
+  p {text-align:justify}
+  li {text-align:justify}
+  blockquote.note
+  {
+    background-color:#E0E0E0;
+    padding-left: 15px;
+    padding-right: 15px;
+    padding-top: 1px;
+    padding-bottom: 1px;
+  }
+  ins {background-color:#A0FFA0}
+  del {background-color:#FFA0A0}
+</style>
+</head>
+<body>
+<table>
+<tr>
+  <td align="left">Doc. no.</td>
+  <td align="left">N4080</td>
+</tr>
+<tr>
+  <td align="left">Date:</td>
+  <td align="left">2014-06-20</td>
+</tr>
+<tr>
+  <td align="left">Project:</td>
+  <td align="left">File System TS</td>
+</tr>
+<tr>
+  <td align="left">Reply to:</td>
+  <td align="left">Beman Dawes &lt;<a href="mailto:bdawes at acm dot org">bdawes at acm dot org</a>&gt;</td>
+</tr>
+</table>
+<h1>File System TS Immediate Issues for Rapperswil</h1>
+<p><p>Revised 2014-06-20 at 09:06:18 UTC</p>
+</p>
+  <p>Reference ISO/IEC TS 18822</p>
+<hr>
+<h3><a name="5"></a>5. [PDTS] Parent of root directory unspecified</h3>
+<p><b>Section:</b> X 8.1 [path.generic] <b>Status:</b> <a href="active.html#Immediate">Immediate</a>
+ <b>Submitter:</b> CH-4 <b>Opened:</b> 2014-01-20 <b>Last modified:</b> 2014-06-19</p>
+<p><b>View all issues with</b> <a href="status-index.html#Immediate">Immediate</a> status.</p>
+<p><b>Discussion:</b></p>
+<p>8.1 [path.generic] says:
+"The filename dot-dot is treated as a reference to the parent directory." So it must be
+specified what "/.." and "/../.." refer to.</p>
+
+<p>Add a statement what the parent directory of the root directory is.</p>
+
+  <p><i>[2014-02-07, Beman Dawes suggests wording]</i></p>
+
+  
+  <p><i>[
+    2014-02-11 Issaquah: Implementation defined. See wiki notes for rationale.
+    Beman to provide wording for review next meeting.
+  ]</i></p>
+
+
+  <p><i>[
+    22 May 2014 Beman provides wording, taken directly from POSIX.
+    See pubs.opengroup.org/onlinepubs/9699919799/xrat/V4_xbd_chap04.html#tag_21_04_12
+  ]</i></p>
+
+
+
+
+<p><b>Proposed resolution:</b></p>
+
+<ol>
+<li>
+<p>Change 8.1 [path.generic]:</p>
+
+<blockquote><p>
+The filename <i>dot</i> is treated as a reference to the current directory.
+The filename <i>dot-dot</i> is treated as a reference to the parent directory.
+<ins>What the filename <i>dot-dot</i> refers to relative to <i>root-directory</i> is implementation-defined.</ins>
+Specific filenames may have special meanings for a particular operating system.
+</p></blockquote>
+</li>
+</ol>
+
+
+
+
+
+
+<hr>
+<h3><a name="22"></a>22. [PDTS] <tt>directory_iterator</tt> underspecified</h3>
+<p><b>Section:</b> X 13.1 [directory_iterator.members] <b>Status:</b> <a href="active.html#Immediate">Immediate</a>
+ <b>Submitter:</b> CH-13 <b>Opened:</b> 2014-01-20 <b>Last modified:</b> 2014-06-19</p>
+<p><b>View all issues with</b> <a href="status-index.html#Immediate">Immediate</a> status.</p>
+<p><b>Discussion:</b></p>
+<p>The behaviour of increment is underspecified: What happens if the implementation
+detects an endless loop (e.g. caused by links)? What happens with automounting and
+possible race conditions?</p>
+<p>More information on this can be found <a href="http://man7.org/linux/manpages/man3/fts.3.html">here</a>.
+<p>Suggested action:</p>
+<p>Specify the required behaviour in these cases.</p>
+</p>
+  <p><i>[2014-02-13 LWG/SG-3 Issaquah: STL will provide wording for next meeting for
+  the endless loop case. The other cases are covered by existing wording in the front matter.]</i></p>
+
+
+  <p><i>[17 Jun 2014 At the request of the LWG, Beman provides wording for a note.]</i></p>
+  
+
+
+
+<p><b>Proposed resolution:</b></p>
+  <p>
+    <i>In 14 Class recursive_directory_iterator [class.rec.dir.itr], add:</i>
+  </p>
+  <blockquote>
+    <p>
+      <ins>
+        [<i>Note: </i>If the directory structure being iterated over contains
+        cycles then
+        the end iterator may be unreachable. <i>--end note</i>]
+      </ins>
+    </p>
+  </blockquote>
+
+
+
+
+
+
+<hr>
+<h3><a name="25"></a>25. [PDTS] Copying equivalent paths effects not specified</h3>
+<p><b>Section:</b> X 15.4 [fs.op.copy_file] <b>Status:</b> <a href="active.html#Immediate">Immediate</a>
+ <b>Submitter:</b> CH-15 <b>Opened:</b> 2014-01-20 <b>Last modified:</b> 2014-06-19</p>
+<p><b>View all issues with</b> <a href="status-index.html#Immediate">Immediate</a> status.</p>
+<p><b>Discussion:</b></p>
+<p>Even if <tt>to</tt> and <tt>from</tt> are different paths, they may be equivalent.</p>
+
+<p>Specify what happens if <tt>(options &amp; copy_options::overwrite_existing)</tt> but <tt>from</tt> and <tt>to</tt>
+resolve to the same file.</p>
+
+  <p><i>[2014-02-09, Beman Dawes: Need advice on this issue:]</i></p>
+
+
+  <p/>What do existing implentations do?
+
+  <p/>Possible resolutions:
+  <ol>
+    <li>Treat it as an error.</li>
+    <li>Once equivalence is determined, take no further action and return true? false?</li>
+    <li>Don't bother to detect a file overwriting itself. This will likely result in an error, anyhow.</li>
+  </ol>
+  <p><i>[2014-02-13 LWG/SG-3 Issaquah: LWG/SG-3 decided to treat equivalence in this case as an error.
+  Beman to provide wording.]</i></p>
+
+
+  <p><i>[2014-04-09 Beman provided wording as requested. The Effects were rewritten to increase
+  clarity. Behavior remains unchanged except for treating equivalence as an error.]</i></p>
+
+
+  <p><i>[17 Jun 2014 Rapperswil LWG moves to Immediate. Jonathan Wakely will provide editorial
+  changes to improve the presentation of bitmask values.]</i></p>
+
+
+
+
+<p><b>Proposed resolution:</b></p>
+  <p/>
+  <i>Change 15.4 [fs.op.copy_file]:</i>
+
+  <blockquote>
+    <p>
+      <i>Precondition:</i> At most one constant from each <code>copy_options</code>
+      option group ([<a href="#enum.copy_options">enum.copy_options</a>]) is present
+      in <code>options</code>.
+    </p>
+
+    <p>
+      <i>Effects:</i>
+    </p>
+    <blockquote>
+      
+        <p><del>
+          If&nbsp; <code>exists(to) &amp;&amp;</code> <code>
+            !(options &amp; (copy_options::skip_existing
+            | copy_options::overwrite_existing | copy_options::update_existing))
+          </code> report a
+          file already exists error as specified in <a href="#Error-reporting">Error reporting (7)</a>.
+        </del></p>
+      
+      
+        <p><del>
+          If <code>
+            !exists(to) || (options &amp; copy_options::overwrite_existing) || ((options &amp; copy_options::update_existing)
+            &amp;&amp; last_write_time(from) &gt; last_write_time(to)) || !(options &amp; (copy_options::skip_existing
+            | copy_options::overwrite_existing | copy_options::update_existing))
+          </code> copy the contents and attributes of the file <code>from</code>
+          resolves to  the file <code>to</code> resolves to.
+        </del></p>
+      
+    </blockquote>
+    <blockquote>
+      
+        <p>
+          <ins>
+            Report a file already exists error as specified in
+            <a href="file:///C:/dot16/filesystem-ts/working-draft.html#Error-reporting">
+              Error reporting (7)
+            </a> if:
+          </ins>
+        </p>
+        <ul>
+          <li><ins>
+              <ins><code>exists(to)</code> and <code>equivalent(from, to)</code>,
+              or</ins>
+          </ins></li>
+          <li><ins>
+              <code>exists(to)</code> and <code>
+                (options &amp; (copy_options::skip_existing
+                | copy_options::overwrite_existing | copy_options::update_existing)) == copy_options::none.
+              </code>
+          </ins></li>
+        </ul>
+        <p><ins>
+          Otherwise copy the contents and attributes of the file <code>from</code>
+          resolves to to the file <code>to</code> resolves to if:
+          </ins></p>
+        <ul>
+          <li><ins>
+              <code>!exists(to)</code>, or
+          </ins></li>
+          <li><ins>
+            <code>exists(to)</code> and <code>
+              (options &amp;
+              copy_options::overwrite_existing) != copy_options::none
+            </code>, or
+          </ins></li>
+          <li><ins>
+            <code>exists(to)</code> and <code>
+              (options &amp;
+              copy_options::update_existing) != copy_options::none
+            </code> and <code>from</code> is more
+            recent than <code>to</code>, determined as if by use of the <code>
+              last_write_time
+            </code> function.
+          </ins></li>
+        </ul>
+        <p><ins>Otherwise no effects.</ins></p>
+      
+    </blockquote>
+
+    <p>
+      <i>Returns</i>: <code>true</code> if the <code>from</code> file
+      was copied, otherwise <code>false</code>. The signature with argument <code>ec</code> return
+      <code>false</code> if an error occurs.
+    </p>
+    <p>
+      <i>Throws:</i> As specified in <a href="#Error-reporting">Error reporting (7)</a>.
+    </p>
+    <p>
+      <i>Complexity:</i> At most one direct or indirect invocation of <code>
+        status(to)</code>.
+    </p>
+  </blockquote>
+  
+
+
+
+
+
+<hr>
+<h3><a name="27"></a>27. [PDTS] Return value of <tt>uintmax_t</tt> on error?</h3>
+<p><b>Section:</b> X 15.14 [fs.op.file_size] <b>Status:</b> <a href="active.html#Immediate">Immediate</a>
+ <b>Submitter:</b> FI-9 <b>Opened:</b> 2014-01-20 <b>Last modified:</b> 2014-06-19</p>
+<p><b>View all issues with</b> <a href="status-index.html#Immediate">Immediate</a> status.</p>
+<p><b>Discussion:</b></p>
+<p>"The signature with argument <tt>ec</tt> returns <tt>static_cast&lt;uintmax_t&gt;(-1)</tt> if an error
+occurs.", one would expect that <b>both</b> signatures return that if an error occurs?</p>
+
+<p>Clarify the Returns clause, and apply the same for every function that returns an
+<tt>uintmax_t</tt> where applicable.</p>
+  
+ <p><i>[2014-02-13 LWG/SG-3 Issaquah:]</i></p>
+
+
+  <p/>Discussion when around in circles for a while, until someone suggested the reference to 15.15 was wrong,
+  and that the issue applied to the previous function in the WP, 15.14 File size [fs.op.file_size].
+  
+  <p/>The NB Comment makes much more sense if it applies to file_size(), so the chair was directed
+  to change the reference from 15.15 [fs.op.hard_lk_ct] to 15.14 [fs.op.file_size].
+  
+  <p/>The intent that file_size() is only meaningful for regular_files. Beman to strike the
+  the static_cast, changing it to "Otherwise an error is reported.".  
+  
+
+
+
+<p><b>Proposed resolution:</b></p>
+  <p>
+    <i>Change 15.14 [fs.op.file_size]:</i>
+  </p>
+
+<pre>uintmax_t file_size(const path&amp; p);
+uintmax_t file_size(const path&amp; p, error_code&amp; ec) noexcept;</pre>
+<blockquote>
+  <p><i>Returns:</i> If <code>
+    <ins>!</ins>exists(p) <del>&amp;&amp;</del>  <ins>|| !</ins>is_regular_file(p)</code><ins>
+      an error is reported (7). Otherwise</ins>, the size in bytes 
+  of the file <code>p</code> resolves to, determined as if by the value of the 
+  POSIX <code>stat</code> structure member <code>st_size</code> 
+  obtained as if by POSIX <code>stat()</code>. 
+  <del>Otherwise, <code>static_cast&lt;uintmax_t&gt;(-1)</code>.</del> The signature with 
+  argument <code>ec</code> 
+  returns <code>static_cast&lt;uintmax_t&gt;(-1)</code> if an error occurs.</p>
+  <p><i>Throws:</i> As specified in <a href="#Error-reporting">Error reporting <ins>(7)</ins></a>.</p>
+</blockquote>
+
+
+
+
+
+
+
+<hr>
+<h3><a name="34"></a>34. 
+    [PDTS] <tt>enum class directory_options</tt> has no summary
+  </h3>
+<p><b>Section:</b> X 6 [fs.filesystem.synopsis] <b>Status:</b> <a href="active.html#Immediate">Immediate</a>
+ <b>Submitter:</b> P.J. Plauger <b>Opened:</b> 2014-01-30 <b>Last modified:</b> 2014-06-19</p>
+<p><b>View other</b> <a href="open-index.html# [fs.filesystem.synopsis">active issues</a> in 6 [fs.filesystem.synopsis].</p>
+<p><b>View all other</b> <a href="section-index.html# [fs.filesystem.synopsis">issues</a> in 6 [fs.filesystem.synopsis].</p>
+<p><b>View all issues with</b> <a href="status-index.html#Immediate">Immediate</a> status.</p>
+<p><b>Discussion:</b></p>
+<p><tt>enum class directory_options</tt> has no summary.</p>
+
+
+<p><b>Proposed resolution:</b></p>
+
+  <p>
+    <i>Change 6 [fs.filesystem.synopsis]:</i>
+  </p>
+  <blockquote>
+    <pre>      enum class directory_options<ins>;</ins>
+      <del>{</del>
+      <del>none,</del>
+      <del>follow_directory_symlink,</del>
+      <del>skip_permission_denied</del>
+      <del>};</del></pre>
+  </blockquote>
+  <p>
+    <i>Add the following sub-section:</i>
+  </p>
+  <blockquote>
+
+    <h3>
+      10.4  Enum class <code>directory_options</code> [<a name="enum.directory_options">enum.directory_options</a>]
+    </h3>
+    <p>
+      The <tt>enum class</tt> type <code>directory_options</code>
+      is a bitmask type (C++11 §17.5.2.1.3) that specifies bitmask constants used to identify
+      directory traversal options.
+    </p>
+    <table border="1" cellpadding="5" cellspacing="0" style="border-collapse: collapse" bordercolor="#111111">
+      <tr>
+        <td>
+          <b>Name</b>
+        </td>
+        <td align="center">
+          <b>Value</b>
+        </td>
+        <td>
+          <b>Meaning</b>
+        </td>
+      </tr>
+
+      <tr>
+        <td>
+          <code>none</code>
+        </td>
+        <td align="center">
+          <code>0</code>
+        </td>
+        <td>(Default) Skip directory symlinks, permission denied is error.</td>
+      </tr>
+      <tr>
+        <td>
+          <code>follow_directory_symlink</code>
+        </td>
+        <td align="center">
+          <code>1</code>
+        </td>
+        <td> Follow rather than skip directory symlinks.</td>
+      </tr>
+      <tr>
+        <td>
+          <code>skip_permission_denied</code>
+        </td>
+        <td align="center">
+          <code>2</code>
+        </td>
+        <td> Skip directories that would otherwise result in permission denied errors.</td>
+      </tr>
+
+    </table>
+  </blockquote>
+
+
+
+
+
+<hr>
+<h3><a name="35"></a>35. [PDTS] <tt>directory_options::skip_permission_denied</tt> is not used</h3>
+<p><b>Section:</b> X 6 [fs.filesystem.synopsis] <b>Status:</b> <a href="active.html#Immediate">Immediate</a>
+ <b>Submitter:</b> P.J. Plauger <b>Opened:</b> 2014-01-30 <b>Last modified:</b> 2014-06-19</p>
+<p><b>View other</b> <a href="open-index.html# [fs.filesystem.synopsis">active issues</a> in 6 [fs.filesystem.synopsis].</p>
+<p><b>View all other</b> <a href="section-index.html# [fs.filesystem.synopsis">issues</a> in 6 [fs.filesystem.synopsis].</p>
+<p><b>View all issues with</b> <a href="status-index.html#Immediate">Immediate</a> status.</p>
+<p><b>Discussion:</b></p>
+<p>
+<tt>directory_options::skip_permission_denied</tt> is not used.
+</p>
+  <p><i>[2014-04-13 Beman: <tt>skip_permissions_denied</tt> not being used is a
+  symptom of a more serious problem; two <tt>directory_itorator</tt> constructors
+  are missing <tt>directory_options</tt> arguments and a description of how they
+  are used. Proposed wording provided.]</i></p>
+
+  <p><i>[17 Jun 2014 LWG requests two signatures rather than one with default argument. Beman updates wording.]</i></p>
+
+
+
+<p><b>Proposed resolution:</b></p>
+  <p>
+    <i>Change 13  [class.directory_iterator]:</i>
+  </p>
+  <blockquote>
+    <pre>      directory_iterator() noexcept;
+      explicit directory_iterator(const path&amp; p);
+      <ins>directory_iterator(const path&amp; p, directory_options options</ins>);
+      directory_iterator(const path&amp; p, error_code&amp; ec) noexcept;
+      <ins>directory_iterator(const path&amp; p,</ins>
+      <ins>directory_options options, error_code&amp; ec) noexcept;</ins>
+      directory_iterator(const directory_iterator&amp;) = default;
+      directory_iterator(directory_iterator&amp;&amp;) = default;
+      ~directory_iterator();
+    </pre>
+  </blockquote>
+  <p>
+    <i>Change 13.1 directory_iterator members [directory_iterator.members]:</i>
+  </p>
+  <blockquote>
+    <pre>      explicit directory_iterator(const path&amp; p);
+      <ins>directory_iterator(const path&amp; p, directory_options options</ins>);
+      directory_iterator(const path&amp; p, error_code&amp; ec) noexcept;
+      <ins>directory_iterator(const path&amp; p,</ins>
+      <ins>directory_options options, error_code&amp; ec) noexcept;</ins>
+    </pre>
+    <p>
+      <i>Effects:</i> For the directory that <code>p</code> resolves to,
+      constructs an iterator for the first element in a sequence of <code>
+        directory_entry
+      </code> elements representing the files in the directory, if
+      any; otherwise the end iterator.
+    </p>
+    <p>
+      <ins>
+        However, if <code>options &amp; directory_options::skip_permissions_denied != directory_options::none</code>
+        and construction encounters an error indicating that permission to access&nbsp;
+        <code>p</code> is denied, constructs the end iterator and does not report an
+        error.
+      </ins>
+    </p>
+  </blockquote>
+  <p>
+    <i>
+      Change 14  <a name="Class-recursive_directory_iterator">
+        Class <code>recursive_directory_iterator</code>
+        [class.rec.dir.itr]
+      </a>:
+    </i>
+  </p>
+  <blockquote>
+    <pre>      explicit recursive_directory_iterator(const path&amp; p<del>,</del>
+      <del>directory_options options = directory_options::none</del>);
+      <ins>recursive_directory_iterator(const path&amp; p, directory_options options);</ins>
+      recursive_directory_iterator(const path&amp; p,
+      directory_options options, error_code&amp; ec) noexcept;
+      recursive_directory_iterator(const path&amp; p, error_code&amp; ec) noexcept;
+    </pre>
+  </blockquote>
+  <p>
+    <i>Change 14.1 recursive_directory_iterator members [rec.dir.itr.members]:</i>
+  </p>
+  <blockquote>
+    <pre>      explicit recursive_directory_iterator(const path&amp; p<del>,</del>
+      <del>directory_options options = directory_options::none</del>);
+      <ins>recursive_directory_iterator(const path&amp; p, directory_options options);</ins>
+      recursive_directory_iterator(const path&amp; p,
+      directory_options options, error_code&amp; ec) noexcept;
+      recursive_directory_iterator(const path&amp; p, error_code&amp; ec) noexcept;
+    </pre>
+    <p>
+      <i>Effects:</i>&nbsp; Constructs a iterator representing the first entry in the
+      directory <code>p</code> resolves to, if any; otherwise, the end iterator.
+    </p>
+    <p>
+      <ins>
+        However, if <code>options &amp; directory_options::skip_permissions_denied != directory_options::none</code>
+        and construction encounters an error indicating that permission to access&nbsp;
+        <code>p</code> is denied, constructs the end iterator and does not report an
+        error.
+      </ins>
+    </p>
+  </blockquote>
+  <p>
+    <i>Change 14.1 recursive_directory_iterator members [rec.dir.itr.members]:</i>
+  </p>
+  <blockquote>
+    <pre>      recursive_directory_iterator&amp; operator++();
+      recursive_directory_iterator&amp; increment(error_code&amp; ec);
+    </pre>
+    <p>
+      <i>Requires:</i> <code>*this != recursive_directory_iterator()</code>.
+    </p>
+    <p>
+      <i>Effects:</i> As specified by C++11 § 24.1.1 Input iterators, except
+      that:
+    </p>
+    <ul>
+      <li>
+        If there are no more entries at this depth, then if <code>depth()!= 0</code>
+        iteration over the parent directory resumes; otherwise <code>
+          *this =
+          recursive_directory_iterator()
+        </code>.
+      </li>
+      <li>
+        Otherwise if <code>
+          recursion_pending() &amp;&amp; is_directory(this-&gt;status())
+          &amp;&amp; (!is_symlink(this-&gt;symlink_status()) || (options() &amp;
+          directory_options::follow_directory_symlink) != <del>0</del> <ins>directory_options::none</ins>)
+        </code> then <ins>either</ins> directory
+        <code>(*this)-&gt;path()</code> is recursively iterated into
+        <ins>
+          or, if <code>
+            options() &amp; directory_options::skip_permissions_denied != directory_options::none
+          </code>
+          and an error occurs indicating that permission to access directory
+          <code>(*this)-&gt;path()</code> is denied, then directory <code>(*this)-&gt;path()</code> is
+          treated as an empty directory and no error is reported
+        </ins>.
+      </li>
+    </ul>
+  </blockquote>
+
+
+
+
+
+<hr>
+<h3><a name="36"></a>36. [PDTS] <tt>copy_options::copy_symlinks</tt> is not used</h3>
+<p><b>Section:</b> X 10.2 [enum.copy_options] <b>Status:</b> <a href="active.html#Immediate">Immediate</a>
+ <b>Submitter:</b> P.J. Plauger <b>Opened:</b> 2014-01-30 <b>Last modified:</b> 2014-06-19</p>
+<p><b>View all other</b> <a href="section-index.html#0.2 [enum.copy_options">issues</a> in 10.2 [enum.copy_options].</p>
+<p><b>View all issues with</b> <a href="status-index.html#Immediate">Immediate</a> status.</p>
+<p><b>Discussion:</b></p>
+<p>
+<tt>copy_options::copy_symlinks</tt> is not used (should test it before calling <tt>copy_symlinks</tt> in <tt>copy</tt>).
+</p>
+  <p><i>[20 May 2014 Beman Dawes provides proposed wording.]</i></p>
+
+
+
+<p><b>Proposed resolution:</b></p>
+  <p>
+    <i>Change 15.3 Copy [fs.op.copy]:</i>
+  </p>
+  <blockquote>
+    <blockquote>
+      <p>
+        If <code>is_symlink(f)</code>, then:
+      </p>
+      <ul>
+        <li>
+          If <code>options &amp; copy_options::skip_symlinks</code>, then return.&nbsp;
+          <span style="font-style: italic; background-color: #C0C0C0">Missing != copy_options::none fixed by issue 59</span>
+        </li>
+        <li>
+          Otherwise if <code>
+            !exists(t) <ins>
+              &amp;&amp; (options &amp; copy_options::copy_symlinks)
+              != copy_options::none
+            </ins>
+          </code>, then <code>
+            copy_symlink(from,
+            to, options)
+          </code>.
+        </li>
+        <li>
+          Otherwise report an error as specified in
+          <a href="file:///C:/dot16/filesystem-ts/issues/mailing/active.html#Error-reporting"
+           style="color: #2020FF; text-decoration: none">
+            Error reporting (7)
+          </a>.
+        </li>
+      </ul>
+    </blockquote>
+  </blockquote>
+
+
+
+
+
+<hr>
+<h3><a name="37"></a>37. [PDTS] All functions with <tt>error_code</tt> arguments should be <tt>noexcept</tt></h3>
+<p><b>Section:</b> X 15.2 [fs.op.canonical], X 15.11 [fs.op.current_path], X 15.27 [fs.op.read_symlink], X 15.36 [fs.op.system_complete], X 15.37 [fs.op.temp_dir_path], X 15.38 [fs.op.unique_path], X 8.4 [path.member] <b>Status:</b> <a href="active.html#Immediate">Immediate</a>
+ <b>Submitter:</b> P.J. Plauger <b>Opened:</b> 2014-01-30 <b>Last modified:</b> 2014-06-19</p>
+<p><b>View all issues with</b> <a href="status-index.html#Immediate">Immediate</a> status.</p>
+<p><b>Discussion:</b></p>
+<p>
+all functions with <tt>error_code</tt> arguments should be <tt>noexcept</tt>
+(see <tt>canonical</tt>, <tt>current_path</tt>, <tt>read_symlink</tt>, <tt>system_complete</tt>,
+<tt>temp_directory_path</tt>, <tt>unique_path</tt>, plus member functions).
+</p>
+<p><i>[2014-02-03: Stephan T. Lavavej comments:]</i></p>
+<p>The declaration and definition of
+"<tt>recursive_directory_iterator&amp; increment(error_code&amp; ec);</tt>" should almost certainly
+be marked noexcept.</p>
+
+<p><i>[2014-02-08: Daniel comments]</i></p>
+
+<p>
+All functions that return a <tt>path</tt> value such as <tt>canonical</tt>, <tt>current_path</tt>,
+<tt>read_symlink</tt>, <tt>system_complete</tt>, <tt>temp_directory_path</tt>, <tt>unique_path</tt>,
+or any member function returning a <tt>path</tt> value or <tt>basic_string</tt> value might legally 
+throw an exception, if the allocator of the underlying string complains about insufficient 
+memory. This is an anti-pattern for <tt>noexcept</tt>, because the exception-specification includes 
+the return statement of a function and given the fact that the language currently does declare RVO
+as an optional action, we cannot rely on it.
+<p/>
+The Standard is currently very careful <em>not</em> to specify functions as <tt>noexcept</tt>,
+if this case can happen, see e.g. <tt>std::locale::name()</tt>. To the contrary, enforcing them to be
+<tt>noexcept</tt>, would cause a similar problem as the unconditional <tt>noexcept</tt> specifier of
+the value-returning <tt>kill_dependency</tt> as denoted by LWG 2236.
+<p/>
+Basically this requirement conflicts with the section "Adopted Guidelines", second bullet of
+<a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2011/n3279.pdf">N3279</a>.
+</p>
+
+<p><i>[Beman Dawes 2014-02-27]</i></p>
+
+
+<p/>Issues <a href="active.html#37">37</a>,
+<a href="active.html#38">38</a>,
+<a href="active.html#41">41</a>,
+and <a href="active.html#49">49</a> are concerned with signatures which should or should not
+be <tt>noexcept</tt>. I will provide unified proposed wording for these issues, possibly in a separate paper.
+
+<p><i>[21 May 2014 Beman Dawes reviewed all functions with <code>error_code&amp;</code> arguments,
+  and provided proposed wording for the one case found where the above guidelines were not met.
+  This was the case previously identified by Stephan T. Lavavej.
+]</i></p>
+
+
+
+
+<p><b>Proposed resolution:</b></p>
+  <p>
+    <i>Change 14 Class recursive_directory_iterator [class.rec.dir.itr]:</i>
+  </p>
+  <blockquote>
+    <pre>recursive_directory_iterator&amp; increment(error_code&amp; ec) <ins>noexcept</ins>;</pre>
+  </blockquote>
+  <p>
+    <i>Change 14.1 recursive_directory_iterator members [rec.dir.itr.members]:</i>
+  </p>
+  <blockquote>
+    <pre>recursive_directory_iterator&amp; increment(error_code&amp; ec) <ins>noexcept</ins>;</pre>
+  </blockquote>
+
+
+
+
+
+<hr>
+<h3><a name="40"></a>40. [PDTS] <tt>class directory_entry</tt> should retain <tt>operator const path&amp;()</tt> from V2</h3>
+<p><b>Section:</b> X 12 [class.directory_entry] <b>Status:</b> <a href="active.html#Immediate">Immediate</a>
+ <b>Submitter:</b> P.J. Plauger <b>Opened:</b> 2014-01-30 <b>Last modified:</b> 2014-06-17</p>
+<p><b>View other</b> <a href="open-index.html#2 [class.directory_entry">active issues</a> in 12 [class.directory_entry].</p>
+<p><b>View all other</b> <a href="section-index.html#2 [class.directory_entry">issues</a> in 12 [class.directory_entry].</p>
+<p><b>View all issues with</b> <a href="status-index.html#Immediate">Immediate</a> status.</p>
+<p><b>Discussion:</b></p>
+<p>  
+<tt>class directory_entry</tt> should retain <tt>operator const path&amp;()</tt> from V2.
+</p>
+
+  <p><i>[2014-05-19 Beman Dawes supplied proposed wording.]</i></p>
+
+  <p><i>[2014-06-02 Beman Dawes provides rationale:]</i></p>
+
+  <blockquote>
+    This conversion operator was removed when <code>status()</code> and <code>symlink_status()</code>
+    were added during the transition from V2 to V3 as it seemed a bit unusual to have a conversion
+    operator for one of the several values held. Users complained as they had found the
+    automatic conversion convenient in the most common <code>directory_entry</code> use case.
+  </blockquote>
+  <p><i>[17 Jun 2014 Rapperswil LWG discusses in depth, accepts proposed wording.]</i></p>
+  
+
+
+<p><b>Proposed resolution:</b></p>
+  <p>
+    <i>Change 12 Class directory_entry [class.directory_entry]:</i>
+  </p>
+  <blockquote>
+    <pre>// observers
+const path&amp;  path() const noexcept;
+<ins>operator const path&amp;() const noexcept;</ins>
+file_status  status() const;
+file_status  status(error_code&amp; ec) const noexcept;
+file_status  symlink_status() const;
+file_status  symlink_status(error_code&amp; ec) const noexcept;</pre>
+  </blockquote>
+
+  <p>
+    <i>Change 12.3 directory_entry observers [directory_entry.obs]:</i>
+  </p>
+  <blockquote>
+    <pre>const path&amp; path() const noexcept;
+<ins>operator const path&amp;() const noexcept;</ins></pre>
+    <blockquote>
+      <p>
+        <i>Returns:</i>
+        <code>m_path</code>
+      </p>
+    </blockquote>
+  </blockquote>
+
+
+
+
+
+
+<hr>
+<h3><a name="41"></a>41. [PDTS] <tt>directory_iterator</tt>, <tt>recursive_directory_iterator</tt>, move construct/assign should be <tt>noexcept</tt></h3>
+<p><b>Section:</b> X 13 [class.directory_iterator], X 14 [class.rec.dir.itr] <b>Status:</b> <a href="active.html#Immediate">Immediate</a>
+ <b>Submitter:</b> P.J. Plauger <b>Opened:</b> 2014-01-30 <b>Last modified:</b> 2014-06-19</p>
+<p><b>View all other</b> <a href="section-index.html#3 [class.directory_iterator">issues</a> in 13 [class.directory_iterator].</p>
+<p><b>View all issues with</b> <a href="status-index.html#Immediate">Immediate</a> status.</p>
+<p><b>Discussion:</b></p>
+<p>
+<tt>class directory_iterator</tt> move construct/assign should be <tt>noexcept</tt>.<br/>
+<tt>class recursive_directory_iterator</tt> move construct/assign should be <tt>noexcept</tt>.
+</p>
+
+<p><i>[Beman Dawes 2014-02-27]</i></p>
+
+
+  <p/>Issues <a href="active.html#37">37</a>,
+  <a href="active.html#38">38</a>,
+  <a href="active.html#41">41</a>,
+  and <a href="active.html#49">49</a> are concerned with signatures which should or should not
+  be <tt>noexcept</tt>. I will provide unified proposed wording for these issues, possibly in a separate paper.
+  <p><i>[Daniel Krügler 2014-02-28]</i></p>
+
+
+<pre>directory_iterator begin(directory_iterator iter) noexcept;
+directory_iterator end(const directory_iterator&amp;) noexcept;</pre>
+
+<p/>are noexcept, but we have no guarantee that at least the
+move-constructor is noexcept:
+
+<pre>directory_iterator(const directory_iterator&amp;) = default;
+directory_iterator(directory_iterator&amp;&amp;) = default;</pre>
+
+<p/>This means that either the above noexcept specifications are not
+warranted or that at least the move-constructor of <tt>directory_iterator</tt>
+is required to be noexcept.
+
+<p/>The same applies to <tt>recursive_directory_iterator</tt>.
+
+<p><i>[21 May 2014 Beman Dawes provided proposed resolution wording.]</i></p>
+
+  <p><i>[18 Jun 2014 "= default" removed per LWG discussion]</i></p>
+
+
+
+<p><b>Proposed resolution:</b></p>
+<p>
+  <i>Change 13 Class directory_iterator [class.directory_iterator]:</i></p>
+  <blockquote>
+    <pre>directory_iterator(const directory_iterator&amp; <ins>rhs</ins>) <del>= default</del>;
+directory_iterator(directory_iterator&amp;&amp; <ins>rhs</ins>) <ins>noexcept</ins> <del>= default</del>;
+...
+directory_iterator&amp; operator=(const directory_iterator&amp; <ins>rhs</ins>) <del>= default</del>;
+directory_iterator&amp; operator=(directory_iterator&amp;&amp; <ins>rhs</ins>) <ins>noexcept</ins> <del>= default</del>;</pre>
+  </blockquote>
+
+  <p/><i>To 13.1 directory_iterator members [directory_iterator.members] add:</i>
+  <blockquote>
+    <pre>directory_iterator(const directory_iterator&amp; rhs);
+directory_iterator(directory_iterator&amp;&amp; rhs) noexcept;</pre>
+    <blockquote>
+      <p>
+        <i>Effects:</i> Constructs an object of class <code>directory_iterator</code>.
+      </p>
+      <p>
+        <i>Postconditions:</i> <code>*this</code> has the original value of <code>rhs</code>.
+      </p>
+
+    </blockquote>
+    <pre>directory_iterator&amp; operator=(const directory_iterator&amp; rhs);
+directory_iterator&amp; operator=(directory_iterator&amp;&amp; rhs) noexcept;</pre>
+    <blockquote>
+      <p>
+        <i>Effects:</i>  
+        If <code>*this</code> and <code>rhs</code> are the same object, the member has no effect.
+      </p>
+      <p>
+        <i>Postconditions:</i> <code>*this</code> has the original value of <code>rhs</code>.
+      </p>
+      <p/><i>Returns:</i>
+      <code>*this</code>.
+
+    </blockquote>
+  </blockquote>
+
+  <p>
+    <i>Change 14 Class recursive_directory_iterator [class.rec.dir.itr]:</i>
+  </p>
+  <blockquote>
+    <pre>recursive_directory_iterator(const recursive_directory_iterator&amp; <ins>rhs</ins>) <del>= default</del>;
+recursive_directory_iterator(recursive_directory_iterator&amp;&amp; <ins>rhs</ins>) <ins>noexcept</ins> <del>= default</del>;
+...
+recursive_directory_iterator&amp; operator=(const recursive_directory_iterator&amp; <ins>rhs</ins>) <del>= default</del>;
+recursive_directory_iterator&amp; operator=(recursive_directory_iterator&amp;&amp; <ins>rhs</ins>) <ins>noexcept</ins> <del>= default</del>;</pre>
+  </blockquote>
+  <p/>
+  <i>To 14.1 recursive_directory_iterator members [rec.dir.itr.members] add:</i>
+  <blockquote>
+    <pre>recursive_directory_iterator(const recursive_directory_iterator&amp; rhs);</pre>
+    <blockquote>
+      <p>
+        <i>Effects:</i> Constructs an object of class <code>recursive_directory_iterator</code>.
+      </p>
+      <p>
+        <i>Postconditions:</i> <code>this->options() == rhs.options() &amp;&amp; this->depth() ==
+        rhs.depth() &amp;&amp; this->recursion_pending() ==
+        rhs.recursion_pending()</code>.
+      </p>
+    </blockquote>
+
+    <pre>recursive_directory_iterator(recursive_directory_iterator&amp;&amp; rhs) noexcept;</pre>
+    <blockquote>
+      <p>
+        <i>Effects:</i> Constructs an object of class <code>recursive_directory_iterator</code>.
+      </p>
+      <p>
+        <i>Postconditions:</i> <code>this->options()</code>, <code>this->depth()</code>, and
+        <code>this->recursion_pending()</code> return the values that
+        <code>rhs.options()</code>, <code>rhs.depth()</code>, and <code>rhs.recursion_pending()</code>,
+        respectively, had before the function call.
+      </p>
+    </blockquote>
+
+    <pre>recursive_directory_iterator&amp; operator=(const recursive_directory_iterator&amp; rhs);</pre>
+    <blockquote>
+      <p>
+        <i>Effects:</i> 
+        If <code>*this</code> and <code>rhs</code> are the same object, the member has no effect.
+      </p>
+      <p>
+      <i>Postconditions:</i> <code>
+        this->options() == rhs.options() &amp;&amp; this->depth() ==
+        rhs.depth() &amp;&amp; this->recursion_pending() ==
+        rhs.recursion_pending()
+      </code>.
+      </p>
+
+      <p/><i>Returns:</i>
+      <code>*this</code>.
+
+    </blockquote>
+
+    <pre>recursive_directory_iterator&amp; operator=(recursive_directory_iterator&amp;&amp; rhs) noexcept;</pre>
+    <blockquote>
+      <p>
+        <i>Effects:</i> 
+        If <code>*this</code> and <code>rhs</code> are the same object, the member has no effect.
+      </p>
+      <p>
+        <i>Postconditions:</i>
+        <code>this->options()</code>, <code>this->depth()</code>, and
+        <code>this->recursion_pending()</code> return the values that
+        <code>rhs.options()</code>, <code>rhs.depth()</code>, and <code>rhs.recursion_pending()</code>,
+        respectively, had before the function call.
+      </p>
+      <p/><i>Returns:</i> <code>*this</code>.
+
+    </blockquote>
+  </blockquote>
+
+
+
+
+
+
+
+<hr>
+<h3><a name="45"></a>45. 
+[PDTS] <tt>create_directory</tt> should refer to <tt>perms::all</tt> instead of Posix
+<tt>S_IRWXU|S_IRWXG|S_IRWXO</tt>
+</h3>
+<p><b>Section:</b> X 15.7 [fs.op.create_directory] <b>Status:</b> <a href="active.html#Immediate">Immediate</a>
+ <b>Submitter:</b> P.J. Plauger <b>Opened:</b> 2014-01-30 <b>Last modified:</b> 2014-06-19</p>
+<p><b>View all issues with</b> <a href="status-index.html#Immediate">Immediate</a> status.</p>
+<p><b>Discussion:</b></p>
+<p>
+<tt>create_directory</tt> should refer to <tt>perms::all</tt> instead of the Posix
+<tt>S_IRWXU|S_IRWXG|S_IRWXO</tt>.
+</p>
+<p><i>[2014-02-28 Beman provided proposed wording.]</i></p>
+
+
+
+<p><b>Proposed resolution:</b></p>
+<p><i>Effects:</i> Establishes the postcondition by attempting to create the 
+  directory <code>p</code> resolves to, as if by POSIX <code>
+  mkdir()</code> with a second argument of <del>S_IRWXU|S_IRWXG|S_IRWXO</del> <ins><code>static_cast&lt;int&gt;(perms::all)</code></ins>. Creation 
+  failure because <code>p</code> resolves to an existing directory shall not be 
+  treated as an error. </p>
+
+
+
+
+
+
+<hr>
+<h3><a name="48"></a>48. [PDTS] <tt>path::template&lt;class charT&gt;string()</tt> conversion rules</h3>
+<p><b>Section:</b> X 8.4.6  [path.native.obs] <b>Status:</b> <a href="active.html#Immediate">Immediate</a>
+ <b>Submitter:</b> P.J. Plauger <b>Opened:</b> 2014-01-30 <b>Last modified:</b> 2014-06-19</p>
+<p><b>View all issues with</b> <a href="status-index.html#Immediate">Immediate</a> status.</p>
+<p><b>Discussion:</b></p>
+<p>
+<tt>path::template&lt;class charT&gt;string()</tt> should promise to convert by the same
+rules as <tt>u16string</tt> for <tt>string&lt;char16_t&gt;</tt>, etc. and one-for-one otherwise.
+<p/>
+What if <tt>charT</tt> is <tt>signed char</tt> (or even <tt>float</tt>)? I don't see where that choice
+is disallowed, so we should either disallow it or make it be something that is quasi-sensible. 
+</p>
+
+<p><i>[2014-02-08 Daniel comments]</i></p>
+
+<p>
+There are two relevant places in the wording that seem to clarify what is required here:
+</p>
+<ol>
+<li><p>
+Most importantly, 5 [fs.req] says:
+</p>
+<blockquote><p>
+Throughout this Technical Specification, <tt>char</tt>, <tt>wchar_t</tt>, <tt>char16_t</tt>, and <tt>char32_t</tt> 
+are collectively called <em>encoded character types</em>.
+<p/>
+Template parameters named <tt>charT</tt> shall be one of the encoded character types.
+<p/>
+[&hellip;]
+[<i>Note</i>: Use of an encoded character type implies an associated encoding. Since <tt>signed char</tt> and <tt>unsigned char</tt> 
+have no implied encoding, they are not included as permitted types. &mdash; <i>end note</i>]
+</p></blockquote>
+</li>
+
+<li><p>
+For both the mentioned <tt>string</tt> function template and the specific non-template functions (such as <tt>u16string()</tt>)
+the same <tt>Remarks</tt> element exists, that refers to character conversion:
+</p>
+<blockquote><p>
+Conversion, if any, is performed as specified by 8.2 [path.cvt].
+</p></blockquote>
+</li>
+</ol>
+
+<p>
+The first quote excludes arbitrary types such as <tt>signed char</tt> or <tt>float</tt> as feasible template arguments. 
+The second quote makes clear that both the function template and the non-template functions do normatively refer to the same 
+wording in 8.2 [path.cvt].
+<p/>
+Based on this interpretation of the issue discussion I recommend resolving it as NAD.
+<p/>
+In addition to that recommendation I recommend to rename the current usage of the symbol <tt>charT</tt> in this technical
+specification, because 5 [fs.req] assigns a very special meaning to the constraints on <tt>charT</tt> types that does not
+exist to this extend in the rest of the standard library. A similar approach is used in Clause 22, where a special symbol <tt>C</tt>
+is used for constrained character types (C++11 &sect;22.3.1.1.1 [locale.category]):
+</p>
+<blockquote><p>
+A template formal parameter with name <tt>C</tt> represents the set of types containing <tt>char</tt>, <tt>wchar_t</tt>, 
+and any other implementation-defined character types that satisfy the requirements for a character on which any of the 
+<tt>iostream</tt> components can be instantiated.
+</p></blockquote>
+
+<p><i>[2014-02-28 Beman provides proposed resolution wording]</i></p>
+
+  <p><i>[18 Jun 2014 Beman changes proposed name from C to EcharT in response to tentative
+  vote concern that C was insuficiently informative as a name.]</i></p>
+
+
+
+
+<p><b>Proposed resolution:</b></p>
+<p><i>In the entire Working Paper, except in the synopsis for path inserter and extractor and 8.6.1 path inserter and extractor [path.io],
+    change each instance of "<code>charT</code>" to "<code>EcharT</code>".</i></p>
+<p><i>For example, in 5 [fs.req]:</i></p>
+<blockquote>Template parameters named <del><code>charT</code></del> <ins><code>EcharT</code></ins> shall be one of the 
+encoded character types.</blockquote>
+
+
+
+
+
+<hr>
+<h3><a name="49"></a>49. [PDTS] <tt>path</tt> and <tt>directory_entry</tt> move ctors should not be <tt>noexcept</tt></h3>
+<p><b>Section:</b> X 8.4.1 [path.construct], X 12 [class.directory_entry] <b>Status:</b> <a href="active.html#Immediate">Immediate</a>
+ <b>Submitter:</b> Stephan T. Lavavej <b>Opened:</b> 2014-02-03 <b>Last modified:</b> 2014-06-20</p>
+<p><b>View all other</b> <a href="section-index.html#.4.1 [path.construct">issues</a> in 8.4.1 [path.construct].</p>
+<p><b>View all issues with</b> <a href="status-index.html#Immediate">Immediate</a> status.</p>
+<p><b>Discussion:</b></p>
+<p>
+<tt>path</tt>'s move ctor is marked <tt>noexcept</tt>, but it contains a <tt>basic_string</tt>.
+Similarly, <tt>directory_entry</tt>'s move ctor is marked <tt>noexcept</tt>, but it contains a <tt>path</tt>.
+This is affected by LWG 2319 "<tt>basic_string</tt>'s move constructor should not be <tt>noexcept</tt>".
+</p>
+
+<p><i>[Beman Dawes 2014-02-27]</i></p>
+
+
+  <p/>Issues <a href="active.html#37">37</a>,
+  <a href="active.html#38">38</a>,
+  <a href="active.html#41">41</a>,
+  and <a href="active.html#49">49</a> are concerned with signatures which should or should not
+  be <tt>noexcept</tt>. I will provide unified proposed wording for these issues, possibly in a separate paper.
+  
+  <p><i>[21 May 2014 Beman Dawes provides wording.
+See <a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2014/n3944.html#2319">LWG 2319</a> for rationale.
+]</i></p>
+
+
+  <p><i>[19 Jun 2014 LWG revises P/R to stay consistent with LWG issues.]</i></p>
+
+
+
+
+<p><b>Proposed resolution:</b></p>
+  <i>Change 8 Class path [class.path]:</i>
+  <blockquote>
+    <pre>path() <ins>noexcept</ins>;</pre>
+  </blockquote>
+
+  <i>Change 8.4.1 path constructors [path.construct]:</i>
+  <blockquote>
+    <pre>path() <ins>noexcept</ins>;</pre>
+  </blockquote>
+
+  <i>Change 12 Class directory_entry [class.directory_entry]:</i>
+  <blockquote>
+    <pre>directory_entry() <ins>noexcept</ins> = default;</pre>
+  </blockquote>
+
+
+
+
+
+
+<hr>
+<h3><a name="53"></a>53. [PDTS] <tt>directory_entry</tt> multithreading concerns</h3>
+<p><b>Section:</b> X 12 [class.directory_entry] <b>Status:</b> <a href="active.html#Immediate">Immediate</a>
+ <b>Submitter:</b> Stephan T. Lavavej <b>Opened:</b> 2014-02-03 <b>Last modified:</b> 2014-06-20</p>
+<p><b>View other</b> <a href="open-index.html#2 [class.directory_entry">active issues</a> in 12 [class.directory_entry].</p>
+<p><b>View all other</b> <a href="section-index.html#2 [class.directory_entry">issues</a> in 12 [class.directory_entry].</p>
+<p><b>View all issues with</b> <a href="status-index.html#Immediate">Immediate</a> status.</p>
+<p><b>Discussion:</b></p>
+<p>12 [class.directory_entry] depicts <tt>directory_entry</tt> as having <tt>mutable m_status</tt> and
+<tt>m_symlink_status</tt> data members.  This is problematic because of C++11's multithreading
+guarantees, which say that <tt>const</tt> member functions are simultaneously callable.
+As a result, <tt>mutable</tt> data members must be protected with synchronization, which was
+probably not considered during this design.  The complexity and expense may be acceptable
+in <tt>directory_entry</tt> (since it can save filesystem queries, apparently) but it would be
+very very nice to have a note about this.</p>
+
+  <p><i>[2014-02-13 LWG/SG-3 discussed in Issaquah: Beman and STL will work together to better
+  understand the concerns, and to formulate a solution. This is not a blocking issue for
+  finishing the TS, but is a blocking issue for merging into the IS]</i></p>
+
+  
+  <p><i>[2014-04-17 Beman provides proposed wording]</i></p>
+
+  <p><i>[2014-06-19 Rapperswil LWG decides to remove mutable private members. Beman provides wording.]</i></p>
+
+
+
+
+<p><b>Proposed resolution:</b></p>
+
+  <p/>
+  <i>Change 12 [class.directory_entry] as indicated:</i>
+
+  <pre>    namespace std { namespace experimental { namespace filesystem { inline namespace v1 {
+
+    class directory_entry
+    {
+    public:
+
+    // <a href="#directory_entry-constructors">constructors</a> and destructor
+    directory_entry() = default;
+    directory_entry(const directory_entry&amp;) = default;
+    directory_entry(directory_entry&amp;&amp;) noexcept = default;
+    <ins>explicit directory_entry(const path&amp; p);</ins>
+    <del>explicit directory_entry(const path&amp; p, file_status st=file_status(),</del>
+      <del>file_status symlink_st=file_status());</del>
+    ~directory_entry();
+
+    // <a href="#directory_entry-modifiers">modifiers</a>
+    directory_entry&amp; operator=(const directory_entry&amp;) = default;
+    directory_entry&amp; operator=(directory_entry&amp;&amp;) noexcept = default;
+    <ins>void assign(const path&amp; p);</ins>
+    <del>void assign(const path&amp; p, file_status st=file_status()</del>,
+      <del>file_status symlink_st=file_status()</del>);
+    <ins>void replace_filename(const path&amp; p);</ins>
+    <del>void replace_filename(const path&amp; p, file_status st=file_status()</del>,
+      <del>file_status symlink_st=file_status()</del>);
+
+    // <a href="#directory_entry-observers">observers</a>
+    const path&amp;  path() const noexcept;
+    file_status  status() const;
+    file_status  status(error_code&amp; ec) const noexcept;
+    file_status  symlink_status() const;
+    file_status  symlink_status(error_code&amp; ec) const noexcept;
+
+    bool operator&lt; (const directory_entry&amp; rhs) const noexcept;
+    bool operator==(const directory_entry&amp; rhs) const noexcept;
+    bool operator!=(const directory_entry&amp; rhs) const noexcept;
+    bool operator&lt;=(const directory_entry&amp; rhs) const noexcept;
+    bool operator&gt; (const directory_entry&amp; rhs) const noexcept;
+    bool operator&gt;=(const directory_entry&amp; rhs) const noexcept;
+    private:
+    path                 m_path;           // for exposition only
+    <del>mutable file_status  m_status;         // for exposition only; stat()-like</del>
+    <del>mutable file_status  m_symlink_status; // for exposition only; lstat()-like</del>
+    };
+
+    } } } }  // namespaces std::experimental::filesystem::v1
+  </pre>
+  <p>
+    A <code>directory_entry</code> object stores a <code>path</code> object<del>,</del>
+    <del>a <code>file_status</code> object for non-symbolic link status, and a <code>file_status</code> object for symbolic link status</del>.
+    <del>
+      The <code>file_status</code> objects act as value caches.
+    </del>
+  </p>
+  <blockquote>
+    <p>
+      <del>
+        [<i>Note:</i> Because <code>status()</code>on a pathname may be a relatively expensive operation,
+        some operating systems provide status information as a byproduct of directory
+        iteration. Caching such status information can result in significant time savings. Cached and
+        non-cached results may differ in the presence of file system races. <i>&mdash;end note</i>]
+      </del>
+    </p>
+  </blockquote>
+  <h3>
+    12.1  <a name="directory_entry-constructors">
+      <code>directory_entry</code> constructors
+    </a>
+    [directory_entry.cons]
+  </h3>
+
+   <p>
+      <i>
+        <span style="background-color: #C0C0C0">
+          Add the description of this
+          constructor in its entirety:
+        </span>
+      </i>
+    </p>
+   <pre>explicit directory_entry(const path&amp; p);</pre>
+  <blockquote>
+    <p/><i>Effects: </i>Constructs an object of type <code>directory_entry</code>
+    
+    <p>
+      <i>Postcondition:</i>
+      <code>path() == p</code>.
+    </p>
+
+  </blockquote>
+  <pre><del>explicit directory_entry(const path&amp; p, file_status st=file_status()</del>,
+    <del>file_status symlink_st=file_status()</del>);</pre>
+  <blockquote>
+    <p>
+      <span style="background-color: #C0C0C0">
+        <i>Strike the description</i>
+      </span>
+    </p>
+
+    
+  </blockquote>
+  <h3>
+    12.2  <a name="directory_entry-modifiers">
+      <code>directory_entry</code> modifiers
+    </a>
+    [directory_entry.mods]
+  </h3>
+
+  <p>
+    <i>
+      <span style="background-color: #C0C0C0">
+        Add the description of this
+        function in its entirety:
+      </span>
+    </i>
+  </p>
+  <pre>void assign(const path&amp; p);</pre>
+  <blockquote>
+    <p>
+      <i>Postcondition:</i>
+      <code>path() == p</code>.
+    </p>
+ 
+  </blockquote>
+  <pre><del>void assign(const path&amp; p, file_status st=file_status()</del>,
+  <del>file_status symlink_st=file_status());</del></pre>
+  <blockquote>
+    <p>
+      <span style="background-color: #C0C0C0">
+        <i>Strike the description</i>
+      </span>
+    </p>
+  </blockquote>
+
+  <p>
+    <i>
+      <span style="background-color: #C0C0C0">
+        Add the description of this
+        function in its entirety:
+      </span>
+    </i>
+  </p>
+  <pre>void replace_filename(const path&amp; p);</pre>
+  <blockquote>
+    <p>
+      <i>Postcondition:</i> <code>path() == x.parent_path() / p</code>
+      where <code>x</code> is the value of <code>path()</code>
+      before the function is called.
+    </p>
+  </blockquote>
+  <pre><del>void replace_filename(const path&amp; p, file_status st=file_status()</del>,
+  <del>file_status symlink_st=file_status());</del></pre>
+  <blockquote>
+    <p>
+      <span style="background-color: #C0C0C0">
+        <i>Strike the description</i>
+      </span>
+    </p>
+  </blockquote>
+  <h3>
+    12.3  <a name="directory_entry-observers">
+      <code>directory_entry</code> observers
+    </a>
+    [directory_entry.obs]
+  </h3>
+  <pre>const path&amp; path() const noexcept;</pre>
+  <blockquote>
+    <p>
+      <i>Returns:</i>
+      <code>m_path</code>
+    </p>
+  </blockquote>
+  <pre>file_status status() const;
+file_status status(error_code&amp; ec) const noexcept;</pre>
+  <blockquote>
+    <p>
+      <del><i>Effects:</i> As if,</del>
+    </p>
+    <blockquote>
+      <pre><del>if (!status_known(m_status))
+{
+  if (status_known(m_symlink_status) &amp;&amp; !is_symlink(m_symlink_status))
+    { m_status = m_symlink_status; }
+  else { m_status = status(m_path<i>[, ec]</i>); }
+}</del></pre>
+    </blockquote>
+    <p>
+      <i>Returns:</i>
+      <code>
+        <del>m_status</del>
+        <ins>status(path()<i>[, ec]</i>)</ins>
+      </code>.
+    </p>
+
+    <p>
+      <i>Throws:</i> As specified in <a href="#Error-reporting">Error reporting (7)</a>.
+    </p>
+
+  </blockquote>
+  <pre>file_status  symlink_status() const;
+file_status  symlink_status(error_code&amp; ec) const noexcept;</pre>
+  <blockquote>
+    <p>
+      <del><i>Effects:</i> As if,</del>
+    </p>
+    <blockquote>
+      <pre><del>
+        if (!status_known(m_symlink_status))
+        {
+        m_symlink_status = symlink_status(m_path<i>[, ec]</i>);
+        }</del></pre>
+    </blockquote>
+    <p>
+      <i>Returns:</i>
+      <code>
+        <del>m_symlink_status</del>
+        <ins>symlink_status(path()<i>[, ec]</i>)</ins>
+      </code>.
+    </p>
+
+    <p>
+      <i>Throws:</i> As specified in <a href="#Error-reporting">Error reporting (7)</a>.
+    </p>
+
+  </blockquote>
+  <pre>bool operator==(const directory_entry&amp; rhs) const noexcept;</pre>
+  <blockquote>
+    <p>
+      <i>Returns:</i> <code>m_path == rhs.m_path</code>.
+    </p>
+    <p>
+      <del>[<i>Note:</i> Status members do not participate in determining
+      equality. — end note]</del>
+    </p>
+  </blockquote>
+  <pre>bool operator!=(const directory_entry&amp; rhs) const noexcept;</pre>
+  <blockquote>
+    <p>
+      <i>Returns:</i> <code>m_path != rhs.m_path</code>.
+    </p>
+  </blockquote>
+  <pre>bool operator&lt; (const directory_entry&amp; rhs) const noexcept;</pre>
+  <blockquote>
+    <p>
+      <i>Returns:</i> <code>m_path &lt; rhs.m_path</code>.
+    </p>
+  </blockquote>
+  <pre>bool operator&lt;=(const directory_entry&amp; rhs) const noexcept;</pre>
+  <blockquote>
+    <p>
+      <i>Returns:</i> <code>m_path &lt;= rhs.m_path</code>.
+    </p>
+  </blockquote>
+  <pre>bool operator&gt; (const directory_entry&amp; rhs) const noexcept;</pre>
+  <blockquote>
+    <p>
+      <i>Returns:</i> <code>m_path &gt; rhs.m_path</code>.
+    </p>
+  </blockquote>
+  <pre>bool operator&gt;=(const directory_entry&amp; rhs) const noexcept;</pre>
+  <blockquote>
+    <p>
+      <i>Returns:</i> <code>m_path &gt;= rhs.m_path</code>.
+    </p>
+  </blockquote>
+
+
+
+
+
+
+
+
+
+<hr>
+<h3><a name="56"></a>56. [PDTS] Feature test macro for TS version</h3>
+<p><b>Section:</b> X 5 [fs.req] <b>Status:</b> <a href="active.html#Immediate">Immediate</a>
+ <b>Submitter:</b> Clark Nelson <b>Opened:</b> 2014-02-10 <b>Last modified:</b> 2014-06-20</p>
+<p><b>View all issues with</b> <a href="status-index.html#Immediate">Immediate</a> status.</p>
+<p><b>Discussion:</b></p>
+<p/><a href="http://isocpp.org/std/standing-documents/sd-6-sg10-feature-test-recommendations">
+SD-6: SG10 Feature Test Recommendations</a> recommends that each library header 
+provide feature test macros. For Technical Specifications, the TS itself should 
+specify recommended names for the feature test macros.
+<p><i>[Beman Dawes 2014-02-28 provided the proposed resolution.
+Thanks to Vicente J. Botet Escriba, Richard Smith, and Clark Nelson for suggestions and corrections.]</i></p>
+
+
+
+<p><b>Proposed resolution:</b></p>
+<p><i>Add a new sub-section:</i></p>
+<blockquote>
+  <p><ins>5.2 Feature test macros [fs.req.macros]</ins></p>
+  <p><ins>This macro allows users to determine which version of this Technical Specification
+   is supported by header <code>&lt;experimental/filesystem&gt;</code>.</ins></p>
+  <p><ins>Header <code>&lt;experimental/filesystem&gt;</code> shall supply the 
+  following macro definition:</ins></p>
+  <blockquote>
+    <pre><ins>#define __cpp_lib_experimental_filesystem     201406</ins></pre>
+  </blockquote>
+<p><ins>[<i>Note:</i> The value of macro <code>__cpp_lib_experimental_filesystem</code> is
+<i>yyyymm</i> where <i>yyyy</i> is the year and <i>mm</i> the month when the version
+of the Technical Specification was completed. <i>&mdash; end note</i>]</ins></p>
+
+</blockquote>
+
+
+
+
+
+<hr>
+<h3><a name="57"></a>57. [PDTS] Inappropriate use of "No diagnostic is required"</h3>
+<p><b>Section:</b> X 2.1 [fs.conform.9945] <b>Status:</b> <a href="active.html#Immediate">Immediate</a>
+ <b>Submitter:</b> LWG/SG-3 <b>Opened:</b> 2014-02-13 <b>Last modified:</b> 2014-06-19</p>
+<p><b>View all other</b> <a href="section-index.html#.1 [fs.conform.9945">issues</a> in 2.1 [fs.conform.9945].</p>
+<p><b>View all issues with</b> <a href="status-index.html#Immediate">Immediate</a> status.</p>
+<p><b>Discussion:</b></p>
+<p/>§ 2.1 [fs.conform.9945] specifes "No diagnostic is required" for races. That prescription is
+used by the standard for the core language; it is not appropriate in library specifications.
+LWG/SG-3 wishes this be changed to undefined behavior.
+
+<p><i>[Beman comments: The replacment wording is similar to that used by C++14 17.6.4.10]</i></p>
+
+
+
+<p><b>Proposed resolution:</b></p>
+<p/>Change the following paragraph from § 2.1 [fs.conform.9945]
+<blockquote>
+<del>The behavior of functions described in this Technical Specification may differ
+from their specification in the presence of file system races ([fs.def.race]).
+No diagnostic is required.</del>
+<p/><ins>Behavior is undefined if calls to functions provided
+by this Technical Specification introduce a file system race (4.6 [fs.def.race]).</ins>
+</blockquote>
+
+<p/>Insert a new sub-section head before the modified paragraph:
+<blockquote>2.1 File system race behavior [fs.race.behavior]</blockquote>
+
+
+
+
+
+
+<hr>
+<h3><a name="58"></a>58. [PDTS] POSIX <tt>utime()</tt> is obsolescent</h3>
+<p><b>Section:</b> X 15.25 [fs.op.last_write_time] <b>Status:</b> <a href="active.html#Immediate">Immediate</a>
+ <b>Submitter:</b> LWG/SG-3 <b>Opened:</b> 2014-02-13 <b>Last modified:</b> 2014-06-19</p>
+<p><b>View all other</b> <a href="section-index.html#5.25 [fs.op.last_write_time">issues</a> in 15.25 [fs.op.last_write_time].</p>
+<p><b>View all issues with</b> <a href="status-index.html#Immediate">Immediate</a> status.</p>
+<p><b>Discussion:</b></p>
+<p>POSIX now says: "Since the <tt>utimbuf</tt> structure only contains <tt>time_t</tt> variables
+and is not accurate to fractions of a second, applications
+should use the <tt>utimensat()</tt> function instead of the obsolescent <tt>utime()</tt> function."</p>
+
+  <p>
+    Suggested resolution: Rewrite the <tt>last_write_time</tt> setter description to utilize <tt>utimensat() or similar.</tt>
+  </p>
+
+  <p><i>[20 May 2014 Beman Dawes supplies proposed wording. He comments:]</i></p>
+
+
+  <p>POSIX supplies two functions, <code>futimens()</code> and <code>utimensat()</code>,
+  as replacements for <code>utime()</code>.
+  <code>futimens()</code> is appropriate for the current TS.
+  <code>utimensat()</code> will be appropriate for a future File System TS that adds the
+  functionality of the whole family of POSIX *<code>at()</code> functions.
+</p>
+
+
+
+<p><b>Proposed resolution:</b></p>
+  <p>
+    <i>Change 15.25 Last write time [fs.op.last_write_time]:</i>
+  </p>
+  <blockquote>
+    <p>
+      <i>Effects:</i> Sets the time of last data modification of the file resolved
+      to by <code>p</code> to <code>new_time</code>, as if by POSIX <del>
+        <code>stat()</code>
+        followed by POSIX <code>utime()</code>
+      </del> <ins>
+        <code>futimens()</code>
+      </ins>.
+    </p>
+  </blockquote>
+
+
+
+
+
+<hr>
+<h3><a name="60"></a>60. [PDTS] Incorrect <i>Throws</i> specification for <tt>absolute()</tt></h3>
+<p><b>Section:</b> X 15.1 [fs.op.absolute] <b>Status:</b> <a href="active.html#Immediate">Immediate</a>
+ <b>Submitter:</b> Daniel Krügler <b>Opened:</b> 2014-02-28 <b>Last modified:</b> 2014-06-19</p>
+<p><b>View all issues with</b> <a href="status-index.html#Immediate">Immediate</a> status.</p>
+<p><b>Discussion:</b></p>
+<p>The <i>Throws</i> element [fs.op.absolute] says:</p>
+<blockquote>
+  <p>&quot;If <code>base.is_absolute()</code> is true, throws only if memory 
+  allocation fails.&quot;</p>
+</blockquote>
+<p>We can strike:</p>
+<blockquote>
+  <p>&quot;If <code>base.is_absolute()</code> is true,&quot; and the wording will still 
+  hold. Note that:</p>
+  <ol>
+    <li>None of the involved functions has requirements.</li>
+    <li>In *every* case potentially memory allocation occurs, even for &quot;<code>return 
+    p</code>&quot;, so this allocation can fail.</li>
+  </ol>
+</blockquote>
+
+<p><i>[02-03-2014 Beman Dawes comments and provides P/R]</i></p>
+
+
+<p/>The <i>Throws</i> element should follow the same form as similar <i>Throws</i>
+elements in the TS. There isn't enough special about this function to justify special
+wording and by referencing Error reporting (7) we ensure <tt>absolute()</tt> follows
+the overall policy for handling memory allocation failures.
+
+
+
+<p><b>Proposed resolution:</b></p>
+<p><i>[Change 15.1 [fs.op.absolute]:]</i></p>
+
+
+<blockquote>
+  <p><i>Throws:</i> <del>If <code>base.is_absolute()</code> is true, throws only if 
+  memory allocation fails.</del> <ins>As specified in <a href="#Error-reporting">Error reporting (7)</a>.</ins></p>
+</blockquote>
+  
+
+
+
+
+
+<hr>
+<h3><a name="62"></a>62. Allocator requirements unspecified</h3>
+<p><b>Section:</b> X 5 Requirements [fs.req] <b>Status:</b> <a href="active.html#Immediate">Immediate</a>
+ <b>Submitter:</b> Daniel Kruegler <b>Opened:</b> 2014-05-19 <b>Last modified:</b> 2014-06-19</p>
+<p><b>View all issues with</b> <a href="status-index.html#Immediate">Immediate</a> status.</p>
+<p><b>Discussion:</b></p>
+<p>
+  The SG3 WP refers in several places to a template parameter named "Allocator" but
+  does not impose requirements on this type.
+</p>
+
+
+<p><b>Proposed resolution:</b></p>
+<p><i>Add the following to 5 Requirements [fs.req]:</i></p>
+
+  <blockquote>
+    <p>
+      <ins>Template parameters named <code>Allocator</code> shall meet the C++ Standard's
+      library Allocator requirements (C++11  �17.6.3.5)</ins></p>
+  </blockquote>  
+
+
+
+
+
+<hr>
+
+
+
+
+
+
+</body>
+</html>
