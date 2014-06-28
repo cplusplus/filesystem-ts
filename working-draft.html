@@ -8,19 +8,38 @@
 <title>Draft Filesystem Technical Specification</title>
 <style type="text/css">
 
-  /* Make room for paragraph numbers. */
-  body  { max-width : 7in;
-             margin-left: 2em; 
-           }
 
+  @media print
+  {
+    body /* Make room for paragraph numbers. */
+    {
+      max-width: 7.5in;
+      margin-left: 2em; 
+    }
+
+    div.noprint { display: none; }
+  }
+
+  @media screen
+  {
+    body /* Make room for paragraph numbers. */
+    {
+      max-width: 6.5in;
+      margin-left: 2em; 
+    }
+
+    div.noscreen { display: none; }
+  }
+  
   [para_num]::before { content: attr(para_num); float: left;
-                              font-size: 70%; margin-left: -3.0em; width: 1.5em; text-align: right;
+                                font-size: 70%; margin-left: -3.0em; width: 1.5em; text-align: right;
                              }
                              
   /* Make inline code avoid line wraps unless we override it with <br>. */                           
   code  { white-space: nowrap; }                          
                            
-  pre    { background-color:#D7EEFF }
+  pre    { background-color:#D7EEFF;  font-size: 80%; }
+  code  { font-size: 80%; }
   a       { text-decoration: none}
   a:link {COLOR: #2020FF;}
   a:visited {COLOR: #2020FF;}
@@ -28,11 +47,48 @@
   a:active {COLOR: #009933;}
   ins     { background-color:#E8FFE8 }
   del     { background-color:#FFD7D7 }
+
+@page
+ { 
+    @top-left { content: "© ISO/IEC"; }
+    
+    @top-right { content: "N4100"; }
+    
+    @bottom-right { content: counter(page); }
+ }
+ 
+ @page:first
+ {
+    @top-left { content: "© ISO 2014 — All rights reserved"; }
+    
+    @top-right { content: normal; }
+    
+    @bottom-right { content: normal; }
+ 
+ }
+   
+contents {
+    display: block;
+    page: table-of-contents;
+    counter-reset: page 1
+}
+
+@page table-of-contents
+{
+    @bottom-right { content: counter(page, lower-alpha); }
+}  
+
+ .page_break { page-break-before: always; }
+ .page_number_reset  { counter-reset: page 1; }
+ 
 </style>
 </head>
 
 <body>
 <!-- generate-paragraph-numbers=false -->
+
+<div class="noprint">
+
 <p>
   <table border="0">
     <tr>
@@ -42,7 +98,7 @@
     <tr>
       <td>Date:</td>
       <td>
-      <!--webbot bot="Timestamp" S-Type="EDITED" S-Format="%Y-%m-%d" startspan -->2014-06-26<!--webbot bot="Timestamp" endspan i-checksum="12388" --></td>
+      <!--webbot bot="Timestamp" S-Type="EDITED" S-Format="%Y-%m-%d" startspan -->2014-06-28<!--webbot bot="Timestamp" endspan i-checksum="12392" --></td>
     </tr>
     <tr>
       <td>Revises:</td>
@@ -71,14 +127,73 @@
 
 <!-- generate-section-numbers=false -->
 
-<h1 align="center">Working Draft,<br>
+<h1 class="page_break" align="center">Working Draft,<br>
 Technical Specification &mdash; File System</h1>
 
 
 <p>© ISO/IEC</p>
+</div>
 
+<div class="noscreen">
+<p align="right">ISO/IEC JTC 1/SC 22/WG 21 <span style="background-color: #FFFF00">D 4100</span><br>
+Date: 2014-07-04<br>
+ISO/IEC DTS 18822<br>
+ISO/IEC JTC1 SC22<br>
+Secretariat: ANSI</p>
+</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<h2>Programming Languages — C++<br>
+&nbsp;— File System Technical Specification</h2>
+<h3>Langages de programmation —  C++<br>
+— Spécification technique de système de fichiers</h3>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<table border="1" cellpadding="10" cellspacing="0" style="border-collapse: collapse" bordercolor="#111111" width="100%">
+  <tr>
+    <td width="100%"><p align="center"><b>Warning</b></p>
+<p>This document is not an ISO International Standard. It is distributed for review and comment. It is
+subject to change without notice and may not be referred to as an International Standard.
+</p>
+<p>Recipients of this draft are invited to submit, with their comments, notification of any relevant
+patent rights of which they are aware and to provide supporting documentation.</p></td>
+  </tr>
+</table>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>Document type: Draft Technical Specification<br>
+Document stage: (40) Enquiry<br>
+Document Language: E</p>
+<div class="page_break"></div>
+<table border="1" cellpadding="10" cellspacing="0" style="border-collapse: collapse" bordercolor="#111111" width="100%">
+  <tr>
+    <td width="100%"><p align="center"><b>Copyright notice</b></p>
+<p>This ISO document is a working draft or committee draft and is copyright-protected by ISO. While
+the reproduction of working drafts or committee drafts in any form for use by participants in the
+ISO standards development process is permitted without prior permission from ISO, neither this
+document nor any extract from it may be reproduced, stored or transmitted in any form for any
+other purpose without prior written permission from ISO.</p>
+<p>Requests for permission to reproduce this document for the purpose of selling it should be
+addressed as shown below or to ISO’s member body in the country of the requester:</p>
+<blockquote><p>ISO copyright officer<br>
+Case postale 56, CH-1211 Geneva 20<br>
+Tel. + 41 22 749 01 11<br>
+Fax + 41 22 749 09 47<br>
+E-mail copyright@iso.org<br>
+Web www.iso.org
+</p></blockquote>
+<p>Reproduction may be subject to royalty payments or a licensing agreement.</p>
+<p>Violators may be prosecuted.</p></td>
+  </tr>
+</table>
+</div>
 
-<h2> <a name="TOC">Contents</a></h2>
+<div class ="contents">
+
+<h2 class="page_break"> <a name="TOC">Contents</a></h2>
 
 <blockquote>
       <p>      <a href="#TOC"> Contents</a><br>
@@ -218,11 +333,12 @@ conversions </a><br>
 </blockquote>
       
 <hr>
+</div>
 <!-- generate-section-numbers=true -->
 <!-- generate-paragraph-numbers=true -->
 
 
-<h2>1  <a name="Scope">Scope</a>&nbsp; [<a name="fs.scope">fs.scope</a>]</h2>
+<h2 class="page_number_reset">1  <a name="Scope">Scope</a>&nbsp; [<a name="fs.scope">fs.scope</a>]</h2>
 
 <p para_num="1">This Technical Specification specifies requirements for implementations of an 
 interface that computer programs written in the C++ programming language may use 
@@ -514,7 +630,6 @@ the following macro definition:</ins></p>
 <p para_num="4"><ins>[<i>Note:</i> The value of macro <code>__cpp_lib_experimental_filesystem</code> 
 is <i>yyyymm</i> where <i>yyyy</i> is the year and <i>mm</i> the month when the 
 version of the Technical Specification was completed. <i>— end note</i>]</ins></p>
-<p para_num="5">&nbsp;</p>
 
 <h2>6  <a name="Header-filesystem-synopsis">Header <code>&lt;experimental/filesystem&gt;</code> synopsis</a> 
 [<a name="fs.filesystem.synopsis">fs.filesystem.synopsis</a>]</h2>
