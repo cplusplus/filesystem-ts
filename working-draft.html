@@ -1267,9 +1267,9 @@ template &lt;class InputIterator&gt;
   follows:</p>
   <blockquote>
   <p para_num="11">If <code>value_type</code> is <code>wchar_t</code>, converts to the native 
-  wide encoding (<a href="#fs.def.native.encode">4.10</a>) using the <code>codecvt&lt;wchar_t, char&gt;</code> 
+  wide encoding (<a href="#fs.def.native.encode">4.10</a>) using the <code>codecvt&lt;wchar_t, char, mbstate_t&gt;</code> 
   facet of <code>loc</code>. Otherwise a conversion is performed using the <code>
-  codecvt&lt;wchar_t, char&gt;</code> facet of <code>loc</code>, and then a second 
+  codecvt&lt;wchar_t, char, mbstate_t&gt;</code> facet of <code>loc</code>, and then a second 
   conversion to the current narrow encoding. </p>
   </blockquote>
   <p para_num="12">[<i>Example</i>:</p>
@@ -1343,7 +1343,7 @@ template &lt;class InputIterator&gt;
     Appends <code>path::preferred_separator</code> to <code>pathname</code> unless:<ul>
     <li para_num="4">an added separator 
     would be redundant, or</li>
-    <li para_num="5">would change a relative path to a absolute path
+    <li para_num="5">would change a relative path to an absolute path
     [<i>Note</i>: An empty path is relative. — <i>end note</i>], or</li>
     <li para_num="6"><code>p.empty()</code>, or</li>
     <li para_num="7"><code>*p.native().cbegin()</code> is a directory separator.</li>
