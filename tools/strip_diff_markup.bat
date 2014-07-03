@@ -1,0 +1,1 @@
+sed "s~<ins>~~g" working-draft.html >working-draft-diffless.html
