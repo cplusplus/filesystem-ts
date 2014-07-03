@@ -103,7 +103,7 @@ div.roman-page
     <tr>
       <td>Date:</td>
       <td>
-      <!--webbot bot="Timestamp" S-Type="EDITED" S-Format="%Y-%m-%d" startspan -->2014-07-02<!--webbot bot="Timestamp" endspan i-checksum="12442" --></td>
+      <!--webbot bot="Timestamp" S-Type="EDITED" S-Format="%Y-%m-%d" startspan -->2014-07-03<!--webbot bot="Timestamp" endspan i-checksum="12444" --></td>
     </tr>
     <tr>
       <td>Revises:</td>
@@ -1141,7 +1141,7 @@ conversions</a> [<a name="path.fmt.cvt">path.fmt.cvt</a>]</h4>
       <p para_num="5">&nbsp;<i>&mdash;end note</i>]
 </blockquote>
 
-<p para_num="6" dir="ltr">Functions arguments that take character sequences representing 
+<p para_num="6">Functions arguments that take character sequences representing 
 paths may use the generic pathname format grammar (<a href="#path.generic">8.1</a>) or 
 the native pathname format (<a href="#fs.def.native">4.11</a>). If and only if such 
 arguments are in the generic format and the generic format is not acceptable to 
@@ -1790,7 +1790,7 @@ operator&lt;&lt;(basic_ostream&lt;charT, traits&gt;&amp; os, const path&amp; p);
   <p para_num="2"><i>Effects:</i> <code>os </code>
   <tt>&lt;&lt; quoted(p.string&lt;charT, traits&gt;())</tt>. </p>
   <p para_num="3">[<i>Note</i>: The <code>quoted</code> function is described in 
-  <del>ISO 14882:2014</del> <ins>C++14</ins> §27.7.6. — <i>end note</i>] </p>
+  <del>ISO 14882:2014</del> <ins>C++14</ins> §27.7.6. &mdash; <i>end note</i>] </p>
   <p para_num="4"><i>Returns:</i> <code>os</code></p>
   </blockquote>
 <pre para_num="5">template &lt;class charT, class traits&gt;
@@ -2356,11 +2356,11 @@ and permissions of a file.</p>
     directory_entry&amp; operator=(const directory_entry&amp;) = default;
     directory_entry&amp; operator=(directory_entry&amp;&amp;) noexcept = default;
     <ins>void assign(const path&amp; p);</ins>
-    <del>void assign(const path&amp; p, file_status st=file_status()</del>,
-      <del>file_status symlink_st=file_status()</del>);
+    <del>void assign(const path&amp; p, file_status st=file_status(),</del>
+      <del>file_status symlink_st=file_status());</del>
     <ins>void replace_filename(const path&amp; p);</ins>
-    <del>void replace_filename(const path&amp; p, file_status st=file_status()</del>,
-      <del>file_status symlink_st=file_status()</del>);
+    <del>void replace_filename(const path&amp; p, file_status st=file_status(),</del>
+      <del>file_status symlink_st=file_status());</del>
 
     // <a href="#directory_entry-observers">observers</a>
     const path&amp;  path() const noexcept;
@@ -3130,7 +3130,7 @@ bool <a name="copy_file2">copy_file</a>(const path&amp; from, const path&amp; to
     <a href="#Error-reporting">Error 
     reporting (7)</a>. </del></p>
     <p para_num="8"><del>If <code>!exists(to) || (options &amp; copy_options::overwrite_existing)</code></del></p>
-    <p para_num="8"><del> <code>&nbsp;|| ((options &amp; copy_options::update_existing) &amp;&amp; last_write_time(from)<br>
+    <p para_num="9"><del> <code>&nbsp;|| ((options &amp; copy_options::update_existing) &amp;&amp; last_write_time(from)<br>
 &nbsp;&nbsp; &gt; last_write_time(to)) || !(options &amp; (copy_options::skip_existing<br>
 &nbsp;| 
     copy_options::overwrite_existing | copy_options::update_existing)) </code>
@@ -3138,36 +3138,35 @@ bool <a name="copy_file2">copy_file</a>(const path&amp; from, const path&amp; to
     the file <code>to</code> resolves to. </del></p>
   </blockquote>
   <blockquote>
-    <p para_num="9"><ins>Report a file already exists error as specified in
+    <p para_num="10"><ins>Report a file already exists error as specified in
     <a href="#Error-reporting">
     Error reporting (7) </a>if: </ins></p>
     <ul>
-      <li para_num="10"><ins><code>exists(to)</code> and <code>equivalent(from, to)</code>, or
+      <li para_num="11"><ins><code>exists(to)</code> and <code>equivalent(from, to)</code>, or
       </ins></li>
-      <li para_num="11" dir="ltr">
-      <p dir="ltr"><ins><code>exists(to)</code> and <code>(options &amp; (copy_options::skip_existing<br>
+      <li para_num="12"><ins><code>exists(to)</code> and <code>(options &amp; (copy_options::skip_existing<br>
 &nbsp;| copy_options::overwrite_existing | copy_options::update_existing))<br>
 &nbsp;&nbsp; == copy_options::none. </code></ins></li>
     </ul>
-    <p para_num="12"><ins>Otherwise copy the contents and attributes of the file <code>from</code> 
+    <p para_num="13"><ins>Otherwise copy the contents and attributes of the file <code>from</code> 
     resolves to to the file <code>to</code> resolves to if: </ins></p>
     <ul>
-      <li para_num="13"><ins><code>!exists(to)</code>, or </ins></li>
-      <li para_num="14"><ins><code>exists(to)</code> and <code>(options &amp; 
+      <li para_num="14"><ins><code>!exists(to)</code>, or </ins></li>
+      <li para_num="15"><ins><code>exists(to)</code> and <code>(options &amp; 
       copy_options::overwrite_existing) != copy_options::none </code>, or </ins>
       </li>
-      <li para_num="15"><ins><code>exists(to)</code> and <code>(options &amp; 
+      <li para_num="16"><ins><code>exists(to)</code> and <code>(options &amp; 
       copy_options::update_existing) != copy_options::none </code>and <code>from</code> 
       is more recent than <code>to</code>, determined as if by use of the <code>
       last_write_time </code>function. </ins></li>
     </ul>
-    <p para_num="16"><ins>Otherwise no effects.</ins></p>
+    <p para_num="17"><ins>Otherwise no effects.</ins></p>
   </blockquote>
-  <p para_num="17"><i>Returns</i>: <code>true</code> if the <code>from</code> file 
+  <p para_num="18"><i>Returns</i>: <code>true</code> if the <code>from</code> file 
   was copied, otherwise <code>false</code>. The signature with argument <code>ec</code> return
   <code>false</code> if an error occurs.</p>
-  <p para_num="18"><i>Throws:</i> As specified in <a href="#Error-reporting">Error reporting (7)</a>.</p>
-  <p para_num="19"><i>Complexity:</i> At most one direct or indirect invocation of <code>
+  <p para_num="19"><i>Throws:</i> As specified in <a href="#Error-reporting">Error reporting (7)</a>.</p>
+  <p para_num="20"><i>Complexity:</i> At most one direct or indirect invocation of <code>
   status(to)</code>.</p>
 </blockquote>
 <h3>15.5  Copy symlink&nbsp; [<a name="fs.op.copy_symlink">fs.op.copy_symlink</a>]</h3>
