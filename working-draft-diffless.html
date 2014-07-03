@@ -103,7 +103,7 @@ div.roman-page
     <tr>
       <td>Date:</td>
       <td>
-      <!--webbot bot="Timestamp" S-Type="EDITED" S-Format="%Y-%m-%d" startspan -->2014-07-02<!--webbot bot="Timestamp" endspan i-checksum="12442" --></td>
+      <!--webbot bot="Timestamp" S-Type="EDITED" S-Format="%Y-%m-%d" startspan -->2014-07-03<!--webbot bot="Timestamp" endspan i-checksum="12444" --></td>
     </tr>
     <tr>
       <td>Revises:</td>
@@ -166,7 +166,7 @@ Secretariat: ANSI</p>
 <table border="1" cellpadding="10" cellspacing="0" style="border-collapse: collapse" bordercolor="#111111" width="100%">
   <tr>
     <td width="100%"><p align="center"><b>Warning</b></p>
-<p>This document is not an ISO  Technical Specification. It is distributed for review and comment. It is
+<p>This document is not an ISO Technical Specification. It is distributed for review and comment. It is
 subject to change without notice and may not be referred to as  a Technical Specification.
 </p>
 <p>Recipients of this draft are invited to submit, with their comments, notification of any relevant
@@ -404,9 +404,8 @@ system emulator rather than the actual underlying operating system.</p>
 
 <h3>2.3 File system race behavior [<a name="fs.race.behavior">fs.race.behavior</a>]</h3>
 
-<p para_num="1"><del>The behavior of functions described in this Technical Specification may 
-differ from their specification in the presence of <a href="#file-system-race">
-file system races</a> ([fs.def.race]). No diagnostic is required.</del></p>
+<p para_num="1">Behavior is undefined if calls to functions provided by this Technical 
+Specification introduce a file system race (<a href="#fs.def.race">4.6</a>).</p>
 
 <p para_num="2">If the possibility of a file system race would make it unreliable for a 
 program to test for a precondition before calling a function described herein, <i>
@@ -529,7 +528,7 @@ by <code>EcharT()</code>. </p>
 and characteristics of an operating system. See [fs.conform.os].</p>
 <h3>4.14  parent directory [<a name="fs.def.parent">fs.def.parent</a>]</h3>
 <p para_num="1">When discussing a given directory, the directory that both contains a 
-directory entry for the given directory and is represented by the  filename 
+directory entry for the given directory and is represented by the filename 
 dot-dot in the given directory.</p>
 <p para_num="2">When discussing other types of files, a directory containing a directory 
 entry for the file under discussion.</p>
@@ -1139,7 +1138,7 @@ conversions</a> [<a name="path.fmt.cvt">path.fmt.cvt</a>]</h4>
       <p para_num="5">&nbsp;<i>&mdash;end note</i>]
 </blockquote>
 
-<p para_num="6" dir="ltr">Functions arguments that take character sequences representing 
+<p para_num="6">Functions arguments that take character sequences representing 
 paths may use the generic pathname format grammar (<a href="#path.generic">8.1</a>) or 
 the native pathname format (<a href="#fs.def.native">4.11</a>). If and only if such 
 arguments are in the generic format and the generic format is not acceptable to 
@@ -1787,7 +1786,7 @@ operator&lt;&lt;(basic_ostream&lt;charT, traits&gt;&amp; os, const path&amp; p);
   <p para_num="2"><i>Effects:</i> <code>os </code>
   <tt>&lt;&lt; quoted(p.string&lt;charT, traits&gt;())</tt>. </p>
   <p para_num="3">[<i>Note</i>: The <code>quoted</code> function is described in 
-   C++14 §27.7.6. — <i>end note</i>] </p>
+   C++14 §27.7.6. &mdash; <i>end note</i>] </p>
   <p para_num="4"><i>Returns:</i> <code>os</code></p>
   </blockquote>
 <pre para_num="5">template &lt;class charT, class traits&gt;
@@ -2353,11 +2352,7 @@ and permissions of a file.</p>
     directory_entry&amp; operator=(const directory_entry&amp;) = default;
     directory_entry&amp; operator=(directory_entry&amp;&amp;) noexcept = default;
     void assign(const path&amp; p);
-    ,
-      );
     void replace_filename(const path&amp; p);
-    ,
-      );
 
     // <a href="#directory_entry-observers">observers</a>
     const path&amp;  path() const noexcept;
@@ -2380,8 +2375,7 @@ and permissions of a file.</p>
   };
 
 } } } }  // namespaces std::experimental::filesystem::v1  </pre>
-<p para_num="2">A <code>directory_entry</code> object stores a <code>path</code> object
-.</p>
+<p para_num="2">A <code>directory_entry</code> object stores a <code>path</code> object.</p>
 <h3>12.1 <a name="directory_entry-constructors"><code>directory_entry</code> 
 constructors </a>[directory_entry.cons] </h3>
 <pre para_num="1">explicit directory_entry(const path&amp; p);</pre>
@@ -2389,29 +2383,6 @@ constructors </a>[directory_entry.cons] </h3>
   <p para_num="2"><i>Effects: </i>Constructs an object of type <code>directory_entry</code>.
   </p>
   <p para_num="3"><i>Postcondition:</i> <code>path() == p</code>.</p>
-</blockquote>
-<pre para_num="4">,
-    );</pre>
-<blockquote>
-  <p para_num="5"></p>
-  <table border="1" cellpadding="5" cellspacing="0" style="border-collapse: collapse" bordercolor="#111111" width="36%">
-    <tr>
-      <td width="18%"></td>
-      <td width="82%"></td>
-    </tr>
-    <tr>
-      <td width="18%"></td>
-      <td width="82%"></td>
-    </tr>
-    <tr>
-      <td width="18%"></td>
-      <td width="82%"></td>
-    </tr>
-    <tr>
-      <td width="18%"></td>
-      <td width="82%"></td>
-    </tr>
-  </table>
 </blockquote>
 <h3>12.2 <a name="directory_entry-modifiers"><code>directory_entry</code> 
 modifiers </a>[directory_entry.mods] </h3>
@@ -2501,12 +2472,12 @@ directory.&nbsp;
         directory_iterator(const path&amp; p, error_code&amp; ec) noexcept;
         directory_iterator(const path&amp; p,
           directory_options options, error_code&amp; ec) noexcept;
-        directory_iterator(const directory_iterator&amp; rhs) ;
-        directory_iterator(directory_iterator&amp;&amp; rhs) noexcept ;
+        directory_iterator(const directory_iterator&amp; rhs);
+        directory_iterator(directory_iterator&amp;&amp; rhs) noexcept;
        ~directory_iterator();
 
-        directory_iterator&amp; operator=(const directory_iterator&amp; rhs) ;
-        directory_iterator&amp; operator=(directory_iterator&amp;&amp; rhs) noexcept ;
+        directory_iterator&amp; operator=(const directory_iterator&amp; rhs);
+        directory_iterator&amp; operator=(directory_iterator&amp;&amp; rhs) noexcept;
         
         const directory_entry&amp; operator*() const;
         const directory_entry* operator-&gt;() const;
@@ -2641,16 +2612,13 @@ directory and its sub-directories.</p>
 
         // constructors and destructor
         recursive_directory_iterator() noexcept;
-        explicit recursive_directory_iterator(const path&amp; p
-          );
+        explicit recursive_directory_iterator(const path&amp; p);
         recursive_directory_iterator(const path&amp; p, directory_options options);
         recursive_directory_iterator(const path&amp; p,
           <a href="#symlink_option">directory_options</a> options, error_code&amp; ec) noexcept;
         recursive_directory_iterator(const path&amp; p, error_code&amp; ec) noexcept;
-        recursive_directory_iterator(const recursive_directory_iterator&amp; rhs)
-          ;
-        recursive_directory_iterator(recursive_directory_iterator&amp;&amp; rhs) noexcept
-          ;
+        recursive_directory_iterator(const recursive_directory_iterator&amp; rhs);
+        recursive_directory_iterator(recursive_directory_iterator&amp;&amp; rhs) noexcept;
        ~recursive_directory_iterator();
 
         // observers
@@ -2974,7 +2942,7 @@ void copy(const path&amp; from, const path&amp; to, <a href="#copy_option">copy_
   <blockquote>
   <p para_num="24">Otherwise if <code>is_directory(f) &amp;&amp; ((options &amp; copy_options::recursive)<br>
 &nbsp; 
-  != copy_options::none || )
+  != copy_options::none || options == copy_options::none)
   </code>then:</p>
   
     <ul>
@@ -3053,30 +3021,29 @@ bool <a name="copy_file2">copy_file</a>(const path&amp; from, const path&amp; to
     <ul>
       <li para_num="8"><code>exists(to)</code> and <code>equivalent(from, to)</code>, or
       </li>
-      <li para_num="9" dir="ltr">
-      <p para_num="10" dir="ltr"><code>exists(to)</code> and <code>(options &amp; (copy_options::skip_existing<br>
+      <li para_num="9"><code>exists(to)</code> and <code>(options &amp; (copy_options::skip_existing<br>
 &nbsp;| copy_options::overwrite_existing | copy_options::update_existing))<br>
 &nbsp;&nbsp; == copy_options::none. </code></li>
     </ul>
-    <p para_num="11">Otherwise copy the contents and attributes of the file <code>from</code> 
+    <p para_num="10">Otherwise copy the contents and attributes of the file <code>from</code> 
     resolves to to the file <code>to</code> resolves to if: </p>
     <ul>
-      <li para_num="12"><code>!exists(to)</code>, or </li>
-      <li para_num="13"><code>exists(to)</code> and <code>(options &amp; 
+      <li para_num="11"><code>!exists(to)</code>, or </li>
+      <li para_num="12"><code>exists(to)</code> and <code>(options &amp; 
       copy_options::overwrite_existing) != copy_options::none </code>, or 
       </li>
-      <li para_num="14"><code>exists(to)</code> and <code>(options &amp; 
+      <li para_num="13"><code>exists(to)</code> and <code>(options &amp; 
       copy_options::update_existing) != copy_options::none </code>and <code>from</code> 
       is more recent than <code>to</code>, determined as if by use of the <code>
       last_write_time </code>function. </li>
     </ul>
-    <p para_num="15">Otherwise no effects.</p>
+    <p para_num="14">Otherwise no effects.</p>
   </blockquote>
-  <p para_num="16"><i>Returns</i>: <code>true</code> if the <code>from</code> file 
+  <p para_num="15"><i>Returns</i>: <code>true</code> if the <code>from</code> file 
   was copied, otherwise <code>false</code>. The signature with argument <code>ec</code> return
   <code>false</code> if an error occurs.</p>
-  <p para_num="17"><i>Throws:</i> As specified in <a href="#Error-reporting">Error reporting (7)</a>.</p>
-  <p para_num="18"><i>Complexity:</i> At most one direct or indirect invocation of <code>
+  <p para_num="16"><i>Throws:</i> As specified in <a href="#Error-reporting">Error reporting (7)</a>.</p>
+  <p para_num="17"><i>Complexity:</i> At most one direct or indirect invocation of <code>
   status(to)</code>.</p>
 </blockquote>
 <h3>15.5  Copy symlink&nbsp; [<a name="fs.op.copy_symlink">fs.op.copy_symlink</a>]</h3>
@@ -3764,11 +3731,11 @@ path <a name="system_complete2">system_complete</a>(const path&amp; p, error_cod
   same semantics as <code>absolute(p, current_path())</code> if <code>p.is_absolute() ||
   !p.has_root_name()</code> or <code>p</code> and <code>base</code> have the same
   <code>root_name()</code>. 
-  Otherwise it acts like <code>absolute(p, cwd</code> is
+  Otherwise it acts like <code>absolute(p, cwd)</code> is
   the current directory for the <code>p.root_name()</code> drive. This will 
   be the current directory for that drive the last time it was set, and thus may 
   be residue left over from a prior program run by the command 
-  processor may be surprising.
+  processor. Although these semantics are useful, they may be surprising.
    <i>&mdash;end example</i>]
 </blockquote>
   
