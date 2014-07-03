@@ -1653,7 +1653,7 @@ for (; !p.extension().empty(); p = p.stem())
   <p para_num="27"> <i>&mdash;end example</i>]</p>
   <p para_num="28">[<i>Note:<b> </b></i>The period is included in the return value so that it is 
   possible to distinguish between no extension and an empty extension. Also note 
-  that for a path <code>p</code>, <code>p.stem()+p.extension() == p</code>. <i>
+  that for a path <code>p</code>, <code>p.stem()+p.extension() == p<ins>.filename()</ins></code>. <i>
   &mdash;end note</i>]</p>
 </blockquote>
 <h4>8.4.10  <a name="path-query"> <code>path</code> query</a> [path.query]</h4>
@@ -1675,7 +1675,7 @@ for (; !p.extension().empty(); p = p.stem())
 </blockquote>
 <pre para_num="9">bool <a name="path-has_relative_path">has_relative_path</a>() const;</pre>
 <blockquote>
-  <p para_num="10"><i>Returns:</i> <code>!<a href="#path-has_relative_path">relative_path</a>().empty()</code></p>
+  <p para_num="10"><i>Returns:</i> <code>!<a href="#path-relative_path">relative_path</a>().empty()</code></p>
 </blockquote>
 <pre para_num="11">bool <a name="path-has_parent_path">has_parent_path</a>() const;</pre>
 <blockquote>
@@ -1691,7 +1691,7 @@ for (; !p.extension().empty(); p = p.stem())
 </blockquote>
 <pre para_num="17">bool <a name="path-has_extension">has_extension</a>() const;</pre>
 <blockquote>
-  <p para_num="18"><i>Returns:</i> <code>!<a href="#path-has_extension">extension</a>().empty()</code></p>
+  <p para_num="18"><i>Returns:</i> <code>!<a href="#path-extension">extension</a>().empty()</code></p>
 </blockquote>
 <pre para_num="19">bool <a name="path-is_absolute">is_absolute</a>() const;</pre>
 <blockquote>
