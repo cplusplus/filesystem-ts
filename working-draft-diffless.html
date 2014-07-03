@@ -408,11 +408,11 @@ system emulator rather than the actual underlying operating system.</p>
 differ from their specification in the presence of <a href="#file-system-race">
 file system races</a> ([fs.def.race]). No diagnostic is required.</del></p>
 
-<p para_num="3">If the possibility of a file system race would make it unreliable for a 
+<p para_num="2">If the possibility of a file system race would make it unreliable for a 
 program to test for a precondition before calling a function described herein, <i>
 Requires</i> is not specified for the function.</p>
 <blockquote>
-<p para_num="4">[<i>Note:</i> As a design practice, preconditions are not specified when it 
+<p para_num="3">[<i>Note:</i> As a design practice, preconditions are not specified when it 
 is unreasonable for a program to detect them prior to calling the function. <i>
 —end note</i>]</p>
 </blockquote>
@@ -2419,9 +2419,9 @@ modifiers </a>[directory_entry.mods] </h3>
 <blockquote>
   <p para_num="2"><i>Postcondition:</i> <code>path() == p</code>. </p>
 </blockquote>
-<pre para_num="5">void replace_filename(const path&amp; p);</pre>
+<pre para_num="3">void replace_filename(const path&amp; p);</pre>
 <blockquote>
-  <p para_num="6"><i>Postcondition:</i> <code>path() == x.parent_path() / p</code> where
+  <p para_num="4"><i>Postcondition:</i> <code>path() == x.parent_path() / p</code> where
   <code>x</code> is the value of <code>path()</code> before the function is 
   called. </p>
 </blockquote>
@@ -2436,44 +2436,44 @@ operator const path&amp;() const noexcept;</pre>
 <pre para_num="3">file_status status() const;
 file_status status(error_code&amp; ec) const noexcept;</pre>
 <blockquote>
-  <p para_num="6"><i>Returns:</i> <code> status(path()<i>[, ec]</i>)</code>.
+  <p para_num="4"><i>Returns:</i> <code> status(path()<i>[, ec]</i>)</code>.
   </p>
-  <p para_num="7"><i>Throws:</i> As specified in
+  <p para_num="5"><i>Throws:</i> As specified in
   <a href="#Error-reporting">Error 
   reporting (7)</a>. </p>
 </blockquote>
-<pre para_num="8">file_status  symlink_status() const;
+<pre para_num="6">file_status  symlink_status() const;
 file_status  symlink_status(error_code&amp; ec) const noexcept;</pre>
 <blockquote>
-   <p para_num="11"><i>Returns:</i> <code> symlink_status(path()<i>[, 
+   <p para_num="7"><i>Returns:</i> <code> symlink_status(path()<i>[, 
   ec]</i>)</code>. </p>
-  <p para_num="12"><i>Throws:</i> As specified in
+  <p para_num="8"><i>Throws:</i> As specified in
   <a href="#Error-reporting">Error 
   reporting (7)</a>. </p>
 </blockquote>
-<pre para_num="13">bool operator==(const directory_entry&amp; rhs) const noexcept;</pre>
+<pre para_num="9">bool operator==(const directory_entry&amp; rhs) const noexcept;</pre>
 <blockquote>
-  <p para_num="14"><i>Returns:</i> <code>m_path == rhs.m_path</code>. </p>
+  <p para_num="10"><i>Returns:</i> <code>m_path == rhs.m_path</code>. </p>
 </blockquote>
-<pre para_num="16">bool operator!=(const directory_entry&amp; rhs) const noexcept;</pre>
+<pre para_num="11">bool operator!=(const directory_entry&amp; rhs) const noexcept;</pre>
 <blockquote>
-  <p para_num="17"><i>Returns:</i> <code>m_path != rhs.m_path</code>. </p>
+  <p para_num="12"><i>Returns:</i> <code>m_path != rhs.m_path</code>. </p>
 </blockquote>
-<pre para_num="18">bool operator&lt; (const directory_entry&amp; rhs) const noexcept;</pre>
+<pre para_num="13">bool operator&lt; (const directory_entry&amp; rhs) const noexcept;</pre>
 <blockquote>
-  <p para_num="19"><i>Returns:</i> <code>m_path &lt; rhs.m_path</code>. </p>
+  <p para_num="14"><i>Returns:</i> <code>m_path &lt; rhs.m_path</code>. </p>
 </blockquote>
-<pre para_num="20">bool operator&lt;=(const directory_entry&amp; rhs) const noexcept;</pre>
+<pre para_num="15">bool operator&lt;=(const directory_entry&amp; rhs) const noexcept;</pre>
 <blockquote>
-  <p para_num="21"><i>Returns:</i> <code>m_path &lt;= rhs.m_path</code>. </p>
+  <p para_num="16"><i>Returns:</i> <code>m_path &lt;= rhs.m_path</code>. </p>
 </blockquote>
-<pre para_num="22">bool operator&gt; (const directory_entry&amp; rhs) const noexcept;</pre>
+<pre para_num="17">bool operator&gt; (const directory_entry&amp; rhs) const noexcept;</pre>
 <blockquote>
-  <p para_num="23"><i>Returns:</i> <code>m_path &gt; rhs.m_path</code>. </p>
+  <p para_num="18"><i>Returns:</i> <code>m_path &gt; rhs.m_path</code>. </p>
 </blockquote>
-<pre para_num="24">bool operator&gt;=(const directory_entry&amp; rhs) const noexcept;</pre>
+<pre para_num="19">bool operator&gt;=(const directory_entry&amp; rhs) const noexcept;</pre>
 <blockquote>
-  <p para_num="25"><i>Returns:</i> <code>m_path &gt;= rhs.m_path</code>. </p>
+  <p para_num="20"><i>Returns:</i> <code>m_path &gt;= rhs.m_path</code>. </p>
 </blockquote>
 <h2>13  <a name="Class-directory_iterator">Class <code>directory_iterator</code> 
 [class.directory_iterator]</a></h2>
@@ -3047,36 +3047,36 @@ bool <a name="copy_file2">copy_file</a>(const path&amp; from, const path&amp; to
   in <code>options</code>.</p>
   <p para_num="6"><i>Effects:</i> </p>
   <blockquote>
-    <p para_num="9">Report a file already exists error as specified in
+    <p para_num="7">Report a file already exists error as specified in
     <a href="#Error-reporting">
     Error reporting (7) </a>if: </p>
     <ul>
-      <li para_num="10"><code>exists(to)</code> and <code>equivalent(from, to)</code>, or
+      <li para_num="8"><code>exists(to)</code> and <code>equivalent(from, to)</code>, or
       </li>
-      <li para_num="11" dir="ltr">
-      <p dir="ltr"><code>exists(to)</code> and <code>(options &amp; (copy_options::skip_existing<br>
+      <li para_num="9" dir="ltr">
+      <p para_num="10" dir="ltr"><code>exists(to)</code> and <code>(options &amp; (copy_options::skip_existing<br>
 &nbsp;| copy_options::overwrite_existing | copy_options::update_existing))<br>
 &nbsp;&nbsp; == copy_options::none. </code></li>
     </ul>
-    <p para_num="12">Otherwise copy the contents and attributes of the file <code>from</code> 
+    <p para_num="11">Otherwise copy the contents and attributes of the file <code>from</code> 
     resolves to to the file <code>to</code> resolves to if: </p>
     <ul>
-      <li para_num="13"><code>!exists(to)</code>, or </li>
-      <li para_num="14"><code>exists(to)</code> and <code>(options &amp; 
+      <li para_num="12"><code>!exists(to)</code>, or </li>
+      <li para_num="13"><code>exists(to)</code> and <code>(options &amp; 
       copy_options::overwrite_existing) != copy_options::none </code>, or 
       </li>
-      <li para_num="15"><code>exists(to)</code> and <code>(options &amp; 
+      <li para_num="14"><code>exists(to)</code> and <code>(options &amp; 
       copy_options::update_existing) != copy_options::none </code>and <code>from</code> 
       is more recent than <code>to</code>, determined as if by use of the <code>
       last_write_time </code>function. </li>
     </ul>
-    <p para_num="16">Otherwise no effects.</p>
+    <p para_num="15">Otherwise no effects.</p>
   </blockquote>
-  <p para_num="17"><i>Returns</i>: <code>true</code> if the <code>from</code> file 
+  <p para_num="16"><i>Returns</i>: <code>true</code> if the <code>from</code> file 
   was copied, otherwise <code>false</code>. The signature with argument <code>ec</code> return
   <code>false</code> if an error occurs.</p>
-  <p para_num="18"><i>Throws:</i> As specified in <a href="#Error-reporting">Error reporting (7)</a>.</p>
-  <p para_num="19"><i>Complexity:</i> At most one direct or indirect invocation of <code>
+  <p para_num="17"><i>Throws:</i> As specified in <a href="#Error-reporting">Error reporting (7)</a>.</p>
+  <p para_num="18"><i>Complexity:</i> At most one direct or indirect invocation of <code>
   status(to)</code>.</p>
 </blockquote>
 <h3>15.5  Copy symlink&nbsp; [<a name="fs.op.copy_symlink">fs.op.copy_symlink</a>]</h3>
