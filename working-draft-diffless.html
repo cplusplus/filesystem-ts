@@ -689,11 +689,6 @@ version of the Technical Specification was completed. <i>— end note</i>]</p>
     enum class <a href="#enum.perms">perms</a>;
     enum class <a name="copy_option" href="#enum.copy_options">copy_options</a>;
     enum class <a name="symlink_option" href="#enum.directory_options">directory_options</a>;
-    
-      
-      
-      
-    
 
     typedef chrono::time_point&lt;<b><i>trivial-clock</i></b>&gt;  file_time_type;
 
@@ -922,7 +917,7 @@ system or for a particular file system.</p>
           path(const Source&amp; source, const locale&amp; loc);
         template &lt;class InputIterator&gt;
           path(InputIterator first, InputIterator last, const locale&amp; loc);
-        ~path();
+       ~path();
 
         // <a href="#path-assignments">assignments</a>
         path&amp; operator=(const path&amp; p);
@@ -1600,7 +1595,8 @@ with the first <i>filename</i> after <i>root-path</i>. Otherwise, <code>path()</
 <pre para_num="10">path <a name="path-parent_path">parent_path</a>() const;</pre>
 <blockquote>
   <p para_num="11"><i>Returns:</i> <code>(empty() || begin() == --end()) ? path() : <i>pp</i></code>, where <code><i>pp</i></code> is constructed as if by 
-  starting with an empty <code>path</code> and successively applying <code>operator/=</code> for each element in the range <code>begin()</code>, <code>--end()</code>.</p>
+  starting with an empty <code>path</code> and successively applying <code>operator/=</code> for each element in the range 
+  [<code>begin()</code>, <code>--end()</code>).</p>
 </blockquote>
 <pre para_num="12">path <a name="path-filename">filename</a>() const;</pre>
 <blockquote>
@@ -2344,9 +2340,7 @@ and permissions of a file.</p>
     directory_entry(const directory_entry&amp;) = default;
     directory_entry(directory_entry&amp;&amp;) noexcept = default;
     explicit directory_entry(const path&amp; p);
-    
-      
-    ~directory_entry();
+   ~directory_entry();
 
     // <a href="#directory_entry-modifiers">modifiers</a>
     directory_entry&amp; operator=(const directory_entry&amp;) = default;
@@ -2368,10 +2362,8 @@ and permissions of a file.</p>
     bool operator&lt;=(const directory_entry&amp; rhs) const noexcept;
     bool operator&gt; (const directory_entry&amp; rhs) const noexcept;
     bool operator&gt;=(const directory_entry&amp; rhs) const noexcept;
-    private:
-    path                 m_path;           // for exposition only
-    
-    
+  private:
+    path   m_path; // for exposition only
   };
 
 } } } }  // namespaces std::experimental::filesystem::v1  </pre>
@@ -2630,9 +2622,9 @@ directory and its sub-directories.</p>
 
         // modifiers
         recursive_directory_iterator&amp;
-          operator=(const recursive_directory_iterator&amp; rhs) ;
+          operator=(const recursive_directory_iterator&amp; rhs);
         recursive_directory_iterator&amp;
-          operator=(recursive_directory_iterator&amp;&amp; rhs) noexcept ;
+          operator=(recursive_directory_iterator&amp;&amp; rhs) noexcept;
 
         recursive_directory_iterator&amp; operator++();
         recursive_directory_iterator&amp; increment(error_code&amp; ec) noexcept;
@@ -2641,7 +2633,6 @@ directory and its sub-directories.</p>
         void disable_recursion_pending();
 
        // other members as required by C++14 §24.1.1 Input iterators
-      
      };
 
 } } } }  // namespaces std::experimental::filesystem::v1</pre>
@@ -2662,12 +2653,11 @@ then the end iterator may be unreachable. <i>&mdash;end note</i>]</p>
 
 </blockquote>
 
-<pre para_num="3">explicit recursive_directory_iterator(const path&amp; p
-  );
+<pre para_num="3">explicit recursive_directory_iterator(const path&amp; p);
 recursive_directory_iterator(const path&amp; p, directory_options options);
 recursive_directory_iterator(const path&amp; p,
   <a href="#symlink_option">directory_options</a> options, error_code&amp; ec) noexcept;
-recursive_<code>directory_iterator(</code>const path&amp; p, error_code&amp; ec<code>) noexcept;</code></pre>
+recursive_directory_iterator(const path&amp; p, error_code&amp; ec) noexcept;</pre>
 <blockquote>
 
 <p para_num="4"><i>Effects:</i>&nbsp; Constructs a iterator representing the first 
@@ -2775,7 +2765,7 @@ iteration over the parent directory resumes; otherwise <code>*this = recursive_d
 &nbsp;!= directory_options::none </code>
 and an error occurs indicating that permission to access directory <code>
 (*this)-&gt;path()</code> is denied, then directory <code>(*this)-&gt;path()</code> is 
-treated as an empty directory and no error is reported .
+treated as an empty directory and no error is reported.
 
   </li>
 </ul>
@@ -2919,8 +2909,7 @@ void copy(const path&amp; from, const path&amp; to, <a href="#copy_option">copy_
     <ul>
       <li para_num="19">If <code>(options &amp; copy_options::directories_only)<br>
 &nbsp;!= copy_options::none</code>, then return. </li>
-      <li para_num="20">Otherwise if <code>(options &amp; copy_options::create_symlinks 
-      )<br>
+      <li para_num="20">Otherwise if <code>(options &amp; copy_options::create_symlinks)<br>
 &nbsp;!= copy_options::none</code>, then create a symbolic link to the 
       source file. </li>
       <li para_num="21">Otherwise if <code>(options &amp; 
@@ -3025,7 +3014,7 @@ bool <a name="copy_file2">copy_file</a>(const path&amp; from, const path&amp; to
     <ul>
       <li para_num="11"><code>!exists(to)</code>, or </li>
       <li para_num="12"><code>exists(to)</code> and <code>(options &amp; 
-      copy_options::overwrite_existing) != copy_options::none </code>, or 
+      copy_options::overwrite_existing) != copy_options::none</code>, or 
       </li>
       <li para_num="13"><code>exists(to)</code> and <code>(options &amp; 
       copy_options::update_existing) != copy_options::none </code>and <code>from</code> 
