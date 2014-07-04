@@ -103,7 +103,7 @@ div.roman-page
     <tr>
       <td>Date:</td>
       <td>
-      <!--webbot bot="Timestamp" S-Type="EDITED" S-Format="%Y-%m-%d" startspan -->2014-07-03<!--webbot bot="Timestamp" endspan i-checksum="12444" --></td>
+      <!--webbot bot="Timestamp" S-Type="EDITED" S-Format="%Y-%m-%d" startspan -->2014-07-04<!--webbot bot="Timestamp" endspan i-checksum="12446" --></td>
     </tr>
     <tr>
       <td>Revises:</td>
@@ -1410,10 +1410,10 @@ template &lt;class InputIterator&gt;
   <p para_num="4"><i>Returns:</i> <code>*this</code></p>
 <p para_num="5">[<i>Example:</i></p>
   <blockquote>
-    <pre para_num="6"><code>path p(&quot;foo/bar&quot;);
+    <pre para_num="6">path p(&quot;foo/bar&quot;);
 std::cout &lt;&lt; p &lt;&lt; '\n';
-</code>p.make_preferred();
-<code>std::cout &lt;&lt; p &lt;&lt; '\n';</code></pre>
+p.make_preferred();
+std::cout &lt;&lt; p &lt;&lt; '\n';</pre>
   </blockquote>
   <p para_num="7">On an operating system where <i>preferred-separator</i> is the same as <i>
   directory-separator</i>, the output is:</p>
@@ -1436,8 +1436,8 @@ std::cout &lt;&lt; p &lt;&lt; '\n';
   <p para_num="14"><i>Returns: </i> <code>*this</code>.</p>
   <p para_num="15">[<i>Example:</i></p>
   <blockquote>
-    <pre para_num="16"><code>std::cout &lt;&lt; path(&quot;/foo&quot;).remove_filename();</code>  // outputs &quot;<code>/</code>&quot;
-std::cout &lt;&lt; path(&quot;/&quot;).<code>remove_</code>filename();     // outputs &quot;&quot;</pre>
+    <pre para_num="16">std::cout &lt;&lt; path(&quot;/foo&quot;).remove_filename();  // outputs &quot;/&quot;
+std::cout &lt;&lt; path(&quot;/&quot;).remove_filename();     // outputs &quot;&quot;</pre>
   </blockquote>
   <p para_num="17"> <i>&mdash;end example</i>]</p>
 </blockquote>
@@ -1452,8 +1452,8 @@ std::cout &lt;&lt; path(&quot;/&quot;).<code>remove_</code>filename();     // ou
   <p para_num="21"><i>Returns: </i> <code>*this</code>.</p>
   <p para_num="22">[<i>Example:</i></p>
   <blockquote>
-    <pre para_num="23"><code>std::cout &lt;&lt; path(&quot;/foo&quot;).replace_filename(&quot;bar&quot;);</code>  // outputs &quot;<code>/bar</code>&quot;
-std::cout &lt;&lt; path(&quot;/&quot;).<code>replace_</code>filename(<code>&quot;bar&quot;</code>);     // outputs &quot;bar&quot;</pre>
+    <pre para_num="23">std::cout &lt;&lt; path(&quot;/foo&quot;).replace_filename(&quot;bar&quot;);  // outputs &quot;/bar&quot;
+std::cout &lt;&lt; path(&quot;/&quot;).replace_filename(&quot;bar&quot;);     // outputs &quot;bar&quot;</pre>
   </blockquote>
   <p para_num="24"> <i>&mdash;end example</i>]</p>
 </blockquote>
@@ -1470,7 +1470,7 @@ std::cout &lt;&lt; path(&quot;/&quot;).<code>replace_</code>filename(<code>&quot
   </ul>
   <p para_num="30"><i>Returns:</i> <code>*this</code></p>
 </blockquote>
-<pre para_num="31"><code>void <a name="path-swap">swap</a>(path&amp; rhs)</code> noexcept<code>;</code></pre>
+<pre para_num="31">void <a name="path-swap">swap</a>(path&amp; rhs) noexcept;</pre>
 <blockquote>
   <p para_num="32"><i>Effects:</i> Swaps the contents of the two paths.</p>
   <p para_num="33"><i>Complexity: </i>constant time.</p>
@@ -1607,7 +1607,7 @@ with the first <i>filename</i> after <i>root-path</i>. Otherwise, <code>path()</
   <p para_num="13"><i>Returns:</i> <code>empty() ? path() : *--end()</code></p>
   <p para_num="14">[<i>Example:</i></p>
   <blockquote>
-    <pre para_num="15"><code>std::cout &lt;&lt; path(&quot;/foo/bar.txt&quot;).filename();</code> // outputs &quot;<code>bar.txt</code>&quot;
+    <pre para_num="15">std::cout &lt;&lt; path(&quot;/foo/bar.txt&quot;).filename(); // outputs &quot;bar.txt&quot;
 std::cout &lt;&lt; path(&quot;/&quot;).filename();            // outputs &quot;/&quot;
 std::cout &lt;&lt; path(&quot;.&quot;).filename();            // outputs &quot;.&quot;
 std::cout &lt;&lt; path(&quot;..&quot;).filename();           // outputs &quot;..&quot;</pre>
@@ -1623,7 +1623,7 @@ std::cout &lt;&lt; path(&quot;..&quot;).filename();           // outputs &quot;.
   returns <code>filename()</code>.</p>
   <p para_num="19">[<i>Example:</i></p>
   <blockquote>
-    <pre para_num="20"><code>std::cout &lt;&lt; path(&quot;/foo/bar.txt&quot;).stem();</code> // outputs &quot;<code>bar</code>&quot;
+    <pre para_num="20">std::cout &lt;&lt; path(&quot;/foo/bar.txt&quot;).stem(); // outputs &quot;bar&quot;
 path p = &quot;foo.bar.baz.tar&quot;;
 for (; !p.extension().empty(); p = p.stem())
   std::cout &lt;&lt; p.extension() &lt;&lt; '\n';
@@ -2533,8 +2533,7 @@ noexcept;</code></p>
 
 </blockquote>
 
-<pre para_num="3"><code>explicit <a name="directory_iterator-ctor-path">directory_iterator</a>(</code>const path&amp; p<code>);
-</code>
+<pre para_num="3">explicit <a name="directory_iterator-ctor-path">directory_iterator</a>(const path&amp; p);
 directory_iterator(const path&amp; p, directory_options options);
 directory_iterator(const path&amp; p, error_code&amp; ec) noexcept;
 directory_iterator(const path&amp; p,
@@ -2744,7 +2743,7 @@ if present, otherwise <code>directory_options::none</code>.</p>
   and so forth. <i>&mdash;end note</i>]</p>
 <p para_num="30"><i>Throws:</i> Nothing.</p>
 </blockquote>
-<pre para_num="31">bool <code>recursion_pending</code>() const;</pre>
+<pre para_num="31">bool recursion_pending() const;</pre>
 <blockquote>
   <p para_num="32"><i>Requires:</i> <code>*this != recursive_directory_iterator()</code>.</p>
   <p para_num="33"><i>Returns:</i> <code>true</code> if <code>disable_recursion_pending()</code> 
@@ -2752,7 +2751,7 @@ if present, otherwise <code>directory_options::none</code>.</p>
   operation, otherwise <code>false</code>.</p>
   <p para_num="34"><i>Throws:</i> Nothing.</p>
 </blockquote>
-<pre para_num="35"><code>recursive_directory_iterator</code>&amp; <a name="recursive_directory_iterator-increment">operator++</a>();
+<pre para_num="35">recursive_directory_iterator&amp; <a name="recursive_directory_iterator-increment">operator++</a>();
 recursive_directory_iterator&amp; increment(error_code&amp; ec) noexcept;</pre>
 <blockquote>
 
