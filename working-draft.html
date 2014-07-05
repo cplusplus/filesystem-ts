@@ -1040,11 +1040,11 @@ operating system dependent encoded character type used  to represent pathnames.<
 <p para_num="4">The value of <a name="preferred_separator"><code>preferred_separator</code></a> 
 is the operating system dependent <i>preferred-separator</i> character (<a href="#path.generic">8.1</a>).</p>
 <blockquote>
-  [<i>Example:</i> For  POSIX based operating 
+  <p para_num="5">[<i>Example:</i> For  POSIX based operating 
       systems, <code>value_type</code> is <code>char</code> and <code>
       preferred_separator</code> is the slash character (/).&nbsp; For Windows based 
 operating systems, <code>value_type</code> is <code>wchar_t</code> and <code>
-      preferred_separator</code> is the backslash character (\).&nbsp; <i>&mdash;end example</i>]
+      preferred_separator</code> is the backslash character (\).&nbsp; <i>&mdash;end example</i>]</p>
 </blockquote>
 <h3>8.1  <code>path</code> generic pathname format grammar [<a name="path.generic">path.generic</a>]</h3>
 <p para_num="1"><i>pathname:<br>
@@ -1698,15 +1698,13 @@ for (; !p.extension().empty(); p = p.stem())
 <blockquote>
   <p para_num="20"><i>Returns:</i> <code>true</code> if <code>pathname</code> 
   contains an absolute path (<a href="#fs.def.absolute-path">4.1</a>), else <code>false</code>.</p>
-</blockquote>
-<blockquote>
-[<i>Example:</i> <code>path(&quot;/&quot;).is_absolute()</code> is
+<p para_num="21">[<i>Example:</i> <code>path(&quot;/&quot;).is_absolute()</code> is
       <code>true</code> for  POSIX based operating systems, and <code>false</code> for Windows based 
-operating systems.&nbsp; <i>&mdash;end example</i>]
+operating systems.&nbsp; <i>&mdash;end example</i>]</p>
 </blockquote>
-<pre para_num="21">bool <a name="path-is_relative">is_relative</a>() const;</pre>
+<pre para_num="22">bool <a name="path-is_relative">is_relative</a>() const;</pre>
 <blockquote>
-  <p para_num="22"><i>Returns:</i> <code>!is_absolute()</code>.</p>
+  <p para_num="23"><i>Returns:</i> <code>!is_absolute()</code>.</p>
 </blockquote>
 <h3>8.5  <a name="path-iterators"> <code>path</code> iterators</a> [path.itr]</h3>
 <p para_num="1"> Path iterators iterate over the elements of the stored pathname.</p>
@@ -3845,10 +3843,9 @@ path <a name="system_complete2">system_complete</a>(const path&amp; p, error_cod
   <p para_num="4"><i>Postcondition:</i> For the returned path, <code>rp,</code> <code>rp.is_absolute()</code> is true.</p>
   <p para_num="5"><i>Throws:</i> As specified in <a href="#Error-reporting">Error reporting (7)</a>.</p>
   
-<blockquote>
-[<i>Example:</i> For POSIX based operating systems, <code>system_complete(p)</code>
+<p para_num="6">[<i>Example:</i> For POSIX based operating systems, <code>system_complete(p)</code>
   has the same semantics as <code>absolute(p, current_path())</code>.</p>
-  <p para_num="6">For Windows based operating systems, <code>system_complete(p)</code> has the 
+  <p para_num="7">For Windows based operating systems, <code>system_complete(p)</code> has the 
   same semantics as <code>absolute(p, current_path())</code> if <code>p.is_absolute() ||
   !p.has_root_name()</code> or <code>p</code> and <code>base</code> have the same
   <code>root_name()</code>. 
@@ -3857,8 +3854,7 @@ path <a name="system_complete2">system_complete</a>(const path&amp; p, error_cod
   be the current directory for that drive the last time it was set, and thus may 
   be residue left over from a prior program run by the command 
   processor<del>!</del><ins>.</ins> Although these semantics are useful, they <del>are very error-prone</del> <ins>may be surprising</ins>.
-   <i>&mdash;end example</i>]
-</blockquote>
+   <i>&mdash;end example</i>]</p>
   
 </blockquote>
 
@@ -3872,11 +3868,11 @@ path temp_directory_path(error_code&amp; ec);</pre>
   The signature with argument <code>ec</code> returns <code>path()</code> if an 
   error occurs.</p>
   <p para_num="3"><i>Throws:</i> As specified in <a href="#Error-reporting">Error reporting (7)</a>.</p>
-  [<i>Example:</i> For POSIX based operating systems, an implementation might 
+  <p para_num="4">[<i>Example:</i> For POSIX based operating systems, an implementation might 
   return the path 
   supplied by the first environment variable found in the list TMPDIR, TMP, TEMP, TEMPDIR, 
   or if none of these are found, <code>&quot;/tmp&quot;</code>.</p>
-  <p para_num="4">For Windows based operating systems, an implementation might return the path
+  <p para_num="5">For Windows based operating systems, an implementation might return the path
   reported by the <i>Windows</i> <code>GetTempPath</code> API function.<i> &mdash;end example</i>] </p> 
   
 </blockquote>
