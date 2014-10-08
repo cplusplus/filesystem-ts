@@ -1,0 +1,37 @@
+<?xml version='1.0' encoding='utf-8' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="67" status="New">
+<title><code>path::root_directory()</code> description is confusing</title>
+<section><sref ref="8.4.9 [path.decompose]"/></section>
+<submitter>Jonathan Wakely</submitter>
+<date>03 Jul 2014</date>
+
+<discussion>
+<p>8.4.9 [path.decompose] p5 says:</p>
+  <blockquote>
+    <p>If <i>root-directory</i> is composed of <i>slash name</i>, <i>slash</i> is excluded from the returned string.</p>
+  </blockquote>
+<p>but the grammar says that <i>root-directory</i> is just slash so that makes no sense.</p>
+
+</discussion>
+
+<resolution>
+<p>
+  <i>Change 8.4.9 [path.decompose] as indicated:</i>
+</p>
+  
+  <blockquote>
+    <pre>path root_directory() const;</pre>
+    <blockquote>
+      <p>
+        <i>Returns:</i> <i>root-directory</i>, if <code>pathname</code> includes <i>root-directory</i>, otherwise <code>path()</code>.
+      </p>
+      <p><del>If <i>root-directory</i> is composed of <i>slash name</i>, <i>slash</i> is excluded from the returned string.</del></p>
+    </blockquote>
+  </blockquote>
+</resolution>
+
+</issue>
