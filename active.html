@@ -5,8 +5,6 @@
 <meta charset="utf-8"> 
 <title>Active Issues List</title>
 <style type="text/css">
-  p {text-align:justify}
-  li {text-align:justify}
   blockquote.note
   {
     background-color:#E0E0E0;
@@ -23,11 +21,11 @@
 <table>
 <tr>
   <td align="left">Doc. no.</td>
-  <td align="left">Dxxxx</td>
+  <td align="left">D4211</td>
 </tr>
 <tr>
   <td align="left">Date:</td>
-  <td align="left">2014-07-05</td>
+  <td align="left">2014-10-10</td>
 </tr>
 <tr>
   <td align="left">Project:</td>
@@ -39,7 +37,7 @@
 </tr>
 </table>
 <h1>File System TS Active Issues List (Revision D3)</h1>
-<p><p>Revised 2014-07-05 at 12:07:23 UTC</p>
+<p><p>Revised 2014-10-10 at 13:10:54 UTC</p>
 </p>
   <p>Reference ISO/IEC TS 18822</p>
   <p>Also see:</p>
@@ -151,14 +149,14 @@ ownership of it.
 
 <h2>Revision History</h2>
 <ul>
-<li>D3: 2014-07-06 SG-3 File System TS<ul>
+<li>D3: 2014-10-10 SG-3 File System TS<ul>
 <li><b>Summary:</b><ul>
-<li>6 open issues, up by 0.</li>
+<li>10 open issues, up by 4.</li>
 <li>61 closed issues, up by 0.</li>
-<li>67 issues total, up by 0.</li>
+<li>71 issues total, up by 4.</li>
 </ul></li>
 <li><b>Details:</b><ul>
-<li>No issues added.</li>
+<li>Added the following 4 New issues: <a href="active.html#69">69</a>, <a href="active.html#70">70</a>, <a href="active.html#71">71</a>, <a href="active.html#72">72</a>.</li>
 <li>No issues changed.</li>
 </ul></li>
 </ul>
@@ -603,6 +601,251 @@ but since <code>path += path2</code> works then it seems reasonable to expect
 
 <p><b>Proposed resolution:</b></p>
 <p></p>
+
+
+
+
+
+<hr>
+<h3><a name="69"></a>69. 
+  <code>recursive_directory_iterator</code> effects refers to non-existent functions
+</h3>
+<p><b>Section:</b> X 14.1 [rec.dir.itr.members] &para;39 <b>Status:</b> <a href="active.html#New">New</a>
+ <b>Submitter:</b> Jonathan Wakely <b>Opened:</b> 2014-07-10 <b>Last modified:</b> 2014-10-08</p>
+<p><b>View all issues with</b> <a href="status-index.html#New">New</a> status.</p>
+<p><b>Discussion:</b></p>
+  <p align="left">
+  <code>operator++/increment</code>, second bullet item, says
+  "Otherwise if <code>
+  recursion_pending() &amp;&amp; is_directory(this-&gt;status())  
+  &amp;&amp; (!is_symlink(this-&gt;symlink_status())</code>..."
+  but <code>recursive_directory_iterator</code> does not have <code>status</code>
+  or <code>symlink_status</code> members.
+</p>
+
+
+<p><b>Proposed resolution:</b></p>
+  <p>
+  <i>Change 14.1 [rec.dir.itr.members] &para;39 as indicated:</i></p>
+  <blockquote>
+    <p align="left">Otherwise if <code>
+      recursion_pending() &amp;&amp; is_directory(<ins>(*</ins>this<ins>)</ins>-&gt;status())
+      &amp;&amp; (!is_symlink(<ins>(*</ins>this<ins>)</ins>-&gt;symlink_status())
+    </code>..."</p>
+
+  </blockquote>
+  
+
+
+
+
+
+<hr>
+<h3><a name="70"></a>70. 
+  <code>system_complete</code> refers to undefined variable 'base'
+</h3>
+<p><b>Section:</b> X 15.36 [fs.op.system_complete] <b>Status:</b> <a href="active.html#New">New</a>
+ <b>Submitter:</b> Jonathan Wakely <b>Opened:</b> 2014-07-20 <b>Last modified:</b> 2014-10-08</p>
+<p><b>View all other</b> <a href="section-index.html#5.36 [fs.op.system_complete">issues</a> in 15.36 [fs.op.system_complete].</p>
+<p><b>View all issues with</b> <a href="status-index.html#New">New</a> status.</p>
+<p><b>Discussion:</b></p>
+<p>The example says "...or <code>p</code> and <code>base</code> have the same <code>root_name()</code>.", but
+<code>base</code> is not defined. I believe it refers to the value returned by <code>current_path()</code>.
+</p>
+
+
+<p><b>Proposed resolution:</b></p>
+<p>
+  <i>Change 15.36 [fs.op.system_complete] as indicated:</i>
+</p>
+  <blockquote>
+    <p>For Windows based operating systems, <code>system_complete(p)</code> has the same semantics as
+    <code>absolute(p, current_path())</code> if <code>p.is_absolute() || !p.has_root_name()</code>
+    or <code>p</code> and <code><del>base</del> <ins>current_path()</ins></code>
+    have the same <code>root_name()</code>. Otherwise it acts like <code>absolute(p, cwd)</code> is the current
+    directory for the <code>p.root_name()</code> drive. This will be the current directory for that drive
+    the last time it was set, and thus may be residue left over from a prior program run by the
+    command processor. Although these semantics are useful, they may be surprising.</p>
+  </blockquote>
+
+
+
+
+
+<hr>
+<h3><a name="71"></a>71. Errors in Copy</h3>
+<p><b>Section:</b> X 15.3 [fs.op.copy] <b>Status:</b> <a href="active.html#New">New</a>
+ <b>Submitter:</b> Jonathan Wakely <b>Opened:</b> 2014-07-28 <b>Last modified:</b> 2014-10-08</p>
+<p><b>View all other</b> <a href="section-index.html#5.3 [fs.op.copy">issues</a> in 15.3 [fs.op.copy].</p>
+<p><b>View all issues with</b> <a href="status-index.html#New">New</a> status.</p>
+<p><b>Discussion:</b></p>
+  <p>15.3 [fs.op.copy] paragraph 16 says:</p>
+  <blockquote>
+    <p>
+      Otherwise if <code>!exists(t) &amp; (options &amp;
+        copy_options::copy_symlinks) != 
+        copy_options::none</code>, then <code>copy_symlink(from, to, options)</code>.
+    </p>
+  </blockquote>
+  <p>But there is no overload of <code>copy_symlink</code> that takes a <code>copy_options</code>;
+  it should be <code>copy_symlink(from, to)</code>.</p>
+
+  <p>15.3 [fs.op.copy] Paragraph 26 says:</p>
+  <blockquote>
+    <p>as if by <code>for (directory_entry& x : directory_iterator(from))</code></p>
+  </blockquote>
+  <p>but the result of dereferencing a <code>directory_iterator</code> is const; it should be:</p>
+  <blockquote>
+    <p>as if by <code>for (<ins>const </ins>directory_entry& x : directory_iterator(from))</code></p>
+  </blockquote>
+
+
+<p><b>Proposed resolution:</b></p>
+  <p>Change 15.3 [fs.op.copy] paragraph 16 as indicated:</p>
+  <blockquote>
+    <p>
+      Otherwise if <code>
+        !exists(t) &amp; (options &amp;
+        copy_options::copy_symlinks) !=
+        copy_options::none
+      </code>, then <code>copy_symlink(from, to<del>, options</del>)</code>.
+    </p>
+  </blockquote>
+  <p>Change 15.3 [fs.op.copy] paragraph 26 as indicated:</p>
+  <blockquote>
+    <p>
+      as if by <code>
+        for (<ins>const </ins>directory_entry& x : directory_iterator(from))
+      </code>
+    </p>
+  </blockquote>
+
+
+
+
+
+<hr>
+<h3><a name="72"></a>72. Should is_empty use error_code in its specification?</h3>
+<p><b>Section:</b> X 15.19 [fs.op.is_empty] <b>Status:</b> <a href="active.html#New">New</a>
+ <b>Submitter:</b> Jonathan Wakely <b>Opened:</b> 2014-08-01 <b>Last modified:</b> 2014-10-09</p>
+<p><b>View all issues with</b> <a href="status-index.html#New">New</a> status.</p>
+<p><b>Discussion:</b></p>
+  <p>The descriptions of most functions are explicit about the use of the <code>ec</code> argument,
+  either saying something like "<code>foo(p)</code> or <code>foo(p, ec)</code>, respectively" or using the
+  <code>ec</code> argument like <code>foo(p[, ec])</code>, but <code>is_empty</code> does not.</p>
+  
+  <p>[fs.op.is_empty]/2 refers to <code>ec</code> unconditionally, but more importantly
+  [fs.op.is_empty]/3 doesn't pass <code>ec</code> to the <code>directory_iterator</code>
+  constructor or the <code>file_size</code> function.</p>
+
+  <p><i>[
+    9 Oct 2014 Beman supplies proposed wording.
+  ]</i></p>
+
+
+
+
+<p><b>Proposed resolution:</b></p>
+  <pre>
+    bool is_empty(const path&amp; p);
+    bool is_empty(const path&amp; p, error_code&amp; ec) noexcept;
+  </pre>
+  <blockquote>
+    <p>
+      <i>Effects:</i>
+    </p>
+    <ul>
+      <li>
+        Determine <code>file_status s</code>, as if by
+        <ins>
+          <code>status(p)</code> or
+        </ins> <code>status(p, ec)</code><ins>, respectively</ins>.
+      </li>
+      <li>
+        <ins>
+          For the signature with argument <code>ec</code>, return <code>false</code> if
+          an error occurred.
+        </ins>
+      </li>
+      <li>
+        <ins>
+          Otherwise, if <code>is_directory(s)</code>:
+        </ins>
+        <ul>
+          <li>
+            <ins>
+              Create <code>directory_iterator itr</code>, as if by
+              <code>directory_iterator(p)</code>
+              or <code>directory_iterator(p, ec)</code>, respectively.
+            </ins>
+          </li>
+          <li>
+            <ins>
+              For the signature with argument <code>ec</code>, return <code>false</code> if
+              an error occurred.
+            </ins>
+          </li>
+          <li>
+            <ins>
+              Otherwise, return <code>itr == directory_iterator()</code>.
+            </ins>
+          </li>
+        </ul>
+      </li>
+      <li>
+        <ins>Otherwise: </ins>
+        <ul>
+          <li>
+            <ins>
+              Determine <code>uintmax_t sz</code>, as if by <code>
+                file_size(p)
+              </code> or<code> file_size(p, ec)</code>, respectively
+            </ins>.
+          </li>
+          <li>
+            <ins>
+              For the signature with argument <code>ec</code>, return <code>false</code> if
+              an error occurred.
+            </ins>
+          </li>
+          <li>
+            <ins>
+              Otherwise, return <code>sz == 0</code>.
+            </ins>
+          </li>
+        </ul>
+      </li>
+    </ul>
+    <p para_num="3">
+      <ins>
+        <i>Remarks:</i> The temporary objects described in <i>Effects</i>
+        are for exposition only. Implementations are not required to create them.
+      </ins>
+    </p>
+    <p para_num="3">
+      <i>Returns:</i>
+      <del>
+        <code>
+          is_directory(s) ? directory_iterator(p) == directory_iterator()
+          : file_size(p) == 0;
+        </code>
+      </del>
+      <ins>
+        See <i>Effects</i>.
+      </ins>
+    </p>
+    <blockquote>
+      <p para_num="4">
+        <del>
+          The signature with argument <code>ec</code> returns <code>false</code> if
+          an error occurs.
+        </del>
+      </p>
+    </blockquote>
+    <p para_num="5">
+      <i>Throws:</i> As specified in <a href="#Error-reporting">Error reporting (7)</a>.
+    </p>
+  </blockquote>
 
 
 
