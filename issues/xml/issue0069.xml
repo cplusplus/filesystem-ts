@@ -1,0 +1,38 @@
+<?xml version='1.0' encoding='utf-8' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="69" status="New">
+<title>
+  <code>recursive_directory_iterator</code> effects refers to non-existent functions
+</title>
+<section><sref ref="14.1 [rec.dir.itr.members] &para;39"/></section>
+<submitter>Jonathan Wakely</submitter>
+<date>10 Jul 2014</date>
+
+<discussion>
+  <p align="left">
+  <code>operator++/increment</code>, second bullet item, says
+  "Otherwise if <code>
+  recursion_pending() &amp;&amp; is_directory(this-&gt;status())  
+  &amp;&amp; (!is_symlink(this-&gt;symlink_status())</code>..."
+  but <code>recursive_directory_iterator</code> does not have <code>status</code>
+  or <code>symlink_status</code> members.
+</p>
+</discussion>
+
+<resolution>
+  <p>
+  <i>Change 14.1 [rec.dir.itr.members] &para;39 as indicated:</i></p>
+  <blockquote>
+    <p align="left">Otherwise if <code>
+      recursion_pending() &amp;&amp; is_directory(<ins>(*</ins>this<ins>)</ins>-&gt;status())
+      &amp;&amp; (!is_symlink(<ins>(*</ins>this<ins>)</ins>-&gt;symlink_status())
+    </code>..."</p>
+
+  </blockquote>
+  
+</resolution>
+
+</issue>

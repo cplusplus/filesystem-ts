@@ -1,0 +1,35 @@
+<?xml version='1.0' encoding='utf-8' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="70" status="New">
+<title>
+  <code>system_complete</code> refers to undefined variable 'base'
+</title>
+<section><sref ref="15.36 [fs.op.system_complete]"/></section>
+<submitter>Jonathan Wakely</submitter>
+<date>20 Jul 2014</date>
+
+<discussion>
+<p>The example says "...or <code>p</code> and <code>base</code> have the same <code>root_name()</code>.", but
+<code>base</code> is not defined. I believe it refers to the value returned by <code>current_path()</code>.
+</p>
+</discussion>
+
+<resolution>
+<p>
+  <i>Change 15.36 [fs.op.system_complete] as indicated:</i>
+</p>
+  <blockquote>
+    <p>For Windows based operating systems, <code>system_complete(p)</code> has the same semantics as
+    <code>absolute(p, current_path())</code> if <code>p.is_absolute() || !p.has_root_name()</code>
+    or <code>p</code> and <code><del>base</del> <ins>current_path()</ins></code>
+    have the same <code>root_name()</code>. Otherwise it acts like <code>absolute(p, cwd)</code> is the current
+    directory for the <code>p.root_name()</code> drive. This will be the current directory for that drive
+    the last time it was set, and thus may be residue left over from a prior program run by the
+    command processor. Although these semantics are useful, they may be surprising.</p>
+  </blockquote>
+</resolution>
+
+</issue>

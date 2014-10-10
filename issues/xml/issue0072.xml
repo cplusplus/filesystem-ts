@@ -1,0 +1,130 @@
+<?xml version='1.0' encoding='utf-8' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="72" status="New">
+<title>Should is_empty use error_code in its specification?</title>
+<section><sref ref="15.19 [fs.op.is_empty]"/></section>
+<submitter>Jonathan Wakely</submitter>
+<date>01 Aug 2014</date>
+
+<discussion>
+  <p>The descriptions of most functions are explicit about the use of the <code>ec</code> argument,
+  either saying something like "<code>foo(p)</code> or <code>foo(p, ec)</code>, respectively" or using the
+  <code>ec</code> argument like <code>foo(p[, ec])</code>, but <code>is_empty</code> does not.</p>
+  
+  <p>[fs.op.is_empty]/2 refers to <code>ec</code> unconditionally, but more importantly
+  [fs.op.is_empty]/3 doesn't pass <code>ec</code> to the <code>directory_iterator</code>
+  constructor or the <code>file_size</code> function.</p>
+
+  <note>
+    9 Oct 2014 Beman supplies proposed wording.
+  </note>
+
+</discussion>
+
+<resolution>
+  <pre>
+    bool is_empty(const path&amp; p);
+    bool is_empty(const path&amp; p, error_code&amp; ec) noexcept;
+  </pre>
+  <blockquote>
+    <p>
+      <i>Effects:</i>
+    </p>
+    <ul>
+      <li>
+        Determine <code>file_status s</code>, as if by
+        <ins>
+          <code>status(p)</code> or
+        </ins> <code>status(p, ec)</code><ins>, respectively</ins>.
+      </li>
+      <li>
+        <ins>
+          For the signature with argument <code>ec</code>, return <code>false</code> if
+          an error occurred.
+        </ins>
+      </li>
+      <li>
+        <ins>
+          Otherwise, if <code>is_directory(s)</code>:
+        </ins>
+        <ul>
+          <li>
+            <ins>
+              Create <code>directory_iterator itr</code>, as if by
+              <code>directory_iterator(p)</code>
+              or <code>directory_iterator(p, ec)</code>, respectively.
+            </ins>
+          </li>
+          <li>
+            <ins>
+              For the signature with argument <code>ec</code>, return <code>false</code> if
+              an error occurred.
+            </ins>
+          </li>
+          <li>
+            <ins>
+              Otherwise, return <code>itr == directory_iterator()</code>.
+            </ins>
+          </li>
+        </ul>
+      </li>
+      <li>
+        <ins>Otherwise: </ins>
+        <ul>
+          <li>
+            <ins>
+              Determine <code>uintmax_t sz</code>, as if by <code>
+                file_size(p)
+              </code> or<code> file_size(p, ec)</code>, respectively
+            </ins>.
+          </li>
+          <li>
+            <ins>
+              For the signature with argument <code>ec</code>, return <code>false</code> if
+              an error occurred.
+            </ins>
+          </li>
+          <li>
+            <ins>
+              Otherwise, return <code>sz == 0</code>.
+            </ins>
+          </li>
+        </ul>
+      </li>
+    </ul>
+    <p para_num="3">
+      <ins>
+        <i>Remarks:</i> The temporary objects described in <i>Effects</i>
+        are for exposition only. Implementations are not required to create them.
+      </ins>
+    </p>
+    <p para_num="3">
+      <i>Returns:</i>
+      <del>
+        <code>
+          is_directory(s) ? directory_iterator(p) == directory_iterator()
+          : file_size(p) == 0;
+        </code>
+      </del>
+      <ins>
+        See <i>Effects</i>.
+      </ins>
+    </p>
+    <blockquote>
+      <p para_num="4">
+        <del>
+          The signature with argument <code>ec</code> returns <code>false</code> if
+          an error occurs.
+        </del>
+      </p>
+    </blockquote>
+    <p para_num="5">
+      <i>Throws:</i> As specified in <a href="#Error-reporting">Error reporting (7)</a>.
+    </p>
+  </blockquote>
+</resolution>
+
+</issue>
