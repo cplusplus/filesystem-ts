@@ -103,13 +103,13 @@ div.roman-page
     <tr>
       <td>Date:</td>
       <td>
-      <!--webbot bot="Timestamp" S-Type="EDITED" S-Format="%Y-%m-%d" startspan -->2014-07-05<!--webbot bot="Timestamp" endspan i-checksum="12448" --></td>
+      <!--webbot bot="Timestamp" S-Type="EDITED" S-Format="%Y-%m-%d" startspan -->2014-10-09<!--webbot bot="Timestamp" endspan i-checksum="12040" --></td>
     </tr>
     <tr>
       <td>Revises:</td>
       <td>
-      <a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2014/n4095.html">
-      N4095</a></td>
+      <a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2014/n4099.html">
+      N4099</a></td>
     </tr>
     <tr>
       <td>
@@ -3316,13 +3316,46 @@ bool <a name="is_directory3">is_directory</a>(const path&amp; p, error_code&amp;
 <pre para_num="1">bool <a name="is_empty">is_empty</a>(const path&amp; p);
 bool <a name="is_empty2">is_empty</a></a>(const path&amp; p, error_code&amp; ec) noexcept;</pre>
 <blockquote>
-  <p para_num="2"><i>Effects:</i> Determines <code>file_status s</code>, as if by <code>status(p, ec)</code>.</p>
-  <p para_num="3"><i>Returns:</i> <code>is_directory(s)<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ? directory_iterator(p) == directory_iterator()<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; : file_size(p) == 0;</code></p>
+  <p para_num="2"><i>Effects:</i> </p>
   <blockquote>
-  <p para_num="4">The signature with argument <code>ec</code> returns <code>false</code> if 
-  an error occurs.</p>
+    <ul>
+      <li> Determine <code>file_status s</code>, as if by
+   <ins><code>status(p)</code> or</ins> <code>status(p, ec)</code><ins>, respectively</ins>.</li>
+      <li><ins>For the signature with argument <code>ec</code>, return <code>false</code> if 
+  an error occurred.</ins></li>
+      <li>
+      <p dir="ltr"><ins>Otherwise, if <code>is_directory(s)</code>:</ins><ul>
+      <li>
+      <p dir="ltr"><ins>Create <code>directory_iterator itr</code>, as if by
+      <code>directory_iterator(p)</code> 
+      or <code>directory_iterator(p, ec)</code>, respectively.</ins></li>
+      <li><ins>For the signature with argument <code>ec</code>, return <code>false</code> if 
+  an error occurred.</ins></li>
+      <li><ins>Otherwise, return <code>itr == directory_iterator()</code>.</ins></li>
+    </ul>
+      </li>
+      <li>
+      <p dir="ltr"><ins>Otherwise: </ins>
+      <ul>
+      <li dir="ltr">
+      <p dir="ltr"><ins>Determine <code>uintmax_t sz</code>, as if by <code>
+      file_size(p)</code> or<code> file_size(p, ec)</code>, respectively</ins>.</li>
+      <li dir="ltr">
+      <p dir="ltr"><ins>For the signature with argument <code>ec</code>, return <code>false</code> if 
+  an error occurred.</ins></li>
+      <li dir="ltr">
+      <p dir="ltr"><ins>Otherwise, return <code>sz == 0</code>.</ins></li>
+    </ul>
+      </li>
+    </ul>
+  </blockquote>
+  <p para_num="3"><i>Returns:</i> <del><code>is_directory(s)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ? directory_iterator(p) == directory_iterator()<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; : file_size(p) == 0;</code></del>
+<ins>See <i>Effects</i>.</ins></p>
+  <blockquote>
+  <p para_num="4"><del>The signature with argument <code>ec</code> returns <code>false</code> if 
+  an error occurs.</del></p>
   </blockquote>
 
 <p para_num="5"><i>Throws:</i> As specified in <a href="#Error-reporting">Error reporting (7)</a>.</p>
