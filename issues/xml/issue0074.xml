@@ -1,0 +1,37 @@
+<?xml version='1.0' encoding='utf-8' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="74" status="New">
+<title>Bidirectional iterator requirement on <code>path::iterator</code>
+is very expensive</title>
+<section><sref ref="8.5 [path.itr]"/></section>
+<submitter>Jonathan Wakely</submitter>
+<date>15 Sep 2015</date>
+
+<discussion>
+<p>[path.itr] requires path::iterator to be a BidirectionalIterator, which also implies
+the ForwardIterator requirement in [forward.iterators] p6 for the following assertion
+to pass:</p>
+<pre>path p("/");
+auto it1 = p.begin();
+auto it2 = p.begin();
+assert( &*it1 == &*it2 );</pre>
+<p>This prevents iterators containing a <code>path</code>, or constructing one on the fly when
+dereferenced, the object they point to must exist outside the iterators and potentially
+outlive them. The only practical way to meet the requirement is for <code>p</code> to hold
+a container of child <code>path</code> objects so the iterators can refer to those
+children. This makes a <code>path</code> object much larger than would naïvely be
+expected.</p>
+<p>The Boost and MSVC implementations of Filesystem fail to meet this requirement. The
+GCC implementation meets it, but it makes <code>sizeof(path) == 64</code> (for 64-bit) or
+<code>sizeof(path) == 40</code> for 32-bit, and makes many path operations
+more expensive.</p>
+</discussion>
+
+<resolution>
+<p></p>
+</resolution>
+
+</issue>

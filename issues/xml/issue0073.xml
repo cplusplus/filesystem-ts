@@ -1,0 +1,36 @@
+<?xml version='1.0' encoding='utf-8' standalone='no'?>
+<!DOCTYPE issue SYSTEM "lwg-issue.dtd" [ 
+  <!ENTITY nbsp "&#160;">
+] >
+
+<issue num="73" status="New">
+<title><code>status()</code> effects cannot be implemented as specified</title>
+<section><sref ref="15.33 [fs.op.status]"/></section>
+<submitter>Jonathan Wakely</submitter>
+<date>15 Sep 2015</date>
+
+<discussion>
+<p>[fs.op.status] paragraph 2 says:</p>
+<blockquote>
+<p><i>Effects:</i> As if:</p>
+<pre>error_code ec;
+file_status result = status(p, ec);
+if (result == file_type::none)
+...</pre>
+</blockquote>
+<p>This won't compile, there is no comparison operator for <code>file_status</code> and <code>file_type</code>,
+and the conversion from <code>file_type</code> to <code>file_status</code> is explicit.</p>
+</discussion>
+
+<resolution>
+<p>Change [fs.op.status] paragraph 2:</p>
+<blockquote>
+<p><i>Effects:</i> As if:</p>
+<pre>error_code ec;
+file_status result = status(p, ec);
+if (result<ins>.type()</ins> == file_type::none)
+...</pre>
+</blockquote>
+</resolution>
+
+</issue>
