@@ -21,11 +21,11 @@
 <table>
 <tr>
   <td align="left">Doc. no.</td>
-  <td align="left">N4211</td>
+  <td align="left">----</td>
 </tr>
 <tr>
   <td align="left">Date:</td>
-  <td align="left">2014-10-11</td>
+  <td align="left">2015-09-18</td>
 </tr>
 <tr>
   <td align="left">Project:</td>
@@ -36,8 +36,8 @@
   <td align="left">Beman Dawes &lt;<a href="mailto:bdawes at acm dot org">bdawes at acm dot org</a>&gt;</td>
 </tr>
 </table>
-<h1>File System TS Active Issues List (Revision R3)</h1>
-<p><p>Revised 2014-10-11 at 18:10:45 UTC</p>
+<h1>File System TS Active Issues List (Revision 4 Draft 1)</h1>
+<p><p>Revised 2015-09-18 at 21:09:36 UTC</p>
 </p>
   <p>Reference ISO/IEC TS 18822</p>
   <p>Also see:</p>
@@ -149,14 +149,14 @@ ownership of it.
 
 <h2>Revision History</h2>
 <ul>
-<li>R3: 2014-10-10 SG-3 File System TS<ul>
+<li>4 Draft 1: 2015-09-18 SG-3 File System TS<ul>
 <li><b>Summary:</b><ul>
-<li>10 open issues, up by 4.</li>
+<li>12 open issues, up by 6.</li>
 <li>61 closed issues, up by 0.</li>
-<li>71 issues total, up by 4.</li>
+<li>73 issues total, up by 6.</li>
 </ul></li>
 <li><b>Details:</b><ul>
-<li>Added the following 4 New issues: <a href="active.html#69">69</a>, <a href="active.html#70">70</a>, <a href="active.html#71">71</a>, <a href="active.html#72">72</a>.</li>
+<li>Added the following 6 New issues: <a href="active.html#69">69</a>, <a href="active.html#70">70</a>, <a href="active.html#71">71</a>, <a href="active.html#72">72</a>, <a href="active.html#73">73</a>, <a href="active.html#74">74</a>.</li>
 <li>No issues changed.</li>
 </ul></li>
 </ul>
@@ -846,6 +846,71 @@ but since <code>path += path2</code> works then it seems reasonable to expect
       <i>Throws:</i> As specified in <a href="#Error-reporting">Error reporting (7)</a>.
     </p>
   </blockquote>
+
+
+
+
+
+<hr>
+<h3><a name="73"></a>73. <code>status()</code> effects cannot be implemented as specified</h3>
+<p><b>Section:</b> X 15.33 [fs.op.status] <b>Status:</b> <a href="active.html#New">New</a>
+ <b>Submitter:</b> Jonathan Wakely <b>Opened:</b> 2015-09-15 <b>Last modified:</b> 2015-09-18</p>
+<p><b>View all issues with</b> <a href="status-index.html#New">New</a> status.</p>
+<p><b>Discussion:</b></p>
+<p>[fs.op.status] paragraph 2 says:</p>
+<blockquote>
+<p><i>Effects:</i> As if:</p>
+<pre>error_code ec;
+file_status result = status(p, ec);
+if (result == file_type::none)
+...</pre>
+</blockquote>
+<p>This won't compile, there is no comparison operator for <code>file_status</code> and <code>file_type</code>,
+and the conversion from <code>file_type</code> to <code>file_status</code> is explicit.</p>
+
+
+<p><b>Proposed resolution:</b></p>
+<p>Change [fs.op.status] paragraph 2:</p>
+<blockquote>
+<p><i>Effects:</i> As if:</p>
+<pre>error_code ec;
+file_status result = status(p, ec);
+if (result<ins>.type()</ins> == file_type::none)
+...</pre>
+</blockquote>
+
+
+
+
+
+<hr>
+<h3><a name="74"></a>74. Bidirectional iterator requirement on <code>path::iterator</code>
+is very expensive</h3>
+<p><b>Section:</b> X 8.5 [path.itr] <b>Status:</b> <a href="active.html#New">New</a>
+ <b>Submitter:</b> Jonathan Wakely <b>Opened:</b> 2015-09-15 <b>Last modified:</b> 2015-09-18</p>
+<p><b>View all issues with</b> <a href="status-index.html#New">New</a> status.</p>
+<p><b>Discussion:</b></p>
+<p>[path.itr] requires path::iterator to be a BidirectionalIterator, which also implies
+the ForwardIterator requirement in [forward.iterators] p6 for the following assertion
+to pass:</p>
+<pre>path p("/");
+auto it1 = p.begin();
+auto it2 = p.begin();
+assert( &*it1 == &*it2 );</pre>
+<p>This prevents iterators containing a <code>path</code>, or constructing one on the fly when
+dereferenced, the object they point to must exist outside the iterators and potentially
+outlive them. The only practical way to meet the requirement is for <code>p</code> to hold
+a container of child <code>path</code> objects so the iterators can refer to those
+children. This makes a <code>path</code> object much larger than would naïvely be
+expected.</p>
+<p>The Boost and MSVC implementations of Filesystem fail to meet this requirement. The
+GCC implementation meets it, but it makes <code>sizeof(path) == 64</code> (for 64-bit) or
+<code>sizeof(path) == 40</code> for 32-bit, and makes many path operations
+more expensive.</p>
+
+
+<p><b>Proposed resolution:</b></p>
+<p></p>
 
 
 
