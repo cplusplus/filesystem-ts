@@ -1,0 +1,54 @@
+<html>
+
+<head>
+<meta name="GENERATOR" content="Microsoft FrontPage 5.0">
+<meta name="ProgId" content="FrontPage.Editor.Document">
+<meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
+<title>54</title>
+</head>
+
+<body>
+
+<h3>54. [PDTS] Concerns with security and testability</h3>
+<p><b>Section:</b> X all <b>Status:</b>
+<a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2014/active.html#NAD%20Future">
+NAD Future</a> <b>Submitter:</b> Google <b>Opened:</b> 2014-01-20 <b>Last 
+modified:</b> 2014-07-05</p>
+<p><b>View all issues with</b>
+<a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2014/status-index.html#NAD%20Future">
+NAD Future</a> status.</p>
+<p><b>Discussion:</b></p>
+<p>We have two primary concerns with the interface as specified: </p>
+<p>(a) its interface repeats the mistake of V7 Unix in 1979 by exposing access 
+checking (and similarly file creation) independently from opening and mutating 
+the file, and </p>
+<p>(b) it provides no realistic means of testing a software library which uses 
+the standard interface for accessing the filesystem under fault scenarios. </p>
+<p>Due to the extent of (a), TOCTTOU [1] security vulnerabilities are 
+guaranteed, if not during access checking[2], during other common operations 
+such as temporary file creation[3]. </p>
+<p>Due to (b) it is impossible to portably test libraries using the proposed 
+interface against critical correctness and security edge cases. </p>
+<p>[1]: TOCTTOU: Time-of-check-to-time-of-use.&nbsp;
+<a href="http://ieeexplore.ieee.org/stamp/stamp.jsp?tp=&arnumber=5388162">
+Operating system integrity in OS/VS2</a> </p>
+<p>[2]: <a href="http://www.csl.sri.com/users/ddean/papers/usenix04.pdf">Fixing 
+Races for Fun and Profit: How to use access(2)</a></p>
+<p>[3]:
+<a href="http://www.cs.ucdavis.edu/research/tech-reports/1995/CSE-95-10.pdf">
+Checking for Race Conditions in File Accesses</a></p>
+<p><i>[Beman Dawes: 10 Feb 2014: Suggested response: NAD, Future]</i> </p>
+<blockquote>
+  <p>We share your concerns and look forward to receiving specific proposals to 
+  address them. Whether they will addressed by a revision of TS 18822 or a new 
+  TS will be decided as proposals progress through the committee process. See
+  <a href="http://isocpp.org/std/submit-a-proposal">How To Submit a Proposal</a>.
+  </p>
+</blockquote>
+<p><i>[17 Jun 2014 Rapperswil LWG agrees NAD, Future with rationale as stated 
+above.]</i></p>
+<p><b>Proposed resolution:</b></p>
+
+</body>
+
+</html>
