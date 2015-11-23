@@ -20,10 +20,25 @@ but since <code>path += path2</code> works then it seems reasonable to expect
     <p>The 12 overloads required by <code>basic_string operator+</code> scared me off,
     and I never came back to the issue.</p>  
   </blockquote>
+
+  <note>22 Nov 2015 Beman supplies proposed resolution wording.</note>
+ 
 </discussion>
 
 <resolution>
-<p></p>
+<p>NAD, Future.</p>
+  <blockquote>
+  <p>It is not necessary to provide every possible string operation for class
+  <code>path</code> because it is always possible to convert to a string,
+  perform the operation, and convert back to a path. The most commonly needed string
+  operations are provided for class <code>path</code> as a convenience, but every added
+  function comes at the cost of increased interface complexity. In this case, the cost
+  is judged to outweigh the convenience.</p>
+  
+  <p>Future changes to the language, such as concepts, and changes to the library, such as
+  <code>basic_string_view</code>, may allow reduction of the complexity of the class path
+  interface. The LWG may wish to reconsider this issue at that time.</p>
+  </blockquote>
 </resolution>
 
 </issue>

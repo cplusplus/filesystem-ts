@@ -28,10 +28,24 @@ expected.</p>
 GCC implementation meets it, but it makes <code>sizeof(path) == 64</code> (for 64-bit) or
 <code>sizeof(path) == 40</code> for 32-bit, and makes many path operations
 more expensive.</p>
+
+  <note>21 Nov 2015 Beman comments:</note>
+  <blockquote>The ForwardIterator requirement in
+   [forward.iterators] "If a and b are both dereferenceable, then a == b if and only if *a and *b are bound to the same object." will be removed by N4560, Working Draft, C++ Extensions for
+   Ranges. I see no point in requiring something for the File System TS that is expensive,
+   has never to my knowledge been requested by users, and is going to go away soon anyhow.
+   The wording I propose below removes the requirement.
+  </blockquote>
+
 </discussion>
 
 <resolution>
-<p></p>
+<p>Change [path.itr] paragraph 2:</p>
+<blockquote>
+<p>A <code>path::iterator</code> is a constant iterator satisfying all the requirements of a bidirectional iterator (C++14 §24.1.4 Bidirectional iterators) <ins>except that there is no requirement
+that two equal iterators be bound to the same object</ins>. Its <code>value_type</code> is <code>path</code>.</p>
+</blockquote>
+
 </resolution>
 
 </issue>
