@@ -25,7 +25,7 @@
 </tr>
 <tr>
   <td align="left">Date:</td>
-  <td align="left">2015-09-18</td>
+  <td align="left">2015-11-23</td>
 </tr>
 <tr>
   <td align="left">Project:</td>
@@ -37,7 +37,7 @@
 </tr>
 </table>
 <h1>File System TS Active Issues List (Revision 4 Draft 1)</h1>
-<p><p>Revised 2015-09-18 at 21:09:36 UTC</p>
+<p><p>Revised 2015-11-23 at 13:11:31 UTC</p>
 </p>
   <p>Reference ISO/IEC TS 18822</p>
   <p>Also see:</p>
@@ -361,16 +361,18 @@ ownership of it.
 <hr>
 <h3><a name="63"></a>63. Enable efficient retrieval of file size from <code>directory_entry</code></h3>
 <p><b>Section:</b> X [fs.op.file_size] <b>Status:</b> <a href="active.html#New">New</a>
- <b>Submitter:</b> Gor Nishanov <b>Opened:</b> 2014-05-22 <b>Last modified:</b> 2014-07-05</p>
+ <b>Submitter:</b> Gor Nishanov <b>Opened:</b> 2014-05-22 <b>Last modified:</b> 2015-11-23</p>
 <p><b>View all issues with</b> <a href="status-index.html#New">New</a> status.</p>
 <p><b>Discussion:</b></p>
 <p>
-  On Windows, the <code>FindFileData</code> structure, which is the underlying data type for <code>directory_entry</code>, contains the file size as one of the fields.
+  On Windows, the <code><del>FindFileData</del> <ins>_WIN32_FIND_DATA</ins></code> structure, which is the underlying data type for <code>directory_entry</code>, contains the file size as one of the fields.
 
   Thus efficient enumeration of files and getting their sizes is possible without doing a separate query for the file size.
 
 </p>
   <p><i>[17 Jun 2014 Rapperswil LWG will investigate issue at a subsequent meeting.]</i></p>
+
+  <p><i>[23 Nov 2015 Editorally correct name of data structure mentioned in discussion.]</i></p>
 
 
 
@@ -583,7 +585,7 @@ and <code>"/"</code> has a filename of <code>"/"</code>.</p>
 <h3><a name="68"></a>68. 
   <code>path::operator+=</code> is defined, but not <code>operator+</code></h3>
 <p><b>Section:</b> X 8 [class.path] <b>Status:</b> <a href="active.html#New">New</a>
- <b>Submitter:</b> Jonathan Wakely <b>Opened:</b> 2014-07-03 <b>Last modified:</b> 2014-07-04</p>
+ <b>Submitter:</b> Jonathan Wakely <b>Opened:</b> 2014-07-03 <b>Last modified:</b> 2015-11-22</p>
 <p><b>View all other</b> <a href="section-index.html# [class.path">issues</a> in 8 [class.path].</p>
 <p><b>View all issues with</b> <a href="status-index.html#New">New</a> status.</p>
 <p><b>Discussion:</b></p>
@@ -598,9 +600,25 @@ but since <code>path += path2</code> works then it seems reasonable to expect
     and I never came back to the issue.</p>  
   </blockquote>
 
+  <p><i>[22 Nov 2015 Beman supplies proposed resolution wording.]</i></p>
+
+ 
+
 
 <p><b>Proposed resolution:</b></p>
-<p></p>
+<p>NAD, Future.</p>
+  <blockquote>
+  <p>It is not necessary to provide every possible string operation for class
+  <code>path</code> because it is always possible to convert to a string,
+  perform the operation, and convert back to a path. The most commonly needed string
+  operations are provided for class <code>path</code> as a convenience, but every added
+  function comes at the cost of increased interface complexity. In this case, the cost
+  is judged to outweigh the convenience.</p>
+  
+  <p>Future changes to the language, such as concepts, and changes to the library, such as
+  <code>basic_string_view</code>, may allow reduction of the complexity of the class path
+  interface. The LWG may wish to reconsider this issue at that time.</p>
+  </blockquote>
 
 
 
@@ -887,7 +905,7 @@ if (result<ins>.type()</ins> == file_type::none)
 <h3><a name="74"></a>74. Bidirectional iterator requirement on <code>path::iterator</code>
 is very expensive</h3>
 <p><b>Section:</b> X 8.5 [path.itr] <b>Status:</b> <a href="active.html#New">New</a>
- <b>Submitter:</b> Jonathan Wakely <b>Opened:</b> 2015-09-15 <b>Last modified:</b> 2015-09-18</p>
+ <b>Submitter:</b> Jonathan Wakely <b>Opened:</b> 2015-09-15 <b>Last modified:</b> 2015-11-22</p>
 <p><b>View all issues with</b> <a href="status-index.html#New">New</a> status.</p>
 <p><b>Discussion:</b></p>
 <p>[path.itr] requires path::iterator to be a BidirectionalIterator, which also implies
@@ -908,9 +926,24 @@ GCC implementation meets it, but it makes <code>sizeof(path) == 64</code> (for 6
 <code>sizeof(path) == 40</code> for 32-bit, and makes many path operations
 more expensive.</p>
 
+  <p><i>[21 Nov 2015 Beman comments:]</i></p>
+
+  <blockquote>The ForwardIterator requirement in
+   [forward.iterators] "If a and b are both dereferenceable, then a == b if and only if *a and *b are bound to the same object." will be removed by N4560, Working Draft, C++ Extensions for
+   Ranges. I see no point in requiring something for the File System TS that is expensive,
+   has never to my knowledge been requested by users, and is going to go away soon anyhow.
+   The wording I propose below removes the requirement.
+  </blockquote>
+
+
 
 <p><b>Proposed resolution:</b></p>
-<p></p>
+<p>Change [path.itr] paragraph 2:</p>
+<blockquote>
+<p>A <code>path::iterator</code> is a constant iterator satisfying all the requirements of a bidirectional iterator (C++14 §24.1.4 Bidirectional iterators) <ins>except that there is no requirement
+that two equal iterators be bound to the same object</ins>. Its <code>value_type</code> is <code>path</code>.</p>
+</blockquote>
+
 
 
 
