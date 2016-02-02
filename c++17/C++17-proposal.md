@@ -30,10 +30,17 @@ The *File System Technical Specification*, ISO/IEC TS 18822:2015, was completed 
 Implementation and Use Experience
 ---------------------------------
 
+* **Boost** Has been shipping versions of Filesystem since 2003.
+* **Microsoft/Dinkumware** Began shipping with Visual C++ 2015. Had previously been shipping a version based on the TR1 proposal.
+* **libstdc++** Began shipping with gcc-5.3.
+* **libc++** <span style="background-color:yellow">Implemented, but not shipping yet.</span> 
+
 Pending Changes
 ---------------
 
 ### Pending issues
+
+There are twelve open TS issues in the LWG Active Issues list. Ten have proposed resolution text.
 
 ### Pending proposals
 
@@ -52,9 +59,18 @@ Acknowledgements
 References
 ----------
 
-TS
+[1]: www.open-std.org/jtc1/sc22/wg21/docs/papers/2014/n4100.pdf
+[2]: www.boost.org/doc/libs/1_60_0/libs/filesystem/doc/index.htm
+[3]: msdn.microsoft.com/en-us/library/hh874694.aspx
+[4]: github.com/efcs/filesystem-standalone
 
-C++WP
- 
+&lsqb;<a name="1">1</a>&rsqb; Beman Dawes, [Programming Languages — C++ — File System Technical Specification][1], 2014. 
+
+&lsqb;<a name="2">2</a>&rsqb; Beman Dawes, others, [Boost Filesystem Library, V3][2], 2015. 
+
+&lsqb;<a name="3">3</a>&rsqb; Microsoft, [&lt;filesystem&gt; (v3), Visual Studio 2015][3], 2015. 
+
+&lsqb;<a name="4">4</a>&rsqb; Eric Fiselier, [Experimental work on the standard filesystem proposal][4], 2014. 
+
 
 ---

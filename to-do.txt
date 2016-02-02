@@ -4,10 +4,17 @@ To Do List
 * Search WP for Throws: Nothing, open an issue. S/B noexcept.
 * IE overflowing right margin slightly
 
+* 2663. Enable efficient retrieval of file size from directory_entry. Pursue BGD's solution:
+* Initial work-in-progress on an experimental branch to remove visible directory_entry cache access by permitting operational function implementations taking boost::filesystem::path& arguments to access private directory_entry cached data via friendship. Since directory_entry has an automatic conversion to const boost::filesystem::path&, users wishing to use the cached data should call operational functions with a directory_entry rather than a path.
 
-  
+Simple issues, ready to discuss
+2665. remove_filename() post condition is incorrect
+2667. path::root_directory() description is confusing
+2674. Bidirectional iterator requirement on path::iterator is very expensive  
+2669. recursive_directory_iterator effects refers to non-existent functions 
+2671. Errors in Copy
+2673. status() effects cannot be implemented as specified
+2670. system_complete refers to undefined variable 'base'
 
-
-
-
+More complex, ready to discuss 
 
