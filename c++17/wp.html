@@ -822,8 +822,8 @@ errors are truly exceptional and indicate a serious failure. Throwing an
 <code>error_code&amp;</code> argument.</li>
 </ul>
 <h3>27.10.8  <a name="class-path">Class <code>path</code> [class.path]</a></h2>
-<p para_num="1">An object of class <code>path</code> represents a path (<a href="#fs.def.path">4.15</a>) 
-and contains a pathname (<a href="#fs.def.pathname">4.16</a>). Such an object is concerned only with the lexical and syntactic aspects 
+<p para_num="1">An object of class <code>path</code> represents a path (<a href="#fs.def.path">29.10.4.15</a>) 
+and contains a pathname (<a href="#fs.def.pathname">29.10.4.16</a>). Such an object is concerned only with the lexical and syntactic aspects 
 of a path. The path does not necessarily exist in external storage, and the 
 pathname is not necessarily valid for the current operating 
 system or for a particular file system.</p>
@@ -961,7 +961,7 @@ system or for a particular file system.</p>
 <p para_num="3"><code><a name="value_type">value_type</a></code> is a <code>typedef</code> for the 
 operating system dependent encoded character type used  to represent pathnames.</p>
 <p para_num="4">The value of <a name="preferred_separator"><code>preferred_separator</code></a> 
-is the operating system dependent <i>preferred-separator</i> character (<a href="#path.generic">8.1</a>).</p>
+is the operating system dependent <i>preferred-separator</i> character (<a href="#path.generic">29.10.8.1</a>).</p>
 <blockquote>
  <p para_num="5">[<i>Example:</i> For  POSIX based operating 
       systems, <code>value_type</code> is <code>char</code> and <code>
@@ -1065,7 +1065,7 @@ conversions</a> [<a name="path.fmt.cvt">path.fmt.cvt</a>]</h4>
 </blockquote>
 
 <p para_num="6">Functions arguments that take character sequences representing 
-paths may use the generic pathname format grammar (<a href="#path.generic">8.1</a>) or 
+paths may use the generic pathname format grammar (<a href="#path.generic">29.10.8.1</a>) or 
 the native pathname format (<a href="#fs.def.native">4.11</a>). If and only if such 
 arguments are in the generic format and the generic format is not acceptable to 
 the operating system as a native path, conversion to native format shall be 
@@ -1094,7 +1094,7 @@ to be converted to is determined
 by its value type:</p>
 <blockquote>
   <ul>
-    <li para_num="2"><code>char</code>: Encoding is the native narrow encoding (<a href="#fs.def.native.encode">4.10</a>). Conversion, if any, is operating system dependent.<p para_num="3">[<i>Note:</i> 
+    <li para_num="2"><code>char</code>: Encoding is the native narrow encoding (<a href="#fs.def.native.encode">29.10.4.10</a>). Conversion, if any, is operating system dependent.<p para_num="3">[<i>Note:</i> 
 For POSIX based operating systems <code>path::value_type</code> is <code>char</code> 
 so no conversion from <code>char</code> value type arguments or to <code>char</code> 
 value type returns is performed.
@@ -1107,7 +1107,7 @@ This results in behavior identical to other C and C++
 standard library functions that perform file operations using narrow character 
 strings to identify paths. Changing this  behavior would be surprising and error 
 prone. <i>&mdash;end note</i>]</li>
-    <li para_num="6"><code>wchar_t</code>: Encoding is the native wide encoding (<a href="#fs.def.native.encode">4.10</a>). Conversion method is unspecified.
+    <li para_num="6"><code>wchar_t</code>: Encoding is the native wide encoding (<a href="#fs.def.native.encode">29.10.4.10</a>). Conversion method is unspecified.
     <p para_num="7">[<i>Note:</i> 
 For Windows based operating systems <code>path::value_type</code> is <code>wchar_t</code> 
 so no conversion from <code>wchar_t</code> value type arguments or to <code>wchar_t</code> 
@@ -1142,7 +1142,7 @@ shall be one of:</p>
 </ul>
 
 <blockquote>
-  <p para_num="5">[<i>Note:</i> See path conversions (<a href="#path.cvt">8.2</a>) 
+  <p para_num="5">[<i>Note:</i> See path conversions (<a href="#path.cvt">24.10.8.2</a>) 
   for how these value types and their encodings convert to <code>
   path::value_type</code> and its encoding. <i>&mdash;end note</i>]</p>
 </blockquote>
@@ -1171,9 +1171,9 @@ template &lt;class InputIterator&gt;
   path(InputIterator first, InputIterator last);</pre>
 <blockquote>
   <p para_num="7"><i>Effects:</i> Constructs an object of class <code>path</code>, storing the effective range of <code>source</code> 
-  (<a href="#path.req">8.3</a>) 
+  (<a href="#path.req">29.10.8.3</a>) 
   or the range [<code>first</code>,<code>last</code>) in <code>pathname</code>, 
-  converting format and encoding if required (<a href="#path.fmt.cvt">8.2.1</a>).</p>
+  converting format and encoding if required (<a href="#path.fmt.cvt">29.10.8.2.1</a>).</p>
 </blockquote>
 <pre para_num="8">template &lt;class <a href="#Source">Source</a>&gt;
   path(const Source&amp; source, const locale&amp; loc);
@@ -1189,7 +1189,7 @@ template &lt;class InputIterator&gt;
   follows:</p>
   <blockquote>
   <p para_num="11">If <code>value_type</code> is <code>wchar_t</code>, converts to the native 
-  wide encoding (<a href="#fs.def.native.encode">4.10</a>) using the <code>codecvt&lt;wchar_t, char, mbstate_t&gt;</code> 
+  wide encoding (<a href="#fs.def.native.encode">29.10.4.10</a>) using the <code>codecvt&lt;wchar_t, char, mbstate_t&gt;</code> 
   facet of <code>loc</code>. Otherwise a conversion is performed using the <code>
   codecvt&lt;wchar_t, char, mbstate_t&gt;</code> facet of <code>loc</code>, and then a second 
   conversion to the current narrow encoding. </p>
@@ -1206,7 +1206,7 @@ fs::create_directory(fs::path(latin1_string, latin1_locale));</pre>
     <p para_num="15">For POSIX based operating systems the path is constructed by first using <code>
     latin1_facet</code> to convert ISO/IEC 8859-1 encoded
     <code>latin1_string</code> to a wide character string in the native wide 
-    encoding (<a href="#fs.def.native.encode">4.10</a>). The resulting wide string is then 
+    encoding (<a href="#fs.def.native.encode">29.10.4.10</a>). The resulting wide string is then 
     converted to a narrow character
     <code>pathname</code> string in the current native narrow encoding. If the 
     native wide encoding is UTF-16 or UTF-32, and the current native narrow 
@@ -1247,9 +1247,9 @@ template &lt;class <a href="#Source">Source</a>&gt;
 template &lt;class InputIterator&gt;
   path&amp; assign(InputIterator first, InputIterator last);</pre>
 <blockquote>
-  <p para_num="8"><i>Effects:</i> Stores the effective range of <code>source</code> (<a href="#path.req">8.3</a>) 
+  <p para_num="8"><i>Effects:</i> Stores the effective range of <code>source</code> (<a href="#path.req">29.10.8.3</a>) 
   or the range [<code>first</code>,<code>last</code>) in <code>pathname</code>, 
-  converting format and encoding if required (<a href="#path.arg.convert">8.2.1</a>). </p>
+  converting format and encoding if required (<a href="#path.arg.convert">29.10.8.2.1</a>). </p>
   <p para_num="9">
   <i>Returns: </i><code>*this</code></p>
   </blockquote>
@@ -1284,7 +1284,7 @@ template &lt;class InputIterator&gt;
   <p para_num="11"><i>Effects:</i></p>
   <blockquote>
     <p para_num="12">Appends <code>path::preferred_separator</code> to <code>pathname</code>, 
-    converting format and encoding if required (<a href="#path.arg.convert">8.2.1</a>), unless:</p>
+    converting format and encoding if required (<a href="#path.arg.convert">29.10.8.2.1</a>), unless:</p>
     <ul>
     <li para_num="13">an added separator 
     would be redundant, or</li>
@@ -1292,9 +1292,9 @@ template &lt;class InputIterator&gt;
     <li para_num="15"><code>source.empty()</code>, or</li>
     <li para_num="16"><code>*source.native().cbegin()</code> is a separator.</li>
   </ul>
-    <p para_num="17">Appends the effective range of <code>source</code> (<a href="#path.req">8.3</a>) 
+    <p para_num="17">Appends the effective range of <code>source</code> (<a href="#path.req">29.10.8.3</a>) 
     or the range [<code>first</code>,<code>last</code>) to <code>pathname</code>, 
-    converting format and encoding if required (<a href="#path.arg.convert">8.2.1</a>).</p>
+    converting format and encoding if required (<a href="#path.arg.convert">29.10.8.2.1</a>).</p>
   </blockquote>
   <p para_num="18"><i>Returns: </i><code>*this</code></p>
   </blockquote>
@@ -1316,13 +1316,13 @@ template &lt;class InputIterator&gt;
  where <code>prior_native</code> is <code>native()</code> prior to the call to <code>operator+=</code>,
  and <code><i>effective-argument</i></code> is:</p>
  <ul><li para_num="3"><code>x.native()</code> if <code>x</code> is present and is <code>const path&amp;</code>, otherwise</li>
- <li para_num="4">the effective range <code>source</code> (<a href="#path.req">8.3</a>), 
+ <li para_num="4">the effective range <code>source</code> (<a href="#path.req">29.10.8.3</a>), 
  if <code>source</code> is present, otherwise,</li>
  <li para_num="5">the range [<code>first</code>,<code>last</code>),
  if <code>first</code> and
  <code>last</code> are present, otherwise,</li>
  <li para_num="6"><code>x</code>.</li></ul><p para_num="7">If the value type of <code><i>effective-argument</i></code> would not be <code>path::value_type</code>, 
-  the actual argument or argument range is first converted (<a href="#path.arg.convert">8.2.1</a>) so that <code><i>effective-argument</i></code> has value type <code>path::value_type</code>.</li> </p>
+  the actual argument or argument range is first converted (<a href="#path.arg.convert">29.10.8.2.1</a>) so that <code><i>effective-argument</i></code> has value type <code>path::value_type</code>.</li> </p>
  <p para_num="8"><i>Returns: </i><code>*this</code></p>
  </blockquote>
 <h5>27.10.8.4.5  <a name="path-modifiers"> <code>path</code> modifiers</a> [path.modifiers]</h4><pre>void <a name="path-clear">clear</a>() noexcept;</pre>
@@ -1387,7 +1387,7 @@ std::cout &lt;&lt; path(&quot;/&quot;).replace_filename(&quot;bar&quot;);     //
 <blockquote>
   <p para_num="26"><i>Effects:</i></p>
   <ul>
-    <li para_num="27">Any existing <code><a href="#path-extension">extension()</a>(</code><a href="#path.decompose">8.4.9</a><code>)</code> is removed from the stored path, 
+    <li para_num="27">Any existing <code><a href="#path-extension">extension()</a>(</code><a href="#path.decompose">29.10.8.4.9</a><code>)</code> is removed from the stored path, 
     then</li>
     <li para_num="28">If <code>replacement</code> is not empty and does not begin with a dot 
     character, a dot character is appended to the stored path, then</li>
@@ -1432,7 +1432,7 @@ basic_string&lt;EcharT, traits, Allocator&gt;
   <p para_num="10"><i>Returns:</i> <code>pathname</code>.</p>
 <p para_num="11"><i>Remarks:</i> All memory allocation, including for the return value, shall 
 be performed by <code>a</code>. Conversion, if any, is specified by
-<a href="#path.cvt">8.2</a>.</p>
+<a href="#path.cvt">24.10.8.2</a>.</p>
 </blockquote>
 <pre para_num="12">std::string <a name="string">string</a>() const;
 std::wstring <a name="wstring">wstring</a>() const;
@@ -1442,14 +1442,14 @@ std::u32string <a name="u32string">u32string</a>() const; </pre>
 <blockquote>
 <p para_num="13"><i>Returns:</i> <code>pathname</code>.</p>
 <p para_num="14"><i>Remarks:</i> Conversion, if any, is performed as specified 
-by <a href="#path.cvt">8.2</a>. 
+by <a href="#path.cvt">24.10.8.2</a>. 
 The encoding of the string returned by <code>u8string()</code> is always UTF-8.</p>
 </blockquote>
 
 <h5>27.10.8.4.7  <a name="path-generic-format-observers"><code>path</code> generic format observers</a> 
 [path.generic.obs]</h4>
 <p para_num="1">Generic format observer functions return strings formatted according to the 
-generic pathname format (<a href="#path.generic">8.1</a>). 
+generic pathname format (<a href="#path.generic">29.10.8.1</a>). 
 The forward slash (<code>'/'</code>) character is used as the <i>
 directory-separator</i> character.</p>
 <blockquote>
@@ -1465,10 +1465,10 @@ basic_string&lt;EcharT, traits, Allocator&gt;
 
 <blockquote>
   <p para_num="4"><i>Returns:</i> <code>pathname</code>, reformatted according to the generic 
-  pathname format (<a href="#path.generic">8.1</a>). </p>
+  pathname format (<a href="#path.generic">29.10.8.1</a>). </p>
 <p para_num="5"><i>Remarks:</i> All memory allocation, including for the return value, shall 
 be performed by <code>a</code>. Conversion, if any, is specified by
-<a href="#path.cvt">8.2</a>.</p>
+<a href="#path.cvt">24.10.8.2</a>.</p>
 </blockquote>
 <pre para_num="6">std::string <a name="generic_string">generic_string</a>() const;
 std::wstring <a name="generic_wstring">generic_wstring</a>() const;
@@ -1477,9 +1477,9 @@ std::u16string <a name="generic_u16string">generic_u16string</a>() const;
 std::u32string <a name="generic_u32string">generic_u32string</a>() const; </pre>
 <blockquote>
 <p para_num="7"><i>Returns:</i> <code>pathname</code>, reformatted according to the generic 
-pathname format (<a href="#path.generic">8.1</a>).</p>
+pathname format (<a href="#path.generic">29.10.8.1</a>).</p>
 <p para_num="8"><i>Remarks:</i>&nbsp; Conversion, if any, is specified by
-<a href="#path-Conversions">8.2</a>. 
+<a href="#path.cvt">24.10.8.2</a>. 
 The encoding of the string returned by <code>generic_u8string()</code> is always 
 UTF-8.</p>
 </blockquote>
@@ -1619,7 +1619,7 @@ for (; !p.extension().empty(); p = p.stem())
 <pre para_num="19">bool <a name="path-is_absolute">is_absolute</a>() const;</pre>
 <blockquote>
   <p para_num="20"><i>Returns:</i> <code>true</code> if <code>pathname</code> 
-  contains an absolute path (<a href="#fs.def.absolute-path">4.1</a>), else <code>false</code>.</p>
+  contains an absolute path (<a href="#fs.def.absolute-path">29.10.4.1</a>), else <code>false</code>.</p>
 <p para_num="21">[<i>Example:</i> <code>path(&quot;/&quot;).is_absolute()</code> is
       <code>true</code> for  POSIX based operating systems, and <code>false</code> for Windows based 
 operating systems.&nbsp; <i>&mdash;end example</i>]</p>
@@ -1740,7 +1740,7 @@ template &lt;class InputIterator&gt;
   <blockquote>
     <ul>
       <li para_num="4">If <code>value_type</code> is <code>char</code> and the current native 
-      narrow encoding (<a href="#fs.def.native.encode">4.11</a>) is UTF-8, <code>path(source)</code> or <code>path(first, last)</code>, 
+      narrow encoding (<a href="#fs.def.native.encode">29.10.4.11</a>) is UTF-8, <code>path(source)</code> or <code>path(first, last)</code>, 
       else</li>
       <li para_num="5">if <code>value_type</code> is <code>wchar_t </code>and the 
       native wide encoding is UTF-16, or if <code>value_type</code> is <code>char16_t</code> 
@@ -1753,7 +1753,7 @@ template &lt;class InputIterator&gt;
       return <code>path(tmp)</code>.</li>
     </ul>
   </blockquote>
-  <p para_num="7"><i>Remarks: </i>Argument format conversion (<a href="#path.fmt.cvt">8.2.1</a>) applies to the 
+  <p para_num="7"><i>Remarks: </i>Argument format conversion (<a href="#path.fmt.cvt">29.10.8.2.1</a>) applies to the 
   arguments for these functions. How Unicode encoding conversions are performed is 
   unspecified. </p>
   <p para_num="8">[<i>Example</i>:</p>
@@ -2373,7 +2373,7 @@ file_status  symlink_status(error_code&amp; ec) const noexcept;</pre>
 sequence of <code>directory_entry</code> elements representing the files in a 
 directory.&nbsp; 
 [<i>Note:</i> For iteration into sub-directories,&nbsp; see class <code>recursive_directory_iterator</code> 
-(<a href="#class.rec.dir.itr">14</a>). <i>&mdash;end note</i>]</p>
+(<a href="#class.rec.dir.itr">29.10.14</a>). <i>&mdash;end note</i>]</p>
 
 <div dir="ltr">
 
@@ -2801,7 +2801,7 @@ void copy(const path&amp; from, const path&amp; to, error_code&amp; ec) noexcept
 void copy(const path&amp; from, const path&amp; to, <a href="#copy_option">copy_options</a> options,
   error_code&amp; ec) noexcept;</pre>
 <blockquote>
-  <p para_num="4"><i>Precondition:</i> At most one constant from each option group (<a href="#enum.copy_options">10.2</a>) 
+  <p para_num="4"><i>Precondition:</i> At most one constant from each option group (<a href="#enum.copy_options">29.10.10.2</a>) 
   is present in <code>options</code>.</p>
   <p para_num="5"><i>Effects:</i></p>
   
@@ -2928,7 +2928,7 @@ bool <a name="copy_file2">copy_file</a>(const path&amp; from, const path&amp; to
                error_code&amp; ec) noexcept;</pre>
 <blockquote>
   <p para_num="5"><i>Precondition:</i> At most one constant from each <code>copy_options</code> 
-  option group (<a href="#enum.copy_options">10.2</a>) is present 
+  option group (<a href="#enum.copy_options">29.10.10.2</a>) is present 
   in <code>options</code>.</p>
   <p para_num="6"><i>Effects:</i> </p>
   <blockquote>
