@@ -5,7 +5,7 @@
 <meta name="GENERATOR" content="Microsoft FrontPage 5.0">
 <meta name="ProgId" content="FrontPage.Editor.Document">
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-<title>Draft Filesystem Technical Specification</title>
+<title>Draft Filesystem <del>Technical Specification</del> <ins>sub-clause</ins></title>
 <style type="text/css">
 
 
@@ -129,151 +129,144 @@ div.roman-page
       <p>Beman Dawes &lt;bdawes at acm dot org&gt;</td>
     </tr>
   </table>
-<p>&nbsp;</p>
-<p>&nbsp;</p>
-<p>&nbsp;</p>
 
 <!-- generate-section-numbers=false -->
 
-<h2 class="page_break" align="center">Filesystem Library</h1>
-<h3 class="page_break"> <a name="TOC">Contents</a></h2>
-
-<blockquote>
-      <p>      <a href="#TOC"> Contents</a><br>
-      <a href="#<del>Scope</del> <ins>General</ins>">1  <del>Scope</del> <ins>General</ins>&nbsp; </a><br>
-      <a href="#Conformance">2  Conformance </a><br>
-      &nbsp;&nbsp;&nbsp;<a href="#fs.conform.9945">2.1  POSIX conformance </a><br>
-      &nbsp;&nbsp;&nbsp;<a href="#fs.conform.os">2.2  Operating system dependent behavior conformance</a><br>
-      &nbsp;&nbsp; <a href="#fs.race.behavior">2.3 File system race 
-      behavior</a><br>
-      <a href="#Normative-references">3  Normative references&nbsp; </a><br>
-      <a href="#Definitions">4  Terms and definitions </a><br>
-      &nbsp;&nbsp;&nbsp;<a href="#Absolute-path">4.1  absolute path </a><br>
-      &nbsp;&nbsp;&nbsp;<a href="#canonical-path">4.2  canonical path </a><br>
-      &nbsp;&nbsp;&nbsp;<a href="#directory">4.3  directory </a><br>
-      &nbsp;&nbsp;&nbsp;<a href="#file">4.4  file </a><br>
-      &nbsp;&nbsp;&nbsp;<a href="#file-system">4.5  file system </a><br>
-      &nbsp;&nbsp;&nbsp;<a href="#file-system-race">4.6  file system race </a><br>
-      &nbsp;&nbsp;&nbsp;<a href="#filename">4.7  filename </a><br>
-      &nbsp;&nbsp;&nbsp;<a href="#hard-link">4.8  hard link </a><br>
-      &nbsp;&nbsp;&nbsp;<a href="#link">4.9  link </a><br>
-      &nbsp;&nbsp;&nbsp;<a href="#fs.def.native.encode">4.10  native encoding </a><br>
-      &nbsp;&nbsp;&nbsp;<a href="#fs.def.native">4.11  native pathname format </a><br>
-      &nbsp;&nbsp;&nbsp;<a href="#NTCTS">4.12  NTCTS </a><br>
-      &nbsp;&nbsp;&nbsp;<a href="#operating system dependent">4.13  operating system dependent behavior 
+<p>
+<a href="#File-systems">27.10  <ins>File systems&nbsp; </ins></a><br>
+&nbsp;&nbsp;&nbsp;<a href="#<del>Scope</del> <ins>General</ins>">27.10.1  <del>Scope</del> <ins>General</ins>&nbsp; </a><br>
+&nbsp;&nbsp;&nbsp;<a href="#Conformance">27.10.2  Conformance </a><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#fs.conform.9945">27.10.2.1  POSIX conformance </a><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#fs.conform.os">27.10.2.2  Operating system dependent behavior conformance </a><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#fs.race.behavior">27.10.2.3  File system race behavior </a><br>
+&nbsp;&nbsp;&nbsp;<a href="#Normative-references">27.10.3  Normative references&nbsp; </a><br>
+&nbsp;&nbsp;&nbsp;<a href="#Definitions">27.10.4  Terms and definitions </a><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#Absolute-path">27.10.4.1  absolute path </a><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#canonical-path">27.10.4.2  canonical path </a><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#directory">27.10.4.3  directory </a><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#file">27.10.4.4  file </a><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#file-system">27.10.4.5  file system </a><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#file-system-race">27.10.4.6  file system race </a><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#filename">27.10.4.7  filename </a><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#hard-link">27.10.4.8  hard link </a><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#link">27.10.4.9  link </a><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#fs.def.native.encode">27.10.4.10  native encoding </a><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#fs.def.native">27.10.4.11  native pathname format </a><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#NTCTS">27.10.4.12  NTCTS </a><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#operating system dependent">27.10.4.13  operating system dependent behavior 
 </a><br>
-      &nbsp;&nbsp;&nbsp;<a href="#fs.def.parent">4.14  parent directory </a><br>
-      &nbsp;&nbsp;&nbsp;<a href="#path">4.15  path </a><br>
-      &nbsp;&nbsp;&nbsp;<a href="#fs.def.pathname">4.16  pathname </a><br>
-      &nbsp;&nbsp;&nbsp;<a href="#fs.def.pathres">4.17  pathname resolution </a><br>
-      &nbsp;&nbsp;&nbsp;<a href="#Relative-path">4.18  relative path </a><br>
-      &nbsp;&nbsp;&nbsp;<a href="#symbolic-link">4.19  symbolic link </a><br>
-      <a href="#fs.req">5  Requirements</a><br>
-&nbsp;&nbsp; <a href="#Namespaces-and-headers">5.1 Namespaces and headers</a><br>
-&nbsp;&nbsp; <a href="#fs.req.macros">5.2 Feature test macros</a><a href="#fs.req"> </a><br>
-      <a href="#Header-filesystem-synopsis">6  Header <code>&lt;experimental/filesystem&gt;</code> synopsis 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#fs.def.parent">27.10.4.14  parent directory </a><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#path">27.10.4.15  path </a><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#fs.def.pathname">27.10.4.16  pathname </a><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#fs.def.pathres">27.10.4.17  pathname resolution </a><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#Relative-path">27.10.4.18  relative path </a><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#symbolic-link">27.10.4.19  symbolic link </a><br>
+&nbsp;&nbsp;&nbsp;<a href="#fs.req">27.10.5  Requirements </a><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#Namespaces-and-headers">27.10.5.1  Namespaces and headers </a><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#fs.req.macros">27.10.5.2  Feature test macros </a><br>
+&nbsp;&nbsp;&nbsp;<a href="#Header-filesystem-synopsis">27.10.6  Header <code>&lt;experimental/filesystem&gt;</code> synopsis 
 </a><br>
-      <a href="#Error-reporting">7  Error reporting </a><br>
-      <a href="#class-path">8  Class <code>path</code> </a><br>
-      &nbsp;&nbsp;&nbsp;<a href="#path.generic">8.1  <code>path</code> generic pathname format grammar </a><br>
-      &nbsp;&nbsp;&nbsp;<a href="#path-Conversions">8.2  <code>path</code> conversions </a><br>
-      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#path-Conversions-to-native-format">8.2.1  <code>path</code> argument format 
+&nbsp;&nbsp;&nbsp;<a href="#Error-reporting">27.10.7  Error reporting </a><br>
+&nbsp;&nbsp;&nbsp;<a href="#class-path">27.10.8  Class <code>path</code> </a><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#path.generic">27.10.8.1  <code>path</code> generic pathname format grammar </a><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#path-Conversions">27.10.8.2  <code>path</code> conversions </a><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#path-Conversions-to-native-format">27.10.8.2.1  <code>path</code> argument format 
 conversions </a><br>
-      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#path.arg.convert">8.2.2  <code>path</code> type and encoding conversions </a><br>
-      &nbsp;&nbsp;&nbsp;<a href="#path-Requirements">8.3  <code>path</code> requirements </a><br>
-      &nbsp;&nbsp;&nbsp;<a href="#path.member">8.4  <code>path</code> members&nbsp; </a><br>
-      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#path-constructors">8.4.1   <code>path</code> constructors </a><br>
-      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#path-assignments">8.4.2  <code>path</code> assignments </a><br>
-      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#path-appends">8.4.3  <code>path</code> appends 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#path.arg.convert">27.10.8.2.2  <code>path</code> type and encoding conversions </a><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#path-Requirements">27.10.8.3  <code>path</code> requirements </a><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#path.member">27.10.8.4  <code>path</code> members&nbsp; </a><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#path-constructors">27.10.8.4.1   <code>path</code> constructors </a><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#path-assignments">27.10.8.4.2  <code>path</code> assignments </a><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#path-appends">27.10.8.4.3  <code>path</code> appends 
 </a><br>
-      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#path-concatenation">8.4.4  <code>path</code> concatenation </a><br>
-      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#path-modifiers">8.4.5   <code>path</code> modifiers </a><br>
-      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#path-native-format-observers">8.4.6  <code>path</code> native format observers 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#path-concatenation">27.10.8.4.4  <code>path</code> concatenation </a><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#path-modifiers">27.10.8.4.5   <code>path</code> modifiers </a><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#path-native-format-observers">27.10.8.4.6  <code>path</code> native format observers 
 </a><br>
-      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#path-generic-format-observers">8.4.7  <code>path</code> generic format observers 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#path-generic-format-observers">27.10.8.4.7  <code>path</code> generic format observers 
 </a><br>
-      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#path-compare">8.4.8  <code>path</code> compare </a><br>
-      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#path-decomposition">8.4.9   <code>path</code> decomposition 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#path-compare">27.10.8.4.8  <code>path</code> compare </a><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#path-decomposition">27.10.8.4.9   <code>path</code> decomposition 
 </a><br>
-      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#path-query">8.4.10   <code>path</code> query </a><br>
-      &nbsp;&nbsp;&nbsp;<a href="#path-iterators">8.5   <code>path</code> iterators </a><br>
-      &nbsp;&nbsp;&nbsp;<a href="#path-non-member-functions">8.6   <code>path</code> non-member functions 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#path-query">27.10.8.4.10   <code>path</code> query </a><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#path-iterators">27.10.8.5   <code>path</code> iterators </a><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#path-non-member-functions">27.10.8.6   <code>path</code> non-member functions 
 </a><br>
-      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#path-inserter-extractor">8.6.1  <code>path</code> inserter and extractor </a><br>
-      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#path.factory">8.6.2  <code>path</code> factory functions </a><br>
-      <a href="#Class-filesystem_error">9  Class <code>filesystem_error</code> 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#path-inserter-extractor">27.10.8.6.1  <code>path</code> inserter and extractor </a><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#path.factory">27.10.8.6.2  <code>path</code> factory functions </a><br>
+&nbsp;&nbsp;&nbsp;<a href="#Class-filesystem_error">27.10.9  Class <code>filesystem_error</code> 
 </a><br>
-      &nbsp;&nbsp;&nbsp;<a href="#filesystem_error-members">9.1   <code>filesystem_error</code> members 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#filesystem_error-members">27.10.9.1   <code>filesystem_error</code> members 
 </a><br>
-      <a href="#fs.enum">10  Enumerations&nbsp; </a><br>
-      &nbsp;&nbsp;&nbsp;<a href="#Enum-file_type">10.1  Enum class <code>file_type</code> </a><br>
-      &nbsp;&nbsp;&nbsp;<a href="#enum.copy_options">10.2  Enum class <code>copy_options</code> </a><br>
-      &nbsp;&nbsp;&nbsp;<a href="#enum.perms">10.3  Enum class <code>perms</code> </a><br>
-      &nbsp;&nbsp;&nbsp;<a href="#enum.directory_options">10.4  Enum class <code>directory_options</code> </a><br>
-      <a href="#file_status">11  Class <code>file_status</code> </a><br>
-      &nbsp;&nbsp;&nbsp;<a href="#file_status-constructors">11.1  <code>file_status</code> constructors 
+&nbsp;&nbsp;&nbsp;<a href="#fs.enum">27.10.10  Enumerations&nbsp; </a><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#Enum-file_type">27.10.10.1  Enum class <code>file_type</code> </a><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#enum.copy_options">27.10.10.2  Enum class <code>copy_options</code> </a><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#enum.perms">27.10.10.3  Enum class <code>perms</code> </a><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#enum.directory_options">27.10.10.4  Enum class <code>directory_options</code> 
+  </a><br>
+&nbsp;&nbsp;&nbsp;<a href="#file_status">27.10.11  Class <code>file_status</code> </a><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#file_status-constructors">27.10.11.1  <code>file_status</code> constructors 
 </a><br>
-      &nbsp;&nbsp;&nbsp;<a href="#file_status-observers">11.2  <code>file_status</code> observers </a><br>
-      &nbsp;&nbsp;&nbsp;<a href="#file_status-modifiers">11.3  <code>file_status</code> modifiers </a><br>
-      <a href="#Class-directory_entry">12  Class <code>directory_entry</code> </a><br>
-      &nbsp;&nbsp;&nbsp;<a href="#directory_entry-constructors">12.1  <code>directory_entry</code> constructors 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#file_status-observers">27.10.11.2  <code>file_status</code> observers </a><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#file_status-modifiers">27.10.11.3  <code>file_status</code> modifiers </a><br>
+&nbsp;&nbsp;&nbsp;<a href="#Class-directory_entry">27.10.12  Class <code>directory_entry</code> </a><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#directory_entry-constructors">27.10.12.1  <code>directory_entry</code> 
+constructors  </a><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#directory_entry-modifiers">27.10.12.2  <code>directory_entry</code> 
+modifiers  </a><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#directory_entry-observers">27.10.12.3  <code>directory_entry</code> 
+observers  </a><br>
+&nbsp;&nbsp;&nbsp;<a href="#Class-directory_iterator">27.10.13  Class <code>directory_iterator</code> 
 </a><br>
-      &nbsp;&nbsp;&nbsp;<a href="#directory_entry-modifiers">12.2  <code>directory_entry</code> modifiers 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#directory_iterator-members">27.10.13.1  <code>directory_iterator</code> members 
 </a><br>
-      &nbsp;&nbsp;&nbsp;<a href="#directory_entry-observers">12.3  <code>directory_entry</code> observers 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#directory_iterator-non-member-functions">27.10.13.2  <code>directory_iterator</code> non-member functions 
 </a><br>
-      <a href="#Class-directory_iterator">13  Class <code>directory_iterator</code> 
+&nbsp;&nbsp;&nbsp;<a href="#class.rec.dir.itr">27.10.14  Class <code>recursive_directory_iterator</code> 
 </a><br>
-      &nbsp;&nbsp;&nbsp;<a href="#directory_iterator-members">13.1  <code>directory_iterator</code> members 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#recursive_directory_iterator-members">27.10.14.1  <code>recursive_directory_iterator</code> members 
 </a><br>
-      &nbsp;&nbsp;&nbsp;<a href="#directory_iterator-non-member-functions">13.2  <code>directory_iterator</code> non-member functions 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#rec.dir.itr.nonmembers">27.10.14.2  <code>recursive_directory_iterator</code> non-member functions 
 </a><br>
-      <a href="#class.rec.dir.itr">14  Class <code>recursive_directory_iterator</code> 
-</a><br>
-      &nbsp;&nbsp;&nbsp;<a href="#recursive_directory_iterator-members">14.1  <code>recursive_directory_iterator</code> members 
-</a><br>
-      &nbsp;&nbsp;&nbsp;<a href="#rec.dir.itr.nonmembers">14.2  <code>recursive_directory_iterator</code> non-member functions 
-</a><br>
-      <a href="#Operational-functions">15  Operational functions </a><br>
-      &nbsp;&nbsp;&nbsp;<a href="#fs.op.absolute">15.1  Absolute&nbsp; </a><br>
-      &nbsp;&nbsp;&nbsp;<a href="#fs.op.canonical">15.2  Canonical&nbsp; </a><br>
-      &nbsp;&nbsp;&nbsp;<a href="#fs.op.copy">15.3  Copy&nbsp; </a><br>
-      &nbsp;&nbsp;&nbsp;<a href="#fs.op.copy_file">15.4  Copy file&nbsp; </a><br>
-      &nbsp;&nbsp;&nbsp;<a href="#fs.op.copy_symlink">15.5  Copy symlink&nbsp; </a><br>
-      &nbsp;&nbsp;&nbsp;<a href="#fs.op.create_directories">15.6  Create directories&nbsp; </a><br>
-      &nbsp;&nbsp;&nbsp;<a href="#fs.op.create_directory">15.7  Create directory&nbsp; </a><br>
-      &nbsp;&nbsp;&nbsp;<a href="#fs.op.create_dir_symlk">15.8  Create directory symlink&nbsp; </a><br>
-      &nbsp;&nbsp;&nbsp;<a href="#fs.op.create_hard_lk">15.9  Create hard link&nbsp; </a><br>
-      &nbsp;&nbsp;&nbsp;<a href="#fs.op.create_symlink">15.10  Create symlink&nbsp; </a><br>
-      &nbsp;&nbsp;&nbsp;<a href="#fs.op.current_path">15.11  Current path&nbsp; </a><br>
-      &nbsp;&nbsp;&nbsp;<a href="#fs.op.exists">15.12  Exists&nbsp; </a><br>
-      &nbsp;&nbsp;&nbsp;<a href="#fs.op.equivalent">15.13  Equivalent&nbsp; </a><br>
-      &nbsp;&nbsp;&nbsp;<a href="#fs.op.file_size">15.14  File size&nbsp; </a><br>
-      &nbsp;&nbsp;&nbsp;<a href="#fs.op.hard_lk_ct">15.15  Hard link count&nbsp; </a><br>
-      &nbsp;&nbsp;&nbsp;<a href="#fs.op.is_block_file">15.16  Is block file&nbsp; </a><br>
-      &nbsp;&nbsp;&nbsp;<a href="#fs.op.is_char_file">15.17  Is character file&nbsp; </a><br>
-      &nbsp;&nbsp;&nbsp;<a href="#fs.op.is_directory">15.18  Is directory&nbsp; </a><br>
-      &nbsp;&nbsp;&nbsp;<a href="#fs.op.is_empty">15.19  Is empty&nbsp; </a><br>
-      &nbsp;&nbsp;&nbsp;<a href="#fs.op.is_fifo">15.20  Is fifo&nbsp; </a><br>
-      &nbsp;&nbsp;&nbsp;<a href="#fs.op.is_other">15.21  Is other&nbsp; </a><br>
-      &nbsp;&nbsp;&nbsp;<a href="#fs.op.is_regular_file">15.22  Is regular file&nbsp; </a><br>
-      &nbsp;&nbsp;&nbsp;<a href="#fs.op.is_socket">15.23  Is socket&nbsp; </a><br>
-      &nbsp;&nbsp;&nbsp;<a href="#fs.op.is_symlink">15.24  Is symlink&nbsp; </a><br>
-      &nbsp;&nbsp;&nbsp;<a href="#fs.op.last_write_time">15.25  Last write time&nbsp; </a><br>
-      &nbsp;&nbsp;&nbsp;<a href="#fs.op.permissions">15.26  Permissions&nbsp; </a><br>
-      &nbsp;&nbsp;&nbsp;<a href="#fs.op.read_symlink">15.27  Read symlink&nbsp; </a><br>
-      &nbsp;&nbsp;&nbsp;<a href="#fs.op.remove">15.28  Remove&nbsp; </a><br>
-      &nbsp;&nbsp;&nbsp;<a href="#fs.op.remove_all">15.29  Remove all&nbsp; </a><br>
-      &nbsp;&nbsp;&nbsp;<a href="#fs.op.rename">15.30  Rename&nbsp; </a><br>
-      &nbsp;&nbsp;&nbsp;<a href="#fs.op.resize_file">15.31  Resize file&nbsp; </a><br>
-      &nbsp;&nbsp;&nbsp;<a href="#fs.op.space">15.32  Space&nbsp; </a><br>
-      &nbsp;&nbsp;&nbsp;<a href="#fs.op.status">15.33  Status&nbsp; </a><br>
-      &nbsp;&nbsp;&nbsp;<a href="#fs.op.status_known">15.34  Status known&nbsp; </a><br>
-      &nbsp;&nbsp;&nbsp;<a href="#fs.op.symlink_status">15.35  Symlink status&nbsp; </a><br>
-      &nbsp;&nbsp;&nbsp;<a href="#fs.op.system_complete">15.36  System complete&nbsp; </a><br>
-      &nbsp;&nbsp;&nbsp;<a href="#fs.op.temp_dir_path">15.37 Temporary directory 
-      path</a></p>
-</blockquote>
+&nbsp;&nbsp;&nbsp;<a href="#Operational-functions">27.10.15  Operational functions </a><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#fs.op.absolute">27.10.15.1  Absolute&nbsp; </a><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#fs.op.canonical">27.10.15.2  Canonical&nbsp; </a><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#fs.op.copy">27.10.15.3  Copy&nbsp; </a><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#fs.op.copy_file">27.10.15.4  Copy file&nbsp; </a><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#fs.op.copy_symlink">27.10.15.5  Copy symlink&nbsp; </a><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#fs.op.create_directories">27.10.15.6  Create directories&nbsp; </a><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#fs.op.create_directory">27.10.15.7  Create directory&nbsp; </a><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#fs.op.create_dir_symlk">27.10.15.8  Create directory symlink&nbsp; </a><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#fs.op.create_hard_lk">27.10.15.9  Create hard link&nbsp; </a><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#fs.op.create_symlink">27.10.15.10  Create symlink&nbsp; </a><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#fs.op.current_path">27.10.15.11  Current path&nbsp; </a><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#fs.op.exists">27.10.15.12  Exists&nbsp; </a><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#fs.op.equivalent">27.10.15.13  Equivalent&nbsp; </a><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#fs.op.file_size">27.10.15.14  File size&nbsp; </a><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#fs.op.hard_lk_ct">27.10.15.15  Hard link count&nbsp; </a><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#fs.op.is_block_file">27.10.15.16  Is block file&nbsp; </a><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#fs.op.is_char_file">27.10.15.17  Is character file&nbsp; </a><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#fs.op.is_directory">27.10.15.18  Is directory&nbsp; </a><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#fs.op.is_empty">27.10.15.19  Is empty&nbsp; </a><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#fs.op.is_fifo">27.10.15.20  Is fifo&nbsp; </a><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#fs.op.is_other">27.10.15.21  Is other&nbsp; </a><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#fs.op.is_regular_file">27.10.15.22  Is regular file&nbsp; </a><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#fs.op.is_socket">27.10.15.23  Is socket&nbsp; </a><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#fs.op.is_symlink">27.10.15.24  Is symlink&nbsp; </a><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#fs.op.last_write_time">27.10.15.25  Last write time&nbsp; </a><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#fs.op.permissions">27.10.15.26  Permissions&nbsp; </a><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#fs.op.read_symlink">27.10.15.27  Read symlink&nbsp; </a><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#fs.op.remove">27.10.15.28  Remove&nbsp; </a><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#fs.op.remove_all">27.10.15.29  Remove all&nbsp; </a><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#fs.op.rename">27.10.15.30  Rename&nbsp; </a><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#fs.op.resize_file">27.10.15.31  Resize file&nbsp; </a><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#fs.op.space">27.10.15.32  Space&nbsp; </a><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#fs.op.status">27.10.15.33  Status&nbsp; </a><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#fs.op.status_known">27.10.15.34  Status known&nbsp; </a><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#fs.op.symlink_status">27.10.15.35  Symlink status&nbsp; </a><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#fs.op.system_complete">27.10.15.36  System complete&nbsp; </a><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#fs.op.temp_dir_path">27.10.15.37  Temporary directory path&nbsp; </a><br>
+</p>
       
 <hr>
 </div>
@@ -282,19 +275,19 @@ conversions </a><br>
 <!-- generate-paragraph-numbers=true -->
 
 
-<h2 class="page_number_reset">27.10  <ins>File systems&nbsp; [<a name="filesystems">filesystems</a>]</ins></h2>
+<h2 class="page_number_reset">27.10  <ins><a name="File-systems">File systems</a>&nbsp; [<a name="filesystems">filesystems</a>]</ins></h2>
 
 
 <h3 class="page_number_reset">27.10.1  <a name="<del>Scope</del> <ins>General</ins>"><del>Scope</del> <ins>General</ins></a>&nbsp; [<a name="fs.general">fs.general</a>]</h2>
 
-<p para_num="1">This Technical Specification specifies requirements for implementations of an 
+<p para_num="1">This <del><del>Technical Specification</del> <ins>sub-clause</ins> specifies requirements for implementations of an 
 interface that computer programs written in the C++ programming language may use 
-to perform operations on file systems and their components, such as paths, 
-regular files, and directories. This Technical Specification is applicable to 
+to perform</del> <ins>sub-clause describes</ins> operations on file systems and their components, such as paths, 
+regular files, and directories.  <del>This <del>Technical Specification</del> <ins>sub-clause</ins> is applicable to 
 information technology systems that can access hierarchical file systems, such 
-as those with operating systems that conform to the POSIX (<a href="#fs.norm.ref">3</a>) 
-interface. This Technical Specification is applicable only to vendors who wish 
-to provide the interface it describes.</p>
+as those with operating systems that conform to the POSIX (<a href="#fs.norm.ref">27.10.2.1</a>) 
+interface. This <del>Technical Specification</del> <ins>sub-clause</ins> is applicable only to vendors who wish 
+to provide the interface it describes.</del></p>
 
 <h3>27.10.2  <a name="Conformance">Conformance</a> [<a name="fs.conformance">fs.conformance</a>]</h2>
 
@@ -302,7 +295,7 @@ to provide the interface it describes.</p>
 implementable, so the conformance sub-clauses take that into account.</p>
 
 <h4>27.10.2.1  POSIX conformance [<a name="fs.conform.9945">fs.conform.9945</a>]</h3>
-<p para_num="1">Some behavior is specified by reference to POSIX (<a href="#fs.norm.ref">3</a>). How such behavior is actually implemented is unspecified.</p>
+<p para_num="1">Some behavior is specified by reference to POSIX (<a href="#fs.norm.ref">27.10.2.1</a>). How such behavior is actually implemented is unspecified.</p>
 <blockquote>
 <p para_num="2">[<i>Note:</i> This constitutes an &quot;as if&quot; rule allowing implementations 
 to call native 
@@ -314,7 +307,7 @@ behavior defined by POSIX. Implementations that do not support exact POSIX
 behavior are encouraged to provide behavior as close to POSIX behavior as is reasonable given the 
 limitations of actual operating systems and file systems. If an implementation cannot provide any 
 reasonable behavior, the implementation shall report an error as specified in § 
-<a href="#fs.err.report">7</a>.
+<a href="#fs.norm.ref">27.10.7</a>.
 </p>
 <blockquote>
 <p para_num="4">[<i>Note:</i> This allows users to rely on an exception being thrown or 
@@ -333,15 +326,14 @@ on the FAT file system. <i>&mdash;end example</i>]</p>
 
 <h4>27.10.2.2  Operating system dependent behavior conformance [<a name="fs.conform.os">fs.conform.os</a>]</h3>
 <p para_num="1">Some behavior is specified as being 
-operating system dependent (<a href="#fs.def.osdep">4.13</a>). The operating system an 
+operating system dependent (<a href="#fs.def.osdep">27.10.4.13</a>). The operating system an 
 implementation is dependent upon is implementation defined.</p>
 <p para_num="2">It is permissible for an implementation to be dependent upon an operating 
 system emulator rather than the actual underlying operating system.</p>
 
 <h4>27.10.2.3  File system race behavior [<a name="fs.race.behavior">fs.race.behavior</a>]</h3>
 
-<p para_num="1">Behavior is undefined if calls to functions provided by this Technical 
-Specification introduce a file system race (<a href="#fs.def.race">4.6</a>).</p>
+<p para_num="1">Behavior is undefined if calls to functions provided by this <del>Technical Specification</del> <ins>sub-clause</ins> introduce a file system race (<a href="#fs.def.race">27.10.4.6</a>).</p>
 
 <p para_num="2">If the possibility of a file system race would make it unreliable for a 
 program to test for a precondition before calling a function described herein, <i>
@@ -374,7 +366,7 @@ N3936</a>.
 
 <p para_num="5">The operating system interface 
 described in ISO/IEC 9945 is herein called <i>POSIX</i>. <i>&mdash;end note</i>]<p para_num="6">This 
-Technical Specification  mentions commercially 
+<del>Technical Specification</del> <ins>sub-clause</ins>  mentions commercially 
 available operating systems for purposes of exposition.<sup> <a href="#footnote">
 [footnote]</a></sup><p para_num="7">Unless otherwise specified, the whole of the C++ 
 Standard&#39;s Library introduction (C++14 §17) is included into this Technical 
@@ -508,7 +500,7 @@ If the file pointed to does not exist, the symbolic link is said to be a
 </blockquote>
 
 <h3>27.10.5  Requirements [<a name="fs.req">fs.req</a>]</h2>
-<p para_num="1">Throughout this Technical Specification, <code>char</code>, <code>wchar_t</code>,
+<p para_num="1">Throughout this <del>Technical Specification</del> <ins>sub-clause</ins>, <code>char</code>, <code>wchar_t</code>,
 <code>char16_t</code>, and <code>char32_t</code> are collectively called <i>
 encoded character types</i>.</p>
 
@@ -531,11 +523,11 @@ Standard&#39;s library Allocator requirements (C++14 §17.6.3.5).</p>
 <h4>27.10.5.1  <a name="Namespaces-and-headers">Namespaces and headers</a> [<a name="fs.req.namespace">fs.req.namespace</a>]</h3>
 
 
-<p para_num="1">The components described in this technical specification are experimental and 
+<p para_num="1">The components described in this <del>Technical Specification</del> <ins>sub-clause</ins> are experimental and 
 not part of the C++ standard library. All components described in this technical 
 specification are declared in namespace <code>std::experimental::filesystem::v1</code> 
 or a sub-namespace thereof unless otherwise specified. The header described in 
-this technical specification shall import the contents of <code>
+this <del>Technical Specification</del> <ins>sub-clause</ins> shall import the contents of <code>
 std::experimental::filesystem::v1</code> into <code>std::experimental::filesystem</code> as 
 if by</p>
 <blockquote>
@@ -548,13 +540,13 @@ if by</p>
 }</pre>
 </blockquote>
 <p para_num="3">Unless otherwise specified, references to other entities described in this 
-technical specification are assumed to be qualified with <code>std::experimental::</code><code>filesystem::v1::</code>, 
+<del>Technical Specification</del> <ins>sub-clause</ins> are assumed to be qualified with <code>std::experimental::</code><code>filesystem::v1::</code>, 
 and references to entities described in the C++ standard are assumed to be qualified 
 with <code>std::</code>.</p>
 
 <h4>27.10.5.2  Feature test macros [<a name="fs.req.macros">fs.req.macros</a>]</h3>
 <p para_num="1">This macro allows users to determine which version of this 
-Technical Specification is supported by header <code>&lt;experimental/filesystem&gt;</code>.</p>
+<del>Technical Specification</del> <ins>sub-clause</ins> is supported by header <code>&lt;experimental/filesystem&gt;</code>.</p>
 <p para_num="2">Header <code>&lt;experimental/filesystem&gt;</code> shall supply 
 the following macro definition:</p>
 <blockquote>
@@ -564,7 +556,7 @@ the following macro definition:</p>
 </blockquote>
 <p para_num="4">[<i>Note:</i> The value of macro <code>__cpp_lib_experimental_filesystem</code> 
 is <i>yyyymm</i> where <i>yyyy</i> is the year and <i>mm</i> the month when the 
-version of the Technical Specification was completed. <i>— end note</i>]</p>
+version of the <del>Technical Specification</del> <ins>sub-clause</ins> was completed. <i>— end note</i>]</p>
 
 <h3>27.10.6  <a name="Header-filesystem-synopsis">Header <code>&lt;experimental/filesystem&gt;</code> synopsis</a> 
 [<a name="fs.filesystem.synopsis">fs.filesystem.synopsis</a>]</h2>
@@ -1799,7 +1791,7 @@ fs::create_directory(fs::u8path(utf8_string));</pre>
 } } } }  // namespaces std::experimental::filesystem::v1</pre>
 <p para_num="2">The class <code>filesystem_error</code> defines the type of 
 objects thrown as exceptions to report file system errors from functions described in this 
-Technical Specification.</p>
+<del>Technical Specification</del> <ins>sub-clause</ins>.</p>
 <h4>27.10.9.1  <a name="filesystem_error-members"> <code>filesystem_error</code> members</a> 
 [filesystem_error.members]</h3>
 <p para_num="1"> Constructors are provided that store zero, one, or two paths associated with 
