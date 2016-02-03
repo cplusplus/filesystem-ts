@@ -164,7 +164,7 @@ div.roman-page
 &nbsp;&nbsp;&nbsp;<a href="#fs.req">27.10.5  Requirements </a><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#Namespaces-and-headers">27.10.5.1  Namespaces and headers </a><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#fs.req.macros">27.10.5.2  Feature test macros </a><br>
-&nbsp;&nbsp;&nbsp;<a href="#Header-filesystem-synopsis">27.10.6  Header <code>&lt;experimental/filesystem&gt;</code> synopsis 
+&nbsp;&nbsp;&nbsp;<a href="#Header-filesystem-synopsis">27.10.6  Header <code>&lt;filesystem&gt;</code> synopsis 
 </a><br>
 &nbsp;&nbsp;&nbsp;<a href="#Error-reporting">27.10.7  Error reporting </a><br>
 &nbsp;&nbsp;&nbsp;<a href="#class-path">27.10.8  Class <code>path</code> </a><br>
@@ -474,7 +474,7 @@ The maximum number of elements in the sequence is operating system dependent.
 
 <h4>27.10.4.16  pathname [<a name="fs.def.pathname">fs.def.pathname</a>]</h3>
 <p para_num="1">A character string that represents the name of a path. Pathnames are 
-formatted according to the generic pathname format grammar (<a href="#path.generic">8.1</a>) or an 
+formatted according to the generic pathname format grammar (<a href="#path.generic">29.10.8.1</a>) or an 
 operating system dependent 
 native pathname format.</p>
 
@@ -524,31 +524,31 @@ implied encoding, they are not included as permitted types. <i>&mdash;end note</
 <p para_num="5">Template parameters named <code>Allocator</code> shall meet the C++ 
 Standard&#39;s library Allocator requirements (§17.6.3.5).</p>
 
-<h4>27.10.5.1  <a name="Namespaces-and-headers">Namespaces and headers</a> [<a name="fs.req.namespace">fs.req.namespace</a>]</h3>
+<del><h4>27.10.5.1  <a name="Namespaces-and-headers">Namespaces and headers</a> [<a name="fs.req.namespace">fs.req.namespace</a>]></h3>
 
 
-<p para_num="1">The components described in this <del>Technical Specification</del> <ins>sub-clause</ins> are experimental and 
+<p para_num="1">The components described in this Technical Specification are experimental and 
 not part of the C++ standard library. All components described in this technical 
-specification are declared in namespace <code>std::experimental::filesystem::v1</code> 
+specification are declared in namespace <code>std::filesystem::v1</code> 
 or a sub-namespace thereof unless otherwise specified. The header described in 
-this <del>Technical Specification</del> <ins>sub-clause</ins> shall import the contents of <code>
-std::experimental::filesystem::v1</code> into <code>std::experimental::filesystem</code> as 
+this shall import the contents of <code>
+std::filesystem::v1</code> into <code>std::filesystem</code> as 
 if by</p>
 <blockquote>
 <pre para_num="2">namespace std {
   namespace experimental {
     namespace filesystem {
-      inline namespace v1 {}
+     }
     }
   }
 }</pre>
 </blockquote>
 <p para_num="3">Unless otherwise specified, references to other entities described in this 
-<del>Technical Specification</del> <ins>sub-clause</ins> are assumed to be qualified with <code>std::experimental::</code><code>filesystem::v1::</code>, 
+Technical Specification are assumed to be qualified with <code>std::filesystem::v1::</code>, 
 and references to entities described in the C++ standard are assumed to be qualified 
-with <code>std::</code>.</p>
+with <code>std::</code>.</p></del>
 
-<h4>27.10.5.2  Feature test macros [<a name="fs.req.macros">fs.req.macros</a>]</h3>
+<del><h4>27.10.5.2  Feature test macros [<a name="fs.req.macros">fs.req.macros</a>]</h3>
 <p para_num="1">This macro allows users to determine which version of this 
 <del>Technical Specification</del> <ins>sub-clause</ins> is supported by header <code>&lt;experimental/filesystem&gt;</code>.</p>
 <p para_num="2">Header <code>&lt;experimental/filesystem&gt;</code> shall supply 
@@ -560,11 +560,11 @@ the following macro definition:</p>
 </blockquote>
 <p para_num="4">[<i>Note:</i> The value of macro <code>__cpp_lib_experimental_filesystem</code> 
 is <i>yyyymm</i> where <i>yyyy</i> is the year and <i>mm</i> the month when the 
-version of the <del>Technical Specification</del> <ins>sub-clause</ins> was completed. <i>— end note</i>]</p>
+version of the Technical Specification was completed. <i>— end note</i>]</p></del>
 
-<h3>27.10.6  <a name="Header-filesystem-synopsis">Header <code>&lt;experimental/filesystem&gt;</code> synopsis</a> 
+<h3>27.10.6  <a name="Header-filesystem-synopsis">Header <code>&lt;filesystem&gt;</code> synopsis</a> 
 [<a name="fs.filesystem.synopsis">fs.filesystem.synopsis</a>]</h2>
-<pre para_num="1">namespace std { namespace experimental { namespace filesystem { inline namespace v1 {
+<pre para_num="1">namespace std { namespace filesystem {
 
     class <a href="#class-path">path</a>;
     
@@ -764,7 +764,7 @@ version of the <del>Technical Specification</del> <ins>sub-clause</ins> was comp
     path         <a href="#temp_directory_path">temp_directory_path</a>();
     path         <a href="#temp_directory_path">temp_directory_path</a>(error_code&amp; ec);
 
-} } } }  // namespaces std::experimental::filesystem::v1</pre>
+} }</pre>
 
  <p para_num="2"><b><i><code>trivial-clock</code></i></b> is an implementation-defined type that satisfies the
 <code>TrivialClock</code> requirements (§20.12.3) 
@@ -827,7 +827,7 @@ and contains a pathname (<a href="#fs.def.pathname">4.16</a>). Such an object is
 of a path. The path does not necessarily exist in external storage, and the 
 pathname is not necessarily valid for the current operating 
 system or for a particular file system.</p>
-<pre para_num="2">namespace std { namespace experimental { namespace filesystem { inline namespace v1 {
+<pre para_num="2">namespace std { namespace filesystem {
 
       class path
       {
@@ -956,7 +956,7 @@ system or for a particular file system.</p>
         string_type pathname;  // <b><i>exposition only</i></b>
       };
 
-} } } }  // namespaces std::experimental::filesystem::v1</pre>
+} }</pre>
 
 <p para_num="3"><code><a name="value_type">value_type</a></code> is a <code>typedef</code> for the 
 operating system dependent encoded character type used  to represent pathnames.</p>
@@ -1198,7 +1198,7 @@ template &lt;class InputIterator&gt;
     <blockquote>
   <p para_num="13">A string is to be read from a database 
   that is encoded in ISO/IEC 8859-1, and used to create a directory:</p>
-      <pre para_num="14">namespace fs = std::experimental::filesystem;
+      <pre para_num="14">namespace fs = std::filesystem;
 std::string latin1_string = read_latin1_data();
 codecvt_8859_1&lt;wchar_t&gt; latin1_facet;
 std::locale latin1_locale(std::locale(), latin1_facet);
@@ -1760,7 +1760,7 @@ template &lt;class InputIterator&gt;
   <blockquote>
     <p para_num="9">A string is to be read from a database that is encoded in UTF-8, and used 
     to create a directory using the native encoding for filenames:</p>
-    <pre para_num="10">namespace fs = std::experimental::filesystem;
+    <pre para_num="10">namespace fs = std::filesystem;
 std::string utf8_string = read_utf8_data();
 fs::create_directory(fs::u8path(utf8_string));</pre>
     <p para_num="11">For POSIX based operating systems with the native narrow encoding set 
@@ -1776,7 +1776,7 @@ fs::create_directory(fs::u8path(utf8_string));</pre>
 </blockquote>
 <h3>27.10.9  <a name="Class-filesystem_error">Class <code>filesystem_error</code> 
 [class.filesystem_error]</a></h2>
-<pre para_num="1">namespace std { namespace experimental { namespace filesystem { inline namespace v1 {
+<pre para_num="1">namespace std { namespace filesystem {
 
       class filesystem_error : public system_error
       {
@@ -1791,7 +1791,7 @@ fs::create_directory(fs::u8path(utf8_string));</pre>
         const path&amp; <a href="#filesystem_error-path2">path2</a>() const noexcept;
         const char* <a href="#filesystem_error-what">what</a>() const noexcept;
       };
-} } } }  // namespaces std::experimental::filesystem::v1</pre>
+} }</pre>
 <p para_num="2">The class <code>filesystem_error</code> defines the type of 
 objects thrown as exceptions to report file system errors from functions described in this 
 <del>Technical Specification</del> <ins>sub-clause</ins>.</p>
@@ -2199,7 +2199,7 @@ permissions. </p>
   </table>
 
 <h3>27.10.11  <a name="file_status">Class <code>file_status</code></a> [<a name="class.file_status">class.file_status</a>]</h2>
-<pre para_num="1">namespace std { namespace experimental { namespace filesystem { inline namespace v1 {
+<pre para_num="1">namespace std { namespace filesystem {
 
       class file_status
       {
@@ -2223,7 +2223,7 @@ permissions. </p>
         void       type(<a href="#enum.file_type">file_type</a> ft) noexcept;
         void       permissions(<a href="#enum.perms">perms</a> prms) noexcept;
       };
-} } } }  // namespaces std::experimental::filesystem::v1</pre>
+} }</pre>
 <p para_num="2">An object of type <code>file_status</code> stores information about the type 
 and permissions of a file.</p>
 <h4>27.10.11.1  <a name="file_status-constructors"><code>file_status</code> constructors</a> 
@@ -2258,7 +2258,7 @@ and permissions of a file.</p>
 </blockquote>
 <h3>27.10.12  <a name="Class-directory_entry">Class <code>directory_entry</code></a> [class.directory_entry]</h2>
 
-<pre para_num="1">namespace std { namespace experimental { namespace filesystem { inline namespace v1 {
+<pre para_num="1">namespace std { namespace filesystem {
 
   class directory_entry
   {
@@ -2295,7 +2295,7 @@ and permissions of a file.</p>
     path   m_path; // for exposition only
   };
 
-} } } }  // namespaces std::experimental::filesystem::v1  </pre>
+} }  </pre>
 <p para_num="2">A <code>directory_entry</code> object stores a <code>path</code> object.</p>
 <h4>27.10.12.1  <a name="directory_entry-constructors"><code>directory_entry</code> 
 constructors </a>[directory_entry.cons] </h3>
@@ -2332,7 +2332,7 @@ file_status status(error_code&amp; ec) const noexcept;</pre>
   </p>
   <p para_num="5"><i>Throws:</i> As specified in
   <a href="#Error-reporting">Error 
-  reporting (7)</a>. </p>
+  reporting (29.10.7)</a>. </p>
 </blockquote>
 <pre para_num="6">file_status  symlink_status() const;
 file_status  symlink_status(error_code&amp; ec) const noexcept;</pre>
@@ -2341,7 +2341,7 @@ file_status  symlink_status(error_code&amp; ec) const noexcept;</pre>
   ec]</i>)</code>. </p>
   <p para_num="8"><i>Throws:</i> As specified in
   <a href="#Error-reporting">Error 
-  reporting (7)</a>. </p>
+  reporting (29.10.7)</a>. </p>
 </blockquote>
 <pre para_num="9">bool operator==(const directory_entry&amp; rhs) const noexcept;</pre>
 <blockquote>
@@ -2375,7 +2375,9 @@ directory.&nbsp;
 [<i>Note:</i> For iteration into sub-directories,&nbsp; see class <code>recursive_directory_iterator</code> 
 (<a href="#class.rec.dir.itr">14</a>). <i>&mdash;end note</i>]</p>
 
-<pre para_num="2">namespace std { namespace experimental { namespace filesystem { inline namespace v1 {
+<div dir="ltr">
+
+<pre para_num="2">namespace std { namespace filesystem {
 
       class directory_iterator
       {
@@ -2408,7 +2410,9 @@ directory.&nbsp;
         // other members as required by §24.1.1 Input iterators 
       };
 
-} } } }  // namespaces std::experimental::filesystem::v1</pre>
+} }</pre>
+
+</div>
 
 <p para_num="3"> <code>directory_iterator</code> satisfies the requirements of an input 
 iterator&nbsp; §24.2.3).</p>
@@ -2519,7 +2523,7 @@ range-based for statements.</p>
 <p para_num="1">An object of type <code>recursive_directory_iterator</code> provides an iterator for 
 a sequence of <code>directory_entry</code> elements representing the files in a 
 directory and its sub-directories.</p>
-<pre para_num="2">namespace std { namespace experimental { namespace filesystem { inline namespace v1 {
+<pre para_num="2">namespace std { namespace filesystem {
 
       class recursive_directory_iterator 
       {
@@ -2564,7 +2568,7 @@ directory and its sub-directories.</p>
        // other members as required by §24.1.1 Input iterators
      };
 
-} } } }  // namespaces std::experimental::filesystem::v1</pre>
+} }</pre>
 
 
 <p para_num="3">The behavior of a <code>recursive_directory_iterator</code> is the same 
@@ -2763,7 +2767,7 @@ an error.&nbsp;See <a href="#Error-reporting">Error reporting (29.10.7)</a>. <i>
   <p para_num="3">[<i>Note:</i> For the returned path, <code>rp,</code> <code>rp.is_absolute()</code> is true. <i>&mdash;end note</i>]</p>
   <p para_num="4"><i>Throws:</i> As specified in
   <a href="#Error-reporting">Error 
-  reporting (7)</a>.</p>
+  reporting (29.10.7)</a>.</p>
 </blockquote>
 <h4>27.10.15.2  Canonical&nbsp; [<a name="fs.op.canonical">fs.op.canonical</a>]</h3>
 <pre para_num="1">path <a name="canonical">canonical</a>(const path&amp; p, const path&amp; base = current_path());
@@ -3171,7 +3175,7 @@ bool <a name="equivalent2">equivalent</a>(const path&amp; p1, const path&amp; p2
 uintmax_t <a name="file_size2">file_size</a>(const path&amp; p, error_code&amp; ec) noexcept;</pre>
 <blockquote>
   <p para_num="2"><i>Returns:</i> If <code>!exists(p)  || !is_regular_file(p)</code> 
-  an error is reported (7). Otherwise, the size in bytes of the file <code>
+  an error is reported (29.10.7). Otherwise, the size in bytes of the file <code>
   p</code> resolves to, determined as if by the value of the POSIX <code>stat</code> 
   structure member <code>st_size</code> obtained as if by POSIX <code>stat()</code>.
    The signature 
