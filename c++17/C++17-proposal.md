@@ -5,16 +5,18 @@
 </tr>
 <tr>
   <td align="left">Date:</td>
-  <td align="left"><span style="background-color:yellow">2016-01-25</span></td>
+  <td align="left"><span style="background-color:yellow">2016-02-15</span></td>
 </tr>
 <tr>
-  <td align="left">Project:</td>
-  <td align="left">Programming Language C++</td>
+  <td align="left">Reply to:</td>
+  <td align="left">Beman Dawes &lt;bdawes at acm dot org&gt;
 </tr>
 <tr>
-  <td align="left" valign="top">Reply to:</td>
-  <td align="left">Beman Dawes &lt;bdawes at acm dot org&gt;</br>
+  <td align="left">Audience:</td>
+  <td align="left">Library, Filesystem</td>
+</tr>
 </table>
+
 Adopt the File System TS for C++17
 ==================================
 
@@ -57,7 +59,7 @@ The proposed wording below was copied unchanged from the File System TS wording,
 
 ### Proposed Wording
 
-<!-- include "wp.html" snippet=snip -->
+<!-- include "wp.html" snippet=wpwording -->proposed wording goes here<!-- end include -->
 
 Acknowledgements
 ----------------
