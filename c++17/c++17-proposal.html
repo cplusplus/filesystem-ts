@@ -443,7 +443,7 @@ implied encoding, they are not included as permitted types. <i>&mdash;end note</
 <p para_num="5">Template parameters named <code>Allocator</code> shall meet the C++ 
 Standard&#39;s library Allocator requirements (§17.6.3.5).</p>
 
-<h4>27.10.5.1  <a name="Namespaces-and-headers"><del>Namespaces and headers</del></a> [<a name="fs.req.namespace">fs.req.namespace</a>]></h3>
+<h4>2<del>7.10.5.1  <a name="Namespaces-and-headers">Namespaces and headers</a> [<a name="fs.req.namespace">fs.req.namespace</a>]></del></h3>
 
 
 <p para_num="1"><del>The components described in this Technical Specification are experimental and 
@@ -467,7 +467,7 @@ Technical Specification are assumed to be qualified with <code>std::filesystem::
 and references to entities described in the C++ standard are assumed to be qualified 
 with <code>std::</code>.</del></p>
 
-<del><h4><del>27.10.5.2  Feature test macros [<a name="fs.req.macros">fs.req.macros</a>]</del></h3>
+<h4><del>27.10.5.2  Feature test macros [<a name="fs.req.macros">fs.req.macros</a>]</del></h3>
 <p para_num="1"><del>This macro allows users to determine which version of this 
 Technical Specification is supported by header <code>&lt;experimental/filesystem&gt;</code>.</del></p>
 <p para_num="2"><del>Header <code>&lt;experimental/filesystem&gt;</code> shall supply 
@@ -483,7 +483,7 @@ version of the Technical Specification was completed. <i>— end note</i>]</del>
 
 <h3>27.10.6  <a name="Header-filesystem-synopsis">Header <code>&lt;filesystem&gt;</code> synopsis</a> 
 [<a name="fs.filesystem.synopsis">fs.filesystem.synopsis</a>]</h2>
-<pre para_num="1">namespace std { namespace filesystem {
+<pre para_num="1">namespace std { <del>namespace experimental {</del> namespace filesystem { <del>inline namespace v1 {</del>
 
   class <a href="#class-path">path</a>;
   
@@ -683,7 +683,7 @@ version of the Technical Specification was completed. <i>— end note</i>]</del>
   path <a href="#temp_directory_path">temp_directory_path</a>();
   path <a href="#temp_directory_path">temp_directory_path</a>(error_code&amp; ec);
 
-} }</pre>
+} }<del> } }</del></pre>
 
  <p para_num="2"><b><i><code>trivial-clock</code></i></b> is an implementation-defined type that satisfies the
 <code>TrivialClock</code> requirements (§20.12.3) 
@@ -746,7 +746,7 @@ and contains a pathname (<a href="#fs.def.pathname">27.10.4.16</a>). Such an obj
 of a path. The path does not necessarily exist in external storage, and the 
 pathname is not necessarily valid for the current operating 
 system or for a particular file system.</p>
-<pre para_num="2">namespace std { namespace filesystem {
+<pre para_num="2">namespace std { <del>namespace experimental {</del> namespace filesystem { <del>inline namespace v1 {</del>
 
   class path
   {
@@ -875,7 +875,7 @@ system or for a particular file system.</p>
     string_type pathname;  // <b><i>exposition only</i></b>
   };
 
-} }</pre>
+} }<del> } }</del></pre>
 
 <p para_num="3"><code><a name="value_type">value_type</a></code> is a <code>typedef</code> for the 
 operating system dependent encoded character type used  to represent pathnames.</p>
@@ -1695,7 +1695,7 @@ fs::create_directory(fs::u8path(utf8_string));</pre>
 </blockquote>
 <h3>27.10.9  <a name="Class-filesystem_error">Class <code>filesystem_error</code> 
 [class.filesystem_error]</a></h2>
-<pre para_num="1">namespace std { namespace filesystem {
+<pre para_num="1">namespace std { <del>namespace experimental {</del> namespace filesystem { <del>inline namespace v1 {</del>
 
       class filesystem_error : public system_error
       {
@@ -1710,7 +1710,7 @@ fs::create_directory(fs::u8path(utf8_string));</pre>
         const path&amp; <a href="#filesystem_error-path2">path2</a>() const noexcept;
         const char* <a href="#filesystem_error-what">what</a>() const noexcept;
       };
-} }</pre>
+} }<del> } }</del></pre>
 <p para_num="2">The class <code>filesystem_error</code> defines the type of 
 objects thrown as exceptions to report file system errors from functions described in this 
 <del>Technical Specification</del> <ins>sub-clause</ins>.</p>
@@ -2118,7 +2118,7 @@ permissions. </p>
   </table>
 
 <h3>27.10.11  <a name="file_status">Class <code>file_status</code></a> [<a name="class.file_status">class.file_status</a>]</h2>
-<pre para_num="1">namespace std { namespace filesystem {
+<pre para_num="1">namespace std { <del>namespace experimental {</del> namespace filesystem { <del>inline namespace v1 {</del>
 
   class file_status
   {
@@ -2142,7 +2142,7 @@ permissions. </p>
     void       type(<a href="#enum.file_type">file_type</a> ft) noexcept;
     void       permissions(<a href="#enum.perms">perms</a> prms) noexcept;
   };
-} }</pre>
+} }<del> } }</del></pre>
 <p para_num="2">An object of type <code>file_status</code> stores information about the type 
 and permissions of a file.</p>
 <h4>27.10.11.1  <a name="file_status-constructors"><code>file_status</code> constructors</a> 
@@ -2177,7 +2177,7 @@ and permissions of a file.</p>
 </blockquote>
 <h3>27.10.12  <a name="Class-directory_entry">Class <code>directory_entry</code></a> [class.directory_entry]</h2>
 
-<pre para_num="1">namespace std { namespace filesystem {
+<pre para_num="1">namespace std { <del>namespace experimental {</del> namespace filesystem { <del>inline namespace v1 {</del>
 
   class directory_entry
   {
@@ -2214,7 +2214,7 @@ and permissions of a file.</p>
     path   m_path; // for exposition only
   };
 
-} }  </pre>
+} }<del> } }</del>  </pre>
 <p para_num="2">A <code>directory_entry</code> object stores a <code>path</code> object.</p>
 <h4>27.10.12.1  <a name="directory_entry-constructors"><code>directory_entry</code> 
 constructors </a>[directory_entry.cons] </h3>
@@ -2296,7 +2296,7 @@ directory.&nbsp;
 
 <div dir="ltr">
 
-<pre para_num="2">namespace std { namespace filesystem {
+<pre para_num="2">namespace std { <del>namespace experimental {</del> namespace filesystem { <del>inline namespace v1 {</del>
 
   class directory_iterator
   {
@@ -2329,7 +2329,7 @@ directory.&nbsp;
     // other members as required by §24.1.1 Input iterators 
   };
 
-} }</pre>
+} }<del> } }</del></pre>
 
 </div>
 
@@ -2442,7 +2442,7 @@ range-based for statements.</p>
 <p para_num="1">An object of type <code>recursive_directory_iterator</code> provides an iterator for 
 a sequence of <code>directory_entry</code> elements representing the files in a 
 directory and its sub-directories.</p>
-<pre para_num="2">namespace std { namespace filesystem {
+<pre para_num="2">namespace std { <del>namespace experimental {</del> namespace filesystem { <del>inline namespace v1 {</del>
 
   class recursive_directory_iterator 
   {
@@ -2487,7 +2487,7 @@ directory and its sub-directories.</p>
    // other members as required by §24.1.1 Input iterators
   };
 
-} }</pre>
+} }<del> } }</del></pre>
 
 
 <p para_num="3">The behavior of a <code>recursive_directory_iterator</code> is the same 
