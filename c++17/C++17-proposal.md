@@ -1,11 +1,11 @@
 <table>
 <tr>
   <td align="left">Doc. no.:</td>
-  <td align="left"><span style="background-color:yellow">DnnnnR0</span></td>
+  <td align="left"><span style="background-color:yellow">D0218R0</span></td>
 </tr>
 <tr>
   <td align="left">Date:</td>
-  <td align="left"><span style="background-color:yellow">2016-02-15</span></td>
+  <td align="left">016-02-12</td>
 </tr>
 <tr>
   <td align="left">Reply to:</td>
@@ -88,6 +88,6 @@ References
 
 &lsqb;<a name="5">5</a>&rsqb; Jamie Alsop, Nicolai Josuttis,	[P0011R0, Additions to Filesystem supporting Relative Paths][5], 2015.
 
-&lsqb;<a name="5">5</a>&rsqb; Beman Dawes,	[<span style="background-color:yellow">P????R0, Filesystem Relative Path Proposal</span>][5], 2016.
+&lsqb;<a name="5">5</a>&rsqb; Beman Dawes,	[P0218R0, Relative Paths for Filesystem][5], 2016.
 
 ---
