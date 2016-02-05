@@ -81,8 +81,8 @@
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#Relative-path">27.10.4.18  relative path </a><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#symbolic-link">27.10.4.19  symbolic link </a><br>
 &nbsp;&nbsp;&nbsp;<a href="#fs.req">27.10.5  Requirements </a><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#Namespaces-and-headers">27.10.5.1  Namespaces and headers </a><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#fs.req.macros">27.10.5.2  Feature test macros </a><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#Namespaces-and-headers"><del>27.10.5.1  Namespaces and headers</del></a><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#fs.req.macros"><del>27.10.5.2  Feature test macros</del></a><br>
 &nbsp;&nbsp;&nbsp;<a href="#Header-filesystem-synopsis">27.10.6  Header <code>&lt;filesystem&gt;</code> synopsis 
 </a><br>
 &nbsp;&nbsp;&nbsp;<a href="#Error-reporting">27.10.7  Error reporting </a><br>
@@ -197,15 +197,15 @@ observers  </a><br>
 <h2 class="page_number_reset">27.10  <ins><a name="File-systems">File systems</a>&nbsp; [<a name="filesystems">filesystems</a>]</ins></h2>
 
 
-<h3 class="page_number_reset">27.10.1  <a name="<del>Scope</del> <ins>General</ins>"><del>Scope</del> <ins>General</ins></a>&nbsp; [<a name="fs.general">fs.general</a>]</h2>
+<h3 class="page_number_reset">27.10.1  <a name="Scope"><del>Scope</del> <ins>General</ins></a>&nbsp; [<a name="fs.general">fs.general</a>]</h2>
 
-<p para_num="1">This <del><del>Technical Specification</del> <ins>sub-clause</ins> specifies requirements for implementations of an 
+<p para_num="1">This <del>Technical Specification specifies requirements for implementations of an 
 interface that computer programs written in the C++ programming language may use 
 to perform</del> <ins>sub-clause describes</ins> operations on file systems and their components, such as paths, 
-regular files, and directories.  <del>This <del>Technical Specification</del> <ins>sub-clause</ins> is applicable to 
+regular files, and directories.  <del>ThisTechnical Specification is applicable to 
 information technology systems that can access hierarchical file systems, such 
 as those with operating systems that conform to the POSIX (<a href="#fs.norm.ref">27.10.2.1</a>) 
-interface. This <del>Technical Specification</del> <ins>sub-clause</ins> is applicable only to vendors who wish 
+interface. This Technical Specification is applicable only to vendors who wish 
 to provide the interface it describes.</del></p>
 
 <h3>27.10.2  <a name="Conformance">Conformance</a> [<a name="fs.conformance">fs.conformance</a>]</h2>
@@ -443,43 +443,43 @@ implied encoding, they are not included as permitted types. <i>&mdash;end note</
 <p para_num="5">Template parameters named <code>Allocator</code> shall meet the C++ 
 Standard&#39;s library Allocator requirements (§17.6.3.5).</p>
 
-<del><h4>27.10.5.1  <a name="Namespaces-and-headers">Namespaces and headers</a> [<a name="fs.req.namespace">fs.req.namespace</a>]></h3>
+<h4>27.10.5.1  <a name="Namespaces-and-headers"><del>Namespaces and headers</del></a> [<a name="fs.req.namespace">fs.req.namespace</a>]></h3>
 
 
-<p para_num="1">The components described in this Technical Specification are experimental and 
+<p para_num="1"><del>The components described in this Technical Specification are experimental and 
 not part of the C++ standard library. All components described in this technical 
 specification are declared in namespace <code>std::filesystem::v1</code> 
 or a sub-namespace thereof unless otherwise specified. The header described in 
 this shall import the contents of <code>
 std::filesystem::v1</code> into <code>std::filesystem</code> as 
-if by</p>
+if by</del></p>
 <blockquote>
-<pre para_num="2">namespace std {
+<pre para_num="2"><del>namespace std {
   namespace experimental {
     namespace filesystem {
      }
     }
   }
-}</pre>
+}</del></pre>
 </blockquote>
-<p para_num="3">Unless otherwise specified, references to other entities described in this 
+<p para_num="3"><del>Unless otherwise specified, references to other entities described in this 
 Technical Specification are assumed to be qualified with <code>std::filesystem::v1::</code>, 
 and references to entities described in the C++ standard are assumed to be qualified 
-with <code>std::</code>.</p></del>
+with <code>std::</code>.</del></p>
 
-<del><h4>27.10.5.2  Feature test macros [<a name="fs.req.macros">fs.req.macros</a>]</h3>
-<p para_num="1">This macro allows users to determine which version of this 
-<del>Technical Specification</del> <ins>sub-clause</ins> is supported by header <code>&lt;experimental/filesystem&gt;</code>.</p>
-<p para_num="2">Header <code>&lt;experimental/filesystem&gt;</code> shall supply 
-the following macro definition:</p>
+<del><h4><del>27.10.5.2  Feature test macros [<a name="fs.req.macros">fs.req.macros</a>]</del></h3>
+<p para_num="1"><del>This macro allows users to determine which version of this 
+Technical Specification is supported by header <code>&lt;experimental/filesystem&gt;</code>.</del></p>
+<p para_num="2"><del>Header <code>&lt;experimental/filesystem&gt;</code> shall supply 
+the following macro definition:</del></p>
 <blockquote>
   <div>
-    <pre para_num="3">#define __cpp_lib_experimental_filesystem     201406</pre>
+    <pre para_num="3"><del>#define __cpp_lib_experimental_filesystem     201406</del></pre>
   </div>
 </blockquote>
-<p para_num="4">[<i>Note:</i> The value of macro <code>__cpp_lib_experimental_filesystem</code> 
+<p para_num="4"><del>[<i>Note:</i> The value of macro <code>__cpp_lib_experimental_filesystem</code> 
 is <i>yyyymm</i> where <i>yyyy</i> is the year and <i>mm</i> the month when the 
-version of the Technical Specification was completed. <i>— end note</i>]</p></del>
+version of the Technical Specification was completed. <i>— end note</i>]</del></p>
 
 <h3>27.10.6  <a name="Header-filesystem-synopsis">Header <code>&lt;filesystem&gt;</code> synopsis</a> 
 [<a name="fs.filesystem.synopsis">fs.filesystem.synopsis</a>]</h2>
@@ -3595,7 +3595,8 @@ path temp_directory_path(error_code&amp; ec);</pre>
   
 </blockquote>
 
-<hr><!-- end include --></p>
+<hr>
+</del><!-- end include --></p>
 <h2 id="acknowledgements">Acknowledgements</h2>
 <p>Thanks to Eric Fiselier, Stephan T. Lavavej, PJ Plauger, and Jonathan Wakely for their work on implementations, and for reporting issues based on their experience.</p>
 <p>Thanks to Jamie Alsop and Nicolai Josuttis for teasing out the details of the relative path problem, and proposing a solution.</p>
