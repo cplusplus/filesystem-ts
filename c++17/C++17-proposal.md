@@ -27,6 +27,8 @@ Technical work on [N4100, *File System Technical Specification*][1], ISO/IEC TS 
 
 This document proposes adopting the File System Technical Specification, with corrections, for C++17.
 
+The alternative to this proposal is to start work on version two of the File System TS. Doing nothing is not an alternative.
+
 ### ISO/IEC Abstract for the Technical Specification
 
 >ISO/IEC TS 18822:2015 specifies requirements for implementations of an interface that computer programs written in the C++ programming language may use to perform operations on file systems and their components, such as paths, regular files, and directories. This Technical Specification is applicable to information technology systems that can access hierarchical file systems, such as those with operating systems that conform to the POSIX (3) interface. This Technical Specification is applicable only to vendors who wish to provide the interface it describes.   
@@ -42,15 +44,15 @@ Implementation and Use Experience
 Pending Changes
 ---------------
 
+The pending issues and proposals described below need to be resolved by LWG soon, but none of them block adopting the Filesystem TS for C++17.
+
 ### Pending issues
 
-There are twelve open Filesystem issues in the LWG Active Issues list. Ten have proposed resolution text. Most of the issues involve standardese corrections or clarifications and require no change to implementations or user code. These issues should be resolved by LWG before shipping C++17, either before or after accepting this proposal.
+There are twelve open Filesystem issues in the LWG Active Issues list. Ten have proposed resolution text. Most of the issues involve standardese corrections or clarifications and require no change to implementations or user code. 
 
 ### Pending proposals
 
-LWG issue 2611 (aka SG3 issue 11), *Lack of relative() operation function*, is a *NAD Future* issue raised by UK PDTS comment GB-1. Two similar but competing solutions have been proposed &mdash; [P0011R0, *Additions to Filesystem supporting Relative Paths*][5] and [P0218R0, *Relative Paths for Filesystem*][6]. The LWG will decide between them. The outcome does not direct effect on this proposal.  
-
-### Pending concerns
+LWG issue 2611 (aka SG3 issue 11), *Lack of relative() operation function*, is a *NAD Future* issue raised by UK PDTS comment GB-1. Two similar but competing solutions have been proposed &mdash; [P0011R0, *Additions to Filesystem supporting Relative Paths*][5] and [P0218R0, *Relative Paths for Filesystem*][6].
 
 Proposed C++17 Wording
 ----------------------

@@ -31,6 +31,7 @@
 <h2 id="introduction">Introduction</h2>
 <p>Technical work on <a href="www.open-std.org/jtc1/sc22/wg21/docs/papers/2014/n4100.pdf">N4100, <em>File System Technical Specification</em></a>, ISO/IEC TS 18822:2015, was completed in July 2014, and published by ISO in July 2015. There are three shipping implementations and one soon-to-ship implementation. Two of the shipping implementations have been have been in use for several years.</p>
 <p>This document proposes adopting the File System Technical Specification, with corrections, for C++17.</p>
+<p>The alternative to this proposal is to start work on version two of the File System TS. Doing nothing is not an alternative.</p>
 <h3 id="isoiec-abstract-for-the-technical-specification">ISO/IEC Abstract for the Technical Specification</h3>
 <blockquote>
 <p>ISO/IEC TS 18822:2015 specifies requirements for implementations of an interface that computer programs written in the C++ programming language may use to perform operations on file systems and their components, such as paths, regular files, and directories. This Technical Specification is applicable to information technology systems that can access hierarchical file systems, such as those with operating systems that conform to the POSIX (3) interface. This Technical Specification is applicable only to vendors who wish to provide the interface it describes.</p>
@@ -43,11 +44,11 @@
 <li><strong>libc++</strong> <a href="github.com/efcs/filesystem-standalone">Implemented</a>, but not yet shipping.</li>
 </ul>
 <h2 id="pending-changes">Pending Changes</h2>
+<p>The pending issues and proposals described below need to be resolved by LWG soon, but none of them block adopting the Filesystem TS for C++17.</p>
 <h3 id="pending-issues">Pending issues</h3>
-<p>There are twelve open Filesystem issues in the LWG Active Issues list. Ten have proposed resolution text. Most of the issues involve standardese corrections or clarifications and require no change to implementations or user code. These issues should be resolved by LWG before shipping C++17, either before or after accepting this proposal.</p>
+<p>There are twelve open Filesystem issues in the LWG Active Issues list. Ten have proposed resolution text. Most of the issues involve standardese corrections or clarifications and require no change to implementations or user code.</p>
 <h3 id="pending-proposals">Pending proposals</h3>
-<p>LWG issue 2611 (aka SG3 issue 11), <em>Lack of relative() operation function</em>, is a <em>NAD Future</em> issue raised by UK PDTS comment GB-1. Two similar but competing solutions have been proposed — <a href="www.open-std.org/jtc1/sc22/wg21/docs/papers/2015/p0011r0.html">P0011R0, <em>Additions to Filesystem supporting Relative Paths</em></a> and <a href="www.open-std.org/jtc1/sc22/wg21/docs/papers/2016/p0218r0.html">P0218R0, <em>Relative Paths for Filesystem</em></a>. The LWG will decide between them. The outcome does not direct effect on this proposal.</p>
-<h3 id="pending-concerns">Pending concerns</h3>
+<p>LWG issue 2611 (aka SG3 issue 11), <em>Lack of relative() operation function</em>, is a <em>NAD Future</em> issue raised by UK PDTS comment GB-1. Two similar but competing solutions have been proposed — <a href="www.open-std.org/jtc1/sc22/wg21/docs/papers/2015/p0011r0.html">P0011R0, <em>Additions to Filesystem supporting Relative Paths</em></a> and <a href="www.open-std.org/jtc1/sc22/wg21/docs/papers/2016/p0218r0.html">P0218R0, <em>Relative Paths for Filesystem</em></a>.</p>
 <h2 id="proposed-c17-wording">Proposed C++17 Wording</h2>
 <p>The proposed wording below is unchanged from the <a href="www.open-std.org/jtc1/sc22/wg21/docs/papers/2014/n4100.pdf">File System TS wording</a>, except for section renumbering and changes shown with <del>delete</del> and <ins>insert</ins> tags. The proposed wording is assumed to appear in the C++ working paper as a new sub-clause at the end of clause 27, <em>Input/output library</em>. A table of contents has been provided for convenience. The project editor may revised location and content editorially.</p>
 <h3 id="proposed-wording">Proposed Wording</h3>
