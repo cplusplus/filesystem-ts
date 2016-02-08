@@ -31,7 +31,8 @@ body
 </tr>
 <tr>
   <td align="left">Date:</td>
-  <td align="left">016-02-12</td>
+  <td align="left">
+  <!--webbot bot="Timestamp" S-Type="EDITED" S-Format="%Y-%m-%d" startspan -->2016-02-07<!--webbot bot="Timestamp" endspan i-checksum="12148" --></td>
 </tr>
 <tr>
   <td align="left">Reply to:</td>
@@ -47,44 +48,68 @@ body
 
 
 <p><a href="#Introduction">
-      Introduction</a><br>
-&nbsp;&nbsp;&nbsp; <a href="#Acknowledgement">Acknowledgement</a><br>
-&nbsp;&nbsp; &nbsp;<a href="#Preliminary-implementation">Preliminary implementation</a><br>
-<a href="#Requirements">Requirements</a><br>
-<a href="#Issues">Issues</a><br>
+      <span style="background-color: #FFFF00">Introduction</span></a><span style="background-color: #FFFF00"><br>
+&nbsp;&nbsp;&nbsp; </span> <a href="#Acknowledgement">
+<span style="background-color: #FFFF00">Acknowledgement</span></a><span style="background-color: #FFFF00"><br>
+&nbsp;&nbsp; &nbsp;</span><a href="#Preliminary-implementation"><span style="background-color: #FFFF00">Preliminary implementation</span></a><span style="background-color: #FFFF00"><br>
+</span>
+<a href="#Requirements"><span style="background-color: #FFFF00">Requirements</span></a><span style="background-color: #FFFF00"><br>
+</span>
+<a href="#Issues"><span style="background-color: #FFFF00">Issues</span></a><span style="background-color: #FFFF00"><br>
+</span>
 <a href="#Design-decisions">
-      Design decisions</a><br>
-&nbsp;&nbsp;&nbsp;&nbsp;<a href="#Provide-separate-relative">Provide separate lexical and 
-      operational <code>relative</code> functions</a><br>
-&nbsp;&nbsp;&nbsp; <a href="#Provide-separate-proximate">Provide 
-separate lexical and operational <code>proximate</code> functions</a><br>
-&nbsp;&nbsp;&nbsp; <a href="#Add-lexical-functions">Add lexical functions as <code>path</code> member functions</a><br>
-&nbsp;&nbsp;&nbsp;&nbsp;<a href="#Provide-normal">Provide a non-member function
+      <span style="background-color: #FFFF00">Design decisions</span></a><span style="background-color: #FFFF00"><br>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><a href="#Provide-separate-relative"><span style="background-color: #FFFF00">Provide separate lexical and 
+      operational <code>relative</code> functions</span></a><span style="background-color: #FFFF00"><br>
+&nbsp;&nbsp;&nbsp; </span> <a href="#Provide-separate-proximate">
+<span style="background-color: #FFFF00">Provide 
+separate lexical and operational <code>proximate</code> functions</span></a><span style="background-color: #FFFF00"><br>
+&nbsp;&nbsp;&nbsp; </span> <a href="#Add-lexical-functions">
+<span style="background-color: #FFFF00">Add lexical functions as <code>path</code> member functions</span></a><span style="background-color: #FFFF00"><br>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><a href="#Provide-normal"><span style="background-color: #FFFF00">Provide a non-member function
 <code>lexically_normal</code> returning a 
-      normal form path</a><br>
-&nbsp;&nbsp;&nbsp;&nbsp;<a href="#Provide-weakly">Provide a <code>weakly_canonical</code> operational function</a><br>
-&nbsp;&nbsp;&nbsp;&nbsp;<a href="#just-work">Resolve issues in ways that &quot;just work&quot; for users</a><br>
-&nbsp;&nbsp;&nbsp;&nbsp;<a href="#mismatch">Specify <code>lexical relative</code> in terms 
-      of <code>std::mismatch</code></a><br>
-&nbsp;&nbsp;&nbsp;&nbsp;<a href="#Specify-op-rel-weakly">Specify operational <code>relative</code> in terms of <code>
-      weakly_canonical</code></a><br>
-&nbsp;&nbsp;&nbsp;&nbsp;<a href="#Specify-op-rel-lex-rel">Specify operational <code>relative</code> in terms of 
-      <code>lexically
-      relative</code></a><br>
-<a href="#Proposed-wording">Proposed wording</a><br>
-&nbsp;&nbsp;&nbsp; <a href="#Define-normal-form">Define <i>normal form</i></a><br>
-&nbsp;&nbsp;&nbsp; <a href="#New-class-path-member-functions">New class path member functions</a><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <a href="#Synopsis-path">Synopsis</a><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <a href="#Specification-path">Specification</a><br>
-&nbsp;&nbsp;&nbsp; <a href="#operational-functions">New operational functions</a><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <a href="#Synopsis-ops">Synopsis</a><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <a href="#Specification-ops">Specification</a></p>
+      normal form path</span></a><span style="background-color: #FFFF00"><br>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><a href="#Provide-weakly"><span style="background-color: #FFFF00">Provide a <code>weakly_canonical</code> operational function</span></a><span style="background-color: #FFFF00"><br>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><a href="#just-work"><span style="background-color: #FFFF00">Resolve issues in ways that &quot;just work&quot; for users</span></a><span style="background-color: #FFFF00"><br>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><a href="#mismatch"><span style="background-color: #FFFF00">Specify <code>lexical relative</code> in terms 
+      of </span> <code><span style="background-color: #FFFF00">std::mismatch</span></code></a><span style="background-color: #FFFF00"><br>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><a href="#Specify-op-rel-weakly"><span style="background-color: #FFFF00">Specify operational <code>relative</code> in terms of
+</span> <code>
+      <span style="background-color: #FFFF00">weakly_canonical</span></code></a><span style="background-color: #FFFF00"><br>
+&nbsp;&nbsp;&nbsp;&nbsp;</span><a href="#Specify-op-rel-lex-rel"><span style="background-color: #FFFF00">Specify operational <code>relative</code> in terms of
+</span> 
+      <code><span style="background-color: #FFFF00">lexically
+      relative</span></code></a><span style="background-color: #FFFF00"><br>
+</span>
+<a href="#Proposed-wording"><span style="background-color: #FFFF00">Proposed wording</span></a><span style="background-color: #FFFF00"><br>
+&nbsp;&nbsp;&nbsp; </span> <a href="#Define-normal-form">
+<span style="background-color: #FFFF00">Define </span> <i>
+<span style="background-color: #FFFF00">normal form</span></i></a><span style="background-color: #FFFF00"><br>
+&nbsp;&nbsp;&nbsp; </span> <a href="#New-class-path-member-functions">
+<span style="background-color: #FFFF00">New class path member functions</span></a><span style="background-color: #FFFF00"><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span> <a href="#Synopsis-path">
+<span style="background-color: #FFFF00">Synopsis</span></a><span style="background-color: #FFFF00"><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span> <a href="#Specification-path">
+<span style="background-color: #FFFF00">Specification</span></a><span style="background-color: #FFFF00"><br>
+&nbsp;&nbsp;&nbsp; </span> <a href="#operational-functions">
+<span style="background-color: #FFFF00">New operational functions</span></a><span style="background-color: #FFFF00"><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span> <a href="#Synopsis-ops">
+<span style="background-color: #FFFF00">Synopsis</span></a><span style="background-color: #FFFF00"><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span> <a href="#Specification-ops">
+<span style="background-color: #FFFF00">Specification</span></a></p>
 
 <h2>
       <a name="Introduction">Introduction</a></h2>
 
-<p>There have been requests for a Filesystem library relative function for at 
-      least ten years.</p>
+<p>The
+<a href="https://www.boost.org/doc/libs/1_60_0/libs/filesystem/doc/index.htm">
+Boost Filesystem library</a> has gotten user requests for a  relative path function for 
+more than ten years. For the <i>
+<a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2014/n4100.pdf">File System TS</a></i>, the issue was 
+raised as LWG 2611, PDTS 
+comment GB-1, and resolved as <em>NAD Future</em>. A proposed solution, 
+<a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2015/p0011r0.html"> <i>
+Additions to Filesystem supporting Relative Paths</i></a>, is currently before the committee.</p>
 
 <p>
       The requested functionality seems simple - given two paths with a common 
@@ -101,24 +126,33 @@ path rel = relative(p, base);  // the requested function
 cout &lt;&lt; rel &lt;&lt; endl;           // outputs &quot;c&quot;
 assert(absolute(rel, base) == p);</pre>
 </blockquote>
-<p>If that was all there was to it, the Filesystem library would have had a
-<code>relative</code> function years ago.</p>
-<blockquote>
-<p>Blocking issues: Clashing requirements, symlinks, directory placeholders (<i>dot</i>,
-<i>dot-dot</i>), user-expectations, corner cases.</p>
-</blockquote>
+<p>If that was all there was to it,  Filesystem would have had a
+<code>relative</code> function years ago. Other libraries supply such a 
+function, such as
+<a href="https://docs.python.org/2/library/os.path.html#os.path.relpath">
+Python&#39;s os.path.relpath</a>, albeit with simplistic semantics.</p>
+<p>The problem with simplistic semantics:</p>
+<ul>
+  <li>Clashing requirements</li>
+  <li>Symlinks</li>
+  <li>Directory placeholders (<i>dot</i>,
+<i>dot-dot</i>)</li>
+  <li>User-expectations</li>
+  <li>Corner cases.</li>
+</ul>
+<p>In previous discussions, committee members have made it clear that they do 
+not want a simplistic solution.</p>
 <h3><a name="Acknowledgement">Acknowledgement</a></h3>
 <p>A paper by Jamie Allsop, <i>Additions to Filesystem supporting Relative Paths</i>, 
 is what broke my mental logjam. Much of what follows is based directly on 
 Jamie&#39;s analysis and proposal. The <code>weakly_canonical</code> function and 
 aspects of the semantic specifications are my contributions. Mistakes, of 
-course, are mine.</p>
-<h3><a name="Preliminary-implementation">Preliminary implementation</a></h3>
-<p>A preliminary implementation is available in the
-<a href="https://github.com/boostorg/filesystem/tree/feature/relative2">
-feature/relative2</a> branch of the Boost Filesystem Git repository. See
-<a href="https://github.com/boostorg/filesystem/tree/feature/relative2">
-github.com/boostorg/filesystem/tree/feature/relative2</a></p>
+course, are mine alone.</p>
+<h3><a name="Preliminary-implementation">Implementation</a> experience</h3>
+<p>
+<a href="https://www.boost.org/doc/libs/1_60_0/libs/filesystem/doc/index.htm">
+Boost Filesystem 1.60.0</a> shipped a preliminary implementation of this 
+proposal in December, 2015.</p>
 <h2><a name="Requirements">Requirements</a></h2>
 <b><a name="Requirement-1">Requirement 1</a>:</b> Some uses require symlinks be followed; i.e. the path must be resolved in 
   the actual file system.<p><b><a name="Requirement-2">Requirement 2</a>: </b>Some uses require symlinks not be followed; i.e. the path must not be 
@@ -505,12 +539,36 @@ path proximate(const path&amp; p, const path&amp; base, system::error_code&amp; 
   <p><i>Throws:</i> As specified in Error reporting.</p>
 </blockquote>
 
+  <h2>Differences between competing proposals</h2>
+  <p><span style="background-color: #FFFF00">tbs</span></p>
+  <h2>Guidance requested</h2>
+  <p><span style="background-color: #FFFF00">tbs</span></p>
+
+  <h2>References</h2>
+
+<p>[<a name="1">1</a>] Beman Dawes,
+<a href="file:///C:/dot16/filesystem-ts/c++17/www.open-std.org/jtc1/sc22/wg21/docs/papers/2014/n4100.pdf">
+N4100, Programming Languages — C++ — File System Technical Specification</a>, 
+2014.<br>
+<a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2014/n4100.pdf" class="uri">
+http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2014/n4100.pdf</a></p>
+<p>[<a name="2">2</a>] Beman Dawes, others,
+<a href="file:///C:/dot16/filesystem-ts/c++17/www.boost.org/doc/libs/1_60_0/libs/filesystem/doc/index.htm">
+Boost Filesystem Library, V3</a>, 2015.<br>
+<a href="https://www.boost.org/doc/libs/1_60_0/libs/filesystem/doc/index.htm" class="uri">
+https://www.boost.org/doc/libs/1_60_0/libs/filesystem/doc/index.htm</a></p>
+<p>[<a name="3">3</a>] Jamie Alsop, Nicolai Josuttis,
+<a href="file:///C:/dot16/filesystem-ts/c++17/www.open-std.org/jtc1/sc22/wg21/docs/papers/2015/p0011r0.html">
+P0011R0, Additions to Filesystem supporting Relative Paths</a>, 2015.<br>
+<a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2015/p0011r0.html" class="uri">
+http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2015/p0011r0.html</a></p>
+<p>[4] Python.org,
+<a href="https://docs.python.org/2/library/os.path.html#os.path.relpath">
+Function os.path.relpath documentation</a>,<br>
+<a href="https://docs.python.org/2/library/os.path.html#os.path.relpath">
+https://docs.python.org/2/library/os.path.html#os.path.relpath</a></p>
+
 <hr>
-<p>© Copyright Beman Dawes 2015</p>
-<p>Distributed under the Boost Software License, Version 1.0. See
-<a href="http://www.boost.org/LICENSE_1_0.txt">www.boost.org/LICENSE_1_0.txt</a></p>
-<p>Revised
-<!--webbot bot="Timestamp" S-Type="EDITED" S-Format="%d %B %Y" startspan -->06 February 2016<!--webbot bot="Timestamp" endspan i-checksum="41317" --></p>
 
 </body>
 
