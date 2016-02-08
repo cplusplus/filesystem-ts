@@ -32,7 +32,7 @@ body
 <tr>
   <td align="left">Date:</td>
   <td align="left">
-  <!--webbot bot="Timestamp" S-Type="EDITED" S-Format="%Y-%m-%d" startspan -->2016-02-07<!--webbot bot="Timestamp" endspan i-checksum="12148" --></td>
+  <!--webbot bot="Timestamp" S-Type="EDITED" S-Format="%Y-%m-%d" startspan -->2016-02-08<!--webbot bot="Timestamp" endspan i-checksum="12150" --></td>
 </tr>
 <tr>
   <td align="left">Reply to:</td>
@@ -48,55 +48,50 @@ body
 
 
 <p><a href="#Introduction">
-      <span style="background-color: #FFFF00">Introduction</span></a><span style="background-color: #FFFF00"><br>
-&nbsp;&nbsp;&nbsp; </span> <a href="#Acknowledgement">
-<span style="background-color: #FFFF00">Acknowledgement</span></a><span style="background-color: #FFFF00"><br>
-&nbsp;&nbsp; &nbsp;</span><a href="#Preliminary-implementation"><span style="background-color: #FFFF00">Preliminary implementation</span></a><span style="background-color: #FFFF00"><br>
-</span>
-<a href="#Requirements"><span style="background-color: #FFFF00">Requirements</span></a><span style="background-color: #FFFF00"><br>
-</span>
-<a href="#Issues"><span style="background-color: #FFFF00">Issues</span></a><span style="background-color: #FFFF00"><br>
-</span>
+      Introduction</a><br>
+&nbsp;&nbsp;&nbsp; <a href="#History">History</a><br>
+&nbsp;&nbsp; &nbsp;<a href="#Preliminary-implementation">Preliminary implementation</a><br>
+<a href="#Requirements">Requirements</a><br>
+<a href="#Issues">Issues</a><br>
 <a href="#Design-decisions">
-      <span style="background-color: #FFFF00">Design decisions</span></a><span style="background-color: #FFFF00"><br>
-&nbsp;&nbsp;&nbsp;&nbsp;</span><a href="#Provide-separate-relative"><span style="background-color: #FFFF00">Provide separate lexical and 
-      operational <code>relative</code> functions</span></a><span style="background-color: #FFFF00"><br>
-&nbsp;&nbsp;&nbsp; </span> <a href="#Provide-separate-proximate">
-<span style="background-color: #FFFF00">Provide 
-separate lexical and operational <code>proximate</code> functions</span></a><span style="background-color: #FFFF00"><br>
-&nbsp;&nbsp;&nbsp; </span> <a href="#Add-lexical-functions">
-<span style="background-color: #FFFF00">Add lexical functions as <code>path</code> member functions</span></a><span style="background-color: #FFFF00"><br>
-&nbsp;&nbsp;&nbsp;&nbsp;</span><a href="#Provide-normal"><span style="background-color: #FFFF00">Provide a non-member function
+      Design decisions</a><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<a href="#Provide-separate-relative">Provide separate lexical and 
+      operational <code>relative</code> functions</a><br>
+&nbsp;&nbsp;&nbsp; <a href="#Provide-separate-proximate">
+Provide 
+separate lexical and operational <code>proximate</code> functions</a><br>
+&nbsp;&nbsp;&nbsp; <a href="#Add-lexical-functions">
+Add lexical functions as <code>path</code> member functions</a><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<a href="#Provide-normal">Provide a non-member function
 <code>lexically_normal</code> returning a 
-      normal form path</span></a><span style="background-color: #FFFF00"><br>
-&nbsp;&nbsp;&nbsp;&nbsp;</span><a href="#Provide-weakly"><span style="background-color: #FFFF00">Provide a <code>weakly_canonical</code> operational function</span></a><span style="background-color: #FFFF00"><br>
-&nbsp;&nbsp;&nbsp;&nbsp;</span><a href="#just-work"><span style="background-color: #FFFF00">Resolve issues in ways that &quot;just work&quot; for users</span></a><span style="background-color: #FFFF00"><br>
-&nbsp;&nbsp;&nbsp;&nbsp;</span><a href="#mismatch"><span style="background-color: #FFFF00">Specify <code>lexical relative</code> in terms 
-      of </span> <code><span style="background-color: #FFFF00">std::mismatch</span></code></a><span style="background-color: #FFFF00"><br>
-&nbsp;&nbsp;&nbsp;&nbsp;</span><a href="#Specify-op-rel-weakly"><span style="background-color: #FFFF00">Specify operational <code>relative</code> in terms of
-</span> <code>
-      <span style="background-color: #FFFF00">weakly_canonical</span></code></a><span style="background-color: #FFFF00"><br>
-&nbsp;&nbsp;&nbsp;&nbsp;</span><a href="#Specify-op-rel-lex-rel"><span style="background-color: #FFFF00">Specify operational <code>relative</code> in terms of
-</span> 
-      <code><span style="background-color: #FFFF00">lexically
-      relative</span></code></a><span style="background-color: #FFFF00"><br>
-</span>
-<a href="#Proposed-wording"><span style="background-color: #FFFF00">Proposed wording</span></a><span style="background-color: #FFFF00"><br>
-&nbsp;&nbsp;&nbsp; </span> <a href="#Define-normal-form">
-<span style="background-color: #FFFF00">Define </span> <i>
-<span style="background-color: #FFFF00">normal form</span></i></a><span style="background-color: #FFFF00"><br>
-&nbsp;&nbsp;&nbsp; </span> <a href="#New-class-path-member-functions">
-<span style="background-color: #FFFF00">New class path member functions</span></a><span style="background-color: #FFFF00"><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span> <a href="#Synopsis-path">
-<span style="background-color: #FFFF00">Synopsis</span></a><span style="background-color: #FFFF00"><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span> <a href="#Specification-path">
-<span style="background-color: #FFFF00">Specification</span></a><span style="background-color: #FFFF00"><br>
-&nbsp;&nbsp;&nbsp; </span> <a href="#operational-functions">
-<span style="background-color: #FFFF00">New operational functions</span></a><span style="background-color: #FFFF00"><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span> <a href="#Synopsis-ops">
-<span style="background-color: #FFFF00">Synopsis</span></a><span style="background-color: #FFFF00"><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span> <a href="#Specification-ops">
-<span style="background-color: #FFFF00">Specification</span></a></p>
+      normal form path</a><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<a href="#Provide-weakly">Provide a <code>weakly_canonical</code> operational function</a><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<a href="#just-work">Resolve issues in ways that &quot;just work&quot; for users</a><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<a href="#mismatch">Specify <code>lexical relative</code> in terms 
+      of <code>std::mismatch</code></a><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<a href="#Specify-op-rel-weakly">Specify operational <code>relative</code> in terms of <code>
+      weakly_canonical</code></a><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<a href="#Specify-op-rel-lex-rel">Specify operational <code>relative</code> in terms of 
+      <code>lexically
+      relative</code></a><br>
+&nbsp;&nbsp;&nbsp; <a href="#No-common-prefix-functions">Do not supply <code>
+common_prefix</code> or <code>remove_common_prefix</code> functions</a><br>
+<a href="#Proposed-wording">Proposed wording</a><br>
+&nbsp;&nbsp;&nbsp; <a href="#Define-normal-form">
+Define <i>
+normal form</i></a><br>
+&nbsp;&nbsp;&nbsp; <a href="#New-class-path-member-functions">
+New class path member functions</a><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <a href="#Synopsis-path">
+Synopsis</a><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <a href="#Specification-path">
+Specification</a><br>
+&nbsp;&nbsp;&nbsp; <a href="#operational-functions">
+New operational functions</a><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <a href="#Synopsis-ops">
+Synopsis</a><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <a href="#Specification-ops">
+Specification</a></p>
 
 <h2>
       <a name="Introduction">Introduction</a></h2>
@@ -141,13 +136,14 @@ Python&#39;s os.path.relpath</a>, albeit with simplistic semantics.</p>
   <li>Corner cases.</li>
 </ul>
 <p>In previous discussions, committee members have made it clear that they do 
-not want a simplistic solution.</p>
-<h3><a name="Acknowledgement">Acknowledgement</a></h3>
-<p>A paper by Jamie Allsop, <i>Additions to Filesystem supporting Relative Paths</i>, 
-is what broke my mental logjam. Much of what follows is based directly on 
-Jamie&#39;s analysis and proposal. The <code>weakly_canonical</code> function and 
-aspects of the semantic specifications are my contributions. Mistakes, of 
-course, are mine alone.</p>
+not want an overly simplistic solution.</p>
+<h3><a name="History">History</a></h3>
+<p>A paper by Jamie Allsop and Nico , <i>
+<a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2015/p0011r0.html">Additions to Filesystem supporting Relative Paths</a></i>, 
+is what broke the &quot;relative&quot; logjam. Much of what follows is based directly on 
+that proposal. The <code>weakly_canonical</code> function and 
+details of the semantic specifications such as use of <code>std::mismatch</code> 
+were introduced by Beman.</p>
 <h3><a name="Preliminary-implementation">Implementation</a> experience</h3>
 <p>
 <a href="https://www.boost.org/doc/libs/1_60_0/libs/filesystem/doc/index.htm">
@@ -216,7 +212,7 @@ specifications) in preliminary designs made reasoning about uses difficult.</p>
       <a name="Add-lexical-functions">Add lexical functions as 
       <code>path</code> member functions</a></h4>
 
-<p dir="ltr">
+<p>
       The Filesystem library is unusual in that it has several functions with 
       both lexical (i.e. cheap) and operational (i.e. expensive due to file 
       system access) forms with differing semantics. It is important that users 
@@ -321,7 +317,8 @@ specifications) in preliminary designs made reasoning about uses difficult.</p>
       resolution of <a href="#Issue-8">issue 8</a>.</p>
 
 <h4>
-      <a name="Specify-op-rel-weakly">Specify</a> <a href="#op-proximate">operational <code>relative</code></a> in terms of <code>
+      <a name="Specify-op-rel-weakly">Specify</a> operational <code>
+      <a href="#op-relative">relative</a></code> in terms of <code>
       <a href="#weakly_canonical">weakly_canonical</a></code></h4>
 
 <p>
@@ -334,7 +331,8 @@ specifications) in preliminary designs made reasoning about uses difficult.</p>
 </ul>
 
 <h4>
-      <a name="Specify-op-rel-lex-rel">Specify</a> <a href="#op-proximate">operational <code>relative</code></a> in terms of 
+      <a name="Specify-op-rel-lex-rel">Specify</a> operational <code>
+      <a href="#op-relative">relative</a></code> in terms of 
       <a href="#lex-proximate"><code>lexically
       relative</code></a></h4>
 
@@ -356,6 +354,24 @@ specifications) in preliminary designs made reasoning about uses difficult.</p>
       These problems are avoided by specifying operational <code>relative</code> 
       in terms of lexical <code>relative</code> after preparatory 
       calls to operational functions.</p>
+
+<h4>
+      <a name="No-common-prefix-functions">Do not supply</a> <code>common_prefix</code> 
+      or <code>remove_common_prefix</code> functions</h4>
+
+<p>
+<a href="file:///C:/dot16/filesystem-ts/c++17/www.open-std.org/jtc1/sc22/wg21/docs/papers/2015/p0011r0.html">
+      P0011R0</a> proposed <code>common_prefix</code> and <code>
+      remove_common_prefix</code> functions. The motivation given was that these 
+      were needed by implementations. They are not needed to implement the 
+      current proposal so are not proposed here.</p>
+
+<p>
+      Given the C++14 <code>std::mismatch</code> algorithm that takes four 
+      iterators and the functions provided by this proposal such as 
+      weakly_canonical, it should be reasonably easy for users to write their 
+      own <code>common_prefix</code>. If the LWG would like to add such 
+      functions, please consider asking for them as a separate proposal. </p>
 
 <h2><a name="Proposed-wording">Proposed wording</a></h2>
 
@@ -499,7 +515,7 @@ normalized.<p>
 A path composed of the result of calling the <code>canonical</code> function on 
 a path composed of the leading elements of <code>p</code> that exist, if any, 
 followed by the elements of <code>p</code> that do not exist, if any.</p>
-<p><i>Postcondition:</i> The returned path is in <a href="#normal">normal form</a>.</p>
+<p><i>Postconditions:</i> The returned path is in <a href="#normal">normal form</a>.</p>
 <p><i>Remarks:</i> Uses <code>operator/=</code> to compose the returned path. 
 Uses the <code>status</code> function to determine existence.</p>
 <p><i>Remarks:</i> Implementations are encouraged to avoid unnecessary 
@@ -539,11 +555,6 @@ path proximate(const path&amp; p, const path&amp; base, system::error_code&amp; 
   <p><i>Throws:</i> As specified in Error reporting.</p>
 </blockquote>
 
-  <h2>Differences between competing proposals</h2>
-  <p><span style="background-color: #FFFF00">tbs</span></p>
-  <h2>Guidance requested</h2>
-  <p><span style="background-color: #FFFF00">tbs</span></p>
-
   <h2>References</h2>
 
 <p>[<a name="1">1</a>] Beman Dawes,
@@ -557,7 +568,7 @@ http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2014/n4100.pdf</a></p>
 Boost Filesystem Library, V3</a>, 2015.<br>
 <a href="https://www.boost.org/doc/libs/1_60_0/libs/filesystem/doc/index.htm" class="uri">
 https://www.boost.org/doc/libs/1_60_0/libs/filesystem/doc/index.htm</a></p>
-<p>[<a name="3">3</a>] Jamie Alsop, Nicolai Josuttis,
+<p>[<a name="3">3</a>] Jamie Allsop, Nicolai Josuttis,
 <a href="file:///C:/dot16/filesystem-ts/c++17/www.open-std.org/jtc1/sc22/wg21/docs/papers/2015/p0011r0.html">
 P0011R0, Additions to Filesystem supporting Relative Paths</a>, 2015.<br>
 <a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2015/p0011r0.html" class="uri">
