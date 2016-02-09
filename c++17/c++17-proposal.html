@@ -43,16 +43,19 @@
 <li><strong>libstdc++</strong> Began shipping with <a href="gcc.gnu.org/gcc-5/">gcc-5.3</a> in 2015.</li>
 <li><strong>libc++</strong> <a href="github.com/efcs/filesystem-standalone">Implemented</a>, but not yet shipping.</li>
 </ul>
-<h2 id="pending-changes">Pending Changes</h2>
-<p>The pending issues and proposals described below need to be resolved by LWG soon, but none of them block adopting the Filesystem TS for C++17.</p>
+<h2 id="pending-issues-and-proposals">Pending Issues and Proposals</h2>
+<p>The pending issues and proposals described below should be resolved by LWG in the next meeting or two, and do not block adopting the Filesystem TS for C++17.</p>
 <h3 id="pending-issues">Pending issues</h3>
 <p>There are twelve open Filesystem issues in the LWG Active Issues list. Ten have proposed resolution text. Most of the issues involve standardese corrections or clarifications and require no change to implementations or user code.</p>
 <h3 id="pending-proposals">Pending proposals</h3>
-<p>LWG issue 2611 (aka SG3 issue 11), <em>Lack of relative() operation function</em>, is a <em>NAD Future</em> issue raised by UK PDTS comment GB-1. Two similar but competing solutions have been proposed — <a href="www.open-std.org/jtc1/sc22/wg21/docs/papers/2015/p0011r0.html">P0011R0, <em>Additions to Filesystem supporting Relative Paths</em></a> and <a href="www.open-std.org/jtc1/sc22/wg21/docs/papers/2016/p0218r0.html">P0218R0, <em>Relative Paths for Filesystem</em></a>.</p>
+<p>LWG issue 2611 (aka SG3 issue 11), <em>Lack of relative() operation function</em>, is a <em>NAD Future</em> issue raised by UK PDTS comment GB-1. Two solutions have been proposed — <a href="www.open-std.org/jtc1/sc22/wg21/docs/papers/2015/p0011r0.html">P0011R0, <em>Additions to Filesystem supporting Relative Paths</em></a> and <a href="www.open-std.org/jtc1/sc22/wg21/docs/papers/2016/p0218r0.html">P0218R0, <em>Relative Paths for Filesystem</em></a>. The authors are working together to finalize a single proposal for the Jacksonville meeting.</p>
+<h2 id="hosted-implementations-only">Hosted implementations only</h2>
+<p>No change is proposed for the C++ working paper's table of &quot;C++ headers for freestanding implementations&quot; in 17.6.2.2 Headers [using.headers]. This means that header filesystem is only required for hosted implementations. See C++ 1.4 Implementation compliance [intro.compliance].</p>
 <h2 id="proposed-c17-wording">Proposed C++17 Wording</h2>
-<p>The proposed wording below is unchanged from the <a href="www.open-std.org/jtc1/sc22/wg21/docs/papers/2014/n4100.pdf">File System TS wording</a>, except for section renumbering and changes shown with <del>delete</del> and <ins>insert</ins> tags. The proposed wording is assumed to appear in the C++ working paper as a new sub-clause at the end of clause 27, <em>Input/output library</em>. A table of contents has been provided for convenience. The project editor may revised location and content editorially.</p>
-<h3 id="proposed-wording">Proposed Wording</h3>
-<!-- include "wp.html" snippet=wpwording --><p>
+<p>The proposed wording below is unchanged from the <a href="www.open-std.org/jtc1/sc22/wg21/docs/papers/2014/n4100.pdf">File System TS wording</a>, except for section renumbering and changes shown with <del>delete</del> and <ins>insert</ins> tags. A table of contents is provided for convenience, but is not part of the proposed wording.</p>
+<p><span style="background-color:lightgrey"><em>Editorial comments are shown in italics with a light gray background.</em></span></p>
+<h3 id="wording-table-of-contents">Wording table of contents</h3>
+<!-- include "wp.html" snippet=wpwordingTOC --><p>
 <a href="#File-systems">27.10  <ins>File systems&nbsp; </ins></a><br>
 &nbsp;&nbsp;&nbsp;<a href="#<del>Scope</del> <ins>General</ins>">27.10.1  <del>Scope</del> <ins>General</ins>&nbsp; </a><br>
 &nbsp;&nbsp;&nbsp;<a href="#Conformance">27.10.2  Conformance </a><br>
@@ -186,15 +189,10 @@ observers  </a><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#fs.op.symlink_status">27.10.15.35  Symlink status&nbsp; </a><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#fs.op.system_complete">27.10.15.36  System complete&nbsp; </a><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#fs.op.temp_dir_path">27.10.15.37  Temporary directory path&nbsp; </a><br>
-</p>
-      
-<hr>
-</div>
-
-<!-- generate-section-numbers=true -->
-<!-- generate-paragraph-numbers=true -->
-
-
+</p><!-- end include --></p>
+<h3 id="proposed-wording">Proposed Wording</h3>
+<p><span style="background-color:lightgrey"><em>Add the following as a new sub-clause at the end of clause 27, Input/output library:</em></span></p>
+<!-- include "wp.html" snippet=wpwording -->
 <h2 class="page_number_reset">27.10  <ins><a name="File-systems">File systems</a>&nbsp; [<a name="filesystems">filesystems</a>]</ins></h2>
 
 
@@ -3596,17 +3594,16 @@ path temp_directory_path(error_code&amp; ec);</pre>
   
 </blockquote>
 
-<hr>
-</del><!-- end include --></p>
+<hr><!-- end include --></p>
 <h2 id="acknowledgements">Acknowledgements</h2>
 <p>Thanks to Eric Fiselier, Stephan T. Lavavej, P.J. Plauger, and Jonathan Wakely for their work on implementations, and for reporting issues based on their experience.</p>
-<p>Thanks to Jamie Alsop and Nicolai Josuttis for teasing out the details of the relative path problem, and proposing a solution.</p>
+<p>Thanks to Jamie Allsop and Nicolai Josuttis for teasing out the details of the relative path problem, and proposing a solution.</p>
 <h2 id="references">References</h2>
 <p>[<a name="1">1</a>] Beman Dawes, <a href="www.open-std.org/jtc1/sc22/wg21/docs/papers/2014/n4100.pdf">N4100, Programming Languages — C++ — File System Technical Specification</a>, 2014.<br><a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2014/n4100.pdf" class="uri">http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2014/n4100.pdf</a></p>
 <p>[<a name="2">2</a>] Beman Dawes, others, <a href="www.boost.org/doc/libs/1_60_0/libs/filesystem/doc/index.htm">Boost Filesystem Library, V3</a>, 2015.<br><a href="https://www.boost.org/doc/libs/1_60_0/libs/filesystem/doc/index.htm" class="uri">https://www.boost.org/doc/libs/1_60_0/libs/filesystem/doc/index.htm</a></p>
 <p>[<a name="3">3</a>] Microsoft, <a href="msdn.microsoft.com/en-us/library/hh874694.aspx">&lt;filesystem&gt; (v3), Visual Studio 2015</a>, 2015.<br><a href="https://msdn.microsoft.com/en-us/library/hh874694.aspx" class="uri">https://msdn.microsoft.com/en-us/library/hh874694.aspx</a></p>
 <p>[<a name="4">4</a>] Eric Fiselier, <a href="github.com/efcs/filesystem-standalone">Experimental work on the standard filesystem proposal</a>, 2014.<br><a href="https://github.com/efcs/filesystem-standalone" class="uri">https://github.com/efcs/filesystem-standalone</a></p>
-<p>[<a name="5">5</a>] Jamie Alsop, Nicolai Josuttis, <a href="www.open-std.org/jtc1/sc22/wg21/docs/papers/2015/p0011r0.html">P0011R0, Additions to Filesystem supporting Relative Paths</a>, 2015.<br><a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2015/p0011r0.html" class="uri">http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2015/p0011r0.html</a></p>
+<p>[<a name="5">5</a>] Jamie Allsop, Nicolai Josuttis, <a href="www.open-std.org/jtc1/sc22/wg21/docs/papers/2015/p0011r0.html">P0011R0, Additions to Filesystem supporting Relative Paths</a>, 2015.<br><a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2015/p0011r0.html" class="uri">http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2015/p0011r0.html</a></p>
 <p>[<a name="6">6</a>] Beman Dawes, <a href="www.open-std.org/jtc1/sc22/wg21/docs/papers/2016/p0218r0.html">P0218R0, Relative Paths for Filesystem</a>, 2016.<br><a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2016/p0218r0.html" class="uri">http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2016/p0218r0.html</a></p>
 <p>[<a name="7">7</a>] GNU, <a href="gcc.gnu.org/gcc-5/">GCC 5 Release Series</a>, 2016.<br><a href="https://gcc.gnu.org/gcc-5/" class="uri">https://gcc.gnu.org/gcc-5/</a></p>
 <hr />

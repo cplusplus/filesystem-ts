@@ -41,25 +41,36 @@ Implementation and Use Experience
 * **libstdc++** Began shipping with [gcc-5.3][7] in 2015.
 * **libc++** [Implemented][4], but not yet shipping. 
 
-Pending Changes
----------------
+## Pending Issues and Proposals
 
-The pending issues and proposals described below need to be resolved by LWG soon, but none of them block adopting the Filesystem TS for C++17.
+The pending issues and proposals described below should be resolved by LWG in the next meeting or two, and do not block adopting the Filesystem TS for C++17.
 
 ### Pending issues
 
-There are twelve open Filesystem issues in the LWG Active Issues list. Ten have proposed resolution text. Most of the issues involve standardese corrections or clarifications and require no change to implementations or user code. 
+There are twelve open Filesystem issues in the LWG Active Issues list. Ten have proposed resolution text. Most of the issues involve standardese corrections or clarifications and require no change to implementations or user code.
 
 ### Pending proposals
 
-LWG issue 2611 (aka SG3 issue 11), *Lack of relative() operation function*, is a *NAD Future* issue raised by UK PDTS comment GB-1. Two similar but competing solutions have been proposed &mdash; [P0011R0, *Additions to Filesystem supporting Relative Paths*][5] and [P0218R0, *Relative Paths for Filesystem*][6].
+LWG issue 2611 (aka SG3 issue 11), *Lack of relative() operation function*, is a *NAD Future* issue raised by UK PDTS comment GB-1. Two solutions have been proposed &mdash; [P0011R0, *Additions to Filesystem supporting Relative Paths*][5] and [P0218R0, *Relative Paths for Filesystem*][6]. The authors are working together to finalize a single proposal for the Jacksonville meeting.
+
+## Hosted implementations only
+
+No change is proposed for the C++ working paper's table of "C++ headers for freestanding implementations" in 17.6.2.2 Headers [using.headers]. This means that header filesystem is only required for hosted implementations. See C++ 1.4 Implementation compliance [intro.compliance].
 
 Proposed C++17 Wording
 ----------------------
 
-The proposed wording below is unchanged from the [File System TS wording][1], except for section renumbering and changes shown with <del>delete</del> and <ins>insert</ins> tags. The proposed wording is assumed to appear in the C++ working paper as a new sub-clause at the end of clause 27, *Input/output library*. A table of contents has been provided for convenience. The project editor may revised location and content editorially.
+The proposed wording below is unchanged from the [File System TS wording][1], except for section renumbering and changes shown with <del>delete</del> and <ins>insert</ins> tags. A table of contents is provided for convenience, but is not part of the proposed wording.
+
+<span style="background-color:lightgrey">*Editorial comments are shown in italics with a light gray background.*</span>
+
+### Wording table of contents
+
+<!-- include "wp.html" snippet=wpwordingTOC -->TOC goes here<!-- end include --> 
 
 ### Proposed Wording
+
+<span style="background-color:lightgrey">*Add the following as a new sub-clause at the end of clause 27, Input/output library:*</span>
 
 <!-- include "wp.html" snippet=wpwording -->proposed wording goes here<!-- end include -->
 
@@ -68,7 +79,7 @@ Acknowledgements
 
 Thanks to Eric Fiselier, Stephan T. Lavavej, P.J. Plauger, and Jonathan Wakely for their work on implementations, and for reporting issues based on their experience.
 
-Thanks to Jamie Alsop and Nicolai Josuttis for teasing out the details of the relative path problem, and proposing a solution.
+Thanks to Jamie Allsop and Nicolai Josuttis for teasing out the details of the relative path problem, and proposing a solution.
 
 References
 ----------
@@ -89,7 +100,7 @@ References
 
 &lsqb;<a name="4">4</a>&rsqb; Eric Fiselier, [Experimental work on the standard filesystem proposal][4], 2014.<br>https://github.com/efcs/filesystem-standalone 
 
-&lsqb;<a name="5">5</a>&rsqb; Jamie Alsop, Nicolai Josuttis,	[P0011R0, Additions to Filesystem supporting Relative Paths][5], 2015.<br>http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2015/p0011r0.html
+&lsqb;<a name="5">5</a>&rsqb; Jamie Allsop, Nicolai Josuttis,	[P0011R0, Additions to Filesystem supporting Relative Paths][5], 2015.<br>http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2015/p0011r0.html
 
 &lsqb;<a name="6">6</a>&rsqb; Beman Dawes, [P0218R0, Relative Paths for Filesystem][6], 2016.<br>http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2016/p0218r0.html
 
