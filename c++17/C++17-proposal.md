@@ -1,7 +1,7 @@
 <table>
 <tr>
   <td align="left">Doc. no.:</td>
-  <td align="left"><span style="background-color:yellow">P0218R0</span></td>
+  <td align="left"><span style="background-color:yellow">D0218R1</span></td>
 </tr>
 <tr>
   <td align="left">Date:</td>
@@ -17,11 +17,9 @@
 </tr>
 </table>
 
-Adopt the File System TS for C++17
-==================================
+# Adopt the File System TS for C++17 (R1)
 
-Introduction
-------------
+# Introduction
 
 Technical work on [N4100, *File System Technical Specification*][1], ISO/IEC TS 18822:2015, was completed in July 2014, and published by ISO in July 2015. There are three shipping implementations and one soon-to-ship implementation. Two of the shipping implementations have been have been in use for several years.
 
@@ -33,8 +31,7 @@ The alternative to this proposal is to start work on version two of the File Sys
 
 >ISO/IEC TS 18822:2015 specifies requirements for implementations of an interface that computer programs written in the C++ programming language may use to perform operations on file systems and their components, such as paths, regular files, and directories. This Technical Specification is applicable to information technology systems that can access hierarchical file systems, such as those with operating systems that conform to the POSIX (3) interface. This Technical Specification is applicable only to vendors who wish to provide the interface it describes.   
 
-Implementation and Use Experience
----------------------------------
+# Implementation and Use Experience
 
 * **Boost** Has been shipping versions of the [Boost Filesystem Library][2] since 2003.
 * **Microsoft/Dinkumware** Began shipping the [TS version with Visual C++ 2015][3]. Previously shipped a version based on the TR1 proposal with VC++ 2012 and VC++ 2013.
@@ -57,8 +54,7 @@ LWG issue 2611 (aka SG3 issue 11), *Lack of relative() operation function*, is a
 
 No change is proposed for the C++ working paper's table of "C++ headers for freestanding implementations" in 17.6.2.2 Headers [using.headers]. This means that header filesystem is only required for hosted implementations. See C++ 1.4 Implementation compliance [intro.compliance].
 
-Proposed C++17 Wording
-----------------------
+## Proposed C++17 Wording
 
 The proposed wording below is unchanged from the [File System TS wording][1], except for section renumbering and changes shown with <del>delete</del> and <ins>insert</ins> tags. A table of contents is provided for convenience, but is not part of the proposed wording.
 
@@ -74,15 +70,13 @@ The proposed wording below is unchanged from the [File System TS wording][1], ex
 
 <!-- include "wp.html" snippet=wpwording -->proposed wording goes here<!-- end include -->
 
-Acknowledgements
-----------------
+## Acknowledgements
 
 Thanks to Eric Fiselier, Stephan T. Lavavej, P.J. Plauger, and Jonathan Wakely for their work on implementations, and for reporting issues based on their experience.
 
 Thanks to Jamie Allsop and Nicolai Josuttis for teasing out the details of the relative path problem, and proposing a solution.
 
-References
-----------
+# References
 
 [1]: www.open-std.org/jtc1/sc22/wg21/docs/papers/2014/n4100.pdf
 [2]: www.boost.org/doc/libs/1_60_0/libs/filesystem/doc/index.htm
