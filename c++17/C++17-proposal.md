@@ -1,11 +1,11 @@
 <table>
 <tr>
   <td align="left">Doc. no.:</td>
-  <td align="left"><span style="background-color:yellow">D0218R0</span></td>
+  <td align="left"><span style="background-color:yellow">P0218R0</span></td>
 </tr>
 <tr>
   <td align="left">Date:</td>
-  <td align="left">016-02-12</td>
+  <td align="left">016-02-11</td>
 </tr>
 <tr>
   <td align="left">Reply to:</td>
