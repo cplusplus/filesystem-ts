@@ -32,7 +32,7 @@ body
 <tr>
   <td align="left">Date:</td>
   <td align="left">
-  <!--webbot bot="Timestamp" S-Type="EDITED" S-Format="%Y-%m-%d" startspan -->2016-02-08<!--webbot bot="Timestamp" endspan i-checksum="12150" --></td>
+  <!--webbot bot="Timestamp" S-Type="EDITED" S-Format="%Y-%m-%d" startspan -->2016-02-12<!--webbot bot="Timestamp" endspan i-checksum="12139" --></td>
 </tr>
 <tr>
   <td align="left">Reply to:</td>
@@ -74,8 +74,9 @@ Add lexical functions as <code>path</code> member functions</a><br>
 &nbsp;&nbsp;&nbsp;&nbsp;<a href="#Specify-op-rel-lex-rel">Specify operational <code>relative</code> in terms of 
       <code>lexically
       relative</code></a><br>
-&nbsp;&nbsp;&nbsp; <a href="#No-common-prefix-functions">Do not supply <code>
-common_prefix</code> or <code>remove_common_prefix</code> functions</a><br>
+&nbsp;&nbsp;&nbsp; <a href="#common_prefix-and-remove_common_prefix-functions">
+Propose <code>common_prefix</code> and <code>remove_common_prefix</code> 
+functions separately, as algorithms</a><br>
 <a href="#Proposed-wording">Proposed wording</a><br>
 &nbsp;&nbsp;&nbsp; <a href="#Define-normal-form">
 Define <i>
@@ -98,12 +99,13 @@ Specification</a></p>
 
 <p>The
 <a href="https://www.boost.org/doc/libs/1_60_0/libs/filesystem/doc/index.htm">
-Boost Filesystem library</a> has gotten user requests for a  relative path function for 
+Boost Filesystem library</a> has had user requests for a  relative path function for 
 more than ten years. For the <i>
 <a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2014/n4100.pdf">File System TS</a></i>, the issue was 
 raised as LWG 2611, PDTS 
-comment GB-1, and resolved as <em>NAD Future</em>. A proposed solution, 
-<a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2015/p0011r0.html"> <i>
+comment GB-1, and resolved as <em>NAD Future</em>. A proposed solution,
+<a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2015/p0011r0.html">
+P0011R0, <i>
 Additions to Filesystem supporting Relative Paths</i></a>, is currently before the committee.</p>
 
 <p>
@@ -138,12 +140,14 @@ Python&#39;s os.path.relpath</a>, albeit with simplistic semantics.</p>
 <p>In previous discussions, committee members have made it clear that they do 
 not want an overly simplistic solution.</p>
 <h3><a name="History">History</a></h3>
-<p>A paper by Jamie Allsop and Nico , <i>
-<a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2015/p0011r0.html">Additions to Filesystem supporting Relative Paths</a></i>, 
+<p>
+<a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2015/p0011r0.html">
+P0011R0, <i>
+Additions to Filesystem supporting Relative Paths</i></a> by Jamie Allsop and Nico Josuttis, 
 is what broke the &quot;relative&quot; logjam. Much of what follows is based directly on 
 that proposal. The <code>weakly_canonical</code> function and 
 details of the semantic specifications such as use of <code>std::mismatch</code> 
-were introduced by Beman.</p>
+were introduced by Beman Dawes.</p>
 <h3><a name="Preliminary-implementation">Implementation</a> experience</h3>
 <p>
 <a href="https://www.boost.org/doc/libs/1_60_0/libs/filesystem/doc/index.htm">
@@ -356,22 +360,21 @@ specifications) in preliminary designs made reasoning about uses difficult.</p>
       calls to operational functions.</p>
 
 <h4>
-      <a name="No-common-prefix-functions">Do not supply</a> <code>common_prefix</code> 
-      or <code>remove_common_prefix</code> functions</h4>
+      Propose <a name="common_prefix-and-remove_common_prefix-functions"> <code>common_prefix</code> 
+      and <code>remove_common_prefix</code> functions</a> separately, as 
+      algorithms</h4>
 
 <p>
-<a href="file:///C:/dot16/filesystem-ts/c++17/www.open-std.org/jtc1/sc22/wg21/docs/papers/2015/p0011r0.html">
-      P0011R0</a> proposed <code>common_prefix</code> and <code>
-      remove_common_prefix</code> functions. The motivation given was that these 
-      were needed by implementations. They are not needed to implement the 
-      current proposal so are not proposed here.</p>
+<a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2015/p0011r0.html">P0011R0</a> proposed <code>common_prefix</code> and <code>
+      remove_common_prefix</code> functions. In subsequent discussions between 
+Allsop, Dawes, and Josuttis, it became clear that these functions are generic 
+algorithms and are generally useful, but are not actually required for purposes 
+of this filesystem proposal. </p>
 
 <p>
-      Given the C++14 <code>std::mismatch</code> algorithm that takes four 
-      iterators and the functions provided by this proposal such as 
-      weakly_canonical, it should be reasonably easy for users to write their 
-      own <code>common_prefix</code>. If the LWG would like to add such 
-      functions, please consider asking for them as a separate proposal. </p>
+      So these two functions are not a part of this proposal. Instead, a 
+      separate proposal will suggest adding these to clause 24, Algorithms 
+      library.</p>
 
 <h2><a name="Proposed-wording">Proposed wording</a></h2>
 
