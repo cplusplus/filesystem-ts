@@ -92,7 +92,9 @@ New operational functions</a><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <a href="#Synopsis-ops">
 Synopsis</a><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <a href="#Specification-ops">
-Specification</a></p>
+Specification</a><br>
+<a href="#LWG-guidance-requested">LWG guidance requested</a><br>
+<a href="#References">References</a></p>
 
 <h2>
       <a name="Introduction">Introduction</a></h2>
@@ -217,19 +219,8 @@ specifications) in preliminary designs made reasoning about uses difficult.</p>
       <code>path</code> member functions</a></h4>
 
 <p>
-      The Filesystem library is unusual in that it has several functions with 
-      both lexical (i.e. cheap) and operational (i.e. expensive due to file 
-      system access) forms with differing semantics. It is important that users 
-      choose the form that meets their application&#39;s specific needs. The library 
-      has always made the distinction via the convention of lexical functions 
-      being members of class <code>path</code>, while operational functions are 
-      non-member functions. The lexical functions proposed here also use the 
-      name prefix <code>lexically_</code> to drive home the distinction.</p>
-
-<p>
-      For the contrary argument, see Sutter and Alexandrescu, <i>C++ Coding Standards</i>, 44: 
-      &quot;Prefer writing nonmember nonfriend functions&quot;, and Meyers, <i>Effective C++ Third Edition</i>, 23: 
-      &quot;Prefer non-member non-friend functions to member functions.&quot;</p>
+      This is the Filesystem library convention, but it is controversial. See
+      <a href="#LWG-guidance-requested">LWG guidance requested</a>.</p>
 
 <h4>
       <a name="Provide-normal">Provide</a><b> </b>a <code>
@@ -556,7 +547,29 @@ path proximate(const path&amp; p, const path&amp; base, system::error_code&amp; 
   <p><i>Throws:</i> As specified in Error reporting.</p>
 </blockquote>
 
-  <h2>References</h2>
+  <h2><a name="LWG-guidance-requested">LWG guidance requested</a></h2>
+
+<p>
+      The Filesystem library is unusual in that it has several functions with 
+      both lexical (i.e. cheap) and operational (i.e. expensive due to file 
+      system access) forms with differing semantics. It is important that users 
+      choose the form that meets their application&#39;s specific needs. The library 
+      has always made the distinction via the convention of lexical functions 
+      being members of class <code>path</code>, while operational functions are 
+      non-member functions. The current wording of this proposal follows the 
+      path member function convention for the new lexical function. The lexical functions proposed here also use the 
+      name prefix <code>lexically_</code> to drive home the distinction.</p>
+
+<p>
+      For the contrary argument, see Sutter and Alexandrescu, <i>C++ Coding Standards</i>, 44: 
+      &quot;Prefer writing nonmember nonfriend functions&quot;, and Meyers, <i>Effective C++ Third Edition</i>, 23: 
+      &quot;Prefer non-member non-friend functions to member functions.&quot;</p>
+
+  <p>The authors disagree; Dawes prefers following the convention (i.e. member 
+  functions), Allsop prefers modern practice (i.e. non-members). They request 
+  LWG guidance.</p>
+
+  <h2><a name="References">References</a></h2>
 
 <p>[<a name="1">1</a>] Beman Dawes,
 <a href="file:///C:/dot16/filesystem-ts/c++17/www.open-std.org/jtc1/sc22/wg21/docs/papers/2014/n4100.pdf">
