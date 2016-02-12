@@ -62,8 +62,8 @@ Provide
 separate lexical and operational <code>proximate</code> functions</a><br>
 &nbsp;&nbsp;&nbsp; <a href="#Add-lexical-functions">
 Add lexical functions as <code>path</code> member functions</a><br>
-&nbsp;&nbsp;&nbsp;&nbsp;<a href="#Provide-normal">Provide a non-member function
-<code>lexically_normal</code> returning a 
+&nbsp;&nbsp;&nbsp;&nbsp;<a href="#Provide-normal">Provide a 
+<code>lexically_normal</code> member function returning a 
       normal form path</a><br>
 &nbsp;&nbsp;&nbsp;&nbsp;<a href="#Provide-weakly">Provide a <code>weakly_canonical</code> operational function</a><br>
 &nbsp;&nbsp;&nbsp;&nbsp;<a href="#just-work">Resolve issues in ways that &quot;just work&quot; for users</a><br>
@@ -232,8 +232,8 @@ specifications) in preliminary designs made reasoning about uses difficult.</p>
       &quot;Prefer non-member non-friend functions to member functions.&quot;</p>
 
 <h4>
-      <a name="Provide-normal">Provide</a><b> </b>a non-member function <code>
-      <a href="#normal">lexically_normal</a></code> returning a 
+      <a name="Provide-normal">Provide</a><b> </b>a <code>
+      <a href="#normal">lexically_normal</a></code> member function returning a 
       <a href="#normal-form">normal form</a> path</h4>
 
 <p>
@@ -255,12 +255,10 @@ specifications) in preliminary designs made reasoning about uses difficult.</p>
       portion of the returned path has not been normalized.</p>
 
 <p>
-      Jamie Allsop has proposed adding a separate normalization function returning a 
-      path, and I agree with him.</p>
-
-<p>
-      Boost.filesystem has a deprecated non-const normalization function that 
-      modifies the path, but I agree with Jamie that a function returning a path 
+      Boost.filesystem has a  non-const normalization function that was 
+      deprecated because it 
+      modifies the path, and that sometimes caused user confusion. We believe that a 
+      const function returning a path 
       is a better solution.</p>
 
 <h4>
