@@ -50,6 +50,42 @@ body
 of file size from <code>directory_entry</code></b></p>
 
 
+  <h2><a name="Introduction">Introduction</a></h2>
+
+  <p>Directory iteration in real-world operating systems returns directory 
+  entries containing file name plus additional information such as file status, 
+  size, and last modification date. Exactly what additional information is 
+  returned varies between operating systems. Accessing the additional 
+  information from the directory entry is much more efficient than re-accessing 
+  the file system to obtain the information.</p>
+
+  <p dir="ltr">The initial filesystem TS proposal
+  <span style="background-color: #FFFF00">(need reference)</span> and the Boost 
+  Filesystem implementation limited the additional information stored in a 
+  directory entry to the regular status and symlink status, since these were the 
+  only additional elements present for most operating systems. The caching of 
+  this additional information was described using mutable exposition-only 
+  members. The LWG removed the mutable members and associated caching wording 
+  because mutable members are problematic and race prone in multi-threaded 
+  environments. In retrospect, the design also exposed too many implementation 
+  details and was not extendible to additional information.</p>
+
+  <p dir="ltr">This paper proposes a new approach to caching that exposes no 
+  implementation details beyond the fact that some information is cached. It is 
+  extendible to additional information by implementations without any need to 
+  make changes to the filesystem TS (or standard library). It makes minimal 
+  changes to existing interfaces and implementations.</p>
+
+  <p dir="ltr">LWG issue 2663, <i>[filesys.ts] Enable efficient retrieval of 
+  file size from </i><code><i>directory_entry</i></code>, requests that for 
+  Windows, caching be extended to file size. Although this request was made 
+  before the LWG removed caching, it is indicative of the desire to maximize 
+  efficiency for particular operating systems.</p>
+
+  <h2>Proposed wording</h2>
+
+  <p>&nbsp;</p>
+
   <h2><a name="References">References</a></h2>
 
 <p>[<a name="1">1</a>] Beman Dawes,
