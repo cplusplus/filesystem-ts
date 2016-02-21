@@ -27,7 +27,7 @@ body
 <table>
 <tr>
   <td align="left">Doc. no.:</td>
-  <td align="left">DxxxxR0</td>
+  <td align="left">D<span style="background-color: #FFFF00">xxxx</span>R0</td>
 </tr>
 <tr>
   <td align="left">Date:</td>
@@ -97,21 +97,25 @@ of file size from <code>directory_entry</code></b></p>
     directory_entry(const directory_entry&amp;) = default;
     directory_entry(directory_entry&amp;&amp;) noexcept = default;
     explicit directory_entry(const path&amp; p);
+    <ins>directory_entry(const path&amp; p, error_code& ec);</ins>
    ~directory_entry();
 
     // <a href="#directory_entry-modifiers">modifiers</a>
     directory_entry&amp; operator=(const directory_entry&amp;) = default;
     directory_entry&amp; operator=(directory_entry&amp;&amp;) noexcept = default;
     void assign(const path&amp; p);
+    <ins>void assign(const path&amp; p, error_code&amp; ec);</ins>
+    <ins>void refresh();</ins>
+    <ins>void refresh(error_code&amp; ec) noexcept;</ins>
     void replace_filename(const path&amp; p);
 
     // <a href="#directory_entry-observers">observers</a>
     const path&amp;  path() const noexcept;
     operator const path&amp;() const noexcept;
-    file_status  status() const;
-    file_status  status(error_code&amp; ec) const noexcept;
-    file_status  symlink_status() const;
-    file_status  symlink_status(error_code&amp; ec) const noexcept;
+    <del>file_status  status() const;</del>
+    <del>file_status  status(error_code&amp; ec) const noexcept;</del>
+    <del>file_status  symlink_status() const;</del>
+    <del>file_status  symlink_status(error_code&amp; ec) const noexcept;</del>
 
     bool operator&lt; (const directory_entry&amp; rhs) const noexcept;
     bool operator==(const directory_entry&amp; rhs) const noexcept;
@@ -149,49 +153,61 @@ last_write_time</code>, and <code>file_size</code>.&nbsp; —<i>end note</i>]</i
 example</i>]</ins></p>
 <h3>12.1 <a name="directory_entry-constructors"><code>directory_entry</code> 
 constructors </a>[directory_entry.cons] </h3>
-<pre para_num="1">explicit directory_entry(const path&amp; p);</pre>
+<pre para_num="1">explicit directory_entry(const path&amp; p);
+<ins>directory_entry(const path&amp; p, error_code& ec);</ins></pre>
 <blockquote>
-  <p para_num="2"><i>Effects: </i>Constructs an object of type <code>directory_entry</code>.
+  <p para_num="2"><i>Effects: </i>Constructs an object of type <code>directory_entry</code><ins>, 
+  then <code>refresh(<i>[ec]</i>)</code></ins>.
   </p>
-  <p para_num="3"><i>Postcondition:</i> <code>path() == p</code>.</p>
+  <p para_num="3" dir="ltr"><i>Postcondition:</i> <code>path() == p</code>.</p>
+  <p para_num="3" dir="ltr"><ins><i>Throws:</i> As specified in <a href="#Error-reporting">Error 
+  reporting (7)</a>.</ins> </p>
 </blockquote>
 <h3>12.2 <a name="directory_entry-modifiers"><code>directory_entry</code> 
 modifiers </a>[directory_entry.mods] </h3>
-<pre para_num="1">void assign(const path&amp; p);</pre>
+<pre para_num="1">void assign(const path&amp; p);
+<ins>void assign(const path&amp; p, error_code&amp; ec);</ins></pre>
 <blockquote>
-  <p para_num="2"><i>Postcondition:</i> <code>path() == p</code>. </p>
+  <p para_num="2"><ins><i>Effects:</i> <code>refresh(<i>[ec]</i>)</code>.</ins></p>
+  <p para_num="2"><i>Postcondition:</i> <code>path() == p</code>.</p>
+  <p para_num="2"><ins><i>Throws:</i> As specified in <a href="#Error-reporting">Error 
+  reporting (7)</a>.</ins> </p>
+</blockquote>
+<pre><ins>void refresh();</ins>
+<ins>void refresh(error_code&amp; ec) noexcept;</ins></pre>
+<blockquote>
+<p para_num="4" dir="ltr"><ins><i>Effects:</i> Stores current values for the 
+attributes of
+the file <code>p</code> resolves to in the additional information cache, if 
+any.</ins></p>
+<p para_num="4"><ins><i>Throws:</i> As specified in <a href="#Error-reporting">Error 
+  reporting (7)</a>.</ins> </p>
 </blockquote>
 <pre para_num="3">void replace_filename(const path&amp; p);</pre>
 <blockquote>
-  <p para_num="4"><i>Postcondition:</i> <code>path() == x.parent_path() / p</code> where
-  <code>x</code> is the value of <code>path()</code> before the function is 
+  <p para_num="4"><i>Postcondition:</i> <code>path() == x.parent_path() / p</code> where <code>x</code> is the value of <code>path()</code> before the function is 
   called. </p>
 </blockquote>
 </blockquote>
-<h3>12.3 <a name="directory_entry-observers"><code>directory_entry</code> 
-observers </a>[directory_entry.obs] </h3>
+<h3>12.3 <a name="directory_entry-observers"><code>directory_entry</code> observers </a>[directory_entry.obs] </h3>
 <pre para_num="1">const path&amp; path() const noexcept;
 operator const path&amp;() const noexcept;</pre>
 <blockquote>
   <p para_num="2"><i>Returns:</i> <code>m_path</code> </p>
 </blockquote>
-<pre para_num="3">file_status status() const;
-file_status status(error_code&amp; ec) const noexcept;</pre>
+<pre para_num="3"><del>file_status status() const;</del>
+<del>file_status status(error_code&amp; ec) const noexcept;</del></pre>
 <blockquote>
-  <p para_num="4"><i>Returns:</i> <code> status(path()<i>[, ec]</i>)</code>.
-  </p>
-  <p para_num="5"><i>Throws:</i> As specified in
-  <a href="#Error-reporting">Error 
-  reporting (7)</a>. </p>
+  <p para_num="4"><del><i>Returns:</i> <code>status(path()<i>[, ec]</i>)</code></del>. </p>
+  <p para_num="5"><del><i>Throws:</i> As specified in <a href="#Error-reporting">Error 
+  reporting (7)</a>.</del></p>
 </blockquote>
-<pre para_num="6">file_status  symlink_status() const;
-file_status  symlink_status(error_code&amp; ec) const noexcept;</pre>
+<pre para_num="6"><del>file_status  symlink_status() const;</del>
+<del>file_status  symlink_status(error_code&amp; ec) const noexcept;</del></pre>
 <blockquote>
-   <p para_num="7"><i>Returns:</i> <code> symlink_status(path()<i>[, 
-  ec]</i>)</code>. </p>
-  <p para_num="8"><i>Throws:</i> As specified in
-  <a href="#Error-reporting">Error 
-  reporting (7)</a>. </p>
+   <p para_num="7"><del><i>Returns:</i> <code>symlink_status(path()<i>[, ec]</i>)</code>.</del></p>
+  <p para_num="8"><del><i>Throws:</i> As specified in <a href="#Error-reporting">Error 
+  reporting (7)</a>.</del></p>
 </blockquote>
 <pre para_num="9">bool operator==(const directory_entry&amp; rhs) const noexcept;</pre>
 <blockquote>
@@ -221,20 +237,16 @@ file_status  symlink_status(error_code&amp; ec) const noexcept;</pre>
 
   <h2><a name="References">References</a></h2>
 
-<p>[<a name="1">1</a>] Beman Dawes,
-<a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2014/n4100.pdf">
-N4100, Programming Languages — C++ — File System Technical Specification</a>, 
+<p>[<a name="1">1</a>] Beman Dawes, <a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2014/n4100.pdf">N4100, Programming Languages — C++ — File System Technical Specification</a>, 
 2014.<br>
 <a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2014/n4100.pdf" class="uri">
 http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2014/n4100.pdf</a></p>
-<p>[<a name="2">2</a>] Beman Dawes, others,
-<a href="http://www.boost.org/doc/libs/1_60_0/libs/filesystem/doc/index.htm">
-Boost Filesystem Library, V3</a>, 2015.<br>
+<p>[<a name="2">2</a>] Beman Dawes, others, <a href="http://www.boost.org/doc/libs/1_60_0/libs/filesystem/doc/index.htm">Boost Filesystem Library, V3</a>, 2015.<br>
 <a href="https://www.boost.org/doc/libs/1_60_0/libs/filesystem/doc/index.htm" class="uri">
 https://www.boost.org/doc/libs/1_60_0/libs/filesystem/doc/index.htm</a></p>
 
 <hr>
 
-</body>
+</pre></body>
 
 </html>
