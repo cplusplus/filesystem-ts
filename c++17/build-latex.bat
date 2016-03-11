@@ -1,0 +1,1 @@
+pandoc -f html -t latex -o p0218r1-wp-wording.tex p0218r1-wp-wording.html
