@@ -1,0 +1,4609 @@
+\subsection{27.10 File systems~ {[}filesystems{]}}
+
+27.10.1 General~ {[}fs.general{]}
+
+This sub-clause describes operations on file systems and their
+components, such as paths, regular files, and directories.
+
+27.10.2 Conformance {[}fs.conformance{]}
+
+Conformance is specified in terms of behavior. Ideal behavior is not
+always implementable, so the conformance sub-clauses take that into
+account.
+
+27.10.2.1 POSIX conformance {[}fs.conform.9945{]}
+
+Some behavior is specified by reference to POSIX
+(\hyperref[fs.norm.ref]{27.10.2.1}). How such behavior is actually
+implemented is unspecified.
+
+\begin{quote}
+{[}\emph{Note:} This constitutes an ``as if'' rule allowing
+implementations to call native operating system or other API's.
+\emph{---end note}{]}
+\end{quote}
+
+Implementations are encouraged to provide such behavior as it is defined
+by POSIX. Implementations shall document any behavior that differs from
+the behavior defined by POSIX. Implementations that do not support exact
+POSIX behavior are encouraged to provide behavior as close to POSIX
+behavior as is reasonable given the limitations of actual operating
+systems and file systems. If an implementation cannot provide any
+reasonable behavior, the implementation shall report an error as
+specified in § \hyperref[fs.norm.ref]{27.10.7}.
+
+\begin{quote}
+{[}\emph{Note:} This allows users to rely on an exception being thrown
+or an error code being set when an implementation cannot provide any
+reasonable behavior. --- \emph{end note}{]}
+\end{quote}
+
+Implementations are not required to provide behavior that is not
+supported by a particular file system.
+
+\begin{quote}
+{[}\emph{Example:} The
+\href{http://en.wikipedia.org/wiki/FAT_filesystem}{FAT file system} used
+by some memory cards, camera memory, and floppy discs does not support
+hard links, symlinks, and many other features of more capable file
+systems, so implementations are not required to support those features
+on the FAT file system. \emph{---end example}{]}
+\end{quote}
+
+27.10.2.2 Operating system dependent behavior conformance
+{[}fs.conform.os{]}
+
+Some behavior is specified as being operating system dependent
+(\hyperref[fs.def.osdep]{27.10.4.13}). The operating system an
+implementation is dependent upon is implementation defined.
+
+It is permissible for an implementation to be dependent upon an
+operating system emulator rather than the actual underlying operating
+system.
+
+27.10.2.3 File system race behavior {[}fs.race.behavior{]}
+
+Behavior is undefined if calls to functions provided by this sub-clause
+introduce a file system race (\hyperref[fs.def.race]{27.10.4.6}).
+
+If the possibility of a file system race would make it unreliable for a
+program to test for a precondition before calling a function described
+herein, \emph{Requires} is not specified for the function.
+
+\begin{quote}
+{[}\emph{Note:} As a design practice, preconditions are not specified
+when it is unreasonable for a program to detect them prior to calling
+the function. \emph{---end note}{]}
+\end{quote}
+
+27.10.3 Normative references~ {[}fs.norm.ref{]}
+
+This sub-clause mentions commercially available operating systems for
+purposes of exposition.
+\textsuperscript{\hyperref[footnote]{{[}footnote{]}}}
+
+\begin{quote}
+\textsuperscript{{[}footnote{]}} POSIX® is a registered trademark of The
+IEEE. MAC OS® is a registered trademark of Apple Inc. Windows® is a
+registered trademark of Microsoft Corporation. This information is given
+for the convenience of users of this document and does not constitute an
+endorsement by ISO or IEC of these products.
+\end{quote}
+
+27.10.4 Terms and definitions {[}fs.definitions{]}
+
+27.10.4.1 absolute path {[}fs.def.absolute-path{]}
+
+A path that unambiguously identifies the location of a file without
+reference to an additional starting location. The elements of a path
+that determine if it is absolute are operating system dependent.
+
+27.10.4.2 canonical path {[}fs.def.canonical-path{]}
+
+An absolute path that has no elements that are symbolic links, and no
+dot or dot-dot elements (\hyperref[path.generic]{28.10.8.1}).
+
+27.10.4.3 directory {[}fs.def.directory{]}
+
+A file within a file system that acts as a container of directory
+entries that contain information about other files, possibly including
+other directory files.
+
+27.10.4.4 file {[}fs.def.file{]}
+
+An object within a file system that holds user or system data. Files can
+be written to, or read from, or both. A file has certain attributes,
+including type. File types include regular files and directories. Other
+types of files, such as symbolic links, may be supported by the
+implementation.
+
+27.10.4.5 file system {[}fs.def.filesystem{]}
+
+A collection of files and certain of their attributes.
+
+27.10.4.6 file system race {[}fs.def.race{]}
+
+The condition that occurs when multiple threads, processes, or computers
+interleave access and modification of the same object within a file
+system.
+
+27.10.4.7 filename {[}fs.def.filename{]}
+
+The name of a file. Filenames dot~ and dot-dot~ have special meaning.
+The following characteristics of filenames are operating system
+dependent:
+
+\begin{itemize}
+\tightlist
+\item
+  The permitted characters. {[}\emph{Example}: Some operating systems
+  prohibit the ASCII control characters (0x00-0x1F) in filenames.
+  \emph{---end example}{]}.
+\item
+  The maximum permitted length.
+\item
+  Filenames that are not permitted.
+\item
+  Filenames that have special meaning.
+\item
+  Case awareness and sensitivity during path resolution.
+\item
+  Special rules that may apply to file types other than regular files,
+  such as directories.
+\end{itemize}
+
+27.10.4.8 hard link {[}fs.def.hardlink{]}
+
+A link (\hyperref[fs.def.link]{27.10.4.9}) to an existing file. Some
+file systems support multiple hard links to a file. If the last hard
+link to a file is removed, the file itself is removed.
+
+\begin{quote}
+{[}\emph{Note:} A hard link can be thought of as a shared-ownership
+smart pointer to a file. \emph{---end note}{]} \emph{}
+\end{quote}
+
+27.10.4.9 link {[}fs.def.link{]}
+
+A directory entry that associates a filename with a file. A link is
+either a hard link (\hyperref[fs.def.hardlink]{27.10.4.8}) or a symbolic
+link (\hyperref[fs.def.symlink]{27.10.4.19}).
+
+27.10.4.10 native encoding {[}fs.def.native.encode{]}
+
+For narrow character strings, the operating system dependent current
+encoding for path names. For wide character strings, the implementation
+defined execution wide-character set encoding (§2.3).
+
+27.10.4.11 native pathname format {[}fs.def.native{]}
+
+The operating system dependent pathname format accepted by the host
+operating system.
+
+27.10.4.12 NTCTS {[}fs.def.ntcts{]}
+
+Acronym for ``null-terminated character-type sequence''. Describes a
+sequence of values of a given encoded character type terminated by that
+type's null character. If the encoded character type is \texttt{EcharT},
+the null character can be constructed by \texttt{EcharT()}.
+
+27.10.4.13 operating system dependent behavior {[}fs.def.osdep{]}
+
+Behavior that is dependent upon the behavior and characteristics of an
+operating system. See {[}fs.conform.os{]}.
+
+27.10.4.14 parent directory {[}fs.def.parent{]}
+
+When discussing a given directory, the directory that both contains a
+directory entry for the given directory and is represented by the
+filename dot-dot in the given directory.
+
+When discussing other types of files, a directory containing a directory
+entry for the file under discussion.
+
+This concept does not apply to dot and dot-dot.
+
+27.10.4.15 path {[}fs.def.path{]}
+
+A sequence of elements that identify the location of a file within a
+filesystem. The elements are the \emph{root-name\textsubscript{opt}},
+\emph{root-directory\textsubscript{opt}}, and an optional sequence of
+filenames. The maximum number of elements in the sequence is operating
+system dependent.
+
+27.10.4.16 pathname {[}fs.def.pathname{]}
+
+A character string that represents the name of a path. Pathnames are
+formatted according to the generic pathname format grammar
+(\hyperref[path.generic]{27.10.8.1}) or an operating system dependent
+native pathname format.
+
+27.10.4.17 pathname resolution {[}fs.def.pathres{]}
+
+Pathname resolution is the operating system dependent mechanism for
+resolving a pathname to a particular file in a file hierarchy. There may
+be multiple pathnames that resolve to the same file.~ {[}\emph{Example:}
+POSIX specifies the mechanism in section 4.11, Pathname resolution.
+\emph{---end example{]}}
+
+27.10.4.18 relative path {[}fs.def.relative-path{]}
+
+A path that is not absolute, and so only unambiguously identifies the
+location of a file when resolved relative to an implied starting
+location. The elements of a path that determine if it is relative are
+operating system dependent.~ {[}\emph{Note:} Pathnames \texttt{"."} and
+\texttt{".."} are relative paths. \emph{---end note}{]}
+
+27.10.4.19 symbolic link {[}fs.def.symlink{]}
+
+A type of file with the property that when the file is encountered
+during pathname resolution, a string stored by the file is used to
+modify the pathname resolution.
+
+\begin{quote}
+{[}\emph{Note:} Symbolic links are often called symlinks. A symbolic
+link can be thought of as a raw pointer to a file. If the file pointed
+to does not exist, the symbolic link is said to be a ``dangling''
+symbolic link. \emph{---end note}{]} \emph{}
+\end{quote}
+
+27.10.5 Requirements {[}fs.req{]}
+
+Throughout this sub-clause, \texttt{char}, \texttt{wchar\_t},
+\texttt{char16\_t}, and \texttt{char32\_t} are collectively called
+\emph{encoded character types}.
+
+Template parameters named \texttt{EcharT} shall be one of the encoded
+character types.
+
+Template parameters named \texttt{InputIterator} shall meet the C++
+Standard's library input iterator requirements (§24.2.3) and shall have
+a value type that is one of the encoded character types.
+
+\begin{quote}
+{[}\emph{Note:} Use of an encoded character type implies an associated
+encoding. Since \texttt{signed\ char} and \texttt{unsigned\ char} have
+no implied encoding, they are not included as permitted types.
+\emph{---end note}{]}
+\end{quote}
+
+Template parameters named \texttt{Allocator} shall meet the C++
+Standard's library Allocator requirements (§17.6.3.5).
+
+27.10.5.1 Namespaces and headers {[}fs.req.namespace{]}
+
+Unless otherwise specified, references to other entities described in
+this sub-clause are assumed to be qualified with
+\texttt{::std::filesystem::}.
+
+27.10.6 Header \texttt{\textless{}filesystem\textgreater{}} synopsis
+{[}fs.filesystem.synopsis{]}
+
+\begin{verbatim}
+namespace std { namespace filesystem {
+
+  class path;
+  
+  void swap(path& lhs, path& rhs) noexcept;
+  size_t hash_value(const path& p) noexcept;
+
+  bool operator==(const path& lhs, const path& rhs) noexcept;
+  bool operator!=(const path& lhs, const path& rhs) noexcept;
+  bool operator< (const path& lhs, const path& rhs) noexcept;
+  bool operator<=(const path& lhs, const path& rhs) noexcept;
+  bool operator> (const path& lhs, const path& rhs) noexcept;
+  bool operator>=(const path& lhs, const path& rhs) noexcept;
+
+  path operator/ (const path& lhs, const path& rhs);
+
+  template <class charT, class traits>
+  basic_ostream<charT, traits>&
+  operator<<(basic_ostream<charT, traits>& os, const path& p);
+
+  template <class charT, class traits>
+  basic_istream<charT, traits>&
+  operator>>(basic_istream<charT, traits>& is, path& p);
+
+  template <class Source>  
+    path u8path(const Source& source);
+  template <class InputIterator>
+    path u8path(InputIterator first, InputIterator last);
+
+  class filesystem_error;      
+  class directory_entry;
+
+  class directory_iterator;
+
+  // enable directory_iterator range-based for statements
+  directory_iterator begin(directory_iterator iter) noexcept;
+  directory_iterator end(const directory_iterator&) noexcept;
+
+  class recursive_directory_iterator;
+
+  // enable recursive_directory_iterator range-based for statements
+  recursive_directory_iterator begin(recursive_directory_iterator iter) noexcept;
+  recursive_directory_iterator end(const recursive_directory_iterator&) noexcept;
+
+  class file_status;
+
+  struct space_info
+  {
+    uintmax_t capacity;
+    uintmax_t free; 
+    uintmax_t available;
+  };
+
+  enum class file_type;
+  enum class perms;
+  enum class copy_options;
+  enum class directory_options;
+
+  typedef chrono::time_point<trivial-clock>  file_time_type;
+
+  // operational functions
+
+  path absolute(const path& p, const path& base=current_path());
+
+  path canonical(const path& p, const path& base = current_path());
+  path canonical(const path& p, error_code& ec);
+  path canonical(const path& p, const path& base, error_code& ec);
+
+  void copy(const path& from, const path& to);
+  void copy(const path& from, const path& to, error_code& ec) noexcept;
+  void copy(const path& from, const path& to, copy_options options);
+  void copy(const path& from, const path& to, copy_options options,  
+         error_code& ec) noexcept;
+
+  bool copy_file(const path& from, const path& to);
+  bool copy_file(const path& from, const path& to, error_code& ec) noexcept;
+  bool copy_file(const path& from, const path& to, copy_options option);
+  bool copy_file(const path& from, const path& to, copy_options option,
+                 error_code& ec) noexcept;
+
+  void copy_symlink(const path& existing_symlink, const path& new_symlink);
+  void copy_symlink(const path& existing_symlink, const path& new_symlink,
+                    error_code& ec) noexcept;
+
+  bool create_directories(const path& p);
+  bool create_directories(const path& p, error_code& ec) noexcept;
+
+  bool create_directory(const path& p);
+  bool create_directory(const path& p, error_code& ec) noexcept;
+
+  bool create_directory(const path& p, const path& attributes);
+  bool create_directory(const path& p, const path& attributes,
+                        error_code& ec) noexcept;
+
+  void create_directory_symlink(const path& to, const path& new_symlink);
+  void create_directory_symlink(const path& to, const path& new_symlink,
+                                error_code& ec) noexcept;
+
+  void create_hard_link(const path& to, const path& new_hard_link);
+  void create_hard_link(const path& to, const path& new_hard_link,
+                        error_code& ec) noexcept;
+
+  void create_symlink(const path& to, const path& new_symlink);
+  void create_symlink(const path& to, const path& new_symlink,
+                      error_code& ec) noexcept;
+
+  path current_path();
+  path current_path(error_code& ec);
+  void current_path(const path& p);
+  void current_path(const path& p, error_code& ec) noexcept;
+
+  bool exists(file_status s) noexcept;
+  bool exists(const path& p);
+  bool exists(const path& p, error_code& ec) noexcept;
+
+  bool equivalent(const path& p1, const path& p2);
+  bool equivalent(const path& p1, const path& p2, error_code& ec) noexcept;
+
+  uintmax_t file_size(const path& p);
+  uintmax_t file_size(const path& p, error_code& ec) noexcept;
+
+  uintmax_t hard_link_count(const path& p);
+  uintmax_t hard_link_count(const path& p, error_code& ec) noexcept;
+
+  bool is_block_file(file_status s) noexcept;
+  bool is_block_file(const path& p);
+  bool is_block_file(const path& p, error_code& ec) noexcept;
+
+  bool is_character_file(file_status s) noexcept;
+  bool is_character_file(const path& p);
+  bool is_character_file(const path& p, error_code& ec) noexcept;
+
+  bool is_directory(file_status s) noexcept;
+  bool is_directory(const path& p);
+  bool is_directory(const path& p, error_code& ec) noexcept;
+
+  bool is_empty(const path& p);
+  bool is_empty(const path& p, error_code& ec) noexcept;
+
+  bool is_fifo(file_status s) noexcept;
+  bool is_fifo(const path& p);
+  bool is_fifo(const path& p, error_code& ec) noexcept;
+
+  bool is_other(file_status s) noexcept;
+  bool is_other(const path& p);
+  bool is_other(const path& p, error_code& ec) noexcept;
+
+  bool is_regular_file(file_status s) noexcept; 
+  bool is_regular_file(const path& p);
+  bool is_regular_file(const path& p, error_code& ec) noexcept;
+
+  bool is_socket(file_status s) noexcept;
+  bool is_socket(const path& p);
+  bool is_socket(const path& p, error_code& ec) noexcept;
+
+  bool is_symlink(file_status s) noexcept;
+  bool is_symlink(const path& p);
+  bool is_symlink(const path& p, error_code& ec) noexcept;
+
+  file_time_type  last_write_time(const path& p);
+  file_time_type  last_write_time(const path& p, error_code& ec) noexcept;
+  void last_write_time(const path& p, file_time_type new_time);
+  void last_write_time(const path& p, file_time_type new_time,
+                       error_code& ec) noexcept;
+                       
+  void permissions(const path& p, perms prms);
+  void permissions(const path& p, perms prms, error_code& ec) noexcept;
+
+  path read_symlink(const path& p);
+  path read_symlink(const path& p, error_code& ec);
+
+  bool remove(const path& p);
+  bool remove(const path& p, error_code& ec) noexcept;
+
+  uintmax_t remove_all(const path& p);
+  uintmax_t remove_all(const path& p, error_code& ec) noexcept;
+
+  void rename(const path& from, const path& to);
+  void rename(const path& from, const path& to, error_code& ec) noexcept;
+
+  void resize_file(const path& p, uintmax_t size);
+  void resize_file(const path& p, uintmax_t size, error_code& ec) noexcept;
+
+  space_info space(const path& p);
+  space_info space(const path& p, error_code& ec) noexcept;
+
+  file_status status(const path& p);
+  file_status status(const path& p, error_code& ec) noexcept;
+
+  bool status_known(file_status s) noexcept;
+
+  file_status symlink_status(const path& p);
+  file_status symlink_status(const path& p, error_code& ec) noexcept;
+
+  path system_complete(const path& p);
+  path system_complete(const path& p, error_code& ec);
+
+  path temp_directory_path();
+  path temp_directory_path(error_code& ec);
+
+} }
+\end{verbatim}
+
+\textbf{\emph{\texttt{trivial-clock}}} is an implementation-defined type
+that satisfies the \texttt{TrivialClock} requirements (§20.12.3) and
+that is capable of representing and measuring file time values.
+Implementations should ensure that the resolution and range of
+\texttt{\ \ file\_time\_type} reflect the operating system dependent
+resolution and range of file time values.
+
+27.10.7 Error reporting {[}fs.err.report{]}
+
+Filesystem library functions often provide two overloads, one that
+throws an exception to report file system errors, and another that sets
+an \texttt{error\_code}.
+
+\begin{quote}
+{[}\emph{Note:} This supports two common use cases:
+
+\begin{itemize}
+\tightlist
+\item
+  Uses where file system errors are truly exceptional and indicate a
+  serious failure. Throwing an exception is the most appropriate
+  response. This is the preferred default for most everyday
+  programming.\\
+   ~
+\item
+  Uses where file system errors are routine and do not necessarily
+  represent failure. Returning an error code is the most appropriate
+  response. This allows application specific error handling, including
+  simply ignoring the error.
+\end{itemize}
+
+\emph{---end note}{]}
+\end{quote}
+
+Functions \textbf{not} having an argument of type \texttt{error\_code\&}
+report errors as follows, unless otherwise specified:
+
+\begin{itemize}
+\tightlist
+\item
+  When a call by the implementation to an operating system or other
+  underlying API results in an error that prevents the function from
+  meeting its specifications, an exception of type
+  \texttt{filesystem\_error} shall be thrown. For functions with a
+  single path argument, that argument shall be passed to the
+  \texttt{filesystem\_error} constructor with a single path argument.~
+  For functions with two path arguments, the first of these arguments
+  shall be passed to the \texttt{filesystem\_error} constructor as the
+  \texttt{path1} argument, and the second shall be passed as the
+  \texttt{path2} argument. The \texttt{filesystem\_error} constructor's
+  \texttt{error\_code} argument is set as appropriate for the specific
+  operating system dependent error.\\
+   ~
+\item
+  Failure to allocate storage is reported by throwing an exception as
+  described in §17.6.5.12.\\
+   ~
+\item
+  Destructors throw nothing.
+\end{itemize}
+
+Functions having an argument of type \texttt{error\_code\&} report
+errors as follows, unless otherwise specified:
+
+\begin{itemize}
+\tightlist
+\item
+  If a call by the implementation to an operating system or other
+  underlying API results in an error that prevents the function from
+  meeting its specifications, the \texttt{error\_code\&} argument is set
+  as appropriate for the specific operating system dependent error.
+  Otherwise, \texttt{clear()} is called on the \texttt{error\_code\&}
+  argument.
+\end{itemize}
+
+27.10.8 Class \texttt{path} {[}class.path{]}
+
+An object of class \texttt{path} represents a path
+(\hyperref[fs.def.path]{27.10.4.15}) and contains a pathname
+(\hyperref[fs.def.pathname]{27.10.4.16}). Such an object is concerned
+only with the lexical and syntactic aspects of a path. The path does not
+necessarily exist in external storage, and the pathname is not
+necessarily valid for the current operating system or for a particular
+file system.
+
+\begin{verbatim}
+namespace std {  namespace filesystem { 
+
+  class path
+  {
+  public:
+    typedef see below                      value_type;
+    typedef basic_string<value_type>       string_type;
+    static constexpr value_type            preferred_separator = see below;
+
+    // constructors and destructor
+    path() noexcept;
+    path(const path& p);
+    path(path&& p) noexcept;
+    template <class Source>
+      path(const Source& source);
+    template <class InputIterator>
+      path(InputIterator first, InputIterator last);
+    template <class Source>  
+      path(const Source& source, const locale& loc);
+    template <class InputIterator>
+      path(InputIterator first, InputIterator last, const locale& loc);
+   ~path();
+
+    // assignments
+    path& operator=(const path& p);
+    path& operator=(path&& p) noexcept;
+    template <class Source>
+      path& operator=(const Source& source);
+    template <class Source>
+      path& assign(const Source& source)
+    template <class InputIterator>
+      path& assign(InputIterator first, InputIterator last);
+
+    // appends
+    path& operator/=(const path& p);
+    template <class Source>
+      path& operator/=(const Source& source);
+    template <class Source>
+      path& append(const Source& source);
+    template <class InputIterator>
+      path& append(InputIterator first, InputIterator last);
+
+    // concatenation
+    path& operator+=(const path& x);
+    path& operator+=(const string_type& x);
+    path& operator+=(const value_type* x);
+    path& operator+=(value_type x);
+    template <class Source>
+      path& operator+=(const Source& x);
+    template <class EcharT>
+      path& operator+=(EcharT x);
+    template <class Source>
+      path& concat(const Source& x);
+    template <class InputIterator>
+      path& concat(InputIterator first, InputIterator last);
+    
+    // modifiers
+    void  clear() noexcept;
+    path& make_preferred();
+    path& remove_filename();
+    path& replace_filename(const path& replacement);
+    path& replace_extension(const path& replacement = path());
+    void  swap(path& rhs) noexcept;
+
+    // native format observers
+    const string_type&  native() const noexcept;
+    const value_type*   c_str() const noexcept;
+    operator string_type() const;
+
+    template <class EcharT, class traits = char_traits<EcharT>,
+              class Allocator = allocator<EcharT> >
+    basic_string<EcharT, traits, Allocator>
+      string(const Allocator& a = Allocator()) const;
+    std::string    string() const;
+    std::wstring   wstring() const;
+    std::string    u8string() const;
+    std::u16string u16string() const;
+    std::u32string u32string() const;
+
+    // generic format observers
+    template <class EcharT, class traits = char_traits<EcharT>,
+              class Allocator = allocator<EcharT> >
+    basic_string<EcharT, traits, Allocator>
+      generic_string(const Allocator& a = Allocator()) const;
+    std::string    generic_string() const;
+    std::wstring   generic_wstring() const;
+    std::string    generic_u8string() const;
+    std::u16string generic_u16string() const;
+    std::u32string generic_u32string() const;
+
+    // compare
+    int  compare(const path& p) const noexcept;
+    int  compare(const string_type& s) const;
+    int  compare(const value_type* s) const;
+
+    // decomposition
+    path root_name() const;
+    path root_directory() const;
+    path root_path() const;
+    path relative_path() const;
+    path parent_path() const;
+    path filename() const;
+    path stem() const;
+    path extension() const;
+
+    // query
+    bool empty() const noexcept;
+    bool has_root_name() const;
+    bool has_root_directory() const;
+    bool has_root_path() const;
+    bool has_relative_path() const;
+    bool has_parent_path() const;
+    bool has_filename() const;
+    bool has_stem() const;
+    bool has_extension() const;
+    bool is_absolute() const;
+    bool is_relative() const;
+
+    // iterators
+    class iterator;
+    typedef iterator const_iterator;
+
+    iterator begin() const;
+    iterator end() const;
+
+  private:
+    string_type pathname;  // exposition only
+  };
+
+} }
+\end{verbatim}
+
+\texttt{value\_type} is a \texttt{typedef} for the operating system
+dependent encoded character type used to represent pathnames.
+
+The value of \texttt{preferred\_separator} is the operating system
+dependent \emph{preferred-separator} character
+(\hyperref[path.generic]{27.10.8.1}).
+
+\begin{quote}
+{[}\emph{Example:} For POSIX based operating systems,
+\texttt{value\_type} is \texttt{char} and
+\texttt{\ \ \ \ \ \ \ preferred\_separator} is the slash character (/).~
+For Windows based operating systems, \texttt{value\_type} is
+\texttt{wchar\_t} and \texttt{\ \ \ \ \ \ \ preferred\_separator} is the
+backslash character (\textbackslash{}).~ \emph{---end example}{]}
+\end{quote}
+
+27.10.8.1 \texttt{path} generic pathname format grammar
+{[}path.generic{]}
+
+\emph{pathname:\\
+ ~~~~~~~~~~~ root-name root-directory\textsubscript{opt}
+relative-path\textsubscript{opt\\
+ ~~~~~~~~~~~~~~} root-directory relative-path\textsubscript{opt\\
+ ~~~~~~~~~~~~~~} relative-path}
+
+\emph{root-name:\\
+ ~~~~~~~~~~~} An operating system dependent name that identifies the
+starting location for absolute paths.
+
+\begin{quote}
+\begin{quote}
+{[}\emph{Note:} Many operating systems define a name beginning with two
+\emph{directory-separator} characters as a \emph{root-name} that
+identifies network or other resource locations. Some operating systems
+define a single letter followed by a colon as a drive specifier - a
+\emph{root-name} identifying a specific device such as a disc drive.
+\emph{---end note}{]}
+\end{quote}
+\end{quote}
+
+\emph{root-directory:\\
+ ~~~~~~~~~~~ directory-separator}
+
+\emph{relative-path:\\
+ ~~~~~~~~~~~ filename\\
+ ~~~~~~~~~~~ relative-path directory-separator\\
+ ~~~~~~~~~~~ relative-path directory-separator filename}
+
+\emph{filename:\\
+ ~~~~~~~~~~~ name\\
+ ~~~~~~~~~~~ dot\\
+ ~~~~~~~~~~~ dot-dot}
+
+\emph{name:\\
+ ~~~~~~~~~~~} A sequence of characters other than
+\emph{directory-separator} characters.
+
+\begin{quote}
+\begin{quote}
+{[}\emph{Note:} Operating systems often place restrictions on the
+characters that may be used in a \emph{filename}. For wide portability,
+users may wish to limit \emph{filename} characters to the POSIX Portable
+Filename Character Set:
+
+\texttt{A\ B\ C\ D\ E\ F\ G\ H\ I\ J\ K\ L\ M\ N\ O\ P\ Q\ R\ S\ T\ U\ V\ W\ X\ Y\ Z\ \ \ \ \ \ \ a\ b\ c\ d\ e\ f\ g\ h\ i\ j\ k\ l\ m\ n\ o\ p\ q\ r\ s\ t\ u\ v\ w\ x\ y\ z\ \ \ \ \ \ \ 0\ 1\ 2\ 3\ 4\ 5\ 6\ 7\ 8\ 9\ .\ \_\ -}
+\emph{\\[2\baselineskip] ---end note}{]}
+\end{quote}
+\end{quote}
+
+\emph{dot:\\
+ ~~~~~~~~~~~} The filename consisting solely of a single period
+character (.).
+
+\emph{dot-dot:\\
+ ~~~~~~~~~~~} The filename consisting solely of two period characters
+(..).
+
+\emph{directory-separator:\\
+ ~~~~~~~~~~~ slash\\
+ ~~~~~~~~~~~ slash directory-separator\\
+ ~~~~~~~~~~~ preferred-separator\\
+ ~~~~~~~~~~~ preferred-separator directory-separator}
+
+\emph{preferred-separator:\\
+ ~~~~~~~~~~~} An operating system dependent directory separator
+character. May be a synonym for \emph{slash}.
+
+\emph{slash:\\
+ ~~~~~~~~~~} The slash character (/).
+
+Multiple successive \emph{directory-separator} characters are considered
+to be the same as one \emph{directory-separator} character.
+
+The filename \emph{dot} is treated as a reference to the current
+directory. The filename \emph{dot-dot} is treated as a reference to the
+parent directory. What the filename \emph{dot-dot} refers to relative to
+\emph{root-directory} is implementation-defined. Specific filenames may
+have special meanings for a particular operating system.
+
+27.10.8.2 \texttt{path} conversions {[}path.cvt{]}
+
+27.10.8.2.1 \texttt{path} argument format conversions {[}path.fmt.cvt{]}
+
+\begin{quote}
+{[}\emph{Note:} The format conversions described in this section are not
+applied on POSIX or Windows based operating systems because on these
+systems:
+
+\begin{itemize}
+\tightlist
+\item
+  The generic format is acceptable as a native path.
+\item
+  There is no need to distinguish between native format and generic
+  format arguments.
+\item
+  Paths for regular files and paths for directories share the same
+  syntax.
+\end{itemize}
+
+~\emph{---end note}{]}
+\end{quote}
+
+Functions arguments that take character sequences representing paths may
+use the generic pathname format grammar
+(\hyperref[path.generic]{27.10.8.1}) or the native pathname format
+(\hyperref[fs.def.native]{4.11}). If and only if such arguments are in
+the generic format and the generic format is not acceptable to the
+operating system as a native path, conversion to native format shall be
+performed during the processing of the argument.
+
+\begin{quote}
+{[}\emph{Note:} Some operating systems may have no unambiguous way to
+distinguish between native format and generic format arguments. This is
+by design as it simplifies use for operating systems that do not require
+disambiguation. An implementation for an operating system where
+disambiguation is required is permitted as an extension to distinguish
+between the formats. \emph{---end note}{]}
+\end{quote}
+
+If the native format requires paths for regular files to be formatted
+differently from paths for directories, the path shall be treated as a
+directory path if last element is \emph{directory-separator}, otherwise
+it shall be treated as a regular file path.
+
+27.10.8.2.2 \texttt{path} type and encoding conversions
+{[}path.type.cvt{]}
+
+For member function arguments that take character sequences representing
+paths and for member functions returning strings, value type and
+encoding conversion is performed if the value type of the argument or
+return differs from \texttt{\ path::value\_type}. Encoding and method of
+conversion for the argument or return value to be converted to is
+determined by its value type:
+
+\begin{quote}
+\begin{itemize}
+\item
+  \texttt{char}: Encoding is the native narrow encoding
+  (\hyperref[fs.def.native.encode]{27.10.4.10}). Conversion, if any, is
+  operating system dependent.
+
+  {[}\emph{Note:} For POSIX based operating systems
+  \texttt{path::value\_type} is \texttt{char} so no conversion from
+  \texttt{char} value type arguments or to \texttt{char} value type
+  returns is performed.
+
+  For Windows based operating systems, the native narrow encoding is
+  determined by calling a Windows API function. \emph{---end note}{]}
+
+  {[}\emph{Note:} This results in behavior identical to other C and C++
+  standard library functions that perform file operations using narrow
+  character strings to identify paths. Changing this behavior would be
+  surprising and error prone. \emph{---end note}{]}
+\item
+  \texttt{wchar\_t}: Encoding is the native wide encoding
+  (\hyperref[fs.def.native.encode]{27.10.4.10}). Conversion method is
+  unspecified.
+
+  {[}\emph{Note:} For Windows based operating systems
+  \texttt{path::value\_type} is \texttt{wchar\_t} so no conversion from
+  \texttt{wchar\_t} value type arguments or to \texttt{wchar\_t} value
+  type returns is performed. \emph{---end note}{]}
+\item
+  \texttt{char16\_t}: Encoding is UTF-16. Conversion method is
+  unspecified.
+\item
+  \texttt{char32\_t}: Encoding is UTF-32. Conversion method is
+  unspecified.
+\end{itemize}
+\end{quote}
+
+If the encoding being converted to has no representation for source
+characters, the resulting converted characters, if any, are unspecified.
+
+27.10.8.3 \texttt{path} requirements {[}path.req{]}
+
+In addition to the requirements (\hyperref[fs.req]{5}), function
+template parameters named \texttt{Source} shall be one of:
+
+\begin{itemize}
+\tightlist
+\item
+  \texttt{basic\_string\textless{}EcharT,\ traits,\ Allocator\textgreater{}}.
+  A function argument \texttt{const\ Source\&} \texttt{source} shall
+  have an effective range {[}\texttt{source.begin()},
+  \texttt{source.end()}).
+\item
+  A type meeting the input iterator requirements that iterates over a
+  NTCTS. The value type shall be an encoded character type. A function
+  argument \texttt{\ \ \ const\ Source\&} \texttt{source} shall have an
+  effective range~ {[}\texttt{source}, \texttt{end}) where \texttt{end}
+  is the first iterator value with an element value equal to
+  \texttt{iterator\_traits\textless{}Source\textgreater{}::value\_type()}.
+\item
+  A character array that after array-to-pointer decay results in a
+  pointer to the start of a NTCTS. The value type shall be an encoded
+  character type. A function argument \texttt{const\ Source\&}
+  \texttt{source} shall have an effective range {[}\texttt{source},
+  \texttt{end}) where \texttt{\ \ \ end} is the first iterator value
+  with an element value equal to
+  \texttt{iterator\_traits\textless{}decay\textless{}Source\textgreater{}::type\textgreater{}::value\_type()}.
+\end{itemize}
+
+\begin{quote}
+{[}\emph{Note:} See path conversions (\hyperref[path.cvt]{27.10.8.2})
+for how these value types and their encodings convert to
+\texttt{\ \ \ path::value\_type} and its encoding. \emph{---end note}{]}
+\end{quote}
+
+Arguments of type \texttt{Source} shall not be null pointers.
+
+27.10.8.4 \texttt{path} members~ {[}path.member{]}
+
+27.10.8.4.1 \texttt{path} constructors {[}path.construct{]}
+
+\begin{verbatim}
+path() noexcept;
+\end{verbatim}
+
+\begin{quote}
+\emph{Effects:} Constructs an object of class \texttt{path}.
+
+\emph{Postconditions:} \texttt{empty()}.
+\end{quote}
+
+\begin{verbatim}
+path(const path& p);
+path(path&& p) noexcept;
+\end{verbatim}
+
+\begin{quote}
+\emph{Effects:} Constructs an object of class \texttt{path} with
+\texttt{\ \ \ pathname} having the original value of
+\texttt{p.pathname}. In the second form, \texttt{p} is left in a valid
+but unspecified state.
+\end{quote}
+
+\begin{verbatim}
+template <class Source>
+  path(const Source& source);
+template <class InputIterator>
+  path(InputIterator first, InputIterator last);
+\end{verbatim}
+
+\begin{quote}
+\emph{Effects:} Constructs an object of class \texttt{path}, storing the
+effective range of \texttt{source} (\hyperref[path.req]{27.10.8.3}) or
+the range {[}\texttt{first},\texttt{last}) in \texttt{pathname},
+converting format and encoding if required
+(\hyperref[path.fmt.cvt]{27.10.8.2.1}).
+\end{quote}
+
+\begin{verbatim}
+template <class Source>
+  path(const Source& source, const locale& loc);
+template <class InputIterator>
+  path(InputIterator first, InputIterator last, const locale& loc);
+\end{verbatim}
+
+\begin{quote}
+\emph{Requires:} The value type of \texttt{Source} and
+\texttt{InputIterator} is \texttt{\ \ \ char}.
+
+\emph{Effects:} Constructs an object of class \texttt{path}, storing the
+effective range of \texttt{\ \ \ source} or the range
+{[}\texttt{first},\texttt{last}) in \texttt{pathname}, after converting
+format if required and after converting the encoding as follows:
+
+\begin{quote}
+If \texttt{value\_type} is \texttt{wchar\_t}, converts to the native
+wide encoding (\hyperref[fs.def.native.encode]{27.10.4.10}) using the
+\texttt{codecvt\textless{}wchar\_t,\ char,\ mbstate\_t\textgreater{}}
+facet of \texttt{loc}. Otherwise a conversion is performed using the
+\texttt{\ \ \ codecvt\textless{}wchar\_t,\ char,\ mbstate\_t\textgreater{}}
+facet of \texttt{loc}, and then a second conversion to the current
+narrow encoding.
+\end{quote}
+
+{[}\emph{Example}:
+
+\begin{quote}
+A string is to be read from a database that is encoded in ISO/IEC
+8859-1, and used to create a directory:
+
+\begin{verbatim}
+namespace fs = std::filesystem;
+std::string latin1_string = read_latin1_data();
+codecvt_8859_1<wchar_t> latin1_facet;
+std::locale latin1_locale(std::locale(), latin1_facet);
+fs::create_directory(fs::path(latin1_string, latin1_locale));
+\end{verbatim}
+
+For POSIX based operating systems the path is constructed by first using
+\texttt{\ \ \ \ \ latin1\_facet} to convert ISO/IEC 8859-1 encoded
+\texttt{latin1\_string} to a wide character string in the native wide
+encoding (\hyperref[fs.def.native.encode]{27.10.4.10}). The resulting
+wide string is then converted to a narrow character \texttt{pathname}
+string in the current native narrow encoding. If the native wide
+encoding is UTF-16 or UTF-32, and the current native narrow encoding is
+UTF-8, all of the characters in the ISO/IEC 8859-1 character set will be
+converted to their Unicode representation, but for other native narrow
+encodings some characters may have no representation.
+
+For Windows based operating systems the path is constructed by using
+\texttt{latin1\_facet} to convert ISO/IEC 8859-1 encoded
+\texttt{\ \ \ \ \ latin1\_string} to a UTF-16 encoded wide character
+\texttt{pathname} string. All of the characters in the ISO/IEC 8859-1
+character set will be converted to their Unicode representation.
+\end{quote}
+
+\emph{---end example{]}}
+\end{quote}
+
+27.10.8.4.2 \texttt{path} assignments {[}path.assign{]}
+
+\begin{verbatim}
+path& operator=(const path& p);
+\end{verbatim}
+
+\begin{quote}
+\emph{Effects:} If \texttt{*this} and \texttt{p} are the same object,
+has no effect. Otherwise, modifies \texttt{pathname} to have the
+original value of \texttt{p.pathname}.
+
+\emph{Returns:} \texttt{*this}
+\end{quote}
+
+\begin{verbatim}
+path& operator=(path&& p) noexcept;
+\end{verbatim}
+
+\begin{quote}
+\emph{Effects:} If \texttt{*this} and \texttt{p} are the same object,
+has no effect. Otherwise, modifies \texttt{pathname} to have the
+original value of \texttt{p.pathname}.~ \texttt{p} is left in a valid
+but unspecified state. {[}\emph{Note:} A valid implementation is
+\texttt{\ \ \ swap(p)}. \emph{---end note}{]}
+
+\emph{Returns:} \texttt{*this}
+\end{quote}
+
+\begin{verbatim}
+template <class Source>
+  path& operator=(const Source& source);
+template <class Source>
+  path& assign(const Source& source);
+template <class InputIterator>
+  path& assign(InputIterator first, InputIterator last);
+\end{verbatim}
+
+\begin{quote}
+\emph{Effects:} Stores the effective range of \texttt{source}
+(\hyperref[path.req]{27.10.8.3}) or the range
+{[}\texttt{first},\texttt{last}) in \texttt{pathname}, converting format
+and encoding if required (\hyperref[path.arg.convert]{27.10.8.2.1}).
+
+\emph{Returns:} \texttt{*this}
+\end{quote}
+
+27.10.8.4.3 \texttt{path} appends {[}path.append{]}
+
+The append operations use \texttt{\ \ \ operator/=} to denote their
+semantic effect of appending \emph{preferred-separator} when needed.
+
+\begin{verbatim}
+path& operator/=(const path& p);
+\end{verbatim}
+
+\begin{quote}
+\emph{Effects:}
+
+\begin{quote}
+Appends \texttt{path::preferred\_separator} to \texttt{pathname} unless:
+
+\begin{itemize}
+\tightlist
+\item
+  an added separator would be redundant, or
+\item
+  would change a relative path to an absolute path {[}\emph{Note}: An
+  empty path is relative. --- \emph{end note}{]}, or
+\item
+  \texttt{p.empty()}, or
+\item
+  \texttt{*p.native().cbegin()} is a directory separator.
+\end{itemize}
+
+Then appends \texttt{p.native()} to \texttt{pathname}.
+\end{quote}
+
+\emph{Returns:} \texttt{*this}
+\end{quote}
+
+\begin{verbatim}
+template <class Source>
+  path& operator/=(const Source& source);
+template <class Source>
+  path& append(const Source& source);
+template <class InputIterator>
+  path& append(InputIterator first, InputIterator last);
+\end{verbatim}
+
+\begin{quote}
+\emph{Effects:}
+
+\begin{quote}
+Appends \texttt{path::preferred\_separator} to \texttt{pathname},
+converting format and encoding if required
+(\hyperref[path.arg.convert]{27.10.8.2.1}), unless:
+
+\begin{itemize}
+\tightlist
+\item
+  an added separator would be redundant, or
+\item
+  would change an relative path to an absolute path, or
+\item
+  \texttt{source.empty()}, or
+\item
+  \texttt{*source.native().cbegin()} is a separator.
+\end{itemize}
+
+Appends the effective range of \texttt{source}
+(\hyperref[path.req]{27.10.8.3}) or the range
+{[}\texttt{first},\texttt{last}) to \texttt{pathname}, converting format
+and encoding if required (\hyperref[path.arg.convert]{27.10.8.2.1}).
+\end{quote}
+
+\emph{Returns:} \texttt{*this}
+\end{quote}
+
+27.10.8.4.4 \texttt{path} concatenation {[}path.concat{]}
+
+\begin{verbatim}
+path& operator+=(const path& x);
+path& operator+=(const string_type& x);
+path& operator+=(const value_type* x);
+path& operator+=(value_type x);
+template <class Source>
+  path& operator+=(const Source& x);
+template <class EcharT>
+  path& operator+=(EcharT x);
+template <class Source>
+  path& concat(const Source& x);
+template <class InputIterator>
+  path& concat(InputIterator first, InputIterator last);
+\end{verbatim}
+
+\begin{quote}
+\emph{Postcondition:}
+\texttt{native()\ ==\ prior\_native\ +\ effective-argument}, where
+\texttt{prior\_native} is \texttt{native()} prior to the call to
+\texttt{operator+=}, and \texttt{effective-argument} is:
+
+\begin{itemize}
+\tightlist
+\item
+  \texttt{x.native()} if \texttt{x} is present and is
+  \texttt{const\ path\&}, otherwise
+\item
+  the effective range \texttt{source} (\hyperref[path.req]{27.10.8.3}),
+  if \texttt{source} is present, otherwise,
+\item
+  the range {[}\texttt{first},\texttt{last}), if \texttt{first} and
+  \texttt{last} are present, otherwise,
+\item
+  \texttt{x}.
+\end{itemize}
+
+If the value type of \texttt{effective-argument} would not be
+\texttt{path::value\_type}, the actual argument or argument range is
+first converted (\hyperref[path.arg.convert]{27.10.8.2.1}) so that
+\texttt{effective-argument} has value type \texttt{path::value\_type}.
+
+\emph{Returns:} \texttt{*this}
+\end{quote}
+
+27.10.8.4.5 \texttt{path} modifiers {[}path.modifiers{]}
+
+\begin{verbatim}
+void clear() noexcept;
+\end{verbatim}
+
+\begin{quote}
+\emph{Postcondition:} \texttt{empty()}
+\end{quote}
+
+\begin{verbatim}
+path& make_preferred();
+\end{verbatim}
+
+\begin{quote}
+\emph{Effects:} Each \emph{directory-separator} is converted to
+\emph{preferred-separator}.
+
+\emph{Returns:} \texttt{*this}
+
+{[}\emph{Example:}
+
+\begin{quote}
+\begin{verbatim}
+path p("foo/bar");
+std::cout << p << '\n';
+p.make_preferred();
+std::cout << p << '\n';
+\end{verbatim}
+\end{quote}
+
+On an operating system where \emph{preferred-separator} is the same as
+\emph{directory-separator}, the output is:
+
+\begin{quote}
+\begin{verbatim}
+"foo/bar"
+"foo/bar"
+\end{verbatim}
+\end{quote}
+
+On an operating system where \emph{preferred-separator} is a backslash,
+the output is:
+
+\begin{quote}
+\begin{verbatim}
+"foo/bar"
+"foo\bar"
+\end{verbatim}
+\end{quote}
+
+\emph{---end example}{]}
+\end{quote}
+
+\begin{verbatim}
+path& remove_filename();
+\end{verbatim}
+
+\begin{quote}
+\emph{Postcondition:} \texttt{!has\_filename()}.
+
+\emph{Returns:} \texttt{*this}.
+
+{[}\emph{Example:}
+
+\begin{quote}
+\begin{verbatim}
+std::cout << path("/foo").remove_filename();  // outputs "/"
+std::cout << path("/").remove_filename();     // outputs ""
+\end{verbatim}
+\end{quote}
+
+\emph{---end example}{]}
+\end{quote}
+
+\begin{verbatim}
+path& replace_filename(const path& replacement);
+\end{verbatim}
+
+\begin{quote}
+\emph{Effects:}
+
+\begin{quote}
+\texttt{remove\_filename();\ \ \ \ \ operator/=(replacement);}
+\end{quote}
+
+\emph{Returns:} \texttt{*this}.
+
+{[}\emph{Example:}
+
+\begin{quote}
+\begin{verbatim}
+std::cout << path("/foo").replace_filename("bar");  // outputs "/bar"
+std::cout << path("/").replace_filename("bar");     // outputs "bar"
+\end{verbatim}
+\end{quote}
+
+\emph{---end example}{]}
+\end{quote}
+
+\begin{verbatim}
+path& replace_extension(const path& replacement = path());
+\end{verbatim}
+
+\begin{quote}
+\emph{Effects:}
+
+\begin{itemize}
+\tightlist
+\item
+  Any existing
+  \texttt{extension()(}\hyperref[path.decompose]{27.10.8.4.9}\texttt{)}
+  is removed from the stored path, then
+\item
+  If \texttt{replacement} is not empty and does not begin with a dot
+  character, a dot character is appended to the stored path, then
+\item
+  \texttt{replacement} is concatenated to the stored path.
+\end{itemize}
+
+\emph{Returns:} \texttt{*this}
+\end{quote}
+
+\begin{verbatim}
+void swap(path& rhs) noexcept;
+\end{verbatim}
+
+\begin{quote}
+\emph{Effects:} Swaps the contents of the two paths.
+
+\emph{Complexity:} constant time.
+\end{quote}
+
+27.10.8.4.6 \texttt{path} native format observers {[}path.native.obs{]}
+
+The string returned by all native format observers is in the
+\hyperref[fs.def.native]{native pathname format}.
+
+\begin{verbatim}
+const string_type&  native() const noexcept;
+\end{verbatim}
+
+\begin{quote}
+\emph{Returns:} \texttt{pathname}.
+\end{quote}
+
+\begin{verbatim}
+const value_type* c_str() const noexcept;
+\end{verbatim}
+
+\begin{quote}
+\emph{Returns:} \texttt{pathname.c\_str()}.
+\end{quote}
+
+\begin{verbatim}
+operator string_type() const;
+\end{verbatim}
+
+\begin{quote}
+\emph{Returns:} \texttt{pathname}.
+
+{[}\emph{Note:} Conversion to \texttt{string\_type} is provided so that
+an object of class \texttt{path} can be given as an argument to existing
+standard library file stream constructors and open functions. This
+provides basic interoperability without the need to modify existing
+standard library classes or headers. \emph{---end note}{]}
+\end{quote}
+
+\begin{verbatim}
+template <class EcharT, class traits = char_traits<EcharT>,
+          class Allocator = allocator<EcharT> >
+basic_string<EcharT, traits, Allocator>
+  string(const Allocator& a = Allocator()) const;
+\end{verbatim}
+
+\begin{quote}
+\emph{Returns:} \texttt{pathname}.
+
+\emph{Remarks:} All memory allocation, including for the return value,
+shall be performed by \texttt{a}. Conversion, if any, is specified by
+\hyperref[path.cvt]{27.10.8.2}.
+\end{quote}
+
+\begin{verbatim}
+std::string string() const;
+std::wstring wstring() const;
+std::string u8string() const;
+std::u16string u16string() const;
+std::u32string u32string() const; 
+\end{verbatim}
+
+\begin{quote}
+\emph{Returns:} \texttt{pathname}.
+
+\emph{Remarks:} Conversion, if any, is performed as specified by
+\hyperref[path.cvt]{27.10.8.2}. The encoding of the string returned by
+\texttt{u8string()} is always UTF-8.
+\end{quote}
+
+27.10.8.4.7 \texttt{path} generic format observers
+{[}path.generic.obs{]}
+
+Generic format observer functions return strings formatted according to
+the generic pathname format (\hyperref[path.generic]{27.10.8.1}). The
+forward slash (\texttt{\textquotesingle{}/\textquotesingle{}}) character
+is used as the \emph{directory-separator} character.
+
+\begin{quote}
+{[}\emph{Example:} On an operating system that uses backslash as its
+preferred-separator,~
+\texttt{path("foo\textbackslash{}\textbackslash{}bar").generic\_string()}
+returns \texttt{"foo/bar"}. \emph{---end example}{]}
+\end{quote}
+
+\begin{verbatim}
+template <class EcharT, class traits = char_traits<EcharT>,
+          class Allocator = allocator<EcharT> >
+basic_string<EcharT, traits, Allocator>
+  generic_string(const Allocator& a = Allocator()) const;
+\end{verbatim}
+
+\begin{quote}
+\emph{Returns:} \texttt{pathname}, reformatted according to the generic
+pathname format (\hyperref[path.generic]{27.10.8.1}).
+
+\emph{Remarks:} All memory allocation, including for the return value,
+shall be performed by \texttt{a}. Conversion, if any, is specified by
+\hyperref[path.cvt]{27.10.8.2}.
+\end{quote}
+
+\begin{verbatim}
+std::string generic_string() const;
+std::wstring generic_wstring() const;
+std::string generic_u8string() const;
+std::u16string generic_u16string() const;
+std::u32string generic_u32string() const; 
+\end{verbatim}
+
+\begin{quote}
+\emph{Returns:} \texttt{pathname}, reformatted according to the generic
+pathname format (\hyperref[path.generic]{27.10.8.1}).
+
+\emph{Remarks:}~ Conversion, if any, is specified by
+\hyperref[path.cvt]{27.10.8.2}. The encoding of the string returned by
+\texttt{generic\_u8string()} is always UTF-8.
+\end{quote}
+
+27.10.8.4.8 \texttt{path} compare {[}path.compare{]}
+
+\begin{verbatim}
+int compare(const path& p) const noexcept;
+\end{verbatim}
+
+\begin{quote}
+\emph{Returns:} A value less than 0 if \texttt{native()} for the
+elements of \texttt{*this} are lexicographically less than
+\texttt{native()} for the elements of \texttt{p}, otherwise a value
+greater than 0 if \texttt{native()} for the elements of \texttt{*this}
+are lexicographically greater than \texttt{native()} for the elements of
+\texttt{p}, otherwise 0.
+
+Remark: The elements are determined as if by iteration over the
+half-open range {[}\texttt{begin()}, \texttt{end()}) for \texttt{*this}
+and~ \texttt{p}.
+\end{quote}
+
+\begin{verbatim}
+int compare(const string_type& s) const
+\end{verbatim}
+
+\begin{quote}
+\emph{Returns:} \texttt{compare(path(s))}.
+\end{quote}
+
+\begin{verbatim}
+int compare(const value_type* s) const
+\end{verbatim}
+
+\begin{quote}
+\emph{Returns:} \texttt{compare(path(s))}.
+\end{quote}
+
+27.10.8.4.9 \texttt{path} decomposition {[}path.decompose{]}
+
+\begin{verbatim}
+path root_name() const;
+\end{verbatim}
+
+\begin{quote}
+\emph{Returns:} \emph{root-name,} if \texttt{pathname} includes
+\emph{root-name}, otherwise \texttt{path()}.
+\end{quote}
+
+\begin{verbatim}
+path root_directory() const;
+\end{verbatim}
+
+\begin{quote}
+\emph{Returns:} \emph{root-directory}, if \texttt{pathname} includes
+\emph{root-directory}, otherwise \texttt{path()}.
+
+If \emph{root-directory} is composed of \emph{slash name}, \emph{slash}
+is excluded from the returned string.
+\end{quote}
+
+\begin{verbatim}
+path root_path() const;
+\end{verbatim}
+
+\begin{quote}
+\emph{Returns:} \texttt{root\_name()\ /\ root\_directory()}
+\end{quote}
+
+\begin{verbatim}
+path relative_path() const;
+\end{verbatim}
+
+\begin{quote}
+\emph{Returns:} A \texttt{path} composed from \texttt{pathname}, if
+\texttt{!empty()}, beginning with the first \emph{filename} after
+\emph{root-path}. Otherwise, \texttt{path()}.
+\end{quote}
+
+\begin{verbatim}
+path parent_path() const;
+\end{verbatim}
+
+\begin{quote}
+\emph{Returns:}
+\texttt{(empty()\ \textbar{}\textbar{}\ begin()\ ==\ -\/-end())\ ?\ path()\ :\ pp},
+where \texttt{pp} is constructed as if by starting with an empty
+\texttt{path} and successively applying \texttt{operator/=} for each
+element in the range {[}\texttt{begin()}, \texttt{-\/-end()}).
+\end{quote}
+
+\begin{verbatim}
+path filename() const;
+\end{verbatim}
+
+\begin{quote}
+\emph{Returns:} \texttt{empty()\ ?\ path()\ :\ *-\/-end()}
+
+{[}\emph{Example:}
+
+\begin{quote}
+\begin{verbatim}
+std::cout << path("/foo/bar.txt").filename(); // outputs "bar.txt"
+std::cout << path("/").filename();            // outputs "/"
+std::cout << path(".").filename();            // outputs "."
+std::cout << path("..").filename();           // outputs ".."
+\end{verbatim}
+\end{quote}
+
+\emph{---end example}{]}
+\end{quote}
+
+\begin{verbatim}
+path stem() const;
+\end{verbatim}
+
+\begin{quote}
+\emph{Returns:} if \texttt{filename()} contains a period but does not
+consist solely of one or two periods, returns the substring of
+\texttt{filename()} starting at its beginning and ending with the
+character before the last period. Otherwise, returns
+\texttt{filename()}.
+
+{[}\emph{Example:}
+
+\begin{quote}
+\begin{verbatim}
+std::cout << path("/foo/bar.txt").stem(); // outputs "bar"
+path p = "foo.bar.baz.tar";
+for (; !p.extension().empty(); p = p.stem())
+  std::cout << p.extension() << '\n';
+  // outputs: .tar
+  //          .baz
+  //          .bar
+\end{verbatim}
+\end{quote}
+
+\emph{---end example}{]}
+\end{quote}
+
+\begin{verbatim}
+path extension() const;
+\end{verbatim}
+
+\begin{quote}
+\emph{Returns:} if \texttt{filename()} contains a period but does not
+consist solely of one or two periods, returns the substring of
+\texttt{filename()} starting at the rightmost period and for the
+remainder of the path. Otherwise, returns an empty \texttt{path} object.
+
+\emph{Remarks:} Implementations are permitted to define additional
+behavior for file systems which append additional elements to
+extensions, such as alternate data streams or partitioned dataset names.
+
+{[}\emph{Example:}
+
+\begin{quote}
+\begin{verbatim}
+std::cout << path("/foo/bar.txt").extension(); // outputs ".txt"
+\end{verbatim}
+\end{quote}
+
+\emph{---end example}{]}
+
+{[}\emph{Note: \textbf{}} The period is included in the return value so
+that it is possible to distinguish between no extension and an empty
+extension. Also note that for a path \texttt{p},
+\texttt{p.stem()+p.extension()\ ==\ p.filename()}. \emph{---end note}{]}
+\end{quote}
+
+27.10.8.4.10 \texttt{path} query {[}path.query{]}
+
+\begin{verbatim}
+bool empty() const noexcept;
+\end{verbatim}
+
+\begin{quote}
+\emph{Returns:} \texttt{pathname.empty()}.
+\end{quote}
+
+\begin{verbatim}
+bool has_root_path() const;
+\end{verbatim}
+
+\begin{quote}
+\emph{Returns:} \texttt{!root\_path().empty()}
+\end{quote}
+
+\begin{verbatim}
+bool has_root_name() const;
+\end{verbatim}
+
+\begin{quote}
+\emph{Returns:} \texttt{!root\_name().empty()}
+\end{quote}
+
+\begin{verbatim}
+bool has_root_directory() const;
+\end{verbatim}
+
+\begin{quote}
+\emph{Returns:} \texttt{!root\_directory().empty()}
+\end{quote}
+
+\begin{verbatim}
+bool has_relative_path() const;
+\end{verbatim}
+
+\begin{quote}
+\emph{Returns:} \texttt{!relative\_path().empty()}
+\end{quote}
+
+\begin{verbatim}
+bool has_parent_path() const;
+\end{verbatim}
+
+\begin{quote}
+\emph{Returns:} \texttt{!parent\_path().empty()}
+\end{quote}
+
+\begin{verbatim}
+bool has_filename() const;
+\end{verbatim}
+
+\begin{quote}
+\emph{Returns:} \texttt{!filename().empty()}
+\end{quote}
+
+\begin{verbatim}
+bool has_stem() const;
+\end{verbatim}
+
+\begin{quote}
+\emph{Returns:} \texttt{!stem().empty()}
+\end{quote}
+
+\begin{verbatim}
+bool has_extension() const;
+\end{verbatim}
+
+\begin{quote}
+\emph{Returns:} \texttt{!extension().empty()}
+\end{quote}
+
+\begin{verbatim}
+bool is_absolute() const;
+\end{verbatim}
+
+\begin{quote}
+\emph{Returns:} \texttt{true} if \texttt{pathname} contains an absolute
+path (\hyperref[fs.def.absolute-path]{27.10.4.1}), else \texttt{false}.
+
+{[}\emph{Example:} \texttt{path("/").is\_absolute()} is \texttt{true}
+for POSIX based operating systems, and \texttt{false} for Windows based
+operating systems.~ \emph{---end example}{]}
+\end{quote}
+
+\begin{verbatim}
+bool is_relative() const;
+\end{verbatim}
+
+\begin{quote}
+\emph{Returns:} \texttt{!is\_absolute()}.
+\end{quote}
+
+27.10.8.5 \texttt{path} iterators {[}path.itr{]}
+
+Path iterators iterate over the elements of the stored pathname.
+
+A \texttt{path::iterator} is a constant iterator satisfying all the
+requirements of a bidirectional iterator (§24.1.4 Bidirectional
+iterators). Its \texttt{value\_type} is \texttt{path}.
+
+Calling any non-const member function of a \texttt{path} object
+invalidates all iterators referring to elements of that object.
+
+The forward traversal order is as follows:
+
+\begin{itemize}
+\tightlist
+\item
+  The \emph{root-name} element, if present.
+\item
+  The \emph{root-directory} element, if present, in the generic format.
+  \emph{{[}note:} the generic format is required to ensure
+  lexicographical comparison works correctly. \emph{---end note}{]}
+\item
+  Each successive \emph{filename} element, if present.
+\item
+  \emph{Dot}, if one or more trailing non-root \emph{slash} characters
+  are present.
+\end{itemize}
+
+The backward traversal order is the reverse of forward traversal.
+
+\begin{verbatim}
+iterator begin() const;
+\end{verbatim}
+
+\begin{quote}
+\emph{Returns:} An iterator for the first present element in the
+traversal list above. If no elements are present, the end iterator.
+\end{quote}
+
+\begin{verbatim}
+iterator end() const;
+\end{verbatim}
+
+\begin{quote}
+\emph{Returns:} The end iterator.
+\end{quote}
+
+27.10.8.6 \texttt{path} non-member functions {[}path.non-member{]}
+
+\begin{verbatim}
+void swap(path& lhs, path& rhs) noexcept;
+\end{verbatim}
+
+\begin{quote}
+\emph{Effects:} \texttt{lhs.swap(rhs)}.
+\end{quote}
+
+\begin{verbatim}
+size_t hash_value (const path& p) noexcept;
+\end{verbatim}
+
+\begin{quote}
+\emph{Returns:} A hash value for the path \texttt{p}. If for two paths,
+\texttt{p1\ ==\ p2} then \texttt{hash\_value(p1)\ ==\ hash\_value(p2)}.
+\end{quote}
+
+\begin{verbatim}
+bool operator< (const path& lhs, const path& rhs) noexcept;
+\end{verbatim}
+
+\begin{quote}
+\emph{Returns:} \texttt{return\ lhs.compare(rhs)\ \textless{}\ 0}.
+\end{quote}
+
+\begin{verbatim}
+bool operator<=(const path& lhs, const path& rhs) noexcept;
+\end{verbatim}
+
+\begin{quote}
+\emph{Returns:} \texttt{!(rhs\ \textless{}\ lhs)}.
+\end{quote}
+
+\begin{verbatim}
+bool operator> (const path& lhs, const path& rhs) noexcept;
+\end{verbatim}
+
+\begin{quote}
+\emph{Returns:} \texttt{rhs\ \textless{}\ lhs}.
+\end{quote}
+
+\begin{verbatim}
+bool operator>=(const path& lhs, const path& rhs) noexcept;
+\end{verbatim}
+
+\begin{quote}
+\emph{Returns:} \texttt{!(lhs\ \textless{}\ rhs)}.
+\end{quote}
+
+\begin{verbatim}
+bool operator==(const path& lhs, const path& rhs) noexcept;
+\end{verbatim}
+
+\begin{quote}
+\emph{Returns:}
+\texttt{!(lhs\ \textless{}\ rhs)\ \&\&\ !(rhs\ \textless{}\ lhs)}.
+
+{[}\emph{Note:} Path equality and path equivalence have different
+semantics.
+
+Equality is determined by the \texttt{path} non-member
+\texttt{operator==}, which considers the two path's lexical
+representations only. Thus \texttt{path("foo")\ ==\ "bar"} is never
+\texttt{true}.
+
+Equivalence is determined by the
+\hyperref[equivalent]{\texttt{equivalent()}} non-member function, which
+determines if two paths \hyperref[class-path]{resolve} to the same file
+system entity. Thus \texttt{equivalent("foo",\ "bar")} will be
+\texttt{true} when both paths resolve to the same file.
+
+Programmers wishing to determine if two paths are ``the same'' must
+decide if ``the same'' means ``the same representation'' or ``resolve to
+the same actual file'', and choose the appropriate function accordingly.
+\emph{---end note}{]}
+\end{quote}
+
+\begin{verbatim}
+bool operator!=(const path& lhs, const path& rhs) noexcept;
+\end{verbatim}
+
+\begin{quote}
+\emph{Returns:} \texttt{!(lhs\ ==\ rhs)}.
+\end{quote}
+
+\begin{verbatim}
+path operator/ (const path& lhs, const path& rhs);
+\end{verbatim}
+
+\begin{quote}
+\emph{Returns:} \texttt{path(lhs)\ /=\ rhs}.
+\end{quote}
+
+27.10.8.6.1 \texttt{path} inserter and extractor {[}path.io{]}
+
+\begin{verbatim}
+template <class charT, class traits>
+basic_ostream<charT, traits>&
+operator<<(basic_ostream<charT, traits>& os, const path& p);
+\end{verbatim}
+
+\begin{quote}
+\emph{Effects:} \texttt{os\ }
+\texttt{\textless{}\textless{}\ quoted(p.string\textless{}charT,\ traits\textgreater{}())}.
+
+{[}\emph{Note}: The \texttt{quoted} function is described in §27.7.6.
+--- \emph{end note}{]}
+
+\emph{Returns:} \texttt{os}
+\end{quote}
+
+\begin{verbatim}
+template <class charT, class traits>
+basic_istream<charT, traits>&
+operator>>(basic_istream<charT, traits>& is, path& p);
+\end{verbatim}
+
+\begin{quote}
+\emph{Effects:~}
+
+\begin{quote}
+\begin{verbatim}
+basic_string<charT, traits> tmp;
+is >> quoted(tmp);
+p = tmp;
+\end{verbatim}
+\end{quote}
+
+\emph{Returns:} \texttt{is}
+\end{quote}
+
+27.10.8.6.2 \texttt{path} factory functions {[}path.factory{]}
+
+\begin{verbatim}
+template <class Source>  
+  path u8path(const Source& source);
+template <class InputIterator>
+  path u8path(InputIterator first, InputIterator last);
+\end{verbatim}
+
+\begin{quote}
+\emph{Requires:} The \texttt{source} and
+{[}\texttt{first},\texttt{last}) sequences are UTF-8 encoded. The value
+type of \texttt{\ \ \ Source} and \texttt{\ \ \ InputIterator} is
+\texttt{char}.
+
+\emph{Returns:}
+
+\begin{quote}
+\begin{itemize}
+\tightlist
+\item
+  If \texttt{value\_type} is \texttt{char} and the current native narrow
+  encoding (\hyperref[fs.def.native.encode]{27.10.4.11}) is UTF-8,
+  \texttt{path(source)} or \texttt{path(first,\ last)}, else
+\item
+  if \texttt{value\_type} is \texttt{wchar\_t\ }and the native wide
+  encoding is UTF-16, or if \texttt{value\_type} is \texttt{char16\_t}
+  or \texttt{char32\_t},~ convert \texttt{source} or
+  {[}\texttt{first},\texttt{last}) to a temporary, \texttt{tmp}, of type
+  \texttt{string\_type} and return \texttt{path(tmp)}, else
+\item
+  convert \texttt{source} or {[}\texttt{first},\texttt{last}) to a
+  temporary, \texttt{tmp}, of type \texttt{u32string} and return
+  \texttt{path(tmp)}.
+\end{itemize}
+\end{quote}
+
+\emph{Remarks:} Argument format conversion
+(\hyperref[path.fmt.cvt]{27.10.8.2.1}) applies to the arguments for
+these functions. How Unicode encoding conversions are performed is
+unspecified.
+
+{[}\emph{Example}:
+
+\begin{quote}
+A string is to be read from a database that is encoded in UTF-8, and
+used to create a directory using the native encoding for filenames:
+
+\begin{verbatim}
+namespace fs = std::filesystem;
+std::string utf8_string = read_utf8_data();
+fs::create_directory(fs::u8path(utf8_string));
+\end{verbatim}
+
+For POSIX based operating systems with the native narrow encoding set to
+UTF-8, no encoding or type conversion occurs.
+
+For POSIX based operating systems with the native narrow encoding not
+set to UTF-8, a conversion to UTF-32 occurs, followed by a conversion to
+the current native narrow encoding. Some Unicode characters may have no
+native character set representation.
+
+For Windows based operating systems a conversion from UTF-8 to UTF-16
+occurs.
+\end{quote}
+
+\emph{---end example{]}}
+\end{quote}
+
+27.10.9 Class \texttt{filesystem\_error} {[}class.filesystem\_error{]}
+
+\begin{verbatim}
+namespace std {  namespace filesystem { 
+
+      class filesystem_error : public system_error
+      {
+      public:
+        filesystem_error(const string& what_arg, error_code ec);
+        filesystem_error(const string& what_arg,
+          const path& p1, error_code ec);
+        filesystem_error(const string& what_arg,
+          const path& p1, const path& p2, error_code ec);
+
+        const path& path1() const noexcept;
+        const path& path2() const noexcept;
+        const char* what() const noexcept;
+      };
+} }
+\end{verbatim}
+
+The class \texttt{filesystem\_error} defines the type of objects thrown
+as exceptions to report file system errors from functions described in
+this sub-clause.
+
+27.10.9.1 \texttt{filesystem\_error} members
+{[}filesystem\_error.members{]}
+
+Constructors are provided that store zero, one, or two paths associated
+with an error.
+
+\begin{verbatim}
+filesystem_error(const string& what_arg, error_code ec);
+\end{verbatim}
+
+\begin{quote}
+\emph{Postcondition:}
+
+\begin{longtable}[c]{@{}ll@{}}
+\toprule
+\textbf{Expression} & \textbf{Value}\tabularnewline
+\texttt{\ \ \ \ \ \ \ runtime\_error::what()} &
+\texttt{what\_arg.c\_str()}\tabularnewline
+\texttt{code()} & \texttt{ec}\tabularnewline
+\texttt{path1().empty()} & \texttt{true}\tabularnewline
+\texttt{path2().empty()} & \texttt{true}\tabularnewline
+\bottomrule
+\end{longtable}
+\end{quote}
+
+\begin{verbatim}
+filesystem_error(const string& what_arg, const path& p1, error_code ec);
+\end{verbatim}
+
+\begin{quote}
+\emph{Postcondition:}
+
+\begin{longtable}[c]{@{}ll@{}}
+\toprule
+\textbf{Expression} & \textbf{Value}\tabularnewline
+\texttt{\ \ \ \ \ \ \ runtime\_error::what()} &
+\texttt{what\_arg.c\_str()}\tabularnewline
+\texttt{code()} & \texttt{ec}\tabularnewline
+\texttt{path1()} & Reference to stored copy of
+\texttt{p1}\tabularnewline
+\texttt{path2().empty()} & \texttt{true}\tabularnewline
+\bottomrule
+\end{longtable}
+\end{quote}
+
+\begin{verbatim}
+filesystem_error(const string& what_arg, const path& p1, const path& p2, error_code ec);
+\end{verbatim}
+
+\begin{quote}
+\emph{Postcondition:}
+
+\begin{longtable}[c]{@{}ll@{}}
+\toprule
+\textbf{Expression} & \textbf{Value}\tabularnewline
+\texttt{\ \ \ \ \ \ \ runtime\_error::what()} &
+\texttt{w}\texttt{hat\_arg.c\_str()}\tabularnewline
+\texttt{code()} & \texttt{ec}\tabularnewline
+\texttt{path1()} & Reference to stored copy of
+\texttt{p1}\tabularnewline
+\texttt{path2()} & Reference to stored copy of
+\texttt{p2}\tabularnewline
+\bottomrule
+\end{longtable}
+\end{quote}
+
+\begin{verbatim}
+const path& path1() const noexcept;
+\end{verbatim}
+
+\begin{quote}
+\emph{Returns:} Reference to copy of \texttt{p1} stored by the
+constructor, or, if none, an empty path.
+\end{quote}
+
+\begin{verbatim}
+const path& path2() const noexcept;
+\end{verbatim}
+
+\begin{quote}
+\emph{Returns:} Reference to copy of \texttt{p2} stored by the
+constructor, or, if none, an empty path.
+\end{quote}
+
+\begin{verbatim}
+const char* what() const noexcept;
+\end{verbatim}
+
+\begin{quote}
+\emph{Returns:} A string containing \texttt{runtime\_error::what()}. The
+exact format is unspecified. Implementations are encouraged but not
+required to include \texttt{path1.native\_string()}if not empty,
+\texttt{path2.native\_string()}if not empty, and
+\texttt{system\_error::what()} strings in the returned string.
+\end{quote}
+
+27.10.10 Enumerations~ {[}fs.enum{]}
+
+27.10.10.1 Enum class \texttt{file\_type} {[}enum.file\_type{]}
+
+This enum class specifies constants used to identify file types.
+
+\begin{longtable}[c]{@{}lll@{}}
+\toprule
+\textbf{Constant Name} & \textbf{Value} &
+\textbf{Meaning}\tabularnewline
+\texttt{none} & \texttt{0} & The type of the file has not been
+determined or an error occurred while trying to determine the
+type.\tabularnewline
+\texttt{not\_found} & \texttt{-1} & Pseudo-type indicating the file was
+not found. {[}\emph{Note:} The file not being found is not considered an
+error while determining the type of a file. \emph{---end
+note}{]}\tabularnewline
+\texttt{regular} & \texttt{1} & Regular file\tabularnewline
+\texttt{directory} & \texttt{2} & Directory file\tabularnewline
+\texttt{symlink} & \texttt{3} & Symbolic link file\tabularnewline
+\texttt{block} & \texttt{4} & Block special file\tabularnewline
+\texttt{character} & \texttt{5} & Character special file\tabularnewline
+\texttt{fifo} & \texttt{6} & FIFO or pipe file\tabularnewline
+\texttt{socket} & \texttt{7} & Socket file\tabularnewline
+\texttt{unknown} & \texttt{8} & The file does exist, but is of an
+operating system dependent type not covered by any of the other cases or
+the process does not have permission to query the file
+type\tabularnewline
+\bottomrule
+\end{longtable}
+
+27.10.10.2 Enum class \texttt{copy\_options} {[}enum.copy\_options{]}
+
+The \texttt{enum\ class} type \texttt{copy\_options} is a bitmask type
+(§17.5.2.1.3) that specifies bitmask constants used to control the
+semantics of copy operations.~ The constants are specified in option
+groups. Constant \texttt{none} is shown in each option group for
+purposes of exposition; implementations shall provide only a single
+definition.~ Calling a Filesystem library function with more than a
+single constant for an option group results in undefined behavior.
+
+\textbf{Option group controlling \texttt{copy\_file} function effects
+for existing target files}
+
+\textbf{Constant}
+
+\textbf{Value}
+
+\textbf{Meaning}
+
+\texttt{none}
+
+\texttt{0}
+
+(Default) Error; file already exists.
+
+\texttt{skip\_existing}
+
+\texttt{1}
+
+Do not overwrite existing file, do not report an error.
+
+\texttt{overwrite\_existing}
+
+\texttt{2}
+
+Overwrite the existing file.
+
+\texttt{update\_existing}
+
+\texttt{4}
+
+Overwrite the existing file if it is older than the replacement file.
+
+\textbf{Option group controlling \texttt{copy} function effects for
+sub-directories}
+
+\textbf{Constant}
+
+\textbf{Value}
+
+\textbf{Meaning}
+
+\texttt{none}
+
+\texttt{0}
+
+(Default) Do not copy sub-directories.
+
+\texttt{recursive}
+
+\texttt{8}
+
+Recursively copy sub-directories and their contents.
+
+\textbf{Option group controlling \texttt{copy} function effects for
+symbolic links}
+
+\textbf{Constant}
+
+\textbf{Value}
+
+\textbf{Meaning}
+
+\texttt{none}
+
+\texttt{0}
+
+(Default) Follow symbolic links.
+
+\texttt{copy\_symlinks}
+
+\texttt{16}
+
+Copy symbolic links as symbolic links rather than copying the files that
+they point to.
+
+\texttt{skip\_symlinks}
+
+\texttt{32}
+
+Ignore symbolic links.
+
+\textbf{Option group controlling \texttt{copy} function effects for
+choosing the form of copying}
+
+\textbf{Constant}
+
+\textbf{Value}
+
+\textbf{Meaning}
+
+\texttt{none}
+
+\texttt{0}
+
+(Default) Copy content.
+
+\texttt{directories\_only}
+
+\texttt{64}
+
+Copy directory structure only, do not copy non-directory files.
+
+\texttt{create\_symlinks}
+
+\texttt{128}
+
+Make symbolic links instead of copies of files. The source path shall be
+an absolute path unless the destination path is in the current
+directory.
+
+\texttt{create\_hard\_links}
+
+\texttt{256}
+
+Make hard links instead of copies of files.
+
+27.10.10.3 Enum class \texttt{perms} {[}enum.perms{]}
+
+The \texttt{enum\ class} type \texttt{perms} is a bitmask type
+(§17.5.2.1.3) that specifies bitmask constants used to identify file
+permissions.
+
+\begin{longtable}[c]{@{}llll@{}}
+\toprule
+\begin{minipage}[t]{0.22\columnwidth}\raggedright\strut
+\textbf{Name}
+\strut\end{minipage} &
+\begin{minipage}[t]{0.22\columnwidth}\raggedright\strut
+\textbf{Value\\
+ (octal)}
+\strut\end{minipage} &
+\begin{minipage}[t]{0.22\columnwidth}\raggedright\strut
+\textbf{POSIX\\
+ macro}
+\strut\end{minipage} &
+\begin{minipage}[t]{0.22\columnwidth}\raggedright\strut
+\textbf{Definition or notes}
+\strut\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.22\columnwidth}\raggedright\strut
+\texttt{none}
+\strut\end{minipage} &
+\begin{minipage}[t]{0.22\columnwidth}\raggedright\strut
+\texttt{0}
+\strut\end{minipage} &
+\begin{minipage}[t]{0.22\columnwidth}\raggedright\strut
+\strut\end{minipage} &
+\begin{minipage}[t]{0.22\columnwidth}\raggedright\strut
+There are no permissions set for the file.
+\strut\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.22\columnwidth}\raggedright\strut
+\texttt{owner\_read}
+\strut\end{minipage} &
+\begin{minipage}[t]{0.22\columnwidth}\raggedright\strut
+\texttt{0400}
+\strut\end{minipage} &
+\begin{minipage}[t]{0.22\columnwidth}\raggedright\strut
+\texttt{S\_IRUSR}
+\strut\end{minipage} &
+\begin{minipage}[t]{0.22\columnwidth}\raggedright\strut
+Read permission, owner
+\strut\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.22\columnwidth}\raggedright\strut
+\texttt{owner\_write}
+\strut\end{minipage} &
+\begin{minipage}[t]{0.22\columnwidth}\raggedright\strut
+\texttt{0200}
+\strut\end{minipage} &
+\begin{minipage}[t]{0.22\columnwidth}\raggedright\strut
+\texttt{S\_IWUSR}
+\strut\end{minipage} &
+\begin{minipage}[t]{0.22\columnwidth}\raggedright\strut
+Write permission, owner
+\strut\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.22\columnwidth}\raggedright\strut
+\texttt{owner\_exec}
+\strut\end{minipage} &
+\begin{minipage}[t]{0.22\columnwidth}\raggedright\strut
+\texttt{0100}
+\strut\end{minipage} &
+\begin{minipage}[t]{0.22\columnwidth}\raggedright\strut
+\texttt{S\_IXUSR}
+\strut\end{minipage} &
+\begin{minipage}[t]{0.22\columnwidth}\raggedright\strut
+Execute/search permission, owner
+\strut\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.22\columnwidth}\raggedright\strut
+\texttt{owner\_all}
+\strut\end{minipage} &
+\begin{minipage}[t]{0.22\columnwidth}\raggedright\strut
+\texttt{0700}
+\strut\end{minipage} &
+\begin{minipage}[t]{0.22\columnwidth}\raggedright\strut
+\texttt{S\_IRWXU}
+\strut\end{minipage} &
+\begin{minipage}[t]{0.22\columnwidth}\raggedright\strut
+Read, write, execute/search by owner;
+\texttt{owner\_read\ \textbar{}\ owner\_write\ \textbar{}\ owner\_exec}
+\strut\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.22\columnwidth}\raggedright\strut
+\texttt{group\_read}
+\strut\end{minipage} &
+\begin{minipage}[t]{0.22\columnwidth}\raggedright\strut
+\texttt{040}
+\strut\end{minipage} &
+\begin{minipage}[t]{0.22\columnwidth}\raggedright\strut
+\texttt{S\_IRGRP}
+\strut\end{minipage} &
+\begin{minipage}[t]{0.22\columnwidth}\raggedright\strut
+Read permission, group
+\strut\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.22\columnwidth}\raggedright\strut
+\texttt{group\_write}
+\strut\end{minipage} &
+\begin{minipage}[t]{0.22\columnwidth}\raggedright\strut
+\texttt{020}
+\strut\end{minipage} &
+\begin{minipage}[t]{0.22\columnwidth}\raggedright\strut
+\texttt{S\_IWGRP}
+\strut\end{minipage} &
+\begin{minipage}[t]{0.22\columnwidth}\raggedright\strut
+Write permission, group
+\strut\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.22\columnwidth}\raggedright\strut
+\texttt{group\_exec}
+\strut\end{minipage} &
+\begin{minipage}[t]{0.22\columnwidth}\raggedright\strut
+\texttt{010}
+\strut\end{minipage} &
+\begin{minipage}[t]{0.22\columnwidth}\raggedright\strut
+\texttt{S\_IXGRP}
+\strut\end{minipage} &
+\begin{minipage}[t]{0.22\columnwidth}\raggedright\strut
+Execute/search permission, group
+\strut\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.22\columnwidth}\raggedright\strut
+\texttt{group\_all}
+\strut\end{minipage} &
+\begin{minipage}[t]{0.22\columnwidth}\raggedright\strut
+\texttt{070}
+\strut\end{minipage} &
+\begin{minipage}[t]{0.22\columnwidth}\raggedright\strut
+\texttt{S\_IRWXG}
+\strut\end{minipage} &
+\begin{minipage}[t]{0.22\columnwidth}\raggedright\strut
+Read, write, execute/search by group;
+\texttt{group\_read\ \textbar{}\ group\_write\ \textbar{}\ group\_exec}
+\strut\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.22\columnwidth}\raggedright\strut
+\texttt{others\_read}
+\strut\end{minipage} &
+\begin{minipage}[t]{0.22\columnwidth}\raggedright\strut
+\texttt{04}
+\strut\end{minipage} &
+\begin{minipage}[t]{0.22\columnwidth}\raggedright\strut
+\texttt{S\_IROTH}
+\strut\end{minipage} &
+\begin{minipage}[t]{0.22\columnwidth}\raggedright\strut
+Read permission, others
+\strut\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.22\columnwidth}\raggedright\strut
+\texttt{others\_write}
+\strut\end{minipage} &
+\begin{minipage}[t]{0.22\columnwidth}\raggedright\strut
+\texttt{02}
+\strut\end{minipage} &
+\begin{minipage}[t]{0.22\columnwidth}\raggedright\strut
+\texttt{S\_IWOTH}
+\strut\end{minipage} &
+\begin{minipage}[t]{0.22\columnwidth}\raggedright\strut
+Write permission, others
+\strut\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.22\columnwidth}\raggedright\strut
+\texttt{others\_exec}
+\strut\end{minipage} &
+\begin{minipage}[t]{0.22\columnwidth}\raggedright\strut
+\texttt{01}
+\strut\end{minipage} &
+\begin{minipage}[t]{0.22\columnwidth}\raggedright\strut
+\texttt{S\_IXOTH}
+\strut\end{minipage} &
+\begin{minipage}[t]{0.22\columnwidth}\raggedright\strut
+Execute/search permission, others
+\strut\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.22\columnwidth}\raggedright\strut
+\texttt{others\_all}
+\strut\end{minipage} &
+\begin{minipage}[t]{0.22\columnwidth}\raggedright\strut
+\texttt{07}
+\strut\end{minipage} &
+\begin{minipage}[t]{0.22\columnwidth}\raggedright\strut
+\texttt{S\_IRWXO}
+\strut\end{minipage} &
+\begin{minipage}[t]{0.22\columnwidth}\raggedright\strut
+Read, write, execute/search by others;
+\texttt{others\_read\ \textbar{}\ others\_write\ \textbar{}\ others\_exec}
+\strut\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.22\columnwidth}\raggedright\strut
+\texttt{all}
+\strut\end{minipage} &
+\begin{minipage}[t]{0.22\columnwidth}\raggedright\strut
+\texttt{0777}
+\strut\end{minipage} &
+\begin{minipage}[t]{0.22\columnwidth}\raggedright\strut
+\strut\end{minipage} &
+\begin{minipage}[t]{0.22\columnwidth}\raggedright\strut
+\texttt{owner\_all\ \textbar{}\ group\_all\ \textbar{}\ others\_all}
+\strut\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.22\columnwidth}\raggedright\strut
+\texttt{set\_uid}
+\strut\end{minipage} &
+\begin{minipage}[t]{0.22\columnwidth}\raggedright\strut
+\texttt{04000}
+\strut\end{minipage} &
+\begin{minipage}[t]{0.22\columnwidth}\raggedright\strut
+\texttt{S\_ISUID}
+\strut\end{minipage} &
+\begin{minipage}[t]{0.22\columnwidth}\raggedright\strut
+Set-user-ID on execution
+\strut\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.22\columnwidth}\raggedright\strut
+\texttt{set\_gid}
+\strut\end{minipage} &
+\begin{minipage}[t]{0.22\columnwidth}\raggedright\strut
+\texttt{02000}
+\strut\end{minipage} &
+\begin{minipage}[t]{0.22\columnwidth}\raggedright\strut
+\texttt{S\_ISGID}
+\strut\end{minipage} &
+\begin{minipage}[t]{0.22\columnwidth}\raggedright\strut
+Set-group-ID on execution
+\strut\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.22\columnwidth}\raggedright\strut
+\texttt{sticky\_bit\ }
+\strut\end{minipage} &
+\begin{minipage}[t]{0.22\columnwidth}\raggedright\strut
+\texttt{01000}
+\strut\end{minipage} &
+\begin{minipage}[t]{0.22\columnwidth}\raggedright\strut
+\texttt{S\_ISVTX}
+\strut\end{minipage} &
+\begin{minipage}[t]{0.22\columnwidth}\raggedright\strut
+Operating system dependent.
+\strut\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.22\columnwidth}\raggedright\strut
+\texttt{mask}
+\strut\end{minipage} &
+\begin{minipage}[t]{0.22\columnwidth}\raggedright\strut
+\texttt{07777}
+\strut\end{minipage} &
+\begin{minipage}[t]{0.22\columnwidth}\raggedright\strut
+~
+\strut\end{minipage} &
+\begin{minipage}[t]{0.22\columnwidth}\raggedright\strut
+\texttt{all\ \textbar{}\ set\_uid\ \textbar{}\ set\_gid\ \textbar{}\ sticky\_bit}
+\strut\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.22\columnwidth}\raggedright\strut
+\texttt{unknown}
+\strut\end{minipage} &
+\begin{minipage}[t]{0.22\columnwidth}\raggedright\strut
+\texttt{0xFFFF}
+\strut\end{minipage} &
+\begin{minipage}[t]{0.22\columnwidth}\raggedright\strut
+\strut\end{minipage} &
+\begin{minipage}[t]{0.22\columnwidth}\raggedright\strut
+The permissions are not known, such as when a \texttt{file\_status}
+object is created without specifying the permissions
+\strut\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.22\columnwidth}\raggedright\strut
+\texttt{add\_perms}
+\strut\end{minipage} &
+\begin{minipage}[t]{0.22\columnwidth}\raggedright\strut
+\texttt{0x10000}
+\strut\end{minipage} &
+\begin{minipage}[t]{0.22\columnwidth}\raggedright\strut
+~
+\strut\end{minipage} &
+\begin{minipage}[t]{0.22\columnwidth}\raggedright\strut
+\texttt{permissions()} shall bitwise \emph{or} the \texttt{perm}
+argument's permission bits to the file's current permission bits.
+\strut\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.22\columnwidth}\raggedright\strut
+\texttt{remove\_perms}
+\strut\end{minipage} &
+\begin{minipage}[t]{0.22\columnwidth}\raggedright\strut
+\texttt{\ \ \ 0x20000}
+\strut\end{minipage} &
+\begin{minipage}[t]{0.22\columnwidth}\raggedright\strut
+~
+\strut\end{minipage} &
+\begin{minipage}[t]{0.22\columnwidth}\raggedright\strut
+\texttt{permissions()} shall bitwise \emph{and} the complement of
+\texttt{perm} argument's permission bits to the file's current
+permission bits.
+\strut\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.22\columnwidth}\raggedright\strut
+\texttt{resolve\_symlinks}
+\strut\end{minipage} &
+\begin{minipage}[t]{0.22\columnwidth}\raggedright\strut
+\texttt{\ \ \ 0x40000}
+\strut\end{minipage} &
+\begin{minipage}[t]{0.22\columnwidth}\raggedright\strut
+~
+\strut\end{minipage} &
+\begin{minipage}[t]{0.22\columnwidth}\raggedright\strut
+\texttt{permissions()} shall resolve symlinks
+\strut\end{minipage}\tabularnewline
+\bottomrule
+\end{longtable}
+
+27.10.10.4 Enum class \texttt{directory\_options}
+{[}enum.directory\_options{]}
+
+The \texttt{enum\ class} type \texttt{directory\_options} is a bitmask
+type (§17.5.2.1.3) that specifies bitmask constants used to identify
+directory traversal options.
+
+\begin{longtable}[c]{@{}lll@{}}
+\toprule
+\textbf{Name} & \textbf{Value} & \textbf{Meaning}\tabularnewline
+\texttt{none} & \texttt{0} & (Default) Skip directory symlinks,
+permission denied is an error.\tabularnewline
+\texttt{follow\_directory\_symlink} & \texttt{1} & Follow rather than
+skip directory symlinks.\tabularnewline
+\texttt{skip\_permission\_denied} & \texttt{2} & Skip directories that
+would otherwise result in permission denied errors.\tabularnewline
+\bottomrule
+\end{longtable}
+
+27.10.11 Class \texttt{file\_status} {[}class.file\_status{]}
+
+\begin{verbatim}
+namespace std { namespace filesystem {
+
+  class file_status
+  {
+  public:
+
+    // constructors
+    explicit file_status(file_type ft = file_type::none,
+                         perms prms = perms::unknown) noexcept;
+    file_status(const file_status&) noexcept = default;
+    file_status(file_status&&) noexcept = default;
+   ~file_status();
+
+    file_status& operator=(const file_status&) noexcept = default;
+    file_status& operator=(file_status&&) noexcept = default;
+
+    // observers
+    file_type  type() const noexcept;
+    perms      permissions() const noexcept;
+
+    // modifiers
+    void       type(file_type ft) noexcept;
+    void       permissions(perms prms) noexcept;
+  };
+} }
+\end{verbatim}
+
+An object of type \texttt{file\_status} stores information about the
+type and permissions of a file.
+
+27.10.11.1 \texttt{file\_status} constructors {[}file\_status.cons{]}
+
+\begin{verbatim}
+explicit file_status() noexcept;
+\end{verbatim}
+
+\begin{quote}
+\emph{Postconditions:} \texttt{type()\ ==\ file\_type::none},
+\texttt{permissions()\ ==\ perms::unknown}.
+\end{quote}
+
+\begin{verbatim}
+explicit file_status(file_type ft, perms prms = perms::unknown) noexcept;
+\end{verbatim}
+
+\begin{quote}
+\emph{Postconditions:} \texttt{type()\ ==\ ft},
+\texttt{permissions()\ ==\ prms}.
+\end{quote}
+
+27.10.11.2 \texttt{file\_status} observers {[}file\_status.obs{]}
+
+\begin{verbatim}
+file_type type() const noexcept;
+\end{verbatim}
+
+\begin{quote}
+\emph{Returns:} The value of \texttt{type()} specified by the
+\emph{postconditions} of the most recent call to a constructor,
+\texttt{operator=}, or \texttt{type(file\_type)} function.
+\end{quote}
+
+\begin{verbatim}
+perms permissions() const noexcept;
+\end{verbatim}
+
+\begin{quote}
+\emph{Returns:} The value of \texttt{permissions()} specified by the
+\emph{postconditions} of the most recent call to a constructor,
+\texttt{operator=}, or \texttt{permissions(perms)} function.
+\end{quote}
+
+27.10.11.3 \texttt{file\_status} modifiers {[}file\_status.mods{]}
+
+\begin{verbatim}
+void type(file_type ft) noexcept;
+\end{verbatim}
+
+\begin{quote}
+\emph{Postconditions:} \texttt{type()\ ==\ ft}.
+\end{quote}
+
+\begin{verbatim}
+void permissions(perms prms) noexcept;
+\end{verbatim}
+
+\begin{quote}
+\emph{Postconditions:} \texttt{permissions()\ ==\ prms}.
+\end{quote}
+
+27.10.12 Class \texttt{directory\_entry} {[}class.directory\_entry{]}
+
+\begin{verbatim}
+namespace std { namespace filesystem {
+
+  class directory_entry
+  {
+  public:
+
+    // constructors and destructor
+    directory_entry() noexcept = default;
+    directory_entry(const directory_entry&) = default;
+    directory_entry(directory_entry&&) noexcept = default;
+    explicit directory_entry(const path& p);
+   ~directory_entry();
+
+    // modifiers
+    directory_entry& operator=(const directory_entry&) = default;
+    directory_entry& operator=(directory_entry&&) noexcept = default;
+    void assign(const path& p);
+    void replace_filename(const path& p);
+
+    // observers
+    const path&  path() const noexcept;
+    operator const path&() const noexcept;
+    file_status  status() const;
+    file_status  status(error_code& ec) const noexcept;
+    file_status  symlink_status() const;
+    file_status  symlink_status(error_code& ec) const noexcept;
+
+    bool operator< (const directory_entry& rhs) const noexcept;
+    bool operator==(const directory_entry& rhs) const noexcept;
+    bool operator!=(const directory_entry& rhs) const noexcept;
+    bool operator<=(const directory_entry& rhs) const noexcept;
+    bool operator> (const directory_entry& rhs) const noexcept;
+    bool operator>=(const directory_entry& rhs) const noexcept;
+  private:
+    path   m_path; // for exposition only
+  };
+
+} }  
+\end{verbatim}
+
+A \texttt{directory\_entry} object stores a \texttt{path} object.
+
+27.10.12.1 \texttt{directory\_entry} constructors
+{[}directory\_entry.cons{]}
+
+\begin{verbatim}
+explicit directory_entry(const path& p);
+\end{verbatim}
+
+\begin{quote}
+\emph{Effects:} Constructs an object of type \texttt{directory\_entry}.
+
+\emph{Postcondition:} \texttt{path()\ ==\ p}.
+\end{quote}
+
+27.10.12.2 \texttt{directory\_entry} modifiers
+{[}directory\_entry.mods{]}
+
+\begin{verbatim}
+void assign(const path& p);
+\end{verbatim}
+
+\begin{quote}
+\emph{Postcondition:} \texttt{path()\ ==\ p}.
+\end{quote}
+
+\begin{verbatim}
+void replace_filename(const path& p);
+\end{verbatim}
+
+\begin{quote}
+\emph{Postcondition:} \texttt{path()\ ==\ x.parent\_path()\ /\ p} where
+\texttt{x} is the value of \texttt{path()} before the function is
+called.
+\end{quote}
+
+27.10.12.3 \texttt{directory\_entry} observers
+{[}directory\_entry.obs{]}
+
+\begin{verbatim}
+const path& path() const noexcept;
+operator const path&() const noexcept;
+\end{verbatim}
+
+\begin{quote}
+\emph{Returns:} \texttt{m\_path}
+\end{quote}
+
+\begin{verbatim}
+file_status status() const;
+file_status status(error_code& ec) const noexcept;
+\end{verbatim}
+
+\begin{quote}
+\emph{Returns:} \texttt{\ status(path(){[},\ ec{]})}.
+
+\emph{Throws:} As specified in \hyperref[Error-reporting]{Error
+reporting (27.10.7)}.
+\end{quote}
+
+\begin{verbatim}
+file_status  symlink_status() const;
+file_status  symlink_status(error_code& ec) const noexcept;
+\end{verbatim}
+
+\begin{quote}
+\emph{Returns:} \texttt{\ symlink\_status(path(){[},\ \ \ \ ec{]})}.
+
+\emph{Throws:} As specified in \hyperref[Error-reporting]{Error
+reporting (27.10.7)}.
+\end{quote}
+
+\begin{verbatim}
+bool operator==(const directory_entry& rhs) const noexcept;
+\end{verbatim}
+
+\begin{quote}
+\emph{Returns:} \texttt{m\_path\ ==\ rhs.m\_path}.
+\end{quote}
+
+\begin{verbatim}
+bool operator!=(const directory_entry& rhs) const noexcept;
+\end{verbatim}
+
+\begin{quote}
+\emph{Returns:} \texttt{m\_path\ !=\ rhs.m\_path}.
+\end{quote}
+
+\begin{verbatim}
+bool operator< (const directory_entry& rhs) const noexcept;
+\end{verbatim}
+
+\begin{quote}
+\emph{Returns:} \texttt{m\_path\ \textless{}\ rhs.m\_path}.
+\end{quote}
+
+\begin{verbatim}
+bool operator<=(const directory_entry& rhs) const noexcept;
+\end{verbatim}
+
+\begin{quote}
+\emph{Returns:} \texttt{m\_path\ \textless{}=\ rhs.m\_path}.
+\end{quote}
+
+\begin{verbatim}
+bool operator> (const directory_entry& rhs) const noexcept;
+\end{verbatim}
+
+\begin{quote}
+\emph{Returns:} \texttt{m\_path\ \textgreater{}\ rhs.m\_path}.
+\end{quote}
+
+\begin{verbatim}
+bool operator>=(const directory_entry& rhs) const noexcept;
+\end{verbatim}
+
+\begin{quote}
+\emph{Returns:} \texttt{m\_path\ \textgreater{}=\ rhs.m\_path}.
+\end{quote}
+
+27.10.13 Class \texttt{directory\_iterator}
+{[}class.directory\_iterator{]}
+
+An object of type \texttt{directory\_iterator} provides an iterator for
+a sequence of \texttt{directory\_entry} elements representing the files
+in a directory.~ {[}\emph{Note:} For iteration into sub-directories,~
+see class \texttt{recursive\_directory\_iterator}
+(\hyperref[class.rec.dir.itr]{27.10.14}). \emph{---end note}{]}
+
+\begin{verbatim}
+namespace std { namespace filesystem {
+
+  class directory_iterator
+  {
+  public:
+    typedef directory_entry        value_type;
+    typedef ptrdiff_t              difference_type;
+    typedef const directory_entry* pointer;
+    typedef const directory_entry& reference;
+    typedef input_iterator_tag     iterator_category;
+
+    // member functions
+    directory_iterator() noexcept;
+    explicit directory_iterator(const path& p);
+    directory_iterator(const path& p, directory_options options);
+    directory_iterator(const path& p, error_code& ec) noexcept;
+    directory_iterator(const path& p,
+      directory_options options, error_code& ec) noexcept;
+    directory_iterator(const directory_iterator& rhs);
+    directory_iterator(directory_iterator&& rhs) noexcept;
+   ~directory_iterator();
+
+    directory_iterator& operator=(const directory_iterator& rhs);
+    directory_iterator& operator=(directory_iterator&& rhs) noexcept;
+    
+    const directory_entry& operator*() const;
+    const directory_entry* operator->() const;
+    directory_iterator&    operator++();
+    directory_iterator&    increment(error_code& ec) noexcept;
+
+    // other members as required by §24.1.1 Input iterators 
+  };
+
+} }
+\end{verbatim}
+
+\texttt{directory\_iterator} satisfies the requirements of an input
+iterator~ §24.2.3).
+
+If an iterator of type \texttt{directory\_iterator} is advanced past the
+last directory element, that iterator shall become equal to the end
+iterator value. The \texttt{directory\_iterator} default
+constructor~shall create an iterator equal to the end iterator value,
+and this shall be the only valid iterator for the end condition.
+
+The result of \texttt{operator*} on an end iterator is undefined
+behavior. For any other iterator value a
+\texttt{const\ directory\_entry\&} is returned. The result of
+\texttt{operator-\textgreater{}} on an end iterator is undefined
+behavior. For any other iterator value a
+\texttt{const\ directory\_entry*} is returned.
+
+Two end iterators are always equal. An end iterator shall not be equal
+to a non-end iterator.
+
+The result of calling the \texttt{path()} member of the
+\texttt{directory\_entry} object obtained by dereferencing a
+\texttt{directory\_iterator} is a reference to a \texttt{path} object
+composed of the directory argument from which the iterator was
+constructed with filename of the directory entry appended as if by
+\texttt{operator/=}.
+
+Directory iteration shall not yield directory entries for the current
+(\emph{dot}) and parent (\emph{dot-dot}) directories.
+
+The order of directory entries obtained by dereferencing successive
+increments of a \texttt{directory\_iterator} is unspecified.
+
+\begin{quote}
+{[}\emph{Note:} Programs performing directory iteration may wish to test
+if the path obtained by dereferencing a directory iterator actually
+exists. It could be a symbolic link to a non-existent file. Programs
+recursively walking directory trees for purposes of removing and
+renaming entries may wish to avoid following symbolic links.
+
+If a file is removed from or added to a directory after the construction
+of a \texttt{directory\_iterator} for the directory, it is unspecified
+whether or not subsequently incrementing the iterator will ever result
+in an iterator referencing the removed or added directory entry. See
+POSIX \texttt{readdir\_r()}. \emph{---end note}{]}
+\end{quote}
+
+27.10.13.1 \texttt{directory\_iterator} members
+{[}directory\_iterator.members{]}
+
+\texttt{directory\_iterator()\ \ noexcept;}
+
+\begin{quote}
+\emph{Effects:} Constructs the end iterator.
+\end{quote}
+
+\begin{verbatim}
+explicit directory_iterator(const path& p);
+directory_iterator(const path& p, directory_options options);
+directory_iterator(const path& p, error_code& ec) noexcept;
+directory_iterator(const path& p,
+  directory_options options, error_code& ec) noexcept;
+\end{verbatim}
+
+\begin{quote}
+\emph{Effects:} For the directory that \texttt{p} resolves to,
+constructs an iterator for the first element in a sequence of
+\texttt{directory\_entry} elements representing the files in the
+directory, if any; otherwise the end iterator. However, if
+\texttt{(options\ \&\ directory\_options::skip\_permissions\_denied)\ !=\ \ directory\_options::none}
+and construction encounters an error indicating that permission to
+access~ \texttt{p} is denied, constructs the end iterator and does not
+report an error.
+
+\emph{Throws:} As specified in \hyperref[Error-reporting]{Error
+reporting (27.10.7)}.
+
+{[}\emph{Note:} To iterate over the current directory, use
+\texttt{directory\_iterator(".")} rather than
+\texttt{directory\_iterator("")}. \emph{---end note}{]}
+\end{quote}
+
+\begin{verbatim}
+directory_iterator(const directory_iterator& rhs);
+directory_iterator(directory_iterator&& rhs) noexcept;
+\end{verbatim}
+
+\begin{quote}
+\emph{Effects:} Constructs an object of class
+\texttt{directory\_iterator}.
+
+\emph{Postconditions:} \texttt{*this} has the original value of
+\texttt{\ \ \ rhs}.
+\end{quote}
+
+\begin{verbatim}
+directory_iterator& operator=(const directory_iterator& rhs);
+directory_iterator& operator=(directory_iterator&& rhs) noexcept;
+\end{verbatim}
+
+\begin{quote}
+\emph{Effects:} If \texttt{*this} and \texttt{rhs} are the same object,
+the member has no effect.
+
+\emph{Postconditions:} \texttt{*this} has the original value of
+\texttt{\ \ \ rhs}.
+
+\emph{Returns:} \texttt{*this}.
+\end{quote}
+
+\begin{verbatim}
+directory_iterator& operator++();
+directory_iterator& increment(error_code& ec) noexcept;
+\end{verbatim}
+
+\begin{quote}
+\emph{Effects:} As specified by §24.1.1 Input iterators.
+
+\emph{Returns:} \texttt{*this}.
+
+\emph{Throws:} As specified in \hyperref[Error-reporting]{Error
+reporting (27.10.7)}.
+\end{quote}
+
+27.10.13.2 \texttt{directory\_iterator} non-member functions
+{[}directory\_iterator.nonmembers{]}
+
+These functions enable use of \texttt{directory\_iterator} with
+range-based for statements.
+
+\begin{verbatim}
+directory_iterator begin(directory_iterator iter) noexcept;
+\end{verbatim}
+
+\begin{quote}
+\emph{Returns:} \texttt{iter}.
+\end{quote}
+
+\begin{verbatim}
+directory_iterator end(const directory_iterator&) noexcept;
+\end{verbatim}
+
+\begin{quote}
+\emph{Returns:} \texttt{directory\_iterator()}.
+\end{quote}
+
+27.10.14 Class \texttt{recursive\_directory\_iterator}
+{[}class.rec.dir.itr{]}
+
+An object of type \texttt{recursive\_directory\_iterator} provides an
+iterator for a sequence of \texttt{directory\_entry} elements
+representing the files in a directory and its sub-directories.
+
+\begin{verbatim}
+namespace std { namespace filesystem {
+
+  class recursive_directory_iterator 
+  {
+  public:
+    typedef directory_entry        value_type;
+    typedef ptrdiff_t              difference_type;
+    typedef const directory_entry* pointer;
+    typedef const directory_entry& reference;
+    typedef input_iterator_tag     iterator_category;
+
+    // constructors and destructor
+    recursive_directory_iterator() noexcept;
+    explicit recursive_directory_iterator(const path& p);
+    recursive_directory_iterator(const path& p, directory_options options);
+    recursive_directory_iterator(const path& p,
+      directory_options options, error_code& ec) noexcept;
+    recursive_directory_iterator(const path& p, error_code& ec) noexcept;
+    recursive_directory_iterator(const recursive_directory_iterator& rhs);
+    recursive_directory_iterator(recursive_directory_iterator&& rhs) noexcept;
+   ~recursive_directory_iterator();
+
+    // observers
+    directory_options  options() const;
+    int                depth() const;
+    bool               recursion_pending() const;
+
+    const directory_entry& operator*() const;
+    const directory_entry* operator->() const;
+
+    // modifiers
+    recursive_directory_iterator&
+      operator=(const recursive_directory_iterator& rhs);
+    recursive_directory_iterator&
+      operator=(recursive_directory_iterator&& rhs) noexcept;
+
+    recursive_directory_iterator& operator++();
+    recursive_directory_iterator& increment(error_code& ec) noexcept;
+
+    void pop();
+    void disable_recursion_pending();
+
+   // other members as required by §24.1.1 Input iterators
+  };
+
+} }
+\end{verbatim}
+
+The behavior of a \texttt{recursive\_directory\_iterator} is the same as
+a \texttt{directory\_iterator} unless otherwise specified.
+
+{[}\emph{Note:} If the directory structure being iterated over contains
+cycles then the end iterator may be unreachable. \emph{---end note}{]}
+
+27.10.14.1 \texttt{recursive\_directory\_iterator} members
+{[}rec.dir.itr.members{]}
+
+\begin{verbatim}
+recursive_directory_iterator() noexcept;
+\end{verbatim}
+
+\begin{quote}
+\emph{Effects:} Constructs the end iterator.
+\end{quote}
+
+\begin{verbatim}
+explicit recursive_directory_iterator(const path& p);
+recursive_directory_iterator(const path& p, directory_options options);
+recursive_directory_iterator(const path& p,
+  directory_options options, error_code& ec) noexcept;
+recursive_directory_iterator(const path& p, error_code& ec) noexcept;
+\end{verbatim}
+
+\begin{quote}
+\emph{Effects:}~ Constructs a iterator representing the first entry in
+the directory \texttt{p} resolves to, if any; otherwise, the end
+iterator. However, if
+\texttt{(options\ \&\ directory\_options::skip\_permissions\_denied)\ !=\ \ directory\_options::none}
+and construction encounters an error indicating that permission to
+access~ \texttt{p} is denied, constructs the end iterator and does not
+report an error.
+
+\emph{Postcondition:} \texttt{options()\ ==\ options} for the signatures
+with a \texttt{\ directory\_options} argument, otherwise
+\texttt{options()\ ==\ \ directory\_options::none}.
+
+\emph{Throws:} As specified in \hyperref[Error-reporting]{Error
+reporting (27.10.7)}.
+
+{[}\emph{Note:} To iterate over the current directory, use
+\texttt{recursive\_directory\_iterator(".")} rather than
+\texttt{recursive\_directory\_iterator("")}. \emph{---end note}{]}
+
+{[}\emph{Note:} By default, \texttt{recursive\_directory\_iterator} does
+not follow directory symlinks. To follow directory symlinks, specify
+\texttt{options} as
+\texttt{\ directory\_options::follow\_directory\_symlink} \emph{---end
+note}{]}
+\end{quote}
+
+\begin{verbatim}
+recursive_directory_iterator(const recursive_directory_iterator& rhs);
+\end{verbatim}
+
+\begin{quote}
+\emph{Effects:} Constructs an object of class
+\texttt{\ \ \ recursive\_directory\_iterator}.
+
+\emph{Postconditions:}
+\texttt{this-\textgreater{}options()\ ==\ rhs.options()\ \&\&\ \ \ \ this-\textgreater{}depth()\ ==\ rhs.depth()\ \&\&\ this-\textgreater{}recursion\_pending()\ ==\ rhs.recursion\_pending()}.
+\end{quote}
+
+\begin{verbatim}
+recursive_directory_iterator(recursive_directory_iterator&& rhs) noexcept;
+\end{verbatim}
+
+\begin{quote}
+\emph{Effects:} Constructs an object of class
+\texttt{\ \ \ recursive\_directory\_iterator}.
+
+\emph{Postconditions:} \texttt{this-\textgreater{}options()},
+\texttt{this-\textgreater{}depth()}, and
+\texttt{this-\textgreater{}recursion\_pending()} return the values that
+\texttt{\ \ \ rhs.options()}, \texttt{rhs.depth()}, and
+\texttt{\ \ \ rhs.recursion\_pending()}, respectively, had before the
+function call.
+\end{quote}
+
+\begin{verbatim}
+recursive_directory_iterator& operator=(const recursive_directory_iterator& rhs);
+\end{verbatim}
+
+\begin{quote}
+\emph{Effects:} If \texttt{*this} and \texttt{rhs} are the same object,
+the member has no effect.
+
+\emph{Postconditions:}
+\texttt{this-\textgreater{}options()\ ==\ rhs.options()\ \&\&\ \ \ \ this-\textgreater{}depth()\ ==\ rhs.depth()\ \&\&\ this-\textgreater{}recursion\_pending()\ ==\ \ \ \ rhs.recursion\_pending()}.
+
+\emph{Returns:} \texttt{*this}.
+\end{quote}
+
+\begin{verbatim}
+recursive_directory_iterator& operator=(recursive_directory_iterator&& rhs) noexcept;
+\end{verbatim}
+
+\begin{quote}
+\emph{Effects:} If \texttt{*this} and \texttt{rhs} are the same object,
+the member has no effect.
+
+\emph{Postconditions:} \texttt{this-\textgreater{}options()},
+\texttt{this-\textgreater{}depth()}, and
+\texttt{this-\textgreater{}recursion\_pending()} return the values that
+\texttt{\ \ \ rhs.options()}, \texttt{rhs.depth()}, and
+\texttt{\ \ \ rhs.recursion\_pending()}, respectively, had before the
+function call.
+
+\emph{Returns:} \texttt{*this}.
+\end{quote}
+
+\begin{verbatim}
+directory_options options() const;
+\end{verbatim}
+
+\begin{quote}
+\emph{Requires:} \texttt{*this\ !=\ recursive\_directory\_iterator()}.
+
+\emph{Returns:} The value of the constructor \texttt{options} argument,
+if present, otherwise \texttt{directory\_options::none}.
+
+\emph{Throws:} Nothing.
+\end{quote}
+
+\begin{verbatim}
+int depth() const;
+\end{verbatim}
+
+\begin{quote}
+\emph{Requires:} \texttt{*this\ !=\ recursive\_directory\_iterator()}.
+
+\emph{Returns:} The current depth of the directory tree being traversed.
+{[}\emph{Note:} The initial directory is depth 0, its immediate
+subdirectories are depth 1, and so forth. \emph{---end note}{]}
+
+\emph{Throws:} Nothing.
+\end{quote}
+
+\begin{verbatim}
+bool recursion_pending() const;
+\end{verbatim}
+
+\begin{quote}
+\emph{Requires:} \texttt{*this\ !=\ recursive\_directory\_iterator()}.
+
+\emph{Returns:} \texttt{true} if \texttt{disable\_recursion\_pending()}
+has not been called subsequent to the prior construction or increment
+operation, otherwise \texttt{false}.
+
+\emph{Throws:} Nothing.
+\end{quote}
+
+\begin{verbatim}
+recursive_directory_iterator& operator++();
+recursive_directory_iterator& increment(error_code& ec) noexcept;
+\end{verbatim}
+
+\begin{quote}
+\emph{Requires:} \texttt{*this\ !=\ recursive\_directory\_iterator()}.
+
+\emph{Effects:} As specified by §24.2.3 Input iterators, except that:
+
+\begin{itemize}
+\tightlist
+\item
+  If there are no more entries at this depth, then if
+  \texttt{depth()!=\ 0} iteration over the parent directory resumes;
+  otherwise \texttt{*this\ =\ recursive\_directory\_iterator()}.
+\item
+  Otherwise if
+  \texttt{recursion\_pending()\ \&\&\ is\_directory(this-\textgreater{}status())\ \ ~\ \ \&\&\ (!is\_symlink(this-\textgreater{}symlink\_status())\ ~\ \textbar{}\textbar{}\ (options()\ \&\ directory\_options::follow\_directory\_symlink)\ !=\ \ \ \ directory\_options::none)\ }then
+  either directory \texttt{\ (*this)-\textgreater{}path()} is
+  recursively iterated into or, if
+  \texttt{(options()\ \ \&\ directory\_options::skip\_permissions\_denied)\ ~!=\ directory\_options::none\ }
+  and an error occurs indicating that permission to access directory
+  \texttt{\ (*this)-\textgreater{}path()} is denied, then directory
+  \texttt{(*this)-\textgreater{}path()} is treated as an empty directory
+  and no error is reported.
+\end{itemize}
+
+\emph{Returns:} \texttt{*this}.
+
+\emph{Throws:} As specified in \hyperref[Error-reporting]{Error
+reporting (27.10.7)}.
+\end{quote}
+
+\begin{verbatim}
+void pop();
+\end{verbatim}
+
+\begin{quote}
+\emph{Requires:} \texttt{*this\ !=\ recursive\_directory\_iterator()}.
+
+\emph{Effects:} If \texttt{depth()\ ==\ 0}, set \texttt{*this} to
+\texttt{recursive\_directory\_iterator()}. Otherwise, cease iteration of
+the directory currently being iterated over, and continue iteration over
+the parent directory.
+\end{quote}
+
+\begin{verbatim}
+void disable_recursion_pending();
+\end{verbatim}
+
+\begin{quote}
+\emph{Requires:} \texttt{*this\ !=\ recursive\_directory\_iterator()}.
+
+\emph{Postcondition:} \texttt{recursion\_pending()\ ==\ false}.
+
+{[}\emph{Note:} \texttt{disable\_recursion\_pending}\texttt{()} is used
+to prevent unwanted recursion into a directory. \emph{---end note}{]}
+\end{quote}
+
+27.10.14.2 \texttt{recursive\_directory\_iterator} non-member functions
+{[}rec.dir.itr.nonmembers{]}
+
+These functions enable use of \texttt{recursive\_directory\_iterator}
+with range-based for statements.
+
+\begin{verbatim}
+recursive_directory_iterator begin(recursive_directory_iterator iter) noexcept;
+\end{verbatim}
+
+\begin{quote}
+\emph{Returns:} \texttt{iter}.
+\end{quote}
+
+\begin{verbatim}
+recursive_directory_iterator end(const recursive_directory_iterator&) noexcept;
+\end{verbatim}
+
+\begin{quote}
+\emph{Returns:} \texttt{recursive\_directory\_iterator()}.
+\end{quote}
+
+27.10.15 Operational functions {[}fs.op.funcs{]}
+
+Operational functions query or modify files, including directories, in
+external storage.
+
+{[}\emph{Note:} Because hardware failures, network failures,
+\hyperref[file-system-race]{file system races}, and many other kinds of
+errors occur frequently in file system operations, users should be aware
+that any filesystem operational function, no matter how apparently
+innocuous, may encounter an error.~See \hyperref[Error-reporting]{Error
+reporting (27.10.7)}. \emph{---end note}{]}
+
+27.10.15.1 Absolute~ {[}fs.op.absolute{]}
+
+\begin{verbatim}
+path absolute(const path& p, const path& base=current_path());
+\end{verbatim}
+
+\begin{quote}
+\emph{Returns:} An \hyperref[Absolute-path]{absolute path} composed
+according to the following table
+
+\begin{longtable}[c]{@{}lll@{}}
+\toprule
+~ & \textbf{\texttt{p.has\_root\_directory()}} &
+\textbf{\texttt{!p.has\_root\_directory()}}\tabularnewline
+\textbf{\texttt{p.has\_root\_name()}} & \texttt{return\ p} &
+\texttt{return\ p.root\_name()/\ absolute(base).root\_directory()\ \ \ \ \ \ \ /\ absolute(base).relative\_path()/\ p.relative\_path()}\tabularnewline
+\textbf{\texttt{!p.has\_root\_name()}} &
+\texttt{returnabsolute(base).root\_name()/\ p} &
+\texttt{returnabsolute(base)\ /\ p}\tabularnewline
+\bottomrule
+\end{longtable}
+
+{[}\emph{Note:} For the returned path, \texttt{rp,}
+\texttt{rp.is\_absolute()} is true. \emph{---end note}{]}
+
+\emph{Throws:} As specified in \hyperref[Error-reporting]{Error
+reporting (27.10.7)}.
+\end{quote}
+
+27.10.15.2 Canonical~ {[}fs.op.canonical{]}
+
+\begin{verbatim}
+path canonical(const path& p, const path& base = current_path());
+path canonical(const path& p, error_code& ec);
+path canonical(const path& p, const path& base, error_code& ec);
+\end{verbatim}
+
+\begin{quote}
+\emph{Overview:} Converts \texttt{p}, which must exist, to an absolute
+path that has no symbolic link, \texttt{"."}, or \texttt{".."} elements.
+
+\emph{Returns:} A path that refers to the same file system object as
+\texttt{absolute(p,base)}. For the overload without a \texttt{base}
+argument, \texttt{base} is \texttt{current\_path()}. Signatures with
+argument \texttt{ec} return \texttt{path()} if an error occurs.
+
+\emph{Throws:}~ As specified in \hyperref[Error-reporting]{Error
+reporting (27.10.7)}.
+
+\emph{Remarks:} \texttt{!exists(p)} is an error.
+
+{[}\emph{Note:} Canonical pathnames allow security checking of a path
+(e.g. does this path live in /home/goodguy or /home/badguy?)~
+\emph{---end note}{]}
+\end{quote}
+
+27.10.15.3 Copy~ {[}fs.op.copy{]}
+
+\begin{verbatim}
+void copy(const path& from, const path& to);
+void copy(const path& from, const path& to, error_code& ec) noexcept;
+\end{verbatim}
+
+\begin{quote}
+\emph{Effects:}
+\texttt{copy(from,\ to,\ copy\_options::none{[},\ ec{]})}.
+\end{quote}
+
+\begin{verbatim}
+void copy(const path& from, const path& to, copy_options options);
+void copy(const path& from, const path& to, copy_options options,
+  error_code& ec) noexcept;
+\end{verbatim}
+
+\begin{quote}
+\emph{Precondition:} At most one constant from each option group
+(\hyperref[enum.copyux5foptions]{27.10.10.2}) is present in
+\texttt{options}.
+
+\emph{Effects:}
+
+\begin{quote}
+Before the first use of \texttt{f} and \texttt{t}:
+
+\begin{itemize}
+\tightlist
+\item
+  If
+  \texttt{(options\ \&\ copy\_options::create\_symlinks)\ !=\ \ \ \ \ \ \ \ copy\_options::none\ \ \ \ \ \ \ \textbar{}\textbar{}\ (options\ \&\ copy\_options::skip\_symlinks)\ \ \ \ \ \ \ \ !=\ copy\_options::none},
+  then \texttt{auto\ f\ =\ \ \ \ \ \ \ \ symlink\_status(from)\ }and if
+  needed \texttt{auto\ t\ =\ symlink\_status(to)}.
+\item
+  Otherwise, \texttt{auto\ f\ =\ status(from)} and if needed
+  \texttt{auto\ \ \ \ \ \ \ \ t\ =\ status(to)}.
+\end{itemize}
+
+Report an error as specified in \hyperref[Error-reporting]{Error
+reporting (27.10.7)} if:
+
+\begin{itemize}
+\tightlist
+\item
+  \texttt{!exists(f)}, or
+\item
+  \texttt{equivalent(from,\ to)}, or
+\item
+  \texttt{is\_other(f)\ \textbar{}\textbar{}\ is\_other(t)}, or
+\item
+  \texttt{is\_directory(f)\ \&\&\ is\_regular\_file(t)}.
+\end{itemize}
+
+If \texttt{is\_symlink(f)}, then:
+
+\begin{itemize}
+\tightlist
+\item
+  If
+  \texttt{(options\ \&\ copy\_options::skip\_symlinks)\ !=\ \ \ \ \ \ \ \ copy\_options::none},
+  then return.
+\item
+  Otherwise if
+  \texttt{!exists(t)\ ~\ \&\&\ (options\ \&\ \ \ \ \ \ \ \ copy\_options::copy\_symlinks)\ !=\ copy\_options::none},
+  then \texttt{copy\_symlink(from,\ \ \ \ \ \ \ \ to,\ options)}.
+\item
+  Otherwise report an error as specified in
+  \hyperref[Error-reporting]{Error reporting (27.10.7)}.
+\end{itemize}
+
+Otherwise if \texttt{is\_regular\_file(f)}, then:
+
+\begin{itemize}
+\tightlist
+\item
+  If
+  \texttt{(options\ \&\ copy\_options::directories\_only)\ ~!=\ copy\_options::none},
+  then return.
+\item
+  Otherwise if
+  \texttt{(options\ \&\ copy\_options::create\_symlinks)\ ~!=\ copy\_options::none},
+  then create a symbolic link to the source file.
+\item
+  Otherwise if
+  \texttt{(options\ \&\ \ \ \ \ \ \ \ copy\_options::create\_hard\_links)\ ~!=\ copy\_options::none},
+  then create a hard link to the source file.
+\item
+  Otherwise if \texttt{is\_directory(t)}, then
+  \texttt{copy\_file(from,\ to/from.filename(),\ \ \ \ \ \ \ \ \ \ options)}.
+\item
+  Otherwise, \texttt{copy\_file(from,\ to,\ options)}.
+\end{itemize}
+\end{quote}
+\end{quote}
+
+\begin{quote}
+\begin{quote}
+Otherwise if
+\texttt{is\_directory(f)\ \&\&\ ((options\ \&\ copy\_options::recursive)\ ~\ \ \ \ !=\ copy\_options::none\ \textbar{}\textbar{}\ options\ ==\ copy\_options::none)\ \ \ }then:
+
+\begin{itemize}
+\tightlist
+\item
+  If~ \texttt{!exists(t)}, then
+  \texttt{create\_directory(to,\ \ \ \ \ \ \ \ from)}.
+\item
+  Then, iterate over the files in \texttt{from}, as if by
+  \texttt{for\ \ \ \ \ \ \ \ (directory\_entry\&\ x\ :\ directory\_iterator(from))},
+  and for each iteration
+  \texttt{copy(x.path(),\ to/x.path().filename(),\ options\ \textbar{}\ \ \ \ \ \ \ \ copy\_options::unspecified)}.
+\end{itemize}
+
+Otherwise no effects.
+\end{quote}
+
+\emph{Throws:} As specified in \hyperref[Error-reporting]{Error
+reporting (27.10.7)}.
+
+\emph{Remarks:} For the signature with argument \texttt{ec}, any
+Filesystem library functions called by the implementation shall have an
+\texttt{\ \ \ error\_code} argument if applicable.
+
+{[}\emph{Example:} Given this directory structure:
+
+\begin{verbatim}
+/dir1
+  file1
+  file2
+  dir2
+    file3
+\end{verbatim}
+
+Calling \texttt{copy("/dir1",\ "/dir3")} would result in:
+
+\begin{verbatim}
+/dir1
+  file1
+  file2
+  dir2
+    file3
+/dir3
+  file1
+  file2
+\end{verbatim}
+
+Alternatively, calling
+\texttt{copy("/dir1",\ "/dir3",\ \ \ \ copy\_options::recursive)} would
+result in:
+
+\begin{verbatim}
+/dir1
+  file1
+  file2
+  dir2
+    file3  
+/dir3
+  file1
+  file2
+  dir2
+    file3
+\end{verbatim}
+
+\emph{---end example}{]}
+\end{quote}
+
+27.10.15.4 Copy file~ {[}fs.op.copy\_file{]}
+
+\begin{verbatim}
+bool copy_file(const path& from, const path& to);
+bool copy_file(const path& from, const path& to, error_code& ec) noexcept;
+\end{verbatim}
+
+\begin{quote}
+\emph{Returns:}
+\texttt{copy\_file(from,\ to,\ copy\_options::none}\emph{{[}}\texttt{,\ ec}\emph{{]}}\texttt{)}.
+
+\emph{Throws:} As specified in \hyperref[Error-reporting]{Error
+reporting (27.10.7)}.
+\end{quote}
+
+\begin{verbatim}
+bool copy_file(const path& from, const path& to, copy_options options);
+bool copy_file(const path& from, const path& to, copy_options options,
+               error_code& ec) noexcept;
+\end{verbatim}
+
+\begin{quote}
+\emph{Precondition:} At most one constant from each
+\texttt{copy\_options} option group
+(\hyperref[enum.copyux5foptions]{27.10.10.2}) is present in
+\texttt{options}.
+
+\emph{Effects:}
+
+\begin{quote}
+Report a file already exists error as specified in
+\hyperref[Error-reporting]{Error reporting (27.10.7)}if:
+
+\begin{itemize}
+\tightlist
+\item
+  \texttt{exists(to)} and \texttt{equivalent(from,\ to)}, or
+\item
+  \texttt{exists(to)} and
+  \texttt{(options\ \&\ (copy\_options::skip\_existing\ ~\textbar{}\ copy\_options::overwrite\_existing\ \textbar{}\ copy\_options::update\_existing))\ ~~\ ==\ copy\_options::none.\ }
+\end{itemize}
+
+Otherwise copy the contents and attributes of the file \texttt{from}
+resolves to to the file \texttt{to} resolves to if:
+
+\begin{itemize}
+\tightlist
+\item
+  \texttt{!exists(to)}, or
+\item
+  \texttt{exists(to)} and
+  \texttt{(options\ \&\ \ \ \ \ \ \ \ copy\_options::overwrite\_existing)\ !=\ copy\_options::none},
+  or
+\item
+  \texttt{exists(to)} and
+  \texttt{(options\ \&\ \ \ \ \ \ \ \ copy\_options::update\_existing)\ !=\ copy\_options::none\ }and
+  \texttt{from} is more recent than \texttt{to}, determined as if by use
+  of the \texttt{\ \ \ \ \ \ \ last\_write\_time\ }function.
+\end{itemize}
+
+Otherwise no effects.
+\end{quote}
+
+\emph{Returns}: \texttt{true} if the \texttt{from} file was copied,
+otherwise \texttt{false}. The signature with argument \texttt{ec} return
+\texttt{false} if an error occurs.
+
+\emph{Throws:} As specified in \hyperref[Error-reporting]{Error
+reporting (27.10.7)}.
+
+\emph{Complexity:} At most one direct or indirect invocation of
+\texttt{\ \ \ status(to)}.
+\end{quote}
+
+27.10.15.5 Copy symlink~ {[}fs.op.copy\_symlink{]}
+
+\begin{verbatim}
+void copy_symlink(const path& existing_symlink, const path& new_symlink);
+void copy_symlink(const path& existing_symlink, const path& new_symlink,
+                  error_code& ec) noexcept;
+\end{verbatim}
+
+\begin{quote}
+\emph{Effects:}
+\texttt{function(read\_symlink(existing\_symlink}\emph{{[}}\texttt{,\ ec}\emph{{]}}\texttt{),\ new\_symlink}\emph{{[}}\texttt{,\ ec}\emph{{]}}\texttt{)},
+where \emph{\texttt{function}} is \texttt{create\_symlink} or
+\texttt{\ \ \ create\_directory\_symlink}, as appropriate.
+
+\emph{Throws:} As specified in \hyperref[Error-reporting]{Error
+reporting (27.10.7)}.
+\end{quote}
+
+27.10.15.6 Create directories~ {[}fs.op.create\_directories{]}
+
+\begin{verbatim}
+bool create_directories(const path& p);
+bool create_directories(const path& p, error_code& ec) noexcept;
+\end{verbatim}
+
+\begin{quote}
+\emph{Effects:} Establishes the postcondition by calling
+\texttt{\ \ \ create\_directory()} for any element of \texttt{p} that
+does not exist.
+
+\emph{Postcondition:} \texttt{is\_directory(p)}
+
+\emph{Returns:} \texttt{true} if a new directory was created, otherwise
+\texttt{\ \ \ false}. The signature with argument \texttt{ec} returns
+false if an error occurs.
+
+\emph{Throws:} As specified in \hyperref[Error-reporting]{Error
+reporting (27.10.7)}.
+
+\emph{Complexity:} \emph{O(n+1)} where \emph{n} is the number of
+elements of \texttt{p} that do not exist.
+\end{quote}
+
+27.10.15.7 Create directory~ {[}fs.op.create\_directory{]}
+
+\begin{verbatim}
+bool create_directory(const path& p);
+bool create_directory(const path& p, error_code& ec) noexcept;
+\end{verbatim}
+
+\begin{quote}
+\emph{Effects:} Establishes the postcondition by attempting to create
+the directory \texttt{p} resolves to, as if by POSIX
+\texttt{\ \ \ mkdir()} with a second argument of
+\texttt{static\_cast\textless{}int\textgreater{}(perms::all)}. Creation
+failure because \texttt{p} resolves to an existing directory shall not
+be treated as an error.
+
+\emph{Postcondition:} \texttt{is\_directory(p)}
+
+\emph{Returns:} \texttt{true} if a new directory was created, otherwise
+\texttt{false}. The signature with argument \texttt{ec} returns false if
+an error occurs.
+
+\emph{Throws:} As specified in \hyperref[Error-reporting]{Error
+reporting (27.10.7)}.
+\end{quote}
+
+\begin{verbatim}
+bool create_directory(const path& p, const path& existing_p);
+bool create_directory(const path& p, const path& existing_p, error_code& ec) noexcept;
+\end{verbatim}
+
+\begin{quote}
+\emph{Effects:} Establishes the postcondition by attempting to create
+the directory \texttt{p} resolves to, with attributes copied from
+directory \texttt{existing\_p}. The set of attributes copied is
+operating system dependent. Creation failure because \texttt{p} resolves
+to an existing directory shall not be treated as an error.
+
+\begin{quote}
+{[}\emph{Note:} For POSIX based operating systems the attributes are
+those copied by native API
+\texttt{stat(existing\_p.c\_str(),\ \&attributes\_stat)} followed by
+\texttt{mkdir(p.c\_str(),\ attributes\_stat.st\_mode)}.~ For Windows
+based operating systems the attributes are those copied by native API
+\texttt{CreateDirectoryExW(existing\_p.c\_str(),\ p.c\_str(),\ 0)}.~
+\emph{---end note}{]}
+\end{quote}
+
+\emph{Postcondition:} \texttt{is\_directory(p)}
+
+\emph{Returns:} \texttt{true} if a new directory was created, otherwise
+\texttt{false}. The signature with argument \texttt{ec} returns false if
+an error occurs.
+
+\emph{Throws:} As specified in \hyperref[Error-reporting]{Error
+reporting (27.10.7)}.
+\end{quote}
+
+27.10.15.8 Create directory symlink~ {[}fs.op.create\_dir\_symlk{]}
+
+\begin{verbatim}
+void create_directory_symlink(const path& to, const path& new_symlink);
+void create_directory_symlink(const path& to, const path& new_symlink,
+                              error_code& ec) noexcept;
+\end{verbatim}
+
+\begin{quote}
+\emph{Effects:} Establishes the postcondition, as if by POSIX
+\texttt{symlink()}.
+
+\emph{Postcondition:} \texttt{new\_symlink} resolves to a symbolic link
+file that contains an unspecified representation of \texttt{to}.
+
+\emph{Throws:} As specified in \hyperref[Error-reporting]{Error
+reporting (27.10.7)}.
+
+{[}\emph{Note:} Some operating systems require symlink creation to
+identify that the link is to a directory. Portable code should use
+\texttt{create\_directory\_symlink()} to create directory symlinks
+rather than \texttt{create\_symlink()} \emph{---end note}{]}
+
+{[}\emph{Note:} Some operating systems do not support symbolic links at
+all or support them only for regular files. Some file systems do not
+support symbolic links regardless of the operating system - the FAT file
+system used on memory cards and flash drives, for example. \emph{---end
+note}{]}
+\end{quote}
+
+27.10.15.9 Create hard link~ {[}fs.op.create\_hard\_lk{]}
+
+\begin{verbatim}
+void create_hard_link(const path& to, const path& new_hard_link);
+void create_hard_link(const path& to, const path& new_hard_link,
+                                      error_code& ec) noexcept;
+\end{verbatim}
+
+\begin{quote}
+\emph{Effects:} Establishes the postcondition, as if by POSIX
+\texttt{link()}.
+
+\emph{Postcondition:}
+
+\begin{itemize}
+\tightlist
+\item
+  ~\texttt{exists(to)\ \&\&\ \ \ \ \ \ exists(}\texttt{new\_hard\_link}\texttt{)\ \&\&\ equivalent(to,\ \ \ \ \ \ \ \ \ \ \ \ }\texttt{new\_hard\_link}\texttt{)}
+\item
+  The contents of the file or directory \texttt{to} resolves to are
+  unchanged.
+\end{itemize}
+
+\emph{Throws:} As specified in \hyperref[Error-reporting]{Error
+reporting (27.10.7)}.
+
+{[}\emph{Note:} Some operating systems do not support hard links at all
+or support them only for regular files. Some file systems do not support
+hard links regardless of the operating system - the FAT file system used
+on memory cards and flash drives, for example. Some file systems limit
+the number of links per file. \emph{---end note}{]}
+\end{quote}
+
+27.10.15.10 Create symlink~ {[}fs.op.create\_symlink{]}
+
+\begin{verbatim}
+void create_symlink(const path& to, const path& new_symlink);
+void create_symlink(const path& to, const path& new_symlink,
+                    error_code& ec) noexcept;
+\end{verbatim}
+
+\begin{quote}
+\emph{Effects:} Establishes the postcondition, as if by POSIX
+\texttt{symlink()}.
+
+\emph{Postcondition:} \texttt{new\_symlink} resolves to a symbolic link
+file that contains an unspecified representation of \texttt{to}.
+
+\emph{Throws:} As specified in \hyperref[Error-reporting]{Error
+reporting (27.10.7)}.
+
+{[}\emph{Note:} Some operating systems do not support symbolic links at
+all or support them only for regular files. Some file systems do not
+support symbolic links regardless of the operating system - the FAT
+system used on memory cards and flash drives, for example. \emph{---end
+note}{]}
+\end{quote}
+
+27.10.15.11 Current path~ {[}fs.op.current\_path{]}
+
+\begin{verbatim}
+path current_path();
+path current_path(error_code& ec);
+\end{verbatim}
+
+\begin{quote}
+\emph{Returns:} The absolute path of the current working directory,
+obtained as if by POSIX \texttt{getcwd()}. The signature with argument
+\texttt{ec} returns \texttt{path()} if an error occurs.
+
+\emph{Throws:} As specified in \hyperref[Error-reporting]{Error
+reporting (27.10.7)}.
+
+\emph{Remarks:} The current working directory is the directory,
+associated with the process, that is used as the starting location in
+pathname resolution for relative paths.
+
+{[}\emph{Note:} The \texttt{current\_path()} name was chosen to
+emphasize that the return is a path, not just a single directory name.
+
+The current path as returned by many operating systems is a dangerous
+global variable. It may be changed unexpectedly by a third-party or
+system library functions, or by another thread.~ \emph{---end note}{]}
+\end{quote}
+
+\begin{verbatim}
+void current_path(const path& p);
+void current_path(const path& p, error_code& ec) noexcept;
+\end{verbatim}
+
+\begin{quote}
+\emph{Effects:} Establishes the postcondition, as if by POSIX
+\texttt{chdir()}.
+
+\emph{Postcondition:} \texttt{equivalent(p,\ current\_path())}.
+
+\emph{Throws:} As specified in \hyperref[Error-reporting]{Error
+reporting (27.10.7)}.
+
+{[}\emph{Note:} The current path for many operating systems is a
+dangerous global state. It may be changed unexpectedly by a third-party
+or system library functions, or by another thread.~ \emph{---end
+note}{]}
+\end{quote}
+
+27.10.15.12 Exists~ {[}fs.op.exists{]}
+
+\begin{verbatim}
+bool exists(file_status s) noexcept;
+\end{verbatim}
+
+\begin{quote}
+\emph{Returns:}
+\texttt{status\_known(s)\ \&\&\ s.type()\ !=\ \ \ \ file\_type::not\_found}
+\end{quote}
+
+\begin{verbatim}
+bool exists(const path& p);
+bool exists(const path& p, error_code& ec) noexcept;
+\end{verbatim}
+
+\begin{quote}
+\emph{Returns:} \texttt{exists(status(p))} or
+\texttt{exists(status(p,\ ec))}, respectively. The signature with
+argument \texttt{ec} returns \texttt{false} if an error occurs.
+
+\emph{Throws:} As specified in \hyperref[Error-reporting]{Error
+reporting (27.10.7)}.
+\end{quote}
+
+27.10.15.13 Equivalent~ {[}fs.op.equivalent{]}
+
+\begin{verbatim}
+bool equivalent(const path& p1, const path& p2);
+bool equivalent(const path& p1, const path& p2, error_code& ec) noexcept;
+\end{verbatim}
+
+\begin{quote}
+\emph{Effects:} Determines \texttt{file\_status\ s1} and \texttt{s2}, as
+if by \texttt{status(p1)} and~ \texttt{status(p2)}, respectively.
+
+\emph{Returns:} \texttt{true}, if \texttt{\ s1\ ==\ \ \ \ \ s2} and
+\texttt{p1} and \texttt{p2} resolve to the same file system entity, else
+\texttt{false}. The signature with argument \texttt{ec} returns
+\texttt{false} if an error occurs.
+
+\begin{quote}
+Two paths are considered to resolve to the same file system entity if
+two candidate entities reside on the same device at the same location.
+This is determined as if by the values of the POSIX \texttt{stat}
+structure\texttt{,} obtained as if by \texttt{stat()} for the two paths,
+having equal \texttt{st\_dev} values and equal \texttt{st\_ino} values.
+\end{quote}
+
+\emph{Throws:} \texttt{filesystem\_error} if
+\texttt{(!exists(s1)\ \&\&\ !exists(s2))\ \textbar{}\textbar{}\ (is\_other(s1)\ \&\&\ is\_other(s2))},
+otherwise as specified in \hyperref[Error-reporting]{Error reporting
+(27.10.7)}.
+\end{quote}
+
+27.10.15.14 File size~ {[}fs.op.file\_size{]}
+
+\begin{verbatim}
+uintmax_t file_size(const path& p);
+uintmax_t file_size(const path& p, error_code& ec) noexcept;
+\end{verbatim}
+
+\begin{quote}
+\emph{Returns:} If
+\texttt{!exists(p)\ \ \textbar{}\textbar{}\ !is\_regular\_file(p)} an
+error is reported (27.10.7). Otherwise, the size in bytes of the file
+\texttt{\ \ \ p} resolves to, determined as if by the value of the POSIX
+\texttt{stat} structure member \texttt{st\_size} obtained as if by POSIX
+\texttt{stat()}. The signature with argument \texttt{ec} returns
+\texttt{static\_cast\textless{}uintmax\_t\textgreater{}(-1)} if an error
+occurs.
+
+\emph{Throws:} As specified in \hyperref[Error-reporting]{Error
+reporting (27.10.7)}.
+\end{quote}
+
+27.10.15.15 Hard link count~ {[}fs.op.hard\_lk\_ct{]}
+
+\begin{verbatim}
+uintmax_t hard_link_count(const path& p);
+uintmax_t hard_link_count(const path& p, error_code& ec) noexcept;
+\end{verbatim}
+
+\begin{quote}
+\emph{Returns:} The number of hard links for \texttt{p}. The signature
+with argument \texttt{ec} returns
+\texttt{static\_cast\textless{}uintmax\_t\textgreater{}(-1)} if an error
+occurs.
+
+\emph{Throws:} As specified in \hyperref[Error-reporting]{Error
+reporting (27.10.7)}.
+\end{quote}
+
+27.10.15.16 Is block file~ {[}fs.op.is\_block\_file{]}
+
+\begin{verbatim}
+bool is_block_file(file_status s) noexcept;
+\end{verbatim}
+
+\begin{quote}
+\emph{Returns:} \texttt{s.type()\ ==\ file\_type::block}
+\end{quote}
+
+\begin{verbatim}
+bool is_block_file(const path& p);
+bool is_block_file(const path& p, error_code& ec) noexcept;
+\end{verbatim}
+
+\begin{quote}
+\emph{Returns:} \texttt{is\_block\_file(status(p))} or
+\texttt{\ \ \ is\_block\_file(status(p,\ ec))}, respectively. The
+signature with argument \texttt{\ \ \ ec} returns \texttt{false} if an
+error occurs.
+
+\emph{Throws:} As specified in \hyperref[Error-reporting]{Error
+reporting (27.10.7)}.
+\end{quote}
+
+27.10.15.17 Is character file~ {[}fs.op.is\_char\_file{]}
+
+\begin{verbatim}
+bool is_character_file(file_status s) noexcept;
+\end{verbatim}
+
+\begin{quote}
+\emph{Returns:} \texttt{s.type()\ ==\ file\_type::character}
+\end{quote}
+
+\begin{verbatim}
+bool is_character_file(const path& p);
+bool is_character_file(const path& p, error_code& ec) noexcept;
+\end{verbatim}
+
+\begin{quote}
+\emph{Returns:} \texttt{is\_character\_file(status(p))} or
+\texttt{is\_character\_file(status(p,\ ec))}, respectively. The
+signature with argument \texttt{ec} returns \texttt{false} if an error
+occurs.
+
+\emph{Throws:} As specified in \hyperref[Error-reporting]{Error
+reporting (27.10.7)}.
+\end{quote}
+
+27.10.15.18 Is directory~ {[}fs.op.is\_directory{]}
+
+\begin{verbatim}
+bool is_directory(file_status s) noexcept;
+\end{verbatim}
+
+\begin{quote}
+\emph{Returns:} \texttt{s.type()\ ==\ file\_type::directory}
+\end{quote}
+
+\begin{verbatim}
+bool is_directory(const path& p);
+bool is_directory(const path& p, error_code& ec) noexcept;
+\end{verbatim}
+
+\begin{quote}
+\emph{Returns:} \texttt{is\_directory(status(p))} or
+\texttt{\ \ \ is\_directory(status(p,\ ec))}, respectively. The
+signature with argument \texttt{\ \ \ ec} returns \texttt{false} if an
+error occurs.
+
+\emph{Throws:} As specified in \hyperref[Error-reporting]{Error
+reporting (27.10.7)}.
+\end{quote}
+
+27.10.15.19 Is empty~ {[}fs.op.is\_empty{]}
+
+\begin{verbatim}
+bool is_empty(const path& p);
+bool is_empty(const path& p, error_code& ec) noexcept;
+\end{verbatim}
+
+\begin{quote}
+\emph{Effects:} Determines \texttt{file\_status\ s}, as if by
+\texttt{status(p,\ ec)}.
+
+\emph{Returns:}
+\texttt{is\_directory(s)\ ~~~~~~~~\ ?\ directory\_iterator(p)\ ==\ directory\_iterator()\ ~~~~~~~~\ :\ file\_size(p)\ ==\ 0;}
+
+\begin{quote}
+The signature with argument \texttt{ec} returns \texttt{false} if an
+error occurs.
+\end{quote}
+
+\emph{Throws:} As specified in \hyperref[Error-reporting]{Error
+reporting (27.10.7)}.
+\end{quote}
+
+27.10.15.20 Is fifo~ {[}fs.op.is\_fifo{]}
+
+\begin{verbatim}
+bool is_fifo(file_status s) noexcept;
+\end{verbatim}
+
+\begin{quote}
+\emph{Returns:} \texttt{s.type()\ ==\ file\_type::fifo}
+\end{quote}
+
+\begin{verbatim}
+bool is_fifo(const path& p);
+bool is_fifo(const path& p, error_code& ec) noexcept;
+\end{verbatim}
+
+\begin{quote}
+\emph{Returns:} \texttt{is\_fifo(status(p))} or
+\texttt{is\_fifo(status(p,\ \ \ \ ec))}, respectively. The signature
+with argument \texttt{ec} returns \texttt{\ \ \ false} if an error
+occurs.
+
+\emph{Throws:} As specified in \hyperref[Error-reporting]{Error
+reporting (27.10.7)}.
+\end{quote}
+
+27.10.15.21 Is other~ {[}fs.op.is\_other{]}
+
+\begin{verbatim}
+bool is_other(file_status s) noexcept;
+\end{verbatim}
+
+\begin{quote}
+\emph{Returns:}
+\texttt{return\ exists(s)\ \&\&\ !is\_regular\_file(s)\ \&\&\ !is\_directory(s)\ \&\&\ !is\_symlink(s)}
+\end{quote}
+
+\begin{verbatim}
+bool is_other(const path& p);
+bool is_other(const path& p, error_code& ec) noexcept;
+\end{verbatim}
+
+\begin{quote}
+\emph{Returns:} \texttt{is\_other(status(p))} or
+\texttt{is\_other(status(p,\ ec))}, respectively. The signature with
+argument \texttt{ec} returns \texttt{false} if an error occurs.
+
+\emph{Throws:} As specified in \hyperref[Error-reporting]{Error
+reporting (27.10.7)}.
+\end{quote}
+
+27.10.15.22 Is regular file~ {[}fs.op.is\_regular\_file{]}
+
+\begin{verbatim}
+bool is_regular_file(file_status s) noexcept;
+\end{verbatim}
+
+\begin{quote}
+\emph{Returns:} \texttt{s.type()\ ==\ file\_type::regular}.
+\end{quote}
+
+\begin{verbatim}
+bool is_regular_file(const path& p);
+\end{verbatim}
+
+\begin{quote}
+\emph{Returns:} \texttt{is\_regular\_file(status(p))}.
+
+\emph{Throws:} \texttt{filesystem\_error} if \texttt{status(p)} would
+throw \texttt{filesystem\_error.}
+\end{quote}
+
+\begin{verbatim}
+bool is_regular_file(const path& p, error_code& ec) noexcept;
+\end{verbatim}
+
+\begin{quote}
+\emph{Effects:} Sets \texttt{ec} as if by \texttt{status(p,\ ec)}.
+{[}\emph{Note:} \texttt{\ \ \ file\_type::none},
+\texttt{file\_type::not\_found} and \texttt{\ \ \ file\_type::unknown}
+cases set \texttt{ec} to error values. To distinguish between cases,
+call the \texttt{status} function directly. \emph{---end note}{]}
+
+\emph{Returns:} \texttt{is\_regular\_file(status(p,\ ec))}. Returns
+\texttt{\ \ \ false} if an error occurs.
+\end{quote}
+
+27.10.15.23 Is socket~ {[}fs.op.is\_socket{]}
+
+\begin{verbatim}
+bool is_socket(file_status s) noexcept;
+\end{verbatim}
+
+\begin{quote}
+\emph{Returns:} \texttt{s.type()\ ==\ file\_type::socket}
+\end{quote}
+
+\begin{verbatim}
+bool is_socket(const path& p);
+bool is_socket(const path& p, error_code& ec) noexcept;
+\end{verbatim}
+
+\begin{quote}
+\emph{Returns:} \texttt{is\_socket(status(p))} or
+\texttt{\ \ \ is\_socket(status(p,\ ec))}, respectively. The signature
+with argument \texttt{\ \ \ ec} returns \texttt{false} if an error
+occurs.
+
+\emph{Throws:} As specified in \hyperref[Error-reporting]{Error
+reporting (27.10.7)}.
+\end{quote}
+
+27.10.15.24 Is symlink~ {[}fs.op.is\_symlink{]}
+
+\begin{verbatim}
+bool is_symlink(file_status s) noexcept;
+\end{verbatim}
+
+\begin{quote}
+\emph{Returns:} \texttt{s.type()\ ==\ file\_type::symlink}
+\end{quote}
+
+\begin{verbatim}
+bool is_symlink(const path& p);
+bool is_symlink(const path& p, error_code& ec) noexcept;
+\end{verbatim}
+
+\begin{quote}
+\emph{Returns:} \texttt{is\_symlink(symlink\_status(p))} or
+\texttt{is\_symlink(symlink\_status(p,\ ec))}, respectively. The
+signature with argument \texttt{ec} returns \texttt{false} if an error
+occurs.
+
+\emph{Throws:} As specified in \hyperref[Error-reporting]{Error
+reporting (27.10.7)}.
+\end{quote}
+
+27.10.15.25 Last write time~ {[}fs.op.last\_write\_time{]}
+
+\begin{verbatim}
+file_time_type last_write_time(const path& p);
+file_time_type last_write_time(const path& p, error_code& ec) noexcept;
+\end{verbatim}
+
+\begin{quote}
+\emph{Returns:} The time of last data modification of \texttt{p},
+determined as if by the value of the POSIX \texttt{stat} structure
+member \texttt{st\_mtime}~ obtained as if by POSIX \texttt{stat()}. The
+signature with argument \texttt{ec} returns
+\texttt{file\_time\_type::min()} if an error occurs.
+
+\emph{Throws:} As specified in \hyperref[Error-reporting]{Error
+reporting (27.10.7)}.
+\end{quote}
+
+\begin{verbatim}
+void last_write_time(const path& p, file_time_type new_time);
+void last_write_time(const path& p, file_time_type new_time,
+                     error_code& ec) noexcept;
+\end{verbatim}
+
+\begin{quote}
+\emph{Effects:} Sets the time of last data modification of the file
+resolved to by \texttt{p} to \texttt{new\_time}, as if by POSIX
+\texttt{futimens()}.
+
+\emph{Throws:} As specified in \hyperref[Error-reporting]{Error
+reporting (27.10.7)}.
+
+{[}\emph{Note:} A postcondition of
+\texttt{last\_write\_time(p)\ ==\ new\_time} is not specified since it
+might not hold for file systems with coarse time granularity.
+\emph{---end note}{]}
+\end{quote}
+
+27.10.15.26 Permissions~ {[}fs.op.permissions{]}
+
+\begin{verbatim}
+void permissions(const path& p, perms prms);
+void permissions(const path& p, perms prms, error_code& ec) noexcept;
+\end{verbatim}
+
+\begin{quote}
+\emph{Requires:}
+\texttt{!((prms\ \&\ perms::add\_perms)\ !=\ \ \ \ perms::none\ \ \ ~\&\&\ (prms\ \&\ perms::remove\_perms)\ !=\ \ \ \ perms::none)}.
+
+\emph{Effects:} Applies the effective permissions bits from
+\texttt{prms} to the file \texttt{p} resolves to, as if by POSIX
+\texttt{fchmodat()}. The effective permission bits are determined as
+specified by the following table.
+
+\begin{longtable}[c]{@{}ll@{}}
+\toprule
+\textbf{bits present in \texttt{prms}} & \textbf{Effective bits
+applied}\tabularnewline
+Neither \texttt{add\_perms} nor \texttt{remove\_perms} &
+\texttt{prms\ \&\ perms::mask}\tabularnewline
+\texttt{add\_perms} &
+\texttt{status(p).permissions()\ \textbar{}\ (prms\ \&\ perms::mask)}\tabularnewline
+\texttt{remove\_perms} &
+\texttt{status(p)}\texttt{.permissions()\ \&\ \textasciitilde{}(prms\ \&\ perms::mask)\ }\tabularnewline
+\bottomrule
+\end{longtable}
+
+{[}\emph{Note:} Conceptually permissions are viewed as bits, but the
+actual implementation may use some other mechanism. \emph{---end
+note}{]}
+
+\emph{Throws:} As specified in \hyperref[Error-reporting]{Error
+reporting (27.10.7)}.
+\end{quote}
+
+27.10.15.27 Read symlink~ {[}fs.op.read\_symlink{]}
+
+\begin{verbatim}
+path read_symlink(const path& p);
+path read_symlink(const path& p, error_code& ec);
+\end{verbatim}
+
+\begin{quote}
+\emph{Returns:}~ If \texttt{p} resolves to a symbolic link, a
+\texttt{path} object containing the contents of that symbolic link. The
+signature with argument \texttt{ec} returns \texttt{path()} if an error
+occurs.
+
+\emph{Throws:} As specified in \hyperref[Error-reporting]{Error
+reporting (27.10.7)}. {[}\emph{Note:} It is an error if \texttt{p} does
+not resolve to a symbolic link. \emph{---end note}{]}
+\end{quote}
+
+27.10.15.28 Remove~ {[}fs.op.remove{]}
+
+\begin{verbatim}
+bool remove(const path& p);
+bool remove(const path& p, error_code& ec) noexcept;
+\end{verbatim}
+
+\begin{quote}
+\emph{Effects:}~ If \texttt{exists(symlink\_status(p,ec))}, it is
+removed as if by POSIX \texttt{remove()}.
+
+\begin{quote}
+{[}\emph{Note:} A symbolic link is itself removed, rather than the file
+it resolves to being removed. \emph{---end note}{]}
+\end{quote}
+
+\emph{Postcondition:} \texttt{!exists(symlink\_status(p))}.
+
+\emph{Returns:}~ \texttt{false} if p did not exist in the first place,
+otherwise \texttt{true}. The signature with argument \texttt{ec} returns
+\texttt{false} if an error occurs.
+
+\emph{Throws:} As specified in \hyperref[Error-reporting]{Error
+reporting (27.10.7)}.
+\end{quote}
+
+27.10.15.29 Remove all~ {[}fs.op.remove\_all{]}
+
+\begin{verbatim}
+uintmax_t remove_all(const path& p);
+uintmax_t remove_all(const path& p, error_code& ec) noexcept;
+\end{verbatim}
+
+\begin{quote}
+\emph{Effects:}~ Recursively deletes the contents of p if it exists,
+then deletes file \texttt{p} itself, as if by POSIX \texttt{remove()}.
+
+\begin{quote}
+{[}\emph{Note:} A symbolic link is itself removed, rather than the file
+it resolves to being removed. \emph{---end note}{]}
+\end{quote}
+
+\emph{Postcondition:} \texttt{!exists(p)}
+
+\emph{Returns:} The number of files removed. The signature with argument
+\texttt{ec} returns
+\texttt{static\_cast\textless{}uintmax\_t\textgreater{}(-1)} if an error
+occurs.
+
+\emph{Throws:} As specified in \hyperref[Error-reporting]{Error
+reporting (27.10.7)}.
+\end{quote}
+
+27.10.15.30 Rename~ {[}fs.op.rename{]}
+
+\begin{verbatim}
+void rename(const path& old_p, const path& new_p);
+void rename(const path& old_p, const path& new_p, error_code& ec) noexcept;
+\end{verbatim}
+
+\begin{quote}
+\emph{Effects:} Renames \texttt{old\_p} to \texttt{new\_p}, as if by
+POSIX \texttt{rename()}.
+
+\begin{quote}
+{[}\emph{Note:} If \texttt{old\_p} and \texttt{new\_p} resolve to the
+same existing file, no action is taken. Otherwise, if \texttt{new\_p}
+resolves to an existing non-directory file, it is removed, while if
+\texttt{new\_p} resolves to an existing directory, it is removed if
+empty on POSIX compliant operating systems but is an error on some other
+operating systems. A symbolic link is itself renamed, rather than the
+file it resolves to being renamed. \emph{---end note}{]}
+\end{quote}
+
+\emph{Throws:} As specified in \hyperref[Error-reporting]{Error
+reporting (27.10.7)}.
+\end{quote}
+
+27.10.15.31 Resize file~ {[}fs.op.resize\_file{]}
+
+\begin{verbatim}
+void resize_file(const path& p, uintmax_t new_size);
+void resize_file(const path& p, uintmax_t new_size, error_code& ec) noexcept;
+\end{verbatim}
+
+\begin{quote}
+\emph{Postcondition:} \texttt{file\_size()\ ==\ new\_size}.
+
+\emph{Throws:} As specified in \hyperref[Error-reporting]{Error
+reporting (27.10.7)}.
+
+\emph{Remarks:} Achieves its postconditions as if by POSIX
+\texttt{truncate()}.
+\end{quote}
+
+27.10.15.32 Space~ {[}fs.op.space{]}
+
+\begin{verbatim}
+space_info space(const path& p);
+space_info space(const path& p, error_code& ec) noexcept;
+\end{verbatim}
+
+\begin{quote}
+\emph{Returns:} An object of type \texttt{space\_info}. The value of the
+\texttt{space\_info} object is determined as if by using POSIX
+\texttt{statvfs()} to obtain a POSIX struct \texttt{statvfs}, and then
+multiplying its \texttt{f\_blocks}, \texttt{f\_bfree}, and
+\texttt{f\_bavail} members by its \texttt{f\_frsize} member, and
+assigning the results to the \texttt{capacity}, \texttt{free}, and
+\texttt{available} members respectively. Any members for which the value
+cannot be determined shall be set to
+\texttt{static\_cast\textless{}uintmax\_t\textgreater{}(-1)}. For the
+signature with argument \texttt{ec}, all members are set to
+\texttt{\ \ \ static\_cast\textless{}uintmax\_t\textgreater{}(-1)} if an
+error occurs.
+
+\emph{Throws:} As specified in \hyperref[Error-reporting]{Error
+reporting (27.10.7)}.
+
+\emph{Remarks:} The value of member \texttt{space\_info::available} is
+operating system dependent. {[}\emph{Note:} \texttt{available} may be
+less than \texttt{free}. \emph{--- end note}{]}
+\end{quote}
+
+27.10.15.33 Status~ {[}fs.op.status{]}
+
+\begin{verbatim}
+file_status status(const path& p);
+\end{verbatim}
+
+\begin{quote}
+\emph{Effects:} As if:
+
+\begin{quote}
+\begin{verbatim}
+error_code ec;
+file_status result = status(p, ec);
+if (result == file_type::none)
+  throw filesystem_error(implementation-supplied-message, p, ec);
+return result;
+\end{verbatim}
+\end{quote}
+
+\emph{Returns:} See above.
+
+\emph{Throws:} \texttt{filesystem\_error}. {[}\emph{Note:}
+\texttt{result} values of
+\texttt{\ \ \ file\_status(file\_type::not\_found)} and
+\texttt{file\_status(file\_type::unknown)} are not considered failures
+and do not cause an exception to be thrown. \emph{---end note}{]}
+\end{quote}
+
+\begin{verbatim}
+file_status status(const path& p, error_code& ec) noexcept;
+\end{verbatim}
+
+\begin{quote}
+\emph{Effects:}
+
+\begin{quote}
+If possible, determines the attributes of the file \texttt{p} resolves
+to, as if by POSIX \texttt{stat()}.
+
+If, during attribute determination, the underlying file system API
+reports an error, sets \texttt{ec} to indicate the specific error
+reported. Otherwise, \texttt{ec.clear()}.
+
+\begin{quote}
+{[}\emph{Note:} This allows users to inspect the specifics of underlying
+API errors even when the value returned by \texttt{status()} is not
+\texttt{\ \ \ \ \ \ \ file\_status(file\_type::none)}.~ \emph{---end
+note}{]}
+\end{quote}
+\end{quote}
+
+\emph{Returns:}
+
+\begin{quote}
+If \texttt{ec\ !=\ error\_code()}:
+
+\begin{itemize}
+\tightlist
+\item
+  If the specific error indicates that \texttt{p} cannot be resolved
+  because some element of the path does not exist, return
+  \texttt{\ \ \ \ \ \ \ file\_status(file\_type::not\_found)}.
+\item
+  Otherwise, if the specific error indicates that \texttt{p} can be
+  resolved but the attributes cannot be determined, return
+  \texttt{\ \ \ \ \ \ \ file\_status(file\_type::unknown)}.
+\item
+  Otherwise, return
+  \texttt{\ \ \ \ \ \ \ file\_status(file\_type::none)}.
+\end{itemize}
+
+\begin{quote}
+{[}\emph{Note:} These semantics distinguish between \texttt{p} being
+known not to exist, \texttt{p} existing but not being able to determine
+its attributes, and there being an error that prevents even knowing if
+\texttt{p} exists. These distinctions are important to some use
+cases.~\emph{---end note}{]}
+\end{quote}
+
+Otherwise,
+
+\begin{itemize}
+\tightlist
+\item
+  If the attributes indicate a regular file, as if by
+  POSIX~\href{http://www.opengroup.org/onlinepubs/000095399/basedefs/sys/stat.h.html}{S\_ISREG()},
+  return \texttt{\ \ \ \ \ \ \ file\_status(file\_type::regular)}.
+  {[}\emph{Note:} \texttt{\ \ \ \ \ \ \ file\_type::regular} implies
+  appropriate \texttt{\textless{}fstream\textgreater{}} operations would
+  succeed, assuming no hardware, permission, access, or file system race
+  errors. Lack of \texttt{file\_type::regular} does not necessarily
+  imply \texttt{\textless{}fstream\textgreater{}} operations would fail
+  on a directory. \emph{---end note}{]}
+\item
+  Otherwise, if the attributes indicate a directory, as if by POSIX
+  \href{http://www.opengroup.org/onlinepubs/000095399/basedefs/sys/stat.h.html}{S\_ISDIR()},
+  return \texttt{\ \ \ \ \ \ \ file\_status(file\_type::directory)}.
+  {[}\emph{Note:} \texttt{\ \ \ \ \ \ \ file\_type::directory} implies
+  \texttt{\ directory\_iterator(p)}would succeed. \emph{---end note}{]}
+\item
+  Otherwise, if the attributes indicate a block special file, as if by
+  POSIX
+  \href{http://www.opengroup.org/onlinepubs/000095399/basedefs/sys/stat.h.html}{S\_ISBLK()},
+  return \texttt{\ \ \ \ \ \ \ file\_status(file\_type::block)}.
+\item
+  Otherwise, if the attributes indicate a character special file, as if
+  by POSIX
+  \href{http://www.opengroup.org/onlinepubs/000095399/basedefs/sys/stat.h.html}{S\_ISCHR()},
+  return \texttt{\ \ \ \ \ \ \ file\_status(file\_type::character)}.
+\item
+  Otherwise, if the attributes indicate a fifo or pipe file, as if by
+  POSIX
+  \href{http://www.opengroup.org/onlinepubs/000095399/basedefs/sys/stat.h.html}{S\_ISFIFO()},
+  return \texttt{\ \ \ \ \ \ \ file\_status(file\_type::fifo)}.
+\item
+  Otherwise, if the attributes indicate a socket, as if by POSIX
+  \href{http://www.opengroup.org/onlinepubs/000095399/basedefs/sys/stat.h.html}{S\_ISSOCK()},
+  return \texttt{\ \ \ \ \ \ \ file\_status(file\_type::socket)}.
+\item
+  Otherwise, return
+  \texttt{\ \ \ \ \ \ \ file\_status(file\_type::unknown)}.
+\end{itemize}
+\end{quote}
+
+\emph{Remarks:} If a symbolic link is encountered during pathname
+resolution, pathname resolution continues using the contents of the
+symbolic link.
+\end{quote}
+
+27.10.15.34 Status known~ {[}fs.op.status\_known{]}
+
+\begin{verbatim}
+bool status_known(file_status s) noexcept;
+\end{verbatim}
+
+\begin{quote}
+\emph{Returns:} \texttt{s.type()\ !=\ file\_type::none}
+\end{quote}
+
+27.10.15.35 Symlink status~ {[}fs.op.symlink\_status{]}
+
+\begin{verbatim}
+file_status symlink_status(const path& p);
+file_status symlink_status(const path& p, error_code& ec) noexcept;
+\end{verbatim}
+
+\begin{quote}
+\emph{Effects:}~ Same as \hyperref[status]{status()}, above, except that
+the attributes of \texttt{p} are determined as if by POSIX
+\texttt{lstat()}.
+\end{quote}
+
+\begin{quote}
+\emph{Returns:} Same as \hyperref[status]{status()}, above, except that
+if the attributes indicate a symbolic link, as if by POSIX
+\href{http://www.opengroup.org/onlinepubs/000095399/basedefs/sys/stat.h.html}{S\_ISLNK()},
+return \texttt{\ \ \ \ \ \ \ file\_status(file\_type::symlink)}. The
+signature with argument \texttt{ec} returns
+\texttt{\ \ \ \ \ \ \ file\_status(file\_type::none)} if an error
+occurs.
+
+\emph{Remarks:} Pathname resolution terminates if \texttt{p} names a
+symbolic link.
+
+\emph{Throws:} As specified in \hyperref[Error-reporting]{Error
+reporting (27.10.7)}.
+\end{quote}
+
+27.10.15.36 System complete~ {[}fs.op.system\_complete{]}
+
+\begin{verbatim}
+path system_complete(const path& p);
+path system_complete(const path& p, error_code& ec);
+\end{verbatim}
+
+\begin{quote}
+\emph{Effects:} Composes an absolute path from \texttt{p}, using the
+same rules used by the operating system to resolve a path passed as the
+filename argument to standard library open functions.
+
+\emph{Returns:} The composed path. The signature with argument
+\texttt{ec} returns \texttt{path()} if an error occurs.
+
+\emph{Postcondition:} For the returned path, \texttt{rp,}
+\texttt{rp.is\_absolute()} is true.
+
+\emph{Throws:} As specified in \hyperref[Error-reporting]{Error
+reporting (27.10.7)}.
+
+{[}\emph{Example:} For POSIX based operating systems,
+\texttt{system\_complete(p)} has the same semantics as
+\texttt{absolute(p,\ current\_path())}.
+
+For Windows based operating systems, \texttt{system\_complete(p)} has
+the same semantics as \texttt{absolute(p,\ current\_path())} if
+\texttt{p.is\_absolute()\ \textbar{}\textbar{}\ \ \ !p.has\_root\_name()}
+or \texttt{p} and \texttt{base} have the same \texttt{root\_name()}.
+Otherwise it acts like \texttt{absolute(p,\ cwd)} is the current
+directory for the \texttt{p.root\_name()} drive. This will be the
+current directory for that drive the last time it was set, and thus may
+be residue left over from a prior program run by the command processor.
+Although these semantics are useful, they may be surprising.
+\emph{---end example}{]}
+\end{quote}
+
+27.10.15.37 Temporary directory path~ {[}fs.op.temp\_dir\_path{]}
+
+\begin{verbatim}
+path temp_directory_path();
+path temp_directory_path(error_code& ec);
+\end{verbatim}
+
+\begin{quote}
+\emph{Returns:} An unspecifed directory path suitable for temporary
+files. An error shall be reported
+if\texttt{\ !exists(p)\ \ \ \ \textbar{}\textbar{}\ !is\_directory(p)},
+where \texttt{p} is the path to be returned. The signature with argument
+\texttt{ec} returns \texttt{path()} if an error occurs.
+
+\emph{Throws:} As specified in \hyperref[Error-reporting]{Error
+reporting (27.10.7)}.
+
+{[}\emph{Example:} For POSIX based operating systems, an implementation
+might return the path supplied by the first environment variable found
+in the list TMPDIR, TMP, TEMP, TEMPDIR, or if none of these are found,
+\texttt{"/tmp"}.
+
+For Windows based operating systems, an implementation might return the
+path reported by the \emph{Windows} \texttt{GetTempPath} API function.
+\emph{---end example}{]}
+\end{quote}
+
+\begin{center}\rule{0.5\linewidth}{\linethickness}\end{center}
