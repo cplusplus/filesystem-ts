@@ -39,7 +39,7 @@ body
   <td align="left">Beman Dawes &lt;bdawes at acm dot org&gt;</tr>
 <tr>
   <td align="left">Audience:</td>
-  <td align="left">Library, Filesystem</td>
+  <td align="left">Library</td>
 </tr>
 </table>
 
@@ -151,14 +151,11 @@ of file size from <code>directory_entry</code></i></b></p>
   &lt;ins&gt; wording. Moving forward now on the removal wording and later on the 
   &lt;ins&gt; wording would allow time to be sure the &lt;ins&gt; wording is fully baked.</i></span></p>
 
-<h2>12  <a name="Class-directory_entry">Class <code>directory_entry</code></a> [class.directory_entry]</h2>
+<h2>27.10.12  <a name="Class-directory_entry">Class <code>directory_entry</code></a> [class.directory_entry]</h2>
 
-<pre para_num="1">namespace std { namespace experimental { namespace filesystem { inline namespace v1 {
-
-  class directory_entry
-  {
+<pre>namespace std::filesystem {
+  class directory_entry {
   public:
-
     // <a href="#directory_entry-constructors">constructors</a> and destructor
     directory_entry() noexcept = default;
     directory_entry(const directory_entry&amp;) = default;
@@ -194,8 +191,8 @@ of file size from <code>directory_entry</code></i></b></p>
     path   m_path; // for exposition only
   };
 
-} } } }  // namespaces std::experimental::filesystem::v1  </pre>
-<p para_num="2">A <code>directory_entry</code> object stores a <code>path</code> object.</p>
+}</pre>
+<p>A <code>directory_entry</code> object stores a <code>path</code> object.</p>
 <p><ins>Implementations are permitted and encouraged to cache additional information in <code>directory_entry</code> 
 objects if such information is available during directory iteration and doing so would improve efficiency of status and other operational query functions. 
 Implementations are permitted and encouraged to overload status and other 
@@ -218,63 +215,63 @@ is_socket</code>, <code>is_symlink</code>, <code>status_known</code>, <code>
 last_write_time</code>, and <code>file_size</code>.&nbsp; —<i>end note</i>]</ins></p>
 <p><ins>[<i>Example: <span style="background-color: #FFFF00">TBS</span> </i>—<i>end 
 example</i>]</ins></p>
-<h3>12.1 <a name="directory_entry-constructors"><code>directory_entry</code> 
+<h3>27.10.12.1 <a name="directory_entry-constructors"><code>directory_entry</code> 
 constructors </a>[directory_entry.cons] </h3>
-<pre para_num="1">explicit directory_entry(const path&amp; p);
+<pre>explicit directory_entry(const path&amp; p);
 <ins>directory_entry(const path&amp; p, error_code& ec);</ins></pre>
 <blockquote>
-  <p para_num="2"><i>Effects: </i>Constructs an object of type <code>directory_entry</code><ins>, 
+  <p><i>Effects: </i>Constructs an object of type <code>directory_entry</code><ins>, 
   then <code>refresh(<i>[ec]</i>)</code></ins>.
   </p>
-  <p para_num="3"><i>Postcondition:</i> <code>path() == p</code>.</p>
-  <p para_num="3"><ins><i>Throws:</i> As specified in <a href="#Error-reporting">Error 
-  reporting (7)</a>.</ins> </p>
+  <p><i>Postcondition:</i> <code>path() == p</code>.</p>
+  <p><ins><i>Throws:</i> As specified in Error 
+  reporting ([fs.err.report]).</ins> </p>
 </blockquote>
-<h3>12.2 <a name="directory_entry-modifiers"><code>directory_entry</code> 
+<h3>27.10.12.2 <a name="directory_entry-modifiers"><code>directory_entry</code> 
 modifiers </a>[directory_entry.mods] </h3>
-<pre para_num="1">void assign(const path&amp; p);
+<pre>void assign(const path&amp; p);
 <ins>void assign(const path&amp; p, error_code&amp; ec);</ins></pre>
 <blockquote>
-  <p para_num="2"><ins><i>Effects:</i> <code>refresh(<i>[ec]</i>)</code>.</ins></p>
-  <p para_num="2"><i>Postcondition:</i> <code>path() == p</code>.</p>
-  <p para_num="2"><ins><i>Throws:</i> As specified in <a href="#Error-reporting">Error 
-  reporting (7)</a>.</ins> </p>
+  <p><ins><i>Effects:</i> <code>refresh(<i>[ec]</i>)</code>.</ins></p>
+  <p><i>Postcondition:</i> <code>path() == p</code>.</p>
+  <p><ins><i>Throws:</i> As specified in Error 
+  reporting ([fs.err.report]).</ins> </p>
 </blockquote>
 <pre><ins>void refresh();</ins>
 <ins>void refresh(error_code&amp; ec) noexcept;</ins></pre>
 <blockquote>
-<p para_num="4"><ins><i>Effects:</i> Stores current values for the 
+<p><ins><i>Effects:</i> Stores current values for the 
 attributes of
 the file <code>p</code> resolves to in the additional information cache, if 
 any.</ins></p>
-<p para_num="4"><ins><i>Throws:</i> As specified in <a href="#Error-reporting">Error 
-  reporting (7)</a>.</ins> </p>
+<p><ins><i>Throws:</i> As specified in Error 
+  reporting ([fs.err.report]).</ins> </p>
 </blockquote>
-<pre para_num="3">void replace_filename(const path&amp; p);</pre>
+<pre>void replace_filename(const path&amp; p);</pre>
 <blockquote>
-  <p para_num="4"><i>Postcondition:</i> <code>path() == x.parent_path() / p</code> where <code>x</code> is the value of <code>path()</code> before the function is 
+  <p><i>Postcondition:</i> <code>path() == x.parent_path() / p</code> where <code>x</code> is the value of <code>path()</code> before the function is 
   called. </p>
 </blockquote>
 </blockquote>
-<h3>12.3 <a name="directory_entry-observers"><code>directory_entry</code> observers </a>[directory_entry.obs] </h3>
-<pre para_num="1">const path&amp; path() const noexcept;
+<h3>27.10.12.3 <a name="directory_entry-observers"><code>directory_entry</code> observers </a>[directory_entry.obs] </h3>
+<pre>const path&amp; path() const noexcept;
 operator const path&amp;() const noexcept;</pre>
 <blockquote>
-  <p para_num="2"><i>Returns:</i> <code>m_path</code> </p>
+  <p><i>Returns:</i> <code>m_path</code> </p>
 </blockquote>
-<pre para_num="3"><del>file_status status() const;</del>
+<pre><del>file_status status() const;</del>
 <del>file_status status(error_code&amp; ec) const noexcept;</del></pre>
 <blockquote>
-  <p para_num="4"><del><i>Returns:</i> <code>status(path()<i>[, ec]</i>)</code></del>. </p>
-  <p para_num="5"><del><i>Throws:</i> As specified in <a href="#Error-reporting">Error 
-  reporting (7)</a>.</del></p>
+  <p><del><i>Returns:</i> <code>status(path()<i>[, ec]</i>)</code></del>. </p>
+  <p para_num="5"><del><i>Throws:</i> As specified in Error 
+  reporting ([fs.err.report]).</del></p>
 </blockquote>
 <pre para_num="6"><del>file_status  symlink_status() const;</del>
 <del>file_status  symlink_status(error_code&amp; ec) const noexcept;</del></pre>
 <blockquote>
    <p para_num="7"><del><i>Returns:</i> <code>symlink_status(path()<i>[, ec]</i>)</code>.</del></p>
-  <p para_num="8"><del><i>Throws:</i> As specified in <a href="#Error-reporting">Error 
-  reporting (7)</a>.</del></p>
+  <p para_num="8"><del><i>Throws:</i> As specified in Error 
+  reporting ([fs.err.report]).</del></p>
 </blockquote>
 <pre para_num="9">bool operator==(const directory_entry&amp; rhs) const noexcept;</pre>
 <blockquote>
