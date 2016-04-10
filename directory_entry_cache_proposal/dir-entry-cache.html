@@ -32,7 +32,7 @@ body
 <tr>
   <td align="left">Date:</td>
   <td align="left">
-  <!--webbot bot="Timestamp" S-Type="EDITED" S-Format="%Y-%m-%d" startspan -->2016-02-21<!--webbot bot="Timestamp" endspan i-checksum="12138" --></td>
+  <!--webbot bot="Timestamp" S-Type="EDITED" S-Format="%Y-%m-%d" startspan -->2016-04-10<!--webbot bot="Timestamp" endspan i-checksum="12263" --></td>
 </tr>
 <tr>
   <td align="left">Reply to:</td>
@@ -46,8 +46,9 @@ body
 <h1 align="center">Directory Entry Caching for Filesystem</h1>
 
 
-<p align="center"><b>Fixing issue 2663 [filesys.ts] Enable efficient retrieval 
-of file size from <code>directory_entry</code></b></p>
+<p align="center"><b>Fixing issue 
+<a href="https://cplusplus.github.io/LWG/lwg-active.html#2663">2663</a>, <i>Enable efficient retrieval 
+of file size from <code>directory_entry</code></i></b></p>
 
 
   <h2><a name="Introduction">Introduction</a></h2>
@@ -59,7 +60,7 @@ of file size from <code>directory_entry</code></b></p>
   information from the directory entry is much more efficient than re-accessing 
   the file system to obtain the information.</p>
 
-  <p dir="ltr">The initial filesystem TS proposal
+  <p>The initial filesystem TS proposal
   <span style="background-color: #FFFF00">(need reference)</span> and the Boost 
   Filesystem implementation limited the additional information stored in a 
   directory entry to the regular status and symlink status, since these were the 
@@ -67,22 +68,88 @@ of file size from <code>directory_entry</code></b></p>
   this additional information was described using mutable exposition-only 
   members. The LWG removed the mutable members and associated caching wording 
   because mutable members are problematic and race prone in multi-threaded 
-  environments. In retrospect, the design also exposed too many implementation 
-  details and was not extendible to additional information.</p>
+  environments. In retrospect, that original design also exposed too many implementation 
+  details and was not extendible to cache information.</p>
 
-  <p dir="ltr">This paper proposes a new approach to caching that exposes no 
-  implementation details beyond the fact that some information is cached. It is 
-  extendible to additional information by implementations without any need to 
-  make changes to the filesystem TS (or standard library). It makes minimal 
+  <p>This paper proposes a new design for caching directory entries that exposes no 
+  implementation details beyond the fact that there may be a cache. It is 
+  extendible by implementations to cache additional information without any need 
+  for changes in user code or the standard library. It makes minimal 
   changes to existing interfaces and implementations.</p>
 
-  <p dir="ltr">LWG issue 2663, <i>[filesys.ts] Enable efficient retrieval of 
+  <p>LWG issue 2663, <i>[filesys.ts] Enable efficient retrieval of 
   file size from </i><code><i>directory_entry</i></code>, requests that for 
-  Windows, caching be extended to file size. Although this request was made 
+  Windows caching be extended to file size. Although this request was made 
   before the LWG removed caching, it is indicative of the desire to maximize 
-  efficiency for particular operating systems.</p>
+  efficiency for particular operating systems. Subsequent to the removal of 
+  directory entry caching and addition of Filesystem to the standard library, a
+  <span style="background-color: #FFFF00">new issue</span> has been submitted 
+  asking for the reinstatement of caching.</p>
+
+  <h2>Design</h2>
+
+  <p>As a convenience for users, class <code>directory_entry</code> 
+  already has an implicit conversion to <code>path</code>:</p>
+
+  <blockquote>
+    <p><code>operator const path&amp;() const noexcept;</code></p>
+</blockquote>
+
+    <p>This means that the following two function calls are equivalent:</p>
+
+  <blockquote>
+
+    <p><code>sz = file_size(my_directory_entry);&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+    // call #1<br>
+    sz = file_size(my_directory_entry.path());&nbsp; // call #2</code></p>
+
+  </blockquote>
+
+    <p>Both would currently call the non-member function:</p>
+
+  <blockquote>
+
+    <p><code>uintmax_t file_size(const path&amp; p);</code></p>
+
+  </blockquote>
+
+    <p>But if there were a second signature: </p>
+
+  <blockquote>
+
+    <p><code>uintmax_t file_size(const directory_entry&amp; d);</code></p>
+
+  </blockquote>
+
+    <p>It would be invoked by call #1, and the implementation could provide the 
+    file size from information cached in <code>d</code>. Guidance to users would 
+    be to use call #1 when the possibly cached&nbsp; <code>directory_entry</code> file size is desired, 
+    use call #2 when file size from a file system access is desired. For 
+    implementations where file size is not cached in directory 
+    entries, both call forms access the file system to obtain the file size.</p>
+
+    <h3>Specification options</h3>
+
+    <p>There are two possible ways to specify the above behavior; (1) require the <code>const 
+    directory_entry&amp;</code> overload for all operational functions that 
+    might possibly benefit from it, either now and in the future, or (2) provide 
+    overall wording to encourage the implementation to supply the <code>const 
+    directory_entry&amp;</code> overload where applicable, but make no changes 
+    to the specifications of individual operational functions .</p>
+
+    <p>The 
+    difficulty with option (1) is that it essentially doubles the number of 
+    operational function signatures, making the operational functions harder to 
+    learn, even though few of these added signatures will do anything more than 
+    forward to the <code>const path&amp;</code>&nbsp; signature. Option (2) 
+    segregates what is essentially an experts-only feature into its own separate 
+    specification, and is what is being proposed below.</p>
 
   <h2>Proposed wording</h2>
+
+  <p><span style="background-color: #FFFF00"><i>Separate &lt;del&gt; wording from 
+  &lt;ins&gt; wording. Moving forward now on the removal wording and later on the 
+  &lt;ins&gt; wording would allow time to be sure the &lt;ins&gt; wording is fully baked.</i></span></p>
 
 <h2>12  <a name="Class-directory_entry">Class <code>directory_entry</code></a> [class.directory_entry]</h2>
 
@@ -159,8 +226,8 @@ constructors </a>[directory_entry.cons] </h3>
   <p para_num="2"><i>Effects: </i>Constructs an object of type <code>directory_entry</code><ins>, 
   then <code>refresh(<i>[ec]</i>)</code></ins>.
   </p>
-  <p para_num="3" dir="ltr"><i>Postcondition:</i> <code>path() == p</code>.</p>
-  <p para_num="3" dir="ltr"><ins><i>Throws:</i> As specified in <a href="#Error-reporting">Error 
+  <p para_num="3"><i>Postcondition:</i> <code>path() == p</code>.</p>
+  <p para_num="3"><ins><i>Throws:</i> As specified in <a href="#Error-reporting">Error 
   reporting (7)</a>.</ins> </p>
 </blockquote>
 <h3>12.2 <a name="directory_entry-modifiers"><code>directory_entry</code> 
@@ -176,7 +243,7 @@ modifiers </a>[directory_entry.mods] </h3>
 <pre><ins>void refresh();</ins>
 <ins>void refresh(error_code&amp; ec) noexcept;</ins></pre>
 <blockquote>
-<p para_num="4" dir="ltr"><ins><i>Effects:</i> Stores current values for the 
+<p para_num="4"><ins><i>Effects:</i> Stores current values for the 
 attributes of
 the file <code>p</code> resolves to in the additional information cache, if 
 any.</ins></p>
@@ -237,13 +304,21 @@ operator const path&amp;() const noexcept;</pre>
 
   <h2><a name="References">References</a></h2>
 
-<p>[<a name="1">1</a>] Beman Dawes, <a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2014/n4100.pdf">N4100, Programming Languages — C++ — File System Technical Specification</a>, 
+
+  <p>[1] Issue 2663, C++ Standard Library Issues Lists,
+  <a href="https://cplusplus.github.io/LWG/lwg-active.html#2663">
+  cplusplus.github.io/LWG/lwg-active.html#2663</a></p>
+
+<p>[2] N4582, Working Draft, Standard for Programming Language C++, 2016,
+<a class="uri" href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2016/n4582.pdf">www.open-std.org/jtc1/sc22/wg21/docs/papers/2016/n4582.pdf</a></p>
+
+<p>[<a name="1">3</a>] Beman Dawes, N4100, Programming Languages — C++ — File System Technical Specification, 
 2014.<br>
 <a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2014/n4100.pdf" class="uri">
-http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2014/n4100.pdf</a></p>
-<p>[<a name="2">2</a>] Beman Dawes, others, <a href="http://www.boost.org/doc/libs/1_60_0/libs/filesystem/doc/index.htm">Boost Filesystem Library, V3</a>, 2015.<br>
+www.open-std.org/jtc1/sc22/wg21/docs/papers/2014/n4100.pdf</a></p>
+<p>[<a name="2">4</a>] Beman Dawes, others, <a href="http://www.boost.org/doc/libs/1_60_0/libs/filesystem/doc/index.htm">Boost Filesystem Library, V3</a>, 2015.<br>
 <a href="https://www.boost.org/doc/libs/1_60_0/libs/filesystem/doc/index.htm" class="uri">
-https://www.boost.org/doc/libs/1_60_0/libs/filesystem/doc/index.htm</a></p>
+www.boost.org/doc/libs/1_60_0/libs/filesystem/doc/index.htm</a></p>
 
 <hr>
 
