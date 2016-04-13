@@ -17,7 +17,7 @@ body
  ins  {background-color: #CCFFCC; text-decoration: none;}
  del  {background-color: #FFCACA; text-decoration: none;}
  pre  {background-color: #D7EEFF; font-size: 95%; font-family: "courier new", courier, serif;}
- code {font-size: 110%; font-family: "courier new", courier, serif;}
+ code {font-family: "courier new", courier, serif;}
  table {font-size: 90%;}
 </style>
 </head>
@@ -32,7 +32,7 @@ body
 <tr>
   <td align="left">Date:</td>
   <td align="left">
-  <!--webbot bot="Timestamp" S-Type="EDITED" S-Format="%Y-%m-%d" startspan -->2016-04-12<!--webbot bot="Timestamp" endspan i-checksum="12267" --></td>
+  <!--webbot bot="Timestamp" S-Type="EDITED" S-Format="%Y-%m-%d" startspan -->2016-04-13<!--webbot bot="Timestamp" endspan i-checksum="12269" --></td>
 </tr>
 <tr>
   <td align="left">Reply to:</td>
@@ -43,7 +43,7 @@ body
 </tr>
 </table>
 
-<h1 align="center">Directory Entry Caching for Filesystem</h1>
+<h1 align="center">Directory Entry Caching for Filesystem (R0)</h1>
 
 
 <p align="center"><b>Fixing issue 
@@ -127,6 +127,33 @@ of file size from <code>directory_entry</code></i></b></p>
     use call #2 when file size from a file system access is desired. For 
     implementations where file size is not cached in directory 
     entries, both call forms access the file system to obtain the file size.</p>
+
+    <h3>Background</h3>
+
+    <p>For Windows, <code>directory_entry</code> information is obtained by calling function
+      <a href="https://msdn.microsoft.com/en-us/library/windows/desktop/aa364418(v=vs.85).aspx">
+      FindFirstFile</a>,
+      <a href="https://msdn.microsoft.com/en-us/library/windows/desktop/aa364419(v=vs.85).aspx">
+      FindFirstFileEx</a>, 
+      or 
+      <a href="https://msdn.microsoft.com/en-us/library/windows/desktop/aa364428(v=vs.85).aspx">
+      FindNextFile</a>, which return pointers to structure
+      
+      <a href="https://msdn.microsoft.com/en-us/library/windows/desktop/aa365740(v=vs.85).aspx">
+      WIN32_FIND_DATA</a>, and can be refreshed by calling function
+      <a href="https://msdn.microsoft.com/en-us/library/windows/desktop/aa364952(v=vs.85).aspx">
+      GetFileInformationByHandle</a> 
+      which returns a pointer to structure
+      <a href="https://msdn.microsoft.com/en-us/library/windows/desktop/aa363788(v=vs.85).aspx">
+      BY_HANDLE_FILE_INFORMATION</a>.</p>
+
+    <p>For some POSIX-like systems, such as
+    <a href="http://man7.org/linux/man-pages/man3/readdir.3.html">Linux</a> and 
+    some BSD-based distributions, glibc versions since 2.19 may support an 
+    additional <code>struct dirent</code> field named <code>d_type</code> 
+    &quot;making it possible to avoid the expense of calling <code>lstat</code>&quot;. 
+    POSIX specifies that the macro <code>_DIRENT_HAVE_D_TYPE</code> is defined 
+    if <code>d_type</code> is present.</p>
 
     <h3>Specification options</h3>
 
