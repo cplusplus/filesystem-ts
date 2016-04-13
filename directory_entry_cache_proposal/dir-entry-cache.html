@@ -48,7 +48,20 @@ body
 
 <p align="center"><b>Fixing issue 
 <a href="https://cplusplus.github.io/LWG/lwg-active.html#2663">2663</a>, <i>Enable efficient retrieval 
-of file size from <code>directory_entry</code></i></b></p>
+of file size from <code>directory_entry</code><br> </i>and issue
+<a href="http://cplusplus.github.io/LWG/lwg-active.html#2677">2677</a>, <i>
+<code>directory_entry::status</code> is not allowed to be cached ...</i></b></p>
+
+
+  <p style="margin-left:20%; margin-right:20%;">This paper proposes a new design for efficiently caching 
+  information obtained during directory iteration. No implementation details are 
+  exposed beyond the fact that there may be a cache. Implementations may cache 
+  directory entry information without any need 
+  for changes in user code or the standard library. The design makes minimal 
+  changes to existing interfaces and implementations. It offers clear guidance 
+  to users as to how to make use of cached information when desired or avoid use of cached 
+  information when not desired, without the user having to know whether any  information is 
+  actually cached.</p>
 
 
   <h2><a name="Introduction">Introduction</a></h2>
@@ -64,18 +77,13 @@ of file size from <code>directory_entry</code></i></b></p>
   <span style="background-color: #FFFF00">(need reference)</span> and the Boost 
   Filesystem implementation limited the additional information stored in a 
   directory entry to the regular status and symlink status, since these were the 
-  only additional elements present for most operating systems. The caching of 
+  only additional elements common to several operating systems. The caching of 
   this additional information was described using mutable exposition-only 
   members. The LWG removed the mutable members and associated caching wording 
   because mutable members are problematic and race prone in multi-threaded 
   environments. In retrospect, that original design also exposed too many implementation 
-  details and was not extendible to cache information.</p>
-
-  <p>This paper proposes a new design for caching directory entries that exposes no 
-  implementation details beyond the fact that there may be a cache. It is 
-  extendible by implementations to cache additional information without any need 
-  for changes in user code or the standard library. It makes minimal 
-  changes to existing interfaces and implementations.</p>
+  details and was not easily extendible to additional cache information such as 
+  file size and last write timestamp.</p>
 
   <p>LWG issue 2663, <i>[filesys.ts] Enable efficient retrieval of 
   file size from </i><code><i>directory_entry</i></code>, requests that for 
