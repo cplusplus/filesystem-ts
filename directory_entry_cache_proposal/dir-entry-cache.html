@@ -32,7 +32,7 @@ body
 <tr>
   <td align="left">Date:</td>
   <td align="left">
-  <!--webbot bot="Timestamp" S-Type="EDITED" S-Format="%Y-%m-%d" startspan -->2016-04-13<!--webbot bot="Timestamp" endspan i-checksum="12269" --></td>
+  <!--webbot bot="Timestamp" S-Type="EDITED" S-Format="%Y-%m-%d" startspan -->2016-04-15<!--webbot bot="Timestamp" endspan i-checksum="12273" --></td>
 </tr>
 <tr>
   <td align="left">Reply to:</td>
@@ -54,14 +54,14 @@ of file size from <code>directory_entry</code><br> </i>and issue
 
 
   <p style="margin-left:20%; margin-right:20%;">This paper proposes a new design for efficiently caching 
-  information obtained during directory iteration. No implementation details are 
+  state information obtained during directory iteration. No implementation details are 
   exposed beyond the fact that there may be a cache. Implementations may cache 
-  directory entry information without any need 
+  directory entry state information without any need 
   for changes in user code or the standard library. The design makes minimal 
-  changes to existing interfaces and implementations. It offers clear guidance 
+  changes to existing interfaces and implementations. The proposed wording offers clear guidance 
   to users as to how to make use of cached information when desired or avoid use of cached 
   information when not desired, without the user having to know whether any  information is 
-  actually cached.</p>
+  actually cached. The proposal has been implemented.</p>
 
 
   <h2><a name="Introduction">Introduction</a></h2>
@@ -228,16 +228,19 @@ of file size from <code>directory_entry</code><br> </i>and issue
 
 }</pre>
 <p>A <code>directory_entry</code> object stores a <code>path</code> object.</p>
-<p><ins>Implementations are permitted and encouraged to cache additional information in <code>directory_entry</code> 
-objects if such information is available during directory iteration and doing so would improve efficiency of status and other operational query functions. 
-Implementations are permitted and encouraged to overload status and other 
-operational query functions that take <code>const path&amp;</code> arguments with 
-additional signatures taking <code>const directory_entry&amp;</code> arguments and 
-satisfy the status or other operational query from the <code>directory_entry</code> 
+<p><ins>Implementations are permitted and encouraged to cache additional information 
+about the state of external 
+storage in <code>directory_entry</code> 
+objects if such information is available during directory iteration and caching 
+it would improve efficiency of  operational query functions ([fs.op.funcs]). 
+Implementations are permitted and encouraged to overload  operational query functions that take <code>const path&amp;</code> arguments with 
+additional signatures taking <code>const directory_entry&amp;</code> arguments. 
+Such overloads shall be equivalent to ([structure.specifications]) the <code>const path&amp;</code> 
+overload of the function except that state information shall be obtained from the <code>directory_entry</code> 
 argument&#39;s 
-cache.</ins></p>
+cache rather than the external file system.</ins></p>
 <p><ins>[<i>Note: </i>Users wishing to make use of cached <code>directory_entry</code> 
-additional information should call status and other operational query functions 
+state information should call status and other operational query functions 
 using the <code>directory_entry</code> object as an argument. Users wishing to 
 ensure that an operational function returns the most recent available 
 information should call the function with a <code>path</code> object or an 
@@ -248,8 +251,9 @@ include <code>status</code>, <code>symlink_status</code>, <code>exists</code>,
 <code>is_fifo</code>, <code>is_other</code>, <code>is_regular_file</code>, <code>
 is_socket</code>, <code>is_symlink</code>, <code>status_known</code>, <code>
 last_write_time</code>, and <code>file_size</code>.&nbsp; —<i>end note</i>]</ins></p>
-<p><ins>[<i>Example: <span style="background-color: #FFFF00">TBS</span> </i>—<i>end 
-example</i>]</ins></p>
+<p><ins><span style="background-color: #FFFF00">[</span><i><span style="background-color: #FFFF00">Example: TBS
+</span> </i><span style="background-color: #FFFF00">—<i>end 
+example</i>]</span></ins></p>
 <h3>27.10.12.1 <a name="directory_entry-constructors"><code>directory_entry</code> 
 constructors </a>[directory_entry.cons] </h3>
 <pre>explicit directory_entry(const path&amp; p);
