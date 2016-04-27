@@ -32,7 +32,7 @@ body
 <tr>
   <td align="left">Date:</td>
   <td align="left">
-  <!--webbot bot="Timestamp" S-Type="EDITED" S-Format="%Y-%m-%d" startspan -->2016-04-15<!--webbot bot="Timestamp" endspan i-checksum="12273" --></td>
+  <!--webbot bot="Timestamp" S-Type="EDITED" S-Format="%Y-%m-%d" startspan -->2016-04-27<!--webbot bot="Timestamp" endspan i-checksum="12278" --></td>
 </tr>
 <tr>
   <td align="left">Reply to:</td>
@@ -53,46 +53,65 @@ of file size from <code>directory_entry</code><br> </i>and issue
 <code>directory_entry::status</code> is not allowed to be cached ...</i></b></p>
 
 
-  <p style="margin-left:20%; margin-right:20%;">This paper proposes a new design for efficiently caching 
-  state information obtained during directory iteration. No implementation details are 
-  exposed beyond the fact that there may be a cache. Implementations may cache 
-  directory entry state information without any need 
-  for changes in user code or the standard library. The design makes minimal 
-  changes to existing interfaces and implementations. The proposed wording offers clear guidance 
-  to users as to how to make use of cached information when desired or avoid use of cached 
-  information when not desired, without the user having to know whether any  information is 
-  actually cached. The proposal has been implemented.</p>
+  <p style="margin-left:20%; margin-right:20%;">This paper provides two 
+  proposals for solving the problem of efficiently caching state information 
+  obtained during directory iteration. Guidance is sought as to which proposal 
+  is preferred by the library and library evolution working groups.</p>
+
+
+  <p style="margin-left:20%; margin-right:20%;">Both proposals include full 
+  wording, have been implemented, and avoid use of mutable data members. Both 
+  offer guidance to users on how to use cached information when desired or avoid 
+  use of cached information when not desired, without exposing to the user 
+  whether information is actually cached. Both allow the user to write code that 
+  is fully portable between&nbsp; implementations that cache or do not cache.</p>
+
+
+  <p style="margin-left:20%; margin-right:20%;">One proposal exposes what 
+  directory state information may possibly be cached, and so would require 
+  additions to the standard to extend the interface to accommodate future 
+  operating systems or file systems that supply additional state information on 
+  directory iteration. </p>
+
+
+  <p style="margin-left:20%; margin-right:20%;">The other proposal does not 
+  expose what directory state information may possibly be cached, and so 
+  requires no changes to the standard as operating systems and file systems 
+  evolve. But this proposal may be harder to reason about. It depends on 
+  automatic conversions, already part of the interface, which may cause some 
+  people to worry about unintended consequences.</p>
 
 
   <h2><a name="Introduction">Introduction</a></h2>
 
-  <p>Directory iteration in real-world operating systems returns directory 
-  entries containing file name plus additional information such as file status, 
-  size, and last modification date. Exactly what additional information is 
-  returned varies between operating systems. Accessing the additional 
+  <p>Directory iteration in real-world operating systems always returns directory 
+  entry information containing file name. POSIX includes file status as an 
+  option, but only some POSIX-like operating system enable this. Windows always 
+  includes file status, 
+  file size, and last modification date. Accessing the additional 
   information from the directory entry is much more efficient than re-accessing 
   the file system to obtain the information.</p>
 
   <p>The initial filesystem TS proposal
   <span style="background-color: #FFFF00">(need reference)</span> and the Boost 
-  Filesystem implementation limited the additional information stored in a 
-  directory entry to the regular status and symlink status, since these were the 
+  Filesystem implementation limited the additional information stored by class
+  <code>directory_entry</code> to the regular status and symlink status, since these were the 
   only additional elements common to several operating systems. The caching of 
   this additional information was described using mutable exposition-only 
-  members. The LWG removed the mutable members and associated caching wording 
-  because mutable members are problematic and race prone in multi-threaded 
-  environments. In retrospect, that original design also exposed too many implementation 
+  data members. The LWG removed the mutable members and associated caching 
+  wording because mutable members are problematic and race prone in 
+  multi-threaded environments. The original design also exposed too many implementation 
   details and was not easily extendible to additional cache information such as 
   file size and last write timestamp.</p>
 
-  <p>LWG issue 2663, <i>[filesys.ts] Enable efficient retrieval of 
-  file size from </i><code><i>directory_entry</i></code>, requests that for 
-  Windows caching be extended to file size. Although this request was made 
-  before the LWG removed caching, it is indicative of the desire to maximize 
-  efficiency for particular operating systems. Subsequent to the removal of 
-  directory entry caching and addition of Filesystem to the standard library, a
-  <span style="background-color: #FFFF00">new issue</span> has been submitted 
-  asking for the reinstatement of caching.</p>
+  <p>LWG issue <a href="http://cplusplus.github.io/LWG/lwg-active.html#2663">2663</a>, <i>Enable efficient retrieval of file size from </i><code><i>directory_entry</i></code>, 
+  requests that for Windows caching be extended to file size.</p>
+
+  <p>LWG issue
+<a href="http://cplusplus.github.io/LWG/lwg-active.html#2677">2677</a>, <i>
+<code>directory_entry::status</code> is not allowed to be cached as a 
+  quality-of-implementation issue</i>, requests the reinstatement of permission 
+  for implementations to cache directory entry information.</p>
 
   <h2>Design</h2>
 
