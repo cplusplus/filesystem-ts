@@ -234,8 +234,10 @@ of file size from <code>directory_entry</code><br> </i>and issue
 
 <p>A <code>directory_entry</code> object stores a <code>path</code> object.</p>
 
-<p><ins>Implementations are encouraged to provide the data members in the following table
-if the equivalent value is available at lower cost during directory iteration. 
+<p><ins>Implementations are encouraged to provide each data member in the following table
+iff its equivalent value is available during directory iteration without actually having
+to call the function from the Equivalent Value column. Otherwise implementations
+shall not provide the data member.
 </ins></p>
 
 <table border="1" align="center">
@@ -281,6 +283,95 @@ Expressions #2 and #3
  by <code>std::filesystem::status(itr-&gt;path())</code> regardless of whether or not
  <code>m_status</code> is provided.
   &mdash;<i>end example</i>]</ins></p>
+
+<h3>27.10.12.1 <a name="directory_entry-constructors"><code>directory_entry</code> 
+constructors </a>[directory_entry.cons] </h3>
+<pre>explicit directory_entry(const path&amp; p);
+<ins>directory_entry(const path&amp; p, error_code& ec);</ins></pre>
+<blockquote>
+  <p><i>Effects: </i>Constructs an object of type <code>directory_entry</code><ins>, 
+  then <code>refresh(<i>[ec]</i>)</code></ins>.
+  </p>
+  <p><i>Postcondition:</i> <code>path() == p</code>.</p>
+  <p><ins><i>Throws:</i> As specified in Error 
+  reporting ([fs.err.report]).</ins> </p>
+</blockquote>
+
+<h3>27.10.12.2 <a name="directory_entry-modifiers"><code>directory_entry</code> 
+modifiers </a>[directory_entry.mods] </h3>
+
+<pre>void assign(const path&amp; p);
+<ins>void assign(const path&amp; p, error_code&amp; ec);</ins></pre>
+<blockquote>
+  <p><ins><i>Effects:</i> <code>refresh(<i>[ec]</i>)</code>.</ins></p>
+  <p><i>Postcondition:</i> <code>path() == p</code>.</p>
+  <p><ins><i>Throws:</i> As specified in Error 
+  reporting ([fs.err.report]).</ins> </p>
+</blockquote>
+
+<pre><ins>void refresh();</ins>
+<ins>void refresh(error_code&amp; ec) noexcept;</ins></pre>
+<blockquote>
+<p><ins><i>Effects:</i>
+For each data member in the table "Possibly Cached Values" above, if the data member
+is present in the implementation then set it to a value equivalent to the
+result of calling the function as shown in the Equivalent Value column.
+</ins></p>
+<p><ins><i>Throws:</i> As specified in Error 
+  reporting ([fs.err.report]).</ins> </p>
+</blockquote>
+
+<pre>void replace_filename(const path&amp; p);</pre>
+<blockquote>
+  <p><i>Postcondition:</i> <code>path() == x.parent_path() / p</code> where <code>x</code> is the value of <code>path()</code> before the function is 
+  called. </p>
+</blockquote>
+</blockquote>
+
+<h3>27.10.12.3 <a name="directory_entry-observers"><code>directory_entry</code> observers </a>[directory_entry.obs] </h3>
+<pre>const path&amp; path() const noexcept;
+operator const path&amp;() const noexcept;</pre>
+<blockquote>
+  <p><i>Returns:</i> <code>m_path</code> </p>
+</blockquote>
+<pre><del>file_status status() const;</del>
+<del>file_status status(error_code&amp; ec) const noexcept;</del></pre>
+<blockquote>
+  <p><del><i>Returns:</i> <code>status(path()<i>[, ec]</i>)</code></del>. </p>
+  <param><del><i>Throws:</i> As specified in Error 
+  reporting ([fs.err.report]).</del></p>
+</blockquote>
+<pre><del>file_status  symlink_status() const;</del>
+<del>file_status  symlink_status(error_code&amp; ec) const noexcept;</del></pre>
+<blockquote>
+   <p><del><i>Returns:</i> <code>symlink_status(path()<i>[, ec]</i>)</code>.</del></p>
+  <p><del><i>Throws:</i> As specified in Error 
+  reporting ([fs.err.report]).</del></p>
+</blockquote>
+<pre>bool operator==(const directory_entry&amp; rhs) const noexcept;</pre>
+<blockquote>
+  <p><i>Returns:</i> <code>m_path == rhs.m_path</code>. </p>
+</blockquote>
+<pre>bool operator!=(const directory_entry&amp; rhs) const noexcept;</pre>
+<blockquote>
+  <p><i>Returns:</i> <code>m_path != rhs.m_path</code>. </p>
+</blockquote>
+<pre>bool operator&lt; (const directory_entry&amp; rhs) const noexcept;</pre>
+<blockquote>
+  <p><i>Returns:</i> <code>m_path &lt; rhs.m_path</code>. </p>
+</blockquote>
+<pre>bool operator&lt;=(const directory_entry&amp; rhs) const noexcept;</pre>
+<blockquote>
+  <p><i>Returns:</i> <code>m_path &lt;= rhs.m_path</code>. </p>
+</blockquote>
+<pre>bool operator&gt; (const directory_entry&amp; rhs) const noexcept;</pre>
+<blockquote>
+  <p><i>Returns:</i> <code>m_path &gt; rhs.m_path</code>. </p>
+</blockquote>
+<pre>bool operator&gt;=(const directory_entry&amp; rhs) const noexcept;</pre>
+<blockquote>
+  <p><i>Returns:</i> <code>m_path &gt;= rhs.m_path</code>. </p>
+</blockquote>
 
 <h2>Proposed wording - Option 2</h2>
 
@@ -356,6 +447,7 @@ last_write_time</code>, and <code>file_size</code>.&nbsp; —<i>end note</i>]</i
 <p><ins><span style="background-color: #FFFF00">[</span><i><span style="background-color: #FFFF00">Example: TBS
 </span> </i><span style="background-color: #FFFF00">—<i>end 
 example</i>]</span></ins></p>
+
 <h3>27.10.12.1 <a name="directory_entry-constructors"><code>directory_entry</code> 
 constructors </a>[directory_entry.cons] </h3>
 <pre>explicit directory_entry(const path&amp; p);
@@ -368,6 +460,7 @@ constructors </a>[directory_entry.cons] </h3>
   <p><ins><i>Throws:</i> As specified in Error 
   reporting ([fs.err.report]).</ins> </p>
 </blockquote>
+
 <h3>27.10.12.2 <a name="directory_entry-modifiers"><code>directory_entry</code> 
 modifiers </a>[directory_entry.mods] </h3>
 <pre>void assign(const path&amp; p);
@@ -394,6 +487,7 @@ any.</ins></p>
   called. </p>
 </blockquote>
 </blockquote>
+
 <h3>27.10.12.3 <a name="directory_entry-observers"><code>directory_entry</code> observers </a>[directory_entry.obs] </h3>
 <pre>const path&amp; path() const noexcept;
 operator const path&amp;() const noexcept;</pre>
@@ -404,39 +498,39 @@ operator const path&amp;() const noexcept;</pre>
 <del>file_status status(error_code&amp; ec) const noexcept;</del></pre>
 <blockquote>
   <p><del><i>Returns:</i> <code>status(path()<i>[, ec]</i>)</code></del>. </p>
-  <p para_num="5"><del><i>Throws:</i> As specified in Error 
+  <param><del><i>Throws:</i> As specified in Error 
   reporting ([fs.err.report]).</del></p>
 </blockquote>
-<pre para_num="6"><del>file_status  symlink_status() const;</del>
+<pre><del>file_status  symlink_status() const;</del>
 <del>file_status  symlink_status(error_code&amp; ec) const noexcept;</del></pre>
 <blockquote>
-   <p para_num="7"><del><i>Returns:</i> <code>symlink_status(path()<i>[, ec]</i>)</code>.</del></p>
-  <p para_num="8"><del><i>Throws:</i> As specified in Error 
+   <p><del><i>Returns:</i> <code>symlink_status(path()<i>[, ec]</i>)</code>.</del></p>
+  <p><del><i>Throws:</i> As specified in Error 
   reporting ([fs.err.report]).</del></p>
 </blockquote>
-<pre para_num="9">bool operator==(const directory_entry&amp; rhs) const noexcept;</pre>
+<pre>bool operator==(const directory_entry&amp; rhs) const noexcept;</pre>
 <blockquote>
-  <p para_num="10"><i>Returns:</i> <code>m_path == rhs.m_path</code>. </p>
+  <p><i>Returns:</i> <code>m_path == rhs.m_path</code>. </p>
 </blockquote>
-<pre para_num="11">bool operator!=(const directory_entry&amp; rhs) const noexcept;</pre>
+<pre>bool operator!=(const directory_entry&amp; rhs) const noexcept;</pre>
 <blockquote>
-  <p para_num="12"><i>Returns:</i> <code>m_path != rhs.m_path</code>. </p>
+  <p><i>Returns:</i> <code>m_path != rhs.m_path</code>. </p>
 </blockquote>
-<pre para_num="13">bool operator&lt; (const directory_entry&amp; rhs) const noexcept;</pre>
+<pre>bool operator&lt; (const directory_entry&amp; rhs) const noexcept;</pre>
 <blockquote>
-  <p para_num="14"><i>Returns:</i> <code>m_path &lt; rhs.m_path</code>. </p>
+  <p><i>Returns:</i> <code>m_path &lt; rhs.m_path</code>. </p>
 </blockquote>
-<pre para_num="15">bool operator&lt;=(const directory_entry&amp; rhs) const noexcept;</pre>
+<pre>bool operator&lt;=(const directory_entry&amp; rhs) const noexcept;</pre>
 <blockquote>
-  <p para_num="16"><i>Returns:</i> <code>m_path &lt;= rhs.m_path</code>. </p>
+  <p><i>Returns:</i> <code>m_path &lt;= rhs.m_path</code>. </p>
 </blockquote>
-<pre para_num="17">bool operator&gt; (const directory_entry&amp; rhs) const noexcept;</pre>
+<pre>bool operator&gt; (const directory_entry&amp; rhs) const noexcept;</pre>
 <blockquote>
-  <p para_num="18"><i>Returns:</i> <code>m_path &gt; rhs.m_path</code>. </p>
+  <p><i>Returns:</i> <code>m_path &gt; rhs.m_path</code>. </p>
 </blockquote>
-<pre para_num="19">bool operator&gt;=(const directory_entry&amp; rhs) const noexcept;</pre>
+<pre>bool operator&gt;=(const directory_entry&amp; rhs) const noexcept;</pre>
 <blockquote>
-  <p para_num="20"><i>Returns:</i> <code>m_path &gt;= rhs.m_path</code>. </p>
+  <p><i>Returns:</i> <code>m_path &gt;= rhs.m_path</code>. </p>
 </blockquote>
 
 
