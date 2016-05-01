@@ -18,7 +18,7 @@ body
  del  {background-color: #FFCACA; text-decoration: none;}
  pre  {background-color: #D7EEFF; font-size: 95%; font-family: "courier new", courier, serif;}
  code {font-family: "courier new", courier, serif;}
- table {font-size: 90%;}
+ table {font-size: 90%; border-collapse: collapse;}
 </style>
 </head>
 
@@ -180,7 +180,109 @@ of file size from <code>directory_entry</code><br> </i>and issue
     segregates what is essentially an experts-only feature into its own separate 
     specification, and is what is being proposed below.</p>
 
-  <h2>Proposed wording</h2>
+<h2>Proposed wording - Option 1</h2>
+
+<h2>27.10.12  <a name="Class-directory_entry">Class <code>directory_entry</code></a> [class.directory_entry]</h2>
+
+<pre>namespace std::filesystem {
+  class directory_entry {
+  public:
+    // <a href="#directory_entry-constructors">constructors</a> and destructor
+    directory_entry() noexcept = default;
+    directory_entry(const directory_entry&amp;) = default;
+    directory_entry(directory_entry&amp;&amp;) noexcept = default;
+    explicit directory_entry(const path&amp; p);
+    <ins>directory_entry(const path&amp; p, error_code& ec);</ins>
+   ~directory_entry();
+
+    // <a href="#directory_entry-modifiers">modifiers</a>
+    directory_entry&amp; operator=(const directory_entry&amp;) = default;
+    directory_entry&amp; operator=(directory_entry&amp;&amp;) noexcept = default;
+    void assign(const path&amp; p);
+    <ins>void assign(const path&amp; p, error_code&amp; ec);</ins>
+    <ins>void refresh();</ins>
+    <ins>void refresh(error_code&amp; ec) noexcept;</ins>
+    void replace_filename(const path&amp; p);
+
+    // <a href="#directory_entry-observers">observers</a>
+    const path&amp;  path() const noexcept;
+    operator const path&amp;() const noexcept;
+    <ins>uintmax_t file_size() const;</ins>
+    <ins>uintmax_t file_size(error_code&amp; ec) const noexcept;</ins>
+    <ins>file_time_type last_write_time()const;</ins>
+    <ins>file_time_type last_write_time(error_code&amp; ec)const noexcept;</ins>
+    file_status  status() const;
+    file_status  status(error_code&amp; ec) const noexcept;>
+    file_status  symlink_status() const;
+    file_status  symlink_status(error_code&amp; ec) const noexcept;
+
+    bool operator&lt; (const directory_entry&amp; rhs) const noexcept;
+    bool operator==(const directory_entry&amp; rhs) const noexcept;
+    bool operator!=(const directory_entry&amp; rhs) const noexcept;
+    bool operator&lt;=(const directory_entry&amp; rhs) const noexcept;
+    bool operator&gt; (const directory_entry&amp; rhs) const noexcept;
+    bool operator&gt;=(const directory_entry&amp; rhs) const noexcept;
+  private:
+    path            m_path;              // for exposition only
+    <ins>uintmax_t       m_file_size;         // for exposition only</ins>
+    <ins>file_time_type  m_last_write_time;   // for exposition only</ins>
+    <ins>file_status     m_status;            // for exposition only</ins>
+    <ins>file_status     m_symlink_status;    // for exposition only</ins>
+  };
+
+}</pre>
+
+<p>A <code>directory_entry</code> object stores a <code>path</code> object.</p>
+
+<p><ins>Implementations are encouraged to provide the data members in the following table
+if the equivalent value is available at lower cost during directory iteration. 
+</ins></p>
+
+<table border="1" align="center">
+  <tr>
+    <td colspan="2" align="center"><ins><b>Possibly Cached Values</b></ins></td>
+  </tr>
+  <tr>
+    <td align="center"><ins><b>Data member</b></ins></td>
+    <td align="center"><ins><b>Equivalent Value</b></ins></td>
+  </tr>
+  <tr>
+    <td><ins><code>m_file_size</code></ins></td>
+    <td><ins><code>std::filesystem::file_size(this->path())</code></ins></td>
+  </tr>
+  <tr>
+    <td><ins><code>m_last_write_time</code></ins></td>
+    <td><ins><code>std::filesystem::last_write_time(this->path())</code></ins></td>
+  </tr>
+  <tr>
+    <td><ins><code>m_status</code></ins></td>
+    <td><ins><code>std::filesystem::status(this->path())</code></ins></td>
+  </tr>
+  <tr>
+    <td><ins><code>m_symlink_status</code></ins></td>
+    <td><ins><code>std::filesystem::symlink_status(this->path())</code></ins></td>
+  </tr>
+</table>
+
+<p><ins>[<i>Example:</i><br/><br/>
+<code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; auto iter = directory_iterator(".");</code><br/>
+<code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </code>...<br/>
+<code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; is_regular_file(iter-&gt;status()) // #1</code><br/>
+<code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; is_regular_file(iter-&gt;path()) &nbsp;&nbsp;// #2</code><br/>
+<code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; is_regular_file(*iter)
+   &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// #3</code><br/><br/>
+
+Expression #1 will call <code>is_regular_file</code> with the value of <code>m_status</code>
+ if provided, otherwise it will call <code>is_regular_file</code> with the value returned
+ by <code>std::filesystem::status(itr-&gt;path())</code>.<br/><br/>
+
+Expressions #2 and #3
+ will always call <code>is_regular_file</code> with the value returned
+ by <code>std::filesystem::status(itr-&gt;path())</code> regardless of whether or not
+ <code>m_status</code> is provided.
+  &mdash;<i>end example</i>]</ins></p>
+
+<h2>Proposed wording - Option 2</h2>
 
   <p><span style="background-color: #FFFF00"><i>Separate &lt;del&gt; wording from 
   &lt;ins&gt; wording. Moving forward now on the removal wording and later on the 
