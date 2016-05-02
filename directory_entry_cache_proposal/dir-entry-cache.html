@@ -314,7 +314,7 @@ modifiers </a>[directory_entry.mods] </h3>
 <blockquote>
 <p><ins><i>Effects:</i>
 For each data member in the table "Possibly Cached Values" above, if the data member
-is present in the implementation then set it to a value equivalent to the
+is implemented then set it to a value equivalent to the
 result of calling the function as shown in the Equivalent Value column.
 </ins></p>
 <p><ins><i>Throws:</i> As specified in Error 
@@ -329,25 +329,49 @@ result of calling the function as shown in the Equivalent Value column.
 </blockquote>
 
 <h3>27.10.12.3 <a name="directory_entry-observers"><code>directory_entry</code> observers </a>[directory_entry.obs] </h3>
+
 <pre>const path&amp; path() const noexcept;
 operator const path&amp;() const noexcept;</pre>
 <blockquote>
   <p><i>Returns:</i> <code>m_path</code> </p>
 </blockquote>
-<pre><del>file_status status() const;</del>
-<del>file_status status(error_code&amp; ec) const noexcept;</del></pre>
+
+<pre><ins>uintmax_t file_size() const;</ins>
+<ins>uintmax_t file_size(error_code&amp; ec) const noexcept;</ins></pre>
 <blockquote>
-  <p><del><i>Returns:</i> <code>status(path()<i>[, ec]</i>)</code></del>. </p>
-  <param><del><i>Throws:</i> As specified in Error 
-  reporting ([fs.err.report]).</del></p>
+  <p><ins><i>Returns:</i> <code>m_file_size</code> if implemented,
+   otherwise <code>std::filesystem::file_size(path()<i>[, ec]</i>)</code>.</ins></p>
+  <p><i>Throws:</i> As specified in Error 
+  reporting ([fs.err.report]).</p>
 </blockquote>
-<pre><del>file_status  symlink_status() const;</del>
-<del>file_status  symlink_status(error_code&amp; ec) const noexcept;</del></pre>
+
+<pre><ins>file_time_type last_write_time() const;</ins>
+<ins>file_time_type last_write_time(error_code&amp; ec) const noexcept;</ins></pre>
 <blockquote>
-   <p><del><i>Returns:</i> <code>symlink_status(path()<i>[, ec]</i>)</code>.</del></p>
-  <p><del><i>Throws:</i> As specified in Error 
-  reporting ([fs.err.report]).</del></p>
+  <p><ins><i>Returns:</i> <code>m_last_write_time</code> if implemented,
+   otherwise <code>std::filesystem::last_write_time(path()<i>[, ec]</i>)</code>. </p>
+  <p><i>Throws:</i> As specified in Error 
+  reporting ([fs.err.report]).</ins></p>
 </blockquote>
+
+<pre>file_status status() const;
+file_status status(error_code&amp; ec) const noexcept;</pre>
+<blockquote>
+  <p><i>Returns:</i> <ins><code>m_status</code> if implemented,
+   otherwise</ins> <code><ins>std::filesystem::</ins>status(path()<i>[, ec]</i>)</code>. </p>
+  <p><i>Throws:</i> As specified in Error 
+  reporting ([fs.err.report]).</p>
+</blockquote>
+
+<pre>file_status  symlink_status() const;
+file_status  symlink_status(error_code&amp; ec) const noexcept;</pre>
+<blockquote>
+   <p><i>Returns:</i> <ins><code>m_symlink_status</code> if implemented,
+   otherwise</ins> <code><ins>std::filesystem::</ins>symlink_status(path()<i>[, ec]</i>)</code>.</p>
+  <p><i>Throws:</i> As specified in Error 
+  reporting ([fs.err.report]).</p>
+</blockquote>
+
 <pre>bool operator==(const directory_entry&amp; rhs) const noexcept;</pre>
 <blockquote>
   <p><i>Returns:</i> <code>m_path == rhs.m_path</code>. </p>
