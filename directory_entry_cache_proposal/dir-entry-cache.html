@@ -32,7 +32,7 @@ body
 <tr>
   <td align="left">Date:</td>
   <td align="left">
-  <!--webbot bot="Timestamp" S-Type="EDITED" S-Format="%Y-%m-%d" startspan -->2016-05-10<!--webbot bot="Timestamp" endspan i-checksum="12327" --></td>
+  <!--webbot bot="Timestamp" S-Type="EDITED" S-Format="%Y-%m-%d" startspan -->2016-05-26<!--webbot bot="Timestamp" endspan i-checksum="12340" --></td>
 </tr>
 <tr>
   <td align="left">Reply to:</td>
@@ -67,25 +67,25 @@ of file size from <code>directory_entry</code><br> </i>and issue
   is fully portable between&nbsp; implementations that cache or do not cache.</p>
 
 
-  <p style="margin-left:20%; margin-right:20%;">One proposal exposes what 
+  <p style="margin-left:20%; margin-right:20%;">Proposal A exposes what 
   directory state information may possibly be cached, and so would require 
   additions to the standard to extend the interface to accommodate future 
   operating systems or file systems that supply additional state information on 
   directory iteration. </p>
 
 
-  <p style="margin-left:20%; margin-right:20%;">The other proposal does not 
+  <p style="margin-left:20%; margin-right:20%;">Proposal B does not 
   expose what directory state information may possibly be cached, and so 
   requires no changes to the standard as operating systems and file systems 
-  evolve. But this proposal may be harder to reason about and it depends on 
-  automatic conversions, already part of the interface, which may cause worry about unintended consequences.</p>
+  evolve. But this proposal may be harder to reason about and its dependence on 
+  automatic conversions may raise objections.</p>
 
 
   <h2><a name="Introduction">Introduction</a></h2>
 
   <p>Directory iteration in real-world operating systems always returns directory 
-  entry information containing file name. POSIX includes file status as an 
-  option, but only some POSIX-like operating system enable this. Windows always 
+  entry information containing at least the file name. POSIX has an 
+  option to also return file status, but only some operating system implement this. Windows always 
   includes file status, 
   file size, and last modification date. Accessing the additional 
   information from the directory entry is much more efficient than re-accessing 
@@ -198,18 +198,35 @@ of file size from <code>directory_entry</code><br> </i>and issue
     segregates what is essentially an experts-only feature into its own separate 
     specification, and is what is being proposed below.</p>
 
-  <h2>Proposed wording</h2>
 
-  <p><span style="background-color: #FFFF00"><i>Separate &lt;del&gt; wording from 
-  &lt;ins&gt; wording. Moving forward now on the removal wording and later on the 
-  &lt;ins&gt; wording would allow time to be sure the &lt;ins&gt; wording is fully baked.</i></span></p>
+  <h2><a name="References">References</a></h2>
 
-<h2>27.10.12  <a name="Class-directory_entry">Class <code>directory_entry</code></a> [class.directory_entry]</h2>
+
+  <p>[1] Issue 2663, C++ Standard Library Issues Lists,
+  <a href="https://cplusplus.github.io/LWG/lwg-active.html#2663">
+  cplusplus.github.io/LWG/lwg-active.html#2663</a></p>
+
+<p>[2] N4582, Working Draft, Standard for Programming Language C++, 2016,
+<a class="uri" href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2016/n4582.pdf">www.open-std.org/jtc1/sc22/wg21/docs/papers/2016/n4582.pdf</a></p>
+
+<p>[<a name="1">3</a>] Beman Dawes, N4100, Programming Languages — C++ — File System Technical Specification, 
+2014.<br>
+<a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2014/n4100.pdf" class="uri">
+www.open-std.org/jtc1/sc22/wg21/docs/papers/2014/n4100.pdf</a></p>
+<p>[<a name="2">4</a>] Beman Dawes, others, <a href="http://www.boost.org/doc/libs/1_60_0/libs/filesystem/doc/index.htm">Boost Filesystem Library, V3</a>, 2015.<br>
+<a href="https://www.boost.org/doc/libs/1_60_0/libs/filesystem/doc/index.htm" class="uri">
+www.boost.org/doc/libs/1_60_0/libs/filesystem/doc/index.htm</a></p>
+
+  <h1><a name="Proposal-1">Proposal 1</a> proposed wording</h1>
+
+  27.10.12 Class <code>directory_entry</code> [class.directory_entry]</h2>
+
+
 
 <pre>namespace std::filesystem {
   class directory_entry {
   public:
-    // <a href="#directory_entry-constructors">constructors</a> and destructor
+    // <a href="#directory_entry-constructors-1">constructors</a> and destructor
     directory_entry() noexcept = default;
     directory_entry(const directory_entry&amp;) = default;
     directory_entry(directory_entry&amp;&amp;) noexcept = default;
@@ -217,7 +234,167 @@ of file size from <code>directory_entry</code><br> </i>and issue
     <ins>directory_entry(const path&amp; p, error_code& ec);</ins>
    ~directory_entry();
 
-    // <a href="#directory_entry-modifiers">modifiers</a>
+    // <a href="#directory_entry-modifiers-1">modifiers</a>
+    directory_entry&amp; operator=(const directory_entry&amp;) = default;
+    directory_entry&amp; operator=(directory_entry&amp;&amp;) noexcept = default;
+    void assign(const path&amp; p);
+    <ins>void assign(const path&amp; p, error_code&amp; ec);</ins>
+    <ins>void refresh();</ins>
+    <ins>void refresh(error_code&amp; ec) noexcept;</ins>
+    <del>void replace_filename(const path&amp; p);</del>
+
+    // <a href="#directory_entry-observers-1">observers</a>
+    const path&amp;  path() const noexcept;
+    operator const path&amp;() const noexcept;
+    file_status  status() const;
+    file_status  status(error_code&amp; ec) const noexcept;
+    file_status  symlink_status() const;
+    file_status  symlink_status(error_code&amp; ec) const noexcept;
+    <ins>uintmax_t  file_size() const;</ins>
+    <ins>uintmax_t  file_size(error_code& ec) const noexcept;</ins>
+    <ins>file_time_type  last_write_time() const;</ins> 
+    <ins>file_time_type  last_write_time(error_code& ec) const noexcept;</ins> 
+
+    bool operator&lt; (const directory_entry&amp; rhs) const noexcept;
+    bool operator==(const directory_entry&amp; rhs) const noexcept;
+    bool operator!=(const directory_entry&amp; rhs) const noexcept;
+    bool operator&lt;=(const directory_entry&amp; rhs) const noexcept;
+    bool operator&gt; (const directory_entry&amp; rhs) const noexcept;
+    bool operator&gt;=(const directory_entry&amp; rhs) const noexcept;
+  private:
+    path   m_path; // for exposition only
+  };
+
+}</pre>
+
+<p>A <code>directory_entry</code> object stores a <code>path</code> object.</p>
+<p><ins>Implementations are permitted and encouraged to cache values for status, 
+symlink status, file size, and last write time attributes of <code>directory_entry</code> 
+objects if such values are available during directory iteration and caching 
+them would improve efficiency of  operational query functions ([fs.op.funcs]).</ins></p>
+<p><ins><span style="background-color: #FFFF00">[</span><i><span style="background-color: #FFFF00">Example: TBS
+</span> </i><span style="background-color: #FFFF00">—<i>end 
+example</i>]</span></ins></p>
+<h3>27.10.12.1 <a name="directory_entry-constructors-1"><code>directory_entry</code> 
+constructors </a>[directory_entry.cons] </h3>
+<pre>explicit directory_entry(const path&amp; p);
+<ins>directory_entry(const path&amp; p, error_code& ec);</ins></pre>
+<blockquote>
+  <p><i>Effects: </i>Constructs an object of type <code>directory_entry</code><ins>, 
+  then <code>refresh(<i>[ec]</i>)</code></ins>.
+  </p>
+  <p><i>Postcondition:</i> <code>path() == p</code>.</p>
+  <p><ins><i>Throws:</i> As specified in Error 
+  reporting ([fs.err.report]).</ins> </p>
+</blockquote>
+<h3>27.10.12.2 <a name="directory_entry-modifiers-1"><code>directory_entry</code> 
+modifiers </a>[directory_entry.mods] </h3>
+<pre>void assign(const path&amp; p);
+<ins>void assign(const path&amp; p, error_code&amp; ec);</ins></pre>
+<blockquote>
+  <p><ins><i>Effects:</i> <code>refresh(<i>[ec]</i>)</code>.</ins></p>
+  <p><i>Postcondition:</i> <code>path() == p</code>.</p>
+  <p><ins><i>Throws:</i> As specified in Error 
+  reporting ([fs.err.report]).</ins> </p>
+</blockquote>
+<pre><ins>void refresh();</ins>
+<ins>void refresh(error_code&amp; ec) noexcept;</ins></pre>
+<blockquote>
+<p><ins><i>Effects:</i> Stores the current value for any cached attribute values of the 
+file <code>p</code> resolves to.</ins></p>
+<p><ins><i>Throws:</i> As specified in Error 
+  reporting ([fs.err.report]).</ins> </p>
+</blockquote>
+<pre><del>void replace_filename(const path&amp; p);</del></pre>
+<blockquote>
+  <p><del><i>Postcondition:</i> <code>path() == x.parent_path() / p</code> where <code>x</code> is the value of <code>path()</code> before the function is 
+  called.</del></p>
+</blockquote>
+</blockquote>
+<h3>27.10.12.3 <a name="directory_entry-observers-1"><code>directory_entry</code> observers
+</a>[directory_entry.obs] </h3>
+<pre>const path&amp; path() const noexcept;
+operator const path&amp;() const noexcept;</pre>
+<blockquote>
+  <p><i>Returns:</i> <code>m_path</code> </p>
+</blockquote>
+<pre>file_status status() const;
+file_status status(error_code&amp; ec) const noexcept;</pre>
+<blockquote>
+  <p><i>Returns:</i> <ins>If cached, the status <code>file_status</code> 
+  attribute value. 
+  Otherwise, </ins> <code>status(path())</code> or <code>status(path(), ec)</code>, 
+  respectively.</p>
+  <p para_num="5"><i>Throws:</i> As specified in Error 
+  reporting ([fs.err.report]).</p>
+</blockquote>
+<pre para_num="6">file_status symlink_status() const;
+file_status symlink_status(error_code&amp; ec) const noexcept;</pre>
+<blockquote>
+   <p para_num="7"><i>Returns:</i> <ins>If cached, the&nbsp; symlink status
+   <code>file_status</code> attribute value. Otherwise, </ins> <code>symlink_status(path())</code> or <code>
+   symlink_status(path(), ec)</code>, respectively.</p>
+  <p para_num="8"><i>Throws:</i> As specified in Error 
+  reporting ([fs.err.report]).</p>
+</blockquote>
+
+<pre><ins>uintmax_t file_size() const;</ins>
+<ins>uintmax_t file_size(error_code& ec) const noexcept;</ins></pre>
+<blockquote>
+<p><ins><i>Returns:</i> If cached, the <code>file_size</code> attribute value. Otherwise,
+<code>file_size(path())</code> or <code>file_size(path(), ec)</code>, respectively.</ins></p>
+</blockquote>
+
+<pre><ins>file_time_type last_write_time() const;</ins> 
+<ins>file_time_type last_write_time(error_code& ec) const noexcept;</ins></pre> 
+<blockquote>
+<p><ins><i>Returns:</i> If cached, the <code>file_time_type</code> attribute value. 
+Otherwise, <code>last_write_time(path())</code> or <code>last_write_time(path(), ec)</code>, respectively.</ins></p>
+</blockquote>
+
+
+<pre para_num="9">bool operator==(const directory_entry&amp; rhs) const noexcept;</pre>
+<blockquote>
+  <p para_num="10"><i>Returns:</i> <code>m_path == rhs.m_path</code>. </p>
+</blockquote>
+<pre para_num="11">bool operator!=(const directory_entry&amp; rhs) const noexcept;</pre>
+<blockquote>
+  <p para_num="12"><i>Returns:</i> <code>m_path != rhs.m_path</code>. </p>
+</blockquote>
+<pre para_num="13">bool operator&lt; (const directory_entry&amp; rhs) const noexcept;</pre>
+<blockquote>
+  <p para_num="14"><i>Returns:</i> <code>m_path &lt; rhs.m_path</code>. </p>
+</blockquote>
+<pre para_num="15">bool operator&lt;=(const directory_entry&amp; rhs) const noexcept;</pre>
+<blockquote>
+  <p para_num="16"><i>Returns:</i> <code>m_path &lt;= rhs.m_path</code>. </p>
+</blockquote>
+<pre para_num="17">bool operator&gt; (const directory_entry&amp; rhs) const noexcept;</pre>
+<blockquote>
+  <p para_num="18"><i>Returns:</i> <code>m_path &gt; rhs.m_path</code>. </p>
+</blockquote>
+<pre para_num="19">bool operator&gt;=(const directory_entry&amp; rhs) const noexcept;</pre>
+<blockquote>
+  <p para_num="20"><i>Returns:</i> <code>m_path &gt;= rhs.m_path</code>. 
+
+  <h1 dir="ltr"><a name="Proposal-2">Proposal 2</a> proposed wording</h1>
+
+<h2>27.10.12 Class <code>directory_entry</code> [class.directory_entry]</h2>
+
+
+
+<pre>namespace std::filesystem {
+  class directory_entry {
+  public:
+    // <a href="#directory_entry-constructors-2">constructors</a> and destructor
+    directory_entry() noexcept = default;
+    directory_entry(const directory_entry&amp;) = default;
+    directory_entry(directory_entry&amp;&amp;) noexcept = default;
+    explicit directory_entry(const path&amp; p);
+    <ins>directory_entry(const path&amp; p, error_code& ec);</ins>
+   ~directory_entry();
+
+    // <a href="#directory_entry-modifiers-2">modifiers</a>
     directory_entry&amp; operator=(const directory_entry&amp;) = default;
     directory_entry&amp; operator=(directory_entry&amp;&amp;) noexcept = default;
     void assign(const path&amp; p);
@@ -226,7 +403,7 @@ of file size from <code>directory_entry</code><br> </i>and issue
     <ins>void refresh(error_code&amp; ec) noexcept;</ins>
     void replace_filename(const path&amp; p);
 
-    // <a href="#directory_entry-observers">observers</a>
+    // <a href="#directory_entry-observers-2">observers</a>
     const path&amp;  path() const noexcept;
     operator const path&amp;() const noexcept;
     <del>file_status  status() const;</del>
@@ -245,6 +422,7 @@ of file size from <code>directory_entry</code><br> </i>and issue
   };
 
 }</pre>
+
 <p>A <code>directory_entry</code> object stores a <code>path</code> object.</p>
 <p><ins>Implementations are permitted and encouraged to cache additional information 
 about the state of external 
@@ -272,7 +450,7 @@ last_write_time</code>, and <code>file_size</code>.&nbsp; —<i>end note</i>]</i
 <p><ins><span style="background-color: #FFFF00">[</span><i><span style="background-color: #FFFF00">Example: TBS
 </span> </i><span style="background-color: #FFFF00">—<i>end 
 example</i>]</span></ins></p>
-<h3>27.10.12.1 <a name="directory_entry-constructors"><code>directory_entry</code> 
+<h3>27.10.12.1 <a name="directory_entry-constructors-2"><code>directory_entry</code> 
 constructors </a>[directory_entry.cons] </h3>
 <pre>explicit directory_entry(const path&amp; p);
 <ins>directory_entry(const path&amp; p, error_code& ec);</ins></pre>
@@ -284,7 +462,7 @@ constructors </a>[directory_entry.cons] </h3>
   <p><ins><i>Throws:</i> As specified in Error 
   reporting ([fs.err.report]).</ins> </p>
 </blockquote>
-<h3>27.10.12.2 <a name="directory_entry-modifiers"><code>directory_entry</code> 
+<h3>27.10.12.2 <a name="directory_entry-modifiers-2"><code>directory_entry</code> 
 modifiers </a>[directory_entry.mods] </h3>
 <pre>void assign(const path&amp; p);
 <ins>void assign(const path&amp; p, error_code&amp; ec);</ins></pre>
@@ -310,7 +488,8 @@ any.</ins></p>
   called. </p>
 </blockquote>
 </blockquote>
-<h3>27.10.12.3 <a name="directory_entry-observers"><code>directory_entry</code> observers </a>[directory_entry.obs] </h3>
+<h3>27.10.12.3 <a name="directory_entry-observers-2"><code>directory_entry</code> observers
+</a>[directory_entry.obs] </h3>
 <pre>const path&amp; path() const noexcept;
 operator const path&amp;() const noexcept;</pre>
 <blockquote>
@@ -355,24 +534,6 @@ operator const path&amp;() const noexcept;</pre>
   <p para_num="20"><i>Returns:</i> <code>m_path &gt;= rhs.m_path</code>. </p>
 </blockquote>
 
-
-  <h2><a name="References">References</a></h2>
-
-
-  <p>[1] Issue 2663, C++ Standard Library Issues Lists,
-  <a href="https://cplusplus.github.io/LWG/lwg-active.html#2663">
-  cplusplus.github.io/LWG/lwg-active.html#2663</a></p>
-
-<p>[2] N4582, Working Draft, Standard for Programming Language C++, 2016,
-<a class="uri" href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2016/n4582.pdf">www.open-std.org/jtc1/sc22/wg21/docs/papers/2016/n4582.pdf</a></p>
-
-<p>[<a name="1">3</a>] Beman Dawes, N4100, Programming Languages — C++ — File System Technical Specification, 
-2014.<br>
-<a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2014/n4100.pdf" class="uri">
-www.open-std.org/jtc1/sc22/wg21/docs/papers/2014/n4100.pdf</a></p>
-<p>[<a name="2">4</a>] Beman Dawes, others, <a href="http://www.boost.org/doc/libs/1_60_0/libs/filesystem/doc/index.htm">Boost Filesystem Library, V3</a>, 2015.<br>
-<a href="https://www.boost.org/doc/libs/1_60_0/libs/filesystem/doc/index.htm" class="uri">
-www.boost.org/doc/libs/1_60_0/libs/filesystem/doc/index.htm</a></p>
 
 <hr>
 
