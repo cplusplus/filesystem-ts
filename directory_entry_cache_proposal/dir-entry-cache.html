@@ -281,7 +281,7 @@ observer functions ([fs.op.funcs]). Such stored attribute values are said to be
 
 for (auto&amp;&amp; itr : directory_iterator(p))
 {
-  // if available use cached last write time to minimize disk accesses
+  // use possibly cached last write time to minimize disk accesses
   std::cout << itr.path() &lt;&lt; &quot; &quot; &lt;&lt; itr.last_write_time() &lt;&lt; &#39;\n&#39;;
 }
 
@@ -349,7 +349,7 @@ operator const path&amp;() const noexcept;</pre>
 <pre>file_status status() const;
 file_status status(error_code&amp; ec) const noexcept;</pre>
 <blockquote>
-  <p><i>Returns:</i> <ins>If cached, the status <code>file_status</code> 
+  <p><i>Returns:</i> <ins>If cached, the status 
   attribute value. 
   Otherwise, </ins> <code>status(path())</code> or <code>status(path(), ec)</code>, 
   respectively.</p>
@@ -359,8 +359,7 @@ file_status status(error_code&amp; ec) const noexcept;</pre>
 <pre para_num="6">file_status symlink_status() const;
 file_status symlink_status(error_code&amp; ec) const noexcept;</pre>
 <blockquote>
-   <p para_num="7"><i>Returns:</i> <ins>If cached, the&nbsp; symlink status
-   <code>file_status</code> attribute value. Otherwise, </ins> <code>symlink_status(path())</code> or <code>
+   <p para_num="7"><i>Returns:</i> <ins>If cached, the&nbsp; symlink status attribute value. Otherwise, </ins> <code>symlink_status(path())</code> or <code>
    symlink_status(path(), ec)</code>, respectively.</p>
   <p para_num="8"><i>Throws:</i> As specified in Error 
   reporting ([fs.err.report]).</p>
@@ -369,14 +368,14 @@ file_status symlink_status(error_code&amp; ec) const noexcept;</pre>
 <pre><ins>uintmax_t file_size() const;</ins>
 <ins>uintmax_t file_size(error_code& ec) const noexcept;</ins></pre>
 <blockquote>
-<p><ins><i>Returns:</i> If cached, the <code>file_size</code> attribute value. Otherwise,
+<p><ins><i>Returns:</i> If cached, the file size attribute value. Otherwise,
 <code>file_size(path())</code> or <code>file_size(path(), ec)</code>, respectively.</ins></p>
 </blockquote>
 
 <pre><ins>file_time_type last_write_time() const;</ins> 
 <ins>file_time_type last_write_time(error_code& ec) const noexcept;</ins></pre> 
 <blockquote>
-<p><ins><i>Returns:</i> If cached, the <code>file_time_type</code> attribute value. 
+<p><ins><i>Returns:</i> If cached, the last write time attribute value. 
 Otherwise, <code>last_write_time(path())</code> or <code>last_write_time(path(), ec)</code>, respectively.</ins></p>
 </blockquote>
 
