@@ -308,8 +308,8 @@ constructors </a>[directory_entry.cons] </h3>
 <ins>directory_entry(const path&amp; p, error_code& ec);</ins></pre>
 <blockquote>
   <p><i>Effects: </i>Constructs an object of type <code>directory_entry</code><ins>, 
-  then <code>refresh()</code><font face="Courier New">or </font> <code>
-  refresh(ec)</code><font face="Courier New">, respectively</font></ins>.
+  then <code>refresh()</code>or <code>
+  refresh(ec)</code>, respectively</ins>.
   </p>
   <p><i>Postcondition:</i> <code>path() == p</code>.</p>
   <p><ins><i>Throws:</i> As specified in Error 
@@ -404,6 +404,8 @@ Otherwise, <code>last_write_time(path())</code> or <code>last_write_time(path(),
 <blockquote>
   <p para_num="20"><i>Returns:</i> <code>m_path &gt;= rhs.m_path</code>. 
 
+  </blockquote>
+
   <h1 dir="ltr"><a name="Proposal-2">Proposal 2</a> proposed wording</h1>
 
 <h2>27.10.12 Class <code>directory_entry</code> [class.directory_entry]</h2>
@@ -428,7 +430,7 @@ Otherwise, <code>last_write_time(path())</code> or <code>last_write_time(path(),
     <ins>void assign(const path&amp; p, error_code&amp; ec);</ins>
     <ins>void refresh();</ins>
     <ins>void refresh(error_code&amp; ec) noexcept;</ins>
-    void replace_filename(const path&amp; p);
+    <del>void replace_filename(const path&amp; p);</del>
 
     // <a href="#directory_entry-observers-2">observers</a>
     const path&amp;  path() const noexcept;
@@ -447,43 +449,60 @@ Otherwise, <code>last_write_time(path())</code> or <code>last_write_time(path(),
   private:
     path   m_path; // for exposition only
   };
-
 }</pre>
 
 <p>A <code>directory_entry</code> object stores a <code>path</code> object.</p>
-<p><ins>Implementations are permitted and encouraged to cache additional information 
-about the state of external 
-storage in <code>directory_entry</code> 
-objects if such information is available during directory iteration and caching 
-it would improve efficiency of  operational query functions ([fs.op.funcs]). 
-Implementations are permitted and encouraged to overload  operational query functions that take <code>const path&amp;</code> arguments with 
-additional signatures taking <code>const directory_entry&amp;</code> arguments. 
-Such overloads shall be equivalent to ([structure.specifications]) the <code>const path&amp;</code> 
-overload of the function except that state information shall be obtained from the <code>directory_entry</code> 
-argument&#39;s 
-cache rather than the external file system.</ins></p>
-<p><ins>[<i>Note: </i>Users wishing to make use of cached <code>directory_entry</code> 
-state information should call status and other operational query functions 
-using the <code>directory_entry</code> object as an argument. Users wishing to 
-ensure that an operational function returns the most recent available 
-information should call the function with a <code>path</code> object or an 
-object that is convertible to <code>path</code>. —<i>end note</i>]</ins></p>
-<p><ins>[<i>Note: </i>Operational query functions that may benefit from caching 
-include <code>status</code>, <code>symlink_status</code>, <code>exists</code>,
-<code>is_block_file</code>, <code>is_character_file</code>, i<code>s_directory</code>,
-<code>is_fifo</code>, <code>is_other</code>, <code>is_regular_file</code>, <code>
-is_socket</code>, <code>is_symlink</code>, <code>status_known</code>, <code>
-last_write_time</code>, and <code>file_size</code>.&nbsp; —<i>end note</i>]</ins></p>
-<p><ins><span style="background-color: #FFFF00">[</span><i><span style="background-color: #FFFF00">Example: TBS
-</span> </i><span style="background-color: #FFFF00">—<i>end 
-example</i>]</span></ins></p>
+
+<p><ins>Implementations are permitted and encouraged to store values for file system 
+attributes in <code>directory_entry</code> objects if such values are available 
+during directory iteration and storing them would improve efficiency of 
+operational query functions ([fs.op.funcs]). Such stored attribute values 
+are said to be cached. 
+Implementations are permitted and encouraged to overload  operational query functions that take 
+a <code>const path&amp;</code> argument with 
+an additional signature replacing the argument with a <code>const directory_entry&amp;</code> argument 
+if the implementation of that added signature can be made more efficient by 
+using cached attribute values. 
+Such an overload shall be equivalent to ([structure.specifications]) the <code>const path&amp;</code> 
+overload of the function except that attribute values shall be obtained from the <code>directory_entry</code>&#39;s 
+cached values rather than the external file system.</ins></p>
+
+<blockquote>
+<p><ins>[<i>Example: </i></ins></p>
+<pre><ins>using namespace std::filesystem;
+
+for (auto&amp;&amp; itr : directory_iterator(p))
+{
+  // use possibly cached last write time to minimize disk accesses
+  std::cout << itr.path() &lt;&lt; &quot; &quot; &lt;&lt; last_write_time(*itr) &lt;&lt; &#39;\n&#39;;
+}
+
+for (auto&amp;&amp; itr : directory_iterator(p))
+{
+  <i>... potentially lengthy computations ...</i>
+  // do not use cached last write time since the cache may be stale
+  std::cout << itr.path() &lt;&lt; &quot; &quot; &lt;&lt; last_write_time(itr-&gt;path()) &lt;&lt; &#39;\n&#39;;
+}</ins></pre>
+<p><ins>On implementations that do not cache the last write time, both loops will 
+result in a potentially expensive call to the <code>
+std::filesystem::last_write_time</code> function.</ins></p>
+<p><ins>On implementations that do cache the last write time, the first loop will use 
+the cached value and so will not result in a potentially expensive call to the
+<code>std::filesystem::last_write_time</code> function.</ins></p>
+<p><ins>The code is portable to any implementation, regardless of whether or not it 
+employs caching.</ins></p>
+<p><ins><i>&nbsp;</i>—<i>end 
+example</i>]</ins></p>
+</blockquote>
+
 <h3>27.10.12.1 <a name="directory_entry-constructors-2"><code>directory_entry</code> 
 constructors </a>[directory_entry.cons] </h3>
 <pre>explicit directory_entry(const path&amp; p);
 <ins>directory_entry(const path&amp; p, error_code& ec);</ins></pre>
 <blockquote>
   <p><i>Effects: </i>Constructs an object of type <code>directory_entry</code><ins>, 
-  then <code>refresh(<i>[ec]</i>)</code></ins>.
+  then <code>refresh()</code>or <code>
+  refresh(ec)</code>, respectively</ins>.
   </p>
   <p><i>Postcondition:</i> <code>path() == p</code>.</p>
   <p><ins><i>Throws:</i> As specified in Error 
@@ -494,7 +513,8 @@ modifiers </a>[directory_entry.mods] </h3>
 <pre>void assign(const path&amp; p);
 <ins>void assign(const path&amp; p, error_code&amp; ec);</ins></pre>
 <blockquote>
-  <p><ins><i>Effects:</i> <code>refresh(<i>[ec]</i>)</code>.</ins></p>
+  <p><ins><i>Effects:</i> <code>refresh()</code>or <code>
+  refresh(ec)</code>, respectively.</ins></p>
   <p><i>Postcondition:</i> <code>path() == p</code>.</p>
   <p><ins><i>Throws:</i> As specified in Error 
   reporting ([fs.err.report]).</ins> </p>
@@ -502,18 +522,15 @@ modifiers </a>[directory_entry.mods] </h3>
 <pre><ins>void refresh();</ins>
 <ins>void refresh(error_code&amp; ec) noexcept;</ins></pre>
 <blockquote>
-<p><ins><i>Effects:</i> Stores current values for the 
-attributes of
-the file <code>p</code> resolves to in the additional information cache, if 
-any.</ins></p>
+<p><ins><i>Effects:</i> Stores the current value for any cached attribute values of the 
+file <code>p</code> resolves to.</ins></p>
 <p><ins><i>Throws:</i> As specified in Error 
   reporting ([fs.err.report]).</ins> </p>
 </blockquote>
-<pre>void replace_filename(const path&amp; p);</pre>
+<pre><del>void replace_filename(const path&amp; p);</del></pre>
 <blockquote>
-  <p><i>Postcondition:</i> <code>path() == x.parent_path() / p</code> where <code>x</code> is the value of <code>path()</code> before the function is 
-  called. </p>
-</blockquote>
+  <p><del><i>Postcondition:</i> <code>path() == x.parent_path() / p</code> where <code>x</code> is the value of <code>path()</code> before the function is 
+  called.</del></p>
 </blockquote>
 <h3>27.10.12.3 <a name="directory_entry-observers-2"><code>directory_entry</code> observers
 </a>[directory_entry.obs] </h3>
