@@ -32,7 +32,7 @@ body
 <tr>
   <td align="left">Date:</td>
   <td align="left">
-  <!--webbot bot="Timestamp" S-Type="EDITED" S-Format="%Y-%m-%d" startspan -->2016-05-27<!--webbot bot="Timestamp" endspan i-checksum="12342" --></td>
+  <!--webbot bot="Timestamp" S-Type="EDITED" S-Format="%Y-%m-%d" startspan -->2016-05-28<!--webbot bot="Timestamp" endspan i-checksum="12344" --></td>
 </tr>
 <tr>
   <td align="left">Reply to:</td>
@@ -61,39 +61,38 @@ of file size from <code>directory_entry</code><br> </i>and issue
 
   <p style="margin-left:20%; margin-right:20%;">Both proposals include full 
   wording, have been implemented, and avoid use of mutable data members. Both 
-  offer guidance to users on how to use cached information when desired or avoid 
-  use of cached information when not desired, without exposing to the user 
+  offer guidance to users on how to use or not use cached information as desired, without exposing to the user 
   whether information is actually cached. Both allow the user to write code that 
   is fully portable between&nbsp; implementations that cache or do not cache.</p>
 
 
   <p style="margin-left:20%; margin-right:20%;">Proposal 1 exposes what 
-  directory state information may possibly be cached, and so would require 
-  additions to the standard to extend the interface to accommodate future 
-  operating systems or file systems that supply additional state information on 
+   
+  information may possibly be cached, and so would require 
+  additions to the standard library should future 
+  operating systems or file systems appear that supply additional state on 
   directory iteration. </p>
 
 
   <p style="margin-left:20%; margin-right:20%;">Proposal 2 does not 
-  expose what directory state information may possibly be cached, and so 
-  requires no changes to the standard as operating systems and file systems 
+  expose what state may possibly be cached, and so 
+  requires no changes to the standard library as operating systems and file systems 
   evolve. But this proposal may be harder to reason about and its dependence on 
-  automatic conversions may raise objections.</p>
+  automatic conversions may cause concern.</p>
 
 
-  <h2><a name="Introduction">Introduction</a></h2>
+  <h2>Background</h2>
 
   <p>Directory iteration in real-world operating systems always returns directory 
-  entry information containing at least the file name. POSIX has an 
-  option to also return file status, but only some operating system implement this. Windows always 
-  includes file status, 
-  file size, and last modification date. Accessing the additional 
-  information from the directory entry is much more efficient than re-accessing 
-  the file system to obtain the information.</p>
+  state information containing at least the file name. POSIX has an 
+  option to also return file status, but not all popular distributions implement this. Windows always 
+  returns file status, 
+  file size, and last modification date. Accessing this additional state from the directory entry is much more efficient than re-accessing 
+  the file system to obtain it. Users know this and expect the standard library 
+  filesystem to deliver the same efficiency.</p>
 
-  <p>The initial filesystem TS proposal
-  <span style="background-color: #FFFF00">(need reference)</span> and the Boost 
-  Filesystem implementation limited the additional information stored by class
+  <p>The initial filesystem TS proposal and the Boost 
+  Filesystem implementation limited the additional state stored by class
   <code>directory_entry</code> to the regular status and symlink status, since these were the 
   only additional elements common to several operating systems. The caching of 
   this additional information was described using mutable exposition-only 
@@ -103,6 +102,10 @@ of file size from <code>directory_entry</code><br> </i>and issue
   details and was not easily extendible to additional cache information such as 
   file size and last write timestamp.</p>
 
+  <p>When <code>directory_entry</code> caching was removed from the TS, the LWG 
+  promised to revisit the issue when Filesystem was added to the standard. Two 
+  issues where subsequently filed that remind us of that promise.</p>
+
   <p>LWG issue <a href="http://cplusplus.github.io/LWG/lwg-active.html#2663">2663</a>, <i>Enable efficient retrieval of file size from </i><code><i>directory_entry</i></code>, 
   requests that for Windows caching be extended to file size.</p>
 
@@ -111,111 +114,6 @@ of file size from <code>directory_entry</code><br> </i>and issue
 <code>directory_entry::status</code> is not allowed to be cached as a 
   quality-of-implementation issue</i>, requests the reinstatement of permission 
   for implementations to cache directory entry information.</p>
-
-  <h2>Design</h2>
-
-  <p>As a convenience for users, class <code>directory_entry</code> 
-  already has an implicit conversion to <code>path</code>:</p>
-
-  <blockquote>
-    <p><code>operator const path&amp;() const noexcept;</code></p>
-</blockquote>
-
-    <p>This means that the following two function calls are equivalent:</p>
-
-  <blockquote>
-
-    <p><code>sz = file_size(my_directory_entry);&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
-    // call #1<br>
-    sz = file_size(my_directory_entry.path());&nbsp; // call #2</code></p>
-
-  </blockquote>
-
-    <p>Both would currently call the non-member function:</p>
-
-  <blockquote>
-
-    <p><code>uintmax_t file_size(const path&amp; p);</code></p>
-
-  </blockquote>
-
-    <p>But if there were a second signature: </p>
-
-  <blockquote>
-
-    <p><code>uintmax_t file_size(const directory_entry&amp; d);</code></p>
-
-  </blockquote>
-
-    <p>It would be invoked by call #1, and the implementation could provide the 
-    file size from information cached in <code>d</code>. Guidance to users would 
-    be to use call #1 when the possibly cached&nbsp; <code>directory_entry</code> file size is desired, 
-    use call #2 when file size from a file system access is desired. For 
-    implementations where file size is not cached in directory 
-    entries, both call forms access the file system to obtain the file size.</p>
-
-    <h3>Background</h3>
-
-    <p>For Windows, <code>directory_entry</code> information is obtained by calling function
-      <a href="https://msdn.microsoft.com/en-us/library/windows/desktop/aa364418(v=vs.85).aspx">
-      FindFirstFile</a>,
-      <a href="https://msdn.microsoft.com/en-us/library/windows/desktop/aa364419(v=vs.85).aspx">
-      FindFirstFileEx</a>, 
-      or 
-      <a href="https://msdn.microsoft.com/en-us/library/windows/desktop/aa364428(v=vs.85).aspx">
-      FindNextFile</a>, which return pointers to structure
-      
-      <a href="https://msdn.microsoft.com/en-us/library/windows/desktop/aa365740(v=vs.85).aspx">
-      WIN32_FIND_DATA</a>, and can be refreshed by calling function
-      <a href="https://msdn.microsoft.com/en-us/library/windows/desktop/aa364952(v=vs.85).aspx">
-      GetFileInformationByHandle</a> 
-      which returns a pointer to structure
-      <a href="https://msdn.microsoft.com/en-us/library/windows/desktop/aa363788(v=vs.85).aspx">
-      BY_HANDLE_FILE_INFORMATION</a>.</p>
-
-    <p>For some POSIX-like systems, such as
-    <a href="http://man7.org/linux/man-pages/man3/readdir.3.html">Linux</a> and 
-    some BSD-based distributions, glibc versions since 2.19 may support an 
-    additional <code>struct dirent</code> field named <code>d_type</code> 
-    &quot;making it possible to avoid the expense of calling <code>lstat</code>&quot;. 
-    POSIX specifies that the macro <code>_DIRENT_HAVE_D_TYPE</code> is defined 
-    if <code>d_type</code> is present.</p>
-
-    <h3>Specification options</h3>
-
-    <p>There are two possible ways to specify the above behavior; (1) require the <code>const 
-    directory_entry&amp;</code> overload for all operational functions that 
-    might possibly benefit from it, either now and in the future, or (2) provide 
-    overall wording to encourage the implementation to supply the <code>const 
-    directory_entry&amp;</code> overload where applicable, but make no changes 
-    to the specifications of individual operational functions .</p>
-
-    <p>The 
-    difficulty with option (1) is that it essentially doubles the number of 
-    operational function signatures, making the operational functions harder to 
-    learn, even though few of these added signatures will do anything more than 
-    forward to the <code>const path&amp;</code>&nbsp; signature. Option (2) 
-    segregates what is essentially an experts-only feature into its own separate 
-    specification, and is what is being proposed below.</p>
-
-
-  <h2><a name="References">References</a></h2>
-
-
-  <p>[1] Issue 2663, C++ Standard Library Issues Lists,
-  <a href="https://cplusplus.github.io/LWG/lwg-active.html#2663">
-  cplusplus.github.io/LWG/lwg-active.html#2663</a></p>
-
-<p>[2] N4582, Working Draft, Standard for Programming Language C++, 2016,
-<a class="uri" href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2016/n4582.pdf">www.open-std.org/jtc1/sc22/wg21/docs/papers/2016/n4582.pdf</a></p>
-
-<p>[<a name="1">3</a>] Beman Dawes, N4100, Programming Languages — C++ — File System Technical Specification, 
-2014.<br>
-<a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2014/n4100.pdf" class="uri">
-www.open-std.org/jtc1/sc22/wg21/docs/papers/2014/n4100.pdf</a></p>
-<p>[<a name="2">4</a>] Beman Dawes, others, <a href="http://www.boost.org/doc/libs/1_60_0/libs/filesystem/doc/index.htm">Boost Filesystem Library, V3</a>, 2015.<br>
-<a href="https://www.boost.org/doc/libs/1_60_0/libs/filesystem/doc/index.htm" class="uri">
-www.boost.org/doc/libs/1_60_0/libs/filesystem/doc/index.htm</a></p>
 
   <h1><a name="Proposal-1">Proposal 1</a> proposed wording</h1>
 
@@ -406,7 +304,7 @@ Otherwise, <code>last_write_time(path())</code> or <code>last_write_time(path(),
 
   </blockquote>
 
-  <h1 dir="ltr"><a name="Proposal-2">Proposal 2</a> proposed wording</h1>
+  <h1><a name="Proposal-2">Proposal 2</a> proposed wording</h1>
 
 <h2>27.10.12 Class <code>directory_entry</code> [class.directory_entry]</h2>
 
@@ -581,6 +479,61 @@ operator const path&amp;() const noexcept;</pre>
 
 <hr>
 
-</pre></body>
+    <h2>Operating system <a name="API">API</a>s</h2>
 
+    <p>For Windows, <code>directory_entry</code> information is obtained by calling function
+      <a href="https://msdn.microsoft.com/en-us/library/windows/desktop/aa364418(v=vs.85).aspx">
+      FindFirstFile</a>,
+      <a href="https://msdn.microsoft.com/en-us/library/windows/desktop/aa364419(v=vs.85).aspx">
+      FindFirstFileEx</a>, 
+      or 
+      <a href="https://msdn.microsoft.com/en-us/library/windows/desktop/aa364428(v=vs.85).aspx">
+      FindNextFile</a>, which return pointers to structure
+      
+      <a href="https://msdn.microsoft.com/en-us/library/windows/desktop/aa365740(v=vs.85).aspx">
+      WIN32_FIND_DATA</a>, and can be refreshed by calling function
+      <a href="https://msdn.microsoft.com/en-us/library/windows/desktop/aa364952(v=vs.85).aspx">
+      GetFileInformationByHandle</a> 
+      which returns a pointer to structure
+      <a href="https://msdn.microsoft.com/en-us/library/windows/desktop/aa363788(v=vs.85).aspx">
+      BY_HANDLE_FILE_INFORMATION</a>.</p>
+
+    <p>For some POSIX-like systems, such as
+    <a href="http://man7.org/linux/man-pages/man3/readdir.3.html">Linux</a> and 
+    some BSD-based distributions, glibc versions since 2.19 may support an 
+    additional <code>struct dirent</code> field named <code>d_type</code> 
+    &quot;making it possible to avoid the expense of calling <code>lstat</code>&quot;. 
+    POSIX specifies that the macro <code>_DIRENT_HAVE_D_TYPE</code> is defined 
+    if <code>d_type</code> is present.</p>
+
+
+  <h2><a name="References">References</a></h2>
+
+
+  <p>Issue 2663, <i>Enable efficient retrieval of file size from directory_entry</i>,<br>
+  <a href="https://cplusplus.github.io/LWG/lwg-active.html#2663">
+  cplusplus.github.io/LWG/lwg-active.html#2663</a></p>
+
+
+  <p>Issue 2677, <i><code>directory_entry::status</code> is not allowed to be 
+  cached as a quality-of-implementation issue</i>,<br>
+  <a href="https://cplusplus.github.io/LWG/lwg-active.html#2663">
+  cplusplus.github.io/LWG/lwg-active.html#2677</a></p>
+
+<p>N4582, <i>Working Draft, Standard for Programming Language C++, 2016</i>,<br>
+<a class="uri" href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2016/n4582.pdf">www.open-std.org/jtc1/sc22/wg21/docs/papers/2016/n4582.pdf</a></p>
+
+<p>N4100, <i>Programming Languages — C++ — File System Technical Specification, 
+2014</i>,<br>
+<a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2014/n4100.pdf" class="uri">
+www.open-std.org/jtc1/sc22/wg21/docs/papers/2014/n4100.pdf</a></p>
+<p> <i>Boost Filesystem Library, V3</i>, 2015,<br>
+<a href="https://www.boost.org/doc/libs/1_60_0/libs/filesystem/doc/index.htm" class="uri">
+www.boost.org/doc/libs/1_60_0/libs/filesystem/doc/index.htm</a></p>
+
+  <hr>
+
+<p>&nbsp;</p>
+
+</body>
 </html>
