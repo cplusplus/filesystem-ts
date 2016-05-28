@@ -56,14 +56,14 @@ of file size from <code>directory_entry</code><br> </i>and issue
   <p style="margin-left:20%; margin-right:20%;">This paper provides two 
   proposals for solving the problem of efficiently caching state information 
   obtained during directory iteration. Guidance is sought as to which proposal 
-  is preferred by the library and library evolution working groups.</p>
+  is preferred.</p>
 
 
   <p style="margin-left:20%; margin-right:20%;">Both proposals include full 
   wording, have been implemented, and avoid use of mutable data members. Both 
   offer guidance to users on how to use or not use cached information as desired, without exposing to the user 
   whether information is actually cached. Both allow the user to write code that 
-  is fully portable between&nbsp; implementations that cache or do not cache.</p>
+  is fully portable between&nbsp;implementations that cache or do not cache.</p>
 
 
   <p style="margin-left:20%; margin-right:20%;">Proposal 1 exposes what 
@@ -71,14 +71,15 @@ of file size from <code>directory_entry</code><br> </i>and issue
   information may possibly be cached, and so would require 
   additions to the standard library should future 
   operating systems or file systems appear that supply additional state on 
-  directory iteration. </p>
+  directory iteration. It is conceptually simpler and closer to existing 
+  practice than proposal 2.</p>
 
 
   <p style="margin-left:20%; margin-right:20%;">Proposal 2 does not 
   expose what state may possibly be cached, and so 
   requires no changes to the standard library as operating systems and file systems 
-  evolve. But this proposal may be harder to reason about and its dependence on 
-  automatic conversions may cause concern.</p>
+  evolve. But this proposal is harder to reason about and depends on 
+  automatic conversions that may cause concern.</p>
 
 
   <h2>Background</h2>
@@ -114,6 +115,38 @@ of file size from <code>directory_entry</code><br> </i>and issue
 <code>directory_entry::status</code> is not allowed to be cached as a 
   quality-of-implementation issue</i>, requests the reinstatement of permission 
   for implementations to cache directory entry information.</p>
+
+  <h2>Design decisions</h2>
+
+  <h3>Add cache <code>refresh()</code> functions</h3>
+
+  <p>The original TS design conflated the observer functions that access cached 
+  state information with refreshing the cached state. Since refreshing the 
+  cached state is non-const, the cached member data had to be mutable and that 
+  was unacceptable. The new design for both proposals provides separate 
+  non-const <code>refresh</code> functions that are called by all other 
+  non-const functions that modify the stored path, ensuring cache integrity. The
+  <code>refresh</code> functions can be called by users if desired to refresh 
+  stale cached data.</p>
+
+  <h3>Proposal 1 - Expose the attributes that may be cached</h3>
+
+  <p>With the separation of refresh and observer functionality, the traditional 
+  observer functions become truly const and provide the model for expanding 
+  caching to cover file size and last write time. But this approach requires the 
+  standard library be changed if future operating systems add new attributes 
+  that become caching candidates.</p>
+
+  <h3>Proposal 2 - Hide the attributes that may be cached</h3>
+
+  <p>By allowing implementations to add overloads to operational functions 
+  taking a <code>const directory_entry&amp;</code> argument instead of a <code>const 
+  path&amp;</code> argument, any file attribute the operating system exposes can be 
+  cached. Because there is an automatic conversion from <code>const 
+  directory_entry&amp;</code> to <code>const path&amp;</code>, user code works whether 
+  or not the attribute is cached. That eliminates the need for the standard 
+  library to expose which attributes may be cached. It just works. But this 
+  approach may be more confusing and lacks existing practice.</p>
 
   <h1><a name="Proposal-1">Proposal 1</a> proposed wording</h1>
 
