@@ -140,7 +140,7 @@ of file size from <code>directory_entry</code><br> </i>and issue
     <ins>void assign(const path&amp; p, error_code&amp; ec);</ins>
     <ins>void refresh();</ins>
     <ins>void refresh(error_code&amp; ec) noexcept;</ins>
-    <del>void replace_filename(const path&amp; p);</del>
+    void replace_filename(const path&amp; p);
 
     // <a href="#directory_entry-observers-1">observers</a>
     const path&amp;  path() const noexcept;
@@ -218,8 +218,9 @@ modifiers </a>[directory_entry.mods] </h3>
 <pre>void assign(const path&amp; p);
 <ins>void assign(const path&amp; p, error_code&amp; ec);</ins></pre>
 <blockquote>
-  <p><ins><i>Effects:</i> <code>refresh(<i>[ec]</i>)</code>.</ins></p>
-  <p><i>Postcondition:</i> <code>path() == p</code>.</p>
+  <p><ins><i>Effects:</i> Equivalent to <code>m_path = p</code>, then <code>refresh()</code>or <code>
+  refresh(ec)</code>, respectively.</ins></p>
+  <p><del><i>Postcondition:</i> <code>path() == p</code>.</del></p>
   <p><ins><i>Throws:</i> As specified in Error 
   reporting ([fs.err.report]).</ins> </p>
 </blockquote>
@@ -231,8 +232,9 @@ file <code>p</code> resolves to.</ins></p>
 <p><ins><i>Throws:</i> As specified in Error 
   reporting ([fs.err.report]).</ins> </p>
 </blockquote>
-<pre><del>void replace_filename(const path&amp; p);</del></pre>
+<pre>void replace_filename(const path&amp; p);</pre>
 <blockquote>
+  <p><ins>Effects: Equivalent to <code>m_path = parent_path()/ p</code>, then <code>refresh()</code><font face="Courier New">.</font></ins></p>
   <p><del><i>Postcondition:</i> <code>path() == x.parent_path() / p</code> where <code>x</code> is the value of <code>path()</code> before the function is 
   called.</del></p>
 </blockquote>
@@ -328,7 +330,7 @@ Otherwise, <code>last_write_time(path())</code> or <code>last_write_time(path(),
     <ins>void assign(const path&amp; p, error_code&amp; ec);</ins>
     <ins>void refresh();</ins>
     <ins>void refresh(error_code&amp; ec) noexcept;</ins>
-    <del>void replace_filename(const path&amp; p);</del>
+    void replace_filename(const path&amp; p);
 
     // <a href="#directory_entry-observers-2">observers</a>
     const path&amp;  path() const noexcept;
@@ -411,9 +413,9 @@ modifiers </a>[directory_entry.mods] </h3>
 <pre>void assign(const path&amp; p);
 <ins>void assign(const path&amp; p, error_code&amp; ec);</ins></pre>
 <blockquote>
-  <p><ins><i>Effects:</i> <code>refresh()</code>or <code>
+  <p><ins><i>Effects:</i> Equivalent to <code>m_path = p</code>, then <code>refresh()</code>or <code>
   refresh(ec)</code>, respectively.</ins></p>
-  <p><i>Postcondition:</i> <code>path() == p</code>.</p>
+  <p><del><i>Postcondition:</i> <code>path() == p</code>.</del></p>
   <p><ins><i>Throws:</i> As specified in Error 
   reporting ([fs.err.report]).</ins> </p>
 </blockquote>
@@ -425,10 +427,12 @@ file <code>p</code> resolves to.</ins></p>
 <p><ins><i>Throws:</i> As specified in Error 
   reporting ([fs.err.report]).</ins> </p>
 </blockquote>
-<pre><del>void replace_filename(const path&amp; p);</del></pre>
+<pre>void replace_filename(const path&amp; p);</pre>
 <blockquote>
+  <p><ins>Effects: Equivalent to <code>m_path = parent_path()/ p</code>, then <code>refresh()</code>.</ins></p>
   <p><del><i>Postcondition:</i> <code>path() == x.parent_path() / p</code> where <code>x</code> is the value of <code>path()</code> before the function is 
   called.</del></p>
+</blockquote>
 </blockquote>
 <h3>27.10.12.3 <a name="directory_entry-observers-2"><code>directory_entry</code> observers
 </a>[directory_entry.obs] </h3>
