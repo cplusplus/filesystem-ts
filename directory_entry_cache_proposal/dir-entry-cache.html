@@ -178,14 +178,40 @@ of file size from <code>directory_entry</code><br> </i>and issue
     // <a href="#directory_entry-observers-1">observers</a>
     const path&amp;  path() const noexcept;
     operator const path&amp;() const noexcept;
-    file_status  status() const;
-    file_status  status(error_code&amp; ec) const noexcept;
-    file_status  symlink_status() const;
-    file_status  symlink_status(error_code&amp; ec) const noexcept;
+    <ins>bool exists();</ins>
+    <ins>bool exists(error_code&amp; ec) noexcept;</ins>
     <ins>uintmax_t  file_size() const;</ins>
     <ins>uintmax_t  file_size(error_code& ec) const noexcept;</ins>
     <ins>file_time_type  last_write_time() const;</ins> 
     <ins>file_time_type  last_write_time(error_code& ec) const noexcept;</ins> 
+    <ins>uintmax_t hard_link_count();</ins>
+    <ins>uintmax_t hard_link_count(error_code&amp; ec) noexcept;</ins>
+    <ins>bool is_block_file();</ins>
+    <ins>bool is_block_file(error_code&amp; ec) noexcept;</ins>
+    <ins>bool is_character_file();</ins>
+    <ins>bool is_character_file(error_code&amp; ec) noexcept;</ins>
+    <ins>bool is_directory();</ins>
+    <ins>bool is_directory(error_code&amp; ec) noexcept;</ins>
+    <ins>bool is_empty();</ins>
+    <ins>bool is_empty(error_code&amp; ec) noexcept;</ins>
+    <ins>bool is_fifo();</ins>
+    <ins>bool is_fifo(error_code&amp; ec) noexcept;</ins>
+    <ins>bool is_other();</ins>
+    <ins>bool is_other(error_code&amp; ec) noexcept;</ins>
+    <ins>bool is_regular_file();</ins>
+    <ins>bool is_regular_file(error_code&amp; ec) noexcept;</ins>
+    <ins>bool is_socket();</ins>
+    <ins>bool is_socket(error_code&amp; ec) noexcept;</ins>
+    <ins>bool is_symlink();</ins>
+    <ins>bool is_symlink(error_code&amp; ec) noexcept;</ins>
+    <ins>path read_symlink();</ins>
+    <ins>path read_symlink(error_code&amp; ec);</ins>
+    <ins>space_info space();</ins>
+    <ins>space_info space(error_code&amp; ec) noexcept;</ins>
+    file_status  status() const;
+    file_status  status(error_code&amp; ec) const noexcept;
+    file_status  symlink_status() const;
+    file_status  symlink_status(error_code&amp; ec) const noexcept;
 
     bool operator&lt; (const directory_entry&amp; rhs) const noexcept;
     bool operator==(const directory_entry&amp; rhs) const noexcept;
