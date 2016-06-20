@@ -27,12 +27,12 @@ body
 <table>
 <tr>
   <td align="left">Doc. no.:</td>
-  <td align="left"><span style="background-color: #FFFF00">D0317R0</span></td>
+  <td align="left"><span style="background-color: #FFFF00">D0317R1</span></td>
 </tr>
 <tr>
   <td align="left">Date:</td>
   <td align="left">
-  <!--webbot bot="Timestamp" S-Type="EDITED" S-Format="%Y-%m-%d" startspan -->2016-05-28<!--webbot bot="Timestamp" endspan i-checksum="12344" --></td>
+  <!--webbot bot="Timestamp" S-Type="EDITED" S-Format="%Y-%m-%d" startspan -->2016-06-20<!--webbot bot="Timestamp" endspan i-checksum="12392" --></td>
 </tr>
 <tr>
   <td align="left">Reply to:</td>
@@ -43,7 +43,7 @@ body
 </tr>
 </table>
 
-<h1 align="center">Directory Entry Caching for Filesystem (R0)</h1>
+<h1 align="center">Directory Entry Caching for Filesystem (R1)</h1>
 
 
 <p align="center"><b>Fixing issue 
@@ -148,7 +148,7 @@ of file size from <code>directory_entry</code><br> </i>and issue
   library to expose which attributes may be cached. It just works. But this 
   approach may be more confusing and lacks existing practice.</p>
 
-  <h1><a name="Proposal-1">Proposal 1</a> proposed wording</h1>
+  <h1>Proposed wording</h1>
 
   <h2>27.10.12 Class <code>directory_entry</code> [class.directory_entry]</h2>
 </h2>
@@ -338,180 +338,6 @@ Otherwise, <code>last_write_time(path())</code> or <code>last_write_time(path(),
   <p para_num="20"><i>Returns:</i> <code>m_path &gt;= rhs.m_path</code>. 
 
   </blockquote>
-
-  <h1><a name="Proposal-2">Proposal 2</a> proposed wording</h1>
-
-<h2>27.10.12 Class <code>directory_entry</code> [class.directory_entry]</h2>
-
-
-
-<pre>namespace std::filesystem {
-  class directory_entry {
-  public:
-    // <a href="#directory_entry-constructors-2">constructors</a> and destructor
-    directory_entry() noexcept = default;
-    directory_entry(const directory_entry&amp;) = default;
-    directory_entry(directory_entry&amp;&amp;) noexcept = default;
-    explicit directory_entry(const path&amp; p);
-    <ins>directory_entry(const path&amp; p, error_code& ec);</ins>
-   ~directory_entry();
-
-    // <a href="#directory_entry-modifiers-2">modifiers</a>
-    directory_entry&amp; operator=(const directory_entry&amp;) = default;
-    directory_entry&amp; operator=(directory_entry&amp;&amp;) noexcept = default;
-    void assign(const path&amp; p);
-    <ins>void assign(const path&amp; p, error_code&amp; ec);</ins>
-    <ins>void refresh();</ins>
-    <ins>void refresh(error_code&amp; ec) noexcept;</ins>
-    void replace_filename(const path&amp; p);
-
-    // <a href="#directory_entry-observers-2">observers</a>
-    const path&amp;  path() const noexcept;
-    operator const path&amp;() const noexcept;
-    <del>file_status  status() const;</del>
-    <del>file_status  status(error_code&amp; ec) const noexcept;</del>
-    <del>file_status  symlink_status() const;</del>
-    <del>file_status  symlink_status(error_code&amp; ec) const noexcept;</del>
-
-    bool operator&lt; (const directory_entry&amp; rhs) const noexcept;
-    bool operator==(const directory_entry&amp; rhs) const noexcept;
-    bool operator!=(const directory_entry&amp; rhs) const noexcept;
-    bool operator&lt;=(const directory_entry&amp; rhs) const noexcept;
-    bool operator&gt; (const directory_entry&amp; rhs) const noexcept;
-    bool operator&gt;=(const directory_entry&amp; rhs) const noexcept;
-  private:
-    path   m_path; // for exposition only
-  };
-}</pre>
-
-<p>A <code>directory_entry</code> object stores a <code>path</code> object.</p>
-
-<p><ins>Implementations are permitted and encouraged to store values for file system 
-attributes in <code>directory_entry</code> objects if such values are available 
-during directory iteration and storing them would improve efficiency of 
-operational query functions ([fs.op.funcs]). Such stored attribute values 
-are said to be cached. 
-Implementations are permitted and encouraged to overload  operational query functions that take 
-a <code>const path&amp;</code> argument with 
-an additional signature replacing the argument with a <code>const directory_entry&amp;</code> argument 
-if the implementation of that added signature can be made more efficient by 
-using cached attribute values. 
-Such an overload shall be equivalent to ([structure.specifications]) the <code>const path&amp;</code> 
-overload of the function except that attribute values shall be obtained from the <code>directory_entry</code>&#39;s 
-cached values rather than the external file system.</ins></p>
-
-<blockquote>
-<p><ins>[<i>Example: </i></ins></p>
-<pre><ins>using namespace std::filesystem;
-
-for (auto&amp;&amp; itr : directory_iterator(p))
-{
-  // use possibly cached last write time to minimize disk accesses
-  std::cout << itr.path() &lt;&lt; &quot; &quot; &lt;&lt; last_write_time(*itr) &lt;&lt; &#39;\n&#39;;
-}
-
-for (auto&amp;&amp; itr : directory_iterator(p))
-{
-  <i>... potentially lengthy computations ...</i>
-  // do not use cached last write time since the cache may be stale
-  std::cout << itr.path() &lt;&lt; &quot; &quot; &lt;&lt; last_write_time(itr-&gt;path()) &lt;&lt; &#39;\n&#39;;
-}</ins></pre>
-<p><ins>On implementations that do not cache the last write time, both loops will 
-result in a potentially expensive call to the <code>
-std::filesystem::last_write_time</code> function.</ins></p>
-<p><ins>On implementations that do cache the last write time, the first loop will use 
-the cached value and so will not result in a potentially expensive call to the
-<code>std::filesystem::last_write_time</code> function.</ins></p>
-<p><ins>The code is portable to any implementation, regardless of whether or not it 
-employs caching.</ins></p>
-<p><ins><i>&nbsp;</i>—<i>end 
-example</i>]</ins></p>
-</blockquote>
-
-<h3>27.10.12.1 <a name="directory_entry-constructors-2"><code>directory_entry</code> 
-constructors </a>[directory_entry.cons] </h3>
-<pre>explicit directory_entry(const path&amp; p);
-<ins>directory_entry(const path&amp; p, error_code& ec);</ins></pre>
-<blockquote>
-  <p><i>Effects: </i>Constructs an object of type <code>directory_entry</code><ins>, 
-  then <code>refresh()</code>or <code>
-  refresh(ec)</code>, respectively</ins>.
-  </p>
-  <p><i>Postcondition:</i> <code>path() == p</code>.</p>
-  <p><ins><i>Throws:</i> As specified in Error 
-  reporting ([fs.err.report]).</ins> </p>
-</blockquote>
-<h3>27.10.12.2 <a name="directory_entry-modifiers-2"><code>directory_entry</code> 
-modifiers </a>[directory_entry.mods] </h3>
-<pre>void assign(const path&amp; p);
-<ins>void assign(const path&amp; p, error_code&amp; ec);</ins></pre>
-<blockquote>
-  <p><ins><i>Effects:</i> Equivalent to <code>m_path = p</code>, then <code>refresh()</code>or <code>
-  refresh(ec)</code>, respectively.</ins></p>
-  <p><del><i>Postcondition:</i> <code>path() == p</code>.</del></p>
-  <p><ins><i>Throws:</i> As specified in Error 
-  reporting ([fs.err.report]).</ins> </p>
-</blockquote>
-<pre><ins>void refresh();</ins>
-<ins>void refresh(error_code&amp; ec) noexcept;</ins></pre>
-<blockquote>
-<p><ins><i>Effects:</i> Stores the current value for any cached attribute values of the 
-file <code>p</code> resolves to.</ins></p>
-<p><ins><i>Throws:</i> As specified in Error 
-  reporting ([fs.err.report]).</ins> </p>
-</blockquote>
-<pre>void replace_filename(const path&amp; p);</pre>
-<blockquote>
-  <p><ins>Effects: Equivalent to <code>m_path = parent_path()/ p</code>, then <code>refresh()</code>.</ins></p>
-  <p><del><i>Postcondition:</i> <code>path() == x.parent_path() / p</code> where <code>x</code> is the value of <code>path()</code> before the function is 
-  called.</del></p>
-</blockquote>
-</blockquote>
-<h3>27.10.12.3 <a name="directory_entry-observers-2"><code>directory_entry</code> observers
-</a>[directory_entry.obs] </h3>
-<pre>const path&amp; path() const noexcept;
-operator const path&amp;() const noexcept;</pre>
-<blockquote>
-  <p><i>Returns:</i> <code>m_path</code> </p>
-</blockquote>
-<pre><del>file_status status() const;</del>
-<del>file_status status(error_code&amp; ec) const noexcept;</del></pre>
-<blockquote>
-  <p><del><i>Returns:</i> <code>status(path()<i>[, ec]</i>)</code></del>. </p>
-  <p para_num="5"><del><i>Throws:</i> As specified in Error 
-  reporting ([fs.err.report]).</del></p>
-</blockquote>
-<pre para_num="6"><del>file_status  symlink_status() const;</del>
-<del>file_status  symlink_status(error_code&amp; ec) const noexcept;</del></pre>
-<blockquote>
-   <p para_num="7"><del><i>Returns:</i> <code>symlink_status(path()<i>[, ec]</i>)</code>.</del></p>
-  <p para_num="8"><del><i>Throws:</i> As specified in Error 
-  reporting ([fs.err.report]).</del></p>
-</blockquote>
-<pre para_num="9">bool operator==(const directory_entry&amp; rhs) const noexcept;</pre>
-<blockquote>
-  <p para_num="10"><i>Returns:</i> <code>m_path == rhs.m_path</code>. </p>
-</blockquote>
-<pre para_num="11">bool operator!=(const directory_entry&amp; rhs) const noexcept;</pre>
-<blockquote>
-  <p para_num="12"><i>Returns:</i> <code>m_path != rhs.m_path</code>. </p>
-</blockquote>
-<pre para_num="13">bool operator&lt; (const directory_entry&amp; rhs) const noexcept;</pre>
-<blockquote>
-  <p para_num="14"><i>Returns:</i> <code>m_path &lt; rhs.m_path</code>. </p>
-</blockquote>
-<pre para_num="15">bool operator&lt;=(const directory_entry&amp; rhs) const noexcept;</pre>
-<blockquote>
-  <p para_num="16"><i>Returns:</i> <code>m_path &lt;= rhs.m_path</code>. </p>
-</blockquote>
-<pre para_num="17">bool operator&gt; (const directory_entry&amp; rhs) const noexcept;</pre>
-<blockquote>
-  <p para_num="18"><i>Returns:</i> <code>m_path &gt; rhs.m_path</code>. </p>
-</blockquote>
-<pre para_num="19">bool operator&gt;=(const directory_entry&amp; rhs) const noexcept;</pre>
-<blockquote>
-  <p para_num="20"><i>Returns:</i> <code>m_path &gt;= rhs.m_path</code>. </p>
-</blockquote>
 
 
 <hr>
