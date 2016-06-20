@@ -305,6 +305,26 @@ operator const path&amp;() const noexcept;</pre>
 <blockquote>
   <p><i>Returns:</i> <code>m_path</code> </p>
 </blockquote>
+
+<pre><ins>uintmax_t file_size() const;</ins>
+<ins>uintmax_t file_size(error_code& ec) const noexcept;</ins></pre>
+<blockquote>
+<p><ins><i>Returns:</i> If cached, the file size attribute value. Otherwise,
+<code>file_size(path())</code> or <code>file_size(path(), ec)</code>, respectively.</ins></p>
+<p><ins><i>Throws:</i> As specified in Error 
+  reporting ([fs.err.report]).</ins> </p>
+</blockquote>
+
+<pre><ins>file_time_type last_write_time() const;</ins> 
+<ins>file_time_type last_write_time(error_code& ec) const noexcept;</ins></pre> 
+<blockquote>
+<p><ins><i>Returns:</i> If cached, the last write time attribute value. 
+Otherwise, <code>last_write_time(path())</code> or <code>last_write_time(path(), ec)</code>, respectively.</ins></p>
+<p><ins><i>Throws:</i> As specified in Error 
+  reporting ([fs.err.report]).</ins> </p>
+</blockquote>
+
+
 <pre>file_status status() const;
 file_status status(error_code&amp; ec) const noexcept;</pre>
 <blockquote>
@@ -322,20 +342,6 @@ file_status symlink_status(error_code&amp; ec) const noexcept;</pre>
    symlink_status(path(), ec)</code>, respectively.</p>
   <p para_num="8"><i>Throws:</i> As specified in Error 
   reporting ([fs.err.report]).</p>
-</blockquote>
-
-<pre><ins>uintmax_t file_size() const;</ins>
-<ins>uintmax_t file_size(error_code& ec) const noexcept;</ins></pre>
-<blockquote>
-<p><ins><i>Returns:</i> If cached, the file size attribute value. Otherwise,
-<code>file_size(path())</code> or <code>file_size(path(), ec)</code>, respectively.</ins></p>
-</blockquote>
-
-<pre><ins>file_time_type last_write_time() const;</ins> 
-<ins>file_time_type last_write_time(error_code& ec) const noexcept;</ins></pre> 
-<blockquote>
-<p><ins><i>Returns:</i> If cached, the last write time attribute value. 
-Otherwise, <code>last_write_time(path())</code> or <code>last_write_time(path(), ec)</code>, respectively.</ins></p>
 </blockquote>
 
 
