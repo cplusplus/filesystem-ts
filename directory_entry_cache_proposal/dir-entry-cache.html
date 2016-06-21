@@ -32,7 +32,7 @@ body
 <tr>
   <td align="left">Date:</td>
   <td align="left">
-  <!--webbot bot="Timestamp" S-Type="EDITED" S-Format="%Y-%m-%d" startspan -->2016-06-20<!--webbot bot="Timestamp" endspan i-checksum="12392" --></td>
+  <!--webbot bot="Timestamp" S-Type="EDITED" S-Format="%Y-%m-%d" startspan -->2016-06-21<!--webbot bot="Timestamp" endspan i-checksum="12394" --></td>
 </tr>
 <tr>
   <td align="left">Reply to:</td>
@@ -53,33 +53,16 @@ of file size from <code>directory_entry</code><br> </i>and issue
 <code>directory_entry::status</code> is not allowed to be cached ...</i></b></p>
 
 
-  <p style="margin-left:20%; margin-right:20%;">This paper provides two 
-  proposals for solving the problem of efficiently caching state information 
-  obtained during directory iteration. Guidance is sought as to which proposal 
-  is preferred.</p>
+  <p style="margin-left:20%; margin-right:20%;">This paper provides a solution 
+  to the problem of efficiently caching state information obtained during 
+  directory iteration.</p>
 
 
-  <p style="margin-left:20%; margin-right:20%;">Both proposals include full 
-  wording, have been implemented, and avoid use of mutable data members. Both 
-  offer guidance to users on how to use or not use cached information as desired, without exposing to the user 
-  whether information is actually cached. Both allow the user to write code that 
+  <p style="margin-left:20%; margin-right:20%;">The proposal has been implemented, 
+  except for some additional observer function requested by the LEWG. Guidance 
+  if provided for users on how to use or not use cached information as desired, without exposing to the user 
+  whether information is actually cached. The proposal allows the user to write code that 
   is fully portable between&nbsp;implementations that cache or do not cache.</p>
-
-
-  <p style="margin-left:20%; margin-right:20%;">Proposal 1 exposes what 
-   
-  information may possibly be cached, and so would require 
-  additions to the standard library should future 
-  operating systems or file systems appear that supply additional state on 
-  directory iteration. It is conceptually simpler and closer to existing 
-  practice than proposal 2.</p>
-
-
-  <p style="margin-left:20%; margin-right:20%;">Proposal 2 does not 
-  expose what state may possibly be cached, and so 
-  requires no changes to the standard library as operating systems and file systems 
-  evolve. But this proposal is harder to reason about and depends on 
-  automatic conversions that may cause concern.</p>
 
 
   <h2>Background</h2>
@@ -123,30 +106,27 @@ of file size from <code>directory_entry</code><br> </i>and issue
   <p>The original TS design conflated the observer functions that access cached 
   state information with refreshing the cached state. Since refreshing the 
   cached state is non-const, the cached member data had to be mutable and that 
-  was unacceptable. The new design for both proposals provides separate 
+  was unacceptable. This proposal provides separate 
   non-const <code>refresh</code> functions that are called by all other 
   non-const functions that modify the stored path, ensuring cache integrity. The
   <code>refresh</code> functions can be called by users if desired to refresh 
-  stale cached data.</p>
+  stale cached data. With the separation of refresh and observer functionality, the  
+  observer functions become truly const.</p>
 
-  <h3>Proposal 1 - Expose the attributes that may be cached</h3>
+  <h3>Provide observer functions for future needs</h3>
 
-  <p>With the separation of refresh and observer functionality, the traditional 
-  observer functions become truly const and provide the model for expanding 
-  caching to cover file size and last write time. But this approach requires the 
-  standard library be changed if future operating systems add new attributes 
-  that become caching candidates.</p>
+  <p>During LEWG discussions in Oulu, Geoffrey Romer suggested providing 
+  observer functions for attributes beyond those currently supported by 
+  real-world file systems. This has the effect of future-proofing <code>
+  directory_entry</code> as file systems evolve. It also sparked the realization 
+  that the <code>is_</code>* family of could functions could be supported.</p>
 
-  <h3>Proposal 2 - Hide the attributes that may be cached</h3>
+  <h2>Revision History</h2>
 
-  <p>By allowing implementations to add overloads to operational functions 
-  taking a <code>const directory_entry&amp;</code> argument instead of a <code>const 
-  path&amp;</code> argument, any file attribute the operating system exposes can be 
-  cached. Because there is an automatic conversion from <code>const 
-  directory_entry&amp;</code> to <code>const path&amp;</code>, user code works whether 
-  or not the attribute is cached. That eliminates the need for the standard 
-  library to expose which attributes may be cached. It just works. But this 
-  approach may be more confusing and lacks existing practice.</p>
+  <p>R0 of this document provided two approaches to directory entry caching. The 
+  LEWG in Oulu voted to move forward with the first of those two approaches, 
+  enhanced with Geoffrey Romer&#39;s observer functions for future needs suggestion, 
+  and that decision is reflected in Revision 1 of this paper.</p>
 
   <h1>Proposed wording</h1>
 
@@ -345,8 +325,7 @@ Otherwise, <code>last_write_time(path())</code> or <code>last_write_time(path(),
   reporting ([fs.err.report]).</ins> </p>
 </blockquote>
 
-<pre>
-<ins>bool is_character_file();</ins>
+<pre><ins>bool is_character_file();</ins>
 <ins>bool is_character_file(error_code&amp; ec) noexcept;</ins></pre>
 <blockquote>
 <p><ins><i>Returns:</i> <code>is_character_file(this->status())</code> or
@@ -355,8 +334,7 @@ Otherwise, <code>last_write_time(path())</code> or <code>last_write_time(path(),
   reporting ([fs.err.report]).</ins> </p>
 </blockquote>
 
-<pre>
-<ins>bool is_directory();</ins>
+<pre><ins>bool is_directory();</ins>
 <ins>bool is_directory(error_code&amp; ec) noexcept;</ins></pre>
 <blockquote>
 <p><ins><i>Returns:</i> <code>is_directory(this->file_status())</code> or
@@ -365,8 +343,7 @@ Otherwise, <code>last_write_time(path())</code> or <code>last_write_time(path(),
   reporting ([fs.err.report]).</ins> </p>
 </blockquote>
 
-<pre>
-<ins>bool is_fifo();</ins>
+<pre><ins>bool is_fifo();</ins>
 <ins>bool is_fifo(error_code&amp; ec) noexcept;</ins></pre>
 <blockquote>
 <p><ins><i>Returns:</i> <code>is_fifo(this->status())</code> or
@@ -375,8 +352,7 @@ Otherwise, <code>last_write_time(path())</code> or <code>last_write_time(path(),
   reporting ([fs.err.report]).</ins> </p>
 </blockquote>
 
-<pre>
-<ins>bool is_other();</ins>
+<pre><ins>bool is_other();</ins>
 <ins>bool is_other(error_code&amp; ec) noexcept;</ins></pre>
 <blockquote>
 <p><ins><i>Returns:</i> <code>is_other(this->status())</code> or
@@ -385,8 +361,7 @@ Otherwise, <code>last_write_time(path())</code> or <code>last_write_time(path(),
   reporting ([fs.err.report]).</ins> </p>
 </blockquote>
 
-<pre>
-<ins>bool is_regular_file();</ins>
+<pre><ins>bool is_regular_file();</ins>
 <ins>bool is_regular_file(error_code&amp; ec) noexcept;</ins></pre>
 <blockquote>
 <p><ins><i>Returns:</i> <code>is_regular_file(this->status())</code> or
@@ -395,8 +370,7 @@ Otherwise, <code>last_write_time(path())</code> or <code>last_write_time(path(),
   reporting ([fs.err.report]).</ins> </p>
 </blockquote>
 
-<pre>
-<ins>bool is_socket();</ins>
+<pre><ins>bool is_socket();</ins>
 <ins>bool is_socket(error_code&amp; ec) noexcept;</ins></pre>
 <blockquote>
 <p><ins><i>Returns:</i> <code>is_socket(this->status())</code> or
@@ -405,8 +379,7 @@ Otherwise, <code>last_write_time(path())</code> or <code>last_write_time(path(),
   reporting ([fs.err.report]).</ins> </p>
 </blockquote>
 
-<pre>
-<ins>bool is_symlink();</ins>
+<pre><ins>bool is_symlink();</ins>
 <ins>bool is_symlink(error_code&amp; ec) noexcept;</ins></pre>
 <blockquote>
 <p><ins><i>Returns:</i> <code>is_symlink(this->symlink_status())</code> or
