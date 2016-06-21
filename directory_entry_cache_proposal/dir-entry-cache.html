@@ -192,8 +192,6 @@ of file size from <code>directory_entry</code><br> </i>and issue
     <ins>bool is_character_file(error_code&amp; ec) noexcept;</ins>
     <ins>bool is_directory();</ins>
     <ins>bool is_directory(error_code&amp; ec) noexcept;</ins>
-    <ins>bool is_empty();</ins>
-    <ins>bool is_empty(error_code&amp; ec) noexcept;</ins>
     <ins>bool is_fifo();</ins>
     <ins>bool is_fifo(error_code&amp; ec) noexcept;</ins>
     <ins>bool is_other();</ins>
@@ -306,6 +304,15 @@ operator const path&amp;() const noexcept;</pre>
   <p><i>Returns:</i> <code>m_path</code> </p>
 </blockquote>
 
+<pre><ins>bool exists();</ins>
+<ins>bool exists(error_code&amp; ec) noexcept;</ins></pre>
+<blockquote>
+<p><ins><i>Returns:</i> <code>exists(this->status())</code> or
+ <code>exists(this->status(ec))</code>, respectively.</ins></p>
+<p><ins><i>Throws:</i> As specified in Error 
+  reporting ([fs.err.report]).</ins> </p>
+</blockquote>
+
 <pre><ins>uintmax_t file_size() const;</ins>
 <ins>uintmax_t file_size(error_code& ec) const noexcept;</ins></pre>
 <blockquote>
@@ -324,6 +331,84 @@ Otherwise, <code>last_write_time(path())</code> or <code>last_write_time(path(),
   reporting ([fs.err.report]).</ins> </p>
 </blockquote>
 
+<pre><ins>bool is_block_file();</ins>
+<ins>bool is_block_file(error_code&amp; ec) noexcept;</ins></pre>
+<blockquote>
+<p><ins><i>Returns:</i> <code>is_block_file(this->status())</code> or
+ <code>is_block_file(this->status(ec))</code>, respectively.</ins></p>
+<p><ins><i>Throws:</i> As specified in Error 
+  reporting ([fs.err.report]).</ins> </p>
+</blockquote>
+
+<pre>
+<ins>bool is_character_file();</ins>
+<ins>bool is_character_file(error_code&amp; ec) noexcept;</ins></pre>
+<blockquote>
+<p><ins><i>Returns:</i> <code>is_character_file(this->status())</code> or
+ <code>is_character_file(this->status(ec))</code>, respectively.</ins></p>
+<p><ins><i>Throws:</i> As specified in Error 
+  reporting ([fs.err.report]).</ins> </p>
+</blockquote>
+
+<pre>
+<ins>bool is_directory();</ins>
+<ins>bool is_directory(error_code&amp; ec) noexcept;</ins></pre>
+<blockquote>
+<p><ins><i>Returns:</i> <code>is_directory(this->file_status())</code> or
+ <code>is_directory(this->file_status(ec))</code>, respectively.</ins></p>
+<p><ins><i>Throws:</i> As specified in Error 
+  reporting ([fs.err.report]).</ins> </p>
+</blockquote>
+
+<pre>
+<ins>bool is_fifo();</ins>
+<ins>bool is_fifo(error_code&amp; ec) noexcept;</ins></pre>
+<blockquote>
+<p><ins><i>Returns:</i> <code>is_fifo(this->status())</code> or
+ <code>is_fifo(this->status(ec))</code>, respectively.</ins></p>
+<p><ins><i>Throws:</i> As specified in Error 
+  reporting ([fs.err.report]).</ins> </p>
+</blockquote>
+
+<pre>
+<ins>bool is_other();</ins>
+<ins>bool is_other(error_code&amp; ec) noexcept;</ins></pre>
+<blockquote>
+<p><ins><i>Returns:</i> <code>is_other(this->status())</code> or
+ <code>is_other(this->status(ec))</code>, respectively.</ins></p>
+<p><ins><i>Throws:</i> As specified in Error 
+  reporting ([fs.err.report]).</ins> </p>
+</blockquote>
+
+<pre>
+<ins>bool is_regular_file();</ins>
+<ins>bool is_regular_file(error_code&amp; ec) noexcept;</ins></pre>
+<blockquote>
+<p><ins><i>Returns:</i> <code>is_regular_file(this->status())</code> or
+ <code>is_regular_file(this->status(ec))</code>, respectively.</ins></p>
+<p><ins><i>Throws:</i> As specified in Error 
+  reporting ([fs.err.report]).</ins> </p>
+</blockquote>
+
+<pre>
+<ins>bool is_socket();</ins>
+<ins>bool is_socket(error_code&amp; ec) noexcept;</ins></pre>
+<blockquote>
+<p><ins><i>Returns:</i> <code>is_socket(this->status())</code> or
+ <code>is_socket(this->status(ec))</code>, respectively.</ins></p>
+<p><ins><i>Throws:</i> As specified in Error 
+  reporting ([fs.err.report]).</ins> </p>
+</blockquote>
+
+<pre>
+<ins>bool is_symlink();</ins>
+<ins>bool is_symlink(error_code&amp; ec) noexcept;</ins></pre>
+<blockquote>
+<p><ins><i>Returns:</i> <code>is_symlink(this->symlink_status())</code> or
+ <code>is_symlink(this->symlink_status(ec))</code>, respectively.</ins></p>
+<p><ins><i>Throws:</i> As specified in Error 
+  reporting ([fs.err.report]).</ins> </p>
+</blockquote>
 
 <pre>file_status status() const;
 file_status status(error_code&amp; ec) const noexcept;</pre>
