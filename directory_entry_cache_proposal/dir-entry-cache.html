@@ -180,12 +180,12 @@ of file size from <code>directory_entry</code><br> </i>and issue
     operator const path&amp;() const noexcept;
     <ins>bool exists();</ins>
     <ins>bool exists(error_code&amp; ec) noexcept;</ins>
-    <ins>uintmax_t  file_size() const;</ins>
-    <ins>uintmax_t  file_size(error_code& ec) const noexcept;</ins>
-    <ins>file_time_type  last_write_time() const;</ins> 
-    <ins>file_time_type  last_write_time(error_code& ec) const noexcept;</ins> 
+    <ins>uintmax_t file_size() const;</ins>
+    <ins>uintmax_t file_size(error_code& ec) const noexcept;</ins>
     <ins>uintmax_t hard_link_count();</ins>
     <ins>uintmax_t hard_link_count(error_code&amp; ec) noexcept;</ins>
+    <ins>file_time_type last_write_time() const;</ins> 
+    <ins>file_time_type last_write_time(error_code& ec) const noexcept;</ins> 
     <ins>bool is_block_file();</ins>
     <ins>bool is_block_file(error_code&amp; ec) noexcept;</ins>
     <ins>bool is_character_file();</ins>
@@ -202,14 +202,10 @@ of file size from <code>directory_entry</code><br> </i>and issue
     <ins>bool is_socket(error_code&amp; ec) noexcept;</ins>
     <ins>bool is_symlink();</ins>
     <ins>bool is_symlink(error_code&amp; ec) noexcept;</ins>
-    <ins>path read_symlink();</ins>
-    <ins>path read_symlink(error_code&amp; ec);</ins>
-    <ins>space_info space();</ins>
-    <ins>space_info space(error_code&amp; ec) noexcept;</ins>
-    file_status  status() const;
-    file_status  status(error_code&amp; ec) const noexcept;
-    file_status  symlink_status() const;
-    file_status  symlink_status(error_code&amp; ec) const noexcept;
+    file_status status() const;
+    file_status status(error_code&amp; ec) const noexcept;
+    file_status symlink_status() const;
+    file_status symlink_status(error_code&amp; ec) const noexcept;
 
     bool operator&lt; (const directory_entry&amp; rhs) const noexcept;
     bool operator==(const directory_entry&amp; rhs) const noexcept;
@@ -224,8 +220,8 @@ of file size from <code>directory_entry</code><br> </i>and issue
 }</pre>
 
 <p>A <code>directory_entry</code> object stores a <code>path</code> object.</p>
-<p><ins>Implementations are permitted and encouraged to store values for status, 
-symlink status, file size, and last write time attributes in <code>directory_entry</code> 
+<p><ins>Implementations are permitted and encouraged to store values for hard link count, status, 
+symlink status, file size, and last write time attributes associated with <code>directory_entry</code> 
 objects if such values are available during directory iteration and storing them would 
 allow the implementation to eliminate file system accesses by <code>directory_entry</code> 
 observer functions ([fs.op.funcs]). Such stored attribute values are said to be
@@ -318,6 +314,15 @@ operator const path&amp;() const noexcept;</pre>
 <blockquote>
 <p><ins><i>Returns:</i> If cached, the file size attribute value. Otherwise,
 <code>file_size(path())</code> or <code>file_size(path(), ec)</code>, respectively.</ins></p>
+<p><ins><i>Throws:</i> As specified in Error 
+  reporting ([fs.err.report]).</ins> </p>
+</blockquote>
+
+<pre><ins>uintmax_t hard_link_count();</ins>
+<ins>uintmax_t hard_link_count(error_code&amp; ec) noexcept;</ins></pre>
+<blockquote>
+<p><ins><i>Returns:</i> If cached, the hard link count attribute value. Otherwise,
+<code>hard_link_count(path())</code> or <code>hard_link_count(path(), ec)</code>, respectively.</ins></p>
 <p><ins><i>Throws:</i> As specified in Error 
   reporting ([fs.err.report]).</ins> </p>
 </blockquote>
