@@ -159,30 +159,30 @@ of file size from <code>directory_entry</code><br> </i>and issue
     // <a href="#directory_entry-observers-1">observers</a>
     const path&amp;  path() const noexcept;
     operator const path&amp;() const noexcept;
-    <ins>bool exists();</ins>
-    <ins>bool exists(error_code&amp; ec) noexcept;</ins>
+    <ins>bool exists() const;</ins>
+    <ins>bool exists(error_code&amp; ec) const noexcept;</ins>
     <ins>uintmax_t file_size() const;</ins>
     <ins>uintmax_t file_size(error_code& ec) const noexcept;</ins>
-    <ins>uintmax_t hard_link_count();</ins>
-    <ins>uintmax_t hard_link_count(error_code&amp; ec) noexcept;</ins>
+    <ins>uintmax_t hard_link_count() const;</ins>
+    <ins>uintmax_t hard_link_count(error_code&amp; ec) const noexcept;</ins>
     <ins>file_time_type last_write_time() const;</ins> 
     <ins>file_time_type last_write_time(error_code& ec) const noexcept;</ins> 
-    <ins>bool is_block_file();</ins>
-    <ins>bool is_block_file(error_code&amp; ec) noexcept;</ins>
-    <ins>bool is_character_file();</ins>
-    <ins>bool is_character_file(error_code&amp; ec) noexcept;</ins>
-    <ins>bool is_directory();</ins>
-    <ins>bool is_directory(error_code&amp; ec) noexcept;</ins>
-    <ins>bool is_fifo();</ins>
-    <ins>bool is_fifo(error_code&amp; ec) noexcept;</ins>
-    <ins>bool is_other();</ins>
-    <ins>bool is_other(error_code&amp; ec) noexcept;</ins>
-    <ins>bool is_regular_file();</ins>
-    <ins>bool is_regular_file(error_code&amp; ec) noexcept;</ins>
-    <ins>bool is_socket();</ins>
-    <ins>bool is_socket(error_code&amp; ec) noexcept;</ins>
-    <ins>bool is_symlink();</ins>
-    <ins>bool is_symlink(error_code&amp; ec) noexcept;</ins>
+    <ins>bool is_block_file() const;</ins>
+    <ins>bool is_block_file(error_code&amp; ec) const noexcept;</ins>
+    <ins>bool is_character_file() const;</ins>
+    <ins>bool is_character_file(error_code&amp; ec) const noexcept;</ins>
+    <ins>bool is_directory() const;</ins>
+    <ins>bool is_directory(error_code&amp; ec) const noexcept;</ins>
+    <ins>bool is_fifo() const;</ins>
+    <ins>bool is_fifo(error_code&amp; ec) const noexcept;</ins>
+    <ins>bool is_other() const;</ins>
+    <ins>bool is_other(error_code&amp; ec) const noexcept;</ins>
+    <ins>bool is_regular_file() const;</ins>
+    <ins>bool is_regular_file(error_code&amp; ec) const noexcept;</ins>
+    <ins>bool is_socket() const;</ins>
+    <ins>bool is_socket(error_code&amp; ec) const noexcept;</ins>
+    <ins>bool is_symlink() const;</ins>
+    <ins>bool is_symlink(error_code&amp; ec) const noexcept;</ins>
     file_status status() const;
     file_status status(error_code&amp; ec) const noexcept;
     file_status symlink_status() const;
@@ -281,8 +281,8 @@ operator const path&amp;() const noexcept;</pre>
   <p><i>Returns:</i> <code>m_path</code> </p>
 </blockquote>
 
-<pre><ins>bool exists();</ins>
-<ins>bool exists(error_code&amp; ec) noexcept;</ins></pre>
+<pre><ins>bool exists() const;</ins>
+<ins>bool exists(error_code&amp; ec) const noexcept;</ins></pre>
 <blockquote>
 <p><ins><i>Returns:</i> <code>exists(this->status())</code> or
  <code>exists(this->status(ec))</code>, respectively.</ins></p>
@@ -299,8 +299,8 @@ operator const path&amp;() const noexcept;</pre>
   reporting ([fs.err.report]).</ins> </p>
 </blockquote>
 
-<pre><ins>uintmax_t hard_link_count();</ins>
-<ins>uintmax_t hard_link_count(error_code&amp; ec) noexcept;</ins></pre>
+<pre><ins>uintmax_t hard_link_count() const;</ins>
+<ins>uintmax_t hard_link_count(error_code&amp; ec) const noexcept;</ins></pre>
 <blockquote>
 <p><ins><i>Returns:</i> If cached, the hard link count attribute value. Otherwise,
 <code>hard_link_count(path())</code> or <code>hard_link_count(path(), ec)</code>, respectively.</ins></p>
@@ -317,8 +317,8 @@ Otherwise, <code>last_write_time(path())</code> or <code>last_write_time(path(),
   reporting ([fs.err.report]).</ins> </p>
 </blockquote>
 
-<pre><ins>bool is_block_file();</ins>
-<ins>bool is_block_file(error_code&amp; ec) noexcept;</ins></pre>
+<pre><ins>bool is_block_file() const;</ins>
+<ins>bool is_block_file(error_code&amp; ec) const noexcept;</ins></pre>
 <blockquote>
 <p><ins><i>Returns:</i> <code>is_block_file(this->status())</code> or
  <code>is_block_file(this->status(ec))</code>, respectively.</ins></p>
@@ -326,8 +326,8 @@ Otherwise, <code>last_write_time(path())</code> or <code>last_write_time(path(),
   reporting ([fs.err.report]).</ins> </p>
 </blockquote>
 
-<pre><ins>bool is_character_file();</ins>
-<ins>bool is_character_file(error_code&amp; ec) noexcept;</ins></pre>
+<pre><ins>bool is_character_file() const;</ins>
+<ins>bool is_character_file(error_code&amp; ec) const noexcept;</ins></pre>
 <blockquote>
 <p><ins><i>Returns:</i> <code>is_character_file(this->status())</code> or
  <code>is_character_file(this->status(ec))</code>, respectively.</ins></p>
@@ -335,8 +335,8 @@ Otherwise, <code>last_write_time(path())</code> or <code>last_write_time(path(),
   reporting ([fs.err.report]).</ins> </p>
 </blockquote>
 
-<pre><ins>bool is_directory();</ins>
-<ins>bool is_directory(error_code&amp; ec) noexcept;</ins></pre>
+<pre><ins>bool is_directory() const;</ins>
+<ins>bool is_directory(error_code&amp; ec) const noexcept;</ins></pre>
 <blockquote>
 <p><ins><i>Returns:</i> <code>is_directory(this->file_status())</code> or
  <code>is_directory(this->file_status(ec))</code>, respectively.</ins></p>
@@ -344,8 +344,8 @@ Otherwise, <code>last_write_time(path())</code> or <code>last_write_time(path(),
   reporting ([fs.err.report]).</ins> </p>
 </blockquote>
 
-<pre><ins>bool is_fifo();</ins>
-<ins>bool is_fifo(error_code&amp; ec) noexcept;</ins></pre>
+<pre><ins>bool is_fifo() const;</ins>
+<ins>bool is_fifo(error_code&amp; ec) const noexcept;</ins></pre>
 <blockquote>
 <p><ins><i>Returns:</i> <code>is_fifo(this->status())</code> or
  <code>is_fifo(this->status(ec))</code>, respectively.</ins></p>
@@ -353,8 +353,8 @@ Otherwise, <code>last_write_time(path())</code> or <code>last_write_time(path(),
   reporting ([fs.err.report]).</ins> </p>
 </blockquote>
 
-<pre><ins>bool is_other();</ins>
-<ins>bool is_other(error_code&amp; ec) noexcept;</ins></pre>
+<pre><ins>bool is_other() const;</ins>
+<ins>bool is_other(error_code&amp; ec) const noexcept;</ins></pre>
 <blockquote>
 <p><ins><i>Returns:</i> <code>is_other(this->status())</code> or
  <code>is_other(this->status(ec))</code>, respectively.</ins></p>
@@ -362,8 +362,8 @@ Otherwise, <code>last_write_time(path())</code> or <code>last_write_time(path(),
   reporting ([fs.err.report]).</ins> </p>
 </blockquote>
 
-<pre><ins>bool is_regular_file();</ins>
-<ins>bool is_regular_file(error_code&amp; ec) noexcept;</ins></pre>
+<pre><ins>bool is_regular_file() const;</ins>
+<ins>bool is_regular_file(error_code&amp; ec) const noexcept;</ins></pre>
 <blockquote>
 <p><ins><i>Returns:</i> <code>is_regular_file(this->status())</code> or
  <code>is_regular_file(this->status(ec))</code>, respectively.</ins></p>
@@ -371,8 +371,8 @@ Otherwise, <code>last_write_time(path())</code> or <code>last_write_time(path(),
   reporting ([fs.err.report]).</ins> </p>
 </blockquote>
 
-<pre><ins>bool is_socket();</ins>
-<ins>bool is_socket(error_code&amp; ec) noexcept;</ins></pre>
+<pre><ins>bool is_socket() const;</ins>
+<ins>bool is_socket(error_code&amp; ec) const noexcept;</ins></pre>
 <blockquote>
 <p><ins><i>Returns:</i> <code>is_socket(this->status())</code> or
  <code>is_socket(this->status(ec))</code>, respectively.</ins></p>
@@ -380,8 +380,8 @@ Otherwise, <code>last_write_time(path())</code> or <code>last_write_time(path(),
   reporting ([fs.err.report]).</ins> </p>
 </blockquote>
 
-<pre><ins>bool is_symlink();</ins>
-<ins>bool is_symlink(error_code&amp; ec) noexcept;</ins></pre>
+<pre><ins>bool is_symlink() const;</ins>
+<ins>bool is_symlink(error_code&amp; ec) const noexcept;</ins></pre>
 <blockquote>
 <p><ins><i>Returns:</i> <code>is_symlink(this->symlink_status())</code> or
  <code>is_symlink(this->symlink_status(ec))</code>, respectively.</ins></p>
