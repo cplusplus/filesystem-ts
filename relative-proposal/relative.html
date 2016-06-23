@@ -438,7 +438,7 @@ does not affect <code>path</code> equality.<i> —end example</i>]</p>
   of <code>base</code> is equal to <code>base.end()</code>, or<br>&nbsp;
     </li>
     <li>An object of class <code>path</code> composed via application of <code>
-    operator/= path(&quot;..&quot;)</code> for each element in the half-open 
+    operator/= (path(&quot;..&quot;))</code> for each element in the half-open 
     range [first 
     mismatched element of <code>base</code>, <code>base.end()</code>), and then 
     application of <code>operator/=</code> for each element in the half-open 
@@ -460,7 +460,7 @@ forward slashes, but that
 does not affect <code>path</code> equality.<i> —end example</i>]</p>
   
   <p>[<i>Note:</i> If symlink following semantics are desired, use the  operational function <code>
-  <a href="#op-proximate">relative</a></code>&nbsp; <i>—end note</i>]</p>
+  <a href="#op-proximate">relative</a>()</code>&nbsp; <i>—end note</i>]</p>
   
   <p>[<i>Note:</i> If <a href="#normal">normalization</a> is needed to ensure 
   consistent matching of elements, apply <code><a href="#normal">lexically_normal()</a></code> 
@@ -477,7 +477,7 @@ does not affect <code>path</code> equality.<i> —end example</i>]</p>
   not an empty path, return it. Otherwise return <code>*this</code>.</p>
   
   <p>[<i>Note:</i> If symlink following semantics are desired, use the  operational function
-  <code><a href="#op-proximate">proximate</a></code>&nbsp; <i>—end note</i>]</p>
+  <code><a href="#op-proximate">proximate()</a></code>&nbsp; <i>—end note</i>]</p>
   
   <p>[<i>Note:</i> If <a href="#normal">normalization</a> is needed to ensure 
   consistent matching of elements, apply <code><a href="#normal">lexically_normal()</a></code> 
@@ -550,14 +550,14 @@ path weakly_canonical(const path&amp; p, error_code&amp; ec);</pre>
 Returns <code>p</code> with symlinks resolved and the result 
 normalized.<p>
 <i>Returns: </i>
-A path composed of the result of calling the <code>canonical</code> function on 
+A path composed of the result of calling the <code>canonical()</code> function on 
 a path composed of the leading elements of <code>p</code> that exist, if any, 
 followed by the elements of <code>p</code> that do not exist, if any.</p>
 <p><i>Postconditions:</i> The returned path is in <a href="#normal">normal form</a>.</p>
 <p><i>Remarks:</i> Uses <code>operator/=</code> to compose the returned path. 
-Uses the <code>status</code> function to determine existence.</p>
+Uses the <code>status()</code> function to determine existence.</p>
 <p><i>Remarks:</i> Implementations are encouraged to avoid unnecessary 
-normalization such as when <code>canonical</code> has already been called on the 
+normalization such as when <code>canonical()</code> has already been called on the 
 entirety of <code>p</code>.</p>
 <p><i>Throws:</i>&nbsp; As specified in Error reporting ([fs.err.report]).</p>
 </blockquote>
