@@ -27,12 +27,12 @@ body
 <table>
 <tr>
   <td align="left">Doc. no.:</td>
-  <td align="left">P0219R0</td>
+  <td align="left">D0219R1</td>
 </tr>
 <tr>
   <td align="left">Date:</td>
   <td align="left">
-  <!--webbot bot="Timestamp" S-Type="EDITED" S-Format="%Y-%m-%d" startspan -->2016-02-12<!--webbot bot="Timestamp" endspan i-checksum="12139" --></td>
+  <!--webbot bot="Timestamp" S-Type="EDITED" S-Format="%Y-%m-%d" startspan -->2016-06-23<!--webbot bot="Timestamp" endspan i-checksum="12398" --></td>
 </tr>
 <tr>
   <td align="left">Reply to:</td>
@@ -368,11 +368,11 @@ of this filesystem proposal. </p>
 
 <h2><a name="Proposed-wording">Proposed wording</a></h2>
 
-<p><span style="background-color: #DBDBDB"><i>&quot;Overview:&quot; sections below are 
-non-normative experiments attempting to make the normative reference 
-specifications easier to grasp.</i></span></p>
+<p><span style="background-color: #DBDBDB"><i>Add&nbsp; a new definition to 
+27.10.4 Terms and definitions [fs.definitions]:</i></span></p>
 
-<h3><a name="Define-normal-form">Define <i>normal form</i></a></h3>
+<h4>27.10.4.n<br>
+<a name="Define-normal-form">normal form</a> [fs.def.normal.form]</h4>
 
 <p>A path is in <b><i><a name="normal-form">normal form</a></i></b> if it has no 
 redundant current directory (<i>dot</i>) or parent directory (<i>dot-dot</i>) 
@@ -384,15 +384,21 @@ is the same path with a current directory (<i>dot</i>) element appended.</p>
 necessary for POSIX-like or Windows-like operating systems, but supports systems 
 like OpenVMS that use different syntax for directory and regular-file names.</i></span></p>
 
-<h3><a name="New-class-path-member-functions">New class path member functions</a></h3>
+<p><span style="background-color: #DBDBDB"><i>Add a new sub-section to the 
+synopsis in 27.10.8 Class path [class.path] after // 27.10.8.4.10, query:</i></span></p>
 
-<h4><a name="Synopsis-path">Synopsis</a></h4>
 
-<pre>path lexically_normal() const;
-path lexically_relative(const path&amp; base) const;
-path lexically_proximate(const path&amp; base) const;</pre>
+<ins><code>// 27.10.8.4.11 Generation</ins></code><br/>
+<ins><code>path lexically_normal() const;</ins></code><br/>
+<ins><code>path lexically_relative(const path&amp; base) const;</ins></code><br/>
+<ins><code>path lexically_proximate(const path&amp; base) const;</code></ins>
 
-<h4><a name="Specification-path">Specification</a></h4>
+
+<p>
+
+<span style="background-color: #DBDBDB; font-style:italic">Add a new sub-section 
+after // 27.10.8.4.10 [path.query]:</span> </p>
+<h4>27.10.8.4.11 <code>path</code> generation</h4>
 
 
 <pre>path <a name="lex-normal">lexically_normal</a>() const;</pre>
