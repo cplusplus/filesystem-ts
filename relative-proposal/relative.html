@@ -536,7 +536,9 @@ path relative(const path&amp; p, const path&amp; base, error_code&amp; ec);</pre
   Resolves symlinks and normalizes both <code>p</code> and <code>base</code> 
   before other processing.</p>
 
-<p><i>Returns:</i> <code><a href="#weakly_canonical">weakly_canonical</a>(p).<a href="#lex-relative">lexically_relative</a>(<a href="#weakly_canonical">weakly_canonical</a>(base))</code>. The second form returns <code>path()</code> if an error occurs.</p>
+<p><i>Returns: </i>For the first form, <code><a href="#weakly_canonical">weakly_canonical</a>(p).<a href="#lex-relative">lexically_relative</a>(<a href="#weakly_canonical">weakly_canonical</a>(base))</code>. 
+For the second form, <code><a href="#weakly_canonical">weakly_canonical</a>(p).<a href="#lex-relative">lexically_relative</a>(<a href="#weakly_canonical">weakly_canonical</a>(base), 
+ec)</code> except <code>path()</code> if an error occurs.</p>
   <p><i>Throws:</i> As specified in Error reporting ([fs.err.report]).</p>
 </blockquote>
 
