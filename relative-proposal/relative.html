@@ -403,8 +403,6 @@ after // 27.10.8.4.10 [path.query]:</span> </p>
 
 <pre>path <a name="lex-normal">lexically_normal</a>() const;</pre>
 <blockquote>
-<p><i>Overview:</i> Returns <code>*this</code> with redundant current directory 
-(<i>dot</i>), parent directory (<i>dot-dot</i>), and <i>directory-separator</i> elements removed.</p>
 <p><i>Returns:</i> <code>*this</code> in <a href="#normal-form">normal form</a>.</p>
 <p><i>Remarks:</i> Uses <code>operator/=</code> to compose the returned path.</p>
 <p>[<i>Example:</i></p>
@@ -417,7 +415,7 @@ does not affect <code>path</code> equality.<i> —end example</i>]</p>
 
 <pre>path <a name="lex-relative">lexically_relative</a>(const path&amp; base) const;</pre>
   <blockquote>
-  <p><i>Overview:</i> Returns <code>*this</code> made relative to <code>base</code>. 
+  <p>Returns <code>*this</code> made relative to <code>base</code>. 
   Treats empty or identical paths as corner cases, not errors. Does not resolve 
   symlinks. Does not first normalize <code>*this</code> or <code>base</code>.</p>
 
@@ -531,7 +529,7 @@ path proximate(const path&amp; p, const path&amp; base, system::error_code&amp; 
 <pre>path relative(const path&amp; p, const path&amp; base=current_path());
 path relative(const path&amp; p, const path&amp; base, system::error_code&amp; ec);</pre>
 <blockquote>
-  <p><i>Overview:</i> Returns <code>p</code> made relative to <code>
+  <p>Returns <code>p</code> made relative to <code>
   base</code>. Treats empty or identical paths as corner cases, not errors. 
   Resolves symlinks and normalizes both <code>p</code> and <code>base</code> 
   before other processing.</p>
@@ -545,7 +543,7 @@ path relative(const path&amp; p, const path&amp; base, system::error_code&amp; e
 <pre>path <a name="weakly_canonical">weakly_canonical</a>(const path&amp; p);
 path weakly_canonical(const path&amp; p, system::error_code&amp; ec);</pre>
 <blockquote>
-<i>Overview:</i> Returns <code>p</code> with symlinks resolved and the result 
+Returns <code>p</code> with symlinks resolved and the result 
 normalized.<p>
 <i>Returns: </i>
 A path composed of the result of calling the <code>canonical</code> function on 
