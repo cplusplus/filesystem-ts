@@ -374,15 +374,21 @@ of this filesystem proposal. </p>
 <h4>27.10.4.n<br>
 <a name="Define-normal-form">normal form</a> [fs.def.normal.form]</h4>
 
-<p>A path is in <b><i><a name="normal-form">normal form</a></i></b> if it has no 
+<p><strike><font face="Arial">A path is in <b><i><a name="normal-form">normal form</a></i></b> if it has no 
 redundant current directory (<i>dot</i>) or parent directory (<i>dot-dot</i>) 
 elements. The normal form for an empty path is an empty path. The normal form 
 for a path ending in a <i>directory-separator</i> that is not the root directory 
-is the same path with a current directory (<i>dot</i>) element appended.</p>
+is the same path with a current directory (<i>dot</i>) element appended.</font></strike></p>
 
-<p><span style="background-color: #DBDBDB"><i>The last sentence above is not 
-necessary for POSIX-like or Windows-like operating systems, but supports systems 
-like OpenVMS that use different syntax for directory and regular-file names.</i></span></p>
+<p>A path in <b><i><a name="normal-form">normal form</a></i></b> has no 
+redundant current directory (<i>dot</i>) elements, no redundant parent directory (<i>dot-dot</i>) 
+elements, and no redundant <i>directory-separator</i>s. The normal form for an empty path is an empty path. The normal form 
+for a path ending in a <i>directory-separator</i> that is not the root directory 
+has a current directory (<i>dot</i>) element appended.</p>
+
+<p>[<i>Note:</i> The rule that appends a current directory (<i>dot</i>) element 
+supports operating systems like OpenVMS that use different syntax for directory 
+names and regular-file names. —<i>end note</i>]</p>
 
 <p><span style="background-color: #DBDBDB"><i>Add a new sub-section to the 
 synopsis in 27.10.8 Class path [class.path] after // 27.10.8.4.10, query:</i></span></p>
@@ -408,7 +414,10 @@ after // 27.10.8.4.10 [path.query]:</span> </p>
 <p>[<i>Example:</i></p>
 <p><code>assert(path(&quot;foo/./bar/..&quot;).lexically_normal() == &quot;foo&quot;);<br>
 assert(path(&quot;foo/.///bar/../&quot;).lexically_normal() == &quot;foo/.&quot;);</code></p>
-<p>The above assertions will succeed.<i> </i>On Windows, the 
+<p>The above assertions will succeed. The second example ends with a current 
+directory (<i>dot</i>) element appended to support operating systems that use 
+different syntax for directory names and regular-file names. </p>
+<p>On Windows, the 
 returned path&#39;s <i>directory-separator</i> characters will be backslashes rather than slashes, but that 
 does not affect <code>path</code> equality.<i> —end example</i>]</p>
 </blockquote>
@@ -596,7 +605,8 @@ entirety of <code>p</code>.</p>
       &quot;Prefer non-member non-friend functions to member functions.&quot;</p>
 
   <p><span style="background-color: #DBDBDB"><i>At the Oulu meeting the LWG 
-  indicated a strong preference for the member / non-member convention and the 
+  indicated a strong preference for the member / non-member convention as 
+  proposed and the 
   naming as proposed.</i></span> </p>
 
   <h2><a name="References">References</a></h2>
