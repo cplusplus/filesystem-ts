@@ -488,22 +488,59 @@ does not affect <code>path</code> equality.<i> —end example</i>]</p>
 </blockquote>
 
 
-<h3>New <a name="operational-functions">operational functions</a></h3>
+<p><span style="background-color: #DBDBDB"><i>Add the following new </i>
+filesystem operational functions<i> to 27.10.6 Header &lt;filesystem&gt; synopsis [fs.filesystem.syn]. 
+Please maintain the alphabetic ordering of operational functions:</i></span></p>
 
 
-<h4><a name="Synopsis-ops">Synopsis</a></h4>
-
-
-<pre>path weakly_canonical(const path&amp; p);
-path weakly_canonical(const path&amp; p, system::error_code&amp; ec);
-path relative(const path&amp; p, system::error_code&amp; ec);
-path relative(const path&amp; p, const path&amp; base=current_path());
-path relative(const path&amp; p, const path&amp; base, system::error_code&amp; ec);
+<pre>...
 path proximate(const path&amp; p, system::error_code&amp; ec);
 path proximate(const path&amp; p, const path&amp; base=current_path());
 path proximate(const path&amp; p, const path&amp; base, system::error_code&amp; ec);
+...
+path relative(const path&amp; p, system::error_code&amp; ec);
+path relative(const path&amp; p, const path&amp; base=current_path());
+path relative(const path&amp; p, const path&amp; base, system::error_code&amp; ec);
+...
+path weakly_canonical(const path&amp; p);
+path weakly_canonical(const path&amp; p, system::error_code&amp; ec);
+...
 </pre>
-<h4><a name="Specification-ops">Specification</a></h4>
+<p><span style="background-color: #DBDBDB"><i>Add the following new filesystem 
+operational functions to 27.10.15 Filesystem operation functions [fs.op.funcs]. 
+Please maintain the alphabetic ordering of operational functions:</i></span></p>
+
+<h4>27.10.15.n Proximate[fs.op.proximate]</h4>
+
+<pre>path <a name="op-proximate">proximate</a>(const path&amp; p, system::error_code&amp; ec);</pre>
+<blockquote>
+<p><i>Returns:</i> <code>proximate(p, current_path(), ec)</code>.</p>
+  <p><i>Throws:</i>&nbsp; As specified in Error reporting.</p>
+  </blockquote>
+<pre>path proximate(const path&amp; p, const path&amp; base=current_path());
+path proximate(const path&amp; p, const path&amp; base, system::error_code&amp; ec);</pre>
+<blockquote>
+
+<p><i>Returns:</i> <code><a href="#weakly_canonical">weakly_canonical</a>(p).<a href="#lex-proximate">lexically_proximate</a>(<a href="#weakly_canonical">weakly_canonical</a>(base))</code>. The second form returns <code>path()</code> if an error occurs.</p>
+  <p><i>Throws:</i> As specified in Error reporting.</p>
+</blockquote>
+
+ 
+<h4>27.10.15.n Relative [fs.op.relative]</h4>
+ 
+<pre>path relative(const path&amp; p, const path&amp; base=current_path());
+path relative(const path&amp; p, const path&amp; base, system::error_code&amp; ec);</pre>
+<blockquote>
+  <p><i>Overview:</i> Returns <code>p</code> made relative to <code>
+  base</code>. Treats empty or identical paths as corner cases, not errors. 
+  Resolves symlinks and normalizes both <code>p</code> and <code>base</code> 
+  before other processing.</p>
+
+<p><i>Returns:</i> <code><a href="#weakly_canonical">weakly_canonical</a>(p).<a href="#lex-relative">lexically_relative</a>(<a href="#weakly_canonical">weakly_canonical</a>(base))</code>. The second form returns <code>path()</code> if an error occurs.</p>
+  <p><i>Throws:</i> As specified in Error reporting.</p>
+</blockquote>
+
+<h4>27.10.15.n Weakly Canonical [fs.op.weakly_canonical]</h4>
 
 <pre>path <a name="weakly_canonical">weakly_canonical</a>(const path&amp; p);
 path weakly_canonical(const path&amp; p, system::error_code&amp; ec);</pre>
@@ -528,31 +565,15 @@ entirety of <code>p</code>.</p>
   <p><i>Throws:</i>&nbsp; As specified in Error reporting.</p>
   
   </blockquote>
-<pre>path relative(const path&amp; p, const path&amp; base=current_path());
-path relative(const path&amp; p, const path&amp; base, system::error_code&amp; ec);</pre>
-<blockquote>
-  <p><i>Overview:</i> Returns <code>p</code> made relative to <code>
-  base</code>. Treats empty or identical paths as corner cases, not errors. 
-  Resolves symlinks and normalizes both <code>p</code> and <code>base</code> 
-  before other processing.</p>
-
-<p><i>Returns:</i> <code><a href="#weakly_canonical">weakly_canonical</a>(p).<a href="#lex-relative">lexically_relative</a>(<a href="#weakly_canonical">weakly_canonical</a>(base))</code>. The second form returns <code>path()</code> if an error occurs.</p>
-  <p><i>Throws:</i> As specified in Error reporting.</p>
-</blockquote>
-
-<pre>path <a name="op-proximate">proximate</a>(const path&amp; p, system::error_code&amp; ec);</pre>
-<blockquote>
-<p><i>Returns:</i> <code>proximate(p, current_path(), ec)</code>.</p>
-  <p><i>Throws:</i>&nbsp; As specified in Error reporting.</p>
   
-  </blockquote>
-<pre>path proximate(const path&amp; p, const path&amp; base=current_path());
-path proximate(const path&amp; p, const path&amp; base, system::error_code&amp; ec);</pre>
+ 
 <blockquote>
+  <p align="center">
 
-<p><i>Returns:</i> <code><a href="#weakly_canonical">weakly_canonical</a>(p).<a href="#lex-proximate">lexically_proximate</a>(<a href="#weakly_canonical">weakly_canonical</a>(base))</code>. The second form returns <code>path()</code> if an error occurs.</p>
-  <p><i>Throws:</i> As specified in Error reporting.</p>
+<span style="background-color: #DBDBDB"><i>-- end proposed wording --</i></span> </p>
 </blockquote>
+
+<hr>
 
   <h2><a name="LWG-guidance-requested">LWG guidance requested</a></h2>
 
@@ -572,9 +593,9 @@ path proximate(const path&amp; p, const path&amp; base, system::error_code&amp; 
       &quot;Prefer writing nonmember nonfriend functions&quot;, and Meyers, <i>Effective C++ Third Edition</i>, 23: 
       &quot;Prefer non-member non-friend functions to member functions.&quot;</p>
 
-  <p>The authors disagree; Dawes prefers following the Filesystem convention 
-  (i.e. member functions), Allsop prefers modern practice (i.e. non-member 
-  functions). They request LWG guidance.</p>
+  <p><span style="background-color: #DBDBDB"><i>At the Oulu meeting the LWG 
+  indicated a strong preference for the member / non-member convention and the 
+  naming as proposed.</i></span> </p>
 
   <h2><a name="References">References</a></h2>
 
