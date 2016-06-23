@@ -513,14 +513,16 @@ Please maintain the alphabetic ordering of operational functions:</i></span></p>
 <pre>path <a name="op-proximate">proximate</a>(const path&amp; p, error_code&amp; ec);</pre>
 <blockquote>
 <p><i>Returns:</i> <code>proximate(p, current_path(), ec)</code>.</p>
-  <p><i>Throws:</i>&nbsp; As specified in Error reporting.</p>
+  <p><i>Throws:</i>&nbsp; As specified in Error reporting ([fs.err.report]).</p>
   </blockquote>
 <pre>path proximate(const path&amp; p, const path&amp; base=current_path());
 path proximate(const path&amp; p, const path&amp; base, error_code&amp; ec);</pre>
 <blockquote>
 
-<p><i>Returns:</i> <code><a href="#weakly_canonical">weakly_canonical</a>(p).<a href="#lex-proximate">lexically_proximate</a>(<a href="#weakly_canonical">weakly_canonical</a>(base))</code>. The second form returns <code>path()</code> if an error occurs.</p>
-  <p><i>Throws:</i> As specified in Error reporting.</p>
+<p><i>Returns:</i> For the first form, <code><a href="#weakly_canonical">weakly_canonical</a>(p).<a href="#lex-proximate">lexically_proximate</a>(<a href="#weakly_canonical">weakly_canonical</a>(base))</code>. 
+For the second form, <code><a href="#weakly_canonical">weakly_canonical</a>(p).<a href="#lex-proximate">lexically_proximate</a>(<a href="#weakly_canonical">weakly_canonical</a>(base), 
+ec)</code>&nbsp; except <code>path()</code> if an error occurs.</p>
+  <p><i>Throws:</i> As specified in Error reporting ([fs.err.report]).</p>
 </blockquote>
 
  
@@ -535,7 +537,7 @@ path relative(const path&amp; p, const path&amp; base, error_code&amp; ec);</pre
   before other processing.</p>
 
 <p><i>Returns:</i> <code><a href="#weakly_canonical">weakly_canonical</a>(p).<a href="#lex-relative">lexically_relative</a>(<a href="#weakly_canonical">weakly_canonical</a>(base))</code>. The second form returns <code>path()</code> if an error occurs.</p>
-  <p><i>Throws:</i> As specified in Error reporting.</p>
+  <p><i>Throws:</i> As specified in Error reporting ([fs.err.report]).</p>
 </blockquote>
 
 <h4>27.10.15.n Weakly Canonical [fs.op.weakly_canonical]</h4>
@@ -555,7 +557,7 @@ Uses the <code>status</code> function to determine existence.</p>
 <p><i>Remarks:</i> Implementations are encouraged to avoid unnecessary 
 normalization such as when <code>canonical</code> has already been called on the 
 entirety of <code>p</code>.</p>
-<p><i>Throws:</i>&nbsp; As specified in Error reporting.</p>
+<p><i>Throws:</i>&nbsp; As specified in Error reporting ([fs.err.report]).</p>
 </blockquote>
 <pre>path <a name="op-relative">relative</a>(const path&amp; p, error_code&amp; ec);</pre>
 <blockquote>
