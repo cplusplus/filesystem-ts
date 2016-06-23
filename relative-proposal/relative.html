@@ -492,16 +492,16 @@ Please maintain the alphabetic ordering of operational functions:</i></span></p>
 
 
 <pre>...
-path proximate(const path&amp; p, system::error_code&amp; ec);
+path proximate(const path&amp; p, error_code&amp; ec);
 path proximate(const path&amp; p, const path&amp; base=current_path());
-path proximate(const path&amp; p, const path&amp; base, system::error_code&amp; ec);
+path proximate(const path&amp; p, const path&amp; base, error_code&amp; ec);
 ...
-path relative(const path&amp; p, system::error_code&amp; ec);
+path relative(const path&amp; p, error_code&amp; ec);
 path relative(const path&amp; p, const path&amp; base=current_path());
-path relative(const path&amp; p, const path&amp; base, system::error_code&amp; ec);
+path relative(const path&amp; p, const path&amp; base, error_code&amp; ec);
 ...
 path weakly_canonical(const path&amp; p);
-path weakly_canonical(const path&amp; p, system::error_code&amp; ec);
+path weakly_canonical(const path&amp; p, error_code&amp; ec);
 ...
 </pre>
 <p><span style="background-color: #DBDBDB"><i>Add the following new filesystem 
@@ -510,13 +510,13 @@ Please maintain the alphabetic ordering of operational functions:</i></span></p>
 
 <h4>27.10.15.n Proximate[fs.op.proximate]</h4>
 
-<pre>path <a name="op-proximate">proximate</a>(const path&amp; p, system::error_code&amp; ec);</pre>
+<pre>path <a name="op-proximate">proximate</a>(const path&amp; p, error_code&amp; ec);</pre>
 <blockquote>
 <p><i>Returns:</i> <code>proximate(p, current_path(), ec)</code>.</p>
   <p><i>Throws:</i>&nbsp; As specified in Error reporting.</p>
   </blockquote>
 <pre>path proximate(const path&amp; p, const path&amp; base=current_path());
-path proximate(const path&amp; p, const path&amp; base, system::error_code&amp; ec);</pre>
+path proximate(const path&amp; p, const path&amp; base, error_code&amp; ec);</pre>
 <blockquote>
 
 <p><i>Returns:</i> <code><a href="#weakly_canonical">weakly_canonical</a>(p).<a href="#lex-proximate">lexically_proximate</a>(<a href="#weakly_canonical">weakly_canonical</a>(base))</code>. The second form returns <code>path()</code> if an error occurs.</p>
@@ -527,7 +527,7 @@ path proximate(const path&amp; p, const path&amp; base, system::error_code&amp; 
 <h4>27.10.15.n Relative [fs.op.relative]</h4>
  
 <pre>path relative(const path&amp; p, const path&amp; base=current_path());
-path relative(const path&amp; p, const path&amp; base, system::error_code&amp; ec);</pre>
+path relative(const path&amp; p, const path&amp; base, error_code&amp; ec);</pre>
 <blockquote>
   <p>Returns <code>p</code> made relative to <code>
   base</code>. Treats empty or identical paths as corner cases, not errors. 
@@ -541,7 +541,7 @@ path relative(const path&amp; p, const path&amp; base, system::error_code&amp; e
 <h4>27.10.15.n Weakly Canonical [fs.op.weakly_canonical]</h4>
 
 <pre>path <a name="weakly_canonical">weakly_canonical</a>(const path&amp; p);
-path weakly_canonical(const path&amp; p, system::error_code&amp; ec);</pre>
+path weakly_canonical(const path&amp; p, error_code&amp; ec);</pre>
 <blockquote>
 Returns <code>p</code> with symlinks resolved and the result 
 normalized.<p>
@@ -557,7 +557,7 @@ normalization such as when <code>canonical</code> has already been called on the
 entirety of <code>p</code>.</p>
 <p><i>Throws:</i>&nbsp; As specified in Error reporting.</p>
 </blockquote>
-<pre>path <a name="op-relative">relative</a>(const path&amp; p, system::error_code&amp; ec);</pre>
+<pre>path <a name="op-relative">relative</a>(const path&amp; p, error_code&amp; ec);</pre>
 <blockquote>
 <p><i>Returns:</i> <code>relative(p, current_path(), ec)</code>.</p>
   <p><i>Throws:</i>&nbsp; As specified in Error reporting.</p>
