@@ -427,25 +427,29 @@ does not affect <code>path</code> equality.<i> —end example</i>]</p>
   Treats empty or identical paths as corner cases, not errors. Does not resolve 
   symlinks. Does not first normalize <code>*this</code> or <code>base</code>.</p>
 
-  <p><i>Remarks:</i> Uses <code>std::mismatch(begin(), end(), base.begin(), base.end())</code>, to determine the first mismatched element of
-  <code>*this</code> and <code>base</code>. Uses <code>operator==</code> to 
-  determine if elements match. </p>
+  <p><i>Effects:</i> </p>
   
-  <p><i>Returns:</i> </p>
+  <p>Using&nbsp; <code>operator==</code> to determine if elements match, 
+  determine the first mismatched element of
+  <code>*this</code> and <code>base</code> using <code>std::mismatch(begin(), end(), base.begin(), base.end())</code>.</p>
+  
+  <p>Then:</p>
   
   <ul>
     <li>
+  return
   <code>path()</code> if the first mismatched element of <code>*this</code> is equal to <code>
   begin()</code> or the first mismatched element 
   of <code>base</code> is equal to <code>base.begin()</code>, or<br>&nbsp;
     </li>
     <li>
+  return
   <code>path(&quot;.&quot;)</code> if the first mismatched element of <code>
   *this</code> is equal to <code>
   end()</code> and the first mismatched element 
   of <code>base</code> is equal to <code>base.end()</code>, or<br>&nbsp;
     </li>
-    <li>An object of class <code>path</code> composed via application of <code>
+    <li>return an object of class <code>path</code> composed via application of <code>
     operator/= (path(&quot;..&quot;))</code> for each element in the half-open 
     range [first 
     mismatched element of <code>base</code>, <code>base.end()</code>), and then 
