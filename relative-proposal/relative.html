@@ -32,7 +32,7 @@ body
 <tr>
   <td align="left">Date:</td>
   <td align="left">
-  <!--webbot bot="Timestamp" S-Type="EDITED" S-Format="%Y-%m-%d" startspan -->2016-06-23<!--webbot bot="Timestamp" endspan i-checksum="12398" --></td>
+  <!--webbot bot="Timestamp" S-Type="EDITED" S-Format="%Y-%m-%d" startspan -->2016-06-24<!--webbot bot="Timestamp" endspan i-checksum="12400" --></td>
 </tr>
 <tr>
   <td align="left">Reply to:</td>
@@ -45,7 +45,7 @@ body
 </tr>
 </table>
 
-<h1>Relative Paths for Filesystem</h1>
+<h1>Relative Paths for Filesystem (R1)</h1>
 
 
 <p><a href="#Introduction">
@@ -69,7 +69,7 @@ Add lexical functions as <code>path</code> member functions</a><br>
 &nbsp;&nbsp;&nbsp;&nbsp;<a href="#Provide-weakly">Provide a <code>weakly_canonical</code> operational function</a><br>
 &nbsp;&nbsp;&nbsp;&nbsp;<a href="#just-work">Resolve issues in ways that &quot;just work&quot; for users</a><br>
 &nbsp;&nbsp;&nbsp;&nbsp;<a href="#mismatch">Specify <code>lexical relative</code> in terms 
-      of <code>std::mismatch</code></a><br>
+      of <code>mismatch</code></a><br>
 &nbsp;&nbsp;&nbsp;&nbsp;<a href="#Specify-op-rel-weakly">Specify operational <code>relative</code> in terms of <code>
       weakly_canonical</code></a><br>
 &nbsp;&nbsp;&nbsp;&nbsp;<a href="#Specify-op-rel-lex-rel">Specify operational <code>relative</code> in terms of 
@@ -149,7 +149,7 @@ P0011R0, <i>
 Additions to Filesystem supporting Relative Paths</i></a> by Jamie Allsop and Nico Josuttis 
 is what broke the &quot;relative&quot; logjam. Much of what follows is based directly on 
 that proposal. The <code>weakly_canonical</code> function and 
-details of the semantic specifications such as use of <code>std::mismatch</code> 
+details of the semantic specifications such as use of <code>mismatch</code> 
 were introduced by Beman Dawes.</p>
 <h3><a name="Preliminary-implementation">Implementation</a> experience</h3>
 <p>
@@ -374,12 +374,6 @@ of this filesystem proposal. </p>
 <h4>27.10.4.n<br>
 <a name="Define-normal-form">normal form</a> [fs.def.normal.form]</h4>
 
-<p><strike><font face="Arial">A path is in <b><i><a name="normal-form">normal form</a></i></b> if it has no 
-redundant current directory (<i>dot</i>) or parent directory (<i>dot-dot</i>) 
-elements. The normal form for an empty path is an empty path. The normal form 
-for a path ending in a <i>directory-separator</i> that is not the root directory 
-is the same path with a current directory (<i>dot</i>) element appended.</font></strike></p>
-
 <p>A path in <b><i><a name="normal-form">normal form</a></i></b> has no 
 redundant current directory (<i>dot</i>) elements, no redundant parent directory (<i>dot-dot</i>) 
 elements, and no redundant <i>directory-separator</i>s. The normal form for an empty path is an empty path. The normal form 
@@ -431,7 +425,7 @@ does not affect <code>path</code> equality.<i> —end example</i>]</p>
   
   <p>Using&nbsp; <code>operator==</code> to determine if elements match, 
   determine the first mismatched element of
-  <code>*this</code> and <code>base</code> using <code>std::mismatch(begin(), end(), base.begin(), base.end())</code>.</p>
+  <code>*this</code> and <code>base</code> using <code>mismatch(begin(), end(), base.begin(), base.end())</code>.</p>
   
   <p>Then:</p>
   
@@ -540,6 +534,14 @@ ec)</code>&nbsp; except <code>path()</code> if an error occurs.</p>
  
 <h4>27.10.15.n Relative [fs.op.relative]</h4>
  
+<pre>path <a name="op-relative">relative</a>(const path&amp; p, error_code&amp; ec);</pre>
+<blockquote>
+<p><i>Returns:</i> <code>relative(p, current_path(), ec)</code>.</p>
+  <p><i>Throws:</i>&nbsp; As specified in Error reporting([fs.err.report]).</p>
+  
+  </blockquote>
+  
+ 
 <pre>path relative(const path&amp; p, const path&amp; base=current_path());
 path relative(const path&amp; p, const path&amp; base, error_code&amp; ec);</pre>
 <blockquote>
@@ -576,12 +578,6 @@ normalization such as when <code>canonical()</code> has already been called on t
 entirety of <code>p</code>.</p>
 <p><i>Throws:</i>&nbsp; As specified in Error reporting ([fs.err.report]).</p>
 </blockquote>
-<pre>path <a name="op-relative">relative</a>(const path&amp; p, error_code&amp; ec);</pre>
-<blockquote>
-<p><i>Returns:</i> <code>relative(p, current_path(), ec)</code>.</p>
-  <p><i>Throws:</i>&nbsp; As specified in Error reporting([fs.err.report]).</p>
-  
-  </blockquote>
   
  
 <blockquote>
