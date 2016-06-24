@@ -526,7 +526,8 @@ path proximate(const path&amp; p, const path&amp; base, error_code&amp; ec);</pr
 
 <p><i>Returns:</i> For the first form, <code><a href="#weakly_canonical">weakly_canonical</a>(p).<a href="#lex-proximate">lexically_proximate</a>(<a href="#weakly_canonical">weakly_canonical</a>(base))</code>. 
 For the second form, <code><a href="#weakly_canonical">weakly_canonical</a>(p, 
-ec).<a href="#lex-proximate">lexically_proximate</a>(<a href="#weakly_canonical">weakly_canonical</a>(base, ec))</code>&nbsp; except <code>path()</code> if an error occurs.</p>
+ec).<a href="#lex-proximate">lexically_proximate</a>(<a href="#weakly_canonical">weakly_canonical</a>(base, ec))</code>&nbsp; except <code>path()</code> 
+at the first error occurrence, if any.</p>
   <p><i>Throws:</i> As specified in Error reporting ([fs.err.report]).</p>
 </blockquote>
 
@@ -552,7 +553,7 @@ path relative(const path&amp; p, const path&amp; base, error_code&amp; ec);</pre
 <p><i>Returns: </i>For the first form, <code><a href="#weakly_canonical">weakly_canonical</a>(p).<a href="#lex-relative">lexically_relative</a>(<a href="#weakly_canonical">weakly_canonical</a>(base))</code>. 
 For the second form, <code><a href="#weakly_canonical">weakly_canonical</a>(p, 
 ec).<a href="#lex-relative">lexically_relative</a>(<a href="#weakly_canonical">weakly_canonical</a>(base, 
-ec))</code> except <code>path()</code> if an error occurs.</p>
+ec))</code> except <code>path()</code> at the first error occurrence, if any.</p>
   <p><i>Throws:</i> As specified in Error reporting ([fs.err.report]).</p>
 </blockquote>
 
@@ -563,15 +564,15 @@ path weakly_canonical(const path&amp; p, error_code&amp; ec);</pre>
 <blockquote>
 Returns <code>p</code> with symlinks resolved and the result 
 normalized.<p dir="ltr">
-<i>Effects: </i>Using the <code>status()</code> function to determine existence, 
+<i>Effects: </i>Using the <code>status(p)</code> or <code>status(p, ec)</code>, 
+respectively to determine existence, 
 return a path composed by <code>operator/=</code>&nbsp; from the result of calling 
-the <code>canonical()</code> function on 
-a path composed of the leading elements of <code>p</code> that exist, if any, 
+<code>canonical()</code> with a path argument composed of the leading elements of <code>p</code> that exist, if any, 
 followed by the elements of <code>p</code> that do not exist, if any. For the 
 first form, <code>canonical()</code> is called without an <code>error_code</code> 
 argument. For the second form, <code>canonical()</code> is called with <code>ec</code> 
-as an <code>error_code</code> argument, and <code>path()</code> is returned if 
-an error occurs.</p>
+as an <code>error_code</code> argument, and <code>path()</code> at the first error 
+occurrence, if any.</p>
 <p><i>Postconditions:</i> The returned path is in <a href="#normal">normal form</a>.</p>
 <p><i>Remarks:</i> Implementations are encouraged to avoid unnecessary 
 normalization such as when <code>canonical()</code> has already been called on the 
