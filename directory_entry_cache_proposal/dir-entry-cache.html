@@ -32,7 +32,7 @@ body
 <tr>
   <td align="left">Date:</td>
   <td align="left">
-  <!--webbot bot="Timestamp" S-Type="EDITED" S-Format="%Y-%m-%d" startspan -->2016-06-21<!--webbot bot="Timestamp" endspan i-checksum="12394" --></td>
+  <!--webbot bot="Timestamp" S-Type="EDITED" S-Format="%Y-%m-%d" startspan -->2016-07-02<!--webbot bot="Timestamp" endspan i-checksum="12458" --></td>
 </tr>
 <tr>
   <td align="left">Reply to:</td>
@@ -59,8 +59,8 @@ of file size from <code>directory_entry</code><br> </i>and issue
 
 
   <p style="margin-left:20%; margin-right:20%;">The proposal has been implemented, 
-  except for some additional observer function requested by the LEWG. Guidance 
-  if provided for users on how to use or not use cached information as desired, without exposing to the user 
+  <span style="background-color: #FFFF00">except for some additional observer function requested by the LEWG</span>. Guidance 
+  is provided for users on how to use or not use cached information as desired, without exposing to the user 
   whether information is actually cached. The proposal allows the user to write code that 
   is fully portable between&nbsp;implementations that cache or do not cache.</p>
 
@@ -124,10 +124,17 @@ of file size from <code>directory_entry</code><br> </i>and issue
 
   <h2>Revision History</h2>
 
-  <p>R0 of this document provided two approaches to directory entry caching. The 
-  LEWG in Oulu voted to move forward with the first of those two approaches, 
-  enhanced with Geoffrey Romer&#39;s suggestion to provide observer functions for 
-  future needs, and that decision is reflected in Revision 1 of this paper.</p>
+  <p><b>R1 - post Oulu:</b></p>
+
+  <ul>
+    <li>Select the first of the two approaches proposed in R0, 
+  enhanced with Geoffrey Romer&#39;s suggestion to provide observer functions 
+    for future needs, in accordance with LEWG vote.</li>
+    <li>Change &quot;for&quot; to &quot;such as&quot; in [class.directory_entry], per LWG.</li>
+</ul>
+
+  <p><b>R0 - pre-Oulu:</b> Initial proposal providing two possible approaches to 
+  directory entry caching. </p>
 
   <h1>Proposed wording</h1>
 
@@ -201,7 +208,7 @@ of file size from <code>directory_entry</code><br> </i>and issue
 }</pre>
 
 <p>A <code>directory_entry</code> object stores a <code>path</code> object.</p>
-<p><ins>Implementations are permitted and encouraged to store values for hard link count, status, 
+<p><ins>Implementations are permitted and encouraged to store values such as hard link count, status, 
 symlink status, file size, and last write time attributes associated with <code>directory_entry</code> 
 objects if such values are available during directory iteration and storing them would 
 allow the implementation to eliminate file system accesses by <code>directory_entry</code> 
