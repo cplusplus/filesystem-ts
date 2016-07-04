@@ -32,7 +32,7 @@ body
 <tr>
   <td align="left">Date:</td>
   <td align="left">
-  <!--webbot bot="Timestamp" S-Type="EDITED" S-Format="%Y-%m-%d" startspan -->2016-07-02<!--webbot bot="Timestamp" endspan i-checksum="12458" --></td>
+  <!--webbot bot="Timestamp" S-Type="EDITED" S-Format="%Y-%m-%d" startspan -->2016-07-04<!--webbot bot="Timestamp" endspan i-checksum="12462" --></td>
 </tr>
 <tr>
   <td align="left">Reply to:</td>
@@ -131,12 +131,18 @@ of file size from <code>directory_entry</code><br> </i>and issue
   enhanced with Geoffrey Romer&#39;s suggestion to provide observer functions 
     for future needs, in accordance with LEWG vote.</li>
     <li>Change &quot;for&quot; to &quot;such as&quot; in [class.directory_entry], per LWG.</li>
+    <li>Use <code>endl</code> rather than <code>&#39;\n&#39;</code> in example, per LWG.</li>
+    <li>Clarify the relationship between directory iteration (which performs the 
+    caching) and directory entries (which store and provide observers for the 
+    cached values) in response to LWG concern.</li>
 </ul>
 
   <p><b>R0 - pre-Oulu:</b> Initial proposal providing two possible approaches to 
   directory entry caching. </p>
 
   <h1>Proposed wording</h1>
+
+  <p><i><span style="background-color: #CCCCCC">Relative to N4594.</span></i></p>
 
   <h2>27.10.12 Class <code>directory_entry</code> [class.directory_entry]</h2>
 </h2>
@@ -202,18 +208,30 @@ of file size from <code>directory_entry</code><br> </i>and issue
     bool operator&gt; (const directory_entry&amp; rhs) const noexcept;
     bool operator&gt;=(const directory_entry&amp; rhs) const noexcept;
   private:
-    path   m_path; // for exposition only
+    path   pathobject; // exposition only
+
+    <ins>// cached attribute values, if any</ins>
+    <ins>file_status statusobject; // exposition only</ins>
+    <ins>...</ins>
+
+    <ins>// allow directory_iterator access to private data members</ins>
+    <ins>friend class directory_iterator; // exposition only</ins>
   };
 
 }</pre>
 
-<p>A <code>directory_entry</code> object stores a <code>path</code> object.</p>
-<p><ins>Implementations are permitted and encouraged to store values such as hard link count, status, 
-symlink status, file size, and last write time attributes associated with <code>directory_entry</code> 
-objects if such values are available during directory iteration and storing them would 
+<p>A <code>directory_entry</code> object stores a <code>path</code> object <ins>
+and may store additional objects for file attributes such as hard link count, 
+status, symlink status, file size, and last write time.</ins></p>
+<p><ins>Implementations are  encouraged to store  such 
+additional file attribute values if available during directory iteration and storing them would 
 allow the implementation to eliminate file system accesses by <code>directory_entry</code> 
-observer functions ([fs.op.funcs]). Such stored attribute values are said to be
+observer functions ([fs.op.funcs]). Such stored file attribute values are said to be
 <i>cached</i>.</ins></p>
+<p><ins>[<i>Note:</i> Storing these attribute values is performed during directory 
+iteration ([class.directory_iterator]). For exposition class <code>directory_iterator</code> is shown as a friend of class 
+<code>directory_entry</code>. The exact mechanism is not exposed to users.&nbsp; &mdash;<i>end 
+note</i>]</ins></p>
 <blockquote>
 <p><ins>[<i>Example: </i></ins></p>
 <pre><ins>using namespace std::filesystem;
@@ -221,14 +239,14 @@ observer functions ([fs.op.funcs]). Such stored attribute values are said to be
 for (auto&amp;&amp; itr : directory_iterator(p))
 {
   // use possibly cached last write time to minimize disk accesses
-  std::cout << itr.path() &lt;&lt; &quot; &quot; &lt;&lt; itr.last_write_time() &lt;&lt; &#39;\n&#39;;
+  std::cout << itr.path() &lt;&lt; &quot; &quot; &lt;&lt; itr.last_write_time() &lt;&lt; std::endl;
 }
 
 for (auto&amp;&amp; itr : directory_iterator(p))
 {
   <i>... potentially lengthy computations ...</i>
   // do not use cached last write time since the cache may be stale
-  std::cout << itr.path() &lt;&lt; &quot; &quot; &lt;&lt; last_write_time(*itr) &lt;&lt; &#39;\n&#39;;
+  std::cout << itr.path() &lt;&lt; &quot; &quot; &lt;&lt; last_write_time(*itr) &lt;&lt; std::endl;
 }</ins></pre>
 <p><ins>On implementations that do not cache the last write time, both loops will 
 result in a potentially expensive call to the <code>
@@ -438,12 +456,15 @@ file_status symlink_status(error_code&amp; ec) const noexcept;</pre>
 </blockquote>
 <pre para_num="19">bool operator&gt;=(const directory_entry&amp; rhs) const noexcept;</pre>
 <blockquote>
-  <p para_num="20"><i>Returns:</i> <code>m_path &gt;= rhs.m_path</code>. 
-
-  </blockquote>
+  <p para_num="20"><i>Returns:</i> <code>m_path &gt;= rhs.m_path</code>.</blockquote>
 
 
-<hr>
+  <h3 para_num="20">&nbsp;7.10.13 Class <code>directory_iterator</code> [class.directory_iterator]</h3>
+  <p>An object of type <code>directory_iterator</code> provides an iterator for 
+  a sequence of <code>directory_entry</code> elements<br>
+  representing the <del>files</del> <ins>path and any cached attribute values ([class.directory_entry]) for each file</ins> in a directory. [ <i>Note:</i> For iteration into 
+  sub-directories, see class <code>recursive_directory_-<br>
+  iterator</code> (27.10.14). —<i>end note</i> ]<hr>
 
     <h2>Operating system <a name="API">API</a>s</h2>
 
