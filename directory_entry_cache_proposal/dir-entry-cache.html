@@ -27,12 +27,12 @@ body
 <table>
 <tr>
   <td align="left">Doc. no.:</td>
-  <td align="left"><span style="background-color: #FFFF00">D0317R0</span></td>
+  <td align="left"><span style="background-color: #FFFF00">D0317R1</span></td>
 </tr>
 <tr>
   <td align="left">Date:</td>
   <td align="left">
-  <!--webbot bot="Timestamp" S-Type="EDITED" S-Format="%Y-%m-%d" startspan -->2016-04-15<!--webbot bot="Timestamp" endspan i-checksum="12273" --></td>
+  <!--webbot bot="Timestamp" S-Type="EDITED" S-Format="%Y-%m-%d" startspan -->2016-07-06<!--webbot bot="Timestamp" endspan i-checksum="12466" --></td>
 </tr>
 <tr>
   <td align="left">Reply to:</td>
@@ -43,7 +43,7 @@ body
 </tr>
 </table>
 
-<h1 align="center">Directory Entry Caching for Filesystem (R0)</h1>
+<h1 align="center">Directory Entry Caching for Filesystem (R1)</h1>
 
 
 <p align="center"><b>Fixing issue 
@@ -53,90 +53,432 @@ of file size from <code>directory_entry</code><br> </i>and issue
 <code>directory_entry::status</code> is not allowed to be cached ...</i></b></p>
 
 
-  <p style="margin-left:20%; margin-right:20%;">This paper proposes a new design for efficiently caching 
-  state information obtained during directory iteration. No implementation details are 
-  exposed beyond the fact that there may be a cache. Implementations may cache 
-  directory entry state information without any need 
-  for changes in user code or the standard library. The design makes minimal 
-  changes to existing interfaces and implementations. The proposed wording offers clear guidance 
-  to users as to how to make use of cached information when desired or avoid use of cached 
-  information when not desired, without the user having to know whether any  information is 
-  actually cached. The proposal has been implemented.</p>
+  <p style="margin-left:20%; margin-right:20%;">This paper provides a solution 
+  to the problem of efficiently caching state information obtained during 
+  directory iteration.</p>
 
 
-  <h2><a name="Introduction">Introduction</a></h2>
+  <p style="margin-left:20%; margin-right:20%;">The proposal has been implemented, 
+  <span style="background-color: #FFFF00">except for some additional observer function requested by the LEWG</span>. Guidance 
+  is provided for users on how to use or not use cached information as desired, without exposing to the user 
+  whether information is actually cached. The proposal allows the user to write code that 
+  is fully portable between&nbsp;implementations that cache or do not cache.</p>
 
-  <p>Directory iteration in real-world operating systems returns directory 
-  entries containing file name plus additional information such as file status, 
-  size, and last modification date. Exactly what additional information is 
-  returned varies between operating systems. Accessing the additional 
-  information from the directory entry is much more efficient than re-accessing 
-  the file system to obtain the information.</p>
 
-  <p>The initial filesystem TS proposal
-  <span style="background-color: #FFFF00">(need reference)</span> and the Boost 
-  Filesystem implementation limited the additional information stored in a 
-  directory entry to the regular status and symlink status, since these were the 
+  <h2>Background</h2>
+
+  <p>Directory iteration in real-world operating systems always returns directory 
+  state information containing at least the file name. POSIX has an 
+  option to also return file status, but not all popular distributions implement this. Windows always 
+  returns file status, 
+  file size, and last modification date. Accessing this additional state from the directory entry is much more efficient than re-accessing 
+  the file system to obtain it. Users know this and expect the standard library 
+  filesystem to deliver the same efficiency.</p>
+
+  <p>The initial filesystem TS proposal and the Boost 
+  Filesystem implementation limited the additional state stored by class
+  <code>directory_entry</code> to the regular status and symlink status, since these were the 
   only additional elements common to several operating systems. The caching of 
   this additional information was described using mutable exposition-only 
-  members. The LWG removed the mutable members and associated caching wording 
-  because mutable members are problematic and race prone in multi-threaded 
-  environments. In retrospect, that original design also exposed too many implementation 
+  data members. The LWG removed the mutable members and associated caching 
+  wording because mutable members are problematic and race prone in 
+  multi-threaded environments. The original design also exposed too many implementation 
   details and was not easily extendible to additional cache information such as 
   file size and last write timestamp.</p>
 
-  <p>LWG issue 2663, <i>[filesys.ts] Enable efficient retrieval of 
-  file size from </i><code><i>directory_entry</i></code>, requests that for 
-  Windows caching be extended to file size. Although this request was made 
-  before the LWG removed caching, it is indicative of the desire to maximize 
-  efficiency for particular operating systems. Subsequent to the removal of 
-  directory entry caching and addition of Filesystem to the standard library, a
-  <span style="background-color: #FFFF00">new issue</span> has been submitted 
-  asking for the reinstatement of caching.</p>
+  <p>When <code>directory_entry</code> caching was removed from the TS, the LWG 
+  promised to revisit the issue when Filesystem was added to the standard. Two 
+  issues where subsequently filed that remind us of that promise.</p>
 
-  <h2>Design</h2>
+  <p>LWG issue <a href="http://cplusplus.github.io/LWG/lwg-active.html#2663">2663</a>, <i>Enable efficient retrieval of file size from </i><code><i>directory_entry</i></code>, 
+  requests that for Windows caching be extended to file size.</p>
 
-  <p>As a convenience for users, class <code>directory_entry</code> 
-  already has an implicit conversion to <code>path</code>:</p>
+  <p>LWG issue
+<a href="http://cplusplus.github.io/LWG/lwg-active.html#2677">2677</a>, <i>
+<code>directory_entry::status</code> is not allowed to be cached as a 
+  quality-of-implementation issue</i>, requests the reinstatement of permission 
+  for implementations to cache directory entry information.</p>
 
-  <blockquote>
-    <p><code>operator const path&amp;() const noexcept;</code></p>
+  <h2>Design decisions</h2>
+
+  <h3>Add cache <code>refresh()</code> functions</h3>
+
+  <p>The original TS design conflated the observer functions that access cached 
+  state information with refreshing the cached state. Since refreshing the 
+  cached state is non-const, the cached member data had to be mutable and that 
+  was unacceptable. This proposal provides separate 
+  non-const <code>refresh</code> functions that are called by all other 
+  non-const functions that modify the stored path, ensuring cache integrity. The
+  <code>refresh</code> functions can be called by users if desired to refresh 
+  stale cached data. With the separation of refresh and observer functionality, the  
+  observer functions become truly const.</p>
+
+  <h3>Provide observer functions for future needs</h3>
+
+  <p>During LEWG discussions in Oulu, Geoffrey Romer suggested providing 
+  observer functions for attributes beyond those currently supported by 
+  real-world file systems. This has the effect of future-proofing <code>
+  directory_entry</code> as file systems evolve. It also sparked the realization 
+  that the <code>is_</code>* family of filesystem query functions could be 
+  supported efficiently in a user-convenient way.</p>
+
+  <h2>Revision History</h2>
+
+  <p><b>R1 - post Oulu:</b></p>
+
+  <ul>
+    <li>Select the first of the two approaches proposed in R0, 
+  enhanced with Geoffrey Romer&#39;s suggestion to provide observer functions 
+    for future needs, in accordance with LEWG vote.</li>
+    <li>Change &quot;for&quot; to &quot;such as&quot; in [class.directory_entry], per LWG.</li>
+    <li>Use <code>endl</code> rather than <code>&#39;\n&#39;</code> in example, per LWG.</li>
+    <li>Clarify the relationship between directory iteration (which stores the 
+    cached values) and directory entries (which provide observers for the cached 
+    values and is where the cached values are stored). In reviewing the Oulu LWG 
+    discussion it became obvious split in caching responsibilities between the
+    <code>directory_entry</code> and <code>directory_iteration</code> was not 
+    adequately described.</li>
+</ul>
+
+  <p><b>R0 - pre-Oulu:</b> Initial proposal providing two possible approaches to 
+  directory entry caching. </p>
+
+  <h1>Proposed wording</h1>
+
+  <p><i><span style="background-color: #CCCCCC">Changes are relative to N4594.</span></i></p>
+
+  <h2>27.10.12 Class <code>directory_entry</code> [class.directory_entry]</h2>
+</h2>
+
+
+
+<pre>namespace std::filesystem {
+  class directory_entry {
+  public:
+    // <a href="#directory_entry-constructors-1">constructors</a> and destructor
+    directory_entry() noexcept = default;
+    directory_entry(const directory_entry&amp;) = default;
+    directory_entry(directory_entry&amp;&amp;) noexcept = default;
+    explicit directory_entry(const path&amp; p);
+    <ins>directory_entry(const path&amp; p, error_code& ec);</ins>
+   ~directory_entry();
+
+    // <a href="#directory_entry-modifiers-1">modifiers</a>
+    directory_entry&amp; operator=(const directory_entry&amp;) = default;
+    directory_entry&amp; operator=(directory_entry&amp;&amp;) noexcept = default;
+    void assign(const path&amp; p);
+    <ins>void assign(const path&amp; p, error_code&amp; ec);</ins>
+    <ins>void refresh();</ins>
+    <ins>void refresh(error_code&amp; ec) noexcept;</ins>
+    void replace_filename(const path&amp; p);
+
+    // <a href="#directory_entry-observers-1">observers</a>
+    const path&amp;  path() const noexcept;
+    operator const path&amp;() const noexcept;
+    <ins>bool exists() const;</ins>
+    <ins>bool exists(error_code&amp; ec) const noexcept;</ins>
+    <ins>uintmax_t file_size() const;</ins>
+    <ins>uintmax_t file_size(error_code& ec) const noexcept;</ins>
+    <ins>uintmax_t hard_link_count() const;</ins>
+    <ins>uintmax_t hard_link_count(error_code&amp; ec) const noexcept;</ins>
+    <ins>file_time_type last_write_time() const;</ins> 
+    <ins>file_time_type last_write_time(error_code& ec) const noexcept;</ins> 
+    <ins>bool is_block_file() const;</ins>
+    <ins>bool is_block_file(error_code&amp; ec) const noexcept;</ins>
+    <ins>bool is_character_file() const;</ins>
+    <ins>bool is_character_file(error_code&amp; ec) const noexcept;</ins>
+    <ins>bool is_directory() const;</ins>
+    <ins>bool is_directory(error_code&amp; ec) const noexcept;</ins>
+    <ins>bool is_fifo() const;</ins>
+    <ins>bool is_fifo(error_code&amp; ec) const noexcept;</ins>
+    <ins>bool is_other() const;</ins>
+    <ins>bool is_other(error_code&amp; ec) const noexcept;</ins>
+    <ins>bool is_regular_file() const;</ins>
+    <ins>bool is_regular_file(error_code&amp; ec) const noexcept;</ins>
+    <ins>bool is_socket() const;</ins>
+    <ins>bool is_socket(error_code&amp; ec) const noexcept;</ins>
+    <ins>bool is_symlink() const;</ins>
+    <ins>bool is_symlink(error_code&amp; ec) const noexcept;</ins>
+    file_status status() const;
+    file_status status(error_code&amp; ec) const noexcept;
+    file_status symlink_status() const;
+    file_status symlink_status(error_code&amp; ec) const noexcept;
+
+    bool operator&lt; (const directory_entry&amp; rhs) const noexcept;
+    bool operator==(const directory_entry&amp; rhs) const noexcept;
+    bool operator!=(const directory_entry&amp; rhs) const noexcept;
+    bool operator&lt;=(const directory_entry&amp; rhs) const noexcept;
+    bool operator&gt; (const directory_entry&amp; rhs) const noexcept;
+    bool operator&gt;=(const directory_entry&amp; rhs) const noexcept;
+  private:
+    path   pathobject; // exposition only
+
+    <ins>// cached attribute values, if any</ins>
+    <ins>file_status statusobject; // exposition only</ins>
+    <ins>...</ins>
+
+    <ins>// grant directory_iterator access to private members</ins>
+    <ins>friend class directory_iterator; // exposition only</ins>
+  };
+
+}</pre>
+
+<p>A <code>directory_entry</code> object stores a <code>path</code> object <ins>
+and may store additional objects for file attributes such as hard link count, 
+status, symlink status, file size, and last write time.</ins></p>
+<p><ins>Implementations are  encouraged to store  such 
+additional file attributes if their values are available during directory iteration and storing them would 
+allow the implementation to eliminate file system accesses by <code>directory_entry</code> 
+observer functions ([fs.op.funcs]). Such stored file attribute values are said to be
+<i>cached</i>.</ins></p>
+<p><ins>[<i>Note:</i> Storing cached attribute values is performed by directory 
+iteration ([class.directory_iterator]).&nbsp; &mdash;<i>end 
+note</i>]</ins></p>
+<blockquote>
+<p><ins>[<i>Example: </i></ins></p>
+<pre><ins>using namespace std::filesystem;
+
+for (auto&amp;&amp; itr : directory_iterator(p))
+{
+  // use possibly cached last write time to minimize disk accesses
+  std::cout << itr.path() &lt;&lt; &quot; &quot; &lt;&lt; itr.last_write_time() &lt;&lt; std::endl;
+}
+
+for (auto&amp;&amp; itr : directory_iterator(p))
+{
+  <i>... potentially lengthy computations ...</i>
+  // do not use cached last write time since the cache may be stale
+  std::cout << itr.path() &lt;&lt; &quot; &quot; &lt;&lt; last_write_time(*itr) &lt;&lt; std::endl;
+}</ins></pre>
+<p><ins>On implementations that do not cache the last write time, both loops will 
+result in a potentially expensive call to the <code>
+std::filesystem::last_write_time</code> function.</ins></p>
+<p><ins>On implementations that do cache the last write time, the first loop will use 
+the cached value and so will not result in a potentially expensive call to the
+<code>std::filesystem::last_write_time</code> function.</ins></p>
+<p><ins>The code is portable to any implementation, regardless of whether or not it 
+employs caching.</ins></p>
+<p><ins><i>&nbsp;</i>—<i>end 
+example</i>]</ins></p>
+</blockquote>
+<h3>27.10.12.1 <a name="directory_entry-constructors-1"><code>directory_entry</code> 
+constructors </a>[directory_entry.cons] </h3>
+<pre>explicit directory_entry(const path&amp; p);
+<ins>directory_entry(const path&amp; p, error_code& ec);</ins></pre>
+<blockquote>
+  <p><i>Effects: </i>Constructs an object of type <code>directory_entry</code><ins>, 
+  then <code>refresh()</code>or <code>
+  refresh(ec)</code>, respectively</ins>.
+  </p>
+  <p><i>Postcondition:</i> <code>path() == p</code>.</p>
+  <p><ins><i>Throws:</i> As specified in Error 
+  reporting ([fs.err.report]).</ins> </p>
+</blockquote>
+<h3>27.10.12.2 <a name="directory_entry-modifiers-1"><code>directory_entry</code> 
+modifiers </a>[directory_entry.mods] </h3>
+<pre>void assign(const path&amp; p);
+<ins>void assign(const path&amp; p, error_code&amp; ec);</ins></pre>
+<blockquote>
+  <p><ins><i>Effects:</i> Equivalent to <code>m_path = p</code>, then <code>refresh()</code>or <code>
+  refresh(ec)</code>, respectively.</ins></p>
+  <p><del><i>Postcondition:</i> <code>path() == p</code>.</del></p>
+  <p><ins><i>Throws:</i> As specified in Error 
+  reporting ([fs.err.report]).</ins> </p>
+</blockquote>
+<pre><ins>void refresh();</ins>
+<ins>void refresh(error_code&amp; ec) noexcept;</ins></pre>
+<blockquote>
+<p><ins><i>Effects:</i> Stores the current value for any cached attribute values of the 
+file <code>p</code> resolves to.</ins></p>
+<p><ins><i>Throws:</i> As specified in Error 
+  reporting ([fs.err.report]).</ins> </p>
+</blockquote>
+<pre>void replace_filename(const path&amp; p);</pre>
+<blockquote>
+  <p><ins>Effects: Equivalent to <code>m_path = parent_path()/ p</code>, then <code>refresh()</code><font face="Courier New">.</font></ins></p>
+  <p><del><i>Postcondition:</i> <code>path() == x.parent_path() / p</code> where <code>x</code> is the value of <code>path()</code> before the function is 
+  called.</del></p>
+</blockquote>
+</blockquote>
+<h3>27.10.12.3 <a name="directory_entry-observers-1"><code>directory_entry</code> observers
+</a>[directory_entry.obs] </h3>
+<pre>const path&amp; path() const noexcept;
+operator const path&amp;() const noexcept;</pre>
+<blockquote>
+  <p><i>Returns:</i> <code>m_path</code> </p>
 </blockquote>
 
-    <p>This means that the following two function calls are equivalent:</p>
+<pre><ins>bool exists() const;</ins>
+<ins>bool exists(error_code&amp; ec) const noexcept;</ins></pre>
+<blockquote>
+<p><ins><i>Returns:</i> <code>exists(this->status())</code> or
+ <code>exists(this->status(ec))</code>, respectively.</ins></p>
+<p><ins><i>Throws:</i> As specified in Error 
+  reporting ([fs.err.report]).</ins> </p>
+</blockquote>
 
-  <blockquote>
+<pre><ins>uintmax_t file_size() const;</ins>
+<ins>uintmax_t file_size(error_code& ec) const noexcept;</ins></pre>
+<blockquote>
+<p><ins><i>Returns:</i> If cached, the file size attribute value. Otherwise,
+<code>file_size(path())</code> or <code>file_size(path(), ec)</code>, respectively.</ins></p>
+<p><ins><i>Throws:</i> As specified in Error 
+  reporting ([fs.err.report]).</ins> </p>
+</blockquote>
 
-    <p><code>sz = file_size(my_directory_entry);&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
-    // call #1<br>
-    sz = file_size(my_directory_entry.path());&nbsp; // call #2</code></p>
+<pre><ins>uintmax_t hard_link_count() const;</ins>
+<ins>uintmax_t hard_link_count(error_code&amp; ec) const noexcept;</ins></pre>
+<blockquote>
+<p><ins><i>Returns:</i> If cached, the hard link count attribute value. Otherwise,
+<code>hard_link_count(path())</code> or <code>hard_link_count(path(), ec)</code>, respectively.</ins></p>
+<p><ins><i>Throws:</i> As specified in Error 
+  reporting ([fs.err.report]).</ins> </p>
+</blockquote>
 
-  </blockquote>
+<pre><ins>file_time_type last_write_time() const;</ins> 
+<ins>file_time_type last_write_time(error_code& ec) const noexcept;</ins></pre> 
+<blockquote>
+<p><ins><i>Returns:</i> If cached, the last write time attribute value. 
+Otherwise, <code>last_write_time(path())</code> or <code>last_write_time(path(), ec)</code>, respectively.</ins></p>
+<p><ins><i>Throws:</i> As specified in Error 
+  reporting ([fs.err.report]).</ins> </p>
+</blockquote>
 
-    <p>Both would currently call the non-member function:</p>
+<pre><ins>bool is_block_file() const;</ins>
+<ins>bool is_block_file(error_code&amp; ec) const noexcept;</ins></pre>
+<blockquote>
+<p><ins><i>Returns:</i> <code>is_block_file(this->status())</code> or
+ <code>is_block_file(this->status(ec))</code>, respectively.</ins></p>
+<p><ins><i>Throws:</i> As specified in Error 
+  reporting ([fs.err.report]).</ins> </p>
+</blockquote>
 
-  <blockquote>
+<pre><ins>bool is_character_file() const;</ins>
+<ins>bool is_character_file(error_code&amp; ec) const noexcept;</ins></pre>
+<blockquote>
+<p><ins><i>Returns:</i> <code>is_character_file(this->status())</code> or
+ <code>is_character_file(this->status(ec))</code>, respectively.</ins></p>
+<p><ins><i>Throws:</i> As specified in Error 
+  reporting ([fs.err.report]).</ins> </p>
+</blockquote>
 
-    <p><code>uintmax_t file_size(const path&amp; p);</code></p>
+<pre><ins>bool is_directory() const;</ins>
+<ins>bool is_directory(error_code&amp; ec) const noexcept;</ins></pre>
+<blockquote>
+<p><ins><i>Returns:</i> <code>is_directory(this->file_status())</code> or
+ <code>is_directory(this->file_status(ec))</code>, respectively.</ins></p>
+<p><ins><i>Throws:</i> As specified in Error 
+  reporting ([fs.err.report]).</ins> </p>
+</blockquote>
 
-  </blockquote>
+<pre><ins>bool is_fifo() const;</ins>
+<ins>bool is_fifo(error_code&amp; ec) const noexcept;</ins></pre>
+<blockquote>
+<p><ins><i>Returns:</i> <code>is_fifo(this->status())</code> or
+ <code>is_fifo(this->status(ec))</code>, respectively.</ins></p>
+<p><ins><i>Throws:</i> As specified in Error 
+  reporting ([fs.err.report]).</ins> </p>
+</blockquote>
 
-    <p>But if there were a second signature: </p>
+<pre><ins>bool is_other() const;</ins>
+<ins>bool is_other(error_code&amp; ec) const noexcept;</ins></pre>
+<blockquote>
+<p><ins><i>Returns:</i> <code>is_other(this->status())</code> or
+ <code>is_other(this->status(ec))</code>, respectively.</ins></p>
+<p><ins><i>Throws:</i> As specified in Error 
+  reporting ([fs.err.report]).</ins> </p>
+</blockquote>
 
-  <blockquote>
+<pre><ins>bool is_regular_file() const;</ins>
+<ins>bool is_regular_file(error_code&amp; ec) const noexcept;</ins></pre>
+<blockquote>
+<p><ins><i>Returns:</i> <code>is_regular_file(this->status())</code> or
+ <code>is_regular_file(this->status(ec))</code>, respectively.</ins></p>
+<p><ins><i>Throws:</i> As specified in Error 
+  reporting ([fs.err.report]).</ins> </p>
+</blockquote>
 
-    <p><code>uintmax_t file_size(const directory_entry&amp; d);</code></p>
+<pre><ins>bool is_socket() const;</ins>
+<ins>bool is_socket(error_code&amp; ec) const noexcept;</ins></pre>
+<blockquote>
+<p><ins><i>Returns:</i> <code>is_socket(this->status())</code> or
+ <code>is_socket(this->status(ec))</code>, respectively.</ins></p>
+<p><ins><i>Throws:</i> As specified in Error 
+  reporting ([fs.err.report]).</ins> </p>
+</blockquote>
 
-  </blockquote>
+<pre><ins>bool is_symlink() const;</ins>
+<ins>bool is_symlink(error_code&amp; ec) const noexcept;</ins></pre>
+<blockquote>
+<p><ins><i>Returns:</i> <code>is_symlink(this->symlink_status())</code> or
+ <code>is_symlink(this->symlink_status(ec))</code>, respectively.</ins></p>
+<p><ins><i>Throws:</i> As specified in Error 
+  reporting ([fs.err.report]).</ins> </p>
+</blockquote>
 
-    <p>It would be invoked by call #1, and the implementation could provide the 
-    file size from information cached in <code>d</code>. Guidance to users would 
-    be to use call #1 when the possibly cached&nbsp; <code>directory_entry</code> file size is desired, 
-    use call #2 when file size from a file system access is desired. For 
-    implementations where file size is not cached in directory 
-    entries, both call forms access the file system to obtain the file size.</p>
+<pre>file_status status() const;
+file_status status(error_code&amp; ec) const noexcept;</pre>
+<blockquote>
+  <p><i>Returns:</i> <ins>If cached, the status 
+  attribute value. 
+  Otherwise, </ins> <code>status(path())</code> or <code>status(path(), ec)</code>, 
+  respectively.</p>
+  <p para_num="5"><i>Throws:</i> As specified in Error 
+  reporting ([fs.err.report]).</p>
+</blockquote>
+<pre para_num="6">file_status symlink_status() const;
+file_status symlink_status(error_code&amp; ec) const noexcept;</pre>
+<blockquote>
+   <p para_num="7"><i>Returns:</i> <ins>If cached, the&nbsp; symlink status attribute value. Otherwise, </ins> <code>symlink_status(path())</code> or <code>
+   symlink_status(path(), ec)</code>, respectively.</p>
+  <p para_num="8"><i>Throws:</i> As specified in Error 
+  reporting ([fs.err.report]).</p>
+</blockquote>
 
-    <h3>Background</h3>
+
+<pre para_num="9">bool operator==(const directory_entry&amp; rhs) const noexcept;</pre>
+<blockquote>
+  <p><i>Returns:</i> <code>m_path == rhs.m_path</code>. </p>
+</blockquote>
+<pre>bool operator!=(const directory_entry&amp; rhs) const noexcept;</pre>
+<blockquote>
+  <p><i>Returns:</i> <code>m_path != rhs.m_path</code>. </p>
+</blockquote>
+<pre>bool operator&lt; (const directory_entry&amp; rhs) const noexcept;</pre>
+<blockquote>
+  <p><i>Returns:</i> <code>m_path &lt; rhs.m_path</code>. </p>
+</blockquote>
+<pre>bool operator&lt;=(const directory_entry&amp; rhs) const noexcept;</pre>
+<blockquote>
+  <p><i>Returns:</i> <code>m_path &lt;= rhs.m_path</code>. </p>
+</blockquote>
+<pre>bool operator&gt; (const directory_entry&amp; rhs) const noexcept;</pre>
+<blockquote>
+  <p><i>Returns:</i> <code>m_path &gt; rhs.m_path</code>. </p>
+</blockquote>
+<pre>bool operator&gt;=(const directory_entry&amp; rhs) const noexcept;</pre>
+<blockquote>
+  <p para_num="20"><i>Returns:</i> <code>m_path &gt;= rhs.m_path</code>.</blockquote>
+
+
+  <h3 para_num="20">&nbsp;7.10.13 Class <code>directory_iterator</code> [class.directory_iterator]</h3>
+  <p>An object of type <code>directory_iterator</code> provides an iterator for 
+  a sequence of <code>directory_entry</code> elements
+  representing the <del>files</del> <ins>path and any cached attribute values ([class.directory_entry]) for each file</ins> in a directory. [ <i>Note:</i> For iteration into 
+  sub-directories, see class <code>recursive_directory_iterator</code> (27.10.14). —<i>end note</i> ]\<p>
+<span style="font-style: italic; background-color: #CCCCCC">Insert a new 
+paragraph before the current note that begins at paragraph 9:</span><p dir="ltr"><ins>
+Constructors and non-const <code>directory_iterator</code> member 
+functions shall store the cached attribute values, if any, described in ([class.directory_entry]) 
+in the <code>directory_entry</code> element returned by <code>operator*()</code>.&nbsp; <code>
+directory_iterator</code> member functions shall not directly or indirectly call 
+the <code>directory_entry</code> <code>refresh()</code> function.[<i>Note:</i> The exact mechanism 
+for storing cached attribute values is not exposed to users.&nbsp; For 
+exposition class <code>directory_iterator</code> is shown in [class.directory_entry] as a friend of class 
+<code>directory_entry</code>. &mdash;<i>end 
+note</i>]</ins><hr>
+
+    <h2>Operating system <a name="API">API</a>s</h2>
 
     <p>For Windows, <code>directory_entry</code> information is obtained by calling function
       <a href="https://msdn.microsoft.com/en-us/library/windows/desktop/aa364418(v=vs.85).aspx">
@@ -163,421 +505,34 @@ of file size from <code>directory_entry</code><br> </i>and issue
     POSIX specifies that the macro <code>_DIRENT_HAVE_D_TYPE</code> is defined 
     if <code>d_type</code> is present.</p>
 
-    <h3>Specification options</h3>
-
-    <p>There are two possible ways to specify the above behavior; (1) require the <code>const 
-    directory_entry&amp;</code> overload for all operational functions that 
-    might possibly benefit from it, either now and in the future, or (2) provide 
-    overall wording to encourage the implementation to supply the <code>const 
-    directory_entry&amp;</code> overload where applicable, but make no changes 
-    to the specifications of individual operational functions .</p>
-
-    <p>The 
-    difficulty with option (1) is that it essentially doubles the number of 
-    operational function signatures, making the operational functions harder to 
-    learn, even though few of these added signatures will do anything more than 
-    forward to the <code>const path&amp;</code>&nbsp; signature. Option (2) 
-    segregates what is essentially an experts-only feature into its own separate 
-    specification, and is what is being proposed below.</p>
-
-<h2>Proposed wording - Option 1</h2>
-
-<h2>27.10.12  <a name="Class-directory_entry">Class <code>directory_entry</code></a> [class.directory_entry]</h2>
-
-<pre>namespace std::filesystem {
-  class directory_entry {
-  public:
-    // <a href="#directory_entry-constructors">constructors</a> and destructor
-    directory_entry() noexcept = default;
-    directory_entry(const directory_entry&amp;) = default;
-    directory_entry(directory_entry&amp;&amp;) noexcept = default;
-    explicit directory_entry(const path&amp; p);
-    <ins>directory_entry(const path&amp; p, error_code& ec);</ins>
-   ~directory_entry();
-
-    // <a href="#directory_entry-modifiers">modifiers</a>
-    directory_entry&amp; operator=(const directory_entry&amp;) = default;
-    directory_entry&amp; operator=(directory_entry&amp;&amp;) noexcept = default;
-    void assign(const path&amp; p);
-    <ins>void assign(const path&amp; p, error_code&amp; ec);</ins>
-    <ins>void refresh();</ins>
-    <ins>void refresh(error_code&amp; ec) noexcept;</ins>
-    void replace_filename(const path&amp; p);
-
-    // <a href="#directory_entry-observers">observers</a>
-    const path&amp;  path() const noexcept;
-    operator const path&amp;() const noexcept;
-    <ins>uintmax_t file_size() const;</ins>
-    <ins>uintmax_t file_size(error_code&amp; ec) const noexcept;</ins>
-    <ins>file_time_type last_write_time()const;</ins>
-    <ins>file_time_type last_write_time(error_code&amp; ec)const noexcept;</ins>
-    file_status  status() const;
-    file_status  status(error_code&amp; ec) const noexcept;>
-    file_status  symlink_status() const;
-    file_status  symlink_status(error_code&amp; ec) const noexcept;
-
-    bool operator&lt; (const directory_entry&amp; rhs) const noexcept;
-    bool operator==(const directory_entry&amp; rhs) const noexcept;
-    bool operator!=(const directory_entry&amp; rhs) const noexcept;
-    bool operator&lt;=(const directory_entry&amp; rhs) const noexcept;
-    bool operator&gt; (const directory_entry&amp; rhs) const noexcept;
-    bool operator&gt;=(const directory_entry&amp; rhs) const noexcept;
-  private:
-    path            m_path;              // for exposition only
-    <ins>uintmax_t       m_file_size;         // for exposition only</ins>
-    <ins>file_time_type  m_last_write_time;   // for exposition only</ins>
-    <ins>file_status     m_status;            // for exposition only</ins>
-    <ins>file_status     m_symlink_status;    // for exposition only</ins>
-  };
-
-}</pre>
-
-<p>A <code>directory_entry</code> object stores a <code>path</code> object.</p>
-
-<p><ins>Implementations are encouraged to provide each data member in the following table
-iff its equivalent value is available during directory iteration without actually having
-to call the function from the Equivalent Value column. Otherwise implementations
-shall not provide the data member.
-</ins></p>
-
-<table border="1" align="center">
-  <tr>
-    <td colspan="2" align="center"><ins><b>Possibly Cached Values</b></ins></td>
-  </tr>
-  <tr>
-    <td align="center"><ins><b>Data member</b></ins></td>
-    <td align="center"><ins><b>Equivalent Value</b></ins></td>
-  </tr>
-  <tr>
-    <td><ins><code>m_file_size</code></ins></td>
-    <td><ins><code>std::filesystem::file_size(this->path())</code></ins></td>
-  </tr>
-  <tr>
-    <td><ins><code>m_last_write_time</code></ins></td>
-    <td><ins><code>std::filesystem::last_write_time(this->path())</code></ins></td>
-  </tr>
-  <tr>
-    <td><ins><code>m_status</code></ins></td>
-    <td><ins><code>std::filesystem::status(this->path())</code></ins></td>
-  </tr>
-  <tr>
-    <td><ins><code>m_symlink_status</code></ins></td>
-    <td><ins><code>std::filesystem::symlink_status(this->path())</code></ins></td>
-  </tr>
-</table>
-
-<p><ins>[<i>Example:</i><br/><br/>
-<code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; auto iter = directory_iterator(".");</code><br/>
-<code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </code>...<br/>
-<code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; is_regular_file(iter-&gt;status()) // #1</code><br/>
-<code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; is_regular_file(iter-&gt;path()) &nbsp;&nbsp;// #2</code><br/>
-<code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; is_regular_file(*iter)
-   &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// #3</code><br/><br/>
-
-Expression #1 will call <code>is_regular_file</code> with the value of <code>m_status</code>
- if provided, otherwise it will call <code>is_regular_file</code> with the value returned
- by <code>std::filesystem::status(itr-&gt;path())</code>.<br/><br/>
-
-Expressions #2 and #3
- will always call <code>is_regular_file</code> with the value returned
- by <code>std::filesystem::status(itr-&gt;path())</code> regardless of whether or not
- <code>m_status</code> is provided.
-  &mdash;<i>end example</i>]</ins></p>
-
-<h3>27.10.12.1 <a name="directory_entry-constructors"><code>directory_entry</code> 
-constructors </a>[directory_entry.cons] </h3>
-<pre>explicit directory_entry(const path&amp; p);
-<ins>directory_entry(const path&amp; p, error_code& ec);</ins></pre>
-<blockquote>
-  <p><i>Effects: </i>Constructs an object of type <code>directory_entry</code><ins>, 
-  then <code>refresh(<i>[ec]</i>)</code></ins>.
-  </p>
-  <p><i>Postcondition:</i> <code>path() == p</code>.</p>
-  <p><ins><i>Throws:</i> As specified in Error 
-  reporting ([fs.err.report]).</ins> </p>
-</blockquote>
-
-<h3>27.10.12.2 <a name="directory_entry-modifiers"><code>directory_entry</code> 
-modifiers </a>[directory_entry.mods] </h3>
-
-<pre>void assign(const path&amp; p);
-<ins>void assign(const path&amp; p, error_code&amp; ec);</ins></pre>
-<blockquote>
-  <p><ins><i>Effects:</i> <code>refresh(<i>[ec]</i>)</code>.</ins></p>
-  <p><i>Postcondition:</i> <code>path() == p</code>.</p>
-  <p><ins><i>Throws:</i> As specified in Error 
-  reporting ([fs.err.report]).</ins> </p>
-</blockquote>
-
-<pre><ins>void refresh();</ins>
-<ins>void refresh(error_code&amp; ec) noexcept;</ins></pre>
-<blockquote>
-<p><ins><i>Effects:</i>
-For each data member in the table "Possibly Cached Values" above, if the data member
-is implemented then set it to a value equivalent to the
-result of calling the function as shown in the Equivalent Value column.
-</ins></p>
-<p><ins><i>Throws:</i> As specified in Error 
-  reporting ([fs.err.report]).</ins> </p>
-</blockquote>
-
-<pre>void replace_filename(const path&amp; p);</pre>
-<blockquote>
-  <p><i>Postcondition:</i> <code>path() == x.parent_path() / p</code> where <code>x</code> is the value of <code>path()</code> before the function is 
-  called. </p>
-</blockquote>
-</blockquote>
-
-<h3>27.10.12.3 <a name="directory_entry-observers"><code>directory_entry</code> observers </a>[directory_entry.obs] </h3>
-
-<pre>const path&amp; path() const noexcept;
-operator const path&amp;() const noexcept;</pre>
-<blockquote>
-  <p><i>Returns:</i> <code>m_path</code> </p>
-</blockquote>
-
-<pre><ins>uintmax_t file_size() const;</ins>
-<ins>uintmax_t file_size(error_code&amp; ec) const noexcept;</ins></pre>
-<blockquote>
-  <p><ins><i>Returns:</i> <code>m_file_size</code> if implemented,
-   otherwise <code>std::filesystem::file_size(path()<i>[, ec]</i>)</code>.</ins></p>
-  <p><i>Throws:</i> As specified in Error 
-  reporting ([fs.err.report]).</p>
-</blockquote>
-
-<pre><ins>file_time_type last_write_time() const;</ins>
-<ins>file_time_type last_write_time(error_code&amp; ec) const noexcept;</ins></pre>
-<blockquote>
-  <p><ins><i>Returns:</i> <code>m_last_write_time</code> if implemented,
-   otherwise <code>std::filesystem::last_write_time(path()<i>[, ec]</i>)</code>. </p>
-  <p><i>Throws:</i> As specified in Error 
-  reporting ([fs.err.report]).</ins></p>
-</blockquote>
-
-<pre>file_status status() const;
-file_status status(error_code&amp; ec) const noexcept;</pre>
-<blockquote>
-  <p><i>Returns:</i> <ins><code>m_status</code> if implemented,
-   otherwise</ins> <code><ins>std::filesystem::</ins>status(path()<i>[, ec]</i>)</code>. </p>
-  <p><i>Throws:</i> As specified in Error 
-  reporting ([fs.err.report]).</p>
-</blockquote>
-
-<pre>file_status  symlink_status() const;
-file_status  symlink_status(error_code&amp; ec) const noexcept;</pre>
-<blockquote>
-   <p><i>Returns:</i> <ins><code>m_symlink_status</code> if implemented,
-   otherwise</ins> <code><ins>std::filesystem::</ins>symlink_status(path()<i>[, ec]</i>)</code>.</p>
-  <p><i>Throws:</i> As specified in Error 
-  reporting ([fs.err.report]).</p>
-</blockquote>
-
-<pre>bool operator==(const directory_entry&amp; rhs) const noexcept;</pre>
-<blockquote>
-  <p><i>Returns:</i> <code>m_path == rhs.m_path</code>. </p>
-</blockquote>
-<pre>bool operator!=(const directory_entry&amp; rhs) const noexcept;</pre>
-<blockquote>
-  <p><i>Returns:</i> <code>m_path != rhs.m_path</code>. </p>
-</blockquote>
-<pre>bool operator&lt; (const directory_entry&amp; rhs) const noexcept;</pre>
-<blockquote>
-  <p><i>Returns:</i> <code>m_path &lt; rhs.m_path</code>. </p>
-</blockquote>
-<pre>bool operator&lt;=(const directory_entry&amp; rhs) const noexcept;</pre>
-<blockquote>
-  <p><i>Returns:</i> <code>m_path &lt;= rhs.m_path</code>. </p>
-</blockquote>
-<pre>bool operator&gt; (const directory_entry&amp; rhs) const noexcept;</pre>
-<blockquote>
-  <p><i>Returns:</i> <code>m_path &gt; rhs.m_path</code>. </p>
-</blockquote>
-<pre>bool operator&gt;=(const directory_entry&amp; rhs) const noexcept;</pre>
-<blockquote>
-  <p><i>Returns:</i> <code>m_path &gt;= rhs.m_path</code>. </p>
-</blockquote>
-
-<h2>Proposed wording - Option 2</h2>
-
-  <p><span style="background-color: #FFFF00"><i>Separate &lt;del&gt; wording from 
-  &lt;ins&gt; wording. Moving forward now on the removal wording and later on the 
-  &lt;ins&gt; wording would allow time to be sure the &lt;ins&gt; wording is fully baked.</i></span></p>
-
-<h2>27.10.12  <a name="Class-directory_entry">Class <code>directory_entry</code></a> [class.directory_entry]</h2>
-
-<pre>namespace std::filesystem {
-  class directory_entry {
-  public:
-    // <a href="#directory_entry-constructors">constructors</a> and destructor
-    directory_entry() noexcept = default;
-    directory_entry(const directory_entry&amp;) = default;
-    directory_entry(directory_entry&amp;&amp;) noexcept = default;
-    explicit directory_entry(const path&amp; p);
-    <ins>directory_entry(const path&amp; p, error_code& ec);</ins>
-   ~directory_entry();
-
-    // <a href="#directory_entry-modifiers">modifiers</a>
-    directory_entry&amp; operator=(const directory_entry&amp;) = default;
-    directory_entry&amp; operator=(directory_entry&amp;&amp;) noexcept = default;
-    void assign(const path&amp; p);
-    <ins>void assign(const path&amp; p, error_code&amp; ec);</ins>
-    <ins>void refresh();</ins>
-    <ins>void refresh(error_code&amp; ec) noexcept;</ins>
-    void replace_filename(const path&amp; p);
-
-    // <a href="#directory_entry-observers">observers</a>
-    const path&amp;  path() const noexcept;
-    operator const path&amp;() const noexcept;
-    <del>file_status  status() const;</del>
-    <del>file_status  status(error_code&amp; ec) const noexcept;</del>
-    <del>file_status  symlink_status() const;</del>
-    <del>file_status  symlink_status(error_code&amp; ec) const noexcept;</del>
-
-    bool operator&lt; (const directory_entry&amp; rhs) const noexcept;
-    bool operator==(const directory_entry&amp; rhs) const noexcept;
-    bool operator!=(const directory_entry&amp; rhs) const noexcept;
-    bool operator&lt;=(const directory_entry&amp; rhs) const noexcept;
-    bool operator&gt; (const directory_entry&amp; rhs) const noexcept;
-    bool operator&gt;=(const directory_entry&amp; rhs) const noexcept;
-  private:
-    path   m_path; // for exposition only
-  };
-
-}</pre>
-<p>A <code>directory_entry</code> object stores a <code>path</code> object.</p>
-<p><ins>Implementations are permitted and encouraged to cache additional information 
-about the state of external 
-storage in <code>directory_entry</code> 
-objects if such information is available during directory iteration and caching 
-it would improve efficiency of  operational query functions ([fs.op.funcs]). 
-Implementations are permitted and encouraged to overload  operational query functions that take <code>const path&amp;</code> arguments with 
-additional signatures taking <code>const directory_entry&amp;</code> arguments. 
-Such overloads shall be equivalent to ([structure.specifications]) the <code>const path&amp;</code> 
-overload of the function except that state information shall be obtained from the <code>directory_entry</code> 
-argument&#39;s 
-cache rather than the external file system.</ins></p>
-<p><ins>[<i>Note: </i>Users wishing to make use of cached <code>directory_entry</code> 
-state information should call status and other operational query functions 
-using the <code>directory_entry</code> object as an argument. Users wishing to 
-ensure that an operational function returns the most recent available 
-information should call the function with a <code>path</code> object or an 
-object that is convertible to <code>path</code>. —<i>end note</i>]</ins></p>
-<p><ins>[<i>Note: </i>Operational query functions that may benefit from caching 
-include <code>status</code>, <code>symlink_status</code>, <code>exists</code>,
-<code>is_block_file</code>, <code>is_character_file</code>, i<code>s_directory</code>,
-<code>is_fifo</code>, <code>is_other</code>, <code>is_regular_file</code>, <code>
-is_socket</code>, <code>is_symlink</code>, <code>status_known</code>, <code>
-last_write_time</code>, and <code>file_size</code>.&nbsp; —<i>end note</i>]</ins></p>
-<p><ins><span style="background-color: #FFFF00">[</span><i><span style="background-color: #FFFF00">Example: TBS
-</span> </i><span style="background-color: #FFFF00">—<i>end 
-example</i>]</span></ins></p>
-
-<h3>27.10.12.1 <a name="directory_entry-constructors"><code>directory_entry</code> 
-constructors </a>[directory_entry.cons] </h3>
-<pre>explicit directory_entry(const path&amp; p);
-<ins>directory_entry(const path&amp; p, error_code& ec);</ins></pre>
-<blockquote>
-  <p><i>Effects: </i>Constructs an object of type <code>directory_entry</code><ins>, 
-  then <code>refresh(<i>[ec]</i>)</code></ins>.
-  </p>
-  <p><i>Postcondition:</i> <code>path() == p</code>.</p>
-  <p><ins><i>Throws:</i> As specified in Error 
-  reporting ([fs.err.report]).</ins> </p>
-</blockquote>
-
-<h3>27.10.12.2 <a name="directory_entry-modifiers"><code>directory_entry</code> 
-modifiers </a>[directory_entry.mods] </h3>
-<pre>void assign(const path&amp; p);
-<ins>void assign(const path&amp; p, error_code&amp; ec);</ins></pre>
-<blockquote>
-  <p><ins><i>Effects:</i> <code>refresh(<i>[ec]</i>)</code>.</ins></p>
-  <p><i>Postcondition:</i> <code>path() == p</code>.</p>
-  <p><ins><i>Throws:</i> As specified in Error 
-  reporting ([fs.err.report]).</ins> </p>
-</blockquote>
-<pre><ins>void refresh();</ins>
-<ins>void refresh(error_code&amp; ec) noexcept;</ins></pre>
-<blockquote>
-<p><ins><i>Effects:</i> Stores current values for the 
-attributes of
-the file <code>p</code> resolves to in the additional information cache, if 
-any.</ins></p>
-<p><ins><i>Throws:</i> As specified in Error 
-  reporting ([fs.err.report]).</ins> </p>
-</blockquote>
-<pre>void replace_filename(const path&amp; p);</pre>
-<blockquote>
-  <p><i>Postcondition:</i> <code>path() == x.parent_path() / p</code> where <code>x</code> is the value of <code>path()</code> before the function is 
-  called. </p>
-</blockquote>
-</blockquote>
-
-<h3>27.10.12.3 <a name="directory_entry-observers"><code>directory_entry</code> observers </a>[directory_entry.obs] </h3>
-<pre>const path&amp; path() const noexcept;
-operator const path&amp;() const noexcept;</pre>
-<blockquote>
-  <p><i>Returns:</i> <code>m_path</code> </p>
-</blockquote>
-<pre><del>file_status status() const;</del>
-<del>file_status status(error_code&amp; ec) const noexcept;</del></pre>
-<blockquote>
-  <p><del><i>Returns:</i> <code>status(path()<i>[, ec]</i>)</code></del>. </p>
-  <param><del><i>Throws:</i> As specified in Error 
-  reporting ([fs.err.report]).</del></p>
-</blockquote>
-<pre><del>file_status  symlink_status() const;</del>
-<del>file_status  symlink_status(error_code&amp; ec) const noexcept;</del></pre>
-<blockquote>
-   <p><del><i>Returns:</i> <code>symlink_status(path()<i>[, ec]</i>)</code>.</del></p>
-  <p><del><i>Throws:</i> As specified in Error 
-  reporting ([fs.err.report]).</del></p>
-</blockquote>
-<pre>bool operator==(const directory_entry&amp; rhs) const noexcept;</pre>
-<blockquote>
-  <p><i>Returns:</i> <code>m_path == rhs.m_path</code>. </p>
-</blockquote>
-<pre>bool operator!=(const directory_entry&amp; rhs) const noexcept;</pre>
-<blockquote>
-  <p><i>Returns:</i> <code>m_path != rhs.m_path</code>. </p>
-</blockquote>
-<pre>bool operator&lt; (const directory_entry&amp; rhs) const noexcept;</pre>
-<blockquote>
-  <p><i>Returns:</i> <code>m_path &lt; rhs.m_path</code>. </p>
-</blockquote>
-<pre>bool operator&lt;=(const directory_entry&amp; rhs) const noexcept;</pre>
-<blockquote>
-  <p><i>Returns:</i> <code>m_path &lt;= rhs.m_path</code>. </p>
-</blockquote>
-<pre>bool operator&gt; (const directory_entry&amp; rhs) const noexcept;</pre>
-<blockquote>
-  <p><i>Returns:</i> <code>m_path &gt; rhs.m_path</code>. </p>
-</blockquote>
-<pre>bool operator&gt;=(const directory_entry&amp; rhs) const noexcept;</pre>
-<blockquote>
-  <p><i>Returns:</i> <code>m_path &gt;= rhs.m_path</code>. </p>
-</blockquote>
-
 
   <h2><a name="References">References</a></h2>
 
 
-  <p>[1] Issue 2663, C++ Standard Library Issues Lists,
+  <p>Issue 2663, <i>Enable efficient retrieval of file size from directory_entry</i>,<br>
   <a href="https://cplusplus.github.io/LWG/lwg-active.html#2663">
   cplusplus.github.io/LWG/lwg-active.html#2663</a></p>
 
-<p>[2] N4582, Working Draft, Standard for Programming Language C++, 2016,
+
+  <p>Issue 2677, <i><code>directory_entry::status</code> is not allowed to be 
+  cached as a quality-of-implementation issue</i>,<br>
+  <a href="https://cplusplus.github.io/LWG/lwg-active.html#2663">
+  cplusplus.github.io/LWG/lwg-active.html#2677</a></p>
+
+<p>N4582, <i>Working Draft, Standard for Programming Language C++, 2016</i>,<br>
 <a class="uri" href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2016/n4582.pdf">www.open-std.org/jtc1/sc22/wg21/docs/papers/2016/n4582.pdf</a></p>
 
-<p>[<a name="1">3</a>] Beman Dawes, N4100, Programming Languages — C++ — File System Technical Specification, 
-2014.<br>
+<p>N4100, <i>Programming Languages — C++ — File System Technical Specification, 
+2014</i>,<br>
 <a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2014/n4100.pdf" class="uri">
 www.open-std.org/jtc1/sc22/wg21/docs/papers/2014/n4100.pdf</a></p>
-<p>[<a name="2">4</a>] Beman Dawes, others, <a href="http://www.boost.org/doc/libs/1_60_0/libs/filesystem/doc/index.htm">Boost Filesystem Library, V3</a>, 2015.<br>
+<p> <i>Boost Filesystem Library, V3</i>, 2015,<br>
 <a href="https://www.boost.org/doc/libs/1_60_0/libs/filesystem/doc/index.htm" class="uri">
 www.boost.org/doc/libs/1_60_0/libs/filesystem/doc/index.htm</a></p>
 
-<hr>
+  <hr>
 
-</pre></body>
+<p>&nbsp;</p>
 
+</body>
 </html>
