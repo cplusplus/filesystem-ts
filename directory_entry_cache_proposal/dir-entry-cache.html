@@ -32,7 +32,7 @@ body
 <tr>
   <td align="left">Date:</td>
   <td align="left">
-  <!--webbot bot="Timestamp" S-Type="EDITED" S-Format="%Y-%m-%d" startspan -->2016-07-04<!--webbot bot="Timestamp" endspan i-checksum="12462" --></td>
+  <!--webbot bot="Timestamp" S-Type="EDITED" S-Format="%Y-%m-%d" startspan -->2016-07-06<!--webbot bot="Timestamp" endspan i-checksum="12466" --></td>
 </tr>
 <tr>
   <td align="left">Reply to:</td>
@@ -132,9 +132,12 @@ of file size from <code>directory_entry</code><br> </i>and issue
     for future needs, in accordance with LEWG vote.</li>
     <li>Change &quot;for&quot; to &quot;such as&quot; in [class.directory_entry], per LWG.</li>
     <li>Use <code>endl</code> rather than <code>&#39;\n&#39;</code> in example, per LWG.</li>
-    <li>Clarify the relationship between directory iteration (which performs the 
-    caching) and directory entries (which store and provide observers for the 
-    cached values) in response to LWG concern.</li>
+    <li>Clarify the relationship between directory iteration (which stores the 
+    cached values) and directory entries (which provide observers for the cached 
+    values and is where the cached values are stored). In reviewing the Oulu LWG 
+    discussion it became obvious split in caching responsibilities between the
+    <code>directory_entry</code> and <code>directory_iteration</code> was not 
+    adequately described.</li>
 </ul>
 
   <p><b>R0 - pre-Oulu:</b> Initial proposal providing two possible approaches to 
@@ -142,7 +145,7 @@ of file size from <code>directory_entry</code><br> </i>and issue
 
   <h1>Proposed wording</h1>
 
-  <p><i><span style="background-color: #CCCCCC">Relative to N4594.</span></i></p>
+  <p><i><span style="background-color: #CCCCCC">Changes are relative to N4594.</span></i></p>
 
   <h2>27.10.12 Class <code>directory_entry</code> [class.directory_entry]</h2>
 </h2>
@@ -214,7 +217,7 @@ of file size from <code>directory_entry</code><br> </i>and issue
     <ins>file_status statusobject; // exposition only</ins>
     <ins>...</ins>
 
-    <ins>// allow directory_iterator access to private data members</ins>
+    <ins>// grant directory_iterator access to private members</ins>
     <ins>friend class directory_iterator; // exposition only</ins>
   };
 
@@ -224,13 +227,12 @@ of file size from <code>directory_entry</code><br> </i>and issue
 and may store additional objects for file attributes such as hard link count, 
 status, symlink status, file size, and last write time.</ins></p>
 <p><ins>Implementations are  encouraged to store  such 
-additional file attribute values if available during directory iteration and storing them would 
+additional file attributes if their values are available during directory iteration and storing them would 
 allow the implementation to eliminate file system accesses by <code>directory_entry</code> 
 observer functions ([fs.op.funcs]). Such stored file attribute values are said to be
 <i>cached</i>.</ins></p>
-<p><ins>[<i>Note:</i> Storing these attribute values is performed during directory 
-iteration ([class.directory_iterator]). For exposition class <code>directory_iterator</code> is shown as a friend of class 
-<code>directory_entry</code>. The exact mechanism is not exposed to users.&nbsp; &mdash;<i>end 
+<p><ins>[<i>Note:</i> Storing cached attribute values is performed by directory 
+iteration ([class.directory_iterator]).&nbsp; &mdash;<i>end 
 note</i>]</ins></p>
 <blockquote>
 <p><ins>[<i>Example: </i></ins></p>
@@ -461,10 +463,20 @@ file_status symlink_status(error_code&amp; ec) const noexcept;</pre>
 
   <h3 para_num="20">&nbsp;7.10.13 Class <code>directory_iterator</code> [class.directory_iterator]</h3>
   <p>An object of type <code>directory_iterator</code> provides an iterator for 
-  a sequence of <code>directory_entry</code> elements<br>
+  a sequence of <code>directory_entry</code> elements
   representing the <del>files</del> <ins>path and any cached attribute values ([class.directory_entry]) for each file</ins> in a directory. [ <i>Note:</i> For iteration into 
-  sub-directories, see class <code>recursive_directory_-<br>
-  iterator</code> (27.10.14). —<i>end note</i> ]<hr>
+  sub-directories, see class <code>recursive_directory_iterator</code> (27.10.14). —<i>end note</i> ]\<p>
+<span style="font-style: italic; background-color: #CCCCCC">Insert a new 
+paragraph before the current note that begins at paragraph 9:</span><p dir="ltr"><ins>
+Constructors and non-const <code>directory_iterator</code> member 
+functions shall store the cached attribute values, if any, described in ([class.directory_entry]) 
+in the <code>directory_entry</code> element returned by <code>operator*()</code>.&nbsp; <code>
+directory_iterator</code> member functions shall not directly or indirectly call 
+the <code>directory_entry</code> <code>refresh()</code> function.[<i>Note:</i> The exact mechanism 
+for storing cached attribute values is not exposed to users.&nbsp; For 
+exposition class <code>directory_iterator</code> is shown in [class.directory_entry] as a friend of class 
+<code>directory_entry</code>. &mdash;<i>end 
+note</i>]</ins><hr>
 
     <h2>Operating system <a name="API">API</a>s</h2>
 
