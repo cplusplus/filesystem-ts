@@ -27,12 +27,12 @@ body
 <table>
 <tr>
   <td align="left">Doc. no.:</td>
-  <td align="left"><span style="background-color: #FFFF00">D0317R1</span></td>
+  <td align="left">D0317R1</td>
 </tr>
 <tr>
   <td align="left">Date:</td>
   <td align="left">
-  <!--webbot bot="Timestamp" S-Type="EDITED" S-Format="%Y-%m-%d" startspan -->2016-07-06<!--webbot bot="Timestamp" endspan i-checksum="12466" --></td>
+  <!--webbot bot="Timestamp" S-Type="EDITED" S-Format="%Y-%m-%d" startspan -->2016-07-30<!--webbot bot="Timestamp" endspan i-checksum="12457" --></td>
 </tr>
 <tr>
   <td align="left">Reply to:</td>
@@ -58,8 +58,8 @@ of file size from <code>directory_entry</code><br> </i>and issue
   directory iteration.</p>
 
 
-  <p style="margin-left:20%; margin-right:20%;">The proposal has been implemented, 
-  <span style="background-color: #FFFF00">except for some additional observer function requested by the LEWG</span>. Guidance 
+  <p style="margin-left:20%; margin-right:20%;">The proposal has been 
+  implemented. Guidance 
   is provided for users on how to use or not use cached information as desired, without exposing to the user 
   whether information is actually cached. The proposal allows the user to write code that 
   is fully portable between&nbsp;implementations that cache or do not cache.</p>
@@ -90,6 +90,8 @@ of file size from <code>directory_entry</code><br> </i>and issue
   promised to revisit the issue when Filesystem was added to the standard. Two 
   issues where subsequently filed that remind us of that promise.</p>
 
+  <blockquote>
+
   <p>LWG issue <a href="http://cplusplus.github.io/LWG/lwg-active.html#2663">2663</a>, <i>Enable efficient retrieval of file size from </i><code><i>directory_entry</i></code>, 
   requests that for Windows caching be extended to file size.</p>
 
@@ -98,6 +100,12 @@ of file size from <code>directory_entry</code><br> </i>and issue
 <code>directory_entry::status</code> is not allowed to be cached as a 
   quality-of-implementation issue</i>, requests the reinstatement of permission 
   for implementations to cache directory entry information.</p>
+
+  </blockquote>
+
+  <p>The Boost Filesystem library has implemented directory entry cashing for 
+  many years. That implementation has been updated to conform to this proposal, 
+  and is passing its test suite. It will ship to users later this year. </p>
 
   <h2>Design decisions</h2>
 
@@ -124,20 +132,32 @@ of file size from <code>directory_entry</code><br> </i>and issue
 
   <h2>Revision History</h2>
 
-  <p><b>R1 - post Oulu:</b></p>
+  <p><b>R1 - Apply changes suggested in Oulu, in preparation for the Chicago 
+  summer LWG meeting:</b></p>
 
   <ul>
     <li>Select the first of the two approaches proposed in R0, 
-  enhanced with Geoffrey Romer&#39;s suggestion to provide observer functions 
-    for future needs, in accordance with LEWG vote.</li>
+    per LEWG vote, enhanced with Geoffrey Romer&#39;s suggestion to provide observer functions 
+    for future need, per LEWG vote.</li>
     <li>Change &quot;for&quot; to &quot;such as&quot; in [class.directory_entry], per LWG.</li>
     <li>Use <code>endl</code> rather than <code>&#39;\n&#39;</code> in example, per LWG.</li>
     <li>Clarify the relationship between directory iteration (which stores the 
     cached values) and directory entries (which provide observers for the cached 
-    values and is where the cached values are stored). In reviewing the Oulu LWG 
-    discussion it became obvious split in caching responsibilities between the
+    values and are where the cached values are stored). In reviewing the Oulu LWG 
+    discussion it became obvious that the split in caching responsibilities between the
     <code>directory_entry</code> and <code>directory_iteration</code> was not 
     adequately described.</li>
+    <li>Modify the [class.directory_entry] example to use explicit call to <code>
+    refresh()</code>.</li>
+    <li>Reviewed all <code>directory_entry</code> member functions, per LWG, and 
+    added wording to <i>Returns</i> or other elements when needed to specify 
+    what happens when an error occurs. Note: If a <i>Returns</i> element is 
+    specified as simply calling a function whose returned value is 
+    well-specified as to the value returned on an error, there is no need to say 
+    anything further.</li>
+    <li>Added an additional signature taking an <code>error_code&amp;</code> 
+    argument to several functions, and updated specifications accordingly, per 
+    LWG.</li>
 </ul>
 
   <p><b>R0 - pre-Oulu:</b> Initial proposal providing two possible approaches to 
@@ -145,7 +165,7 @@ of file size from <code>directory_entry</code><br> </i>and issue
 
   <h1>Proposed wording</h1>
 
-  <p><i><span style="background-color: #CCCCCC">Changes are relative to N4594.</span></i></p>
+  <p><i><span style="background-color: #CCCCCC">Changes are relative to N4606.</span></i></p>
 
   <h2>27.10.12 Class <code>directory_entry</code> [class.directory_entry]</h2>
 </h2>
@@ -163,26 +183,23 @@ of file size from <code>directory_entry</code><br> </i>and issue
     <ins>directory_entry(const path&amp; p, error_code& ec);</ins>
    ~directory_entry();
 
-    // <a href="#directory_entry-modifiers-1">modifiers</a>
+    // assignments
     directory_entry&amp; operator=(const directory_entry&amp;) = default;
     directory_entry&amp; operator=(directory_entry&amp;&amp;) noexcept = default;
+
+    // <a href="#directory_entry-modifiers-1">modifiers</a>
     void assign(const path&amp; p);
     <ins>void assign(const path&amp; p, error_code&amp; ec);</ins>
+    void replace_filename(const path&amp; p);
+    <ins>void replace_filename(const path&amp; p, error_code&amp; ec);</ins>
     <ins>void refresh();</ins>
     <ins>void refresh(error_code&amp; ec) noexcept;</ins>
-    void replace_filename(const path&amp; p);
 
     // <a href="#directory_entry-observers-1">observers</a>
     const path&amp;  path() const noexcept;
     operator const path&amp;() const noexcept;
     <ins>bool exists() const;</ins>
     <ins>bool exists(error_code&amp; ec) const noexcept;</ins>
-    <ins>uintmax_t file_size() const;</ins>
-    <ins>uintmax_t file_size(error_code& ec) const noexcept;</ins>
-    <ins>uintmax_t hard_link_count() const;</ins>
-    <ins>uintmax_t hard_link_count(error_code&amp; ec) const noexcept;</ins>
-    <ins>file_time_type last_write_time() const;</ins> 
-    <ins>file_time_type last_write_time(error_code& ec) const noexcept;</ins> 
     <ins>bool is_block_file() const;</ins>
     <ins>bool is_block_file(error_code&amp; ec) const noexcept;</ins>
     <ins>bool is_character_file() const;</ins>
@@ -199,6 +216,12 @@ of file size from <code>directory_entry</code><br> </i>and issue
     <ins>bool is_socket(error_code&amp; ec) const noexcept;</ins>
     <ins>bool is_symlink() const;</ins>
     <ins>bool is_symlink(error_code&amp; ec) const noexcept;</ins>
+    <ins>uintmax_t file_size() const;</ins>
+    <ins>uintmax_t file_size(error_code& ec) const noexcept;</ins>
+    <ins>uintmax_t hard_link_count() const;</ins>
+    <ins>uintmax_t hard_link_count(error_code&amp; ec) const noexcept;</ins>
+    <ins>file_time_type last_write_time() const;</ins> 
+    <ins>file_time_type last_write_time(error_code& ec) const noexcept;</ins> 
     file_status status() const;
     file_status status(error_code&amp; ec) const noexcept;
     file_status symlink_status() const;
@@ -214,7 +237,7 @@ of file size from <code>directory_entry</code><br> </i>and issue
     path   pathobject; // exposition only
 
     <ins>// cached attribute values, if any</ins>
-    <ins>file_status statusobject; // exposition only</ins>
+    <ins>file_status status_cache; // exposition only</ins>
     <ins>...</ins>
 
     <ins>// grant directory_iterator access to private members</ins>
@@ -227,28 +250,33 @@ of file size from <code>directory_entry</code><br> </i>and issue
 and may store additional objects for file attributes such as hard link count, 
 status, symlink status, file size, and last write time.</ins></p>
 <p><ins>Implementations are  encouraged to store  such 
-additional file attributes if their values are available during directory iteration and storing them would 
+additional file attributes during directory iteration if their values are available and storing 
+the values would 
 allow the implementation to eliminate file system accesses by <code>directory_entry</code> 
 observer functions ([fs.op.funcs]). Such stored file attribute values are said to be
 <i>cached</i>.</ins></p>
-<p><ins>[<i>Note:</i> Storing cached attribute values is performed by directory 
-iteration ([class.directory_iterator]).&nbsp; &mdash;<i>end 
+<p><ins>[<i>Note:</i> For purposes of exposition, class <code>directory_iterator</code> ([class.directory_iterator]) 
+is shown above as a friend of class <code>directory_entry</code>. Friendship 
+allows the <code>directory_iterator</code> implementation to cache already 
+available attribute values directly into a <code>directory_entry</code> object 
+without the cost of an unneeded call to <code>refresh()</code>.&nbsp; —<i>end 
 note</i>]</ins></p>
 <blockquote>
 <p><ins>[<i>Example: </i></ins></p>
 <pre><ins>using namespace std::filesystem;
 
-for (auto&amp;&amp; itr : directory_iterator(p))
+// use possibly cached last write time to minimize disk accesses
+for (auto&& x : directory_iterator("."))
 {
-  // use possibly cached last write time to minimize disk accesses
-  std::cout << itr.path() &lt;&lt; &quot; &quot; &lt;&lt; itr.last_write_time() &lt;&lt; std::endl;
+  std::cout << x.path() << " " << x.last_write_time() << std::endl;
 }
 
-for (auto&amp;&amp; itr : directory_iterator(p))
+// call refresh() to refresh a stale cache
+for (auto&& x : directory_iterator("."))
 {
-  <i>... potentially lengthy computations ...</i>
-  // do not use cached last write time since the cache may be stale
-  std::cout << itr.path() &lt;&lt; &quot; &quot; &lt;&lt; last_write_time(*itr) &lt;&lt; std::endl;
+  lengthy_function(x.path());  // cache becomes stale
+  x.refresh();
+  std::cout << x.path() << " " << x.last_write_time() << std::endl;
 }</ins></pre>
 <p><ins>On implementations that do not cache the last write time, both loops will 
 result in a potentially expensive call to the <code>
@@ -270,9 +298,10 @@ constructors </a>[directory_entry.cons] </h3>
   then <code>refresh()</code>or <code>
   refresh(ec)</code>, respectively</ins>.
   </p>
-  <p><i>Postcondition:</i> <code>path() == p</code>.</p>
+  <p><i>Postcondition:</i> <code>path() == p</code><ins> if no error occurs, otherwise 
+  <code>path() == std::filesystem::path()</code></ins>.</p>
   <p><ins><i>Throws:</i> As specified in Error 
-  reporting ([fs.err.report]).</ins> </p>
+  reporting ([fs.err.report]).</ins></p>
 </blockquote>
 <h3>27.10.12.2 <a name="directory_entry-modifiers-1"><code>directory_entry</code> 
 modifiers </a>[directory_entry.mods] </h3>
@@ -280,25 +309,35 @@ modifiers </a>[directory_entry.mods] </h3>
 <ins>void assign(const path&amp; p, error_code&amp; ec);</ins></pre>
 <blockquote>
   <p><ins><i>Effects:</i> Equivalent to <code>m_path = p</code>, then <code>refresh()</code>or <code>
-  refresh(ec)</code>, respectively.</ins></p>
+  refresh(ec)</code>, respectively. If an error occurs the value of any cached 
+  attributes is unspecified</ins>.</p>
   <p><del><i>Postcondition:</i> <code>path() == p</code>.</del></p>
   <p><ins><i>Throws:</i> As specified in Error 
   reporting ([fs.err.report]).</ins> </p>
+</blockquote>
+<pre>void replace_filename(const path&amp; p);
+<ins>void replace_filename(const path&amp; p, error_code&amp; ec);</ins></pre>
+<blockquote>
+  <p><ins><i>Effects:</i> Equivalent to <code>m_path = parent_path()/ p</code>, then <code>refresh()</code>or <code>
+  refresh(ec)</code>, respectively. If an error occurs the value of any cached 
+  attributes is unspecified.</ins></p>
+  <p><del><i>Postcondition:</i> <code>path() == x.parent_path() / p</code> where <code>x</code> is the value of <code>path()</code> before the function is 
+  called.</del></p>
+<p><ins><i>Throws:</i> As specified in Error 
+  reporting ([fs.err.report]).</ins></p>
 </blockquote>
 <pre><ins>void refresh();</ins>
 <ins>void refresh(error_code&amp; ec) noexcept;</ins></pre>
 <blockquote>
 <p><ins><i>Effects:</i> Stores the current value for any cached attribute values of the 
-file <code>p</code> resolves to.</ins></p>
+file <code>p</code> resolves to. If an error occurs, the value of any cached 
+attributes is unspecified.</ins></p>
 <p><ins><i>Throws:</i> As specified in Error 
   reporting ([fs.err.report]).</ins> </p>
-</blockquote>
-<pre>void replace_filename(const path&amp; p);</pre>
-<blockquote>
-  <p><ins>Effects: Equivalent to <code>m_path = parent_path()/ p</code>, then <code>refresh()</code><font face="Courier New">.</font></ins></p>
-  <p><del><i>Postcondition:</i> <code>path() == x.parent_path() / p</code> where <code>x</code> is the value of <code>path()</code> before the function is 
-  called.</del></p>
-</blockquote>
+<p><ins>[<i>Note</i>: Implementations of <code>directory_iterator</code> [class.directory_iterator] are prohibited from 
+directly or indirectly calling the <code>refresh</code> function since it must 
+access the external file system, and the objective of caching is to avoid 
+unnecessary file system accesses.&nbsp; &mdash;<i>end note</i>]</ins></p>
 </blockquote>
 <h3>27.10.12.3 <a name="directory_entry-observers-1"><code>directory_entry</code> observers
 </a>[directory_entry.obs] </h3>
@@ -313,33 +352,6 @@ operator const path&amp;() const noexcept;</pre>
 <blockquote>
 <p><ins><i>Returns:</i> <code>exists(this->status())</code> or
  <code>exists(this->status(ec))</code>, respectively.</ins></p>
-<p><ins><i>Throws:</i> As specified in Error 
-  reporting ([fs.err.report]).</ins> </p>
-</blockquote>
-
-<pre><ins>uintmax_t file_size() const;</ins>
-<ins>uintmax_t file_size(error_code& ec) const noexcept;</ins></pre>
-<blockquote>
-<p><ins><i>Returns:</i> If cached, the file size attribute value. Otherwise,
-<code>file_size(path())</code> or <code>file_size(path(), ec)</code>, respectively.</ins></p>
-<p><ins><i>Throws:</i> As specified in Error 
-  reporting ([fs.err.report]).</ins> </p>
-</blockquote>
-
-<pre><ins>uintmax_t hard_link_count() const;</ins>
-<ins>uintmax_t hard_link_count(error_code&amp; ec) const noexcept;</ins></pre>
-<blockquote>
-<p><ins><i>Returns:</i> If cached, the hard link count attribute value. Otherwise,
-<code>hard_link_count(path())</code> or <code>hard_link_count(path(), ec)</code>, respectively.</ins></p>
-<p><ins><i>Throws:</i> As specified in Error 
-  reporting ([fs.err.report]).</ins> </p>
-</blockquote>
-
-<pre><ins>file_time_type last_write_time() const;</ins> 
-<ins>file_time_type last_write_time(error_code& ec) const noexcept;</ins></pre> 
-<blockquote>
-<p><ins><i>Returns:</i> If cached, the last write time attribute value. 
-Otherwise, <code>last_write_time(path())</code> or <code>last_write_time(path(), ec)</code>, respectively.</ins></p>
 <p><ins><i>Throws:</i> As specified in Error 
   reporting ([fs.err.report]).</ins> </p>
 </blockquote>
@@ -416,6 +428,33 @@ Otherwise, <code>last_write_time(path())</code> or <code>last_write_time(path(),
   reporting ([fs.err.report]).</ins> </p>
 </blockquote>
 
+<pre><ins>uintmax_t file_size() const;</ins>
+<ins>uintmax_t file_size(error_code& ec) const noexcept;</ins></pre>
+<blockquote>
+<p><ins><i>Returns:</i> If cached, the file size attribute value. Otherwise,
+<code>file_size(path())</code> or <code>file_size(path(), ec)</code>, respectively.</ins></p>
+<p><ins><i>Throws:</i> As specified in Error 
+  reporting ([fs.err.report]).</ins> </p>
+</blockquote>
+
+<pre><ins>uintmax_t hard_link_count() const;</ins>
+<ins>uintmax_t hard_link_count(error_code&amp; ec) const noexcept;</ins></pre>
+<blockquote>
+<p><ins><i>Returns:</i> If cached, the hard link count attribute value. Otherwise,
+<code>hard_link_count(path())</code> or <code>hard_link_count(path(), ec)</code>, respectively.</ins></p>
+<p><ins><i>Throws:</i> As specified in Error 
+  reporting ([fs.err.report]).</ins> </p>
+</blockquote>
+
+<pre><ins>file_time_type last_write_time() const;</ins> 
+<ins>file_time_type last_write_time(error_code& ec) const noexcept;</ins></pre> 
+<blockquote>
+<p><ins><i>Returns:</i> If cached, the last write time attribute value. 
+Otherwise, <code>last_write_time(path())</code> or <code>last_write_time(path(), ec)</code>, respectively.</ins></p>
+<p><ins><i>Throws:</i> As specified in Error 
+  reporting ([fs.err.report]).</ins> </p>
+</blockquote>
+
 <pre>file_status status() const;
 file_status status(error_code&amp; ec) const noexcept;</pre>
 <blockquote>
@@ -478,24 +517,21 @@ exposition class <code>directory_iterator</code> is shown in [class.directory_en
 <code>directory_entry</code>. &mdash;<i>end 
 note</i>]</ins><hr>
 
-    <h2>Operating system <a name="API">API</a>s</h2>
+    <h2>Note for implementors</h2>
 
-    <p>For Windows, <code>directory_entry</code> information is obtained by calling function
+    <p>For Windows, <code>directory_entry</code> information is obtained during 
+    directory iteration by calling function
       <a href="https://msdn.microsoft.com/en-us/library/windows/desktop/aa364418(v=vs.85).aspx">
       FindFirstFile</a>,
       <a href="https://msdn.microsoft.com/en-us/library/windows/desktop/aa364419(v=vs.85).aspx">
       FindFirstFileEx</a>, 
       or 
       <a href="https://msdn.microsoft.com/en-us/library/windows/desktop/aa364428(v=vs.85).aspx">
-      FindNextFile</a>, which return pointers to structure
-      
-      <a href="https://msdn.microsoft.com/en-us/library/windows/desktop/aa365740(v=vs.85).aspx">
-      WIN32_FIND_DATA</a>, and can be refreshed by calling function
+      FindNextFile</a>, and can be refreshed by calling function
       <a href="https://msdn.microsoft.com/en-us/library/windows/desktop/aa364952(v=vs.85).aspx">
-      GetFileInformationByHandle</a> 
-      which returns a pointer to structure
-      <a href="https://msdn.microsoft.com/en-us/library/windows/desktop/aa363788(v=vs.85).aspx">
-      BY_HANDLE_FILE_INFORMATION</a>.</p>
+      GetFileInformationByHandle</a> or
+    <a href="https://msdn.microsoft.com/en-us/library/windows/desktop/aa364946(v=vs.85).aspx">
+    GetFileAttributesEx</a>.</p>
 
     <p>For some POSIX-like systems, such as
     <a href="http://man7.org/linux/man-pages/man3/readdir.3.html">Linux</a> and 
